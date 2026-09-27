@@ -1,0 +1,85 @@
+{
+  "_comment": "Every live image in the show. Generators first, then the post chain. Each entry publishes a texture into the pool under its name. Add an effect = add a .gdshader in patches/ and an entry here. See docs/PATCHES.md.",
+  "passes": [
+    {
+      "name": "noise",
+      "shader": "res://patches/noise.gdshader",
+      "size": [512, 512],
+      "time": "/tex/noise/speed",
+      "params": {
+        "scale":      {"address": "/tex/noise/scale",    "min": 0.5, "max": 12.0, "default": 3.0, "curve": "exp"},
+        "warp":       {"address": "/tex/noise/warp",     "min": 0.0, "max": 4.0,  "default": 1.0},
+        "hue":        {"address": "/tex/noise/hue",      "min": 0.0, "max": 1.0,  "default": 0.55},
+        "spread":     {"address": "/tex/noise/spread",   "min": 0.0, "max": 1.5,  "default": 0.4},
+        "contrast":   {"address": "/tex/noise/contrast", "min": 0.3, "max": 3.0,  "default": 1.0}
+      }
+    },
+    {
+      "name": "bands",
+      "shader": "res://patches/bands.gdshader",
+      "size": [512, 512],
+      "time": "/tex/bands/speed",
+      "params": {
+        "bands":      {"address": "/tex/bands/count", "min": 1.0,   "max": 40.0, "default": 6.0, "curve": "exp"},
+        "angle":      {"address": "/tex/bands/angle", "min": -3.1416, "max": 3.1416, "default": 0.0},
+        "rings":      {"address": "/tex/bands/rings", "min": 0.0,   "max": 1.0,  "default": 0.0},
+        "sharpness":  {"address": "/tex/bands/sharp", "min": 0.0,   "max": 1.0,  "default": 0.4},
+        "hue":        {"address": "/tex/bands/hue",   "min": 0.0,   "max": 1.0,  "default": 0.08}
+      }
+    },
+    {
+      "name": "feedback",
+      "shader": "res://patches/feedback.gdshader",
+      "size": [512, 512],
+      "time": "/tex/feedback/speed",
+      "feedback": "prev_tex",
+      "textures": {
+        "input_tex": {"select": "/tex/feedback/source", "default": "noise"}
+      },
+      "params": {
+        "decay":      {"address": "/tex/feedback/decay",    "min": 0.8,  "max": 0.999, "default": 0.96},
+        "zoom":       {"address": "/tex/feedback/zoom",     "min": 0.95, "max": 1.08,  "default": 1.01},
+        "turn":       {"address": "/tex/feedback/turn",     "min": -0.05, "max": 0.05, "default": 0.004},
+        "input_mix":  {"address": "/tex/feedback/mix",      "min": 0.0,  "max": 1.0,   "default": 0.08},
+        "displace":   {"address": "/tex/feedback/displace", "min": 0.0,  "max": 4.0,   "default": 0.5},
+        "hue_shift":  {"address": "/tex/feedback/hue",      "min": -0.2, "max": 0.2,   "default": 0.0}
+      }
+    },
+    {
+      "name": "lens",
+      "shader": "res://patches/lens.gdshader",
+      "size": "output",
+      "post_only": true,
+      "textures": { "src": "stage" },
+      "params": {
+        "distort":    {"address": "/lens/distort",    "min": -0.6, "max": 2.0, "default": 0.0},
+        "aberration": {"address": "/lens/aberration", "min": 0.0,  "max": 4.0, "default": 0.3},
+        "vignette":   {"address": "/lens/vignette",   "min": 0.0,  "max": 1.0, "default": 0.35},
+        "grain":      {"address": "/lens/grain",      "min": 0.0,  "max": 0.3, "default": 0.03}
+      }
+    },
+    {
+      "name": "screen",
+      "shader": "res://patches/screen.gdshader",
+      "size": "output",
+      "post_only": true,
+      "feedback": "prev_tex",
+      "textures": {
+        "src": "lens",
+        "overlay_tex": {"select": "/screen/overlay_source", "default": "bands"}
+      },
+      "params": {
+        "feedback":   {"address": "/screen/feedback",   "min": 0.0,   "max": 0.98, "default": 0.0},
+        "fb_zoom":    {"address": "/screen/fb_zoom",    "min": 0.96,  "max": 1.06, "default": 1.0},
+        "fb_turn":    {"address": "/screen/fb_turn",    "min": -0.04, "max": 0.04, "default": 0.0},
+        "kaleido":    {"address": "/screen/kaleido",    "min": 0.0,   "max": 12.0, "default": 0.0},
+        "overlay":    {"address": "/screen/overlay",    "min": 0.0,   "max": 1.0,  "default": 0.0},
+        "hue":        {"address": "/screen/hue",        "min": -0.5,  "max": 0.5,  "default": 0.0},
+        "saturation": {"address": "/screen/saturation", "min": 0.0,   "max": 2.0,  "default": 1.0},
+        "contrast":   {"address": "/screen/contrast",   "min": 0.5,   "max": 1.8,  "default": 1.0},
+        "exposure":   {"address": "/screen/exposure",   "min": 0.2,   "max": 3.0,  "default": 1.0, "curve": "exp"},
+        "fade":       {"address": "/screen/fade",       "min": 0.0,   "max": 1.0,  "default": 1.0, "smooth": 0.5}
+      }
+    }
+  ]
+}

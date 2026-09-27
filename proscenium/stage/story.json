@@ -1,0 +1,53 @@
+{
+  "scene": "Test scene — two figures at dusk",
+  "beats": [
+    {
+      "name": "Dusk",
+      "end": "continue",
+      "actors": { "mara": "enter", "tomas": "wait" },
+      "look": { "/world/light/key/hue": 0.08, "/world/fog/density": 0.02, "/tex/noise/hue": 0.55 },
+      "fade": 3.0
+    },
+    {
+      "name": "The crossing",
+      "end": "continue",
+      "actors": { "mara": "cross", "tomas": "wait" }
+    },
+    {
+      "name": "She asks",
+      "end": "hold",
+      "actors": { "mara": "ask", "tomas": "wait" },
+      "lines": [
+        { "at": 1.3, "who": "MARA", "text": "Will the grass remember us?", "dur": 3.0 }
+      ]
+    },
+    {
+      "name": "He turns",
+      "end": "continue",
+      "actors": { "tomas": "turn" }
+    },
+    {
+      "name": "The answer",
+      "end": "hold",
+      "actors": { "tomas": "answer" },
+      "lines": [
+        { "at": 0.5, "who": "TOMAS", "text": "It remembers everything.", "dur": 2.2 },
+        { "at": 2.6, "who": "TOMAS", "text": "That's the trouble.", "dur": 2.0 }
+      ]
+    },
+    {
+      "name": "Storm",
+      "length": 8.0,
+      "end": "loop",
+      "look": {
+        "/world/light/key/hue": 0.62,
+        "/world/fog/density": 0.06,
+        "/tex/noise/warp": 3.2,
+        "/tex/noise/hue": 0.72,
+        "/screen/feedback": 0.75,
+        "/lens/aberration": 1.4
+      },
+      "fade": 4.0
+    }
+  ]
+}

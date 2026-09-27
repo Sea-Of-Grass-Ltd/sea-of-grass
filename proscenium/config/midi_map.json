@@ -1,0 +1,61 @@
+{
+  "_comment": "Default layout for a Korg nanoKONTROL2 in its factory CC mode (8 strips of fader + knob + S/M/R buttons, plus transport). Any controller works: move a control in the show, read its channel and number off the HUD (H), and add it here. Press F5 to reload. Keys are \"channel:number\"; channel 1-16 or * for any.",
+  "cc": {
+    "*:0":  "/story/rate",
+    "*:16": "/lens/drift",
+    "*:32": "/story/hold",
+    "*:48": "/story/loop",
+    "*:64": "/story/go",
+
+    "*:1":  "/lens/distance",
+    "*:17": "/lens/orbit",
+    "*:33": {"address": "/lens/target", "step": 1},
+    "*:49": "/lens/shake",
+
+    "*:2":  "/lens/height",
+    "*:18": "/lens/fov",
+    "*:34": {"address": "/surface/wall/source", "step": 1},
+    "*:50": {"address": "/surface/costume/source", "step": 1},
+
+    "*:3":  "/world/light/key/intensity",
+    "*:19": "/world/light/key/hue",
+    "*:35": {"address": "/surface/floor/source", "step": 1},
+
+    "*:4":  "/world/fog/density",
+    "*:20": "/world/particles/amount",
+    "*:36": {"address": "/world/particles/source", "step": 1},
+
+    "*:5":  "/surface/wall/amount",
+    "*:21": "/tex/noise/warp",
+    "*:37": {"address": "/tex/feedback/source", "step": 1},
+
+    "*:6":  "/screen/feedback",
+    "*:22": "/screen/kaleido",
+    "*:38": {"address": "/screen/overlay_source", "step": 1},
+    "*:70": "/show/look/3",
+
+    "*:7":  "/screen/fade",
+    "*:23": "/lens/distort",
+    "*:71": "/show/look/4",
+    "*:68": "/show/look/1",
+    "*:69": "/show/look/2",
+
+    "*:41": "/story/go",
+    "*:42": "/story/hold",
+    "*:43": "/story/prev",
+    "*:44": "/story/next",
+    "*:45": "/show/store",
+    "*:46": "/story/loop",
+    "*:58": "/story/restart"
+  },
+  "notes": {
+    "*:36": "/story/go",
+    "*:37": "/story/hold",
+    "*:38": "/story/prev",
+    "*:39": "/story/next",
+    "*:40": "/show/look/1",
+    "*:41": "/show/look/2",
+    "*:42": "/show/look/3",
+    "*:43": "/show/look/4"
+  }
+}

@@ -14,6 +14,8 @@ studies/
   front-door/index.html       Study 02 — self-contained, ~29 KB
   looking-glass/              Study 03 — page + 2 modules + 3.8 MB of models
   packfold/                   Study 04 — notes, the toy it embeds, and a sample .dxf
+proscenium/                   not part of the site: a Godot 4 project for live animation
+                              theatre - see proscenium/README.md
 assets/
   logo.svg                    the mark, fill="currentColor" (inherits type color)
   favicon.svg                 same mark, explicit fill, a little padding

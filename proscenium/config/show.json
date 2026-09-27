@@ -1,0 +1,11 @@
+{
+  "_comment": "Show-wide settings. output_size is the resolution of the stage render and the post chain; the window scales it to fit.",
+  "output_size": [1280, 720],
+  "story": "res://stage/story.json",
+  "osc": {
+    "listen_port": 9000,
+    "send": [
+      {"host": "127.0.0.1", "port": 9001, "prefix": "/"}
+    ]
+  }
+}
