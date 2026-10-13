@@ -200,8 +200,35 @@ svg.layer{display:block;overflow:visible;}
 .home svg{display:block;width:100%;height:auto;}
 @media (max-width:640px){.home{left:16px;top:14px;width:26px;}}
 @media (prefers-reduced-motion:reduce){.home{transition-duration:.01ms;}}
-.credit{color:var(--ink-soft);}
-@media (max-width:979px){.credit{display:block;position:static;max-width:none;margin:14px 16px 24px;}}
+/* the write-up, below the plate: a reading column in the site's conventions */
+.note{max-width:66ch;margin:0 auto;padding:72px 24px 120px;font-size:13px;line-height:1.85;color:var(--ink-soft);}
+.note .kicker{margin:0 0 6px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;}
+.note h1{margin:0 0 18px;font-size:13px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);}
+.note .lead{color:var(--ink);font-size:14px;}
+.note h2{margin:44px 0 14px;padding-top:14px;border-top:1px solid var(--line);font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);}
+.note p{margin:0 0 16px;}
+.note em{font-style:normal;color:var(--ink);}
+.note ul.does{list-style:none;margin:0 0 16px;padding:0;}
+.note ul.does li{padding:9px 0 9px 16px;margin-bottom:2px;border-left:1px solid var(--line);}
+.note ul.does li span{color:var(--ink);font-weight:500;}
+.note .tablewrap{overflow-x:auto;margin:0 0 16px;}
+.note table{width:100%;min-width:520px;border-collapse:collapse;font-size:12px;line-height:1.6;}
+.note th{padding:6px 12px 6px 0;border-bottom:1px solid var(--ink);text-align:left;font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);}
+.note td{padding:8px 12px 8px 0;border-bottom:1px solid var(--line);vertical-align:top;}
+.note td:first-child{width:9em;color:var(--ink);font-weight:500;}
+.note td small{display:block;font-size:11px;font-weight:400;color:var(--ink-soft);}
+@media (max-width:600px){          /* phones: each row stacks as a card, its columns labelled */
+  .note table{min-width:0;} .note thead{display:none;}
+  .note tr,.note td{display:block;width:auto;} .note tr{padding:10px 0;border-bottom:1px solid var(--line);}
+  .note td{padding:2px 0;border:0;} .note td:first-child{width:auto;margin-bottom:4px;}
+  .note td[data-label]::before{content:attr(data-label);display:block;margin-top:6px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);}
+}
+.home{position:absolute;}           /* the mark stays at the top of the page, so it never sits over the write-up */
+/* on a screen where the plate fits whole, a quiet pointer to the write-up below it */
+.about{position:fixed;left:16px;bottom:12px;z-index:6;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);text-decoration:none;transition:opacity .3s ease;}
+.about:hover,.about:focus-visible{color:var(--ink);}
+.about.away{opacity:0;pointer-events:none;}
+@media (max-width:979px){.about{display:none;}}
 
 </style>
 </head>
@@ -237,7 +264,101 @@ svg.layer{display:block;overflow:visible;}
     <div class="layer ui" id="ui"></div>
   </div>
 </main>
-<p class="credit">Frame after Eugène Grasset &middot; tiles after Garneri, <i>L&rsquo;Ornato</i> &middot; rosettes after Cusack&rsquo;s <i>Freehand Ornament</i></p>
+<article class="note" aria-labelledby="note-title">
+  <p class="kicker">Study 06</p>
+  <h1 id="note-title">Grasset</h1>
+  <p class="lead">Grasset puts live, generative content where web pages have used pre-made motion graphics, and uses it to bring back the ornate, panelled forms that modern web design left behind. It rebuilds one of Eugène Grasset’s calendar plates as an instrument: every panel plays, and three 3D plants turn through the four seasons.</p>
+
+  <h2>The idea</h2>
+  <p>The study’s claim is that the web no longer has to choose between motion and ornament. Where a page would once have carried a pre-made motion graphic, Grasset carries generative content instead.</p>
+  <p><em>Generative content in place of motion graphics.</em> Web motion has mostly been made in advance: a loop, a video, a scripted transition that plays the same way every time. Here every moving surface is computed live in the browser. It answers to touch, to the season, to sound if you allow it, and it never plays the same way twice.</p>
+  <p><em>Older forms, made live.</em> There is a running debate about where web design goes next, and most answers rehash the same modern style: flat colour, a strict grid, white space, a clean sans serif. That style won partly because it was what early browsers could carry. Ordinary laptops and phones can now draw live graphics and 3D in the page. So the denser, more decorative forms the modern style replaced are practical again: the ornamented frame, the illustrated border, the panelled page. They can also be alive rather than static.</p>
+  <p><em>Grasset as the test case.</em> His calendar plates are the opposite of modern web taste. Every surface is decorated, the content sits inside an ornamental frame, and the frame matters as much as what it holds. This study rebuilds that frame as the interface itself.</p>
+  <p>The aim is to break the hold the modern sensibility has had on the web, rather than refine it once more: to show that ornament and generative motion can make a page people want to play with.</p>
+
+  <h2>What sets it apart</h2>
+  <p>What makes the piece unusual is that the ornament does the work: it is the content, the motion and the controls at once.</p>
+  <ul class="does">
+    <li><span>The ornament is the interface.</span> You play the piece by tapping its decoration: a border, a tile, a rosette, the capital. The controls sit inside the frame too, the controller in the centre panel and the season slider in a column.</li>
+    <li><span>Generated, not pre-made.</span> There are no video files or canned animations. The synths, borders, tiles and rosettes are drawn live, and the leaves that fall in autumn are the tree’s own leaves letting go.</li>
+    <li><span>Time as content.</span> The seasons change the state of the whole page: what grows, what falls, the light, the colour. They aren’t a scripted sequence that plays and ends.</li>
+    <li><span>Print and 3D in one picture.</span> The plants are real 3D models painted and inked to sit in the plate like lithograph illustrations, beside a printed illustration and vector ornament, so you can’t see where one medium stops.</li>
+    <li><span>Restraint inside density.</span> A frame this ornate could easily be loud. Keeping it grey first, with colour reserved for living things and a single highlight, lets it stay calm and readable.</li>
+    <li><span>Alive when left alone.</span> Untouched, the synths drift on their own, so the page keeps changing without you, as a living picture rather than a page waiting for input.</li>
+    <li><span>Open and ordinary.</span> It runs in any modern browser, on a laptop or a phone, as one page with no app or plugin.</li>
+  </ul>
+
+  <h2>What plays</h2>
+  <p>Every part of the frame is live, and every part changes when you tap it. The four the controller drives are marked as its targets.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Part</th><th>What it does</th><th>How you play it</th></tr></thead>
+    <tbody>
+      <tr><td>Synth I <small>top band, left column</small></td><td data-label="What it does">A square synth after cross-stitch, lattice and quilt blocks, three blocks across the top and three stacked down the column, with diamonds laid over the column. 9 modes: Stitch, Fret, Compartiment, Lattice, Nested, Arc &amp; Check, Star Block, Circles, Chaos Engine.</td><td data-label="How you play it">Tap it; controller target I</td></tr>
+      <tr><td>Synth II <small>side panels</small></td><td data-label="What it does">A visual synth after the EYESY video synthesiser, running behind the branch as one panel seen either side of the window. 13 modes, from Bubble Wrap to Chaos Engine.</td><td data-label="How you play it">Tap it; controller target II</td></tr>
+      <tr><td>Borders <small>the bands between panels</small></td><td data-label="What it does">Animated band patterns: Comb, Stripes, Sawtooth, Drops, Checker, Crown, Pickets, Flames. Rave gives each band a different pattern and swaps them on every beat.</td><td data-label="How you play it">Tap a band; controller target Borders</td></tr>
+      <tr><td>Tiles <small>2×2 block, single tile, diamonds</small></td><td data-label="What it does">Square tiles after Garneri’s <i>L’Ornato</i>. The block and the single tile always show different variants of the same family.</td><td data-label="How you play it">Tap a tile; the slider at the foot of the left column morphs the square</td></tr>
+      <tr><td>Rosettes <small>on the vase</small></td><td data-label="What it does">Four flower plates after Cusack’s <i>Freehand Ornament</i>: Hearts, Ribbons, Quatrefoil, Lily cross. They open and close with the season.</td><td data-label="How you play it">Tap a rosette; controller target Flowers</td></tr>
+      <tr><td>Beads <small>on the vase</small></td><td data-label="What it does">A row of beads that steps along with the beat.</td><td data-label="How you play it">Tap them to send a beat</td></tr>
+      <tr><td>Capital <small>top of the left column</small></td><td data-label="What it does">An Ionic capital whose volutes are logarithmic spirals.</td><td data-label="How you play it">Tap it to step the spiral’s ratio</td></tr>
+      <tr><td>Plants <small>aspen, branch, grass</small></td><td data-label="What it does">Three 3D models that turn through the seasons.</td><td data-label="How you play it">The season slider</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>The seasons</h2>
+  <p>The season slider in the right column turns the whole frame through the year. It has four stops (blossom, sun, leaf, snowflake), opens on the season it is, and moves the short way round, about a season every 1.4 seconds.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th></th><th>Plants</th><th>The frame</th></tr></thead>
+    <tbody>
+      <tr><td>Spring</td><td data-label="Plants">The aspen hangs catkins and comes into young leaf; the branch puts out fresh leaves and pink plumes; the grass is short and new.</td><td data-label="The frame">Greys lean green; highlight is rose</td></tr>
+      <tr><td>Summer</td><td data-label="Plants">Full leaf on the aspen and branch; the grass at full height.</td><td data-label="The frame">Greys lean warm; highlight is lime</td></tr>
+      <tr><td>Autumn</td><td data-label="Plants">The aspen goes gold and drops its own leaves, which fall fast and are gone in about a second, then regrow so the tree never goes bare too early; the branch turns vermilion and rust; the wind picks up.</td><td data-label="The frame">Greys lean russet; highlight is rust</td></tr>
+      <tr><td>Winter</td><td data-label="Plants">The aspen is bare, with snow settling only on surfaces that face up; the branch keeps its dead leaves, as oak and beech do, and its plumes dry where they stand.</td><td data-label="The frame">Greys lean cool; highlight is cobalt; the slider’s sun becomes a moon among stars</td></tr>
+    </tbody>
+  </table></div>
+  <p>The rosettes on the vase open and close with the season too, and every change crossfades rather than cuts.</p>
+
+  <h2>Colour</h2>
+  <p>The frame is grey first, so the plants carry the colour. The panels, synths, tiles, rosettes and controller are drawn in warm greys on a light ground, each season tinting them very slightly.</p>
+  <p>Colour comes back in only three places:</p>
+  <ul class="does">
+    <li><span>The plants,</span> in deep painted ramps for each season.</li>
+    <li><span>The bison</span> in the arched window, a full-colour illustration in the place where Grasset puts his panel picture.</li>
+    <li><span>One highlight colour</span> for whatever you can touch: the chosen tab and pressed effects, slider knobs and fills, the season’s icon and sun. It changes with the season, from rose to lime to rust to cobalt, and text on it switches dark or light to stay readable.</li>
+  </ul>
+  <p>The frame is outlined in one ink: the pediment and the ledge at the foot each carry a single unbroken contour, and the capital is drawn in the same line. A Tone button in the controller swaps the greys for a full folk palette of vermilion, gold, ivory and cobalt.</p>
+
+  <h2>Playing it</h2>
+  <p>There are two ways in: tap the frame itself, or use the controller at the foot of the blank centre panel.</p>
+  <ul class="does">
+    <li><span>Tap the frame.</span> Every part changes when tapped; the synths step to their next mode.</li>
+    <li><span>The controller.</span> Pick what you’re playing (I, II, Flowers, Borders), then one of four tabs. <em>Mode</em> steps through the modes. <em>Shape</em> has five sliders: for Synth I these are Grid, Motif, Rings, Colour and Speed; for Flowers, Petals, Width, Heart, Spin and Centre; for Borders, Speed, Height, Spacing, Colour and Wobble. <em>Colour</em> steps the foreground and background colours, or switches the palette or the Tone. <em>Effect</em> has Flash, Shuffle, Trails, Pulse, Still and Listen.</li>
+    <li><span>Now Playing.</span> The dark box under the bison shows the season and both synths’ modes. Pressing it outlines the parts the controller is playing.</li>
+    <li><span>Left alone.</span> After 15 seconds untouched, the synths start to drift on their own: their sliders sway and their mode changes every 14 seconds or so. Their names are marked with a ~ while they drift.</li>
+    <li><span>Keys.</span> ← → change mode, Space flashes, R shuffles.</li>
+    <li><span>Listen.</span> Lets the beat follow sound from your microphone. It only starts when you press it, and nothing is recorded or sent.</li>
+  </ul>
+  <p>Settings are remembered in your browser. With reduced motion turned on, changes apply instantly instead of animating.</p>
+
+  <h2>How it is made</h2>
+  <p>The study is one page plus three models, 2.9 MB in all. It is built from an SVG export of the Illustrator artwork, so every live part sits on the drawing’s own 800-unit grid and the frame scales as one piece on any screen.</p>
+  <ul class="does">
+    <li><span>The frame and its live parts:</span> SVG and canvas, drawn in the page’s own JavaScript. No framework.</li>
+    <li><span>The plants:</span> three Blender models (aspen, branch, grass), exported as compressed glTF and drawn with three.js. A painted shader reproduces the Blender material’s colour ramp, the ink outlines are drawn as inverted shells, and each camera matches its Blender camera, so every plant sits exactly where its painting sat.</li>
+    <li><span>Fallbacks:</span> the original paintings of the three plants show while the models load, and stay if the browser can’t draw 3D. A model that fails to load is retried, and the paintings return if the graphics card drops out.</li>
+    <li><span>Outside the page:</span> three.js and its Draco decoder come from jsDelivr, pinned at version 0.169.0, and the type is IBM Plex Mono from Google Fonts.</li>
+  </ul>
+
+  <h2>Credits</h2>
+  <ul class="does">
+    <li><span>Frame:</span> after Eugène Grasset’s calendar plates.</li>
+    <li><span>Tiles:</span> after Garneri, <i>L’Ornato</i>.</li>
+    <li><span>Rosettes:</span> after Cusack’s <i>Freehand Ornament</i>.</li>
+    <li><span>Synth II:</span> after the EYESY video synthesiser by Critter &amp; Guitari.</li>
+    <li><span>Capital’s spiral:</span> after Paynter (1921), Fig. 152.</li>
+    <li><span>Controller:</span> after the one on tristan.design.</li>
+  </ul>
+</article>
+<a class="about" href="#note-title">About this study &darr;</a><script>(()=>{const a=document.querySelector(".about"),n=document.querySelector(".note");if(a&&n&&"IntersectionObserver" in window)new IntersectionObserver(e=>a.classList.toggle("away",e[0].isIntersecting),{rootMargin:"0px 0px -15% 0px"}).observe(n);})();</script>
 <script>window.__GEO = {"vb": [800, 1382, -67], "synth1": [[344.6, 139, 269.4, 85], [92, 976, 115, 265]], "synth2": [[85, 535, 615, 417]], "windowFill": [347.6, 530, 266.4, 560], "tileSmall": [614, 451, 86, 86], "borders": [[614, 439, 86, 12], [614, 537, 86, 12], [614, 944, 120.62, 12], [55, 952, 292.94, 12]], "diamonds": [[149.5, 1052.3333333333333, 30], [149.5, 1128.6666666666667, 30]], "tileSquare": [207, 976, 139.60000000000002, 114], "capital": [175, 28, 76, 63], "shell": [350.4, 915.42, 263.6, 174.53], "rosettes": [[663, 1010.74, 26.5], [655.02, 1118.2, 22.77], [693.1, 1182.52, 38.75]], "beads": [[632.0, 1064, 3.6], [643.5, 1064, 3.6], [655.0, 1064, 3.6], [666.5, 1064, 3.6], [678.0, 1064, 3.6], [689.5, 1064, 3.6], [701.0, 1064, 3.6]], "controller": [99, 407.43, 225, 97.54], "controlPanel": [362, 612, 236, 330], "capSlider": [84.61, 344.61, 100.74], "morphSlider": [99.01, 199.46, 1223.92], "plants": [654, 281, 46, 157.27, 291.64, 416.92], "window": [346.6, 301, 267, 739], "knobR": 5.92, "plants3d": {"aspen": {"frame": [383.46, -116.52, 459.93, 574.91]}, "branch": {"frame": [-38.07, 534.14, 759.03, 566.9], "holes": [[347.6, 529.14, 266.4, 576.9], [700, 529.14, 80, 576.9]]}, "grass": {"frame": [202.44, 1085.64, 465.15, 159.67], "holes": [[614, 1080.64, 80, 169.67]], "clip": [207, 1090, 407, 150.5]}}, "study": true};</script>
 <script>
 // The live parts of the Grasset lockup. Everything is drawn in artboard units
