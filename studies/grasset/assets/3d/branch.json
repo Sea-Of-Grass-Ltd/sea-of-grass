@@ -1,0 +1,213 @@
+{
+ "name": "branch",
+ "res": [
+  1600,
+  1195
+ ],
+ "polys": [
+  242400,
+  105277
+ ],
+ "camera": {
+  "x": 0.0,
+  "z": 1.7899999618530273,
+  "ortho": 5.050000190734863
+ },
+ "bbox": [
+  -2.2639758586883545,
+  0.09599995613098145,
+  2.4250874519348145,
+  3.5111708641052246
+ ],
+ "panel": null,
+ "materials": {
+  "MAT_branch": {
+   "base": "#93a7a3",
+   "lift": -1.0,
+   "blend": 0.45,
+   "edge": 0.45,
+   "stops": [
+    [
+     0.0,
+     "#4f6260"
+    ],
+    [
+     0.45,
+     "#809591"
+    ],
+    [
+     0.72,
+     "#a3b5b1"
+    ],
+    [
+     1.0,
+     "#d3ddd7"
+    ]
+   ],
+   "interp": "EASE"
+  },
+  "MAT_ink": {
+   "base": "#2f2a1c"
+  },
+  "MAT_ink_hull": {
+   "base": "#2f2a1c"
+  },
+  "MAT_leaf": {
+   "base": "#a3a25a",
+   "lift": -1.1,
+   "blend": 0.45,
+   "edge": 0.3,
+   "stops": [
+    [
+     0.0,
+     "#4c4e20"
+    ],
+    [
+     0.45,
+     "#7c7e3a"
+    ],
+    [
+     0.7,
+     "#a3a25a"
+    ],
+    [
+     0.86,
+     "#c0be7a"
+    ],
+    [
+     1.0,
+     "#e0daa6"
+    ]
+   ],
+   "interp": "EASE"
+  },
+  "MAT_plume": {
+   "base": "#b2b06c",
+   "lift": -1.1,
+   "blend": 0.45,
+   "edge": 0.3,
+   "stops": [
+    [
+     0.0,
+     "#585a24"
+    ],
+    [
+     0.45,
+     "#8b8b4a"
+    ],
+    [
+     0.7,
+     "#b2b06c"
+    ],
+    [
+     0.86,
+     "#cfcb90"
+    ],
+    [
+     1.0,
+     "#ece6bb"
+    ]
+   ],
+   "interp": "EASE"
+  },
+  "MAT_scroll": {
+   "base": "#adab63",
+   "lift": -1.1,
+   "blend": 0.45,
+   "edge": 0.3,
+   "stops": [
+    [
+     0.0,
+     "#55561f"
+    ],
+    [
+     0.45,
+     "#878744"
+    ],
+    [
+     0.7,
+     "#adab63"
+    ],
+    [
+     0.86,
+     "#cac786"
+    ],
+    [
+     1.0,
+     "#e8e2b2"
+    ]
+   ],
+   "interp": "EASE"
+  },
+  "MAT_stalk": {
+   "base": "#9d9c58",
+   "lift": -1.0,
+   "blend": 0.45,
+   "edge": 0.45,
+   "stops": [
+    [
+     0.0,
+     "#5a5b26"
+    ],
+    [
+     0.45,
+     "#8a8a47"
+    ],
+    [
+     0.72,
+     "#aeac68"
+    ],
+    [
+     1.0,
+     "#dcd7a6"
+    ]
+   ],
+   "interp": "EASE"
+  }
+ },
+ "roles": {
+  "BR_main": "BRANCH",
+  "BR_twig": "BRANCH",
+  "BR_stub1": "BRANCH",
+  "BR_stub2": "BRANCH",
+  "BR_stub3": "BRANCH",
+  "BR_marks": "BRANCH",
+  "HUB": "STEMS",
+  "L01": "LEAVES",
+  "L02": "LEAVES",
+  "L03": "LEAVES",
+  "L08": "LEAVES",
+  "L09": "LEAVES",
+  "L04": "LEAVES",
+  "L05": "LEAVES",
+  "L07": "LEAVES",
+  "L06": "LEAVES",
+  "L10": "LEAVES",
+  "P5": "SCROLLS",
+  "T1": "SCROLLS",
+  "T2": "SCROLLS",
+  "A09": "SCROLLS",
+  "A05": "SCROLLS",
+  "A03": "SCROLLS",
+  "A04": "SCROLLS",
+  "A04b": "SCROLLS",
+  "A06": "SCROLLS",
+  "A07": "SCROLLS",
+  "A08": "SCROLLS",
+  "RS": "SCROLLS",
+  "R6": "SCROLLS",
+  "R7": "SCROLLS",
+  "R1": "SCROLLS",
+  "R2": "SCROLLS",
+  "R3": "SCROLLS",
+  "R4": "SCROLLS",
+  "P4": "PLUMES",
+  "P3": "PLUMES",
+  "P2": "PLUMES",
+  "P1": "PLUMES",
+  "B1": "PLUMES",
+  "B2": "PLUMES",
+  "B3": "PLUMES",
+  "R5": "PLUMES"
+ }
+}

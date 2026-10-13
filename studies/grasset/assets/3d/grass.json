@@ -1,0 +1,161 @@
+{
+ "name": "grass",
+ "res": [
+  1866,
+  600
+ ],
+ "polys": [
+  308270,
+  119236
+ ],
+ "camera": {
+  "x": 0.0,
+  "z": 0.7720000147819519,
+  "ortho": 5.075520038604736
+ },
+ "bbox": [
+  -2.5360000133514404,
+  -0.10700000822544098,
+  2.5360000133514404,
+  1.5440000295639038
+ ],
+ "panel": [
+  -2.48799991607666,
+  0.0,
+  2.48799991607666,
+  1.5440000295639038
+ ],
+ "materials": {
+  "MAT_base": {
+   "base": "#a39d82",
+   "lift": -1.0,
+   "blend": 0.45,
+   "edge": 0.45,
+   "stops": [
+    [
+     0.0,
+     "#5e5a46"
+    ],
+    [
+     0.45,
+     "#8f8a70"
+    ],
+    [
+     0.72,
+     "#b1ab8f"
+    ],
+    [
+     1.0,
+     "#d8d2b8"
+    ]
+   ],
+   "interp": "EASE"
+  },
+  "MAT_blade": {
+   "base": "#dcc670",
+   "lift": -1.1,
+   "blend": 0.45,
+   "edge": 0.3,
+   "stops": [
+    [
+     0.0,
+     "#5a5420"
+    ],
+    [
+     0.42,
+     "#9c9040"
+    ],
+    [
+     0.68,
+     "#cdbb62"
+    ],
+    [
+     0.85,
+     "#e2d083"
+    ],
+    [
+     1.0,
+     "#f4e8b2"
+    ]
+   ],
+   "interp": "EASE",
+   "tint": "tint"
+  },
+  "MAT_ink": {
+   "base": "#2a2618"
+  },
+  "MAT_ink_hull": {
+   "base": "#2a2618"
+  },
+  "MAT_panel": {
+   "base": "#c4c0ad",
+   "lift": -1.0,
+   "blend": 0.45,
+   "edge": 0.0,
+   "stops": [
+    [
+     0.0,
+     "#8d8a78"
+    ],
+    [
+     0.5,
+     "#b5b19c"
+    ],
+    [
+     0.8,
+     "#c4c0ad"
+    ],
+    [
+     1.0,
+     "#d2cebb"
+    ]
+   ],
+   "interp": "EASE"
+  }
+ },
+ "roles": {
+  "L09": "BLADES",
+  "L03": "BLADES",
+  "L06": "BLADES",
+  "L12": "BLADES",
+  "C17": "BLADES",
+  "C10": "BLADES",
+  "C11": "BLADES",
+  "C12": "BLADES",
+  "C8": "BLADES",
+  "C9": "BLADES",
+  "C13": "BLADES",
+  "C16": "BLADES",
+  "R7": "BLADES",
+  "C18": "BLADES",
+  "R8b": "BLADES",
+  "R8": "BLADES",
+  "R6": "BLADES",
+  "X1": "BLADES",
+  "X2": "BLADES",
+  "R9": "BLADES",
+  "L07": "BLADES",
+  "L01": "BLADES",
+  "L02": "BLADES",
+  "L10": "BLADES",
+  "L08": "BLADES",
+  "L04": "BLADES",
+  "L05": "BLADES",
+  "L11": "BLADES",
+  "C2": "BLADES",
+  "C1": "BLADES",
+  "C4": "BLADES",
+  "C6": "BLADES",
+  "C5": "BLADES",
+  "C3": "BLADES",
+  "C7": "BLADES",
+  "R4": "BLADES",
+  "R5": "BLADES",
+  "R1": "BLADES",
+  "R2": "BLADES",
+  "R3": "BLADES",
+  "GROUND": "BASE",
+  "PANEL": "PANEL",
+  "PANEL_frame": "PANEL"
+ }
+}
