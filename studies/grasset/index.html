@@ -194,6 +194,18 @@ svg.layer{display:block;overflow:visible;}
 #mirror .ray-on{opacity:0;transition:opacity .5s ease;}
 #mirror .ray-on.on{opacity:1;}
 
+/* ---- the study's season buttons: neo-brutalist, to sit with the frame's heavy line */
+.seasons{position:absolute;display:flex;flex-direction:column;justify-content:space-between;padding:calc(var(--u)*2) calc(var(--u)*5) calc(var(--u)*5) calc(var(--u)*2);}
+.seasons button{flex:none;height:calc(var(--u)*31);display:grid;place-items:center;padding:0;cursor:pointer;
+  background:var(--window);color:var(--ink);border:calc(var(--u)*2.2) solid var(--ink);border-radius:calc(var(--u)*3);
+  box-shadow:calc(var(--u)*3) calc(var(--u)*3) 0 var(--ink);transition:transform .08s ease, box-shadow .08s ease, background .25s ease;}
+.seasons button svg{width:calc(var(--u)*18);height:calc(var(--u)*18);}
+.seasons button:hover{transform:translate(calc(var(--u)*-1),calc(var(--u)*-1));box-shadow:calc(var(--u)*4) calc(var(--u)*4) 0 var(--ink);}
+.seasons button[aria-checked="true"]{background:var(--salmon);color:var(--on-accent, var(--ink));
+  transform:translate(calc(var(--u)*3),calc(var(--u)*3));box-shadow:none;}
+.seasons button:focus-visible{outline:calc(var(--u)*1.6) solid var(--ink);outline-offset:calc(var(--u)*2);}
+@media (prefers-reduced-motion:reduce){.seasons button{transition:none;}}
+
 :root{--vbw:800;--vbh:1382;--oy:67;}
 .home{position:fixed;left:24px;top:20px;z-index:6;display:block;width:34px;color:var(--ink-soft);transition:color .18s ease;}
 .home:hover,.home:focus-visible{color:var(--ink);}
@@ -279,11 +291,11 @@ svg.layer{display:block;overflow:visible;}
   <h2>What sets it apart</h2>
   <p>What makes the piece unusual is that the ornament does the work: it is the content, the motion and the controls at once.</p>
   <ul class="does">
-    <li><span>The ornament is the interface.</span> You play the piece by tapping its decoration: a border, a tile, a rosette, the capital. The controls sit inside the frame too, the controller in the centre panel and the season slider in a column.</li>
+    <li><span>The ornament is the interface.</span> You play the piece by tapping its decoration: a border, a tile, a rosette, the capital. The controls sit inside the frame too, the controller in the centre panel and the season buttons in a column.</li>
     <li><span>Generated, not pre-made.</span> There are no video files or canned animations. The synths, borders, tiles and rosettes are drawn live, and the leaves that fall in autumn are the tree’s own leaves letting go.</li>
     <li><span>Time as content.</span> The seasons change the state of the whole page: what grows, what falls, the light, the colour. They aren’t a scripted sequence that plays and ends.</li>
     <li><span>Print and 3D in one picture.</span> The plants are real 3D models painted and inked to sit in the plate like lithograph illustrations, beside a printed illustration and vector ornament, so you can’t see where one medium stops.</li>
-    <li><span>Restraint inside density.</span> A frame this ornate could easily be loud. Keeping it grey first, with colour reserved for living things and a single highlight, lets it stay calm and readable.</li>
+    <li><span>Restraint inside density.</span> A frame this ornate could easily be loud. Its colour is held to three harmonised inks, laid as tints on a white page and turning with the season, so it stays calm and readable.</li>
     <li><span>Alive when left alone.</span> Untouched, the synths drift on their own, so the page keeps changing without you, as a living picture rather than a page waiting for input.</li>
     <li><span>Open and ordinary.</span> It runs in any modern browser, on a laptop or a phone, as one page with no app or plugin.</li>
   </ul>
@@ -294,38 +306,38 @@ svg.layer{display:block;overflow:visible;}
     <thead><tr><th>Part</th><th>What it does</th><th>How you play it</th></tr></thead>
     <tbody>
       <tr><td>Synth I <small>top band, left column</small></td><td data-label="What it does">A square synth after cross-stitch, lattice and quilt blocks, three blocks across the top and three stacked down the column, with diamonds laid over the column. 9 modes: Stitch, Fret, Compartiment, Lattice, Nested, Arc &amp; Check, Star Block, Circles, Chaos Engine.</td><td data-label="How you play it">Tap it; controller target I</td></tr>
-      <tr><td>Synth II <small>side panels</small></td><td data-label="What it does">A visual synth after the EYESY video synthesiser, running behind the branch as one panel seen either side of the window. 13 modes, from Bubble Wrap to Chaos Engine.</td><td data-label="How you play it">Tap it; controller target II</td></tr>
+      <tr><td>Synth II <small>side panels</small></td><td data-label="What it does">A visual synth after the EYESY video synthesiser, running behind the branch as one panel seen either side of the window. 12 modes, from Bubble Wrap to Chaos Engine.</td><td data-label="How you play it">Tap it; controller target II</td></tr>
       <tr><td>Borders <small>the bands between panels</small></td><td data-label="What it does">Animated band patterns: Comb, Stripes, Sawtooth, Drops, Checker, Crown, Pickets, Flames. Rave gives each band a different pattern and swaps them on every beat.</td><td data-label="How you play it">Tap a band; controller target Borders</td></tr>
       <tr><td>Tiles <small>2×2 block, single tile, diamonds</small></td><td data-label="What it does">Square tiles after Garneri’s <i>L’Ornato</i>. The block and the single tile always show different variants of the same family.</td><td data-label="How you play it">Tap a tile; the slider at the foot of the left column morphs the square</td></tr>
       <tr><td>Rosettes <small>on the vase</small></td><td data-label="What it does">Four flower plates after Cusack’s <i>Freehand Ornament</i>: Hearts, Ribbons, Quatrefoil, Lily cross. They open and close with the season.</td><td data-label="How you play it">Tap a rosette; controller target Flowers</td></tr>
       <tr><td>Beads <small>on the vase</small></td><td data-label="What it does">A row of beads that steps along with the beat.</td><td data-label="How you play it">Tap them to send a beat</td></tr>
       <tr><td>Capital <small>top of the left column</small></td><td data-label="What it does">An Ionic capital whose volutes are logarithmic spirals.</td><td data-label="How you play it">Tap it to step the spiral’s ratio</td></tr>
-      <tr><td>Plants <small>aspen, branch, grass</small></td><td data-label="What it does">Three 3D models that turn through the seasons.</td><td data-label="How you play it">The season slider</td></tr>
+      <tr><td>Plants <small>aspen, branch, grass</small></td><td data-label="What it does">Three 3D models that turn through the seasons.</td><td data-label="How you play it">The season buttons</td></tr>
     </tbody>
   </table></div>
 
   <h2>The seasons</h2>
-  <p>The season slider in the right column turns the whole frame through the year. It has four stops (blossom, sun, leaf, snowflake), opens on the season it is, and moves the short way round, about a season every 1.4 seconds.</p>
+  <p>Four buttons in the right column (blossom, sun, leaf, snowflake) turn the whole frame through the year. The study opens in summer, and each change goes the short way round, about a season every 1.4 seconds.</p>
   <div class="tablewrap"><table>
     <thead><tr><th></th><th>Plants</th><th>The frame</th></tr></thead>
     <tbody>
-      <tr><td>Spring</td><td data-label="Plants">The aspen hangs catkins and comes into young leaf; the branch puts out fresh leaves and pink plumes; the grass is short and new.</td><td data-label="The frame">Greys lean green; highlight is rose</td></tr>
-      <tr><td>Summer</td><td data-label="Plants">Full leaf on the aspen and branch; the grass at full height.</td><td data-label="The frame">Greys lean warm; highlight is lime</td></tr>
-      <tr><td>Autumn</td><td data-label="Plants">The aspen goes gold and drops its own leaves, which fall fast and are gone in about a second, then regrow so the tree never goes bare too early; the branch turns vermilion and rust; the wind picks up.</td><td data-label="The frame">Greys lean russet; highlight is rust</td></tr>
-      <tr><td>Winter</td><td data-label="Plants">The aspen is bare, with snow settling only on surfaces that face up; the branch keeps its dead leaves, as oak and beech do, and its plumes dry where they stand.</td><td data-label="The frame">Greys lean cool; highlight is cobalt; the slider’s sun becomes a moon among stars</td></tr>
+      <tr><td>Spring</td><td data-label="Plants">The aspen hangs catkins and comes into young leaf; the branch puts out fresh leaves and pink plumes; the grass is short and new.</td><td data-label="The frame">Sage, with violet and plum; highlight is rose</td></tr>
+      <tr><td>Summer</td><td data-label="Plants">Full leaf on the aspen and branch; the grass at full height.</td><td data-label="The frame">Ochre, with teal and lavender; highlight is lime</td></tr>
+      <tr><td>Autumn</td><td data-label="Plants">The aspen goes gold and drops its own leaves, which fall fast and are gone in about a second, then regrow so the tree never goes bare too early; the branch turns vermilion and rust; the wind picks up.</td><td data-label="The frame">Rust, with teal-green and blue; highlight is rust</td></tr>
+      <tr><td>Winter</td><td data-label="Plants">The aspen is bare, with snow settling only on surfaces that face up; the branch keeps its dead leaves, as oak and beech do, and its plumes dry where they stand.</td><td data-label="The frame">Slate, with brick red and olive; highlight is cobalt</td></tr>
     </tbody>
   </table></div>
   <p>The rosettes on the vase open and close with the season too, and every change crossfades rather than cuts.</p>
 
   <h2>Colour</h2>
-  <p>The frame is grey first, so the plants carry the colour. The panels, synths, tiles, rosettes and controller are drawn in warm greys on a light ground, each season tinting them very slightly.</p>
-  <p>Colour comes back in only three places:</p>
+  <p>The frame is printed in three inks on a white page, as a split-complementary harmony: the season’s own colour and the two hues either side of its opposite. The season’s colour takes the frame and its line, the second hue the synths’ main figures and the vase’s flowers, and the third the tiles, borders and lighter figures.</p>
+  <p>Stronger colour comes in three places:</p>
   <ul class="does">
     <li><span>The plants,</span> in deep painted ramps for each season.</li>
     <li><span>The bison</span> in the arched window, a full-colour illustration in the place where Grasset puts his panel picture.</li>
-    <li><span>One highlight colour</span> for whatever you can touch: the chosen tab and pressed effects, slider knobs and fills, the season’s icon and sun. It changes with the season, from rose to lime to rust to cobalt, and text on it switches dark or light to stay readable.</li>
+    <li><span>One highlight colour</span> for whatever you can touch: the chosen tab and pressed effects, slider knobs and fills, the chosen season button. It changes with the season, from rose to lime to rust to cobalt, and text on it switches dark or light to stay readable.</li>
   </ul>
-  <p>The frame is outlined in one ink: the pediment and the ledge at the foot each carry a single unbroken contour, and the capital is drawn in the same line. A Tone button in the controller swaps the greys for a full folk palette of vermilion, gold, ivory and cobalt.</p>
+  <p>The frame is outlined in one ink: the pediment and the ledge at the foot each carry a single unbroken contour, and the capital is drawn in the same line. The Tone button in the controller offers other palettes: one-colour seasons, analogous and triad harmonies, grey, sepia, indigo, verdigris, and a full folk palette of vermilion, gold, ivory and cobalt.</p>
 
   <h2>Playing it</h2>
   <p>There are two ways in: tap the frame itself, or use the controller at the foot of the blank centre panel.</p>
@@ -429,7 +441,7 @@ const CAST = ['#7FA07A', '#C8A878', '#B88660', '#7C90B0'];       // the greys le
 const SEASON_ACCENT = ['#C4506E', '#8DC63F', '#BF4F2A', '#3D6CB0'];
 function greyTone(i) {
   const g = h => mixHex(h, CAST[i], 0.07), a = SEASON_ACCENT[i];
-  return {paper: g('#DEDBD5'), cream: g('#F1EFEA'), window: g('#F4F2EE'), yellow: g('#C9C5BD'), cap: g('#B4AFA7'), vase: g('#A29D95'), ink: '#3A3733', black: '#2F2D2A',
+  return {paper: '#FFFFFF', cream: g('#F1EFEA'), window: g('#F4F2EE'), yellow: g('#C9C5BD'), cap: g('#B4AFA7'), vase: g('#A29D95'), ink: '#3A3733', black: '#2F2D2A',
     accent: a,
     q: {cream: g('#F1EFEA'), paper: g('#E1DED8'), sand: g('#C9C5BD'), clay: g('#67635C'), blush: g('#A9A49C'), sage: g('#7E7A73'), mist: g('#BCB8B1'), navy: g('#5A5650'), line: '#3A3733'}};
 }
@@ -439,10 +451,69 @@ const hexRGB = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
 const mixHex = (a, b, f) => '#' + hexRGB(a).map((v, i) => Math.round(v + (hexRGB(b)[i] - v) * f).toString(16).padStart(2, '0')).join('');
 // the season bar's sky, top and bottom, its sun (a moon by winter) and how many stars show
 const SKY = [['#46545a', '#7d8c80', '#F2C9B8', 0.1], ['#33485c', '#8aa0ad', '#F3C567', 0], ['#3c2d2a', '#93603f', '#E39A5E', 0.15], ['#1d222b', '#4a5462', '#EEEBE0', 0.9]];
-const TONES = ['Grey', 'Folk'];
-let GREY_PAL = null;
-const tonePal = () => STATE.tone === 'Folk' ? SEASON_PAL : (GREY_PAL = GREY_PAL || [0, 1, 2, 3].map(greyTone));
-const toneSky = () => STATE.tone === 'Folk' ? SKY : skyGrey();
+// (In the light tones the page around the frame is plain white.)
+// Print tones: a paper and one ink, the frame mixed between them as in a
+// two-colour print. Each is [paper, ink] per season; Seasons changes its ink
+// through the year (sage, ochre, rust, slate), the others keep one.
+const PRINT_TONES = {
+  Sepia:     [0, 1, 2, 3].map(() => ['#F2E8D5', '#6B4A2B']),
+  Indigo:    [0, 1, 2, 3].map(() => ['#F0EADB', '#2E3F73']),
+  Verdigris: [0, 1, 2, 3].map(() => ['#F0EADB', '#2F6B62']),
+  Seasons:   [['#F1EBDB', '#55704A'], ['#F3EBD8', '#A0742A'], ['#F2E7D9', '#8C4428'], ['#ECEBE6', '#3F5A7E']],
+};
+// A print tone can carry two more inks in harmony with the first: the first
+// keeps the frame and its line, the second takes the vase and the synths' main
+// figures, the third the tiles, borders and lighter figures. One ink alone is
+// the plain two-colour print.
+function printTone(i, paper, ink, ink2 = ink, ink3 = ink) {
+  const t = f => mixHex(paper, ink, f), t2 = f => mixHex(paper, ink2, f), t3 = f => mixHex(paper, ink3, f), deep = mixHex(ink, '#000000', 0.45);
+  // with harmony inks the vase is the frame's own tint (like the panel round the
+  // bison) and its flowers carry the other two hues; alone, the vase sits a step darker
+  const harmony = ink2 !== ink;
+  return {paper: '#FFFFFF', cream: paper, window: mixHex(paper, '#FFFFFF', 0.35), yellow: t(0.24), cap: t(0.34), vase: harmony ? t(0.24) : t(0.46), harmony,
+    ink: deep, black: mixHex(ink, '#000000', 0.6), accent: SEASON_ACCENT[i],
+    q: {cream: paper, paper: t(0.12), sand: t3(0.24), clay: t2(0.66), blush: t3(0.40), sage: t(0.52), mist: t2(0.30), navy: t(0.78), line: deep}};
+}
+// hue turns on the colour wheel, keeping the ink's own saturation and lightness
+function hexHSL(h) {
+  const [r, g, b] = hexRGB(h).map(v => v / 255), mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2, d = mx - mn;
+  if (!d) return [0, 0, l];
+  const s = d / (1 - Math.abs(2 * l - 1)), hh = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
+  return [(hh * 60 + 360) % 360, s, l];
+}
+function hslHex(hh, s, l) {
+  const c = (1 - Math.abs(2 * l - 1)) * s, x = c * (1 - Math.abs((hh / 60) % 2 - 1)), m = l - c / 2;
+  const [r, g, b] = hh < 60 ? [c, x, 0] : hh < 120 ? [x, c, 0] : hh < 180 ? [0, c, x] : hh < 240 ? [0, x, c] : hh < 300 ? [x, 0, c] : [c, 0, x];
+  return '#' + [r, g, b].map(v => Math.round((v + m) * 255).toString(16).padStart(2, '0')).join('');
+}
+const turn = (h, deg) => { const [hh, s, l] = hexHSL(h); return hslHex((hh + deg + 360) % 360, s, l); };
+// the season tones with two harmony inks: analogous (neighbours, calm), split
+// complementary (either side of the opposite) and triad (evenly spaced, liveliest)
+const HARMONY = {Analogous: [-35, 35], 'Split comp.': [150, 210], Triad: [120, 240]};
+for (const [name, [a, b]] of Object.entries(HARMONY))
+  PRINT_TONES[name] = PRINT_TONES.Seasons.map(([paper, ink]) => [paper, ink, turn(ink, a), turn(ink, b)]);
+const TONES = ['Grey', 'Sepia', 'Indigo', 'Verdigris', 'Seasons', 'Analogous', 'Split comp.', 'Triad', 'Folk'];
+const TONE_CACHE = {};
+const tonePal = () => STATE.tone === 'Folk' ? SEASON_PAL : (TONE_CACHE[STATE.tone] = TONE_CACHE[STATE.tone] ||
+  [0, 1, 2, 3].map(i => PRINT_TONES[STATE.tone] ? printTone(i, ...PRINT_TONES[STATE.tone][i]) : greyTone(i)));
+// the season bar's sky in a print tone: the ink deepening overhead, the accent for its sun
+const toneSky = () => STATE.tone === 'Folk' ? SKY : !PRINT_TONES[STATE.tone] ? skyGrey() :
+  tonePal().map((P, i) => [mixHex(P.ink, P.vase, 0.25), P.vase, SEASON_ACCENT[i], [0.1, 0, 0.15, 0.9][i]]);
+// and what sits behind and under the 3D plants (the grass's backdrop and ground,
+// the branch's twig), mixed from the same tone, so they belong to the frame
+let rampsFor = null;
+function toneRamps() {
+  if (STATE.tone === 'Folk') return null;
+  if (rampsFor && rampsFor.tone === STATE.tone) return rampsFor.R;
+  const SN = ['spring', 'summer', 'autumn', 'winter'], R = {MAT_panel: {}, MAT_base: {}, MAT_branch: {}};
+  tonePal().forEach((P, j) => {
+    const y = P.yellow, k = P.ink, c = P.cream;
+    R.MAT_panel[SN[j]] = [mixHex(y, k, 0.28), mixHex(y, k, 0.18), mixHex(y, k, 0.08), y, mixHex(y, c, 0.35)];
+    R.MAT_base[SN[j]] = R.MAT_branch[SN[j]] = [k, mixHex(k, y, 0.35), mixHex(k, y, 0.6), mixHex(k, y, 0.85), mixHex(y, c, 0.4)];
+  });
+  rampsFor = {tone: STATE.tone, R};
+  return R;
+}
 const FRAME_KEYS = ['paper', 'cream', 'window', 'yellow', 'cap', 'vase', 'ink', 'black'];
 const at = (arr, v) => arr[Math.min(arr.length - 1, Math.floor(wrap01(v) * arr.length))];
 const stepIn = (cur, arr, d) => { const n = arr.length, i = Math.min(n - 1, Math.floor(wrap01(cur) * n)); return ((i + d + n) % n + 0.5) / n; };
@@ -458,7 +529,12 @@ const DEF = {
   pal: 0, palv: 3, tone: 'Grey', trails: false, pulse: true, still: reduce,
   spiral: 0.75, morph: 0.25, season: [3, 3, 0, 0, 0, 1, 1, 1, 2, 2, 2, 3][new Date().getMonth()],   // the season it is
 };
-const KEY = 'sog-grasset-live-v2';
+// the study keeps its own settings, apart from the landing page's
+const KEY = G.study ? 'sog-grasset-study-v2' : 'sog-grasset-live-v2';
+if (G.study) {   // the study opens on Chaos Engine and Hypno Waffle, in the colours chosen for them
+  DEF.syn[0] = {mode: 8, k: [0.2017, 0.6147, 0.6466, 0.8210, 0.1522], fg: 7 / 12, bg: 0.375};
+  DEF.syn[1] = {mode: 5, k: [0.8477, 0.7197, 0.2047, 0.1607, 0.1829], fg: 11 / 12, bg: 0.125};
+}
 const SEASONS = ['Spring', 'Summer', 'Autumn', 'Winter'];
 let STATE = JSON.parse(JSON.stringify(DEF));
 let LOADED = null;
@@ -466,6 +542,9 @@ try { const s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && s.syn 
 let saveT = 0;
 const save = () => { clearTimeout(saveT); saveT = setTimeout(() => { try { localStorage.setItem(KEY, JSON.stringify(STATE)); } catch (e) {} }, 250); };
 const PAL = () => PALS[STATE.pal % PALS.length];
+if (!TONES.includes(STATE.tone)) STATE.tone = 'Grey';
+if (G.study) STATE.season = 1;                     // the study always opens in summer
+if (G.study && !STATE.toneChosen) STATE.tone = 'Split comp.';   // and its frame takes the season's colour with its split-complementary pair, until you pick a tone
 if (LOADED && LOADED.palv !== 3) {                                   // the folk palette: start the synths on their new colours
   STATE.syn.forEach((S0, i) => { S0.fg = DEF.syn[i].fg; S0.bg = DEF.syn[i].bg; S0.k[3] = DEF.syn[i].k[3]; });
   STATE.borders.fg = DEF.borders.fg; STATE.borders.bg = DEF.borders.bg; STATE.flowers.fg = DEF.flowers.fg; STATE.flowers.bg = DEF.flowers.bg; STATE.pal = 0; STATE.palv = 3; STATE.tone = 'Grey';
@@ -601,6 +680,7 @@ const MODES = [
   {n: 'Bouncy Castle', f: bouncyCastle},
   {n: 'Chaos Engine', f: chaosEngine},
 ];
+if (G.study) MODES.splice(MODES.findIndex(m => m.n === 'Spirograph Sludge'), 1);   // the study leaves this one out
 
 // ---------------------------------------------------------------- Synth I: the square synth
 // The top band and the bottom-left column hold the same three squares: across
@@ -740,7 +820,8 @@ function sqCircles(W, H, idx) {                    // round circles on the corne
   disc(0, 0, R2); ctx.stroke();
 }
 function sqChaos(W, H, idx) {
-  const ivl = RZ_IVL[Math.min(3, Math.floor(K(3) * 4))], m = Math.floor(hash(Math.floor(t / ivl), 5) * (SQ_MODES.length - 1)), kb = S.k;
+  const ivl = RZ_IVL[Math.min(3, Math.floor(K(3) * 4))], slot = Math.floor(t / ivl), kb = S.k;
+  const m = G.study && slot === 0 ? 0 : Math.floor(hash(slot, 5) * (SQ_MODES.length - 1));   // the study's run opens on Stitch
   S.k = RZ_OFF.map((o, i) => 0.5 + 0.5 * Math.sin(t * TAU * (0.1 + K(1) * 1.9) / RZ_RATES[i] + o));
   try { SQ_MODES[m].f(W, H, idx); } finally { S.k = kb; }
 }
@@ -1054,7 +1135,10 @@ const beads = (() => {
 const BLOOM = {len: [0.62, 1, 0.72, 0.5], wide: [0.62, 1, 0.78, 0.5], cen: [0.85, 1, 1.75, 1.3], seed: [0, 0, 1, 0.7]};
 const seasonVal = (keys, s) => { const i = Math.floor(s) % 4, f = s - Math.floor(s), e = f * f * (3 - 2 * f); return lerp(keys[i], keys[(i + 1) % 4], e); };
 function rosetteMarkup(fam, n, k, breathe, r, sea) {
-  const ink = Q.line, sw = f2(1.1 / r), fill = sea < 0.5 || sea > 3.5 ? Q.blush : Q.cream;
+  // on a harmony tone's pale vase the flowers take the other two hues: main petals
+  // in the second (the centres keep its deep shade), the petals between in the third
+  const harm = tonePal()[Math.round(sea) % 4].harmony;
+  const ink = Q.line, sw = f2(1.1 / r), fill = harm ? Q.mist : sea < 0.5 || sea > 3.5 ? Q.blush : Q.cream, between = harm ? Q.blush : Q.sand;
   const wsc = (0.55 + k[1] * 0.8) * seasonVal(BLOOM.wide, sea), notch = k[2] * 0.5, cen = (0.7 + k[4] * 0.8) * seasonVal(BLOOM.cen, sea), b = breathe * seasonVal(BLOOM.len, sea);
   let s = `<g stroke="${ink}" stroke-width="${f2(.5 / r)}" opacity=".3" fill="none"><circle r=".5"/>`;
   for (let i = 0; i < n * 2; i++) { const a = i * Math.PI / n; s += `<path d="M0,0L${f2(Math.cos(a) * .5)},${f2(Math.sin(a) * .5)}"/>`; }
@@ -1062,7 +1146,7 @@ function rosetteMarkup(fam, n, k, breathe, r, sea) {
   const P = (d, f) => `<path d="${d}" fill="${f || fill}" stroke="${ink}" stroke-width="${sw}" stroke-linejoin="round"/>`;
   const step = TAU / n;
   if (fam === 0) {                                        // Plate 21: heart petals, pointed sepals between
-    for (let i = 0; i < n; i++) s += P(petal(i * step + step / 2, .2 * cen, .64 * b, step * .32 * wsc, .25, 1, 1.3, 20), Q.sand);
+    for (let i = 0; i < n; i++) s += P(petal(i * step + step / 2, .2 * cen, .64 * b, step * .32 * wsc, .25, 1, 1.3, 20), between);
     for (let i = 0; i < n; i++) s += P(petal(i * step, .26 * cen, .72 * b, step * .62 * wsc, .12 + notch, 0, .65));
     s += P(circ(0, 0, .3 * cen)) + P(circ(0, 0, .12 * cen), Q.clay);
   } else if (fam === 1) {                                 // Plate 83: long petals ending in scrolls, a ring of beads
@@ -1071,16 +1155,16 @@ function rosetteMarkup(fam, n, k, breathe, r, sea) {
       s += `<path d="${logSpiral(tx, ty, .11, .72, 1, a + Math.PI / 2, .02)}" fill="none" stroke="${ink}" stroke-width="${sw}"/>`;
       s += `<path d="M${f2(Math.cos(a + step / 2) * .3 * cen)},${f2(Math.sin(a + step / 2) * .3 * cen)}L${f2(Math.cos(a + step / 2) * .92)},${f2(Math.sin(a + step / 2) * .92)}" stroke="${ink}" stroke-width="${sw}"/>`; }
     s += P(circ(0, 0, .3 * cen));
-    for (let i = 0; i < n * 2; i++) { const a = i * step / 2; s += P(circ(Math.cos(a) * .24 * cen, Math.sin(a) * .24 * cen, .035 * cen), Q.sand); }
+    for (let i = 0; i < n * 2; i++) { const a = i * step / 2; s += P(circ(Math.cos(a) * .24 * cen, Math.sin(a) * .24 * cen, .035 * cen), between); }
     s += P(circ(0, 0, .14 * cen), Q.clay);
   } else if (fam === 2) {                                 // Plate 11: heart lobes on the axes, pointed leaves between, C-scrolls
-    for (let i = 0; i < n; i++) s += P(petal(i * step + step / 2, .1 * cen, .9 * b, step * .2 * wsc, 0, 1, .8), Q.sand);
+    for (let i = 0; i < n; i++) s += P(petal(i * step + step / 2, .1 * cen, .9 * b, step * .2 * wsc, 0, 1, .8), between);
     for (let i = 0; i < n; i++) s += P(petal(i * step, .08 * cen, .86 * b, step * .42 * wsc, .25 + notch * .6, 0, .55));
     for (let i = 0; i < n; i++) { const a = i * step + step / 2, x = Math.cos(a) * .2 * cen, y = Math.sin(a) * .2 * cen;
       s += `<path d="${logSpiral(x, y, .09 * cen, .7, 1, a + Math.PI, .015)}" fill="none" stroke="${ink}" stroke-width="${sw}"/>`; }
     s += P(circ(0, 0, .08 * cen), Q.clay);
   } else {                                                // Plate 10: lily arms with side lobes, broad leaves between
-    for (let i = 0; i < n; i++) s += P(petal(i * step + step / 2, .1 * cen, .88 * b, step * .38 * wsc, notch * .4, .7, .8), Q.sand);
+    for (let i = 0; i < n; i++) s += P(petal(i * step + step / 2, .1 * cen, .88 * b, step * .38 * wsc, notch * .4, .7, .8), between);
     for (let i = 0; i < n; i++) { const a = i * step, bx = Math.cos(a) * .5, by = Math.sin(a) * .5;
       for (const sd of [-1, 1]) s += P(petal(0, 0, .3 * b, .32, 0, .8, .9).replace(/^M/, 'M').replace(/(-?[\d.]+),(-?[\d.]+)/g, (m0, px, py) => {
         const aa = a + sd * .95, X = +px, Y = +py; return f2(bx + X * Math.cos(aa) - Y * Math.sin(aa)) + ',' + f2(by + X * Math.sin(aa) + Y * Math.cos(aa)); }));
@@ -1198,11 +1282,33 @@ if (!G.study) {
     I('<g transform="rotate(-28)"><path d="M0,7.5C-7.5,3.5-6.8,-6.5,0,-9C6.8,-6.5,7.5,3.5,0,7.5Z"/><path d="M0,7.5V11.5M0,6V-6.5M0,1.5L-3.6,-1.8M0,-2L3.4,-4.8"/></g>'),
     I([0, 1, 2].map(k => `<g transform="rotate(${k * 60})"><path d="M0,-10V10M-2.6,-7.4L0,-5L2.6,-7.4M-2.6,7.4L0,5L2.6,7.4"/></g>`).join('')),
   ];
-  Slider({label: 'Season', vertical: true, box: [x, y, bw, bh], run: [(y0 - y) / bh, (y1 - y) / bh],
-    value: fromSeason(STATE.season), steps: 4, ticks: [0, 1 / 3, 2 / 3, 1], icons: ICONS, trackX: 70,
-    format: v => SEASONS[toSeason(v)],
-    onInput: v => { const i = toSeason(v); if (i === STATE.season) return; STATE.season = window.__season = i;
-      window.dispatchEvent(new CustomEvent('season', {detail: i})); save(); }});
+  const setSeason = i => { if (i === STATE.season) return; STATE.season = window.__season = i;
+    window.dispatchEvent(new CustomEvent('season', {detail: i})); save(); };
+  if (G.study) {
+    // The study: four buttons stacked in the column, one pressed in, each with its
+    // season's icon. Neo-brutalist (ink borders, hard shadows, flat fills) to sit
+    // with the frame's own heavy line. A radio group: arrows move between them.
+    const group = document.createElement('div');
+    group.className = 'seasons'; group.setAttribute('role', 'radiogroup'); group.setAttribute('aria-label', 'Season');
+    box(group, x, y, bw, bh); ui.appendChild(group);
+    const btns = SEASONS.map((name, i) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.setAttribute('role', 'radio'); b.setAttribute('aria-label', name); b.title = name; b.innerHTML = ICONS[i];
+      b.addEventListener('click', () => { setSeason(i); show(); });
+      group.appendChild(b); return b;
+    });
+    const show = () => btns.forEach((b, i) => { const on = i === STATE.season; b.setAttribute('aria-checked', on); b.tabIndex = on ? 0 : -1; });
+    group.addEventListener('keydown', e => {
+      const d = {ArrowUp: -1, ArrowLeft: -1, ArrowDown: 1, ArrowRight: 1}[e.key]; if (!d) return;
+      e.preventDefault(); const i = (STATE.season + d + 4) % 4; setSeason(i); show(); btns[i].focus();
+    });
+    show();
+  } else {
+    Slider({label: 'Season', vertical: true, box: [x, y, bw, bh], run: [(y0 - y) / bh, (y1 - y) / bh],
+      value: fromSeason(STATE.season), steps: 4, ticks: [0, 1 / 3, 2 / 3, 1], icons: ICONS, trackX: 70,
+      format: v => SEASONS[toSeason(v)],
+      onInput: v => { const i = toSeason(v); if (i !== STATE.season) setSeason(i); }});
+  }
 }
 
 // ---------------------------------------------------------------- studies + preview
@@ -1422,7 +1528,7 @@ sheet.addEventListener('click', e => {
     case 'fg-': S0.fg = stepIn(S0.fg, pal.fg, -1); changed(); break; case 'fg+': S0.fg = stepIn(S0.fg, pal.fg, 1); changed(); break;
     case 'bg-': S0.bg = stepIn(S0.bg, pal.bg, -1); changed(); break; case 'bg+': S0.bg = stepIn(S0.bg, pal.bg, 1); changed(); break;
     case 'pal': STATE.pal = (STATE.pal + 1) % PALS.length; changed(); break;
-    case 'tone': STATE.tone = TONES[(TONES.indexOf(STATE.tone) + 1) % TONES.length]; save(); applyPalette(palS); dispatchEvent(new CustomEvent('tone', {detail: STATE.tone})); changed(); break;
+    case 'tone': STATE.tone = TONES[(TONES.indexOf(STATE.tone) + 1) % TONES.length]; STATE.toneChosen = true; save(); applyPalette(palS); dispatchEvent(new CustomEvent('tone', {detail: STATE.tone})); changed(); break;
   }
 });
 sheet.addEventListener('click', async e => {
@@ -1551,7 +1657,7 @@ function applyPalette(s) {
     root.setProperty('--on-accent', (0.299 * r_ + 0.587 * g_ + 0.114 * b_) / 255 > 0.6 ? C.ink : '#FFFFFF');
   } else { root.removeProperty('--salmon'); root.removeProperty('--on-accent'); }
   document.documentElement.dataset.tone = STATE.tone;
-  window.__tone = STATE.tone;
+  window.__tone = STATE.tone; window.__toneRamps = toneRamps();
   const SKs = toneSky(), SK = SKs[i], SK2 = SKs[(i + 1) % 4];
   root.setProperty('--sky-top', mixHex(SK[0], SK2[0], f)); root.setProperty('--sky-bot', mixHex(SK[1], SK2[1], f));
   root.setProperty('--sun', mixHex(SK[2], SK2[2], f)); root.setProperty('--stars', (lerp(SK[3], SK2[3], f)).toFixed(2));
@@ -1631,7 +1737,7 @@ const GREY_RAMPS = {
   MAT_base: same(['#3a3733', '#5e5a54', '#86817a', '#aaa59e', '#cdc9c2']),
   MAT_branch: same(['#2e2c29', '#55524d', '#807c76', '#aaa69f', '#d6d2cb']),
 };
-const rampFor = mname => (window.__tone !== 'Folk' && GREY_RAMPS[mname]) || RAMPS[mname];
+const rampFor = mname => (window.__tone !== 'Folk' && ((window.__toneRamps && window.__toneRamps[mname]) || GREY_RAMPS[mname])) || RAMPS[mname];   // the tone's own, when it has them
 // the branch's leaves go vermilion-rust where the aspen goes gold
 const BRANCH_AUTUMN_LEAF = ['#4a1408', '#8e2a10', '#c4471a', '#e5702a', '#f6a85a'];
 const KEYS = {                     // spring, summer, autumn, winter
