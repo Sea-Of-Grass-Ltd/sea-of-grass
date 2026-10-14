@@ -144,7 +144,7 @@
     <path d="M14.4 10.3C15.9 9.2 17.6 8.6 19.6 8.5"/>
   </svg>
   <h1>Talaria</h1>
-  <p class="premise">The studio’s task manager, named for the winged sandals of Hermes. Projects as lists or boards, shared live between Sea of Grass and Caduceus.</p>
+  <p class="premise">The studio’s task manager, named for the winged sandals of Hermes. Projects as lists or boards, shared live between Sea of Grass and Caduceus, and reachable from Claude.</p>
 
   <h2>Download</h2>
   <ul id="downloads">
@@ -155,7 +155,8 @@
   <div class="notes">
     <p><strong>macOS.</strong> Open the <code>.dmg</code> and drag Talaria into Applications. The app isn’t notarized by Apple, so the first time, right-click it and choose <em>Open</em>, then <em>Open</em> again. After that it opens normally.</p>
     <p><strong>Linux.</strong> Make the AppImage executable with <code>chmod +x Talaria_*.AppImage</code> and run it, or install the <code>.deb</code> or <code>.rpm</code> with your package manager.</p>
-    <p><strong>Signing in.</strong> Click <em>Continue with Google</em> and pick the Gmail you were invited with. You’ll only see the spaces that address belongs to.</p>
+    <p><strong>Claude.</strong> Download the Claude extension and open it; the Claude app shows an <em>Install</em> button. Then ask Claude things like “what’s on my plate this week?” or “add a task to Windrow for Bryce, due Friday”. The first time, your browser opens to sign in with Google, and Claude only sees what you can see. It can add and change tasks but never delete them.</p>
+        <p><strong>Signing in.</strong> Click <em>Continue with Google</em> and pick the Gmail you were invited with. You’ll only see the spaces that address belongs to.</p>
   </div>
 
   <footer>
@@ -174,6 +175,7 @@
     { test: /\.AppImage$/i,       what: "Linux — AppImage",       os: "linux" },
     { test: /\.deb$/i,            what: "Linux — Debian / Ubuntu", os: "linux" },
     { test: /\.rpm$/i,            what: "Linux — Fedora / openSUSE", os: "linux" },
+    { test: /\.mcpb$/i,           what: "Claude — Talaria extension", os: "claude" },
   ];
 
   function thisComputer() {
