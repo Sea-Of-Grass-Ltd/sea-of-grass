@@ -129,6 +129,15 @@
     color:var(--ink-soft);
   }
   footer a{color:inherit;}
+  .notice{
+    margin:1.5rem 0 0;
+    padding:.9rem 1rem;
+    border:1px solid var(--line);
+    border-radius:6px;
+    font-size:13px;
+  }
+  .notice strong{font-weight:500;}
+  .notice[hidden]{display:none;}
 </style>
 </head>
 <body>
@@ -144,6 +153,7 @@
     <path d="M14.4 10.3C15.9 9.2 17.6 8.6 19.6 8.5"/>
   </svg>
   <h1>Talaria</h1>
+  <p class="notice" id="confirmed" hidden><strong>Your email is confirmed.</strong> Open Talaria and sign in with your email and password. If you don’t have it yet, download it below.</p>
   <p class="premise">The studio’s task manager, named for the winged sandals of Hermes. Projects as lists or boards, shared live between Sea of Grass and Caduceus, and reachable from Claude.</p>
 
   <h2>Download</h2>
@@ -168,6 +178,21 @@
 <script>
   // Lists the newest GitHub release's installers, with this computer's first.
   const REPO = "TristanDesigns/talaria";
+
+  // Arriving from a Talaria confirmation email: say so, then tidy the address
+  // (Supabase may append one-time sign-in details after the #).
+  (function () {
+    var from = location.search + location.hash;
+    if (/confirmed=1|type=(signup|email)/.test(from)) {
+      document.getElementById("confirmed").hidden = false;
+      history.replaceState(null, "", location.pathname);
+    } else if (/error_description=/.test(location.hash)) {
+      var p = document.getElementById("confirmed");
+      p.innerHTML = "<strong>That link didn’t work.</strong> It may have expired. Try signing in to Talaria anyway, or ask Tristan to approve your account.";
+      p.hidden = false;
+      history.replaceState(null, "", location.pathname);
+    }
+  })();
 
   const KINDS = [
     { test: /aarch64\.dmg$/i,     what: "macOS — Apple Silicon", os: "mac-arm" },
