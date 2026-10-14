@@ -17,6 +17,8 @@ studies/
   beacon/index.html           Study 05 — self-contained, ~1 MB (inline vector buildings)
   grasset/                    Study 06 — page + painted fallbacks + 3 models, 2.9 MB; three.js from a CDN
   windrow/index.html          Study 07 — self-contained, ~13 KB; MediaPipe and its hand model from CDNs
+talaria/index.html            download page for Talaria, the studio's task app (unlisted)
+404.html                      not-found page; also sends /Talaria/ etc. to /talaria/
 assets/
   logo.svg                    the mark, fill="currentColor" (inherits type color)
   favicon.svg                 same mark, explicit fill, a little padding

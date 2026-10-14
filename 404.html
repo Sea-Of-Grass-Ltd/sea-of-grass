@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Not found — Sea of Grass</title>
+<meta name="robots" content="noindex" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+
+<script>
+  // GitHub Pages paths are case-sensitive; people type them however they like.
+  // If a lowercase version of this address exists, go there instead.
+  (function () {
+    var KNOWN = ["/talaria/"];
+    var path = location.pathname.toLowerCase();
+    if (path.charAt(path.length - 1) !== "/") path += "/";
+    for (var i = 0; i < KNOWN.length; i++) {
+      if (path === KNOWN[i] || path === KNOWN[i] + "index.html/") {
+        location.replace(KNOWN[i] + location.search + location.hash);
+        return;
+      }
+    }
+    var studies = path.match(/^\/studies\/[a-z0-9-]+\/$/);
+    if (studies && location.pathname !== studies[0]) location.replace(studies[0]);
+  })();
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+  :root{
+    --paper:#faf9f6;
+    --ink:#141311;
+    --line:#d9d6cf;
+    --ink-soft:rgba(20,19,17,.5);
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--paper);}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"IBM Plex Mono","SFMono-Regular",Menlo,Consolas,monospace;
+    font-size:14px;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  .page{
+    max-width:44rem;
+    margin:0 auto;
+    padding:clamp(3rem,10vh,7rem) clamp(1.25rem,5vw,2rem) 4rem;
+  }
+  h1{
+    margin:0;
+    font-size:13px;
+    font-weight:500;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+  }
+  p{margin:.4rem 0 0; font-size:13px; color:var(--ink-soft);}
+  a{color:inherit;}
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>Not found</h1>
+  <p>Nothing lives at this address. <a href="/">Back to Sea of Grass</a>.</p>
+</div>
+</body>
+</html>
