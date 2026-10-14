@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Murmuration — Sea of Grass</title>
+<meta name="description" content="Study 08. An attempt at a quick AI generative effect driven by hand motion, built on a 2020 M1 laptop. It runs at about one image a second and looks bad. These are the notes on why." />
+<link rel="canonical" href="https://seaofgrass.studio/studies/murmuration/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="Sea of Grass" />
+<meta property="og:url" content="https://seaofgrass.studio/studies/murmuration/" />
+<meta property="og:title" content="Murmuration — Sea of Grass" />
+<meta property="og:description" content="Hand motion into AI birds on an M1 MacBook: what got built, what it costs, and why one image a second is not an effect." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+/* ============================================================
+   Study 08 — Murmuration. A prose study, after Front Door:
+   Plex Sans for running text, Plex Mono for labels and data.
+   ============================================================ */
+
+:root{
+  --paper:#faf9f6;
+  --ink:#141311;
+  --line:#d9d6cf;
+  --ink-soft:rgba(20,19,17,.5);
+  --cell:#ffffff;
+  --sans:"IBM Plex Sans",ui-sans-serif,system-ui,-apple-system,sans-serif;
+  --mono:"IBM Plex Mono","SFMono-Regular",Menlo,Consolas,monospace;
+}
+
+*{box-sizing:border-box;}
+html{background:var(--paper);-webkit-text-size-adjust:100%;}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--sans);font-size:15px;line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:52rem;margin:0 auto;padding:0 clamp(1.25rem,5vw,2rem);}
+a{color:inherit;text-underline-offset:3px;text-decoration-thickness:1px;}
+a:focus-visible{outline:1px solid var(--ink);outline-offset:4px;}
+
+.home{display:inline-block;width:30px;color:var(--ink-soft);transition:color .18s ease;padding-top:clamp(2rem,6vh,3.25rem);}
+.home:hover,.home:focus-visible{color:var(--ink);}
+.home svg{display:block;width:100%;height:auto;}
+
+.top{padding:2.25rem 0 2.5rem;border-bottom:1px solid var(--line);}
+.kicker{font-family:var(--mono);font-size:11.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin:0 0 1.25rem;}
+h1{font-size:clamp(28px,5.2vw,42px);line-height:1.1;letter-spacing:-.022em;font-weight:600;margin:0 0 1.1rem;text-wrap:balance;}
+.standfirst{font-size:17px;line-height:1.6;color:var(--ink-soft);max-width:58ch;margin:0;text-wrap:pretty;}
+.meta{display:flex;flex-wrap:wrap;gap:.5rem 1.75rem;margin-top:1.9rem;font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--ink-soft);}
+.meta b{font-weight:500;color:var(--ink);}
+
+section{padding:3.25rem 0;border-bottom:1px solid var(--line);}
+section:last-of-type{border-bottom:0;}
+.num{display:block;font-family:var(--mono);font-size:11.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:.75rem;}
+h2{font-size:clamp(20px,3.3vw,26px);line-height:1.22;letter-spacing:-.018em;font-weight:600;margin:0 0 1rem;text-wrap:balance;}
+h3{font-size:15.5px;line-height:1.4;letter-spacing:-.006em;font-weight:600;margin:2.1rem 0 .6rem;}
+p{margin:0 0 1rem;max-width:64ch;text-wrap:pretty;}
+p.lead{font-size:16.5px;color:var(--ink-soft);}
+ul,ol{margin:0 0 1rem;padding-left:1.35rem;max-width:64ch;}
+li{margin-bottom:.5rem;}
+code{font-family:var(--mono);font-size:.87em;background:var(--cell);border:1px solid var(--line);padding:1px 5px;white-space:nowrap;}
+
+figure{margin:1.6rem 0 .75rem;}
+figure img{display:block;width:100%;height:auto;border:1px solid var(--line);background:#000;}
+figure.small img{width:min(256px,100%);image-rendering:auto;}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+figcaption{margin-top:.6rem;font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--ink-soft);max-width:64ch;line-height:1.55;}
+
+.scroller{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;margin:1.35rem 0 .5rem;font-size:14px;}
+caption{text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);padding-bottom:.65rem;}
+th{text-align:left;font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);padding:0 .9rem .5rem 0;border-bottom:1px solid var(--line);}
+td{padding:.7rem .9rem .7rem 0;border-bottom:1px solid var(--line);vertical-align:top;}
+td:last-child,th:last-child{padding-right:0;}
+td.k,td.n{font-family:var(--mono);font-size:12.5px;white-space:nowrap;}
+td.n{font-variant-numeric:tabular-nums;}
+
+.flow{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);margin:1.4rem 0 .5rem;}
+.flow-step{background:var(--cell);padding:.95rem 1.1rem;display:grid;grid-template-columns:24px 1fr;gap:1rem;align-items:start;}
+.flow-step i{font-family:var(--mono);font-style:normal;font-size:11px;color:var(--ink-soft);padding-top:3px;}
+.flow-step div{font-size:14px;color:var(--ink-soft);}
+.flow-step b{color:var(--ink);font-weight:600;}
+
+.note{border-top:1px solid var(--ink);border-bottom:1px solid var(--line);padding:1.1rem 0 1.2rem;margin:1.6rem 0 .5rem;}
+.note p{margin:0;max-width:60ch;font-size:14.5px;color:var(--ink-soft);}
+.note b{color:var(--ink);font-weight:600;}
+
+footer{padding:2.75rem 0 5rem;border-top:1px solid var(--line);font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--ink-soft);}
+footer p{max-width:64ch;margin:0 0 .5rem;}
+footer a{text-decoration:none;border-bottom:1px solid var(--line);}
+footer a:hover{color:var(--ink);}
+
+@media (max-width:640px){
+  section{padding:2.5rem 0;}
+  .pair{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<a class="home" href="/" aria-label="Sea of Grass — all studies">
+  <svg viewBox="43.63 44.56 350.94 258.56" fill="currentColor" aria-hidden="true">
+    <path d="M 60.1360,299.5890 C 40.8560,283.5000 37.9720,248.8600 54.1230,229.1250 C 61.9590,219.4780 73.2066,213.0913 85.9080,212.4050 L 279.9170,212.3880 C 292.7328,211.6894 302.2259,200.5242 302.6140,188.1740 C 303.0171,175.3461 294.1087,163.3937 280.9850,162.4350 L 160.3860,162.3770 C 155.6830,162.3750 152.4580,158.1300 152.2660,154.1930 C 152.0640,150.0420 155.5000,145.5160 160.3230,145.5160 L 323.2740,145.5180 C 363.5090,146.7569 394.2264,180.5210 394.5670,220.2810 C 394.9023,259.4236 360.4620,297.7100 320.2520,299.1580 C 320.2520,299.1580 69.9310,307.7640 60.1360,299.5890 Z"/>
+    <path d="M 365.1390,47.9780 C 360.1170,47.5130 354.1470,47.1080 347.4230,46.7550 C 274.7440,42.9430 114.0820,45.2510 114.0820,45.2510 C 73.9994,46.9759 43.7290,80.8860 43.6260,120.3040 C 43.5230,159.4680 73.5199,193.9418 113.3820,195.4730 L 277.3270,195.8440 C 282.2870,195.8440 285.7460,192.0070 285.9600,187.6500 C 286.1670,183.4310 282.8680,178.9500 277.9760,178.9480 L 158.2750,178.9140 C 145.3037,178.2644 135.8119,166.8014 135.6040,154.2420 C 135.3960,141.6768 144.3477,129.9059 157.2620,128.9900 L 350.1640,128.8050 C 352.3160,128.8030 354.4280,128.6110 356.4990,128.2740 C 366.7370,126.6070 375.8830,121.0490 382.8160,113.4590 C 390.0330,105.5580 394.4238,95.7293 394.5320,85.6870 C 394.7250,67.7708 381.6430,52.8390 365.1390,47.9780 Z"/>
+    <circle cx="357.983" cy="86.686" r="36.548"/>
+  </svg>
+</a>
+
+<header class="top">
+  <p class="kicker">Study 08 · a documented failure</p>
+  <h1>Murmuration: AI birds from hand motion, on a laptop that can't keep up</h1>
+  <p class="standfirst">The goal was simple: a quick AI generative effect driven by motion. Move your hands, and an image model paints something out of the movement, live. On a 2020 M1 MacBook it runs at about one image a second, and it looks bad. These are the notes on what got built, what it cost, and exactly why it falls short.</p>
+  <div class="meta">
+    <span><b>Hardware</b> Apple M1, 16 GB</span>
+    <span><b>Tools</b> TouchDesigner 2025, MediaPipe, SD-Turbo</span>
+    <span><b>Result</b> ~1 AI image per second</span>
+    <span><b>Status</b> shelved</span>
+  </div>
+</header>
+
+<main>
+
+<section>
+  <span class="num">01 — The reference</span>
+  <h2>A clip on r/TouchDesigner</h2>
+  <p class="lead">The starting point was a short screen recording posted to <a href="https://www.reddit.com/r/TouchDesigner/comments/1v3npnj/real_time_hand_tracking_ai_trails_w/">r/TouchDesigner</a>: someone waving their hands at a webcam while glowing trails follow their fingers, and those trails turn, continuously, into birds.</p>
+  <p>The clip shows three layers working at once. Hand tracking puts dots on each finger. A particle system (TouchDesigner's POPs) paints colour-cycling trails wherever the fingertips go. Then StreamDiffusion, a way of running Stable Diffusion fast enough for live video, redraws each frame of those trails as birds. The birds keep up with the hands. That last part is what makes it read as an effect rather than a slideshow, and it depends on an NVIDIA graphics card.</p>
+</section>
+
+<section>
+  <span class="num">02 — What got built</span>
+  <h2>The same three layers, on a Mac</h2>
+  <p>The first two layers were straightforward and work well. The third is the subject of the rest of this page.</p>
+
+  <div class="flow">
+    <div class="flow-step"><i>01</i><div><b>Hand tracking.</b> The webcam feeds the free <a href="https://github.com/torinmb/mediapipe-touchdesigner">MediaPipe TouchDesigner plugin</a>, which reports every fingertip as a number, many times a second.</div></div>
+    <div class="flow-step"><i>02</i><div><b>Trails.</b> Each index fingertip becomes a particle emitter. A curl-noise field swirls the particles, a rainbow noise colours them, and a feedback loop lets the image smear, drift and fade.</div></div>
+    <div class="flow-step"><i>03</i><div><b>Hand-off.</b> TouchDesigner saves a 512px square of the trails about fifteen times a second into a shared folder.</div></div>
+    <div class="flow-step"><i>04</i><div><b>The model.</b> A separate Python program runs SD-Turbo img2img on the newest frame, using the Mac's GPU, and writes the result back.</div></div>
+    <div class="flow-step"><i>05</i><div><b>Crossfade.</b> TouchDesigner reloads each new AI image and blends toward it a few percent per frame, so the slow updates melt into each other instead of jumping.</div></div>
+  </div>
+
+  <figure>
+    <img src="trails.jpg" width="1280" height="720" alt="Glowing multicoloured particle trails swirling on black, shaped by a hand movement." loading="lazy" />
+    <figcaption>Layers 1–2 on their own: particle trails from one hand. This part runs at full frame rate and looks the way it should.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <span class="num">03 — The dead ends</span>
+  <h2>Two ways of getting a faster GPU, neither finished</h2>
+  <p>Since the M1 can't run StreamDiffusion at speed, the first plan was to borrow someone else's graphics card.</p>
+  <h3>Daydream Scope's cloud mode</h3>
+  <p>Daydream Scope is a desktop app that runs live video diffusion either locally or on Daydream's servers, and it accepts video from TouchDesigner over Syphon. It installed, signed in, and then failed to connect: after sign-in it contacts <code>signer.daydream.live</code>, and that address no longer resolves anywhere. The app's latest release (v0.2.5, May 2026) still points at it, and the project has been quiet since July. The cloud side appears to be gone.</p>
+  <h3>Renting an NVIDIA card</h3>
+  <p>The fallback was to rent an RTX 4090 by the hour on RunPod and run StreamDiffusion's own demo there. The Mac half was set up: the trails went out over Syphon into OBS, OBS turned them into a virtual webcam, and a browser would send that to the rented machine. It stopped at deploying the pod. Accounts, credit, an install script against a repository last updated in 2024, a virtual camera, a screen grab to bring the result back: too much machinery for what was meant to be a quick effect.</p>
+</section>
+
+<section>
+  <span class="num">04 — The numbers</span>
+  <h2>What an M1 actually manages</h2>
+  <p class="lead">Before building the local version, SD-Turbo was benchmarked on its own on this machine, with nothing else running.</p>
+  <div class="scroller">
+    <table>
+      <caption>SD-Turbo img2img, one denoising step, Apple M1 GPU</caption>
+      <thead><tr><th>Size</th><th>Full decoder</th><th>Tiny decoder (TAESD)</th></tr></thead>
+      <tbody>
+        <tr><td class="k">512px</td><td class="n">0.37 fps · 2.7 s</td><td class="n">0.94 fps · 1.1 s</td></tr>
+        <tr><td class="k">384px</td><td class="n">0.68 fps · 1.5 s</td><td class="n">1.58 fps · 0.6 s</td></tr>
+        <tr><td class="k">256px</td><td class="n">1.44 fps · 0.7 s</td><td class="n">2.73 fps · 0.37 s</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Inside the real setup, sharing the GPU with hand tracking, particles and feedback, it ran at <b>0.9 images a second at 320px</b> and <b>about 1.05 at 256px</b>. Cutting the particle birth rate from 2,500 to 1,000 a second changed nothing, so the particles weren't the bottleneck. The hand-tracking model and full-resolution compositing take the rest.</p>
+  <p>For comparison, StreamDiffusion's own README reports about 94 fps for the same kind of one-step SD-Turbo img2img on an RTX 4090 with TensorRT. That's roughly ninety times what this laptop delivers in practice.</p>
+  <figure>
+    <img src="benchmark.jpg" width="1172" height="384" alt="Three squares on black: soft coloured blobs as input, the same blobs with a bird's head emerging at 512px, and a rougher abstract shape at 256px." loading="lazy" />
+    <figcaption>Benchmark input (left), 512px with the full decoder (middle), 256px with the tiny decoder (right). At one step and moderate strength, the model only half-commits: a beak appears, the rest stays blob.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <span class="num">05 — The result</span>
+  <h2>Why it looks bad</h2>
+  <div class="pair">
+    <figure class="small">
+      <img src="ai-frame.jpg" width="256" height="256" alt="A small 256-pixel AI image of a pale, fragmentary bird with feathered wings on black." loading="lazy" />
+      <figcaption>One AI frame, actual size: 256px. Feathers, a wing, a suggestion of a head.</figcaption>
+    </figure>
+    <figure>
+      <img src="output.jpg" width="1280" height="720" alt="A muddy, smeared composite of several overlapping half-formed birds and glowing trails filling the frame." loading="lazy" />
+      <figcaption>The final output: AI images crossfaded and laid over faint trails, scaled to 1280×720.</figcaption>
+    </figure>
+  </div>
+  <p>Each of these problems would be survivable alone. Together they make the effect unusable.</p>
+  <ul>
+    <li><b>It doesn't follow you.</b> At one image a second, plus the hop through a folder, plus a crossfade that takes about a second to settle, a bird appears one to two seconds after the movement that caused it. The connection between your hand and the image, which is the whole point, is lost.</li>
+    <li><b>The crossfade makes mud.</b> Each AI frame is generated from scratch, so consecutive images are two unrelated birds. Blending between them doesn't produce motion. It produces double exposures, visible in the composite above as overlapping half-birds.</li>
+    <li><b>Too few pixels.</b> A 256px square is stretched five times to fill a 1280×720 frame, and its top and bottom are cropped off to fit the wide shape. Whatever detail the model drew is gone.</li>
+    <li><b>The model only half-commits.</b> One denoising step is all the M1 can afford. At that budget, strength trades directly between keeping the trails and drawing birds, and every setting in between gives fragments: a beak here, a wing there.</li>
+    <li><b>The input is wrong for it.</b> The feedback loop fills the frame with drifting smoke. The model reads that haze as part of the picture and paints it in, which is a big part of the murk. The reference clip appears to feed it cleaner strokes on black.</li>
+    <li><b>It flickers.</b> A fixed random seed keeps the style steady, but small changes in the input still swing the output from frame to frame. At one frame a second that reads as jumping rather than flicker, and the crossfade can only soften it.</li>
+  </ul>
+  <div class="note">
+    <p><b>The short version:</b> live diffusion is a frame-rate problem first and an image-quality problem second. Below about ten images a second, every workaround (crossfading, lower resolution, lighter models) trades one kind of ugliness for another.</p>
+  </div>
+</section>
+
+<section>
+  <span class="num">06 — What it would take</span>
+  <h2>Where the line is</h2>
+  <ul>
+    <li><b>An NVIDIA GPU.</b> StreamDiffusion's speed comes from CUDA and TensorRT, which Macs don't have. An RTX 3060 (12 GB) is roughly the entry point; a 4070 or 3090 is comfortable; a 4090 is what the reference clip implies. These are estimates from published benchmarks, not tested here.</li>
+    <li><b>Or a faster Mac, partly.</b> An M4 Max GPU is perhaps five or six times an M1's. That would make this smoother but still well short of the clip.</li>
+    <li><b>Temporal coherence.</b> StreamDiffusion skips frames that barely change, and newer video-diffusion models carry information between frames. Without one of those, even a fast GPU gives flickering birds.</li>
+    <li><b>Cleaner input.</b> Strokes on black, no feedback haze, so the model has something definite to reshape.</li>
+    <li><b>Or no diffusion at all.</b> The motion-driven half is the part that works. <a href="/studies/windrow/">Windrow</a>, the study before this one, does the motion with no model at all: a field of grass that moves with your hands, in the browser, at full frame rate.</li>
+  </ul>
+</section>
+
+<section>
+  <span class="num">07 — Process notes</span>
+  <h2>How a quick effect became two days</h2>
+  <p>The request was a quick generative effect. It took two days, and most of that went into infrastructure rather than the effect: a 180 MB tracking plugin, a desktop app whose cloud had vanished, an OBS virtual camera, a GPU-rental setup sheet, a 3.6 GB local model install, and a disk too full to hold it until it was cleaned out.</p>
+  <p>The lesson is ordering. The first thing to establish was the frame rate the model could actually reach on this hardware. It's one benchmark that takes ten minutes, and its answer (about one image a second) would have set expectations before any of the pipeline was built. Benchmark first, then build.</p>
+</section>
+
+</main>
+
+<footer>
+  <p>Reference clip: <a href="https://www.reddit.com/r/TouchDesigner/comments/1v3npnj/real_time_hand_tracking_ai_trails_w/">"Real time hand tracking AI trails w/ StreamDiffusion + POPs"</a>, r/TouchDesigner. Not reproduced here.</p>
+  <p>Built with <a href="https://derivative.ca">TouchDesigner</a> (Derivative), the <a href="https://github.com/torinmb/mediapipe-touchdesigner">MediaPipe TouchDesigner plugin</a> (torinmb), <a href="https://huggingface.co/stabilityai/sd-turbo">SD-Turbo</a> (Stability AI) via Hugging Face diffusers, and <a href="https://github.com/madebyollin/taesd">TAESD</a> (madebyollin). The approach follows <a href="https://github.com/cumulo-autumn/StreamDiffusion">StreamDiffusion</a> (cumulo-autumn et al.).</p>
+  <p>All images on this page are TouchDesigner and model output. No webcam footage is shown.</p>
+</footer>
+
+</div>
+</body>
+</html>
