@@ -356,7 +356,9 @@ const BY_ID = Object.fromEntries(EFFECTS.map(e => [e.id, Object.assign(e, {type:
 const MODES = ["Normal", "Multiply", "Screen", "Overlay", "Lighten", "Darken", "Difference"];
 
 const canvas = $("gl");
-const gl = canvas.getContext("webgl2", {antialias: false, preserveDrawingBuffer: false, alpha: false});
+// One WebGL context for everything: three.js draws the street into textures
+// of this context, and the layers work straight from them.
+const gl = canvas.getContext("webgl2", {antialias: false, preserveDrawingBuffer: false, alpha: false, stencil: false});
 const VS = `#version 300 es
 in vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }`;
 const FXF = `#version 300 es
@@ -380,7 +382,7 @@ float n1(vec2 p){
 float lum(vec3 c){ return dot(c, vec3(0.299, 0.587, 0.114)); }
 vec3 pal(float t){ return 0.55 + 0.45 * cos(6.2832 * (t + vec3(0.0, 0.33, 0.67))); }
 vec3 src(vec2 uv){ uv = clamp(uv, 0.0, 1.0); return texture(uSrc, uSrcFlip > 0.5 ? vec2(uv.x, 1.0 - uv.y) : uv).rgb; }
-float kindAt(vec2 uv){ return floor((1.0 - texture(uBase, vec2(clamp(uv.x, 0.0, 1.0), 1.0 - clamp(uv.y, 0.0, 1.0))).a) / 0.03 + 0.5); }
+float kindAt(vec2 uv){ return floor((1.0 - texture(uBase, clamp(uv, 0.0, 1.0)).a) / 0.03 + 0.5); }
 // How strongly an outline runs through here: a change of brightness, or the
 // edge of one thing against another.
 float edgeAt(vec2 uv, float w){
@@ -621,7 +623,7 @@ uniform float uSrcFlip, uPass;
 out vec4 o;
 float lum(vec3 c){ return dot(c, vec3(0.299, 0.587, 0.114)); }
 float L(vec2 uv){ uv = clamp(uv, 0.0, 1.0); return lum(texture(uSrc, uSrcFlip > 0.5 ? vec2(uv.x, 1.0 - uv.y) : uv).rgb); }
-float K(vec2 uv){ return floor((1.0 - texture(uBase, vec2(clamp(uv.x, 0.0, 1.0), 1.0 - clamp(uv.y, 0.0, 1.0))).a) / 0.03 + 0.5); }
+float K(vec2 uv){ return floor((1.0 - texture(uBase, clamp(uv, 0.0, 1.0)).a) / 0.03 + 0.5); }
 void main(){
   vec2 uv = gl_FragCoord.xy / uDim;
   if (uPass < 0.5){
@@ -644,25 +646,124 @@ void main(){
   }
 }`;
 
-// A mark is a ribbon of 13 points. Each instance finds its place (a cell of
-// a jittered grid, moved by the layer's motion, edge marks climbing onto the
-// nearest edge), takes its colour from beneath, then walks: along the flow,
-// curling, or zigzagging, as its brush asks.
+// Where the fill marks go: one pixel here for each small cell of the screen.
+// It looks at the street's surface there, lays a grid over that face in the
+// world (cells about the brush's spacing at DREF, doubled far off until
+// they're a couple of screen cells across), and keeps the grid cell only if
+// its middle falls in this screen cell, so each is drawn once. It writes the
+// mark's anchor (jittered in its cell, orbiting) and the face's normal.
+const ANCF = `#version 300 es
+precision highp float;
+precision highp sampler2D;
+uniform sampler2D uG;
+uniform vec2 uRes, uDir, uCell;
+uniform float uStyle, uTick, uTime, uFocal, uDens;
+uniform vec3 uCam;
+uniform mat4 uVP;
+uniform vec4 uP, uMo;
+layout(location = 0) out vec4 o0;
+layout(location = 1) out vec4 o1;
+const float DREF = 20.0;
+float h1(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+vec4 gAt(vec2 px){ ivec2 s = textureSize(uG, 0); return texelFetch(uG, clamp(ivec2(px / uRes * vec2(s)), ivec2(0), s - 1), 0); }
+vec3 proj(vec3 Pw){ vec4 c = uVP * vec4(Pw, 1.0); return vec3((c.xy / c.w * 0.5 + 0.5) * uRes, c.w); }
+float S; float TK;
+float r(float k){ return fract(h1(vec2(S, k)) + uMo.x * h1(vec2(S + TK * 17.13, k + TK * 3.1))); }
+vec3 normalAt(vec2 px, vec3 P){
+  vec2 e = uRes / vec2(textureSize(uG, 0)) * 1.5;
+  vec3 a = gAt(px + vec2(e.x, 0.0)).xyz - P, b = P - gAt(px - vec2(e.x, 0.0)).xyz;
+  vec3 c = gAt(px + vec2(0.0, e.y)).xyz - P, d = P - gAt(px - vec2(0.0, e.y)).xyz;
+  vec3 n = cross(dot(a, a) < dot(b, b) ? a : b, dot(c, c) < dot(d, d) ? c : d);
+  n = dot(n, n) > 1e-12 ? normalize(n) : vec3(0.0, 1.0, 0.0);
+  return dot(n, P) > 0.0 ? -n : n;                         // facing the camera
+}
+// each brush's spacing, as it looks at DREF
+float spacing(int st){
+  if (st == 1) return 20.0 * (0.5 + uP.x);
+  if (st == 2) return 44.0;
+  if (st == 3) return 24.0;
+  if (st == 4) return 34.0;
+  if (st == 7) return 13.0;
+  if (st == 8) return 50.0 * (0.45 + uP.x);
+  if (st == 9) return 26.0;
+  return 15.0;
+}
+void main(){
+  o0 = vec4(0.0, 0.0, 0.0, -1.0); o1 = vec4(0.0);
+  ivec2 cI = ivec2(gl_FragCoord.xy);
+  vec2 sp = (vec2(cI) + 0.5) * uCell;
+  vec4 g = gAt(sp);
+  if (g.w < 0.5) return;
+  TK = uTick;
+  vec3 Pr = g.xyz, P = Pr + uCam;
+  float kind = floor(g.w), d = length(Pr);
+  // the sky is a dome round the camera: its grid runs in longitude and latitude
+  bool sky = d > 400.0;
+  vec2 ae = vec2(atan(Pr.x, -Pr.z), asin(clamp(Pr.y / d, -1.0, 1.0)));
+  vec3 N = sky ? -Pr / d : normalAt(sp, Pr);
+  vec3 T1 = abs(N.y) > 0.97 ? vec3(0.0, 0.0, 1.0) : normalize(cross(vec3(0.0, 1.0, 0.0), N));
+  vec3 T2 = normalize(cross(N, T1));
+  float bs = uRes.y / 1000.0;
+  float cw0 = spacing(int(uStyle + 0.5)) * bs / sqrt(uDens) * DREF / uFocal;
+  float lod = max(0.0, ceil(log2(2.3 * max(uCell.x, uCell.y) * d / uFocal / cw0)));
+  float cw = cw0 * exp2(lod);
+  vec2 drift = uDir * uMo.y * uTime * 0.5;               // drift slides the marks over the face
+  vec2 uv = (sky ? ae * d : vec2(dot(P, T1), dot(P, T2))) / cw + drift;
+  vec2 L = floor(uv);
+  #define AT(q) (sky ? uCam + d * vec3(sin(((q) - drift).x * cw / d) * cos(((q) - drift).y * cw / d), sin(((q) - drift).y * cw / d), -cos(((q) - drift).x * cw / d) * cos(((q) - drift).y * cw / d)) : P + (T1 * ((q).x - uv.x) + T2 * ((q).y - uv.y)) * cw)
+  vec3 s0 = proj(AT(L + 0.5));
+  if (s0.z <= 0.0 || ivec2(floor(s0.xy / uCell)) != cI) return;
+  S = floor(h1(L * 0.731 + vec2(lod * 13.7 + kind * 3.1, kind * 7.3 + dot(floor(N * 3.0 + 0.5), vec3(1.0, 5.0, 25.0)))) * 65536.0);
+  vec2 j = vec2(r(1.0), r(2.0)) * 0.9 + 0.05;
+  float an = uTime * 1.4 + h1(vec2(S, 4.0)) * 6.2832;
+  j += vec2(cos(an), sin(an)) * uMo.w * 0.6;             // orbit
+  vec3 Pm = AT(L + j);
+  if (sky) N = -normalize(Pm - uCam);
+  o0 = vec4(Pm - uCam, lod * 32.0 + g.w);
+  o1 = vec4(N, S + kind * 65536.0 + (sky ? 4194304.0 : 0.0));
+}`;
+
+// Marks live on the street's surfaces. The street is drawn a second time
+// into uG, each pixel holding where it is in the world (from the camera) and
+// which face of which thing it's on. A fill mark is anchored to a cell of a
+// grid laid over its face, in the world: so it stays put on the wall or lawn
+// as you walk, comes out big up close and small far off, runs along the face
+// (its siding, its slope, the length of the street), foreshortened as the
+// face recedes, and is cut off at the face's edges. Each cell is drawn by the
+// one instance whose screen cell holds the cell's middle. Far away, where
+// cells would be smaller than that, the grid coarsens by doubling.
+// Edge marks still find the outlines in the picture, and are sized by distance.
 const MARKV = `#version 300 es
 precision highp float;
-uniform sampler2D uFlow, uSrc, uBase;
+precision highp sampler2D;
+uniform sampler2D uFlow, uSrc, uBase, uG, uAnc0, uAnc1;
 uniform vec2 uRes, uDir;
-uniform float uSrcFlip, uTick, uTime, uStyle, uCount, uCols, uEdge;
+uniform float uSrcFlip, uTick, uTime, uStyle, uCount, uCols, uEdge, uFam, uHasG, uFocal, uDens;
+uniform vec3 uCam;
+uniform mat4 uVP;
 uniform vec4 uP, uMo;                                      // uMo: jitter, drift, flow, orbit
 out vec2 vL; out float vLen, vW, vSeed, vK; out vec4 vC;
+flat out float vKey;
 const int SEG = 12;
+const float DREF = 20.0;                                   // sizes are given as they look this far off
 float h1(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 float lum(vec3 c){ return dot(c, vec3(0.299, 0.587, 0.114)); }
 vec3 pal(float t){ return 0.55 + 0.45 * cos(6.2832 * (t + vec3(0.0, 0.33, 0.67))); }
 vec3 src(vec2 px, float lod){ vec2 uv = clamp(px / uRes, 0.0, 1.0); return textureLod(uSrc, uSrcFlip > 0.5 ? vec2(uv.x, 1.0 - uv.y) : uv, lod).rgb; }
-float kindAt(vec2 px){ vec2 uv = clamp(px / uRes, 0.0, 1.0); return floor((1.0 - textureLod(uBase, vec2(uv.x, 1.0 - uv.y), 0.0).a) / 0.03 + 0.5); }
+float kindAt(vec2 px){ vec2 uv = clamp(px / uRes, 0.0, 1.0); return floor((1.0 - textureLod(uBase, uv, 0.0).a) / 0.03 + 0.5); }
 float edgeAt(vec2 px){ return textureLod(uFlow, px / uRes, 0.0).w; }
-// which way things run here (along edges, not across), and how surely
+vec4 gAt(vec2 px){ ivec2 s = textureSize(uG, 0); return texelFetch(uG, clamp(ivec2(px / uRes * vec2(s)), ivec2(0), s - 1), 0); }
+// the face's normal, from where its neighbours are (the nearer side, across an edge)
+vec3 normalAt(vec2 px, vec3 P){
+  vec2 e = uRes / vec2(textureSize(uG, 0)) * 1.5;
+  vec3 a = gAt(px + vec2(e.x, 0.0)).xyz - P, b = P - gAt(px - vec2(e.x, 0.0)).xyz;
+  vec3 c = gAt(px + vec2(0.0, e.y)).xyz - P, d = P - gAt(px - vec2(0.0, e.y)).xyz;
+  vec3 n = cross(dot(a, a) < dot(b, b) ? a : b, dot(c, c) < dot(d, d) ? c : d);
+  n = dot(n, n) > 1e-12 ? normalize(n) : vec3(0.0, 1.0, 0.0);
+  return dot(n, P) > 0.0 ? -n : n;                         // facing the camera
+}
+vec3 proj(vec3 Pw){ vec4 c = uVP * vec4(Pw, 1.0); return vec3((c.xy / c.w * 0.5 + 0.5) * uRes, c.w); }
+// which way things run here in the picture (along edges, not across), and how surely
 vec3 tangent(vec2 px){
   vec4 t = textureLod(uFlow, px / uRes, 0.0);
   float E = t.x, F = t.y, G = t.z, d = sqrt((E - G) * (E - G) + 4.0 * F * F), l1 = 0.5 * (E + G + d);
@@ -674,21 +775,105 @@ vec3 tangent(vec2 px){
 float S; float TK;
 float r(float k){ return fract(h1(vec2(S, k)) + uMo.x * h1(vec2(S + TK * 17.13, k + TK * 3.1))); }
 mat2 rot(float a){ return mat2(cos(a), sin(a), -sin(a), cos(a)); }
+void none(){ gl_Position = vec4(-9.0, -9.0, 0.0, 1.0); vL = vec2(0.0); vLen = vW = vSeed = vK = vKey = 0.0; vC = vec4(0.0); }
+
 void main(){
   int id = gl_InstanceID, n = int(uCount), seg = gl_VertexID / 2;
   float side = float(gl_VertexID % 2) * 2.0 - 1.0;
-  S = float(id); TK = uTick;
   float bs = uRes.y / 1000.0;
   int st = int(uStyle + 0.5);
-  // where: a cell of a jittered grid (cells handed out in a scrambled order)
-  int ci = (id * 7919) % n;
+  TK = uTick;
   float rows = ceil(uCount / uCols);
+
+  // ------------------------------------------------ fill marks, on the surfaces (placed by ANCF)
+  if (uFam < 0.5 && uHasG > 0.5){
+    ivec2 aI = ivec2(id % int(uCols), id / int(uCols));
+    vec4 A = texelFetch(uAnc0, aI, 0);
+    if (A.w < 0.0){ none(); return; }
+    vec4 B = texelFetch(uAnc1, aI, 0);
+    float lod = floor(A.w / 32.0), key = A.w - lod * 32.0;
+    bool sky = B.w >= 4194304.0;
+    float bw = B.w - (sky ? 4194304.0 : 0.0), kind = floor(bw / 65536.0);
+    S = bw - kind * 65536.0;
+    vec3 Pm = A.xyz + uCam, N = B.xyz;
+    float d = length(A.xyz), grow = exp2(lod);
+    vec3 T1 = sky ? normalize(vec3(N.z, 0.0, -N.x)) : abs(N.y) > 0.97 ? vec3(0.0, 0.0, 1.0) : normalize(cross(vec3(0.0, 1.0, 0.0), N));
+    vec3 T2 = normalize(cross(N, T1));
+    // the brush's size, as it looks at DREF: spacing, length, width; and its way of going
+    float spc = 20.0, len = 60.0, w = 12.0, th = 0.0, spread = 0.5, curl = 0.0, zig = 0.0, line = 0.0, taper = 0.0, a = 1.0, k = 0.0;
+    bool both = true;                                      // runs either way along its direction
+    if (st == 1){ float sz = 0.5 + uP.x; spc = 20.0 * sz; len = 60.0 * sz; w = 22.0 * sz; spread = 0.5; taper = 0.3; }
+    else if (st == 2){ spc = 44.0; len = 150.0; w = 80.0 * (0.35 + uP.x * 1.2); spread = 3.14; a = 0.3; }
+    else if (st == 3){ spc = 24.0; len = 56.0; w = 40.0 * (0.5 + uP.x); spread = 3.14; }
+    else if (st == 4){ spc = 34.0; len = 200.0; line = 1.2; spread = 3.14; a = 0.6; }
+    else if (st == 7){ spc = 13.0; len = 52.0; w = 10.0; th = 0.8 + (h1(vec2(kind, 2.0)) - 0.5) * 1.6; spread = 0.3; both = false; }
+    else if (st == 8){ w = 100.0 * (0.45 + uP.x); spc = w * 0.5; len = w + 20.0; spread = 3.14; }
+    else if (st == 9){ spc = 26.0; len = 80.0; line = 1.7; zig = 16.0 * (1.0 - uP.y); th = 0.6 + (h1(vec2(kind, 5.0)) - 0.5); spread = 0.4; }
+    else { spc = 15.0; len = 95.0; w = 16.0; spread = 0.5; }
+    vec3 sm = proj(Pm);
+    if (sm.z <= 0.0){ none(); return; }
+    float lenPx = len * bs * DREF / d * grow;
+    vec3 c = src(sm.xy, clamp(log2(max(lenPx, 1.0) / 8.0), 0.0, 4.0));
+    float l = lum(c), dark = 1.0 - l, sat = max(c.r, max(c.g, c.b)) - min(c.r, min(c.g, c.b));
+    float keep = 1.0;
+    vec3 col = c;
+    if (st == 1){ col = c * (0.93 + 0.14 * r(11.0)); curl = (r(12.0) - 0.5) * 0.06; }
+    else if (st == 2){ col = clamp(mix(vec3(l), c, 1.7) * 1.3 + 0.04, 0.0, 1.0); curl = (r(12.0) - 0.5) * 0.12; }
+    else if (st == 3){ float mx = max(c.r, max(c.g, c.b));
+      col = mx > 0.05 ? c / mx : c; col = clamp(mix(vec3(lum(col)), col, 1.6) * (0.5 + 0.45 * mx), 0.0, 1.0);
+      keep *= step(r(9.0), (dark * 1.1 + sat * 1.5) * (0.4 + uP.y) + 0.1); }
+    else if (st == 4){ col = vec3(0.17, 0.17, 0.22); curl = (0.55 + 0.6 * r(12.0)) * (r(13.0) < 0.5 ? -1.0 : 1.0);
+      keep *= step(r(9.0), pow(dark, 1.5) * uP.y * 2.4); }
+    else if (st == 7){ col = clamp(mix(vec3(l), c, 1.7) * (0.88 + 0.22 * r(11.0)), 0.0, 1.0); curl = (r(12.0) - 0.5) * 0.05; a = 0.95;
+      keep *= step(r(9.0), 0.45 + dark * 0.8); }
+    else if (st == 8){ vec3 pig = mix(vec3(l), c, 1.5);
+      col = clamp(mix(vec3(1.0), pig, 0.28 + 0.22 * r(11.0)), 0.0, 1.0); a = 0.85; k = uP.y; keep *= 1.0 - smoothstep(0.84, 0.96, l); }
+    else if (st == 9){ col = clamp(mix(vec3(l), c, 1.9) * (0.7 + 0.3 * r(11.0)), 0.0, 1.0); a = 0.8;
+      curl = uP.y * (0.6 + 0.5 * r(12.0)) * (r(14.0) < 0.5 ? -1.0 : 1.0); keep *= step(r(9.0), 0.3 + dark * 0.9); }
+    else { col = mix(vec3(0.95, 0.95, 0.92), clamp(mix(vec3(l), c, 1.5), 0.0, 1.0), 0.35); a = 0.92; curl = (r(12.0) - 0.5) * 0.05;
+      keep *= step(r(9.0), pow(l, 1.1) * 1.5 + 0.04); }
+    if (keep < 0.5){ none(); return; }
+    // the walk, on the face, in the world
+    float lenW = len * bs * DREF / uFocal * grow, wW = w * bs * DREF / uFocal * grow, zigW = zig * bs * DREF / uFocal * grow;
+    float t0 = th + (r(5.0) - 0.5) * spread;
+    vec3 D = cos(t0) * T1 + sin(t0) * T2;
+    if (both && r(15.0) < 0.5) D = -D;
+    vec3 adv = abs(curl) > 0.2 ? D * 0.75 : vec3(0.0);
+    float cs = h1(vec2(S, 21.0)) * 6.28, stepW = lenW / float(SEG);
+    vec3 ctr = Pm - (D + adv) * lenW * 0.5;                // centred on its anchor
+    vec3 prv = proj(ctr), cur = prv, nxt = prv;
+    for (int i = 0; i <= SEG + 1; i++){
+      vec3 B = cross(N, D);
+      vec3 q = proj(ctr + B * zigW * (i % 2 == 0 ? -0.5 : 0.5));
+      if (i == seg - 1) prv = q;
+      if (i == seg) cur = q;
+      if (i == seg + 1){ nxt = q; break; }
+      float cu = curl * (1.0 + 0.6 * sin(float(i) * 0.9 + cs));
+      D = normalize(cos(cu) * D + sin(cu) * cross(N, D));
+      ctr += (D + adv) * stepW;
+    }
+    if (seg == 0) prv = vec3(cur.xy - (nxt.xy - cur.xy), cur.z);
+    if (cur.z <= 0.0){ none(); return; }
+    vec2 tg = normalize(nxt.xy - prv.xy + 1e-5), nm = vec2(-tg.y, tg.x);
+    float tt = float(seg) / float(SEG);
+    float ww = line > 0.0 ? line * bs * clamp(sqrt(DREF / d), 0.6, 1.6) : wW * uFocal / cur.z;
+    ww *= mix(1.0, pow(sin(3.1416 * mix(0.05, 0.95, tt)), 0.6), taper);
+    vec2 pos = cur.xy + nm * side * max(ww, 0.8) * 0.5;
+    vL = vec2(tt * lenPx, side); vLen = lenPx; vW = max(ww, 0.8); vSeed = h1(vec2(S, TK + 0.37)); vK = k;
+    vC = vec4(col, a); vKey = sky ? 0.0 : key;              // the dome's facets aren't edges
+    gl_Position = vec4(pos / uRes * 2.0 - 1.0, 0.0, 1.0);
+    return;
+  }
+
+  // ------------------------------------------------ edge marks (and fills, without the surfaces)
+  S = float(id);
+  int ci = (id * 7919) % n;
   vec2 uv = (vec2(mod(float(ci), uCols), floor(float(ci) / uCols)) + vec2(r(1.0), r(2.0))) / vec2(uCols, rows);
   uv = fract(uv + uDir * uMo.y * uTime * 0.035);           // drift
   vec2 p = uv * uRes;
-  float cell = uRes.x / uCols, an = uTime * 1.4 + h1(vec2(S, 4.0)) * 6.2832;
-  p += vec2(cos(an), sin(an)) * uMo.w * cell * 1.6;        // orbit
-  bool edge = h1(vec2(S, 0.5)) < uEdge;
+  float cellW = uRes.x / uCols, an = uTime * 1.4 + h1(vec2(S, 4.0)) * 6.2832;
+  p += vec2(cos(an), sin(an)) * uMo.w * cellW * 1.6;       // orbit
+  bool edge = uFam > 0.5 || h1(vec2(S, 0.5)) < uEdge;
   float keep = 1.0;
   if (edge){                                               // climb onto the nearest edge
     for (int i = 0; i < 7; i++){
@@ -708,6 +893,8 @@ void main(){
     }
     alive = smoothstep(0.0, 0.18, age) * smoothstep(1.0, 0.72, age);
   }
+  // nearer things get bigger marks
+  float fD = uHasG > 0.5 ? clamp(DREF / max(length(gAt(p).xyz), 1.0), 0.3, 1.5) : 1.0;
   vec3 c = src(p, 2.0);
   float l = lum(c), dark = 1.0 - l, sat = max(c.r, max(c.g, c.b)) - min(c.r, min(c.g, c.b));
   // the brush
@@ -722,7 +909,9 @@ void main(){
     k = step(0.62, r(10.0));
   } else if (st == 1){                                     // Strokes: coarse strokes first, then fine ones where there's detail
     float sz = 0.5 + uP.x;
-    if (float(id) < uCount * 0.45){ len = mix(26.0, 60.0, r(6.0)) * bs * sz; w = mix(11.0, 22.0, r(7.0)) * bs * sz; c = src(p, 3.0); }
+    if (edge){ len = mix(10.0, 26.0, r(6.0)) * bs * sz; w = mix(4.0, 8.0, r(7.0)) * bs * sz; c = src(p, 1.0);
+               keep *= step(r(9.0), 0.3 + uP.z); }
+    else if (float(id) < uCount * 0.45){ len = mix(26.0, 60.0, r(6.0)) * bs * sz; w = mix(11.0, 22.0, r(7.0)) * bs * sz; c = src(p, 3.0); }
     else { len = mix(10.0, 26.0, r(6.0)) * bs * sz; w = mix(4.0, 8.0, r(7.0)) * bs * sz; c = src(p, 1.0);
            keep *= step(r(9.0), edgeAt(p) * (0.4 + uP.z * 1.6)); }
     col = c * (0.93 + 0.14 * r(11.0)); curl = (r(12.0) - 0.5) * 0.08; taper = 0.3;
@@ -772,6 +961,7 @@ void main(){
     col = mix(vec3(0.95, 0.95, 0.92), clamp(mix(vec3(l), c, 1.5), 0.0, 1.0), 0.35); a = 0.92;
     keep *= step(r(9.0), pow(l, 1.1) * 1.5 + 0.04);
   }
+  len *= fD; w *= (st == 4 || st == 9 || st == 5) ? sqrt(fD) : fD; zig *= fD;
   // the walk: a polyline of SEG+1 points; this vertex needs its point and its neighbours
   vec3 t0 = tangent(p);
   vec2 d = normalize(mix(d0, t0.xy, follow * t0.z));
@@ -796,7 +986,7 @@ void main(){
   float tt = float(seg) / float(SEG);
   float ww = w * mix(1.0, pow(sin(3.1416 * mix(0.05, 0.95, tt)), 0.6), taper);
   vec2 pos = cur + nm * side * ww * 0.5;
-  vL = vec2(tt * len, side); vLen = len; vW = w; vSeed = h1(vec2(S, TK + 0.37)); vK = k;
+  vL = vec2(tt * len, side); vLen = len; vW = w; vSeed = h1(vec2(S, TK + 0.37)); vK = k; vKey = 0.0;
   vC = vec4(col, a * alive);
   gl_Position = keep * alive < 0.02 ? vec4(-9.0, -9.0, 0.0, 1.0) : vec4(pos / uRes * 2.0 - 1.0, 0.0, 1.0);
 }`;
@@ -804,8 +994,12 @@ void main(){
 // The brushes: what a mark looks like across and along itself.
 const MARKF = `#version 300 es
 precision highp float;
-uniform float uStyle, uBlend;
+precision highp sampler2D;
+uniform float uStyle, uBlend, uClip;
+uniform vec2 uRes;
+uniform sampler2D uG;
 in vec2 vL; in float vLen, vW, vSeed, vK; in vec4 vC;
+flat in float vKey;
 out vec4 o;
 float h1(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 float n1(vec2 p){
@@ -814,6 +1008,10 @@ float n1(vec2 p){
 }
 void main(){
   vec2 fc = gl_FragCoord.xy;
+  if (uClip > 0.5 && vKey > 0.5){                          // a mark on a face stays on it
+    ivec2 gs = textureSize(uG, 0);
+    if (abs(texelFetch(uG, clamp(ivec2(fc / uRes * vec2(gs)), ivec2(0), gs - 1), 0).w - vKey) > 0.002) discard;
+  }
   int st = int(uStyle + 0.5);
   float ax = vL.x, ay = vL.y, t = ax / max(vLen, 1.0), cov = 1.0;
   vec3 col = vC.rgb;
@@ -891,15 +1089,20 @@ function texture(w, h, src){
     gl.texParameteri(gl.TEXTURE_2D, k, v);
   return t;
 }
-let FXP, ANAP, MARKP, floatOK = false, emptyVao = null;
+let FXP, ANAP, MARKP, ANCP = null, floatOK = false, emptyVao = null, quadVao = null;
 if (gl){
   FXP = program(FXF);
+  gl.useProgram(FXP.p);
+  for (const [k, v] of [["uSrc", 0], ["uBase", 1], ["uMarks", 2], ["uLut", 3]]) gl.uniform1i(FXP.u[k], v);
   floatOK = !!gl.getExtension("EXT_color_buffer_float");
-  try { ANAP = program(ANAF); MARKP = program(MARKF, MARKV); emptyVao = gl.createVertexArray(); }
+  try { ANAP = program(ANAF); MARKP = program(MARKF, MARKV); ANCP = floatOK ? program(ANCF) : null; emptyVao = gl.createVertexArray(); }
   catch (e){ console.warn("marks unavailable", e); ANAP = MARKP = null; }
+  if (MARKP){ gl.useProgram(MARKP.p); for (const [k, v] of [["uSrc", 0], ["uBase", 1], ["uFlow", 4], ["uG", 5], ["uAnc0", 6], ["uAnc1", 7]]) gl.uniform1i(MARKP.u[k], v); }
+  quadVao = gl.createVertexArray(); gl.bindVertexArray(quadVao);
   gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
   gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+  gl.bindVertexArray(null);
 }
 
 // ------------------------------------------------------------------ the suburb
@@ -915,11 +1118,15 @@ function loadSuburb(){
   if (suburb) return Promise.resolve(suburb);
   return suburbLoading = suburbLoading || (async () => {
     const T = await import("three");
-    const r = new T.WebGLRenderer({antialias: true, alpha: true, premultipliedAlpha: false});
+    const r = new T.WebGLRenderer({canvas, context: gl});
     r.shadowMap.enabled = true;
-    r.domElement.className = "street";
-    r.domElement.setAttribute("aria-label", "An endless suburb");
-    document.body.insertBefore(r.domElement, $("gl"));
+    r.autoClear = true;
+    // The picture goes to a smoothed (multisampled) texture, its alpha saying
+    // which kind of thing each pixel is; the G-buffer, at half size in floats,
+    // says where each pixel is in the world (from the camera) and which face
+    // of which thing it's on.
+    let streetRT = null, gRT = null;
+    const gPass = {value: 0};
     const scene = new T.Scene();
 
     // The sky's gradient, wrapped round a dome: top to bottom is straight up to
@@ -953,16 +1160,26 @@ function loadSuburb(){
       const m = sky ? new T.MeshBasicMaterial({map: skyTex, side: T.BackSide, fog: false, depthWrite: false})
                     : new T.MeshLambertMaterial({color, side: T.DoubleSide, shadowSide: T.FrontSide});
       m.onBeforeCompile = sh => {
-        Object.assign(sh.uniforms, {uKindId: k.id, uGlow: k.glow, uWriteId: writeId});
+        Object.assign(sh.uniforms, {uKindId: k.id, uGlow: k.glow, uWriteId: writeId, uGPass: gPass});
+        sh.vertexShader = sh.vertexShader
+          .replace("#include <common>", "#include <common>\nvarying vec3 vWorldG;\nvarying float vObjG;")
+          .replace("#include <project_vertex>", "#include <project_vertex>\n vWorldG = (modelMatrix * vec4(transformed, 1.0)).xyz;" +
+                   "\n vObjG = fract(sin(dot(modelMatrix[3].xyz, vec3(12.9898, 78.233, 37.719))) * 43758.5453);");
         if (!sky) sh.vertexShader = sh.vertexShader
           .replace("#include <common>", "#include <common>\nattribute vec3 aPaint;\nvarying vec3 vPaint;")
           .replace("#include <begin_vertex>", "#include <begin_vertex>\n vPaint = aPaint;");
         sh.fragmentShader = sh.fragmentShader
-          .replace("#include <common>", "#include <common>\n" + KIND_GLSL + (sky ? "" : "\nvarying vec3 vPaint;"))
+          .replace("#include <common>", "#include <common>\n" + KIND_GLSL + "\nuniform float uGPass;\nvarying vec3 vWorldG;\nvarying float vObjG;" + (sky ? "" : "\nvarying vec3 vPaint;"))
           .replace("#include <color_fragment>", "#include <color_fragment>\n" + (sky ? "" : " if (vPaint.r >= 0.0) diffuseColor.rgb = vPaint;"))
           .replace("#include <dithering_fragment>", `#include <dithering_fragment>
+            gl_FragColor = sRGBTransferOETF(gl_FragColor);   // drawn into a linear texture, stored as the screen would show it
             gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.62, 0.94, 0.78), 0.45 * uGlow);
-            gl_FragColor.a = uWriteId > 0.5 ? 1.0 - uKindId * 0.03 : 1.0;`);
+            gl_FragColor.a = uWriteId > 0.5 ? 1.0 - uKindId * 0.03 : 1.0;
+            if (uGPass > 0.5){                       // where it is; and kind + this face of this thing
+              vec3 nw = normalize(cross(dFdx(vWorldG), dFdy(vWorldG)));
+              float face = fract(vObjG + dot(floor(nw * 2.5 + 0.5), vec3(0.1371, 0.2713, 0.4139)));
+              gl_FragColor = vec4(vWorldG - cameraPosition, uKindId + 1.0 + 0.05 + 0.9 * face);
+            }`);
       };
       return matCache[kind] = m;
     }
@@ -1225,12 +1442,25 @@ function loadSuburb(){
       return null;
     }
 
+    const vp = new T.Matrix4();
     suburb = {
-      canvas: r.domElement, kinds,
+      canvas, kinds, camera,
       size(w, h){
         r.setPixelRatio(Math.min(devicePixelRatio || 1, w < 700 ? 1.5 : 2, quality));
         r.setSize(w, h); camera.aspect = w / h; camera.fov = w < h ? 74 : 52; camera.updateProjectionMatrix();
+        const W = canvas.width, H = canvas.height;
+        if (streetRT) streetRT.dispose(); if (gRT) gRT.dispose();
+        streetRT = new T.WebGLRenderTarget(W, H, {samples: 4, generateMipmaps: true, minFilter: T.LinearMipmapLinearFilter});
+        gRT = floatOK ? new T.WebGLRenderTarget(Math.ceil(W / 2), Math.ceil(H / 2),
+          {type: T.FloatType, minFilter: T.NearestFilter, magFilter: T.NearestFilter, generateMipmaps: false}) : null;
       },
+      // the raw textures, for the layers
+      textures(){
+        return {base: r.properties.get(streetRT.texture).__webglTexture, g: gRT ? r.properties.get(gRT.texture).__webglTexture : null};
+      },
+      // the camera, for marks to find their place on the screen
+      view(){ vp.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
+              return {vp: vp.elements, cam: camera.position, focal: canvas.height / 2 / Math.tan(camera.fov * Math.PI / 360)}; },
       // One frame: walk, light up the kinds in the selected layer's mask, draw.
       frame(dt, o){
         camera.position.z -= o.walk;
@@ -1240,8 +1470,17 @@ function loadSuburb(){
         sun.position.set(40, 45, cz + 55); sun.target.position.set(0, 0, cz - 55);
         for (const t of things) if (t.position.z > cz + LOT) t.position.z -= N * LOT;
         for (const kind in kinds) kinds[kind].glow.value = o.glowKinds.has(kind) ? o.glow : 0;
-        writeId.value = o.ids ? 1 : 0;
-        r.render(scene, camera);
+        writeId.value = 1;
+        r.resetState();                                    // the layers have used the context since
+        r.shadowMap.autoUpdate = true;
+        r.setClearColor(0x000000, 0);
+        r.setRenderTarget(streetRT); r.render(scene, camera);
+        if (gRT && o.geometry){
+          r.shadowMap.autoUpdate = false; gPass.value = 1; scene.fog.near = 1e6; scene.fog.far = 2e6;
+          r.setRenderTarget(gRT); r.clear(); r.render(scene, camera);
+          gPass.value = 0; scene.fog.near = 90; scene.fog.far = 330;
+        }
+        r.setRenderTarget(null);
       },
       keyAt(x, y){ const h = hitAt(x, y); return h ? h.kind : "sky"; },
       idOf(kind){ return kinds[kind] ? kinds[kind].id.value : -1; },
@@ -1497,9 +1736,8 @@ function build(){
   if (!innerWidth || !innerHeight || !street || !suburb) return;
   suburb.size(innerWidth, innerHeight);
   if (!gl){ showReadout(); return; }
-  const src = suburb.canvas, W = src.width, H = src.height;
-  canvas.width = W; canvas.height = H;
-  if (run) [run.base, run.mark, ...run.tex, ...run.ana].forEach(t => gl.deleteTexture(t));
+  const W = canvas.width, H = canvas.height;
+  if (run) [run.mark, ...run.tex, ...run.ana, ...(run.anc || [])].forEach(t => gl.deleteTexture(t));
   const target = t => {
     const f = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, f);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t, 0); return f;
@@ -1516,9 +1754,22 @@ function build(){
     return t;
   });
   const mark = texture(W, H);
-  run = {W, H, base: texture(W, H, src), tex, fbo, ana, anaFbo: ana.map(target), AW, AH, mark, markFbo: target(mark)};
+  run = {W, H, tex, fbo, ana, anaFbo: ana.map(target), AW, AH, mark, markFbo: target(mark)};
+  if (ANCP){
+    const c = Math.max(4, 5 * H / 1000), cols = Math.ceil(W / c), rows = Math.ceil(H / c);
+    const anc = [0, 1].map(() => {
+      const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA32F, cols, rows, 0, gl.RGBA, gl.FLOAT, null);
+      for (const [k, v] of [[gl.TEXTURE_MIN_FILTER, gl.NEAREST], [gl.TEXTURE_MAG_FILTER, gl.NEAREST]]) gl.texParameteri(gl.TEXTURE_2D, k, v);
+      return t;
+    });
+    const f = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, f);
+    anc.forEach((t, i) => gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + i, gl.TEXTURE_2D, t, 0));
+    gl.drawBuffers([gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1]);
+    Object.assign(run, {anc, ancFbo: f, cols, rows});
+  }
   // sources are mipmapped, so a mark can take the colour of an area, not a pixel
-  for (const t of [run.base, ...run.tex]){ gl.bindTexture(gl.TEXTURE_2D, t); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR); }
+  for (const t of run.tex){ gl.bindTexture(gl.TEXTURE_2D, t); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR); }
   showReadout();
 }
 let rt; function rebuildSoon(){ clearTimeout(rt); rt = setTimeout(build, 250); }
@@ -1547,10 +1798,10 @@ function frame(now){
   const glowKinds = new Set(L && maskFlash > 0 ? L.mask : []);
   // ids go in the street's alpha only while the layers cover it; otherwise
   // the street shows itself, and must be opaque
-  const live = !!(on && run && layers.some(l => l.on && l.opacity > 0));
-  suburb.frame(dt, {walk: speed * 60 * 0.18 * dt, glowKinds, glow: maskFlash, ids: live});
-  canvas.hidden = !live;
-  if (live) drawLayers();
+  if (!run) return;
+  const geometry = on && layers.some(l => l.on && l.opacity > 0 && BY_ID[l.fx].marks);
+  suburb.frame(dt, {walk: speed * 60 * 0.18 * dt, glowKinds, glow: maskFlash, geometry});
+  drawLayers();
 }
 
 const tickOf = L => L.motion.boil > 0.005 ? Math.floor(clock * (0.6 + L.motion.boil * 14)) : 0;
@@ -1558,20 +1809,24 @@ function markCount(L){
   const m = BY_ID[L.fx].marks, area = Math.min(1.6, Math.max(0.2, run.W * run.H / (2560 * 1440)));
   return Math.max(64, Math.round(m.n * area * (m.dens >= 0 ? 0.25 + 1.5 * L.p[m.dens] : 1)));
 }
-// Marks for one layer, into run.mark: look at the picture beneath, then lay them.
+// Marks for one layer, into run.mark: look at the picture beneath, then lay
+// them, the fill on the street's surfaces, then the edges over it.
 function drawMarks(L, srcTex, flip){
-  const {W, H, AW, AH} = run, m = BY_ID[L.fx].marks;
+  const {W, H, AW, AH} = run, m = BY_ID[L.fx].marks, G = run.g;
   gl.useProgram(ANAP.p);
   gl.uniform1i(ANAP.u.uSrc, 0); gl.uniform1i(ANAP.u.uBase, 1); gl.uniform1i(ANAP.u.uIn, 4);
   gl.uniform2f(ANAP.u.uRes, W, H); gl.uniform2f(ANAP.u.uDim, AW, AH); gl.uniform1f(ANAP.u.uSrcFlip, flip ? 1 : 0);
   gl.viewport(0, 0, AW, AH);
-  [[0, -1, 0], [1, 0, 1], [2, 1, 0]].forEach(([pass, from, to]) => {
+  const edge = typeof m.edge === "function" ? m.edge(L) : m.edge;
+  // the picture's flow is only for marks that find edges; fills on surfaces go by the geometry
+  if (!G || !ANCP || edge > 0) [[0, -1, 0], [1, 0, 1], [2, 1, 0]].forEach(([pass, from, to]) => {
     gl.bindFramebuffer(gl.FRAMEBUFFER, run.anaFbo[to]);
     gl.activeTexture(gl.TEXTURE4); gl.bindTexture(gl.TEXTURE_2D, from < 0 ? null : run.ana[from]);
     gl.uniform1f(ANAP.u.uPass, pass);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   });
   gl.activeTexture(gl.TEXTURE4); gl.bindTexture(gl.TEXTURE_2D, run.ana[0]);
+  gl.activeTexture(gl.TEXTURE5); gl.bindTexture(gl.TEXTURE_2D, G);
   gl.bindFramebuffer(gl.FRAMEBUFFER, run.markFbo); gl.viewport(0, 0, W, H);
   if (m.blend === 1) gl.clearColor(1, 1, 1, 1); else gl.clearColor(0, 0, 0, 0);
   gl.clear(gl.COLOR_BUFFER_BIT);
@@ -1579,37 +1834,87 @@ function drawMarks(L, srcTex, flip){
   if (m.blend === 1) gl.blendFunc(gl.DST_COLOR, gl.ZERO);
   else if (m.blend === 2) gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
   else gl.blendFunc(gl.ONE, gl.ONE);
-  const u = MARKP.u, n = markCount(L), M = L.motion;
+  const u = MARKP.u, M = L.motion, v = suburb.view();
   gl.useProgram(MARKP.p);
-  gl.uniform1i(u.uFlow, 4); gl.uniform1i(u.uSrc, 0); gl.uniform1i(u.uBase, 1);
+  gl.uniform1i(u.uFlow, 4); gl.uniform1i(u.uSrc, 0); gl.uniform1i(u.uBase, 1); gl.uniform1i(u.uG, 5);
   gl.uniform2f(u.uRes, W, H);
   gl.uniform2f(u.uDir, Math.cos(M.angle * 6.2832), Math.sin(M.angle * 6.2832));
   gl.uniform1f(u.uSrcFlip, flip ? 1 : 0); gl.uniform1f(u.uTick, tickOf(L)); gl.uniform1f(u.uTime, clock);
-  gl.uniform1f(u.uStyle, m.style); gl.uniform1f(u.uCount, n); gl.uniform1f(u.uCols, Math.max(1, Math.round(Math.sqrt(n * W / H))));
-  gl.uniform1f(u.uEdge, typeof m.edge === "function" ? m.edge(L) : m.edge);
+  gl.uniform1f(u.uStyle, m.style);
   gl.uniform4f(u.uP, L.p[0] ?? 0, L.p[1] ?? 0, L.p[2] ?? 0, 0);
   gl.uniform4f(u.uMo, M.jitter, M.drift, M.flow, M.orbit);
   gl.uniform1f(u.uBlend, m.blend);
+  gl.uniform1f(u.uHasG, G ? 1 : 0);
+  gl.uniformMatrix4fv(u.uVP, false, v.vp);
+  gl.uniform3f(u.uCam, v.cam.x, v.cam.y, v.cam.z);
+  gl.uniform1f(u.uFocal, v.focal);
+  gl.uniform1f(u.uDens, m.dens >= 0 ? 0.25 + 1.5 * L.p[m.dens] : 1);
   gl.bindVertexArray(emptyVao);
-  gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 26, n);
+  const batch = (fam, n, cols, clip) => {
+    gl.uniform1f(u.uFam, fam); gl.uniform1f(u.uCount, n); gl.uniform1f(u.uCols, cols); gl.uniform1f(u.uClip, clip);
+    gl.uniform1f(u.uEdge, edge);
+    gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 26, n);
+  };
+  if (G && ANCP){
+    // fill: place the marks on the surfaces, then one instance per screen cell (most have none)
+    if (edge < 1){
+      const {cols, rows} = run, a = ANCP.u;
+      gl.disable(gl.BLEND); gl.bindVertexArray(quadVao);
+      gl.useProgram(ANCP.p); gl.bindFramebuffer(gl.FRAMEBUFFER, run.ancFbo); gl.viewport(0, 0, cols, rows);
+      gl.uniform1i(a.uG, 5); gl.uniform2f(a.uRes, W, H); gl.uniform2f(a.uCell, W / cols, H / rows);
+      gl.uniform2f(a.uDir, Math.cos(M.angle * 6.2832), Math.sin(M.angle * 6.2832));
+      gl.uniform1f(a.uStyle, m.style); gl.uniform1f(a.uTick, tickOf(L)); gl.uniform1f(a.uTime, clock);
+      gl.uniform1f(a.uFocal, v.focal); gl.uniform1f(a.uDens, m.dens >= 0 ? 0.25 + 1.5 * L.p[m.dens] : 1);
+      gl.uniform3f(a.uCam, v.cam.x, v.cam.y, v.cam.z); gl.uniformMatrix4fv(a.uVP, false, v.vp);
+      gl.uniform4f(a.uP, L.p[0] ?? 0, L.p[1] ?? 0, L.p[2] ?? 0, 0); gl.uniform4f(a.uMo, M.jitter, M.drift, M.flow, M.orbit);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      gl.activeTexture(gl.TEXTURE6); gl.bindTexture(gl.TEXTURE_2D, run.anc[0]);
+      gl.activeTexture(gl.TEXTURE7); gl.bindTexture(gl.TEXTURE_2D, run.anc[1]);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, run.markFbo); gl.viewport(0, 0, W, H);
+      gl.enable(gl.BLEND); gl.useProgram(MARKP.p); gl.bindVertexArray(emptyVao);
+      gl.uniform1i(u.uAnc0, 6); gl.uniform1i(u.uAnc1, 7);
+      batch(0, cols * rows, cols, 1);
+    }
+    if (edge > 0){
+      const n = Math.max(64, Math.round(markCount(L) * Math.min(1, edge + 0.25)));
+      batch(1, n, Math.max(1, Math.round(Math.sqrt(n * W / H))), 0);
+    }
+  } else {
+    const n = markCount(L);
+    batch(0, n, Math.max(1, Math.round(Math.sqrt(n * W / H))), 0);
+  }
   gl.bindVertexArray(null);
   gl.disable(gl.BLEND);
 }
 
 function drawLayers(){
-  const {W, H} = run;
+  const {W, H} = run, T = suburb.textures();
+  run.base = T.base; run.g = T.g;
+  // three.js leaves its state behind: put back what the layers assume
+  for (const c of [gl.DEPTH_TEST, gl.CULL_FACE, gl.SCISSOR_TEST, gl.BLEND, gl.STENCIL_TEST, gl.POLYGON_OFFSET_FILL]) gl.disable(c);
+  gl.colorMask(true, true, true, true); gl.depthMask(false);
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false); gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+  gl.bindVertexArray(quadVao);
   gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, run.base);
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, suburb.canvas);
-  gl.generateMipmap(gl.TEXTURE_2D);
-  const stack = layers.filter(l => l.on && l.opacity > 0).reverse();   // bottom first
+  let stack = on ? layers.filter(l => l.on && l.opacity > 0).reverse() : [];   // bottom first
+  if (!stack.length) stack = [null];                       // nothing showing: the street, copied out
   let from = -1;                                           // -1: the street itself
   stack.forEach((L, n) => {
-    const fx = BY_ID[L.fx], last = n === stack.length - 1, to = from === 0 ? 1 : 0;
-    const srcTex = from < 0 ? run.base : run.tex[from], flip = from < 0;
+    const last = n === stack.length - 1, to = from === 0 ? 1 : 0;
+    const srcTex = from < 0 ? run.base : run.tex[from], flip = false;
+    if (!L){
+      gl.useProgram(FXP.p); gl.viewport(0, 0, W, H); gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+      gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, srcTex);
+      gl.uniform1i(FXP.u.uSrc, 0); gl.uniform1i(FXP.u.uBase, 1); gl.uniform1i(FXP.u.uMarks, 2); gl.uniform1i(FXP.u.uLut, 3);
+      gl.uniform2f(FXP.u.uRes, W, H); gl.uniform1f(FXP.u.uSrcFlip, 0); gl.uniform1f(FXP.u.uType, -1);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      return;
+    }
+    const fx = BY_ID[L.fx];
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, srcTex);
     if (from >= 0) gl.generateMipmap(gl.TEXTURE_2D);
     const marks = !!(fx.marks && MARKP);
-    if (marks) drawMarks(L, srcTex, flip);
+    if (marks){ drawMarks(L, srcTex, flip); gl.bindVertexArray(quadVao); }
     if (fx.id === "grade") lutFor(L);
     gl.useProgram(FXP.p); gl.viewport(0, 0, W, H);
     gl.bindFramebuffer(gl.FRAMEBUFFER, last ? null : run.fbo[to]);
