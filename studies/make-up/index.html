@@ -217,14 +217,14 @@
     .layers{top:auto;left:8px;right:8px;bottom:64px;width:auto;max-height:52vh;}
   }
 
-  /* ---------- on a phone: a brief card, and type that doesn't make iOS zoom ---------- */
-  .help .morebtn{display:none;margin-right:6px;}
+  /* ---------- on a phone: the card sits low, and type doesn't make iOS zoom ---------- */
+  .help .x{position:sticky;top:0;float:right;z-index:1;width:30px;height:30px;margin:-6px -8px 0 8px;border-radius:50%;
+    border:1px solid rgba(255,255,255,.3);background:rgba(16,15,14,.9);color:#fff;font:400 18px/1 sans-serif;cursor:pointer;}
+  .help .x:hover{background:rgba(60,58,56,.95);}
   @media (max-width:700px){
     .help{top:auto;bottom:12px;transform:translateX(-50%);max-height:calc(100dvh - 90px);overflow:auto;padding:14px 16px;}
     .help h2{font-size:18px;margin-bottom:8px;}
     .help .lede{font-size:12.5px;line-height:1.5;}
-    .help:not(.more) dl, .help:not(.more) > p:not(.kicker):not(.lede){display:none;}
-    .help .morebtn{display:inline-flex;}
   }
   /* iOS zooms into any text box under 16px and stays zoomed */
   @media (max-width:700px), (pointer:coarse){
@@ -263,36 +263,28 @@
 <div class="help" id="help" hidden role="dialog" aria-label="About Make-Up">
   <p class="kicker">Study 11 · Sea of Grass</p>
   <h2 id="helpTitle">Make-Up</h2>
-  <p class="lede">The same endless street as <a href="/studies/fever/">Fever</a>, made up. Fever changes the shape of things;
-    Make-Up changes how they look, never their shape. It works like the layers in an image editor: stack effects over the
-    street, and each one works on everything beneath it.</p>
+  <p class="lede"><a href="/studies/fever/">Fever</a>'s street, made up: stack looks over it like layers in an image editor.</p>
   <dl>
-    <dt>make-up</dt><dd>the button, or M: shows the layers over the street, or takes them off</dd>
-    <dt>+ effect</dt><dd>adds a layer on top. Most are made of marks, thousands of them, laid by hand as it were along the
-      shapes in the street: pencil, scribble, chalk, crayon, watercolour, spray, airbrush, paint strokes, ink, neon, riso print</dd>
-    <dt>a layer</dt><dd>the eye shows or hides it; the mode blends it with what's below (multiply, screen, overlay…); opacity
-      sets how much; ↑ ↓ move it; × deletes it. Select it to change its settings</dd>
-    <dt>motion</dt><dd>how the look moves: boil redraws it like hand-drawn frames, jitter sets how much changes each time,
-      drift slides it across, flow streams the marks along the edges, orbit circles them</dd>
-    <dt>grade</dt><dd>a colour grade over everything below: presets and sliders, or load a .cube LUT; <b>save .cube</b>
-      keeps it for Fantasmagoria or any editor</dd>
-    <dt>mask</dt><dd>with a layer selected, click things in the street (a colour of house, the lamps, the road, the lawn, the
-      sky) and the layer only touches those. Click again to take one out; <b>everything</b> clears the mask</dd>
+    <dt>make-up</dt><dd>the button, or M, puts the layers on or takes them off</dd>
+    <dt>+ effect</dt><dd>pencil, scribble, chalk, watercolour, spray, ink, neon, riso, or a colour grade</dd>
+    <dt>a layer</dt><dd>select it for its settings and motion; click things in the street to keep it to them</dd>
   </dl>
-  <p>Make-Up is the look tool from Fantasmagoria, the studio's live show, made to be used alongside Fever, and tried out here
-    on its own. The street comes from a popular dreamcore meme, drawn live with <a href="https://threejs.org">three.js</a>.
-    The effects are after references Tristan collected: airbrushed posters, a stencil-sprayed house, a glowing neon swirl, a
-    glossy vector flower, a riso-printed plant, Fabio Catapano's Spectrum 001, a board of scribbled, rotoscoped and
-    crayoned animation, watercolour blots, a scribbled-pencil fill and a chalky brushed elephant. Nothing leaves your browser.</p>
+  <p>Fantasmagoria's look tool. Drawn with <a href="https://threejs.org">three.js</a>. Nothing leaves your browser.</p>
   <button class="chip" id="gotit">Begin</button>
 </div>
 <script>
-// On a phone the card is brief; the rest is behind "how it works".
+// The intro card closes with ×, Begin, or a tap anywhere outside it.
 (() => {
-  const h = document.getElementById("help"), b = document.createElement("button");
-  b.className = "chip morebtn"; b.type = "button"; b.textContent = "how it works"; b.setAttribute("aria-expanded", "false");
-  b.onclick = () => b.setAttribute("aria-expanded", String(h.classList.toggle("more")));
-  h.lastElementChild.before(b);
+  const h = document.getElementById("help");
+  // a close button that stays in reach, and a tap outside the card closes it too
+  const x = document.createElement("button");
+  x.className = "x"; x.type = "button"; x.textContent = "×"; x.setAttribute("aria-label", "Close");
+  x.onclick = () => document.getElementById("gotit").click();
+  h.prepend(x);
+  addEventListener("pointerdown", e => {
+    if (h.hidden || h.contains(e.target) || e.target.closest("#ask")) return;
+    document.getElementById("gotit").click();
+  });
 })();
 </script>
 

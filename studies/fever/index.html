@@ -166,14 +166,14 @@
   }
   @media (prefers-reduced-motion:reduce){ .chip,.dockb{transition:none;} }
 
-  /* ---------- on a phone: a brief card, and type that doesn't make iOS zoom ---------- */
-  .help .morebtn{display:none;margin-right:6px;}
+  /* ---------- on a phone: the card sits low, and type doesn't make iOS zoom ---------- */
+  .help .x{position:sticky;top:0;float:right;z-index:1;width:30px;height:30px;margin:-6px -8px 0 8px;border-radius:50%;
+    border:1px solid rgba(255,255,255,.3);background:rgba(16,15,14,.9);color:#fff;font:400 18px/1 sans-serif;cursor:pointer;}
+  .help .x:hover{background:rgba(60,58,56,.95);}
   @media (max-width:700px){
     .help{top:auto;bottom:12px;transform:translateX(-50%);max-height:calc(100dvh - 90px);overflow:auto;padding:14px 16px;}
     .help h2{font-size:18px;margin-bottom:8px;}
     .help .lede{font-size:12.5px;line-height:1.5;}
-    .help:not(.more) dl, .help:not(.more) > p:not(.kicker):not(.lede){display:none;}
-    .help .morebtn{display:inline-flex;}
   }
   /* iOS zooms into any text box under 16px and stays zoomed */
   @media (max-width:700px), (pointer:coarse){
@@ -227,38 +227,30 @@
 <div class="help" id="help" hidden role="dialog" aria-label="About Fever">
   <p class="kicker">Study 10 · Sea of Grass</p>
   <h2 id="helpTitle">Fever</h2>
-  <p class="lede">An examination of one street: pastel houses down both sides of a grey road, under a hard blue
-    sky, going on forever. Press <b>Fever</b> and cast a spell on it. <b>Cyclone</b> is a black eye that rides
-    over the surfaces of things and twists, sinks and tears them as it goes; <b>Shatter</b> breaks whatever it
-    passes into the pieces it's made of (bricks, boards, shingles, turf, asphalt), which burst off, tumble and
-    fall, then fly back; <b>Liquify</b> ripples it, melts it into drips and sets
-    worms crawling over it, all at once, in whatever mix you like. Choose with the spell button beside Fever.</p>
+  <p class="lede">One endless dreamcore street. Press <b>Fever</b> and cast a spell on it.</p>
   <dl>
-    <dt>fever</dt><dd>the button, or F: casts the spell; press again and the street comes back whole</dd>
-    <dt>steer</dt><dd>the spell sits on whatever is under the pointer and rides over it: the walls, roofs and
-      lawn around it are wrung or broken; click and it surges</dd>
-    <dt>pick</dt><dd>in controls, press <b>Pick</b> (or K), then click one thing: a colour of house, the lamps, the
-      road, the lawn. The spell then hits only that, and clicking casts it. Pick again to add more;
-      <b>Clear</b> lets it hit everything</dd>
-    <dt>spell</dt><dd>the button beside Fever opens the list of spells; on the sky, each has a flat form</dd>
-    <dt>controls</dt><dd>turn the spell's dials, the speed you walk at, and under Cast: surge, freeze, follow</dd>
+    <dt>fever</dt><dd>the button, or F, casts the spell; again, and the street comes back</dd>
+    <dt>spell</dt><dd>Cyclone, Shatter or Liquify, from the button beside Fever</dd>
+    <dt>steer</dt><dd>the spell rides whatever's under the pointer; click to surge</dd>
+    <dt>pick</dt><dd>in controls, Pick (K), then click things so only they're hit</dd>
   </dl>
-  <p>Fever is the picture-treating tool from Fantasmagoria, the studio's live show, tried out here on its own.
-    The street comes from a popular dreamcore meme: an endless suburban street of pastel houses under a
-    too-blue sky. It is drawn live with <a href="https://threejs.org">three.js</a>. Cyclone is after a TouchDesigner piece posted to
-    <a href="https://www.reddit.com/r/TouchDesigner/comments/1t0wkv2/using_td_to_eat_up_worlds/">r/TouchDesigner</a>
-    ("using TD to eat up worlds"), rebuilt in WebGL; Shatter after the Voronoi-fracture
-    pieces common in TouchDesigner, and Liquify after its fluid displacement work and
-    Fabio Catapano's Spectrum 001. Nothing leaves your browser.</p>
+  <p>Fantasmagoria's picture tool, after TouchDesigner work and Fabio Catapano's Spectrum 001. Drawn with
+    <a href="https://threejs.org">three.js</a>. Nothing leaves your browser.</p>
   <button class="chip" id="gotit">Begin</button>
 </div>
 <script>
-// On a phone the card is brief; the rest is behind "how it works".
+// The intro card closes with ×, Begin, or a tap anywhere outside it.
 (() => {
-  const h = document.getElementById("help"), b = document.createElement("button");
-  b.className = "chip morebtn"; b.type = "button"; b.textContent = "how it works"; b.setAttribute("aria-expanded", "false");
-  b.onclick = () => b.setAttribute("aria-expanded", String(h.classList.toggle("more")));
-  h.lastElementChild.before(b);
+  const h = document.getElementById("help");
+  // a close button that stays in reach, and a tap outside the card closes it too
+  const x = document.createElement("button");
+  x.className = "x"; x.type = "button"; x.textContent = "×"; x.setAttribute("aria-label", "Close");
+  x.onclick = () => document.getElementById("gotit").click();
+  h.prepend(x);
+  addEventListener("pointerdown", e => {
+    if (h.hidden || h.contains(e.target) || e.target.closest("#ask")) return;
+    document.getElementById("gotit").click();
+  });
 })();
 </script>
 
