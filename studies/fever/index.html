@@ -238,20 +238,42 @@ in vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }`;
 // last frame is dripped, spun around the eye, drawn in, slipped and eaten.
 // While Fever is off uPrime holds, so the whole frame is the plain picture
 // and switching on starts from exactly what was showing.
-const FS = `#version 300 es
-precision highp float;
-uniform sampler2D uPrev, uSheet, uMask;
-uniform float uMasked;
-uniform vec2 uRes, uEye;
-uniform float uTime, uFlow, uFront, uAspect, uPrime;
-uniform float uEyeR, uSpin, uPull, uTear, uDrip;
-out vec4 o;
+// The spell runs at a coarse size (the pixels dial); the street is drawn at
+// full resolution. The last pass shows the coarse spell only where it is
+// actually eating (below the front, and on picked things when there are
+// picks) and the crisp street everywhere else, so both passes need to agree
+// on where the front is: that's eatenAt, shared by both.
+const COMMON = `
+uniform vec2 uEye;
+uniform float uTime, uFront, uAspect, uEyeR;
 float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 float noise(vec2 p){
   vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
   return mix(mix(hash(i), hash(i + vec2(1, 0)), f.x), mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), f.x), f.y);
 }
 float fbm(vec2 p){ float v = 0.0, a = 0.5; for (int i = 0; i < 4; i++){ v += a * noise(p); p *= 2.03; a *= 0.5; } return v; }
+// How far into the eaten part a coarse pixel is (below 0: untouched).
+// frag is the coarse pixel's centre, res the coarse size.
+float eatenAt(vec2 frag, vec2 res){
+  vec2 uv = frag / res;
+  float yd = 1.0 - uv.y;
+  vec2 e = uv - uEye; e.x *= uAspect;
+  float col = floor(frag.x / 4.0);
+  float ragged = (hash(vec2(col, floor(uTime * 0.7))) - 0.5) * 0.05;
+  float blob = fbm(vec2(uv.x * uAspect * 2.5, yd * 2.5 - uTime * 0.08));
+  float halo = smoothstep(0.18 + uEyeR * 3.0, 0.0, length(e)) * 0.3;
+  return yd - uFront + (blob - 0.5) * 0.55 + ragged + halo;
+}`;
+
+const FS = `#version 300 es
+precision highp float;
+uniform sampler2D uPrev, uSheet, uMask;
+uniform float uMasked;
+uniform vec2 uRes;
+uniform float uFlow, uPrime;
+uniform float uSpin, uPull, uTear, uDrip;
+out vec4 o;
+${COMMON}
 // What the spell eats. With picks, that's only the picked things, as a
 // premultiplied layer that is clear everywhere else, and the result is cut
 // back to their outlines: the spell happens on their surface, made only of
@@ -270,10 +292,7 @@ void main(){
   vec4 intact = sheet(uv);
 
   float col = floor(gl_FragCoord.x / 4.0);
-  float ragged = (hash(vec2(col, floor(uTime * 0.7))) - 0.5) * 0.05;
-  float blob = fbm(vec2(uv.x * uAspect * 2.5, yd * 2.5 - uTime * 0.08));
-  float halo = smoothstep(0.18 + uEyeR * 3.0, 0.0, r) * 0.3;
-  float eaten = yd - uFront + (blob - 0.5) * 0.55 + ragged + halo;
+  float eaten = eatenAt(gl_FragCoord.xy, uRes);
   if (eaten < 0.0 || uPrime > 0.5){ o = intact; return; }
   float depth = smoothstep(0.0, 0.35, eaten);
 
@@ -300,14 +319,30 @@ void main(){
   if (uMasked < 0.5) o.a = 1.0;
   else o *= texture(uMask, vec2(uv.x, yd)).r;
 }`;
+
+// The last pass, at full resolution: the crisp street, with the coarse spell
+// put back only where it's eating.
 const BLIT = `#version 300 es
 precision highp float;
-uniform sampler2D uTex, uMask, uPlate; uniform vec2 uRes; uniform float uTint, uMasked; out vec4 o;
+uniform sampler2D uTex, uMask, uFull;
+uniform vec2 uRes, uLow;
+uniform float uTint, uMasked, uOn;
+out vec4 o;
+${COMMON}
 void main(){
   vec2 uv = gl_FragCoord.xy / uRes;
-  o = texture(uTex, uv);
-  if (uMasked > 0.5) o += texture(uPlate, vec2(uv.x, 1.0 - uv.y)) * (1.0 - o.a);   // the whole street underneath
+  vec2 frag = floor(uv * uLow) + 0.5;                 // the coarse pixel this lands in
+  vec2 luv = frag / uLow;
+  vec4 street = texture(uFull, vec2(uv.x, 1.0 - uv.y));
+  vec4 spell = texture(uTex, luv);
+  float hit = uOn > 0.5 ? step(0.0, eatenAt(frag, uLow)) : 0.0;
+  if (uMasked > 0.5){
+    hit *= texture(uMask, vec2(luv.x, 1.0 - luv.y)).r;
+    spell += street * (1.0 - spell.a);                // gaps in the debris show the thing itself
+  }
+  o = mix(street, spell, hit);
   if (uTint > 0.5) o.rgb = mix(o.rgb, vec3(0.62, 0.94, 0.78), 0.45 * texture(uMask, vec2(uv.x, 1.0 - uv.y)).r);
+  o.a = 1.0;
 }`;
 
 function program(fs){
@@ -599,14 +634,16 @@ let run = null, paused = false, steer = true, gulp = 0, film = null;
 function build(){
   if (!gl || !innerWidth || !innerHeight || !(film || (street && suburb))) return;
   const px = Math.max(1, Math.max(2, Math.round(innerWidth / 520)) + val("pixel") - 2);
-  const W = Math.ceil(innerWidth / px), H = Math.ceil(innerHeight / px);
-  canvas.width = W; canvas.height = H;
+  const W = Math.ceil(innerWidth / px), H = Math.ceil(innerHeight / px);       // the spell's pixels
+  const dpr = Math.min(devicePixelRatio || 1, innerWidth < 700 ? 1.5 : 2);
+  const FW = Math.round(innerWidth * dpr), FH = Math.round(innerHeight * dpr);  // the street's
+  canvas.width = FW; canvas.height = FH;
   let src;
   if (film){
-    src = document.createElement("canvas"); src.width = W; src.height = H;
+    src = document.createElement("canvas"); src.width = FW; src.height = FH;
     film.canvas = src; film.ctx = src.getContext("2d");
-    film.ctx.fillStyle = "#000"; film.ctx.fillRect(0, 0, W, H);
-  } else { suburb.size(W, H); src = suburb.canvas; }
+    film.ctx.fillStyle = "#000"; film.ctx.fillRect(0, 0, FW, FH);
+  } else { suburb.size(FW, FH); src = suburb.canvas; }
   if (run){ run.tex.forEach(t => gl.deleteTexture(t)); gl.deleteTexture(run.sheetTex); gl.deleteTexture(run.maskTex); }
   const tex = [texture(W, H), texture(W, H)], fbo = tex.map(t => {
     const f = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, f);
@@ -614,7 +651,7 @@ function build(){
     gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT); return f;
   });
   const eye = run ? run.eye : [0.5, 0.24], target = run ? run.target : [0.5, 0.24];
-  run = {W, H, tex, fbo, i: 0, sheetTex: texture(W, H, src), maskTex: texture(W, H), eye, target, primed: false};
+  run = {W, H, FW, FH, tex, fbo, i: 0, sheetTex: texture(FW, FH, src), maskTex: texture(FW, FH), eye, target, primed: false};
   showReadout();
 }
 let rt; function rebuildSoon(){ clearTimeout(rt); rt = setTimeout(build, 250); }
@@ -663,7 +700,7 @@ function frame(now){
   gl.uniform1f(P.u.uFront, val("height"));
   gl.uniform1f(P.u.uAspect, run.W / run.H);
   gl.uniform1f(P.u.uPrime, run.primed && on ? 0 : 1);
-  gl.uniform1f(P.u.uEyeR, val("eye") * (1 + Math.sin(Math.min(1, gulp) * Math.PI) * 1.6));
+  gl.uniform1f(P.u.uEyeR, val("eye") * (1 + Math.sin(Math.min(1, gulp) * Math.PI) * 1.6));   // the last pass uses the same
   gl.uniform1f(P.u.uSpin, val("spin") * (1 + gulp * 2));
   gl.uniform1f(P.u.uPull, val("pull") * (1 + gulp * 3));
   gl.uniform1f(P.u.uTear, val("tear"));
@@ -671,13 +708,21 @@ function frame(now){
   run.primed = true;
   gl.drawArrays(gl.TRIANGLES, 0, 3);
 
-  gl.useProgram(B.p); gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  const eyeR = val("eye") * (1 + Math.sin(Math.min(1, gulp) * Math.PI) * 1.6);
+  gl.useProgram(B.p); gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0, 0, run.FW, run.FH);
   gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
   gl.bindTexture(gl.TEXTURE_2D, run.tex[b]); gl.uniform1i(B.u.uTex, 1);
-  gl.activeTexture(gl.TEXTURE3); gl.bindTexture(gl.TEXTURE_2D, run.sheetTex); gl.uniform1i(B.u.uPlate, 3);
+  gl.activeTexture(gl.TEXTURE3); gl.bindTexture(gl.TEXTURE_2D, run.sheetTex); gl.uniform1i(B.u.uFull, 3);
   gl.activeTexture(gl.TEXTURE1);
   gl.uniform1i(B.u.uMask, 2); gl.uniform1f(B.u.uMasked, masked ? 1 : 0); gl.uniform1f(B.u.uTint, masked && pickMode ? 1 : 0);
-  gl.uniform2f(B.u.uRes, run.W, run.H);
+  gl.uniform2f(B.u.uRes, run.FW, run.FH);
+  gl.uniform2f(B.u.uLow, run.W, run.H);
+  gl.uniform1f(B.u.uOn, on ? 1 : 0);
+  gl.uniform2f(B.u.uEye, run.eye[0], run.eye[1]);
+  gl.uniform1f(B.u.uTime, clock);
+  gl.uniform1f(B.u.uFront, val("height"));
+  gl.uniform1f(B.u.uAspect, run.W / run.H);
+  gl.uniform1f(B.u.uEyeR, eyeR);
   gl.drawArrays(gl.TRIANGLES, 0, 3);
   run.i = b;
 }
