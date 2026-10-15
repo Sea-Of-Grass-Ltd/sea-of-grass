@@ -334,8 +334,7 @@ const EFFECTS = [
    marks: {style: 2, blend: 2, ground: 5, n: 3200, edge: .35, dens: 1}},
   {id: "spray",    name: "Spray",    group: "Print & paint", p: [["spread", .45], ["coverage", .55]], boil: .25,
    marks: {style: 3, blend: 2, ground: 0, n: 9000, edge: .3, dens: 1}},
-  {id: "watercolour", name: "Watercolour", group: "Print & paint", p: [["wash", .5], ["rims", .6], ["density", .55]], boil: .12,
-   marks: {style: 8, blend: 1, ground: 0, n: 1300, edge: .2, dens: 2}},
+  {id: "watercolour", name: "Watercolour", group: "Print & paint", p: [["blooms", .5], ["rims", .6], ["bleed", .4], ["pencil", .35]], boil: .06, geo: true},
   {id: "crayon",   name: "Crayon",   group: "Print & paint", p: [["scribble", .55], ["outline", .6]], boil: .3,
    marks: {style: 7, blend: 2, ground: 0, n: 14000, edge: L => L.p[1] * .3, dens: 0}},
   {id: "scribble", name: "Scribble", group: "Line", p: [["lines", .75], ["hatching", .6]], boil: .3,
@@ -363,7 +362,11 @@ const VS = `#version 300 es
 in vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }`;
 const FXF = `#version 300 es
 precision highp float;
-uniform sampler2D uSrc, uBase;
+precision highp sampler2D;
+uniform sampler2D uSrc, uBase, uG;
+uniform float uGOn;
+uniform vec3 uCam;
+uniform vec4 uP2;
 uniform vec2 uRes;
 uniform float uSrcFlip, uTime, uType, uMode, uOpacity, uAll;
 uniform vec4 uP;
@@ -537,14 +540,73 @@ vec3 effect(vec2 uv){
     }
     return g;
   }
-  if (k == 13){                                            // Watercolour: wash, rims, (boil)
-    vec3 b = blurAt(uv + (vec2(n1(fc * 0.01 + tick), n1(fc * 0.01 + tick + 3.0)) - 0.5) * 10.0 / uRes, 6.0 + uP.x * 22.0);
-    vec3 pig = floor(b * 4.0 + 0.5) / 4.0;                 // a few pigments
-    float rim = clamp(length(blurAt(uv, 3.0) - blurAt(uv, 14.0)) * 3.5, 0.0, 1.0);   // dried, darker edges
-    float gran = (n1(fc * 0.35) - 0.5) * 0.18 + (n1(fc * 0.06 + tick) - 0.5) * 0.12;
-    vec3 wash = mix(vec3(1.0), clamp(pig + gran, 0.0, 1.0), 0.8) * (1.0 - rim * 0.4 * uP.y);
-    vec3 col = paper(fc) * wash;
-    return mix(col, paper(fc), smoothstep(0.78, 0.95, lum(b)));   // the whites are left as paper
+  if (k == 13){                                            // Watercolour: blooms, rims, bleed, pencil (boil)
+    // A wash is laid over each face at once (each wall, roof slope, the lawn,
+    // the road, the sky), from the street's geometry. Pigment is a filter on
+    // the paper: the colour is its transmittance raised to how much pigment
+    // settled there, so thicker is darker and richer. The settling is uneven
+    // and anchored to the world, so the washes stay on their faces as you walk;
+    // it pools into a dark rim where the wash dried, blooms into cauliflowers,
+    // granulates in the paper's tooth, and bleeds into its neighbour where
+    // the paper was still wet. The wash wanders off its outline a little, the
+    // whites are left as paper, and a light pencil underdrawing shows through.
+    float bs = uRes.y / 1000.0;
+    vec2 px = 1.0 / uRes;
+    vec4 G0 = uGOn > 0.5 ? texture(uG, uv) : vec4(0.0);
+    vec3 Wp = G0.xyz + uCam;
+    bool skyW = length(G0.xyz) > 400.0;
+    // world-anchored coordinates for the settling (the sky's by direction)
+    vec2 q = uGOn < 0.5 ? fc / (60.0 * bs)
+           : skyW ? vec2(atan(G0.x, -G0.z), 2.6 * G0.y / length(G0.xyz)) * 7.0
+           : vec2(Wp.x + 0.6 * Wp.y, Wp.z + 0.8 * Wp.y) * 0.45;
+    float tk = tick * 0.37;
+    // the wash wanders off its shape
+    vec2 off = (vec2(n1(q * 1.7 + tk), n1(q * 1.7 + 5.3 + tk)) - 0.5) * 7.0 * bs * px;
+    vec2 wv = uv + off;
+    float key = uGOn > 0.5 ? texture(uG, wv).w : kindAt(wv);
+    // how far to the edge of this wash (0 at the edge, 1 well inside)
+    float ed = 1.0;
+    for (int i = 1; i <= 4; i++){
+      float rr = float(i * i) * 1.6 * bs;
+      for (int j = 0; j < 8; j++){
+        float a = float(j) * 0.7854 + float(i) * 0.4;
+        vec2 o = vec2(cos(a), sin(a)) * rr * px;
+        float k2 = uGOn > 0.5 ? texture(uG, wv + o).w : kindAt(wv + o);
+        if (abs(k2 - key) > 0.001) ed = min(ed, rr / (25.6 * bs));
+      }
+    }
+    vec3 pig = blurAt(wv, 3.0 * bs);
+    float L = lum(pig);
+    // wet-in-wet: here and there the edge never dried; the colours run together
+    float soft = smoothstep(0.45, 0.7, n1(q * 0.6 + 21.0)) * uP.z;
+    if (soft > 0.01) pig = mix(pig, blurAt(wv, 16.0 * bs), soft * (1.0 - smoothstep(0.0, 0.6, ed)));
+    // one coat's colour, a little lighter than the paint, as a filter
+    vec3 coat = clamp(mix(vec3(lum(pig)), pig, 1.25), 0.02, 1.0);
+    coat = mix(vec3(1.0), coat, 0.66);                     // transparent: the paper shows through
+    // how much pigment settled
+    float dens = 0.9 + (n1(q * 0.5) - 0.5) * 0.55 + (n1(q * 1.9 + 3.0) - 0.5) * 0.25;
+    float bl = n1(q * 0.8 + 11.0 + tk);                     // blooms: a pale middle with a crinkled dark edge
+    float bm = smoothstep(0.66, 0.72, bl);
+    float crinkle = n1(q * 6.0 + 2.0) * 0.06;
+    float ring = smoothstep(0.62 + crinkle, 0.66 + crinkle, bl) * (1.0 - smoothstep(0.67 + crinkle, 0.71 + crinkle, bl));
+    dens = mix(dens, dens * 0.55, bm * uP.x) + ring * 0.55 * uP.x;
+    dens += (1.0 - smoothstep(0.0, 0.12, ed)) * 1.2 * uP.y * (1.0 - soft);   // the rim, where it dried
+    float gran = n1(fc * 1.1) * 0.5 + n1(fc * 0.3 + 7.0) * 0.3 + h1(floor(fc * 0.8)) * 0.2;   // granulation in the tooth
+    dens *= 0.88 + 0.24 * gran * (1.0 - L * 0.5);
+    vec3 col = pow(coat, vec3(max(dens, 0.0) * 1.35));
+    // a second glaze over the shadows, laid with its own wander
+    float sh = smoothstep(0.55, 0.3, L) * smoothstep(0.35, 0.6, n1(q * 0.9 + 40.0 + tk));
+    col *= pow(coat, vec3(sh * 0.9));
+    // here and there the wash stops short of its edge, and a sliver of paper shows
+    col = mix(col, vec3(1.0), (1.0 - smoothstep(0.0, 0.05, ed)) * step(0.6, n1(q * 2.3 + 17.0)) * (1.0 - soft));
+    // whites left as paper
+    col = mix(col, vec3(1.0), smoothstep(0.82, 0.95, lum(c)));
+    col *= paper(fc);
+    // the pencil underdrawing, a little off the paint
+    vec2 po = (vec2(n1(q * 3.0 + 7.0), n1(q * 3.0 + 9.0)) - 0.5) * 3.0 * bs * px;
+    float pl = edgeAt(uv + po, 1.2) * step(0.3, n1(fc * 0.25 + 3.0));
+    col = mix(col, col * vec3(0.55, 0.55, 0.6), pl * uP2.x * 0.8);
+    return col;
   }
   if (k == 14){                                            // Pencil: density, loops, (boil)
     vec3 col = paper(fc);
@@ -1093,7 +1155,7 @@ let FXP, ANAP, MARKP, ANCP = null, floatOK = false, emptyVao = null, quadVao = n
 if (gl){
   FXP = program(FXF);
   gl.useProgram(FXP.p);
-  for (const [k, v] of [["uSrc", 0], ["uBase", 1], ["uMarks", 2], ["uLut", 3]]) gl.uniform1i(FXP.u[k], v);
+  for (const [k, v] of [["uSrc", 0], ["uBase", 1], ["uMarks", 2], ["uLut", 3], ["uG", 5]]) gl.uniform1i(FXP.u[k], v);
   floatOK = !!gl.getExtension("EXT_color_buffer_float");
   try { ANAP = program(ANAF); MARKP = program(MARKF, MARKV); ANCP = floatOK ? program(ANCF) : null; emptyVao = gl.createVertexArray(); }
   catch (e){ console.warn("marks unavailable", e); ANAP = MARKP = null; }
@@ -1162,22 +1224,23 @@ function loadSuburb(){
       m.onBeforeCompile = sh => {
         Object.assign(sh.uniforms, {uKindId: k.id, uGlow: k.glow, uWriteId: writeId, uGPass: gPass});
         sh.vertexShader = sh.vertexShader
-          .replace("#include <common>", "#include <common>\nvarying vec3 vWorldG;\nvarying float vObjG;")
+          .replace("#include <common>", "#include <common>\nvarying vec3 vWorldG;\nvarying float vObjG;\nvarying vec3 vNormG;")
           .replace("#include <project_vertex>", "#include <project_vertex>\n vWorldG = (modelMatrix * vec4(transformed, 1.0)).xyz;" +
-                   "\n vObjG = fract(sin(dot(modelMatrix[3].xyz, vec3(12.9898, 78.233, 37.719))) * 43758.5453);");
+                   "\n vObjG = fract(sin(dot(modelMatrix[3].xyz, vec3(12.9898, 78.233, 37.719))) * 43758.5453);" +
+                   (sky ? "\n vNormG = vec3(0.0);" : "\n vNormG = normalize(mat3(modelMatrix) * objectNormal);"));
         if (!sky) sh.vertexShader = sh.vertexShader
           .replace("#include <common>", "#include <common>\nattribute vec3 aPaint;\nvarying vec3 vPaint;")
           .replace("#include <begin_vertex>", "#include <begin_vertex>\n vPaint = aPaint;");
         sh.fragmentShader = sh.fragmentShader
-          .replace("#include <common>", "#include <common>\n" + KIND_GLSL + "\nuniform float uGPass;\nvarying vec3 vWorldG;\nvarying float vObjG;" + (sky ? "" : "\nvarying vec3 vPaint;"))
+          .replace("#include <common>", "#include <common>\n" + KIND_GLSL + "\nuniform float uGPass;\nvarying vec3 vWorldG;\nvarying float vObjG;\nvarying vec3 vNormG;" + (sky ? "" : "\nvarying vec3 vPaint;"))
           .replace("#include <color_fragment>", "#include <color_fragment>\n" + (sky ? "" : " if (vPaint.r >= 0.0) diffuseColor.rgb = vPaint;"))
           .replace("#include <dithering_fragment>", `#include <dithering_fragment>
             gl_FragColor = sRGBTransferOETF(gl_FragColor);   // drawn into a linear texture, stored as the screen would show it
             gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.62, 0.94, 0.78), 0.45 * uGlow);
             gl_FragColor.a = uWriteId > 0.5 ? 1.0 - uKindId * 0.03 : 1.0;
             if (uGPass > 0.5){                       // where it is; and kind + this face of this thing
-              vec3 nw = normalize(cross(dFdx(vWorldG), dFdy(vWorldG)));
-              float face = fract(vObjG + dot(floor(nw * 2.5 + 0.5), vec3(0.1371, 0.2713, 0.4139)));
+              // the face: from the geometry's own normals, which are exact, so a face is one key edge to edge
+              float face = ${sky ? "0.0" : "fract(vObjG + dot(floor(vNormG * 4.0 + 0.5), vec3(0.1371, 0.2713, 0.4139)))"};
               gl_FragColor = vec4(vWorldG - cameraPosition, uKindId + 1.0 + 0.05 + 0.9 * face);
             }`);
       };
@@ -1799,7 +1862,7 @@ function frame(now){
   // ids go in the street's alpha only while the layers cover it; otherwise
   // the street shows itself, and must be opaque
   if (!run) return;
-  const geometry = on && layers.some(l => l.on && l.opacity > 0 && BY_ID[l.fx].marks);
+  const geometry = on && layers.some(l => l.on && l.opacity > 0 && (BY_ID[l.fx].marks || BY_ID[l.fx].geo));
   suburb.frame(dt, {walk: speed * 60 * 0.18 * dt, glowKinds, glow: maskFlash, geometry});
   drawLayers();
 }
@@ -1896,6 +1959,7 @@ function drawLayers(){
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false); gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
   gl.bindVertexArray(quadVao);
   gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, run.base);
+  gl.activeTexture(gl.TEXTURE5); gl.bindTexture(gl.TEXTURE_2D, run.g);
   let stack = on ? layers.filter(l => l.on && l.opacity > 0).reverse() : [];   // bottom first
   if (!stack.length) stack = [null];                       // nothing showing: the street, copied out
   let from = -1;                                           // -1: the street itself
@@ -1934,6 +1998,9 @@ function drawLayers(){
     gl.uniform1f(FXP.u.uGround, marks ? fx.marks.ground : 0);
     gl.uniform1f(FXP.u.uLutN, LUTN);
     gl.uniform1f(FXP.u.uSpin, (M.spin - 0.5) * 2);
+    gl.uniform4f(FXP.u.uP2, L.p[3] ?? 0, L.p[4] ?? 0, 0, 0);
+    { const v = suburb.view(); gl.uniform3f(FXP.u.uCam, v.cam.x, v.cam.y, v.cam.z); }
+    gl.uniform1f(FXP.u.uGOn, run.g && fx.geo ? 1 : 0);
     const ids = L.mask.map(k => suburb.idOf(k)).filter(i => i >= 0);
     gl.uniform1f(FXP.u.uAll, ids.length ? 0 : 1);
     gl.uniform1fv(FXP.u["uMask[0]"], Array.from({length: 16}, (_, i) => ids.includes(i) ? 1 : 0));
