@@ -10,130 +10,152 @@
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
-  /* A designed world of its own: the map is colour on black. The controller
-     is a slim strip in the language of the tristan.design control surface:
-     glass, hard ink outlines, offset shadows, dials with glyphs. */
+  /* A designed world of its own: the map is colour on black, and the
+     controller is dark glass over it: a slim strip on a desktop, a bottom
+     sheet on a phone. White type, soft shadows, one mint accent. */
   :root{
-    --paper:#faf9f6; --ink:#141311;
-    --glass:linear-gradient(rgba(255,255,255,.82), rgba(255,255,255,.38) 50%, rgba(255,255,255,.56));
-    --pink:#f6a6d8; --violet:#9b7bff;
+    --paper:#faf9f6; --ink:#141311; --mint:#9ff0c8;
+    --glass:rgba(16,15,14,.62); --edge:rgba(255,255,255,.16); --edge2:rgba(255,255,255,.3);
+    --soft:0 14px 40px rgba(0,0,0,.55), 0 1px 0 rgba(255,255,255,.08) inset;
     --ui:"Figtree", ui-sans-serif, system-ui, -apple-system, sans-serif;
     --mono:"IBM Plex Mono","SFMono-Regular",Menlo,Consolas,monospace;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;height:100%;background:#000;}
-  body{color:var(--ink);font-family:var(--ui);overflow:hidden;}
-  canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block;image-rendering:pixelated;touch-action:none;}
+  body{color:#fff;font-family:var(--ui);overflow:hidden;}
+  /* will-change keeps the canvas on its own compositing layer; without it the
+     browser flattens the see-through parts over the video to black. */
+  canvas#gl{position:fixed;inset:0;z-index:1;width:100%;height:100%;display:block;image-rendering:pixelated;touch-action:none;will-change:transform;}
 
   .home{position:fixed;top:18px;left:20px;z-index:5;color:var(--paper);mix-blend-mode:difference;}
   .home svg{width:30px;height:auto;display:block;}
 
+  /* ---------- the video, full screen, under the canvas ---------- */
+  .player{position:fixed;inset:0;z-index:0;background:#000;overflow:hidden;}
+  .player[hidden]{display:none;}
+  .player iframe{
+    position:absolute;top:50%;left:50%;border:0;pointer-events:none;
+    width:max(100vw, 177.78vh);height:max(100vh, 56.25vw);transform:translate(-50%,-50%);
+  }
+
   /* ---------- chips ---------- */
   .chip{
-    font:700 10.5px/1 var(--ui);letter-spacing:.08em;text-transform:uppercase;color:#000;
-    background:var(--glass);border:1.5px solid #000;border-radius:99px;padding:7px 10px;cursor:pointer;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.9), 2px 2px 0 #000;white-space:nowrap;
-    transition:transform .07s steps(2), box-shadow .07s steps(2);
+    font:700 10.5px/1 var(--ui);letter-spacing:.08em;text-transform:uppercase;color:#fff;
+    background:rgba(255,255,255,.06);border:1px solid var(--edge2);border-radius:99px;padding:8px 11px;cursor:pointer;
+    white-space:nowrap;transition:background .12s, border-color .12s, transform .08s;
   }
-  .chip:hover{transform:translate(-1px,-1px);box-shadow:inset 0 1px 0 rgba(255,255,255,.9), 3px 3px 0 #000;}
-  .chip:active{transform:translate(1px,1px);box-shadow:1px 1px 0 #000;}
-  .chip[aria-pressed="true"],.chip[aria-selected="true"]{background:#000;color:#fff;box-shadow:2px 2px 0 #000;}
-  .chip:focus-visible,.dial:focus-visible,.cloud:focus-visible,.qmark:focus-visible{outline:2px solid #fff;outline-offset:3px;}
-  .chip.tiny{padding:6px 8px;font-size:10px;}
+  .chip:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.5);}
+  .chip:active{transform:scale(.97);}
+  .chip[aria-pressed="true"],.chip[aria-selected="true"]{background:#fff;color:#000;border-color:#fff;}
+  .chip:focus-visible,.dial:focus-visible,.dockb:focus-visible{outline:2px solid var(--mint);outline-offset:3px;}
+  .chip[hidden]{display:none;}
 
   /* ---------- dock ---------- */
-  .dock{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:7;display:flex;align-items:center;gap:12px;}
-  .cloud{border:0;background:none;padding:0;cursor:pointer;width:84px;height:52px;position:relative;transition:transform .1s steps(2);}
-  .cloud:hover{transform:translateY(-2px) rotate(-2deg);}
-  .cloud svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;}
-  .cloud span{position:relative;font:800 12px var(--ui);color:#000;}
-  .qmark{border:0;background:none;cursor:pointer;font:800 40px/1 var(--ui);color:var(--pink);
-    -webkit-text-stroke:1.5px #000;text-shadow:2px 2px 0 #000;padding:0 2px;transition:transform .1s steps(2);}
-  .qmark:hover{transform:rotate(8deg);}
+  .dock{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:7;display:flex;align-items:center;gap:8px;}
+  .dockb{
+    font:800 11px/1 var(--ui);letter-spacing:.1em;text-transform:uppercase;color:#fff;cursor:pointer;
+    background:var(--glass);border:1px solid var(--edge2);border-radius:99px;padding:11px 16px;
+    backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);box-shadow:var(--soft);
+    display:flex;align-items:center;gap:8px;transition:background .12s, transform .08s;
+  }
+  .dockb:hover{background:rgba(40,38,36,.75);}
+  .dockb:active{transform:scale(.97);}
+  .dockb[aria-expanded="true"]{background:#fff;color:#000;}
+  .dockb .dot{width:10px;height:10px;border-radius:50%;background:var(--mint);box-shadow:0 0 12px var(--mint);}
+  .dockb[aria-expanded="true"] .dot{background:#000;box-shadow:none;}
+  .dockb.q{padding:11px 13px;font-size:14px;}
 
   /* ---------- the strip ---------- */
   .ctrl{
-    position:fixed;left:50%;bottom:76px;transform:translateX(-50%);z-index:6;
+    position:fixed;left:50%;bottom:70px;transform:translateX(-50%);z-index:6;
     display:flex;align-items:center;gap:12px;max-width:calc(100vw - 16px);
-    padding:8px 10px 8px 8px;border:1.5px solid #000;border-radius:22px;
-    background:linear-gradient(rgba(255,255,255,.6), rgba(255,255,255,.3));
-    backdrop-filter:blur(14px) saturate(1.6);-webkit-backdrop-filter:blur(14px) saturate(1.6);
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.9), 3px 3px 0 #000;
+    padding:8px 10px;border:1px solid var(--edge);border-radius:20px;
+    background:var(--glass);backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3);
+    box-shadow:var(--soft);
   }
   .ctrl[hidden]{display:none;}
   .tabs{display:flex;flex-direction:column;gap:4px;}
-  .tabs .chip{padding:5px 9px;font-size:9.5px;text-align:left;}
+  .tabs .chip{padding:6px 9px;font-size:9.5px;text-align:left;border-color:transparent;background:transparent;}
+  .tabs .chip:hover{background:rgba(255,255,255,.1);}
+  .tabs .chip[aria-selected="true"]{background:#fff;color:#000;}
   .page{display:flex;align-items:center;gap:8px;}
   .page[hidden]{display:none;}
-  .sep{width:1.5px;align-self:stretch;background:rgba(0,0,0,.35);}
+  .sep{width:1px;align-self:stretch;background:var(--edge);}
 
   /* dials */
-  .dwrap{display:flex;flex-direction:column;align-items:center;gap:3px;width:56px;}
+  .dwrap{display:flex;flex-direction:column;align-items:center;gap:4px;width:58px;}
   .dial{
-    --v:0.5;position:relative;width:42px;height:42px;border-radius:50%;cursor:ns-resize;touch-action:none;
-    border:1.5px solid #000;box-shadow:2px 2px 0 #000, inset 0 1px 0 rgba(255,255,255,.8);
-    background:conic-gradient(from 225deg, var(--pink) 0deg, var(--violet) calc(var(--v) * 270deg),
-      rgba(255,255,255,.35) calc(var(--v) * 270deg) 270deg, rgba(0,0,0,.08) 270deg 360deg);
+    --v:0.5;position:relative;width:44px;height:44px;border-radius:50%;cursor:ns-resize;touch-action:none;
+    background:conic-gradient(from 225deg, var(--mint) 0deg, var(--mint) calc(var(--v) * 270deg),
+      rgba(255,255,255,.14) calc(var(--v) * 270deg) 270deg, transparent 270deg 360deg);
+    box-shadow:0 6px 16px rgba(0,0,0,.5);
   }
-  .dial::after{content:"";position:absolute;inset:6px;border-radius:50%;background:var(--glass);border:1.5px solid #000;}
-  .dial .g{position:absolute;inset:0;display:grid;place-items:center;font:800 14px var(--ui);z-index:1;pointer-events:none;}
-  .dial .ind{position:absolute;left:50%;top:50%;width:2px;height:21px;margin-left:-1px;margin-top:-21px;z-index:1;
+  .dial::after{content:"";position:absolute;inset:5px;border-radius:50%;background:#1a1917;border:1px solid var(--edge2);}
+  .dial .g{position:absolute;inset:0;display:grid;place-items:center;font:800 14px var(--ui);color:#fff;z-index:1;pointer-events:none;}
+  .dial .ind{position:absolute;left:50%;top:50%;width:2px;height:22px;margin-left:-1px;margin-top:-22px;z-index:1;
     transform-origin:50% 100%;transform:rotate(calc(-135deg + var(--v) * 270deg));pointer-events:none;}
-  .dial .ind::before{content:"";position:absolute;top:0;left:-1px;width:4px;height:7px;border-radius:2px;background:#000;}
-  .dname{font:700 9px var(--ui);letter-spacing:.1em;text-transform:uppercase;}
-  .dname b{font:600 9px var(--mono);margin-left:4px;color:rgba(0,0,0,.6);}
+  .dial .ind::before{content:"";position:absolute;top:1px;left:-1px;width:4px;height:7px;border-radius:2px;background:var(--mint);box-shadow:0 0 6px var(--mint);}
+  .dname{font:700 9px var(--ui);letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.85);}
+  .dname b{font:500 9px var(--mono);margin-left:4px;color:var(--mint);}
 
   /* sites page */
   .feed{display:flex;align-items:center;gap:6px;}
   .feed input{
-    width:min(300px,46vw);font:600 11px var(--ui);color:#000;border:1.5px solid #000;border-radius:99px;
-    padding:7px 11px;background:rgba(255,255,255,.8);box-shadow:inset 0 2px 5px rgba(24,18,48,.18);
+    width:min(300px,42vw);font:600 11px var(--ui);color:#fff;border:1px solid var(--edge2);border-radius:99px;
+    padding:8px 12px;background:rgba(0,0,0,.35);outline:none;
   }
-  .feed input::placeholder{color:rgba(0,0,0,.45);}
-
-  /* ---------- the player ---------- */
-  .player{
-    position:fixed;top:14px;right:14px;z-index:5;width:min(340px,48vw);aspect-ratio:16/9;
-    border:1.5px solid #000;border-radius:14px;overflow:hidden;background:#000;box-shadow:3px 3px 0 #000;
-  }
-  .player[hidden]{display:none;}
-  .player iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
-  .player .chip{position:absolute;top:6px;right:6px;padding:4px 7px;}
+  .feed input:focus{border-color:var(--mint);}
+  .feed input::placeholder{color:rgba(255,255,255,.45);}
 
   /* ---------- help ---------- */
   .help{
     position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:8;
-    width:min(400px,calc(100vw - 24px));padding:16px 18px;border:1.5px solid #000;border-radius:20px;
-    background:linear-gradient(rgba(255,255,255,.88), rgba(255,255,255,.66));
-    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:4px 4px 0 #000;
+    width:min(400px,calc(100vw - 24px));padding:18px 20px;border:1px solid var(--edge);border-radius:20px;
+    background:rgba(16,15,14,.78);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:var(--soft);
   }
   .help[hidden]{display:none;}
-  .help h2{font:800 18px var(--ui);margin:0 0 8px;}
-  .help dl{display:grid;grid-template-columns:auto 1fr;gap:5px 10px;margin:0 0 10px;font:600 12.5px/1.4 var(--ui);}
-  .help dt{font-weight:800;}
+  .help h2{font:800 18px var(--ui);margin:0 0 10px;}
+  .help dl{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;margin:0 0 12px;font:600 12.5px/1.45 var(--ui);}
+  .help dt{color:var(--mint);}
   .help dd{margin:0;}
-  .help p{font:600 11.5px/1.5 var(--ui);margin:0 0 10px;color:rgba(0,0,0,.7);}
-  .help a{color:inherit;}
+  .help p{font:600 11.5px/1.55 var(--ui);margin:0 0 12px;color:rgba(255,255,255,.65);}
+  .help a{color:#fff;}
+  .help .feed{margin:0 0 14px;}
+  .help .feed input{flex:1;width:auto;min-width:0;font-size:13px;padding:10px 14px;}
 
   .readout{
-    position:fixed;left:20px;bottom:18px;z-index:4;margin:0;padding:5px 9px;border:1.5px solid #000;border-radius:99px;
-    background:var(--glass);box-shadow:2px 2px 0 #000;font:700 9.5px var(--ui);letter-spacing:.08em;text-transform:uppercase;
+    position:fixed;left:20px;bottom:20px;z-index:4;margin:0;padding:6px 10px;border:1px solid var(--edge);border-radius:99px;
+    background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    font:700 9.5px var(--ui);letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.85);
     pointer-events:none;font-variant-numeric:tabular-nums;
   }
   .readout:empty{display:none;}
 
+  /* ---------- the bottom sheet, on a phone ---------- */
   @media (max-width:700px){
     .readout{display:none;}
-    .ctrl{flex-direction:column;align-items:stretch;gap:8px;bottom:72px;padding:8px;}
-    .tabs{flex-direction:row;flex-wrap:wrap;}
-    .page{flex-wrap:wrap;justify-content:center;}
+    .ctrl{
+      left:8px;right:8px;bottom:64px;transform:none;max-width:none;
+      flex-direction:column;align-items:stretch;gap:10px;padding:10px;border-radius:18px;
+    }
     .sep{display:none;}
-    .feed{flex-wrap:wrap;justify-content:center;}
-    .feed input{width:min(300px,calc(100vw - 60px));}
-    .player{width:46vw;top:12px;right:12px;}
+    .tabs{flex-direction:row;gap:2px;padding:3px;border-radius:99px;background:rgba(255,255,255,.07);}
+    .tabs .chip{flex:1;text-align:center;padding:8px 4px;}
+    .page{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+    .page[hidden]{display:none;}
+    .page .chip{text-align:center;padding:10px 8px;}
+    .page[data-page="sites"] .feed{grid-column:1 / -1;}
+    .feed input{flex:1;width:auto;min-width:0;}
+    .page[data-page="portal"],.page[data-page="motion"]{grid-template-columns:repeat(4,1fr);justify-items:center;}
+    .page[data-page="fx"]{grid-template-columns:repeat(3,1fr);}
+    .page[data-page="fx"] .chip{padding:10px 4px;}
   }
-  @media (prefers-reduced-motion:reduce){ .chip,.cloud,.qmark{transition:none;} }
+  @media (prefers-reduced-motion:reduce){ .chip,.dockb{transition:none;} }
 </style>
+
+<div class="player" id="player" hidden>
+  <iframe id="yt" title="Video" allow="autoplay; encrypted-media" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+</div>
 
 <canvas id="gl" aria-label="A map of websites scrolling into a portal that tears and swallows them"></canvas>
 
@@ -144,11 +166,6 @@
     <circle cx="357.983" cy="86.686" r="36.548"/>
   </svg>
 </a>
-
-<div class="player" id="player" hidden>
-  <iframe id="yt" title="Video" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe>
-  <button class="chip tiny" id="pclose" aria-label="Close video">×</button>
-</div>
 
 <!-- ---------------------------------------------------------------- controller -->
 <div class="ctrl" id="ctrl" hidden role="dialog" aria-label="Dark Puddle controls">
@@ -161,15 +178,17 @@
   <div class="sep"></div>
 
   <div class="page" data-page="sites">
+    <button class="chip" data-set="search" aria-pressed="false" id="searchBtn" hidden>Search</button>
     <button class="chip" data-set="top" aria-pressed="true">Top</button>
     <button class="chip" data-set="sog" aria-pressed="false">Sea of Grass</button>
     <button class="chip" data-set="mine" aria-pressed="false">Mine</button>
+    <button class="chip" data-set="video" aria-pressed="false" id="videoBtn" hidden>Video</button>
     <label class="chip" for="file" title="A browser history export, read in this tab and never uploaded">History…</label>
     <input type="file" id="file" accept=".json,.txt,application/json,text/plain" hidden>
     <div class="feed">
       <input id="links" spellcheck="false" autocomplete="off" aria-label="Links to feed it"
-        placeholder="paste links, or a YouTube link" />
-      <button class="chip" id="feedBtn">Feed</button>
+        placeholder="a subject, links, or a YouTube link" />
+      <button class="chip" id="feedBtn">Go</button>
     </div>
     <button class="chip" id="shots" aria-pressed="true" title="Pictures of the sites, from WordPress mshots">Pics</button>
   </div>
@@ -187,31 +206,32 @@
 </div>
 
 <div class="dock">
-  <button class="cloud" id="open" aria-label="Controls" aria-expanded="false">
-    <svg viewBox="0 0 112 70" aria-hidden="true">
-      <path d="M24 60 C8 60 6 40 20 36 C18 20 38 14 46 24 C52 8 78 8 82 26 C98 22 108 40 96 50 C104 60 92 66 84 62 L28 62 Z" transform="translate(3 3)" fill="#000"/>
-      <path d="M24 60 C8 60 6 40 20 36 C18 20 38 14 46 24 C52 8 78 8 82 26 C98 22 108 40 96 50 C104 60 92 66 84 62 L28 62 Z" fill="#9ff0c8" stroke="#000" stroke-width="2.5" stroke-linejoin="round"/>
-    </svg>
-    <span>controls</span>
-  </button>
-  <button class="qmark" id="ask" aria-label="How to play">?</button>
+  <button class="dockb" id="open" aria-label="Controls" aria-expanded="false"><span class="dot"></span>controls</button>
+  <button class="dockb q" id="ask" aria-label="How to play">?</button>
 </div>
 
 <div class="help" id="help" hidden role="dialog" aria-label="How to play">
-  <h2>how to play</h2>
+  <h2 id="helpTitle">what should it eat?</h2>
+  <div class="feed">
+    <input id="askq" spellcheck="false" autocomplete="off" aria-label="A subject"
+      placeholder="a subject: frogs, cathedrals, neon signs…" />
+    <button class="chip" id="askGo">Go</button>
+  </div>
   <dl>
     <dt>steer</dt><dd>move the pointer and the portal follows</dd>
     <dt>tap</dt><dd>click the map and the eye swallows</dd>
-    <dt>cloud</dt><dd>size the eye, change the spin, feed it your own links</dd>
-    <dt>video</dt><dd>paste a YouTube link: it plays up top while its poster gets eaten below</dd>
+    <dt>feed</dt><dd>type a subject and it eats pictures of it; paste links and it eats those</dd>
+    <dt>controls</dt><dd>size the eye, change the spin, pick what's on the map</dd>
+    <dt>video</dt><dd>paste a YouTube link and it fills the screen: the portal tears its poster, since a page
+      can't read another site's video</dd>
   </dl>
   <p>The cyclone is after a TouchDesigner piece posted to
     <a href="https://www.reddit.com/r/TouchDesigner/comments/1t0wkv2/using_td_to_eat_up_worlds/">r/TouchDesigner</a>
-    ("using TD to eat up worlds"), rebuilt in WebGL. The controller borrows the control surface of
-    <a href="https://tristan.design">tristan.design</a>. Site pictures come from WordPress's
-    <a href="https://developer.wordpress.com/docs/photon/">mshots</a>, which receives the addresses being shown;
-    for a history file, only the site names. Your links and settings stay in this browser.</p>
-  <button class="chip" id="gotit">Got it</button>
+    ("using TD to eat up worlds"), rebuilt in WebGL. Subject pictures come from
+    <a href="https://commons.wikimedia.org">Wikimedia Commons</a>; site pictures from WordPress's
+    <a href="https://developer.wordpress.com/docs/photon/">mshots</a>, which receives the addresses being shown
+    (for a history file, only the site names). Your links and settings stay in this browser.</p>
+  <button class="chip" id="gotit">Skip, eat the top sites</button>
 </div>
 
 <p class="readout" id="readout"></p>
@@ -252,6 +272,7 @@ function youtubeId(u){
     return id && /^[\w-]{6,}$/.test(id) ? id : null;
   } catch (e) { return null; }
 }
+const poster = id => `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
 function linkSites(text){
   const out = [];
   for (let raw of text.split(/[\s,]+/)){
@@ -261,17 +282,32 @@ function linkSites(text){
       const u = new URL(raw);
       if (!u.hostname.includes(".")) continue;
       const host = u.hostname.replace(/^www\./, ""), yt = youtubeId(u.href);
-      if (yt){
-        out.push({host: "youtube.com", url: u.href, label: "▶ youtube " + yt, note: "video", yt,
-                  thumb: `https://i.ytimg.com/vi/${yt}/hqdefault.jpg`});
-        continue;
-      }
+      if (yt){ out.push({host: "youtube.com", url: u.href, label: "▶ youtube " + yt, note: "video", yt, thumb: poster(yt)}); continue; }
       const path = (u.pathname + u.search).replace(/\/$/, "");
       out.push({host, url: u.href, label: host + path, note: ""});
     } catch (e) {}
   }
   return out.slice(0, 120);
 }
+
+// A subject becomes pictures of it, from Wikimedia Commons: free, no key,
+// and its thumbnails may be drawn into WebGL.
+async function searchImages(q){
+  const url = "https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrlimit=30" +
+    "&gsrsearch=" + encodeURIComponent(q + " filetype:bitmap") +
+    "&prop=imageinfo&iiprop=url&iiurlwidth=480&format=json&origin=*";
+  try {
+    const j = await (await fetch(url)).json();
+    return Object.values(j.query?.pages || {})
+      .sort((a, b) => a.index - b.index)
+      .map(pg => {
+        const ii = pg.imageinfo?.[0]; if (!ii?.thumburl) return null;
+        const label = pg.title.replace(/^File:/, "").replace(/\.[a-z0-9]+$/i, "").replace(/_/g, " ");
+        return {host: "commons.wikimedia.org", url: ii.descriptionurl || ii.url, label, note: "", thumb: ii.thumburl};
+      }).filter(Boolean);
+  } catch (e) { return []; }
+}
+const looksLikeLink = t => /^(https?:\/\/|www\.)/i.test(t) || /^[\w.-]+\.[a-z]{2,}(\/|$)/i.test(t);
 
 // History exports differ (Safari's History.json, Chrome's BrowserHistory.json,
 // or a plain list of links), so look for any object with a web url and a time.
@@ -364,6 +400,23 @@ function fit(g, s, w){
   while (s.length > 1 && g.measureText(s + "…").width > w) s = s.slice(0, -1);
   return s + "…";
 }
+// Video mode: the sheet is the video's poster, screen-wide, stacked three
+// high so it can scroll. Black until the poster arrives.
+function layoutPosterSheet(img, W, H){
+  const c = document.createElement("canvas");
+  c.width = W; c.height = H * 3;
+  const g = c.getContext("2d");
+  g.fillStyle = "#000"; g.fillRect(0, 0, c.width, c.height);
+  if (img){
+    const r = Math.max(W / img.width, H / img.height);
+    for (let i = 0; i < 3; i++){
+      g.save(); g.beginPath(); g.rect(0, i * H, W, H); g.clip();
+      g.drawImage(img, (W - img.width * r) / 2, i * H + (H - img.height * r) / 2, img.width * r, img.height * r);
+      g.restore();
+    }
+  }
+  return {c, g, list: [], cols: 1, tw: W, th: H};
+}
 
 // ------------------------------------------------------------------ pictures
 // WordPress's mshots photographs a page on request. While it's still working
@@ -416,18 +469,20 @@ function loadPictures(sheet){
 
 // ------------------------------------------------------------------ WebGL
 const canvas = $("gl");
-const gl = canvas.getContext("webgl2", {antialias: false, preserveDrawingBuffer: false});
+const gl = canvas.getContext("webgl2", {antialias: false, preserveDrawingBuffer: false, alpha: true, premultipliedAlpha: true});
 
 const VS = `#version 300 es
 in vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }`;
 
 // One frame of the portal. Above a blobby front the map is intact; behind it,
 // last frame is dripped, spun around the eye, drawn in, slipped and eaten.
+// In video mode the intact part is left clear, so the live video shows
+// through from underneath, and what gets eaten is the video's poster.
 const FS = `#version 300 es
 precision highp float;
 uniform sampler2D uPrev, uSheet;
 uniform vec2 uRes, uEye;
-uniform float uTime, uScroll, uSheetH, uFlow, uFront, uAspect, uPrime;
+uniform float uTime, uScroll, uSheetH, uFlow, uFront, uAspect, uPrime, uVideo;
 uniform float uEyeR, uSpin, uPull, uTear, uDrip;
 out vec4 o;
 float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
@@ -445,13 +500,14 @@ void main(){
   float yd = 1.0 - uv.y;
   vec2 e = uv - uEye; e.x *= uAspect;
   float r = length(e);
+  vec4 intact = uVideo > 0.5 ? vec4(0.0) : sheet(uv);
 
   float col = floor(gl_FragCoord.x / 4.0);
   float ragged = (hash(vec2(col, floor(uTime * 0.7))) - 0.5) * 0.05;
   float blob = fbm(vec2(uv.x * uAspect * 2.5, yd * 2.5 - uTime * 0.08));
   float halo = smoothstep(0.18 + uEyeR * 3.0, 0.0, r) * 0.3;
   float eaten = yd - uFront + (blob - 0.5) * 0.55 + ragged + halo;
-  if (eaten < 0.0 || uPrime > 0.5){ o = sheet(uv); return; }
+  if (eaten < 0.0 || uPrime > 0.5){ o = intact; return; }
   float depth = smoothstep(0.0, 0.35, eaten);
 
   float speed = pow(hash(vec2(col, 9.0)), 3.0);
@@ -473,7 +529,9 @@ void main(){
   vec4 prev = texture(uPrev, clamp(q, 0.0, 1.0));
   float feed = 1.0 - smoothstep(0.0, 0.025, eaten);
   o = mix(prev, sheet(uv), feed);
+  o = mix(o, sheet(uv), 1.0 - o.a);                     // whatever was clear fills with poster
   o.rgb *= smoothstep(uEyeR * 0.25, uEyeR, r);
+  o.a = 1.0;
 }`;
 const BLIT = `#version 300 es
 precision highp float;
@@ -511,7 +569,6 @@ if (gl){
 }
 
 // ------------------------------------------------------------------ dials
-// Every dial is 0..1; map() turns it into the value the shader wants.
 const DIALS = {
   portal: [
     {id: "eye",    glyph: "◉", name: "eye",    v: 0.22, map: v => 0.01 + v * 0.24},
@@ -570,26 +627,27 @@ DIALS.portal.forEach(d => makeDial(d, $("dials-portal")));
 DIALS.motion.forEach(d => makeDial(d, $("dials-motion")));
 
 // ------------------------------------------------------------------ the loop
-let sites = [], setName = "", run = null, paused = false, steer = true, gulp = 0;
+let sites = [], setName = "", noun = "sites", run = null, paused = false, steer = true, gulp = 0;
+let video = null, posterImg = null;                        // video mode: a YouTube id and its poster
 const picsOn = () => $("shots").getAttribute("aria-pressed") === "true";
 
 function build(){
-  if (!gl || !sites.length) return;
+  if (!gl || (!sites.length && !video)) return;
   const px = Math.max(1, Math.max(2, Math.round(innerWidth / 520)) + val("pixel") - 2);
   const W = Math.ceil(innerWidth / px), H = Math.ceil(innerHeight / px);
   canvas.width = W; canvas.height = H;
-  const sheet = layoutSheet(sites, W);
+  const sheet = video ? layoutPosterSheet(posterImg, W, H) : layoutSheet(sites, W);
   if (run){ run.tex.forEach(t => gl.deleteTexture(t)); gl.deleteTexture(run.sheetTex); }
   const tex = [texture(W, H), texture(W, H)], fbo = tex.map(t => {
     const f = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, f);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t, 0);
-    gl.clearColor(0, 0, 0, 1); gl.clear(gl.COLOR_BUFFER_BIT); return f;
+    gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT); return f;
   });
   const eye = run ? run.eye : [0.5, 0.24], target = run ? run.target : [0.5, 0.24];
   run = {W, H, tex, fbo, i: 0, sheet, sheetTex: texture(sheet.c.width, sheet.c.height, sheet.c),
          sheetH: sheet.c.height, scroll: 0, eye, target, dirty: false, primed: false};
   shotsPainted = 0;
-  if (picsOn()) loadPictures(sheet);
+  if (!video && picsOn()) loadPictures(sheet);
   showReadout();
 }
 let rt; function rebuildSoon(){ clearTimeout(rt); rt = setTimeout(build, 250); }
@@ -627,6 +685,7 @@ function frame(now){
   gl.uniform1f(P.u.uFront, val("height"));
   gl.uniform1f(P.u.uAspect, run.W / run.H);
   gl.uniform1f(P.u.uPrime, run.primed ? 0 : 1);
+  gl.uniform1f(P.u.uVideo, video ? 1 : 0);
   gl.uniform1f(P.u.uEyeR, val("eye") * (1 + Math.sin(Math.min(1, gulp) * Math.PI) * 1.6));
   gl.uniform1f(P.u.uSpin, val("spin") * (1 + gulp * 2));
   gl.uniform1f(P.u.uPull, val("pull") * (1 + gulp * 3));
@@ -636,6 +695,7 @@ function frame(now){
   gl.drawArrays(gl.TRIANGLES, 0, 3);
 
   gl.useProgram(B.p); gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
   gl.bindTexture(gl.TEXTURE_2D, run.tex[b]); gl.uniform1i(B.u.uTex, 1);
   gl.uniform2f(B.u.uRes, run.W, run.H);
   gl.drawArrays(gl.TRIANGLES, 0, 3);
@@ -644,47 +704,70 @@ function frame(now){
 requestAnimationFrame(frame);
 
 function showReadout(){
-  $("readout").textContent = `${setName} · ${sites.length} ${sites.length === 1 ? "site" : "sites"}` +
-    (picsOn() ? ` · ${shotsPainted} pics` : "");
+  $("readout").textContent = video ? "video · youtube " + video :
+    `${setName} · ${sites.length} ${noun}` + (picsOn() && noun === "sites" ? ` · ${shotsPainted} pics` : "");
 }
 
 // ------------------------------------------------------------------ the video
-// A YouTube link plays up here, in its own frame. Browsers don't let a page
-// read pixels out of another site's video, so the player itself can't be
-// pulled into the portal; its poster tile in the map is what gets eaten.
+// A YouTube link fills the screen, muted and looping, under the canvas. The
+// portal can't read its frames (browsers keep other sites' video private),
+// so what it tears is the video's poster, fetched as a plain image.
 function showVideo(id){
-  const f = $("yt"), src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&rel=0&playsinline=1`;
+  const f = $("yt"), src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&rel=0&playsinline=1&modestbranding=1`;
   if (f.getAttribute("src") !== src) f.src = src;
   $("player").hidden = false;
 }
-function hideVideo(){ $("player").hidden = true; $("yt").removeAttribute("src"); }
-$("pclose").addEventListener("click", hideVideo);
+function hideVideo(){ $("player").hidden = true; $("yt").removeAttribute("src"); video = null; }
 
 // ------------------------------------------------------------------ choosing sites
 function useSet(name){
+  if (name === "video" && !store.get("video")) name = "mine";
+  if (name === "search" && !store.get("query")) name = "top";
+  noun = "sites";
   document.querySelectorAll("[data-set]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.set === name)));
-  if (name === "top"){ sites = topSites(); setName = "top sites"; hideVideo(); }
-  else if (name === "sog"){ sites = sogSites(); setName = "sea of grass"; hideVideo(); }
+  if (name === "top"){ hideVideo(); sites = topSites(); setName = "top sites"; }
+  else if (name === "sog"){ hideVideo(); sites = sogSites(); setName = "sea of grass"; }
   else if (name === "mine"){
     const list = linkSites(store.get("links") || "");
     if (!list.length){ $("links").focus(); $("links").placeholder = "paste a few links first, then Feed"; return; }
-    sites = list; setName = "my links";
-    const v = list.find(s => s.yt);
-    if (v) showVideo(v.yt); else hideVideo();
+    hideVideo(); sites = list; setName = "my links";
+  }
+  else if (name === "search"){
+    const q = store.get("query");
+    hideVideo(); sites = []; setName = "searching " + q; noun = "pictures"; showReadout();
+    store.set("set", name);
+    searchImages(q).then(list => {
+      if (store.get("set") !== "search" || store.get("query") !== q) return;   // they moved on
+      if (!list.length){ setName = "nothing found for " + q; showReadout(); return; }
+      sites = list; setName = q; build();
+    });
+    return;
+  }
+  else if (name === "video"){
+    video = store.get("video"); sites = []; setName = "video"; posterImg = null;
+    showVideo(video);
+    loadImg(poster(video)).then(img => { if (img && video){ posterImg = img; build(); } });
   }
   store.set("set", name);
   build();
 }
 document.querySelectorAll("[data-set]").forEach(b => b.addEventListener("click", () => useSet(b.dataset.set)));
 
-// Feed adds what's in the box to "my links" (newest first) and switches to it.
+// Feed adds what's in the box to "my links" (newest first). A YouTube link
+// becomes the video; anything else switches to the links.
 function feed(){
   const fresh = $("links").value.trim();
-  if (!fresh) { useSet("mine"); return; }
+  if (!fresh){ useSet("mine"); return; }
+  if (!fresh.split(/[\s,]+/).some(looksLikeLink)){                 // a subject, not links
+    $("links").value = "";
+    store.set("query", fresh); $("searchBtn").hidden = false; useSet("search"); return;
+  }
   const have = store.get("links") || "";
   store.set("links", (fresh + "\n" + have).trim());
   $("links").value = "";
-  useSet("mine");
+  const yt = linkSites(fresh).find(s => s.yt);
+  if (yt){ store.set("video", yt.yt); $("videoBtn").hidden = false; useSet("video"); }
+  else useSet("mine");
 }
 $("feedBtn").addEventListener("click", feed);
 $("links").addEventListener("keydown", e => { if (e.key === "Enter") feed(); });
@@ -729,7 +812,7 @@ $("reset").addEventListener("click", () => {
   build();
 });
 
-const overUI = t => t.closest && t.closest(".ctrl, .dock, .help, .home, .player");
+const overUI = t => t.closest && t.closest(".ctrl, .dock, .help, .home");
 addEventListener("pointermove", e => {
   if (!run || !steer || overUI(e.target)) return;
   run.target = [e.clientX / innerWidth, Math.max(0.08, Math.min(0.75, 1 - e.clientY / innerHeight))];
@@ -745,14 +828,28 @@ addEventListener("keydown", e => {
 addEventListener("resize", rebuildSoon);
 $("ask").addEventListener("click", () => { $("help").hidden = !$("help").hidden; });
 $("gotit").addEventListener("click", () => { $("help").hidden = true; store.set("helped", "1"); });
+const askGo = () => {
+  const q = $("askq").value.trim();
+  $("help").hidden = true; store.set("helped", "1");
+  if (!q) return;
+  $("askq").value = "";
+  if (q.split(/[\s,]+/).some(looksLikeLink)){ $("links").value = q; feed(); return; }
+  store.set("query", q); $("searchBtn").hidden = false; useSet("search");
+};
+$("askGo").addEventListener("click", askGo);
+$("askq").addEventListener("keydown", e => { if (e.key === "Enter") askGo(); });
 
 // ------------------------------------------------------------------ go
 (async () => {
   if (!gl){ $("readout").textContent = "this browser doesn't support WebGL2, which the portal needs"; return; }
   await document.fonts.ready;
   if (store.get("pics") === "0") $("shots").setAttribute("aria-pressed", "false");
+  if (store.get("video")) $("videoBtn").hidden = false;
+  if (store.get("query")) $("searchBtn").hidden = false;
   const s = store.get("set");
-  useSet(s === "sog" || (s === "mine" && linkSites(store.get("links") || "").length) ? s : "top");
-  if (!store.get("helped")) $("help").hidden = false;
+  const ok = s === "sog" || s === "video" && store.get("video") || s === "search" && store.get("query") ||
+    s === "mine" && linkSites(store.get("links") || "").length;
+  useSet(ok ? s : "top");
+  if (!store.get("helped")){ $("help").hidden = false; $("askq").focus(); }
 })();
 </script>
