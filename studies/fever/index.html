@@ -979,8 +979,11 @@ function loadSuburb(){
 
     // ---- grass: blades that sway in the wind, part round the pointer (spell
     // or no spell) and go wherever the spell sends the lawn. They're laid out
-    // once, 140 deep, and wrap round the camera as it walks.
-    const BLADES = phone ? 24000 : 70000, DEEP = 140;
+    // once, 140 deep, and wrap round the camera as it walks. The lawns, from
+    // the curb to just past the houses, are mown: short flecks in mixed
+    // greens. Beyond them, at the sides, the grass grows long.
+    const MOWN = 21;                                       // how far out the mowing goes
+    const SHORT = phone ? 16000 : 48000, LONG = phone ? 9000 : 30000, BLADES = SHORT + LONG, DEEP = 140;
     const bladeG = new T.InstancedBufferGeometry();
     const bl = [[-1, 0], [1, 0], [-0.75, 0.35], [0.75, 0.35], [-0.4, 0.7], [0.4, 0.7], [0, 1]];
     bladeG.setAttribute("position", new T.Float32BufferAttribute(bl.flatMap(([x, y]) => [x, y, 0]), 3));
@@ -988,7 +991,8 @@ function loadSuburb(){
     const base = new Float32Array(BLADES * 3), brnd = new Float32Array(BLADES * 3);
     for (let i = 0; i < BLADES; i++){
       const s = Math.random() < 0.5 ? -1 : 1;
-      base.set([s * (5.1 + Math.pow(Math.random(), 1.7) * 48), 0, -Math.random() * DEEP], i * 3);   // thicker near the street
+      const x = i < SHORT ? 5.1 + Math.random() * (MOWN + 1 - 5.1) : MOWN - 1 + Math.pow(Math.random(), 1.4) * 34;
+      base.set([s * x, 0, -Math.random() * DEEP], i * 3);
       brnd.set([Math.random(), Math.random(), Math.random()], i * 3);
     }
     bladeG.setAttribute("aBase", new T.InstancedBufferAttribute(base, 3));
@@ -1009,7 +1013,11 @@ function loadSuburb(){
         #include <fog_pars_vertex>
         void main(){
           vec3 b = vec3(aBase.x, 0.0, uCamZ + 12.0 - mod(uCamZ + 12.0 - aBase.z, ${DEEP}.0));
-          float h = 0.45 + aRand.x * 0.6, wd = 0.06 + aRand.z * 0.04, t = position.y, a = aRand.y * 6.2832;
+          // mown on the lawns, with a ragged edge where the mowing stops
+          float edge = ${MOWN}.0 + (fract(sin(floor(b.z * 0.8) * 91.7) * 4375.5) - 0.5) * 2.5;
+          float tall = smoothstep(edge - 0.6, edge + 0.6, abs(b.x));
+          float h = mix(0.05 + aRand.x * 0.09, 0.45 + aRand.x * 0.6, tall);
+          float wd = mix(0.07 + aRand.z * 0.05, 0.06 + aRand.z * 0.04, tall), t = position.y, a = aRand.y * 6.2832;
           vec3 local = vec3(cos(a) * position.x * wd, t * h, sin(a) * position.x * wd);
           vec2 wind = vec2(1.0, 0.35) * (sin(uTime * 1.6 + b.x * 0.31 + b.z * 0.23) * 0.3 + sin(uTime * 3.7 + (b.x - b.z) * 1.7) * 0.1);
           vec2 d = b.xz - uPtr.xz;
@@ -1018,6 +1026,10 @@ function loadSuburb(){
           vec3 w = b + local + vec3(bend.x, -0.4 * dot(bend, bend) / max(h, 0.1), bend.y);
           w = spellAt(w, b, vec3(0.0, 1.0, 0.0));
           vT = t; vCol = mix(uRoot, uTip, t) * (0.75 + 0.5 * aRand.z);
+          // the mown flecks: lighter and darker greens, a few gone straw-yellow
+          vec3 fleck = mix(uRoot, uTip, aRand.z) * (0.7 + 0.7 * aRand.x);
+          fleck = mix(fleck, vec3(0.55, 0.6, 0.12), step(0.93, fract(aRand.y * 13.0)) * 0.6);
+          vCol = mix(fleck, vCol, tall);
           vec4 mvPosition = viewMatrix * vec4(w, 1.0);
           gl_Position = projectionMatrix * mvPosition;
           #include <fog_vertex>
