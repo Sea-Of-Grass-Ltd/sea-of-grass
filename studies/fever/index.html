@@ -900,7 +900,8 @@ function loadSuburb(){
     const proxies = [];
     function place(geo, kind, color, parent, x, y, z){
       const m = new T.Mesh(geo, mat(kind, color));
-      m.castShadow = m.receiveShadow = true; m.userData.owner = kind;
+      // the flat ground only receives shadows: casting them onto itself is what striped it
+      m.castShadow = kind !== "lawn" && kind !== "road"; m.receiveShadow = true; m.userData.owner = kind;
       m.position.set(x, y, z); parent.add(m);
       return m;
     }

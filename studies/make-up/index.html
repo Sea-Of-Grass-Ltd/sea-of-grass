@@ -330,8 +330,7 @@ const EFFECTS = [
    marks: {style: 0, blend: 2, ground: 4, n: 9000, edge: 1, dens: 2}},
   {id: "strokes",  name: "Strokes",  group: "Print & paint", p: [["size", .5], ["density", .6], ["detail", .6]], boil: .1,
    marks: {style: 1, blend: 2, ground: 6, n: 16000, edge: 0, dens: 1}},
-  {id: "airbrush", name: "Airbrush", group: "Print & paint", p: [["softness", .5], ["density", .55], ["grain", .6]], boil: .05,
-   marks: {style: 2, blend: 2, ground: 5, n: 3200, edge: .35, dens: 1}},
+  {id: "airbrush", name: "Airbrush", group: "Print & paint", p: [["softness", .5], ["grain", .65], ["pastel", .55]], boil: .55},
   {id: "spray",    name: "Spray",    group: "Print & paint", p: [["spread", .45], ["coverage", .55]], boil: .25,
    marks: {style: 3, blend: 2, ground: 0, n: 9000, edge: .3, dens: 1}},
   {id: "watercolour", name: "Watercolour", group: "Print & paint", p: [["blooms", .5], ["rims", .6], ["bleed", .4], ["pencil", .35]], boil: .06, geo: true},
@@ -339,14 +338,14 @@ const EFFECTS = [
    marks: {style: 7, blend: 2, ground: 0, n: 14000, edge: L => L.p[1] * .3, dens: 0}},
   {id: "scribble", name: "Scribble", group: "Line", p: [["lines", .75], ["hatching", .6]], boil: .3,
    marks: {style: 4, blend: 1, ground: 0, n: 12000, edge: .5, dens: -1}},
-  {id: "pencil",   name: "Pencil",   group: "Line", p: [["density", .6], ["loops", .3]], boil: .3,
+  {id: "pencil",   name: "Pencil",   group: "Line", p: [["density", .6], ["cross", .5]], boil: .3,
    marks: {style: 9, blend: 1, ground: 0, n: 9000, edge: .15, dens: 0}},
   {id: "chalk",    name: "Chalk",    group: "Line", p: [["strokes", .55], ["ground", 0]], boil: .2,
    marks: {style: 10, blend: 2, ground: 2, n: 9000, edge: 0, dens: 0}},
-  {id: "ink",      name: "Ink",      group: "Line", p: [["threshold", .3], ["colour", 0], ["brush", .6]], boil: .25,
-   marks: {style: 5, blend: 2, ground: 4, n: 7000, edge: 1, dens: 2}},
+  {id: "ink",      name: "Ink",      group: "Line", p: [["hatching", .6], ["outline", .6]], boil: .25,
+   marks: {style: 5, blend: 2, ground: 0, n: 7000, edge: L => 0.12 + L.p[1] * 0.5, dens: 0}},
   {id: "neon",     name: "Neon",     group: "Line", p: [["glow", .5], ["tint", .5], ["lines", .6]], boil: 0,
-   marks: {style: 6, blend: 3, ground: 3, n: 6000, edge: 1, dens: 2}},
+   marks: {style: 6, blend: 3, ground: 7, n: 3200, edge: 1, dens: 2}},
   {id: "grade",    name: "Grade",    group: "Grade", p: []},
 ];
 const SHADER_TYPE = {spectrum: 0, bleach: 1, print: 2, gloss: 3, strokes: 4, airbrush: 5, spray: 6, glow: 7, vector: 8,
@@ -467,13 +466,29 @@ vec3 effect(vec2 uv){
     vec3 col = mix(pal(h1(vec2(lane, 11.0))), vec3(1.0), 0.3 * across);
     return mix(c, col, body * smoothstep(0.15, 0.45, across));
   }
-  if (k == 5){                                             // Airbrush: softness, bands, grain
-    vec3 b = blurAt(uv, 4.0 + uP.x * 28.0);
-    float bl = lum(b);
-    float band = smoothstep(0.0, 1.0, fract(bl * (2.0 + uP.y * 6.0)));   // soft, sprayed steps of shade
-    vec3 col = b * (0.75 + 0.5 * band);
-    col = mix(vec3(lum(col)), col, 1.25);                  // a little richer
-    return clamp(col + (h1(fc + uTime * 0.0) - 0.5) * 0.2 * uP.z, 0.0, 1.0);
+  if (k == 5){                                             // Airbrush: softness, grain, pastel (boil)
+    // Sprayed paint: every pixel takes its colour from a random point a little
+    // way off, so neighbouring colours speckle into each other where they
+    // meet; edges go soft and hazy; colours lift toward pastel; and a fine
+    // grain of brighter and darker specks covers it all, sprayed anew each tick.
+    float bs = uRes.y / 1000.0;
+    vec2 px = 1.0 / uRes;
+    vec2 g = floor(fc / max(1.0, 1.2 * bs));                 // a grain about a pixel or two
+    float a = h1(g + tick * 17.0) * 6.2832, rr = sqrt(h1(g * 1.37 + tick * 7.0)) * (3.0 + uP.y * 14.0) * bs;
+    vec2 j = vec2(cos(a), sin(a)) * rr * px;
+    vec3 soft = mix(src(uv + j), blurAt(uv + j, (1.5 + uP.x * 7.0) * bs), 0.55);   // shapes kept, edges sprayed
+    soft = mix(soft, blurAt(uv, (12.0 + uP.x * 24.0) * bs), 0.1 + uP.x * 0.15);   // overspray haze
+    float l = lum(soft);
+    vec3 col = clamp(mix(vec3(l), soft, 1.3 + uP.z * 0.3), 0.0, 1.0);
+    col = 1.0 - (1.0 - col) * (1.0 - 0.42 * uP.z);           // lifted toward pastel
+    // a pastel light: shadows toward blue-violet, lights toward pink
+    vec3 tint = mix(vec3(0.62, 0.66, 1.08), vec3(1.08, 0.88, 0.94), smoothstep(0.2, 0.85, l));
+    col = mix(col, clamp(col * tint + vec3(0.04, 0.0, 0.05), 0.0, 1.0), 0.7 * uP.z);
+    float sp = h1(g * 0.71 + tick * 3.3);
+    col += (h1(g + tick * 5.1) - 0.5) * 0.16 * uP.y;         // fine grain
+    col = mix(col, col * 1.18 + 0.06, step(0.92, sp) * uP.y); // bright specks
+    col = mix(col, col * 0.78, step(sp, 0.06) * uP.y);       // dark specks
+    return clamp(col, 0.0, 1.0);
   }
   if (k == 6){                                             // Spray: spread, coverage, (boil)
     vec2 j = (vec2(h1(fc + tick), h1(fc.yx + tick * 1.3)) - 0.5) * (2.0 + uP.x * 24.0) / uRes;
@@ -667,7 +682,7 @@ void main(){
     vec3 g = gr == 0 ? paper(gl_FragCoord.xy) : gr == 1 ? below
            : gr == 2 ? mix(vec3(0.07, 0.13, 0.22) * (0.9 + 0.12 * n1(gl_FragCoord.xy * 0.02) + 0.04 * h1(gl_FragCoord.xy)), below * 0.3, uP.y)
            : gr == 3 ? vec3(0.012, 0.012, 0.02) : gr == 4 ? effect(uv)
-           : gr == 5 ? blurAt(uv, 8.0) * 0.22 : blurAt(uv, 7.0);
+           : gr == 5 ? blurAt(uv, 8.0) * 0.22 : gr == 7 ? below * 0.13 + 0.008 : blurAt(uv, 7.0);
     vec4 mk = texture(uMarks, uv);
     fx = uMarkMode < 1.5 ? g * mk.rgb : uMarkMode < 2.5 ? g * (1.0 - mk.a) + mk.rgb : g + mk.rgb;
     fx = clamp(fx, 0.0, 1.0);
@@ -744,10 +759,11 @@ float spacing(int st){
   if (st == 1) return 20.0 * (0.5 + uP.x);
   if (st == 2) return 44.0;
   if (st == 3) return 24.0;
-  if (st == 4) return 34.0;
+  if (st == 4) return 24.0;
+  if (st == 5) return 13.0;
   if (st == 7) return 13.0;
   if (st == 8) return 50.0 * (0.45 + uP.x);
-  if (st == 9) return 26.0;
+  if (st == 9) return 15.0;
   return 15.0;
 }
 void main(){
@@ -867,10 +883,11 @@ void main(){
     if (st == 1){ float sz = 0.5 + uP.x; spc = 20.0 * sz; len = 60.0 * sz; w = 22.0 * sz; spread = 0.5; taper = 0.3; }
     else if (st == 2){ spc = 44.0; len = 150.0; w = 80.0 * (0.35 + uP.x * 1.2); spread = 3.14; a = 0.3; }
     else if (st == 3){ spc = 24.0; len = 56.0; w = 40.0 * (0.5 + uP.x); spread = 3.14; }
-    else if (st == 4){ spc = 34.0; len = 200.0; line = 1.2; spread = 3.14; a = 0.6; }
+    else if (st == 4){ spc = 24.0; len = 200.0; line = 1.5; spread = 3.14; a = 0.7; }
     else if (st == 7){ spc = 13.0; len = 52.0; w = 10.0; th = 0.8 + (h1(vec2(kind, 2.0)) - 0.5) * 1.6; spread = 0.3; both = false; }
     else if (st == 8){ w = 100.0 * (0.45 + uP.x); spc = w * 0.5; len = w + 20.0; spread = 3.14; }
-    else if (st == 9){ spc = 26.0; len = 80.0; line = 1.7; zig = 16.0 * (1.0 - uP.y); th = 0.6 + (h1(vec2(kind, 5.0)) - 0.5); spread = 0.4; }
+    else if (st == 9){ len = 34.0; w = 18.0; th = 0.6 + (h1(vec2(kind, 5.0)) - 0.5) * 0.8; spread = 0.15; both = false; k = 6.0; }
+    else if (st == 5){ len = 30.0; w = 15.0; th = 0.75 + (h1(vec2(kind, 6.0)) - 0.5) * 0.5; spread = 0.1; both = false; k = 7.0; }
     else { spc = 15.0; len = 95.0; w = 16.0; spread = 0.5; }
     vec3 sm = proj(Pm);
     if (sm.z <= 0.0){ none(); return; }
@@ -884,16 +901,28 @@ void main(){
     else if (st == 3){ float mx = max(c.r, max(c.g, c.b));
       col = mx > 0.05 ? c / mx : c; col = clamp(mix(vec3(lum(col)), col, 1.6) * (0.5 + 0.45 * mx), 0.0, 1.0);
       keep *= step(r(9.0), (dark * 1.1 + sat * 1.5) * (0.4 + uP.y) + 0.1); }
-    else if (st == 4){ col = vec3(0.17, 0.17, 0.22); curl = (0.55 + 0.6 * r(12.0)) * (r(13.0) < 0.5 ? -1.0 : 1.0);
-      keep *= step(r(9.0), pow(dark, 1.5) * uP.y * 2.4); }
+    else if (st == 4){ col = vec3(0.13, 0.14, 0.24); curl = (0.55 + 0.6 * r(12.0)) * (r(13.0) < 0.5 ? -1.0 : 1.0);
+      keep *= step(r(9.0), pow(smoothstep(0.12, 0.85, dark), 1.2) * uP.y * 2.0 * (sky ? 0.12 : 1.0)); }
     else if (st == 7){ col = clamp(mix(vec3(l), c, 1.7) * (0.88 + 0.22 * r(11.0)), 0.0, 1.0); curl = (r(12.0) - 0.5) * 0.05; a = 0.95;
       keep *= step(r(9.0), 0.45 + dark * 0.8); }
     else if (st == 8){ vec3 pig = mix(vec3(l), c, 1.5);
       col = clamp(mix(vec3(1.0), pig, 0.28 + 0.22 * r(11.0)), 0.0, 1.0); a = 0.85; k = uP.y; keep *= 1.0 - smoothstep(0.84, 0.96, l); }
-    else if (st == 9){ col = clamp(mix(vec3(l), c, 1.9) * (0.7 + 0.3 * r(11.0)), 0.0, 1.0); a = 0.8;
-      curl = uP.y * (0.6 + 0.5 * r(12.0)) * (r(14.0) < 0.5 ? -1.0 : 1.0); keep *= step(r(9.0), 0.3 + dark * 0.9); }
-    else { col = mix(vec3(0.95, 0.95, 0.92), clamp(mix(vec3(l), c, 1.5), 0.0, 1.0), 0.35); a = 0.92; curl = (r(12.0) - 0.5) * 0.05;
-      keep *= step(r(9.0), pow(l, 1.1) * 1.5 + 0.04); }
+    else if (st == 9){                                     // coloured pencil: hatching, crossed as it darkens
+      float tone = smoothstep(0.08, 0.85, dark);
+      col = clamp(mix(vec3(l), c, 2.0) * (0.75 + 0.25 * r(11.0)), 0.0, 1.0); a = 0.85;
+      bool cross = r(16.0) < smoothstep(0.25, 0.75, tone) * uP.y * 1.6;
+      if (cross){ th += 1.25; col *= 0.78; }
+      k = floor(mix(2.0, 8.0, tone) + r(17.0));             // tone is in how close the lines are
+      keep *= step(r(9.0), sky ? 0.0 : 0.92); }               // the sky is left as paper
+    else if (st == 5){                                     // pen and ink: hatching builds the shade, crossed in the dark
+      float tone = smoothstep(0.38, 0.95, dark) * (0.5 + uP.x);
+      col = vec3(0.04, 0.04, 0.06); a = 1.0;
+      float layer = r(16.0);
+      if (layer < 0.4 && tone > 0.5) th += 1.3; else if (layer < 0.55 && tone > 0.8) th -= 0.8;
+      k = floor(mix(2.0, 10.0, clamp(tone, 0.0, 1.0)) + r(17.0));
+      keep *= step(0.12, tone) * (sky ? 0.0 : 1.0); }
+    else { col = mix(vec3(0.96, 0.96, 0.93), clamp(mix(vec3(l), c, 1.5), 0.0, 1.0), 0.22); a = 0.92; curl = (r(12.0) - 0.5) * 0.04;
+      keep *= step(r(9.0), (pow(smoothstep(0.15, 0.8, l), 1.2) * 1.5 + 0.03) * (sky ? 0.4 : 1.0)); }      // chalk: the lights picked out
     if (keep < 0.5){ none(); return; }
     // the walk, on the face, in the world
     float lenW = len * bs * DREF / uFocal * grow, wW = w * bs * DREF / uFocal * grow, zigW = zig * bs * DREF / uFocal * grow;
@@ -995,10 +1024,13 @@ void main(){
            a = 0.6; keep *= step(r(9.0), pow(dark, 1.5) * uP.y * 2.4); }
   } else if (st == 5){                                     // Ink: brush-pen strokes along the edges, tapering
     len = mix(30.0, 110.0, r(6.0)) * bs; w = mix(2.0, 5.5, r(7.0)) * bs; taper = 1.0; col = vec3(0.03); curl = (r(12.0) - 0.5) * 0.04;
-  } else if (st == 6){                                     // Neon: glowing tubes along the edges
-    len = mix(40.0, 170.0, r(6.0)) * bs; w = 30.0 * bs * (0.35 + uP.x); k = 1.8 * bs / w;
-    col = mix(vec3(1.0), pal(uP.y * 2.0 + r(14.0) * 0.22 + uTime * 0.03), 0.3 + uP.y * 0.7);
-    curl = (r(12.0) - 0.5) * 0.1;
+  } else if (st == 6){                                     // Neon: tubes along the strong edges, in their thing's colour
+    len = mix(90.0, 240.0, r(6.0)) * bs; w = 34.0 * bs * (0.35 + uP.x); k = 2.0 * bs / w;
+    vec3 own = clamp(mix(vec3(lum(src(p, 3.0))), src(p, 3.0), 2.4), 0.0, 1.0);
+    own = own / max(max(own.r, max(own.g, own.b)), 0.05);
+    col = mix(own, pal(uP.y * 2.0 + r(14.0) * 0.15 + uTime * 0.02), uP.y * 0.8);
+    keep *= smoothstep(0.5, 0.85, edgeAt(p)) * smoothstep(0.25, 0.55, tangent(p).z);   // only where an edge really runs
+    alive *= mix(1.0, 0.3, step(0.965, h1(vec2(S, floor(uTime * 11.0)))));   // a tube that flickers now and then
   } else if (st == 7){                                     // Crayon: waxy hatching at an angle for each thing, dark outlines
     float kd = kindAt(p);
     d0 = rot(0.8 + (h1(vec2(kd, 2.0)) - 0.5) * 1.6) * vec2(1.0, 0.0);
@@ -1041,7 +1073,8 @@ void main(){
     vec2 td = dot(t.xy, d) < 0.0 ? -t.xy : t.xy;
     d = normalize(mix(d, td, follow * t.z) + 1e-5);
     d = rot(curl * (1.0 + 0.6 * sin(float(i) * 0.9 + cs))) * d;
-    ctr += (d + adv) * stepL;
+    // an outline stops where its edge does, rather than running off into the open
+    ctr += (d + adv) * stepL * (edge ? smoothstep(0.2, 0.45, edgeAt(ctr)) : 1.0);
   }
   if (seg == 0) prv = cur - (nxt - cur);
   vec2 tg = normalize(nxt - prv + 1e-5), nm = vec2(-tg.y, tg.x);
@@ -1097,6 +1130,13 @@ void main(){
     if (vK > 0.5) dens = ay > 0.0 ? 0.0 : exp(-ay * ay * 1.4);
     vec2 cl = floor(fc / 1.6);
     cov = step(h1(cl + vSeed * 91.7), dens * 0.6 * smoothstep(0.0, 0.2, t) * smoothstep(1.0, 0.8, t));
+  } else if ((st == 5 || st == 9) && vK >= 2.0){           // a patch of hatching: parallel lines, each starting and stopping on its own
+    float n = floor(vK), u = (ay * 0.5 + 0.5) * n, li = floor(u), fu = fract(u) - 0.5;
+    float lw = (st == 9 ? 1.8 : 1.3) * uRes.y / 1000.0, frac = clamp(lw / max(vW / n, 0.5), 0.08, 0.85);
+    cov = 1.0 - smoothstep(frac * 0.5, frac * 0.5 + 0.14, abs(fu));
+    float s0 = h1(vec2(li, vSeed * 7.0)) * 0.3, s1 = 1.0 - h1(vec2(li, vSeed * 13.0)) * 0.3;
+    cov *= smoothstep(s0, s0 + 0.05, t) * smoothstep(s1, s1 - 0.05, t);
+    cov *= st == 9 ? smoothstep(0.12, 0.55, tooth + 0.18) : 0.85 + 0.15 * step(0.1, h1(floor(fc * 0.7)));
   } else if (st == 4 || st == 9){                          // graphite and pencil: a thin line catching on the paper's tooth
     cov = smoothstep(1.0, 0.35, abs(ay)) * ends * smoothstep(0.18, 0.62, tooth + 0.15);
   } else if (st == 5){                                     // brush pen, breaking up dry at the tail
@@ -1344,7 +1384,8 @@ function loadSuburb(){
     const proxies = [];
     function place(geo, kind, color, parent, x, y, z){
       const m = new T.Mesh(geo, mat(kind, color));
-      m.castShadow = m.receiveShadow = true; m.userData.owner = kind;
+      // the flat ground only receives shadows: casting them onto itself is what striped it
+      m.castShadow = kind !== "lawn" && kind !== "road"; m.receiveShadow = true; m.userData.owner = kind;
       m.position.set(x, y, z); parent.add(m);
       return m;
     }
