@@ -486,10 +486,9 @@ if (gl){
 
 // ------------------------------------------------------------------ the suburb
 // An endless liminal street in 3D: pastel houses down both sides of a grey
-// road, lamps on the right, a hard blue sky, and a lawn of real grass that
-// sways and parts round the pointer. The camera walks toward the vanishing
-// point and lots behind it are moved to the far end, so it never runs out.
-// three.js comes from a CDN on first use.
+// road, lamps on the right, flat green lawns, a hard blue sky. The camera
+// walks toward the vanishing point and lots behind it are moved to the far
+// end, so it never runs out. three.js comes from a CDN on first use.
 //
 // The spell is not a picture laid over the screen: it lives in the scene.
 // Its eye sits on whatever surface is under the pointer and rides over
@@ -552,7 +551,7 @@ vec3 puddle(vec3 w){
   return w;
 }
 // w is this corner, wc its piece's centre, both in the world.
-vec3 shatter(vec3 w, vec3 wc){
+vec3 shatter(vec3 w, vec3 wc, float rs){
   float s0 = uOn * uHit;
   if (s0 <= 0.0) return w;
   float most = 0.0; vec3 away = vec3(0.0), n = vec3(0.0, 1.0, 0.0);
@@ -560,7 +559,7 @@ vec3 shatter(vec3 w, vec3 wc){
     float s = uTrail[i].w * s0;
     if (s <= 0.002) continue;
     vec3 d = wc - uTrail[i].xyz;
-    float k = smoothstep(0.0, 1.0, clamp(1.0 - length(d) / (uR * 2.0), 0.0, 1.0)) * s;
+    float k = smoothstep(0.0, 1.0, clamp(1.0 - length(d) / (uR * 2.0 * rs), 0.0, 1.0)) * s;
     if (k > most){ most = k; away = d; n = uTrailN[i]; }
   }
   if (most <= 0.001) return w;
@@ -591,19 +590,24 @@ vec3 ripple(vec3 w, vec3 nrm){
   vBreak = most; vWave = sum;
   return w + nrm * sum * uAmp;
 }
-vec3 spellAt(vec3 w, vec3 wc, vec3 nrm){
+// deep: the earth under the lawn, which only Shatter touches, and in a
+// smaller hole than the turf above it.
+vec3 spellAt(vec3 w, vec3 wc, vec3 nrm, float deep){
   vHole = 0.0; vBreak = 0.0; vWave = 0.0;
+  if (deep > 0.5) return uSpell > 0.5 && uSpell < 1.5 ? shatter(w, wc, 0.55) : w;
   if (uSpell < 0.5) return puddle(w);
-  if (uSpell < 1.5) return shatter(w, wc);
+  if (uSpell < 1.5) return shatter(w, wc, 1.0);
   return ripple(w, nrm);
 }`;
 
 // What things are made of. While whole, a thing is its plain colour; as a
 // spell works on it, its pieces show what they are, drawn in code from where
 // each corner sits in its piece: the outside on the front, what's behind it
-// on the back.
+// on the back. Under the ground is a layer of earth, and under that a hole
+// onto the same night as behind the broken sky: Shatter digs through turf,
+// then earth, then into the dark.
 const PIECE_GLSL = `
-uniform float uSpell;
+uniform float uSpell, uTime;
 varying float vHole, vBreak, vWave, vKind, vRand;
 varying vec2 vTile;
 varying vec3 vPaint;
@@ -615,6 +619,13 @@ float sn(vec2 p){
 vec3 dirt(vec2 p){
   vec3 c = vec3(0.12, 0.06, 0.03) * (0.7 + 0.5 * sn(p * 7.0));
   return mix(c, vec3(0.25, 0.22, 0.18), step(0.9, sh(floor(p * 14.0))) * 0.7);
+}
+// What's under the earth: the same night as behind the broken sky, stars
+// twinkling, lit by nothing and untouched by the haze.
+vec3 night(){
+  vec2 cell = floor(gl_FragCoord.xy / 2.0);
+  float star = step(0.996, sh(cell)) * (0.6 + 0.4 * sin(uTime * 3.0 + sh(cell + 5.0) * 40.0));
+  return mix(vec3(0.01, 0.01, 0.04), vec3(0.07, 0.02, 0.13), sn(gl_FragCoord.xy / 300.0)) + star;
 }
 vec3 woodLook(vec2 t){ return vec3(0.45, 0.27, 0.12) * (0.75 + 0.25 * sn(vec2(t.x * 3.0, t.y * 40.0 + vRand * 9.0))); }
 vec3 made(vec3 base, bool front){
@@ -643,13 +654,13 @@ vec3 made(vec3 base, bool front){
     return base * (0.75 + grit);
   }
   if (k == 6) return base * (0.82 + 0.18 * sn(t * 12.0)) * (0.8 + 0.2 * smoothstep(0.0, 0.08, edge));   // concrete
-  if (k == 7) return dirt(t * 140.0);                      // the dirt under it all
+  if (k == 7) return dirt(t * 1.5 + vRand * 3.0) * (front ? 1.0 : 0.7);   // a clod of earth
   if (k == 8) return woodLook(t);                          // timber
   return base;
 }
 vec3 look(vec3 base, bool front){
   vec3 whole = base;
-  if (int(vKind + 0.5) == 7) return made(base, front);
+  if (int(vKind + 0.5) == 7 || int(vKind + 0.5) == 9) return made(base, front);
   if (uSpell > 1.5){                                       // Ripple: water
     vec3 wet = mix(base, vec3(0.06, 0.3, 0.5), 0.45 * vBreak) * (1.0 - 0.15 * vBreak);
     return wet + vec3(0.85, 0.95, 1.0) * max(vWave, 0.0) * 0.5;
@@ -719,13 +730,15 @@ function loadSuburb(){
           .replace("#include <begin_vertex>", `#include <begin_vertex>
             { vec4 wp = modelMatrix * vec4(transformed, 1.0);
               vKind = aKind; vTile = aTile; vPaint = aPaint; vRand = aRand.x;
-              wp.xyz = spellAt(wp.xyz, (modelMatrix * vec4(aCenter, 1.0)).xyz, normalize(mat3(modelMatrix) * objectNormal));
+              wp.xyz = spellAt(wp.xyz, (modelMatrix * vec4(aCenter, 1.0)).xyz, normalize(mat3(modelMatrix) * objectNormal),
+                               abs(aKind - 7.0) < 0.5 ? 1.0 : 0.0);
               transformed = (inverse(modelMatrix) * wp).xyz; }`);
         sh.fragmentShader = sh.fragmentShader
           .replace("#include <common>", "#include <common>\nuniform float uGlow;\n" + PIECE_GLSL)
           .replace("#include <color_fragment>", "#include <color_fragment>\n diffuseColor.rgb = look(vPaint.r < 0.0 ? diffuseColor.rgb : vPaint, gl_FrontFacing);")
           .replace("#include <dithering_fragment>", `#include <dithering_fragment>
             gl_FragColor.rgb *= 1.0 - smoothstep(0.0, 0.9, vHole);
+            if (int(vKind + 0.5) == 9) gl_FragColor = vec4(night(), 1.0);   // the hole under it all
             gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.62, 0.94, 0.78), 0.45 * uGlow);`);
       };
       return matCache[kind] = m;
@@ -878,11 +891,15 @@ function loadSuburb(){
     }
     place(RG.geometry(), "road", 0x8e8e8b, ground, 0, 0, 0);
     twin(new T.PlaneGeometry(9.8, 700), "road", ground, 0, 0.03, -300, flat);
-    const DG = Builder();                                   // the dirt, which no spell touches
-    DG.piece({O: [0, -0.5, 0], U: [1, 0, 0], V: [0, 0, -1], N: [0, 1, 0]},
-             [[[-350, -50], [350, -50], [350, 650], [-350, 650]]], {u0: -350, v0: -50, w: 700, h: 700}, 7, OWN);
-    const dirtM = place(DG.geometry(), "dirt", 0x5a3d26, ground, 0, 0, 0);
-    dirtM.castShadow = false;
+    // Under the lawn and road: a layer of earth in clods, which only Shatter
+    // breaks; under that, the void, which nothing touches.
+    const DG = Builder();
+    groundGrid(DG, [-350, ...span(-325, -50, 25), ...span(-50, 50, 1), ...span(50, 350, 25), 350], -0.5, 7, OWN);
+    place(DG.geometry(), "earth", 0x5a3d26, ground, 0, 0, 0).castShadow = false;
+    const VG = Builder();
+    VG.piece({O: [0, -4, 0], U: [1, 0, 0], V: [0, 0, -1], N: [0, 1, 0]},
+             [[[-350, -50], [350, -50], [350, 650], [-350, 650]]], {u0: -350, v0: -50, w: 700, h: 700}, 9, OWN);
+    place(VG.geometry(), "void", 0x000000, ground, 0, 0, 0).castShadow = false;
 
     // ---- a house: two gable walls (one facing the road, with a door and a
     // window), two side walls, a roof of two shingled slabs, and a path to
@@ -977,11 +994,11 @@ function loadSuburb(){
       if (i % 3 === 1){ const l = lamp(); l.position.set(6.2, 0, -i * LOT + 3); scene.add(l); things.push(l); }
     }
 
-    // ---- grass: blades that sway in the wind, part round the pointer (spell
-    // or no spell) and go wherever the spell sends the lawn. They're laid out
-    // once, 140 deep, and wrap round the camera as it walks. The lawns, from
-    // the curb to just past the houses, are mown: short flecks in mixed
-    // greens. Beyond them, at the sides, the grass grows long.
+    // ---- grass, seen only as debris: while the lawn is whole it's a flat
+    // green, but where Shatter breaks it, the blades appear and fly with the
+    // clods. Mown flecks on the lawns, long grass at the sides. They're laid
+    // out once, 140 deep, and wrap round the camera as it walks; a blade
+    // nothing is breaking is folded away to nothing.
     const MOWN = 21;                                       // how far out the mowing goes
     const SHORT = phone ? 16000 : 48000, LONG = phone ? 9000 : 30000, BLADES = SHORT + LONG, DEEP = 140;
     const bladeG = new T.InstancedBufferGeometry();
@@ -1000,13 +1017,13 @@ function loadSuburb(){
     bladeG.instanceCount = BLADES;
     const lawnKind = kinds["lawn"];
     const bladeU = Object.assign({}, U, T.UniformsUtils.clone(T.UniformsLib.fog), {
-      uHit: lawnKind.hit, uGlow: lawnKind.glow, uCamZ: {value: 0}, uPtr: {value: new T.Vector3(0, -99, 0)}, uPtrOn: {value: 0},
+      uHit: lawnKind.hit, uGlow: lawnKind.glow, uCamZ: {value: 0},
       uRoot: {value: new T.Color(0x1f6b1d)}, uTip: {value: new T.Color(0x86d64c)},
     });
     const bladeM = new T.ShaderMaterial({
       uniforms: bladeU, fog: true, side: T.DoubleSide,
       vertexShader: `
-        uniform float uCamZ, uPtrOn; uniform vec3 uPtr, uRoot, uTip;
+        uniform float uCamZ; uniform vec3 uRoot, uTip;
         attribute vec3 aBase;
         varying float vT; varying vec3 vCol;
         ${SPELL_GLSL}
@@ -1020,11 +1037,10 @@ function loadSuburb(){
           float wd = mix(0.07 + aRand.z * 0.05, 0.06 + aRand.z * 0.04, tall), t = position.y, a = aRand.y * 6.2832;
           vec3 local = vec3(cos(a) * position.x * wd, t * h, sin(a) * position.x * wd);
           vec2 wind = vec2(1.0, 0.35) * (sin(uTime * 1.6 + b.x * 0.31 + b.z * 0.23) * 0.3 + sin(uTime * 3.7 + (b.x - b.z) * 1.7) * 0.1);
-          vec2 d = b.xz - uPtr.xz;
-          vec2 push = uPtrOn * normalize(d + 1e-4) * smoothstep(3.2, 0.0, length(d)) * 1.6;
-          vec2 bend = (wind + push) * t * t * h;
+          vec2 bend = wind * t * t * h;
           vec3 w = b + local + vec3(bend.x, -0.4 * dot(bend, bend) / max(h, 0.1), bend.y);
-          w = spellAt(w, b, vec3(0.0, 1.0, 0.0));
+          w = spellAt(w, b, vec3(0.0, 1.0, 0.0), 0.0);
+          if (vBreak < 0.03){ gl_Position = vec4(2.0, 2.0, 2.0, 1.0); return; }   // whole: not there
           vT = t; vCol = mix(uRoot, uTip, t) * (0.75 + 0.5 * aRand.z);
           // the mown flecks: lighter and darker greens, a few gone straw-yellow
           vec3 fleck = mix(uRoot, uTip, aRand.z) * (0.7 + 0.7 * aRand.x);
@@ -1050,7 +1066,7 @@ function loadSuburb(){
         }`,
     });
     const grass = new T.Mesh(bladeG, bladeM);
-    grass.frustumCulled = false;
+    grass.frustumCulled = false; grass.visible = false;
     scene.add(grass);
 
     const picked = new Set();
@@ -1070,7 +1086,7 @@ function loadSuburb(){
 
     // The eye and its wake.
     const eye = new T.Vector3(0, -999, 0), eyeN = new T.Vector3(0, 1, 0);
-    let present = 0, sinceDrop = 0, part = 0;
+    let present = 0, sinceDrop = 0;
 
     suburb = {
       canvas: r.domElement, picked, hover: null,
@@ -1080,7 +1096,7 @@ function loadSuburb(){
       },
       show(v){ r.domElement.hidden = !v; },
       // One frame: walk, move the eye to the surface under the pointer, drop
-      // a wake point now and then, part the grass, set the dials, draw.
+      // a wake point now and then, set the dials, draw.
       frame(dt, o){
         camera.position.z -= o.walk;
         const cz = camera.position.z;
@@ -1093,7 +1109,7 @@ function loadSuburb(){
         const all = picked.size === 0;
         const hits = kind => all || picked.has(kind);
         for (const kind in kinds){
-          kinds[kind].hit.value = kind !== "dirt" && hits(kind) ? 1 : 0;
+          kinds[kind].hit.value = kind === "void" ? 0 : kind === "earth" ? (hits("lawn") || hits("road") ? 1 : 0) : hits(kind) ? 1 : 0;
           kinds[kind].glow.value = Math.max(pickMode && picked.has(kind) ? 1 : 0, this.hover === kind ? o.glow : 0);
         }
         const h = o.on && o.pointer ? hitAt(o.pointer[0], o.pointer[1], hits) : null;
@@ -1113,13 +1129,9 @@ function loadSuburb(){
         tr[0].set(eye.x, eye.y, eye.z, present);
         tn[0].copy(eyeN);
         for (let i = 1; i < TRAIL; i++) tr[i].w = Math.min(tr[i].w, present * (1 - i / TRAIL));
-        // The grass parts round the pointer when it's on the lawn or the road.
-        const g = o.ptr ? hitAt(o.ptr[0], o.ptr[1]) : null;
-        if (g && (g.kind === "lawn" || g.kind === "road")) bladeU.uPtr.value.lerp(g.point, part > 0.05 ? Math.min(1, dt * 12) : 1);
-        part += ((g && (g.kind === "lawn" || g.kind === "road") ? 1 : 0) - part) * Math.min(1, dt * 5);
-        bladeU.uPtrOn.value = part; bladeU.uCamZ.value = cz;
         U.uR.value = o.R; U.uSpin.value = o.spin; U.uPull.value = o.pull; U.uSink.value = o.sink;
         U.uSpell.value = o.spell; U.uBurst.value = o.burst; U.uTumble.value = o.tumble; U.uFall.value = o.fall; U.uShrink.value = o.shrink;
+        grass.visible = o.spell === 1; bladeU.uCamZ.value = cz;   // the blades are only ever Shatter's debris
         U.uAmp.value = o.amp; U.uWave.value = o.wave; U.uRipFlow.value = o.flow;
         U.uDrip.value = o.drip; U.uTear.value = o.tear; U.uSnap.value = o.snap; U.uTime.value = o.time;
         U.uOn.value += ((o.on ? 1 : 0) - U.uOn.value) * Math.min(1, dt * 3);
@@ -1321,7 +1333,6 @@ function frame(now){
       : spell.id === "ripple" ? {spell: 2, R: val("spread") * swell} : {spell: 0}),
     burst: val("burst") * (1 + gulp * 1.5), tumble: val("tumble"), fall: val("fall"), shrink: val("shrink"),
     amp: val("swell") * (1 + gulp * 2), wave: val("wave"), flow: val("flow"),
-    ptr: pointer,
   });
   sky += ((suburb.onSky && steer ? 1 : 0) - sky) * Math.min(1, dt * 3);
   if (sky > 0.01 && run){
