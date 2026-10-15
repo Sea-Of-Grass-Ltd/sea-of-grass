@@ -2,7 +2,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Fever</title>
-<meta name="description" content="An endless pastel suburb. Press Fever and cast a spell on its houses, lamps, road and sky. The first spell is Dark Puddle, a portal that eats the picture." />
+<meta name="description" content="An endless pastel suburb. Press Fever and cast a spell on its houses, lamps, road and lawn: Cyclone wrings them into a black eye, Shatter breaks them into flying shards." />
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -172,6 +172,7 @@
   <div class="sep"></div>
 
   <div class="page" data-page="street">
+    <div id="streetDials" style="display:contents"></div>
     <button class="chip" id="pickBtn" aria-pressed="false" title="Then click one thing in the street for the spell to hit (K)">Pick</button>
     <button class="chip" id="pickAll" title="Pick every house, or unpick them">Houses</button>
     <button class="chip" id="pickNone" title="Clear the picks: the spell hits everything">Clear</button>
@@ -202,12 +203,13 @@
   <p class="kicker">Study 10 · Sea of Grass</p>
   <h2 id="helpTitle">Fever</h2>
   <p class="lede">An examination of one street: pastel houses down both sides of a grey road, under a hard blue
-    sky, going on forever. Press <b>Fever</b> and cast a spell on it. The first spell is Dark Puddle: a black
-    eye that rides over the surfaces of things and twists, sinks and tears them as it goes.</p>
+    sky, going on forever. Press <b>Fever</b> and cast a spell on it. <b>Cyclone</b> is a black eye that rides
+    over the surfaces of things and twists, sinks and tears them as it goes; <b>Shatter</b> breaks whatever it
+    passes into shards that burst off, tumble and fall, then fly back. Choose in controls, under Spells.</p>
   <dl>
     <dt>fever</dt><dd>the button, or F: casts the spell; press again and the street comes back whole</dd>
-    <dt>steer</dt><dd>the eye sits on whatever is under the pointer and rides over it, twisting and sinking
-      the walls, roofs and lawn around it; click and it swallows</dd>
+    <dt>steer</dt><dd>the spell sits on whatever is under the pointer and rides over it: the walls, roofs and
+      lawn around it are wrung or broken; click and it surges</dd>
     <dt>pick</dt><dd>in controls, press <b>Pick</b> (or K), then click one thing: a colour of house, the lamps, the
       road, the lawn. The spell then hits only that, and clicking casts it. Pick again to add more;
       <b>Clear</b> lets it hit everything</dd>
@@ -216,9 +218,10 @@
   <p>Fever is the picture-treating tool from Fantasmagoria, the studio's live show, tried out here on its own.
     The street comes from a popular dreamcore meme: an endless suburban street of pastel houses under a
     too-blue sky. It is drawn live with <a href="https://threejs.org">three.js</a>; the film of it was made
-    with Higgsfield from a still. The portal is after a TouchDesigner piece posted to
+    with Higgsfield from a still. Cyclone is after a TouchDesigner piece posted to
     <a href="https://www.reddit.com/r/TouchDesigner/comments/1t0wkv2/using_td_to_eat_up_worlds/">r/TouchDesigner</a>
-    ("using TD to eat up worlds"), rebuilt in WebGL. Nothing leaves your browser.</p>
+    ("using TD to eat up worlds"), rebuilt in WebGL; Shatter after the Voronoi-fracture
+    pieces common in TouchDesigner. Nothing leaves your browser.</p>
   <button class="chip" id="gotit">Begin</button>
 </div>
 
@@ -243,7 +246,7 @@ const gl = canvas.getContext("webgl2", {antialias: false, preserveDrawingBuffer:
 const VS = `#version 300 es
 in vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }`;
 
-// Spell: Dark Puddle. Above a blobby front the picture is intact; behind it,
+// The flat Cyclone, for the film. Above a blobby front the picture is intact; behind it,
 // last frame is dripped, spun around the eye, drawn in, slipped and eaten.
 // While Fever is off uPrime holds, so the whole frame is the plain picture
 // and switching on starts from exactly what was showing.
@@ -401,12 +404,17 @@ if (gl){
 // vanishing point and lots behind it are moved to the far end, so it never
 // runs out. three.js comes from a CDN on first use.
 //
-// Here the spell is not a picture laid over the screen: Dark Puddle lives in
-// the scene. Its eye sits on whatever surface is under the pointer (a wall,
-// a roof, the lawn) and rides over surfaces as you move. Around it the actual
-// geometry is twisted about the surface, pulled in, sunk into a funnel,
-// dripped, slipped in bands and snapped into blocks, with a black hole at the
-// middle; a short wake of earlier eye positions trails behind it. Every
+// Here the spell is not a picture laid over the screen: it lives in the
+// scene. Its eye sits on whatever surface is under the pointer (a wall, a
+// roof, the lawn) and rides over surfaces as you move, with a short wake of
+// earlier eye positions behind it. Two spells, both moving the geometry
+// itself:
+//   Cyclone  twisted about the surface, pulled in, sunk into a funnel,
+//            dripped, slipped in bands and snapped into blocks, with a black
+//            hole at the middle.
+//   Shatter  every small triangle is a shard: near the eye they burst off
+//            the surface, tumble about their own centres, shrink and fall,
+//            and fly back into place once the eye has moved on. Every
 // material carries the same vertex shader, and a per-kind switch says
 // whether that kind is hit: everything, or only what's picked. The models
 // are subdivided so they have enough points to bend.
@@ -420,6 +428,8 @@ const PUDDLE_GLSL = `
 uniform vec4 uTrail[${TRAIL}];
 uniform vec3 uTrailN[${TRAIL}];
 uniform float uR, uSpin, uPull, uSink, uDrip, uTear, uSnap, uTime, uOn, uHit;
+uniform float uSpell, uBurst, uTumble, uFall, uShrink;
+attribute vec3 aCenter, aRand;                             // each shard's centre, and three random numbers
 varying float vHole;
 float ph(float n){ return fract(sin(n * 127.1) * 43758.5453); }
 vec3 spinAbout(vec3 v, vec3 a, float t){ return v * cos(t) + cross(a, v) * sin(t) + a * dot(a, v) * (1.0 - cos(t)); }
@@ -450,6 +460,30 @@ vec3 puddle(vec3 w){
   }
   if (uSnap > 0.0 && most > 0.05) w = mix(w, floor(w / uSnap + 0.5) * uSnap, min(1.0, most * 3.0));   // hard blocks
   return w;
+}
+// w is this corner, wc its shard's centre, both in the world.
+vec3 shatter(vec3 w, vec3 wc){
+  vHole = 0.0;
+  float s0 = uOn * uHit;
+  if (s0 <= 0.0) return w;
+  float most = 0.0; vec3 away = vec3(0.0), n = vec3(0.0, 1.0, 0.0);
+  for (int i = 0; i < ${TRAIL}; i++){
+    float s = uTrail[i].w * s0;
+    if (s <= 0.002) continue;
+    vec3 d = wc - uTrail[i].xyz;
+    float k = smoothstep(0.0, 1.0, clamp(1.0 - length(d) / (uR * 2.0), 0.0, 1.0)) * s;
+    if (k > most){ most = k; away = d; n = uTrailN[i]; }
+  }
+  if (most <= 0.001) return w;
+  vec3 r = aRand;
+  vec3 off = w - wc;                                       // the corner, about its shard's centre
+  off = spinAbout(off, normalize(r * 2.0 - 1.0 + 0.001), uTumble * most * 7.0 * (0.4 + r.x));
+  off *= 1.0 - uShrink * 0.85 * most;
+  vec3 dir = normalize(normalize(away + 0.001) * 0.7 + n * (0.8 + r.z));
+  vec3 c = wc + dir * uBurst * uR * 1.4 * most * (0.4 + r.y);
+  c.y -= uFall * uR * 1.6 * most * most * (0.3 + r.z);
+  vHole = most * 0.35 * (0.5 + r.x);                       // a little darker as they break
+  return c + off;
 }`;
 
 function loadSuburb(){
@@ -477,7 +511,7 @@ function loadSuburb(){
     camera.position.set(0, 9, 0);
     scene.add(new T.HemisphereLight(0xe4eeff, 0x3f7d33, 1.35));
     const sun = new T.DirectionalLight(0xfffaf0, 2.8);
-    sun.castShadow = true; sun.shadow.mapSize.set(1024, 1024);
+    sun.castShadow = true; sun.shadow.mapSize.set(1024, 1024); sun.shadow.normalBias = 0.04;
     Object.assign(sun.shadow.camera, {left: -50, right: 50, top: 70, bottom: -70, near: 1, far: 220});
     scene.add(sun, sun.target);
 
@@ -487,6 +521,7 @@ function loadSuburb(){
       uTrailN: {value: Array.from({length: TRAIL}, () => new T.Vector3(0, 1, 0))},
       uR: {value: 3}, uSpin: {value: 1}, uPull: {value: 1}, uSink: {value: 0.5}, uDrip: {value: 1},
       uTear: {value: 1}, uSnap: {value: 0.15}, uTime: {value: 0}, uOn: {value: 0},
+      uSpell: {value: 0}, uBurst: {value: 1}, uTumble: {value: 1}, uFall: {value: 0.5}, uShrink: {value: 0.3},
     };
     // Materials, one set per kind, so each kind can be switched on or off.
     const kinds = {};                                      // kind -> {hit, glow}
@@ -495,13 +530,17 @@ function loadSuburb(){
       const key = kind + ":" + color;
       if (matCache[key]) return matCache[key];
       const k = kinds[kind] = kinds[kind] || {hit: {value: 1}, glow: {value: 0}};
-      const m = new T.MeshLambertMaterial({color});
+      // Shards turn over, so both sides draw; shadows come from the front side
+      // only, or double-sided surfaces shadow themselves in stripes.
+      const m = new T.MeshLambertMaterial({color, side: T.DoubleSide, shadowSide: T.FrontSide});
       m.onBeforeCompile = sh => {
         Object.assign(sh.uniforms, U, {uHit: k.hit, uGlow: k.glow});
         sh.vertexShader = sh.vertexShader
           .replace("#include <common>", "#include <common>\n" + PUDDLE_GLSL)
           .replace("#include <begin_vertex>", `#include <begin_vertex>
-            { vec4 wp = modelMatrix * vec4(transformed, 1.0); wp.xyz = puddle(wp.xyz); transformed = (inverse(modelMatrix) * wp).xyz; }`);
+            { vec4 wp = modelMatrix * vec4(transformed, 1.0);
+              wp.xyz = uSpell < 0.5 ? puddle(wp.xyz) : shatter(wp.xyz, (modelMatrix * vec4(aCenter, 1.0)).xyz);
+              transformed = (inverse(modelMatrix) * wp).xyz; }`);
         sh.fragmentShader = sh.fragmentShader
           .replace("#include <common>", "#include <common>\nvarying float vHole;\nuniform float uGlow;")
           .replace("#include <dithering_fragment>", `#include <dithering_fragment>
@@ -515,7 +554,24 @@ function loadSuburb(){
     // visible fine mesh and an invisible plain twin on layer 2 for rays.
     const tess = new TessellateModifier(0.7, 8);
     const FINE = new Map();
-    const fine = g => { if (!FINE.has(g)) FINE.set(g, tess.modify(g)); return FINE.get(g); };
+    // Shatter needs each triangle to know its centre and to have its own
+    // random numbers, so fine shapes are unshared triangles with both.
+    function shards(g){
+      g = g.index ? g.toNonIndexed() : g;
+      const pos = g.attributes.position, n = pos.count;
+      const cen = new Float32Array(n * 3), rnd = new Float32Array(n * 3);
+      for (let t = 0; t < n; t += 3){
+        const cx = (pos.getX(t) + pos.getX(t + 1) + pos.getX(t + 2)) / 3;
+        const cy = (pos.getY(t) + pos.getY(t + 1) + pos.getY(t + 2)) / 3;
+        const cz = (pos.getZ(t) + pos.getZ(t + 1) + pos.getZ(t + 2)) / 3;
+        const a = Math.random(), b = Math.random(), c = Math.random();
+        for (let v = t; v < t + 3; v++){ cen.set([cx, cy, cz], v * 3); rnd.set([a, b, c], v * 3); }
+      }
+      g.setAttribute("aCenter", new T.BufferAttribute(cen, 3));
+      g.setAttribute("aRand", new T.BufferAttribute(rnd, 3));
+      return g;
+    }
+    const fine = g => { if (!FINE.has(g)) FINE.set(g, shards(tess.modify(g))); return FINE.get(g); };
     const proxies = [];
     function piece(fineG, plainG, kind, color, parent, x, y, z, rx){
       const m = new T.Mesh(fineG, mat(kind, color));
@@ -530,10 +586,10 @@ function loadSuburb(){
     // Grids already have the points to bend.
     const ground = new T.Group(); scene.add(ground);
     const flat = -Math.PI / 2;
-    piece(new T.PlaneGeometry(700, 700, 280, 280), new T.PlaneGeometry(700, 700), "lawn", 0x3aa836, ground, 0, 0, -300, flat);
-    piece(new T.PlaneGeometry(9, 700, 10, 700), new T.PlaneGeometry(9, 700), "road", 0x8e8e8b, ground, 0, 0.03, -300, flat);
+    piece(shards(new T.PlaneGeometry(700, 700, 200, 200)), new T.PlaneGeometry(700, 700), "lawn", 0x3aa836, ground, 0, 0, -300, flat);
+    piece(shards(new T.PlaneGeometry(9, 700, 10, 700)), new T.PlaneGeometry(9, 700), "road", 0x8e8e8b, ground, 0, 0.03, -300, flat);
     for (const x of [-4.7, 4.7])
-      piece(new T.BoxGeometry(0.4, 0.3, 700, 1, 1, 700), new T.BoxGeometry(0.4, 0.3, 700), "road", 0xd8d5cb, ground, x, 0.15, -300);
+      piece(shards(new T.BoxGeometry(0.4, 0.3, 700, 1, 1, 700)), new T.BoxGeometry(0.4, 0.3, 700), "road", 0xd8d5cb, ground, x, 0.15, -300);
 
     // A house: walls and gables in one piece, two roof slabs, a door and a
     // window on the side that faces the road, and a path to the curb.
@@ -565,7 +621,7 @@ function loadSuburb(){
     const poleG = new T.CylinderGeometry(0.14, 0.18, 12.5, 8, 24), armG = new T.BoxGeometry(2.2, 0.12, 0.14), headG = new T.BoxGeometry(0.9, 0.22, 0.4);
     function lamp(){
       const g = new T.Group();
-      piece(poleG, poleG, "lamps", 0xc9ccd2, g, 0, 6.25, 0);
+      piece(shards(poleG.clone()), poleG, "lamps", 0xc9ccd2, g, 0, 6.25, 0);
       piece(fine(armG), armG, "lamps", 0xc9ccd2, g, -1, 12.4, 0);
       piece(fine(headG), headG, "lamps", 0xf4f2ec, g, -2.1, 12.3, 0);
       return g;
@@ -643,6 +699,7 @@ function loadSuburb(){
         tn[0].copy(eyeN);
         for (let i = 1; i < TRAIL; i++) tr[i].w = Math.min(tr[i].w, present * (1 - i / TRAIL));
         U.uR.value = o.R; U.uSpin.value = o.spin; U.uPull.value = o.pull; U.uSink.value = o.sink;
+        U.uSpell.value = o.spell; U.uBurst.value = o.burst; U.uTumble.value = o.tumble; U.uFall.value = o.fall; U.uShrink.value = o.shrink;
         U.uDrip.value = o.drip; U.uTear.value = o.tear; U.uSnap.value = o.snap; U.uTime.value = o.time;
         U.uOn.value += ((o.on ? 1 : 0) - U.uOn.value) * Math.min(1, dt * 3);
         r.render(scene, camera);
@@ -669,25 +726,34 @@ function loadSuburb(){
 
 // ------------------------------------------------------------------ spells
 // A spell is a shader and its dials, grouped into pages. Fever shows the
-// chosen spell's pages in the controller. Dark Puddle is the first; the next
-// ones (fluid stir, kaleidoscope, pixel sort) slot in here.
+// chosen spell's pages in the controller. Cyclone and Shatter so far; the
+// next ones from the TouchDesigner research (fluid stir, kaleidoscope, pixel
+// sort, overgrowth) slot in here, each a branch of the street's shader.
 const SPELLS = [
-  {id: "puddle", name: "Dark Puddle", note: "a portal that eats it", pages: {portal: [
+  {id: "cyclone", name: "Cyclone", note: "wrings it into a black eye", pages: {eye: [
     {id: "eye",    glyph: "◉", name: "eye",    v: 0.22, map: v => 0.01 + v * 0.24},
     {id: "spin",   glyph: "↻", name: "spin",   v: 0.5,  map: v => v * 2},
     {id: "pull",   glyph: "⊙", name: "pull",   v: 0.5,  map: v => v * 2},
-    {id: "height", glyph: "▲", name: "height", v: 0.6,  map: v => 0.65 - v * 0.55},
+    {id: "height", glyph: "▼", name: "sink",   v: 0.6,  map: v => 0.65 - v * 0.55},
   ], motion: [
-    {id: "speed",  glyph: "→", name: "speed",  v: 0.3,  map: v => v * 60},
     {id: "drip",   glyph: "⇣", name: "drip",   v: 0.5,  map: v => v * 2},
     {id: "tear",   glyph: "≋", name: "tear",   v: 0.5,  map: v => v * 2},
     {id: "pixel",  glyph: "▦", name: "pixels", v: 0.25, map: v => 1 + Math.round(v * 4)},
   ]}},
+  {id: "shatter", name: "Shatter", note: "breaks it into flying shards", pages: {shards: [
+    {id: "reach",  glyph: "◎", name: "reach",  v: 0.3,  map: v => 1.5 + v * 12},
+    {id: "burst",  glyph: "✷", name: "burst",  v: 0.5,  map: v => v * 2},
+    {id: "tumble", glyph: "↻", name: "tumble", v: 0.5,  map: v => v * 2},
+    {id: "fall",   glyph: "⇣", name: "fall",   v: 0.35, map: v => v * 2},
+    {id: "shrink", glyph: "◇", name: "shrink", v: 0.3,  map: v => v},
+  ]}},
 ];
+// The street's own dial, whatever the spell.
+const STREET = [{id: "speed", glyph: "→", name: "walk", v: 0.3, map: v => v * 60}];
 let spell = SPELLS.find(x => x.id === store.get("spell")) || SPELLS[0];
 let on = false;
 const D = {};
-for (const sp of SPELLS) for (const group in sp.pages) for (const d of sp.pages[group]){
+for (const d of [...STREET, ...SPELLS.flatMap(sp => Object.values(sp.pages).flat())]){
   d.def = d.v;
   const saved = parseFloat(store.get("knob:" + d.id));
   if (!isNaN(saved)) d.v = Math.min(1, Math.max(0, saved));
@@ -761,6 +827,7 @@ function showTab(name){
   document.querySelectorAll("[data-page]").forEach(p => p.hidden = p.dataset.page !== name);
 }
 renderSpell();
+STREET.forEach(d => makeDial(d, $("streetDials")));
 
 // ------------------------------------------------------------------ the loop
 // Two ways to see the street: the 3D one (the default; the spell lives in
@@ -819,6 +886,8 @@ function frame(now){
       R: (1 + D.eye.v * 12) * swell,
       spin: val("spin") * (1 + gulp * 2), pull: val("pull") * (1 + gulp * 2), sink: D.height.v * 1.6 * (1 + gulp),
       drip: val("drip"), tear: val("tear"), snap: (val("pixel") - 1) * 0.15,
+      ...(spell.id === "shatter" ? {spell: 1, R: val("reach") * swell} : {spell: 0}),
+      burst: val("burst") * (1 + gulp * 1.5), tumble: val("tumble"), fall: val("fall"), shrink: val("shrink"),
     });
     return;
   }
@@ -853,7 +922,7 @@ function flatFrame(dt, swell){
   gl.uniform1f(P.u.uDz, 0);
   gl.uniform1f(P.u.uFront, val("height"));
   gl.uniform1f(P.u.uAspect, run.W / run.H);
-  gl.uniform1f(P.u.uPrime, run.primed && on ? 0 : 1);
+  gl.uniform1f(P.u.uPrime, run.primed && on && spell.id === "cyclone" ? 0 : 1);
   gl.uniform1f(P.u.uEyeR, eyeR);
   gl.uniform1f(P.u.uSpin, val("spin") * (1 + gulp * 2));
   gl.uniform1f(P.u.uPull, val("pull") * (1 + gulp * 3));
@@ -870,7 +939,7 @@ function flatFrame(dt, swell){
   gl.uniform1i(B.u.uMask, 2); gl.uniform1f(B.u.uMasked, 0); gl.uniform1f(B.u.uTint, 0); gl.uniform1f(B.u.uGlow, 0);
   gl.uniform2f(B.u.uRes, run.FW, run.FH);
   gl.uniform2f(B.u.uLow, run.W, run.H);
-  gl.uniform1f(B.u.uOn, on ? 1 : 0);
+  gl.uniform1f(B.u.uOn, on && spell.id === "cyclone" ? 1 : 0);
   gl.uniform2f(B.u.uEye, run.eye[0], run.eye[1]);
   gl.uniform1f(B.u.uTime, clock);
   gl.uniform1f(B.u.uFront, val("height"));
