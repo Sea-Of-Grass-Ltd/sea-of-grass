@@ -736,15 +736,15 @@ function loadSuburb(){
       return own(g, "lamps");
     }
 
-    // Lots, LOT apart, N deep; three rows of houses a side, a lamp every
+    // Lots, LOT apart, N deep; one row of houses a side, a lamp every
     // third lot on the right.
     const LOT = 12, N = 26, things = [];
     let seed = 7;
     const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
     for (let i = 0; i < N; i++){
-      for (const side of [-1, 1]) for (let row = 0; row < 3; row++){
-        const h = house(side, row === 0, Math.floor(rnd() * 1000));
-        h.position.set(side * (16 + row * 15), 0, -i * LOT - (row % 2) * LOT / 2);
+      for (const side of [-1, 1]){
+        const h = house(side, true, Math.floor(rnd() * 1000));
+        h.position.set(side * 16, 0, -i * LOT);
         scene.add(h); things.push(h);
       }
       if (i % 3 === 1){ const l = lamp(); l.position.set(6.2, 0, -i * LOT + 3); scene.add(l); things.push(l); }
