@@ -218,6 +218,9 @@
         placeholder="a subject, links, or a YouTube link" />
       <button class="chip" id="feedBtn">Go</button>
     </div>
+    <button class="chip" id="pickBtn" hidden aria-pressed="false" title="Click things in the street to choose what the spell hits (K)">Pick</button>
+    <button class="chip" id="pickAll" hidden title="Pick every house, or unpick them">Houses</button>
+    <button class="chip" id="pickNone" hidden title="Clear the picks: the spell hits everything">Clear</button>
     <button class="chip" id="liveYt" hidden title="Opens the video in its own window and asks to share it">Eat it live</button>
     <label class="chip" for="add" title="Add pictures or a video from your computer">+</label>
     <input type="file" id="add" accept="image/*,video/*" multiple hidden>
@@ -255,19 +258,23 @@
       placeholder="what should it eat? frogs, cathedrals, neon signs…" />
     <button class="chip" id="askGo">Go</button>
   </div>
-  <p class="lede">A tool for treating a moving picture. Put something on screen (pictures of a subject,
-    websites, a YouTube video, your own files), press <b>Fever</b>, and cast a spell on it. The first spell is
-    Dark Puddle: a portal that drags the picture, row by row, into a black eye you steer.</p>
+  <p class="lede">A tool for treating a moving picture. It opens on an endless suburb; press <b>Fever</b> and
+    cast a spell on it. The first spell is Dark Puddle: a portal that drags the picture, row by row, into a
+    black eye you steer. You can swap the street for pictures of a subject, websites, a YouTube video or your
+    own files.</p>
   <dl>
     <dt>fever</dt><dd>the button, or F: casts the spell; press again and the picture comes back whole</dd>
     <dt>steer</dt><dd>move the pointer and the eye follows; click and it swallows</dd>
+    <dt>pick</dt><dd>in the street, turn on <b>Pick</b> (or K) and click things: a colour of house, the lamps,
+      the road, the lawn, the sky. The spell then hits only those</dd>
     <dt>controls</dt><dd>pick the picture, pick the spell, turn its dials</dd>
     <dt>+</dt><dd>add pictures or a video from your computer, or drop them on the page</dd>
     <dt>video</dt><dd>paste a YouTube link and it fills the screen; <b>Eat it live</b> lets the portal tear the
       moving picture</dd>
   </dl>
   <p>Fever is the picture-treating tool from Fantasmagoria, the studio's live show, tried out here on its own.
-    The portal is after a TouchDesigner piece posted to
+    The street is drawn live with <a href="https://threejs.org">three.js</a>; the film of it was made with
+    Higgsfield from a still. The portal is after a TouchDesigner piece posted to
     <a href="https://www.reddit.com/r/TouchDesigner/comments/1t0wkv2/using_td_to_eat_up_worlds/">r/TouchDesigner</a>
     ("using TD to eat up worlds"), rebuilt in WebGL. Subject pictures come from
     <a href="https://commons.wikimedia.org">Wikimedia Commons</a>; site pictures from WordPress's
@@ -540,7 +547,8 @@ in vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }`;
 // and switching on starts from exactly what was showing.
 const FS = `#version 300 es
 precision highp float;
-uniform sampler2D uPrev, uSheet;
+uniform sampler2D uPrev, uSheet, uMask;
+uniform float uMasked;
 uniform vec2 uRes, uEye;
 uniform float uTime, uScroll, uSheetH, uFlow, uFront, uAspect, uPrime, uVideo;
 uniform float uEyeR, uSpin, uPull, uTear, uDrip;
@@ -592,11 +600,17 @@ void main(){
   o = mix(o, sheet(uv), 1.0 - o.a);                     // whatever was clear fills with poster
   o.rgb *= smoothstep(uEyeR * 0.25, uEyeR, r);
   o.a = 1.0;
+  // Picked things only: wherever the mask is black the picture stays whole.
+  if (uMasked > 0.5) o = mix(sheet(uv), o, texture(uMask, vec2(uv.x, yd)).r);
 }`;
 const BLIT = `#version 300 es
 precision highp float;
-uniform sampler2D uTex; uniform vec2 uRes; out vec4 o;
-void main(){ o = texture(uTex, gl_FragCoord.xy / uRes); }`;
+uniform sampler2D uTex, uMask; uniform vec2 uRes; uniform float uTint; out vec4 o;
+void main(){
+  vec2 uv = gl_FragCoord.xy / uRes;
+  o = texture(uTex, uv);
+  if (uTint > 0.5) o.rgb = mix(o.rgb, vec3(0.62, 0.94, 0.78), 0.45 * texture(uMask, vec2(uv.x, 1.0 - uv.y)).r);
+}`;
 
 function program(fs){
   const p = gl.createProgram();
@@ -626,6 +640,159 @@ if (gl){
   gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
   gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+}
+
+// ------------------------------------------------------------------ the suburb
+// An endless liminal street in 3D: pastel houses down both sides of a grey
+// road, lamps on the right, a hard blue sky. The camera walks toward the
+// vanishing point and lots behind it are moved to the far end, so it never
+// runs out. Because it's a real scene, not a film, every house, lamp, the
+// road, the lawn and the sky can be picked, and the spell then works only on
+// what's picked. A pick is a kind, not one object, since the camera walks
+// past any one house in seconds: pick a pink house and every pink house down
+// the street is hit. A second render paints picked things white, the rest black,
+// and the shader uses that as a mask. three.js comes from a CDN on first use.
+let suburb = null, suburbLoading = null, street = false, pickMode = false;
+function loadSuburb(){
+  if (suburb) return Promise.resolve(suburb);
+  return suburbLoading = suburbLoading || (async () => {
+    const T = await import("https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js");
+    const r = new T.WebGLRenderer({antialias: false, preserveDrawingBuffer: true});
+    r.setPixelRatio(1); r.shadowMap.enabled = true;
+    const scene = new T.Scene();
+
+    const sky = document.createElement("canvas"); sky.width = 2; sky.height = 512;
+    const sg = sky.getContext("2d"), grad = sg.createLinearGradient(0, 0, 0, 512);
+    grad.addColorStop(0, "#0716c9"); grad.addColorStop(0.3, "#0d34e6"); grad.addColorStop(0.47, "#2f78f2");
+    grad.addColorStop(0.5, "#a6cff3"); grad.addColorStop(1, "#a6cff3");
+    sg.fillStyle = grad; sg.fillRect(0, 0, 2, 512);
+    const skyTex = new T.CanvasTexture(sky); skyTex.colorSpace = T.SRGBColorSpace;
+    scene.background = skyTex;
+    scene.fog = new T.Fog(0xa6cff3, 90, 330);
+
+    const camera = new T.PerspectiveCamera(52, 1, 0.5, 600);
+    camera.position.set(0, 9, 0);
+    scene.add(new T.HemisphereLight(0xe4eeff, 0x3f7d33, 1.35));
+    const sun = new T.DirectionalLight(0xfffaf0, 2.8);
+    sun.castShadow = true; sun.shadow.mapSize.set(1024, 1024);
+    Object.assign(sun.shadow.camera, {left: -50, right: 50, top: 70, bottom: -70, near: 1, far: 220});
+    scene.add(sun, sun.target);
+
+    const lambert = c => new T.MeshLambertMaterial({color: c});
+    const own = (o, holder) => { o.traverse(m => { if (m.isMesh){ m.userData.owner = holder; m.castShadow = m.receiveShadow = true; } }); return o; };
+
+    // The ground goes with the camera; it's all one colour, so nobody can tell.
+    const ground = new T.Group(); scene.add(ground);
+    const lawn = new T.Mesh(new T.PlaneGeometry(900, 900), lambert(0x3aa836));
+    lawn.rotation.x = -Math.PI / 2; lawn.position.z = -350; ground.add(own(lawn, "lawn"));
+    const road = new T.Group(); ground.add(road);
+    const tar = new T.Mesh(new T.PlaneGeometry(9, 900), lambert(0x8e8e8b));
+    tar.rotation.x = -Math.PI / 2; tar.position.set(0, 0.03, -350); road.add(tar);
+    for (const x of [-4.7, 4.7]){
+      const curb = new T.Mesh(new T.BoxGeometry(0.4, 0.3, 900), lambert(0xd8d5cb));
+      curb.position.set(x, 0.15, -350); road.add(curb);
+    }
+    own(road, "road");
+
+    // A house: walls and gables in one piece, two roof slabs, a door and a
+    // window on the side that faces the road, and a path to the curb.
+    const D = 8.5, Wd = 8, Hw = 3.2, Rg = 1.7;
+    const prof = new T.Shape([new T.Vector2(-D / 2, 0), new T.Vector2(D / 2, 0), new T.Vector2(D / 2, Hw),
+                              new T.Vector2(0, Hw + Rg), new T.Vector2(-D / 2, Hw)]);
+    const bodyG = new T.ExtrudeGeometry(prof, {depth: Wd, bevelEnabled: false});
+    bodyG.translate(0, 0, -Wd / 2); bodyG.rotateY(Math.PI / 2);
+    const ang = Math.atan(Rg / (D / 2)), slab = (D / 2 + 0.7) / Math.cos(ang);
+    const slabG = new T.BoxGeometry(Wd + 0.9, 0.32, slab);
+    const roofM = lambert(0x7b6d62), whiteM = lambert(0xf4f2ec), pathM = lambert(0xd9d4c4), darkM = lambert(0x2b2d33);
+    const NAMES = ["blue", "green", "salmon", "pink", "yellow", "orange", "red", "lilac", "aqua", "white"];
+    const WALLS = [0x4f7fe0, 0x3caf48, 0xe9806f, 0xf2a6cb, 0xf2c431, 0xf07b39, 0xe24a3b, 0xb48ce4, 0x6fcfe6, 0xf6efe4].map(lambert);
+    const doorG = new T.BoxGeometry(0.12, 2.2, 1.05), winG = new T.BoxGeometry(0.12, 1.1, 1.3), paneG = new T.BoxGeometry(0.14, 0.8, 1.0);
+    function house(side, front, seed){
+      const g = new T.Group(); g.userData.house = true;
+      g.add(new T.Mesh(bodyG, WALLS[seed % WALLS.length]));
+      for (const sgn of [1, -1]){
+        const m = new T.Mesh(slabG, roofM);
+        m.rotation.x = sgn * ang;
+        const zc = sgn * (D / 2 + 0.7) / 2;
+        m.position.set(0, Hw + Rg - Math.tan(ang) * Math.abs(zc) + 0.2, zc);
+        g.add(m);
+      }
+      if (front){
+        const fx = -side * (Wd / 2 + 0.02);
+        const door = new T.Mesh(doorG, whiteM); door.position.set(fx, 1.1, 1.6); g.add(door);
+        const win = new T.Mesh(winG, whiteM); win.position.set(fx, 2.1, -1.7); g.add(win);
+        const pane = new T.Mesh(paneG, darkM); pane.position.set(fx - side * 0.02, 2.1, -1.7); g.add(pane);
+        const len = 16 - Wd / 2 - 4.9;
+        const path = new T.Mesh(new T.BoxGeometry(len, 0.08, 1.5), pathM);
+        path.position.set(-side * (Wd / 2 + len / 2), 0.04, 1.6); g.add(path);
+      }
+      return own(g, NAMES[seed % WALLS.length] + " houses");
+    }
+    function lamp(){
+      const g = new T.Group();
+      const pole = new T.Mesh(new T.CylinderGeometry(0.14, 0.18, 12.5, 8), lambert(0xc9ccd2)); pole.position.y = 6.25; g.add(pole);
+      const arm = new T.Mesh(new T.BoxGeometry(2.2, 0.12, 0.14), lambert(0xc9ccd2)); arm.position.set(-1, 12.4, 0); g.add(arm);
+      const head = new T.Mesh(new T.BoxGeometry(0.9, 0.22, 0.4), whiteM); head.position.set(-2.1, 12.3, 0); g.add(head);
+      return own(g, "lamps");
+    }
+
+    // Lots, LOT apart, N deep; three rows of houses a side, a lamp every
+    // third lot on the right.
+    const LOT = 12, N = 26, things = [];
+    let seed = 7;
+    const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    for (let i = 0; i < N; i++){
+      for (const side of [-1, 1]) for (let row = 0; row < 3; row++){
+        const h = house(side, row === 0, Math.floor(rnd() * 1000));
+        h.position.set(side * (16 + row * 15), 0, -i * LOT - (row % 2) * LOT / 2);
+        scene.add(h); things.push(h);
+      }
+      if (i % 3 === 1){ const l = lamp(); l.position.set(6.2, 0, -i * LOT + 3); scene.add(l); things.push(l); }
+    }
+
+    const picked = new Set();
+    const isPicked = m => picked.has(m.userData.owner);
+    const black = new T.MeshBasicMaterial({color: 0x000000, fog: false}), white = new T.MeshBasicMaterial({color: 0xffffff, fog: false});
+    const cBlack = new T.Color(0x000000), cWhite = new T.Color(0xffffff);
+    const ray = new T.Raycaster();
+
+    suburb = {
+      canvas: r.domElement, picked,
+      size(w, h){ r.setSize(w, h, false); camera.aspect = w / h; camera.fov = w < h ? 74 : 52; camera.updateProjectionMatrix(); },
+      step(dz){
+        camera.position.z -= dz;
+        const cz = camera.position.z;
+        camera.lookAt(0, 9, cz - 100);
+        ground.position.z = cz;
+        sun.position.set(40, 45, cz + 55); sun.target.position.set(0, 0, cz - 55);
+        for (const t of things) if (t.position.z > cz + LOT) t.position.z -= N * LOT;
+      },
+      render(){ r.render(scene, camera); },
+      renderMask(){
+        const bg = scene.background, fog = scene.fog;
+        scene.background = picked.has("sky") ? cWhite : cBlack; scene.fog = null;
+        r.shadowMap.autoUpdate = false;
+        scene.traverse(m => { if (m.isMesh){ m.userData.mat = m.material; m.material = isPicked(m) ? white : black; } });
+        r.render(scene, camera);
+        scene.traverse(m => { if (m.isMesh) m.material = m.userData.mat; });
+        scene.background = bg; scene.fog = fog; r.shadowMap.autoUpdate = true;
+      },
+      // Pick or unpick whatever is under a point on the screen.
+      pick(x, y){
+        ray.setFromCamera(new T.Vector2(x * 2 - 1, 1 - y * 2), camera);
+        const hit = ray.intersectObjects(scene.children, true)[0];
+        const key = hit ? hit.object.userData.owner : "sky";
+        if (picked.has(key)) picked.delete(key); else picked.add(key);
+      },
+      pickHouses(){
+        const all = NAMES.map(n => n + " houses"), every = all.every(k => picked.has(k));
+        all.forEach(k => every ? picked.delete(k) : picked.add(k));
+      },
+      describe(){ return [...picked].join(", "); },
+    };
+    suburb.step(0);
+    return suburb;
+  })();
 }
 
 // ------------------------------------------------------------------ spells
@@ -732,12 +899,13 @@ const canShare = !!(navigator.mediaDevices && navigator.mediaDevices.getDisplayM
 let current = "top";                                      // what the menu ticks
 
 function build(){
-  if (!gl || (!sites.length && !video && !live)) return;
+  if (!gl || !innerWidth || !innerHeight || (!sites.length && !video && !live && !(street && suburb))) return;
   const px = Math.max(1, Math.max(2, Math.round(innerWidth / 520)) + val("pixel") - 2);
   const W = Math.ceil(innerWidth / px), H = Math.ceil(innerHeight / px);
   canvas.width = W; canvas.height = H;
-  const sheet = live ? layoutLiveSheet(W, H) : video ? layoutPosterSheet(posterImg, W, H) : layoutSheet(sites, W);
-  if (run){ run.tex.forEach(t => gl.deleteTexture(t)); gl.deleteTexture(run.sheetTex); }
+  if (street) suburb.size(W, H);
+  const sheet = street ? {c: suburb.canvas, list: []} : live ? layoutLiveSheet(W, H) : video ? layoutPosterSheet(posterImg, W, H) : layoutSheet(sites, W);
+  if (run){ run.tex.forEach(t => gl.deleteTexture(t)); gl.deleteTexture(run.sheetTex); gl.deleteTexture(run.maskTex); }
   const tex = [texture(W, H), texture(W, H)], fbo = tex.map(t => {
     const f = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, f);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t, 0);
@@ -745,9 +913,9 @@ function build(){
   });
   const eye = run ? run.eye : [0.5, 0.24], target = run ? run.target : [0.5, 0.24];
   run = {W, H, tex, fbo, i: 0, sheet, sheetTex: texture(sheet.c.width, sheet.c.height, sheet.c),
-         sheetH: sheet.c.height, scroll: 0, eye, target, dirty: false, primed: false};
+         sheetH: sheet.c.height, scroll: 0, eye, target, dirty: false, primed: false, maskTex: texture(W, H)};
   shotsPainted = 0;
-  if (!video && !live) loadPictures(sheet);
+  if (!video && !live && !street) loadPictures(sheet);
   showReadout();
 }
 let rt; function rebuildSoon(){ clearTimeout(rt); rt = setTimeout(build, 250); }
@@ -766,7 +934,18 @@ function frame(now){
   if (!run || paused) return;
   clock += dt;
   const speed = val("speed");
-  if (live){
+  const masked = street && suburb && suburb.picked.size > 0;
+  if (street && suburb){
+    suburb.step(speed * 0.18 * dt);
+    suburb.render();
+    gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, run.sheetTex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, suburb.canvas);
+    if (masked){
+      suburb.renderMask();
+      gl.bindTexture(gl.TEXTURE_2D, run.maskTex);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, suburb.canvas);
+    }
+  } else if (live){
     const v = $("live");
     if (v.readyState >= 2 && v.videoWidth && live.ctx){
       const {canvas: c, ctx: g} = live, r = Math.max(c.width / v.videoWidth, c.height / v.videoHeight);
@@ -783,6 +962,8 @@ function frame(now){
   gl.useProgram(P.p); gl.viewport(0, 0, run.W, run.H);
   gl.bindFramebuffer(gl.FRAMEBUFFER, run.fbo[b]);
   gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, run.tex[a]); gl.uniform1i(P.u.uPrev, 0);
+  gl.activeTexture(gl.TEXTURE2); gl.bindTexture(gl.TEXTURE_2D, run.maskTex); gl.uniform1i(P.u.uMask, 2);
+  gl.uniform1f(P.u.uMasked, masked ? 1 : 0);
   gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, run.sheetTex); gl.uniform1i(P.u.uSheet, 1);
   gl.uniform2f(P.u.uRes, run.W, run.H);
   gl.uniform2f(P.u.uEye, run.eye[0], run.eye[1]);
@@ -805,6 +986,7 @@ function frame(now){
   gl.useProgram(B.p); gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
   gl.bindTexture(gl.TEXTURE_2D, run.tex[b]); gl.uniform1i(B.u.uTex, 1);
+  gl.uniform1i(B.u.uMask, 2); gl.uniform1f(B.u.uTint, masked && pickMode ? 1 : 0);
   gl.uniform2f(B.u.uRes, run.W, run.H);
   gl.drawArrays(gl.TRIANGLES, 0, 3);
   run.i = b;
@@ -812,7 +994,8 @@ function frame(now){
 requestAnimationFrame(frame);
 
 function showReadout(){
-  $("readout").textContent = (on ? spell.name.toLowerCase() : "fever off") + " · " + (live ? "live · " + live.name : video ? "video · youtube " + video :
+  $("readout").textContent = (on ? spell.name.toLowerCase() : "fever off") + " · " + (street ?
+    "suburb · " + (suburb && suburb.picked.size ? suburb.describe() : "all of it") + (pickMode ? " · picking" : "") : live ? "live · " + live.name : video ? "video · youtube " + video :
     `${setName} · ${sites.length} ${noun}` + (noun === "sites" && picsOn() ? ` · ${shotsPainted} pics` : ""));
 }
 
@@ -857,7 +1040,7 @@ function hideVideo(){ $("player").hidden = true; $("yt").removeAttribute("src");
 // A video file, or a shared tab, window or screen: the browser lets the page
 // read those, so every frame goes through the portal. Nothing is uploaded.
 function startLive(kind, name, setup){
-  stopLive(); hideVideo();
+  stopLive(); hideVideo(); leaveStreet();
   const v = $("live");
   setup(v);
   v.muted = muted || kind === "share";               // a shared tab already plays its own sound
@@ -907,7 +1090,7 @@ function addFiles(files){
 }
 function useFiles(){
   if (!fileTiles.length) return;
-  stopLive(); hideVideo();
+  stopLive(); hideVideo(); leaveStreet();
   sites = fileTiles; setName = "your pictures"; noun = "pictures";
   current = "files"; renderMenu(); build();
 }
@@ -925,8 +1108,30 @@ if (canShare){
 }
 
 // ------------------------------------------------------------------ choosing sites
+function leaveStreet(){ street = false; setPick(false); $("pickBtn").hidden = $("pickAll").hidden = $("pickNone").hidden = true; }
+function setPick(v){
+  pickMode = v;
+  $("pickBtn").setAttribute("aria-pressed", String(v));
+  showReadout();
+}
 function useSet(name){
-  stopLive();
+  stopLive(); leaveStreet();
+  if (name === "suburb"){
+    hideVideo(); sites = []; current = name; renderMenu(); store.set("set", name);
+    setName = "suburb"; $("readout").textContent = "building the suburb…";
+    loadSuburb().then(() => {
+      if (store.get("set") !== "suburb") return;
+      street = true; $("pickBtn").hidden = $("pickAll").hidden = $("pickNone").hidden = false;
+      build();
+    }).catch(() => { $("readout").textContent = "couldn't load the 3D street"; });
+    return;
+  }
+  if (name === "film"){
+    current = name; store.set("set", name);
+    startLive("film", "suburb film", v => { v.srcObject = null; v.loop = true; v.src = "suburb.mp4"; });
+    current = "film"; renderMenu();
+    return;
+  }
   if (name === "video" && !store.get("video")) name = "mine";
   if (name === "search" && !store.get("query")) store.set("query", DEFAULT_Q);
   noun = "sites";
@@ -997,6 +1202,8 @@ $("file").addEventListener("change", e => {
 function renderMenu(){
   const q = store.get("query"), v = store.get("video"), mine = linkSites(store.get("links") || "").length;
   const items = [
+    ["suburb", "The suburb, 3D"], ["film", "The suburb, film"],
+    "sep",
     ["top", "Top sites"], ["sog", "Sea of Grass"],
     mine ? ["mine", "My links"] : null,
     v ? ["video", "Video"] : null,
@@ -1043,6 +1250,9 @@ function setFever(v){
   showReadout();
 }
 $("fever").addEventListener("click", () => setFever(!on));
+$("pickBtn").addEventListener("click", () => setPick(!pickMode));
+$("pickAll").addEventListener("click", () => { if (suburb){ suburb.pickHouses(); setPick(true); } });
+$("pickNone").addEventListener("click", () => { if (suburb){ suburb.picked.clear(); showReadout(); } });
 
 const swallow = () => { if (on) gulp = 1; };
 const refill = () => { if (run) run.primed = false; };
@@ -1063,12 +1273,16 @@ addEventListener("pointermove", e => {
   if (!run || !steer || !on || overUI(e.target)) return;
   run.target = [e.clientX / innerWidth, Math.max(0.08, Math.min(0.75, 1 - e.clientY / innerHeight))];
 });
-canvas.addEventListener("click", swallow);
+canvas.addEventListener("click", e => {
+  if (street && suburb && pickMode){ suburb.pick(e.clientX / innerWidth, e.clientY / innerHeight); showReadout(); }
+  else swallow();
+});
 addEventListener("keydown", e => {
   if (e.target.closest && e.target.closest("input, .dial")) return;
   if (e.key === " "){ swallow(); e.preventDefault(); }
   else if (e.key === "r" || e.key === "R") refill();
   else if (e.key === "f" || e.key === "F") setFever(!on);
+  else if ((e.key === "k" || e.key === "K") && street) setPick(!pickMode);
   else if (e.key === "p" || e.key === "P") $("pause").click();
   else if (e.key === "Escape"){ openMenu(false); openCtrl(false); $("help").hidden = true; }
 });
@@ -1091,9 +1305,9 @@ $("askq").addEventListener("keydown", e => { if (e.key === "Enter") askGo(); });
   if (!gl){ $("readout").textContent = "this browser doesn't support WebGL2, which the portal needs"; return; }
   await document.fonts.ready;
   const s = store.get("set");
-  const ok = s === "sog" || s === "video" && store.get("video") || s === "search" && store.get("query") ||
+  const ok = s === "sog" || s === "top" || s === "suburb" || s === "film" || s === "video" && store.get("video") || s === "search" && store.get("query") ||
     s === "mine" && linkSites(store.get("links") || "").length;
-  useSet(ok ? s : "search");                               // first visit: pictures of Apollo
+  useSet(ok ? s : "suburb");                               // first visit: the suburb
   if (!store.get("helped")){ $("help").hidden = false; $("askq").focus(); }
 })();
 </script>
