@@ -176,14 +176,14 @@
   }
   @media (prefers-reduced-motion:reduce){ .chip,.dockb{transition:none;} }
 
-  /* ---------- on a phone: a brief card, and type that doesn't make iOS zoom ---------- */
-  .help .morebtn{display:none;margin-right:6px;}
+  /* ---------- on a phone: the card sits low, and type doesn't make iOS zoom ---------- */
+  .help .x{position:sticky;top:0;float:right;z-index:1;width:30px;height:30px;margin:-6px -8px 0 8px;border-radius:50%;
+    border:1px solid rgba(255,255,255,.3);background:rgba(16,15,14,.9);color:#fff;font:400 18px/1 sans-serif;cursor:pointer;}
+  .help .x:hover{background:rgba(60,58,56,.95);}
   @media (max-width:700px){
     .help{top:auto;bottom:12px;transform:translateX(-50%);max-height:calc(100dvh - 90px);overflow:auto;padding:14px 16px;}
     .help h2{font-size:18px;margin-bottom:8px;}
     .help .lede{font-size:12.5px;line-height:1.5;}
-    .help:not(.more) dl, .help:not(.more) > p:not(.kicker):not(.lede){display:none;}
-    .help .morebtn{display:inline-flex;}
   }
   /* iOS zooms into any text box under 16px and stays zoomed */
   @media (max-width:700px), (pointer:coarse){
@@ -257,32 +257,29 @@
       placeholder="what should it eat? frogs, cathedrals, neon signs…" />
     <button class="chip" id="askGo">Go</button>
   </div>
-  <p class="lede">A whirlpool that eats pictures. Give it a subject and it lays pictures of that subject out as a
-    map, then drags them, row by row, into a portal you steer with the pointer. It will also eat websites, a
-    YouTube video, or pictures and video from your own computer.</p>
+  <p class="lede">A whirlpool that eats pictures. Name a subject, or feed it websites, a YouTube link or your own files.</p>
   <dl>
-    <dt>steer</dt><dd>move the pointer and the portal follows; click and the eye swallows</dd>
-    <dt>controls</dt><dd>size the eye, change the spin, pick what's on the map</dd>
-    <dt>+</dt><dd>add pictures or a video from your computer, or drop them on the page</dd>
-    <dt>video</dt><dd>paste a YouTube link and it fills the screen; <b>Eat it live</b> lets the portal tear the
-      moving picture</dd>
+    <dt>steer</dt><dd>the portal follows the pointer; click and it swallows</dd>
+    <dt>+</dt><dd>add pictures or video, or drop them on the page</dd>
   </dl>
-  <p>The cyclone is after a TouchDesigner piece posted to
-    <a href="https://www.reddit.com/r/TouchDesigner/comments/1t0wkv2/using_td_to_eat_up_worlds/">r/TouchDesigner</a>
-    ("using TD to eat up worlds"), rebuilt in WebGL. Subject pictures come from
-    <a href="https://commons.wikimedia.org">Wikimedia Commons</a>; site pictures from WordPress's
-    <a href="https://developer.wordpress.com/docs/photon/">mshots</a>, which receives the addresses being shown
-    (for a history file, only the site names). Your files are read in the tab and never uploaded; your links and
-    settings stay in this browser.</p>
+  <p>After a piece on <a href="https://www.reddit.com/r/TouchDesigner/comments/1t0wkv2/using_td_to_eat_up_worlds/">r/TouchDesigner</a>.
+    Pictures from <a href="https://commons.wikimedia.org">Wikimedia Commons</a>; site pictures from WordPress's
+    <a href="https://developer.wordpress.com/docs/photon/">mshots</a>, which sees the addresses shown. Your files stay in the tab.</p>
   <button class="chip" id="gotit">Skip</button>
 </div>
 <script>
-// On a phone the card is brief; the rest is behind "how it works".
+// The intro card closes with ×, Begin, or a tap anywhere outside it.
 (() => {
-  const h = document.getElementById("help"), b = document.createElement("button");
-  b.className = "chip morebtn"; b.type = "button"; b.textContent = "how it works"; b.setAttribute("aria-expanded", "false");
-  b.onclick = () => b.setAttribute("aria-expanded", String(h.classList.toggle("more")));
-  h.lastElementChild.before(b);
+  const h = document.getElementById("help");
+  // a close button that stays in reach, and a tap outside the card closes it too
+  const x = document.createElement("button");
+  x.className = "x"; x.type = "button"; x.textContent = "×"; x.setAttribute("aria-label", "Close");
+  x.onclick = () => document.getElementById("gotit").click();
+  h.prepend(x);
+  addEventListener("pointerdown", e => {
+    if (h.hidden || h.contains(e.target) || e.target.closest("#ask")) return;
+    document.getElementById("gotit").click();
+  });
 })();
 </script>
 
