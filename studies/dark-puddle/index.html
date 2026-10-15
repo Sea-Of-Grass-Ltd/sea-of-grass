@@ -2,77 +2,140 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Dark Puddle</title>
-<meta name="description" content="Your recently viewed websites, laid out as a map and fed into a cyclone that eats them. Your history is read inside the tab and never leaves it." />
+<meta name="description" content="A map of websites fed into a portal that eats them. Steer it, size its eye, feed it your own links, or a YouTube video." />
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
-  /* A designed world of its own: the map is colour on black, the chrome
-     around it stays in the site's paper-and-ink. */
+  /* A designed world of its own: the map is colour on black. The controller
+     is a slim strip in the language of the tristan.design control surface:
+     glass, hard ink outlines, offset shadows, dials with glyphs. */
   :root{
-    --paper:#faf9f6;
-    --ink:#141311;
-    --line:#d9d6cf;
-    --ink-soft:rgba(20,19,17,.5);
+    --paper:#faf9f6; --ink:#141311;
+    --glass:linear-gradient(rgba(255,255,255,.82), rgba(255,255,255,.38) 50%, rgba(255,255,255,.56));
+    --pink:#f6a6d8; --violet:#9b7bff;
+    --ui:"Figtree", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --mono:"IBM Plex Mono","SFMono-Regular",Menlo,Consolas,monospace;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;height:100%;background:#000;}
-  body{color:var(--ink);font-family:"IBM Plex Mono","SFMono-Regular",Menlo,Consolas,monospace;overflow:hidden;}
-
+  body{color:var(--ink);font-family:var(--ui);overflow:hidden;}
   canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block;image-rendering:pixelated;touch-action:none;}
 
-  .home{position:fixed;top:22px;left:24px;z-index:5;color:var(--paper);mix-blend-mode:difference;}
-  .home svg{width:34px;height:auto;display:block;}
+  .home{position:fixed;top:18px;left:20px;z-index:5;color:var(--paper);mix-blend-mode:difference;}
+  .home svg{width:30px;height:auto;display:block;}
 
-  .panel{
-    position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);
-    width:min(460px,calc(100vw - 32px));max-height:calc(100vh - 32px);overflow:auto;
-    background:var(--paper);border:1px solid var(--line);padding:22px 22px 18px;z-index:6;
+  /* ---------- chips ---------- */
+  .chip{
+    font:700 10.5px/1 var(--ui);letter-spacing:.08em;text-transform:uppercase;color:#000;
+    background:var(--glass);border:1.5px solid #000;border-radius:99px;padding:7px 10px;cursor:pointer;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.9), 2px 2px 0 #000;white-space:nowrap;
+    transition:transform .07s steps(2), box-shadow .07s steps(2);
   }
-  .panel[hidden]{display:none;}
-  .panel h1{font-size:13px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;margin:0 0 12px;}
-  .panel p{font-size:12px;line-height:1.6;margin:0 0 12px;color:var(--ink-soft);}
-  .panel p strong{color:var(--ink);font-weight:500;}
-  .panel ol{font-size:12px;line-height:1.6;color:var(--ink-soft);margin:0 0 12px;padding-left:1.2em;}
-  .panel b{color:var(--ink);font-weight:500;}
-  .drop{
-    border:1px dashed var(--ink-soft);padding:16px;text-align:center;font-size:12px;margin:4px 0 10px;
-    cursor:pointer;color:var(--ink);
-  }
-  .drop.over{background:#efece5;}
-  .shots{display:flex;gap:8px;align-items:center;font-size:12px;margin:0 0 8px;cursor:pointer;}
-  .panel p a{color:inherit;}
-  .panel button{
-    font:inherit;font-size:13px;letter-spacing:.14em;text-transform:uppercase;
-    background:var(--ink);color:var(--paper);border:0;padding:11px 16px;cursor:pointer;width:100%;
-  }
-  .panel .status{margin:10px 0 0;min-height:1.6em;color:var(--ink);}
+  .chip:hover{transform:translate(-1px,-1px);box-shadow:inset 0 1px 0 rgba(255,255,255,.9), 3px 3px 0 #000;}
+  .chip:active{transform:translate(1px,1px);box-shadow:1px 1px 0 #000;}
+  .chip[aria-pressed="true"],.chip[aria-selected="true"]{background:#000;color:#fff;box-shadow:2px 2px 0 #000;}
+  .chip:focus-visible,.dial:focus-visible,.cloud:focus-visible,.qmark:focus-visible{outline:2px solid #fff;outline-offset:3px;}
+  .chip.tiny{padding:6px 8px;font-size:10px;}
 
-  .readout,.credit{background:var(--paper);color:var(--ink);border:1px solid var(--line);padding:6px 9px;}
-  .readout:empty{display:none;}
+  /* ---------- dock ---------- */
+  .dock{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:7;display:flex;align-items:center;gap:12px;}
+  .cloud{border:0;background:none;padding:0;cursor:pointer;width:84px;height:52px;position:relative;transition:transform .1s steps(2);}
+  .cloud:hover{transform:translateY(-2px) rotate(-2deg);}
+  .cloud svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;}
+  .cloud span{position:relative;font:800 12px var(--ui);color:#000;}
+  .qmark{border:0;background:none;cursor:pointer;font:800 40px/1 var(--ui);color:var(--pink);
+    -webkit-text-stroke:1.5px #000;text-shadow:2px 2px 0 #000;padding:0 2px;transition:transform .1s steps(2);}
+  .qmark:hover{transform:rotate(8deg);}
+
+  /* ---------- the strip ---------- */
+  .ctrl{
+    position:fixed;left:50%;bottom:76px;transform:translateX(-50%);z-index:6;
+    display:flex;align-items:center;gap:12px;max-width:calc(100vw - 16px);
+    padding:8px 10px 8px 8px;border:1.5px solid #000;border-radius:22px;
+    background:linear-gradient(rgba(255,255,255,.6), rgba(255,255,255,.3));
+    backdrop-filter:blur(14px) saturate(1.6);-webkit-backdrop-filter:blur(14px) saturate(1.6);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.9), 3px 3px 0 #000;
+  }
+  .ctrl[hidden]{display:none;}
+  .tabs{display:flex;flex-direction:column;gap:4px;}
+  .tabs .chip{padding:5px 9px;font-size:9.5px;text-align:left;}
+  .page{display:flex;align-items:center;gap:8px;}
+  .page[hidden]{display:none;}
+  .sep{width:1.5px;align-self:stretch;background:rgba(0,0,0,.35);}
+
+  /* dials */
+  .dwrap{display:flex;flex-direction:column;align-items:center;gap:3px;width:56px;}
+  .dial{
+    --v:0.5;position:relative;width:42px;height:42px;border-radius:50%;cursor:ns-resize;touch-action:none;
+    border:1.5px solid #000;box-shadow:2px 2px 0 #000, inset 0 1px 0 rgba(255,255,255,.8);
+    background:conic-gradient(from 225deg, var(--pink) 0deg, var(--violet) calc(var(--v) * 270deg),
+      rgba(255,255,255,.35) calc(var(--v) * 270deg) 270deg, rgba(0,0,0,.08) 270deg 360deg);
+  }
+  .dial::after{content:"";position:absolute;inset:6px;border-radius:50%;background:var(--glass);border:1.5px solid #000;}
+  .dial .g{position:absolute;inset:0;display:grid;place-items:center;font:800 14px var(--ui);z-index:1;pointer-events:none;}
+  .dial .ind{position:absolute;left:50%;top:50%;width:2px;height:21px;margin-left:-1px;margin-top:-21px;z-index:1;
+    transform-origin:50% 100%;transform:rotate(calc(-135deg + var(--v) * 270deg));pointer-events:none;}
+  .dial .ind::before{content:"";position:absolute;top:0;left:-1px;width:4px;height:7px;border-radius:2px;background:#000;}
+  .dname{font:700 9px var(--ui);letter-spacing:.1em;text-transform:uppercase;}
+  .dname b{font:600 9px var(--mono);margin-left:4px;color:rgba(0,0,0,.6);}
+
+  /* sites page */
+  .feed{display:flex;align-items:center;gap:6px;}
+  .feed input{
+    width:min(300px,46vw);font:600 11px var(--ui);color:#000;border:1.5px solid #000;border-radius:99px;
+    padding:7px 11px;background:rgba(255,255,255,.8);box-shadow:inset 0 2px 5px rgba(24,18,48,.18);
+  }
+  .feed input::placeholder{color:rgba(0,0,0,.45);}
+
+  /* ---------- the player ---------- */
+  .player{
+    position:fixed;top:14px;right:14px;z-index:5;width:min(340px,48vw);aspect-ratio:16/9;
+    border:1.5px solid #000;border-radius:14px;overflow:hidden;background:#000;box-shadow:3px 3px 0 #000;
+  }
+  .player[hidden]{display:none;}
+  .player iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+  .player .chip{position:absolute;top:6px;right:6px;padding:4px 7px;}
+
+  /* ---------- help ---------- */
+  .help{
+    position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:8;
+    width:min(400px,calc(100vw - 24px));padding:16px 18px;border:1.5px solid #000;border-radius:20px;
+    background:linear-gradient(rgba(255,255,255,.88), rgba(255,255,255,.66));
+    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:4px 4px 0 #000;
+  }
+  .help[hidden]{display:none;}
+  .help h2{font:800 18px var(--ui);margin:0 0 8px;}
+  .help dl{display:grid;grid-template-columns:auto 1fr;gap:5px 10px;margin:0 0 10px;font:600 12.5px/1.4 var(--ui);}
+  .help dt{font-weight:800;}
+  .help dd{margin:0;}
+  .help p{font:600 11.5px/1.5 var(--ui);margin:0 0 10px;color:rgba(0,0,0,.7);}
+  .help a{color:inherit;}
+
   .readout{
-    position:fixed;left:24px;bottom:22px;z-index:4;margin:0;
-    font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-variant-numeric:tabular-nums;
-    pointer-events:none;
+    position:fixed;left:20px;bottom:18px;z-index:4;margin:0;padding:5px 9px;border:1.5px solid #000;border-radius:99px;
+    background:var(--glass);box-shadow:2px 2px 0 #000;font:700 9.5px var(--ui);letter-spacing:.08em;text-transform:uppercase;
+    pointer-events:none;font-variant-numeric:tabular-nums;
   }
-  .credit{
-    position:fixed;right:24px;bottom:22px;z-index:4;margin:0;max-width:46ch;
-    font-size:11px;line-height:1.5;color:var(--ink-soft);
+  .readout:empty{display:none;}
+
+  @media (max-width:700px){
+    .readout{display:none;}
+    .ctrl{flex-direction:column;align-items:stretch;gap:8px;bottom:72px;padding:8px;}
+    .tabs{flex-direction:row;flex-wrap:wrap;}
+    .page{flex-wrap:wrap;justify-content:center;}
+    .sep{display:none;}
+    .feed{flex-wrap:wrap;justify-content:center;}
+    .feed input{width:min(300px,calc(100vw - 60px));}
+    .player{width:46vw;top:12px;right:12px;}
   }
-  .credit a{color:inherit;}
-  .forget{
-    position:fixed;right:24px;top:22px;z-index:5;font:inherit;font-size:11px;letter-spacing:.14em;
-    text-transform:uppercase;background:var(--paper);color:var(--ink);border:1px solid var(--line);
-    padding:7px 10px;cursor:pointer;
-  }
-  .forget[hidden]{display:none;}
-  @media (max-width:600px){ .credit{left:16px;right:16px;bottom:56px;max-width:none;} .readout{left:16px;bottom:16px;} }
+  @media (prefers-reduced-motion:reduce){ .chip,.cloud,.qmark{transition:none;} }
 </style>
 
-<canvas id="gl" aria-label="Your recent websites as a map of tiles, scrolling into a cyclone that tears and swallows them"></canvas>
+<canvas id="gl" aria-label="A map of websites scrolling into a portal that tears and swallows them"></canvas>
 
 <a class="home" href="/" aria-label="Sea of Grass — all studies">
   <svg viewBox="43.63 44.56 350.94 258.56" fill="currentColor" aria-hidden="true">
@@ -82,46 +145,137 @@
   </svg>
 </a>
 
-<div class="panel" id="panel">
-  <h1>Dark Puddle</h1>
-  <p><strong>Your recently viewed websites, laid out as a map and fed into a cyclone that eats them.</strong>
-    Newest sites are crisp at the top; older ones tear apart and spiral into the eye. Move the pointer to steer it.</p>
-  <p><strong>Your history stays in this tab.</strong> Websites can't see your history, so you hand it over:
-    export it from your browser and drop the file here. It's read inside this page, never uploaded or saved, and
-    it's gone when you close the tab. If you're on a shared or projected screen, remember everyone can see it.</p>
-  <p><strong>Pictures of the sites are optional.</strong> To show what each website looks like, the page asks
-    <a href="https://microlink.io">Microlink</a>, a screenshot service, for a picture of each site's home page (up to 24). That
-    sends Microlink the site names, but not the pages you visited or when. Leave it off and each site is drawn as a
-    coloured plot instead.</p>
-  <ol>
-    <li><b>Safari:</b> File → Export Browsing Data, tick History, unzip the result, drop <b>History.json</b>.</li>
-    <li><b>Chrome:</b> takeout.google.com, choose Chrome, download, drop <b>BrowserHistory.json</b>.</li>
-  </ol>
-  <label class="shots"><input type="checkbox" id="shots"> Show pictures of the sites (uses Microlink)</label>
-  <label class="drop" id="drop">Drop your history file here, or click to choose one
-    <input type="file" id="file" accept=".json,.txt,application/json,text/plain" hidden>
-  </label>
-  <button id="sample">Use a sample history (with pictures)</button>
-  <p class="status" id="status"></p>
+<div class="player" id="player" hidden>
+  <iframe id="yt" title="Video" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+  <button class="chip tiny" id="pclose" aria-label="Close video">×</button>
 </div>
 
-<button class="forget" id="forget" hidden>Forget it</button>
+<!-- ---------------------------------------------------------------- controller -->
+<div class="ctrl" id="ctrl" hidden role="dialog" aria-label="Dark Puddle controls">
+  <div class="tabs" role="tablist">
+    <button class="chip" role="tab" aria-selected="true" data-tab="sites">Sites</button>
+    <button class="chip" role="tab" aria-selected="false" data-tab="portal">Portal</button>
+    <button class="chip" role="tab" aria-selected="false" data-tab="motion">Motion</button>
+    <button class="chip" role="tab" aria-selected="false" data-tab="fx">FX</button>
+  </div>
+  <div class="sep"></div>
+
+  <div class="page" data-page="sites">
+    <button class="chip" data-set="top" aria-pressed="true">Top</button>
+    <button class="chip" data-set="sog" aria-pressed="false">Sea of Grass</button>
+    <button class="chip" data-set="mine" aria-pressed="false">Mine</button>
+    <label class="chip" for="file" title="A browser history export, read in this tab and never uploaded">History…</label>
+    <input type="file" id="file" accept=".json,.txt,application/json,text/plain" hidden>
+    <div class="feed">
+      <input id="links" spellcheck="false" autocomplete="off" aria-label="Links to feed it"
+        placeholder="paste links, or a YouTube link" />
+      <button class="chip" id="feedBtn">Feed</button>
+    </div>
+    <button class="chip" id="shots" aria-pressed="true" title="Pictures of the sites, from WordPress mshots">Pics</button>
+  </div>
+
+  <div class="page" data-page="portal" hidden id="dials-portal"></div>
+  <div class="page" data-page="motion" hidden id="dials-motion"></div>
+
+  <div class="page" data-page="fx" hidden>
+    <button class="chip" id="swallow">Swallow</button>
+    <button class="chip" id="refill">Refill</button>
+    <button class="chip" id="pause" aria-pressed="false">Pause</button>
+    <button class="chip" id="steer" aria-pressed="true">Steer</button>
+    <button class="chip" id="reset">Reset</button>
+  </div>
+</div>
+
+<div class="dock">
+  <button class="cloud" id="open" aria-label="Controls" aria-expanded="false">
+    <svg viewBox="0 0 112 70" aria-hidden="true">
+      <path d="M24 60 C8 60 6 40 20 36 C18 20 38 14 46 24 C52 8 78 8 82 26 C98 22 108 40 96 50 C104 60 92 66 84 62 L28 62 Z" transform="translate(3 3)" fill="#000"/>
+      <path d="M24 60 C8 60 6 40 20 36 C18 20 38 14 46 24 C52 8 78 8 82 26 C98 22 108 40 96 50 C104 60 92 66 84 62 L28 62 Z" fill="#9ff0c8" stroke="#000" stroke-width="2.5" stroke-linejoin="round"/>
+    </svg>
+    <span>controls</span>
+  </button>
+  <button class="qmark" id="ask" aria-label="How to play">?</button>
+</div>
+
+<div class="help" id="help" hidden role="dialog" aria-label="How to play">
+  <h2>how to play</h2>
+  <dl>
+    <dt>steer</dt><dd>move the pointer and the portal follows</dd>
+    <dt>tap</dt><dd>click the map and the eye swallows</dd>
+    <dt>cloud</dt><dd>size the eye, change the spin, feed it your own links</dd>
+    <dt>video</dt><dd>paste a YouTube link: it plays up top while its poster gets eaten below</dd>
+  </dl>
+  <p>The cyclone is after a TouchDesigner piece posted to
+    <a href="https://www.reddit.com/r/TouchDesigner/comments/1t0wkv2/using_td_to_eat_up_worlds/">r/TouchDesigner</a>
+    ("using TD to eat up worlds"), rebuilt in WebGL. The controller borrows the control surface of
+    <a href="https://tristan.design">tristan.design</a>. Site pictures come from WordPress's
+    <a href="https://developer.wordpress.com/docs/photon/">mshots</a>, which receives the addresses being shown;
+    for a history file, only the site names. Your links and settings stay in this browser.</p>
+  <button class="chip" id="gotit">Got it</button>
+</div>
+
 <p class="readout" id="readout"></p>
-<p class="credit">
-  The world-eating cyclone is after a TouchDesigner piece posted to
-  <a href="https://www.reddit.com/r/TouchDesigner/comments/1t0wkv2/using_td_to_eat_up_worlds/">r/TouchDesigner</a>
-  ("using TD to eat up worlds"): a scrolling map, a feedback loop, tearing rows and a whirlpool.
-  Rebuilt here in WebGL.
-</p>
 
 <script>
 "use strict";
 const $ = id => document.getElementById(id);
+const store = {
+  get(k){ try { return localStorage.getItem("darkpuddle:" + k); } catch (e) { return null; } },
+  set(k, v){ try { localStorage.setItem("darkpuddle:" + k, v); } catch (e) {} },
+};
 
-// ------------------------------------------------------------------ history
-// Exports differ (Safari's History.json, Chrome's BrowserHistory.json, or a
-// plain list of links), so look for any object with a web url and a time.
-function readHistory(text){
+// ------------------------------------------------------------------ the sites
+// A tile is {host, url, label, note, thumb?}: url is what gets photographed,
+// thumb is a picture to use instead (YouTube posters), note is the small text
+// at the right of the label strip.
+const TOP = ["google.com", "youtube.com", "facebook.com", "instagram.com", "wikipedia.org", "x.com",
+  "reddit.com", "amazon.com", "chatgpt.com", "tiktok.com", "linkedin.com", "netflix.com", "yahoo.com",
+  "bing.com", "whatsapp.com", "twitch.tv", "pinterest.com", "microsoft.com", "apple.com", "github.com",
+  "spotify.com", "nytimes.com", "bbc.com", "ebay.com"];
+const SOG = ["scrollwork", "front-door", "looking-glass", "packfold", "beacon", "grasset", "windrow",
+  "murmuration", "dark-puddle"];
+
+const topSites = () => TOP.map((h, i) => ({host: h, url: `https://${h}/`, label: h, note: "#" + (i + 1)}));
+const sogSites = () =>
+  [{host: "seaofgrass.studio", url: "https://seaofgrass.studio/", label: "seaofgrass.studio", note: "index"}]
+  .concat(SOG.map((s, i) => ({host: "seaofgrass.studio", url: `https://seaofgrass.studio/studies/${s}/`,
+                              label: s.replace(/-/g, " "), note: String(i + 1).padStart(2, "0")})))
+  .concat([{host: "tristan.design", url: "https://tristan.design/", label: "tristan.design", note: ""}]);
+
+function youtubeId(u){
+  try {
+    const x = new URL(u), host = x.hostname.replace(/^(www|m)\./, "");
+    let id = null;
+    if (host === "youtu.be") id = x.pathname.slice(1).split("/")[0];
+    else if (/(^|\.)youtube(-nocookie)?\.com$/.test(host))
+      id = x.searchParams.get("v") || (x.pathname.match(/\/(shorts|embed|live|v)\/([\w-]+)/) || [])[2];
+    return id && /^[\w-]{6,}$/.test(id) ? id : null;
+  } catch (e) { return null; }
+}
+function linkSites(text){
+  const out = [];
+  for (let raw of text.split(/[\s,]+/)){
+    raw = raw.trim(); if (!raw) continue;
+    if (!/^https?:\/\//i.test(raw)) raw = "https://" + raw;
+    try {
+      const u = new URL(raw);
+      if (!u.hostname.includes(".")) continue;
+      const host = u.hostname.replace(/^www\./, ""), yt = youtubeId(u.href);
+      if (yt){
+        out.push({host: "youtube.com", url: u.href, label: "▶ youtube " + yt, note: "video", yt,
+                  thumb: `https://i.ytimg.com/vi/${yt}/hqdefault.jpg`});
+        continue;
+      }
+      const path = (u.pathname + u.search).replace(/\/$/, "");
+      out.push({host, url: u.href, label: host + path, note: ""});
+    } catch (e) {}
+  }
+  return out.slice(0, 120);
+}
+
+// History exports differ (Safari's History.json, Chrome's BrowserHistory.json,
+// or a plain list of links), so look for any object with a web url and a time.
+function historySites(text){
   const visits = [];
   let data = null;
   try { data = JSON.parse(text); } catch (e) {}
@@ -131,61 +285,33 @@ function readHistory(text){
       if (!o || typeof o !== "object") return;
       const url = o.url || o.destination_url || o.URL;
       if (typeof url === "string" && /^https?:\/\//i.test(url)){
-        visits.push({url, title: o.title || o.page_title || "", t: toMs(
-          o.time_usec ?? o.visit_time ?? o.lastVisitTime ?? o.visitTime ?? o.last_visit_time ?? o.date ?? 0)});
+        visits.push({url, t: toMs(o.time_usec ?? o.visit_time ?? o.lastVisitTime ?? o.visitTime ?? o.last_visit_time ?? o.date ?? 0)});
         return;
       }
       for (const k in o) walk(o[k]);
     })(data);
   } else {
-    (text.match(/https?:\/\/[^\s"'<>]+/g) || []).forEach((url, i) => visits.push({url, title: "", t: -i}));
+    (text.match(/https?:\/\/[^\s"'<>]+/g) || []).forEach((url, i) => visits.push({url, t: -i}));
   }
-  return recentSites(visits);
-}
-
-function toMs(t){
-  t = Number(t) || 0;
-  if (t > 1e17) return (t / 1000 - 11644473600000000) / 1000;   // Windows epoch, microseconds
-  if (t > 1e14) return t / 1000;                                  // Unix microseconds
-  if (t > 1e11) return t;                                         // milliseconds
-  if (t > 1e8)  return t * 1000;                                  // seconds
-  return t;
-}
-
-// Newest first, one tile per website (its most recent visit), up to 240.
-function recentSites(visits){
   visits.sort((a, b) => b.t - a.t);
   const seen = new Map();
   for (const v of visits){
     let host;
     try { host = new URL(v.url).hostname.replace(/^www\./, ""); } catch (e) { continue; }
     if (!host || seen.has(host)) continue;
-    seen.set(host, {host, title: (v.title || "").trim(), t: v.t});
+    seen.set(host, {host, url: `https://${host}/`, label: host, note: ago(v.t)});   // home page only, never the page visited
     if (seen.size >= 240) break;
   }
   return [...seen.values()];
 }
-
-function sampleHistory(){
-  const now = Date.now(), m = 60e3;
-  const rows = [
-    ["seaofgrass.studio", "Windrow — Sea of Grass"], ["en.wikipedia.org", "Murmuration (animal behaviour)"],
-    ["github.com", "Pull requests · Sea-Of-Grass-Ltd"], ["maps.apple.com", "Directions to the hardware store"],
-    ["weather.gov", "7-day forecast"], ["docs.derivative.ca", "Feedback TOP"], ["youtube.com", "How to repot a fern"],
-    ["reddit.com", "r/TouchDesigner"], ["bandcamp.com", "New releases this week"], ["fonts.google.com", "IBM Plex Mono"],
-    ["news.ycombinator.com", "Hacker News"], ["archive.org", "Wayback Machine"], ["nasa.gov", "Image of the day"],
-    ["craigslist.org", "free stuff"], ["mdn.mozilla.org", "WebGL2RenderingContext"], ["etsy.com", "ceramic planters"],
-    ["nytimes.com", "The crossword"], ["are.na", "a channel of moss"], ["spotify.com", "Daily mix 3"],
-    ["huggingface.co", "stabilityai/sd-turbo"], ["runpod.io", "Pricing"], ["obsproject.com", "Download"],
-    ["gmail.com", "Inbox (12)"], ["calendar.google.com", "This week"], ["figma.com", "Untitled"],
-    ["pinterest.com", "pixel art towns"], ["letterboxd.com", "Watchlist"], ["usps.com", "Track a package"],
-    ["merriam-webster.com", "puddle — definition"], ["openstreetmap.org", "OpenStreetMap"],
-    ["vimeo.com", "Staff picks"], ["bbc.co.uk", "Weather"], ["discogs.com", "Marketplace"], ["shadertoy.com", "Browse"],
-    ["amazon.com", "Your orders"], ["notion.so", "Studio notes"], ["claude.ai", "New chat"], ["instagram.com", "Explore"],
-  ];
-  return rows.map(([host, title], i) => ({host, title, t: now - (i * i * 4 + i * 3 + 2) * m}));
+function toMs(t){
+  t = Number(t) || 0;
+  if (t > 1e17) return (t / 1000 - 11644473600000000) / 1000;
+  if (t > 1e14) return t / 1000;
+  if (t > 1e11) return t;
+  if (t > 1e8)  return t * 1000;
+  return t;
 }
-
 function ago(t){
   if (!t || t < 1e11) return "";
   const s = Math.max(0, (Date.now() - t) / 1000);
@@ -195,36 +321,28 @@ function ago(t){
 }
 
 // ------------------------------------------------------------------ the map
-// Each site is a plot: a picture of its home page when pictures are on (a
-// coloured block with its initial until the picture arrives, or if it never
-// does), with a label strip for its name and how long ago. Paths run between
-// the plots. Drawn small and scaled up with hard pixels, like the tiles of a
-// game map.
 function hashHue(s){ let h = 2166136261; for (const c of s) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return (h >>> 0) % 360; }
 
-function layoutSheet(sites, W){
+function layoutSheet(list0, W){
   const cols = Math.max(2, Math.round(W / 150)), tw = Math.floor(W / cols), th = Math.round(tw * 0.78);
   const maxRows = Math.floor(4000 / th);
-  let list = sites.slice(0, cols * maxRows);
-  // Repeat a short history so the map is always several screens tall.
-  while (list.length < cols * 10) list = list.concat(sites);
+  let list = list0.slice(0, cols * maxRows);
+  while (list.length < cols * 10) list = list.concat(list0);
   const rows = Math.ceil(list.length / cols);
   const c = document.createElement("canvas");
   c.width = W; c.height = rows * th;
   const g = c.getContext("2d");
-  g.fillStyle = "#c9b48a"; g.fillRect(0, 0, c.width, c.height);          // the paths
+  g.fillStyle = "#c9b48a"; g.fillRect(0, 0, c.width, c.height);
   const sheet = {c, g, list, cols, tw, th};
   list.forEach((s, i) => drawTile(sheet, i, null));
   return sheet;
 }
-
 function drawTile(sheet, i, img){
   const {g, list, cols, tw, th} = sheet, s = list[i];
   const x = (i % cols) * tw, y = Math.floor(i / cols) * th, h = hashHue(s.host);
   const px = x + 4, py = y + 4, pw = tw - 8, ph = th - 8, label = 20, picH = ph - label;
-  g.fillStyle = `hsl(${h} 45% 22%)`; g.fillRect(px - 1, py - 1, pw + 2, ph + 2);   // frame
+  g.fillStyle = `hsl(${h} 45% 22%)`; g.fillRect(px - 1, py - 1, pw + 2, ph + 2);
   if (img){
-    // Cover-fit the top of the home page into the picture area.
     const r = Math.max(pw / img.width, picH / img.height);
     g.save(); g.beginPath(); g.rect(px, py, pw, picH); g.clip();
     g.drawImage(img, px + (pw - img.width * r) / 2, py, img.width * r, img.height * r);
@@ -233,54 +351,67 @@ function drawTile(sheet, i, img){
     g.fillStyle = `hsl(${h} 60% 46%)`; g.fillRect(px, py, pw, picH);
     g.fillStyle = `hsl(${(h + 180) % 360} 70% 80%)`; g.fillRect(px + 6, py + 6, 16, 16);
     g.fillStyle = "#141311"; g.font = "500 12px 'IBM Plex Mono', monospace"; g.textBaseline = "top";
-    g.fillText(s.host[0].toUpperCase(), px + 10, py + 8);
-    g.fillStyle = "rgba(250,249,246,.85)"; g.font = "400 9px 'IBM Plex Mono', monospace";
-    g.fillText(fit(g, s.title || s.host, pw - 12), px + 6, py + 28);
+    g.fillText((s.yt ? "▶" : s.label[0]).toUpperCase(), px + 9, py + 8);
   }
-  g.fillStyle = `hsl(${h} 50% 30%)`; g.fillRect(px, py + picH, pw, label);           // label strip
+  g.fillStyle = `hsl(${h} 50% 30%)`; g.fillRect(px, py + picH, pw, label);
   g.textBaseline = "top"; g.font = "500 9px 'IBM Plex Mono', monospace"; g.fillStyle = "#faf9f6";
-  const when = ago(s.t);
-  g.fillText(fit(g, s.host, pw - 12 - (when ? g.measureText(when).width + 6 : 0)), px + 5, py + picH + 6);
-  if (when){ g.fillStyle = "rgba(250,249,246,.65)"; g.fillText(when, px + pw - 5 - g.measureText(when).width, py + picH + 6); }
+  const note = s.note || "";
+  g.fillText(fit(g, s.label, pw - 12 - (note ? g.measureText(note).width + 6 : 0)), px + 5, py + picH + 6);
+  if (note){ g.fillStyle = "rgba(250,249,246,.65)"; g.fillText(note, px + pw - 5 - g.measureText(note).width, py + picH + 6); }
 }
-
 function fit(g, s, w){
   if (g.measureText(s).width <= w) return s;
   while (s.length > 1 && g.measureText(s + "…").width > w) s = s.slice(0, -1);
   return s + "…";
 }
 
-// Home-page pictures from Microlink, a few at a time. Each one that arrives is
-// painted into every tile for that site and the map texture is refreshed.
-// Only the site's home page is asked for, never the page that was visited.
-const shotCache = new Map();
-function loadShots(sheet, onPainted){
-  const hosts = [...new Set(sheet.list.map(s => s.host))].slice(0, 24);   // Microlink's free quota is about 50 a day per visitor
-  let next = 0, active = 0, painted = 0;
+// ------------------------------------------------------------------ pictures
+// WordPress's mshots photographs a page on request. While it's still working
+// it answers with a 400x300 placeholder, which the browser then caches, so
+// each retry asks at a width one pixel wider: a new address, a fresh answer.
+// thum.io is the fallback. YouTube tiles use the video's own poster.
+const picCache = new Map();
+let shotsPainted = 0;
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+function loadImg(url){
+  return new Promise(res => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";                       // so WebGL may use it
+    img.onload = () => res(img);
+    img.onerror = () => res(null);
+    img.src = url;
+  });
+}
+async function picture(tile){
+  const key = tile.thumb || tile.url;
+  if (picCache.has(key)) return picCache.get(key);
+  const p = (async () => {
+    if (tile.thumb) return loadImg(tile.thumb);
+    for (let i = 0; i < 5; i++){
+      const img = await loadImg(`https://s0.wp.com/mshots/v1/${encodeURIComponent(tile.url)}?w=${480 + i}&h=${360}`);
+      if (img && !(img.width === 400 && img.height === 300)) return img;
+      await sleep(2500 + i * 1500);
+    }
+    return loadImg(`https://image.thum.io/get/width/480/crop/360/noanimate/${tile.url}`);
+  })();
+  picCache.set(key, p);
+  return p;
+}
+function loadPictures(sheet){
+  const tiles = [...new Map(sheet.list.map(s => [s.thumb || s.url, s])).values()].slice(0, 48);
+  let next = 0, active = 0;
   const pump = () => {
-    while (active < 3 && next < hosts.length){
-      const host = hosts[next++];
-      active++;
-      shot(host).then(img => {
-        if (img && sheet === run?.sheet){
-          sheet.list.forEach((s, i) => { if (s.host === host) drawTile(sheet, i, img); });
-          painted++; onPainted(painted);
+    while (active < 6 && next < tiles.length){
+      const t = tiles[next++]; active++;
+      picture(t).then(img => {
+        if (img && run && sheet === run.sheet){
+          sheet.list.forEach((s, i) => { if ((s.thumb || s.url) === (t.thumb || t.url)) drawTile(sheet, i, img); });
+          shotsPainted++; run.dirty = true; showReadout();
         }
       }).finally(() => { active--; pump(); });
     }
   };
   pump();
-}
-function shot(host){
-  if (!shotCache.has(host)) shotCache.set(host, new Promise(res => {
-    const img = new Image();
-    img.crossOrigin = "anonymous";                       // so WebGL may use it
-    img.onload = () => res(img.width > 8 ? img : null);
-    img.onerror = () => res(null);
-    img.src = "https://api.microlink.io/?url=" + encodeURIComponent(`https://${host}/`) +
-      "&screenshot=true&meta=false&embed=screenshot.url&viewport.width=1024&viewport.height=768&viewport.deviceScaleFactor=1";
-  }));
-  return shotCache.get(host);
 }
 
 // ------------------------------------------------------------------ WebGL
@@ -290,13 +421,14 @@ const gl = canvas.getContext("webgl2", {antialias: false, preserveDrawingBuffer:
 const VS = `#version 300 es
 in vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }`;
 
-// One frame of the cyclone, after the original: above a blobby front the
-// map is intact; behind it, last frame is dripped, spun, slipped and eaten.
+// One frame of the portal. Above a blobby front the map is intact; behind it,
+// last frame is dripped, spun around the eye, drawn in, slipped and eaten.
 const FS = `#version 300 es
 precision highp float;
 uniform sampler2D uPrev, uSheet;
 uniform vec2 uRes, uEye;
 uniform float uTime, uScroll, uSheetH, uFlow, uFront, uAspect, uPrime;
+uniform float uEyeR, uSpin, uPull, uTear, uDrip;
 out vec4 o;
 float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 float noise(vec2 p){
@@ -314,41 +446,35 @@ void main(){
   vec2 e = uv - uEye; e.x *= uAspect;
   float r = length(e);
 
-  // What's been eaten: a blobby front rising from below, ragged column by
-  // column, plus a halo around the eye so it eats wherever it's steered.
   float col = floor(gl_FragCoord.x / 4.0);
   float ragged = (hash(vec2(col, floor(uTime * 0.7))) - 0.5) * 0.05;
   float blob = fbm(vec2(uv.x * uAspect * 2.5, yd * 2.5 - uTime * 0.08));
-  float eaten = yd - uFront + (blob - 0.5) * 0.55 + ragged + smoothstep(0.3, 0.0, r) * 0.25;
+  float halo = smoothstep(0.18 + uEyeR * 3.0, 0.0, r) * 0.3;
+  float eaten = yd - uFront + (blob - 0.5) * 0.55 + ragged + halo;
   if (eaten < 0.0 || uPrime > 0.5){ o = sheet(uv); return; }
   float depth = smoothstep(0.0, 0.35, eaten);
 
-  // Last frame, carried down. Some columns run faster: the drips.
   float speed = pow(hash(vec2(col, 9.0)), 3.0);
-  vec2 q = uv + vec2(0.0, uFlow * (0.6 + 5.0 * speed * depth));
+  vec2 q = uv + vec2(0.0, uFlow * (0.6 + 5.0 * uDrip * speed * depth));
 
-  // Spun around the eye and drawn in, a little more each frame, so the
-  // spiral arms keep their texture as they wind tighter.
   vec2 d = q - uEye; d.x *= uAspect;
-  float k = clamp(1.0 - length(d) / 0.7, 0.0, 1.0);
-  float a = 0.035 * k * k * k + 0.006 * k;
+  float reach = 0.45 + uEyeR * 2.0;
+  float k = clamp(1.0 - length(d) / reach, 0.0, 1.0);
+  float a = uSpin * (0.035 * k * k * k + 0.006 * k);
   d = mat2(cos(a), -sin(a), sin(a), cos(a)) * d;
-  d *= 1.0 + 0.006 * k;
+  d *= 1.0 + 0.006 * uPull * k;
   d.x /= uAspect;
   q = uEye + d;
 
-  // Bands of rows slip sideways with hard edges.
   float band = floor(gl_FragCoord.y / 5.0), tick = floor(uTime * 6.0);
-  float slip = step(0.9 - 0.08 * depth, hash(vec2(band, tick)));
-  q.x += slip * (hash(vec2(band, tick + 3.0)) - 0.5) * 0.02 * depth;
+  float slip = step(1.0 - (0.1 + 0.08 * depth) * uTear, hash(vec2(band, tick)));
+  q.x += slip * (hash(vec2(band, tick + 3.0)) - 0.5) * 0.02 * depth * min(uTear, 1.5);
 
-  vec4 prev = texture(uPrev, clamp(q, 0.0, 1.0));   // edges stretch rather than leak black
-  float feed = 1.0 - smoothstep(0.0, 0.025, eaten);  // fresh map at the front
+  vec4 prev = texture(uPrev, clamp(q, 0.0, 1.0));
+  float feed = 1.0 - smoothstep(0.0, 0.025, eaten);
   o = mix(prev, sheet(uv), feed);
-  o.rgb *= smoothstep(0.015, 0.08, r);               // and the eye swallows it
+  o.rgb *= smoothstep(uEyeR * 0.25, uEyeR, r);
 }`;
-
-
 const BLIT = `#version 300 es
 precision highp float;
 uniform sampler2D uTex; uniform vec2 uRes; out vec4 o;
@@ -376,8 +502,7 @@ function texture(w, h, src){
     gl.texParameteri(gl.TEXTURE_2D, k, v);
   return t;
 }
-
-let sites = null, run = null, P, B;
+let P, B;
 if (gl){
   P = program(FS); B = program(BLIT);
   gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
@@ -385,24 +510,90 @@ if (gl){
   gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
 }
 
+// ------------------------------------------------------------------ dials
+// Every dial is 0..1; map() turns it into the value the shader wants.
+const DIALS = {
+  portal: [
+    {id: "eye",    glyph: "◉", name: "eye",    v: 0.22, map: v => 0.01 + v * 0.24},
+    {id: "spin",   glyph: "↻", name: "spin",   v: 0.5,  map: v => v * 2},
+    {id: "pull",   glyph: "⊙", name: "pull",   v: 0.5,  map: v => v * 2},
+    {id: "height", glyph: "▲", name: "height", v: 0.6,  map: v => 0.65 - v * 0.55},
+  ],
+  motion: [
+    {id: "speed",  glyph: "→", name: "speed",  v: 0.3,  map: v => v * 60},
+    {id: "drip",   glyph: "⇣", name: "drip",   v: 0.5,  map: v => v * 2},
+    {id: "tear",   glyph: "≋", name: "tear",   v: 0.5,  map: v => v * 2},
+    {id: "pixel",  glyph: "▦", name: "pixels", v: 0.25, map: v => 1 + Math.round(v * 4)},
+  ],
+};
+const D = {};
+for (const group in DIALS) for (const d of DIALS[group]){
+  d.def = d.v;
+  const saved = parseFloat(store.get("knob:" + d.id));
+  if (!isNaN(saved)) d.v = Math.min(1, Math.max(0, saved));
+  D[d.id] = d;
+}
+const val = id => D[id].map(D[id].v);
+
+function makeDial(d, host){
+  const wrap = document.createElement("div"); wrap.className = "dwrap";
+  wrap.innerHTML = `<div class="dial" tabindex="0" role="slider" aria-label="${d.name}" aria-valuemin="0" aria-valuemax="100">
+      <span class="g" aria-hidden="true">${d.glyph}</span><i class="ind"></i></div>
+    <span class="dname">${d.name}<b></b></span>`;
+  host.appendChild(wrap);
+  const el = wrap.querySelector(".dial"), out = wrap.querySelector("b");
+  d.paint = () => {
+    el.style.setProperty("--v", d.v);
+    out.textContent = Math.round(d.v * 100);
+    el.setAttribute("aria-valuenow", Math.round(d.v * 100));
+  };
+  const set = v => {
+    d.v = Math.min(1, Math.max(0, v)); d.paint(); store.set("knob:" + d.id, d.v.toFixed(3));
+    if (d.id === "pixel") rebuildSoon();
+  };
+  let start = null;
+  el.addEventListener("pointerdown", e => { el.setPointerCapture(e.pointerId); start = {y: e.clientY, v: d.v}; el.focus(); e.preventDefault(); });
+  el.addEventListener("pointermove", e => { if (start) set(start.v + (start.y - e.clientY) / 140); });
+  el.addEventListener("pointerup", () => { start = null; });
+  el.addEventListener("pointercancel", () => { start = null; });
+  el.addEventListener("wheel", e => { e.preventDefault(); set(d.v - Math.sign(e.deltaY) * 0.03); }, {passive: false});
+  el.addEventListener("keydown", e => {
+    const step = e.shiftKey ? 0.1 : 0.02;
+    if (e.key === "ArrowUp" || e.key === "ArrowRight"){ set(d.v + step); e.preventDefault(); }
+    if (e.key === "ArrowDown" || e.key === "ArrowLeft"){ set(d.v - step); e.preventDefault(); }
+    if (e.key === "Home"){ set(0); e.preventDefault(); }
+    if (e.key === "End"){ set(1); e.preventDefault(); }
+  });
+  d.paint();
+}
+DIALS.portal.forEach(d => makeDial(d, $("dials-portal")));
+DIALS.motion.forEach(d => makeDial(d, $("dials-motion")));
+
+// ------------------------------------------------------------------ the loop
+let sites = [], setName = "", run = null, paused = false, steer = true, gulp = 0;
+const picsOn = () => $("shots").getAttribute("aria-pressed") === "true";
+
 function build(){
-  if (!sites) return;
-  const px = Math.max(2, Math.round(innerWidth / 520));             // size of one "pixel"
+  if (!gl || !sites.length) return;
+  const px = Math.max(1, Math.max(2, Math.round(innerWidth / 520)) + val("pixel") - 2);
   const W = Math.ceil(innerWidth / px), H = Math.ceil(innerHeight / px);
   canvas.width = W; canvas.height = H;
   const sheet = layoutSheet(sites, W);
+  if (run){ run.tex.forEach(t => gl.deleteTexture(t)); gl.deleteTexture(run.sheetTex); }
   const tex = [texture(W, H), texture(W, H)], fbo = tex.map(t => {
     const f = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, f);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t, 0);
     gl.clearColor(0, 0, 0, 1); gl.clear(gl.COLOR_BUFFER_BIT); return f;
   });
-  if (run && run.sheetTex) gl.deleteTexture(run.sheetTex);
-  run = {W, H, px, tex, fbo, i: 0, sheet, sheetTex: texture(sheet.c.width, sheet.c.height, sheet.c),
-         sheetH: sheet.c.height, scroll: 0, eye: [0.5, 0.24], target: [0.5, 0.24], dirty: false};
-  if (useShots) loadShots(sheet, n => { run.dirty = true; shotsPainted = n; showReadout(); });
+  const eye = run ? run.eye : [0.5, 0.24], target = run ? run.target : [0.5, 0.24];
+  run = {W, H, tex, fbo, i: 0, sheet, sheetTex: texture(sheet.c.width, sheet.c.height, sheet.c),
+         sheetH: sheet.c.height, scroll: 0, eye, target, dirty: false, primed: false};
+  shotsPainted = 0;
+  if (picsOn()) loadPictures(sheet);
+  showReadout();
 }
+let rt; function rebuildSoon(){ clearTimeout(rt); rt = setTimeout(build, 250); }
 
-// Re-upload the map when pictures have arrived, at most a few times a second.
 setInterval(() => {
   if (!run || !run.dirty) return;
   run.dirty = false;
@@ -410,15 +601,17 @@ setInterval(() => {
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, run.sheet.c);
 }, 300);
 
-let last = 0;
+let last = 0, clock = 0;
 function frame(now){
   requestAnimationFrame(frame);
-  if (!run) return;
   const dt = Math.min(0.05, (now - last) / 1000 || 0.016); last = now;
-  const speed = 18;                                                  // map pixels per second
+  if (!run || paused) return;
+  clock += dt;
+  const speed = val("speed");
   run.scroll += speed * dt;
   run.eye[0] += (run.target[0] - run.eye[0]) * Math.min(1, dt * 2.5);
   run.eye[1] += (run.target[1] - run.eye[1]) * Math.min(1, dt * 2.5);
+  gulp = Math.max(0, gulp - dt * 1.4);
 
   const a = run.i, b = 1 - a;
   gl.useProgram(P.p); gl.viewport(0, 0, run.W, run.H);
@@ -427,13 +620,18 @@ function frame(now){
   gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, run.sheetTex); gl.uniform1i(P.u.uSheet, 1);
   gl.uniform2f(P.u.uRes, run.W, run.H);
   gl.uniform2f(P.u.uEye, run.eye[0], run.eye[1]);
-  gl.uniform1f(P.u.uTime, now / 1000);
+  gl.uniform1f(P.u.uTime, clock);
   gl.uniform1f(P.u.uScroll, run.scroll);
   gl.uniform1f(P.u.uSheetH, run.sheetH);
   gl.uniform1f(P.u.uFlow, speed * dt / run.H);
-  gl.uniform1f(P.u.uFront, 0.33);              // the eaten edge, from the top
+  gl.uniform1f(P.u.uFront, val("height"));
   gl.uniform1f(P.u.uAspect, run.W / run.H);
   gl.uniform1f(P.u.uPrime, run.primed ? 0 : 1);
+  gl.uniform1f(P.u.uEyeR, val("eye") * (1 + Math.sin(Math.min(1, gulp) * Math.PI) * 1.6));
+  gl.uniform1f(P.u.uSpin, val("spin") * (1 + gulp * 2));
+  gl.uniform1f(P.u.uPull, val("pull") * (1 + gulp * 3));
+  gl.uniform1f(P.u.uTear, val("tear"));
+  gl.uniform1f(P.u.uDrip, val("drip"));
   run.primed = true;
   gl.drawArrays(gl.TRIANGLES, 0, 3);
 
@@ -445,47 +643,116 @@ function frame(now){
 }
 requestAnimationFrame(frame);
 
-// ------------------------------------------------------------------ wiring
-let useShots = false, shotsPainted = 0, readoutLabel = "";
-async function start(list, label, shots){
-  if (!gl){ $("status").textContent = "This browser doesn't support WebGL2, which the cyclone needs."; return; }
-  if (!list.length){ $("status").textContent = "No websites found in that file. Is it the history export?"; return; }
-  sites = list; useShots = shots; readoutLabel = label;
-  await document.fonts.ready;
-  build();
-  $("panel").hidden = true;
-  $("forget").hidden = false;
-  showReadout();
-}
 function showReadout(){
-  const newest = ago(sites[0].t);
-  $("readout").textContent = `${readoutLabel} · ${sites.length} sites${newest ? " · newest " + newest : ""}` +
-    (useShots ? ` · ${shotsPainted} pictures` : "") + " · move to steer";
+  $("readout").textContent = `${setName} · ${sites.length} ${sites.length === 1 ? "site" : "sites"}` +
+    (picsOn() ? ` · ${shotsPainted} pics` : "");
 }
 
-function loadFile(f){
-  if (!f) return;
-  $("status").textContent = "Reading…";
-  const r = new FileReader();
-  r.onload = () => start(readHistory(String(r.result)), "your history", $("shots").checked);
-  r.onerror = () => { $("status").textContent = "That file couldn't be read."; };
-  r.readAsText(f);
+// ------------------------------------------------------------------ the video
+// A YouTube link plays up here, in its own frame. Browsers don't let a page
+// read pixels out of another site's video, so the player itself can't be
+// pulled into the portal; its poster tile in the map is what gets eaten.
+function showVideo(id){
+  const f = $("yt"), src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&rel=0&playsinline=1`;
+  if (f.getAttribute("src") !== src) f.src = src;
+  $("player").hidden = false;
 }
+function hideVideo(){ $("player").hidden = true; $("yt").removeAttribute("src"); }
+$("pclose").addEventListener("click", hideVideo);
 
-$("file").addEventListener("change", e => loadFile(e.target.files[0]));
-const drop = $("drop");
-drop.addEventListener("dragover", e => { e.preventDefault(); drop.classList.add("over"); });
-drop.addEventListener("dragleave", () => drop.classList.remove("over"));
-drop.addEventListener("drop", e => { e.preventDefault(); drop.classList.remove("over"); loadFile(e.dataTransfer.files[0]); });
-addEventListener("dragover", e => e.preventDefault());
-addEventListener("drop", e => { e.preventDefault(); if ($("panel").hidden) return; loadFile(e.dataTransfer.files[0]); });
-// The sample is made up, so it always shows pictures.
-$("sample").addEventListener("click", () => start(sampleHistory(), "sample history", true));
-$("forget").addEventListener("click", () => location.reload());     // drops everything held in memory
+// ------------------------------------------------------------------ choosing sites
+function useSet(name){
+  document.querySelectorAll("[data-set]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.set === name)));
+  if (name === "top"){ sites = topSites(); setName = "top sites"; hideVideo(); }
+  else if (name === "sog"){ sites = sogSites(); setName = "sea of grass"; hideVideo(); }
+  else if (name === "mine"){
+    const list = linkSites(store.get("links") || "");
+    if (!list.length){ $("links").focus(); $("links").placeholder = "paste a few links first, then Feed"; return; }
+    sites = list; setName = "my links";
+    const v = list.find(s => s.yt);
+    if (v) showVideo(v.yt); else hideVideo();
+  }
+  store.set("set", name);
+  build();
+}
+document.querySelectorAll("[data-set]").forEach(b => b.addEventListener("click", () => useSet(b.dataset.set)));
 
-addEventListener("pointermove", e => {
-  if (!run) return;
-  run.target = [e.clientX / innerWidth, Math.max(0.08, Math.min(0.7, 1 - e.clientY / innerHeight))];
+// Feed adds what's in the box to "my links" (newest first) and switches to it.
+function feed(){
+  const fresh = $("links").value.trim();
+  if (!fresh) { useSet("mine"); return; }
+  const have = store.get("links") || "";
+  store.set("links", (fresh + "\n" + have).trim());
+  $("links").value = "";
+  useSet("mine");
+}
+$("feedBtn").addEventListener("click", feed);
+$("links").addEventListener("keydown", e => { if (e.key === "Enter") feed(); });
+$("shots").addEventListener("click", e => {
+  const on = e.currentTarget.getAttribute("aria-pressed") !== "true";
+  e.currentTarget.setAttribute("aria-pressed", String(on)); store.set("pics", on ? "1" : "0"); build();
 });
-let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(build, 200); });
+
+$("file").addEventListener("change", e => {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    const list = historySites(String(r.result));
+    if (!list.length){ alert("No websites found in that file. Is it a browser history export?"); return; }
+    document.querySelectorAll("[data-set]").forEach(b => b.setAttribute("aria-pressed", "false"));
+    $("shots").setAttribute("aria-pressed", "false");        // the visitor turns pictures on for their own history
+    hideVideo(); sites = list; setName = "your history"; build();
+  };
+  r.readAsText(f);
+  e.target.value = "";
+});
+
+// ------------------------------------------------------------------ the controller
+function openCtrl(open){ $("ctrl").hidden = !open; $("open").setAttribute("aria-expanded", String(open)); }
+$("open").addEventListener("click", () => openCtrl($("ctrl").hidden));
+document.querySelectorAll("[data-tab]").forEach(t => t.addEventListener("click", () => {
+  document.querySelectorAll("[data-tab]").forEach(o => o.setAttribute("aria-selected", String(o === t)));
+  document.querySelectorAll("[data-page]").forEach(p => p.hidden = p.dataset.page !== t.dataset.tab);
+}));
+
+const swallow = () => { gulp = 1; };
+const refill = () => { if (run) run.primed = false; };
+$("swallow").addEventListener("click", swallow);
+$("refill").addEventListener("click", refill);
+$("pause").addEventListener("click", e => { paused = !paused; e.currentTarget.setAttribute("aria-pressed", String(paused)); });
+$("steer").addEventListener("click", e => {
+  steer = !steer; e.currentTarget.setAttribute("aria-pressed", String(steer));
+  if (!steer && run) run.target = [0.5, 0.24];
+});
+$("reset").addEventListener("click", () => {
+  for (const id in D){ D[id].v = D[id].def; D[id].paint(); store.set("knob:" + id, D[id].v); }
+  build();
+});
+
+const overUI = t => t.closest && t.closest(".ctrl, .dock, .help, .home, .player");
+addEventListener("pointermove", e => {
+  if (!run || !steer || overUI(e.target)) return;
+  run.target = [e.clientX / innerWidth, Math.max(0.08, Math.min(0.75, 1 - e.clientY / innerHeight))];
+});
+canvas.addEventListener("click", swallow);
+addEventListener("keydown", e => {
+  if (e.target.closest && e.target.closest("input, .dial")) return;
+  if (e.key === " "){ swallow(); e.preventDefault(); }
+  else if (e.key === "r" || e.key === "R") refill();
+  else if (e.key === "p" || e.key === "P") $("pause").click();
+  else if (e.key === "Escape"){ openCtrl(false); $("help").hidden = true; }
+});
+addEventListener("resize", rebuildSoon);
+$("ask").addEventListener("click", () => { $("help").hidden = !$("help").hidden; });
+$("gotit").addEventListener("click", () => { $("help").hidden = true; store.set("helped", "1"); });
+
+// ------------------------------------------------------------------ go
+(async () => {
+  if (!gl){ $("readout").textContent = "this browser doesn't support WebGL2, which the portal needs"; return; }
+  await document.fonts.ready;
+  if (store.get("pics") === "0") $("shots").setAttribute("aria-pressed", "false");
+  const s = store.get("set");
+  useSet(s === "sog" || (s === "mine" && linkSites(store.get("links") || "").length) ? s : "top");
+  if (!store.get("helped")) $("help").hidden = false;
+})();
 </script>
