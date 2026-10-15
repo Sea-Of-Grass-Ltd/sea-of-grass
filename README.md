@@ -19,6 +19,7 @@ studies/
   windrow/index.html          Study 07 — self-contained, ~13 KB; MediaPipe and its hand model from CDNs
   murmuration/                Study 08 — prose page + 4 captured frames, ~230 KB
   dark-puddle/index.html      Study 09 — self-contained, ~25 KB, WebGL2; optional site pictures from Microlink
+  fever/index.html            Study 10 — self-contained, ~30 KB, WebGL2; Fantasmagoria's spell tool, Dark Puddle as the first spell
 talaria/index.html            download page for Talaria, the studio's task app (unlisted)
 404.html                      not-found page; also sends /Talaria/ etc. to /talaria/
 assets/
