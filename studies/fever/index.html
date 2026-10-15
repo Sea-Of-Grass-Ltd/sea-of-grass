@@ -486,10 +486,9 @@ if (gl){
 
 // ------------------------------------------------------------------ the suburb
 // An endless liminal street in 3D: pastel houses down both sides of a grey
-// road, lamps on the right, a hard blue sky, and a lawn of real grass that
-// sways and parts round the pointer. The camera walks toward the vanishing
-// point and lots behind it are moved to the far end, so it never runs out.
-// three.js comes from a CDN on first use.
+// road, lamps on the right, flat green lawns, a hard blue sky. The camera
+// walks toward the vanishing point and lots behind it are moved to the far
+// end, so it never runs out. three.js comes from a CDN on first use.
 //
 // The spell is not a picture laid over the screen: it lives in the scene.
 // Its eye sits on whatever surface is under the pointer and rides over
@@ -671,7 +670,6 @@ function loadSuburb(){
     r.domElement.setAttribute("aria-label", "An endless suburb, and whatever spell Fever is casting on it");
     document.body.insertBefore(r.domElement, $("gl"));
     const scene = new T.Scene();
-    const phone = innerWidth < 700;
 
     const sky = document.createElement("canvas"); sky.width = 2; sky.height = 512;
     const sg = sky.getContext("2d"), grad = sg.createLinearGradient(0, 0, 0, 512);
@@ -977,82 +975,6 @@ function loadSuburb(){
       if (i % 3 === 1){ const l = lamp(); l.position.set(6.2, 0, -i * LOT + 3); scene.add(l); things.push(l); }
     }
 
-    // ---- grass: blades that sway in the wind, part round the pointer (spell
-    // or no spell) and go wherever the spell sends the lawn. They're laid out
-    // once, 140 deep, and wrap round the camera as it walks. The lawns, from
-    // the curb to just past the houses, are mown: short flecks in mixed
-    // greens. Beyond them, at the sides, the grass grows long.
-    const MOWN = 21;                                       // how far out the mowing goes
-    const SHORT = phone ? 16000 : 48000, LONG = phone ? 9000 : 30000, BLADES = SHORT + LONG, DEEP = 140;
-    const bladeG = new T.InstancedBufferGeometry();
-    const bl = [[-1, 0], [1, 0], [-0.75, 0.35], [0.75, 0.35], [-0.4, 0.7], [0.4, 0.7], [0, 1]];
-    bladeG.setAttribute("position", new T.Float32BufferAttribute(bl.flatMap(([x, y]) => [x, y, 0]), 3));
-    bladeG.setIndex([0, 1, 3, 0, 3, 2, 2, 3, 5, 2, 5, 4, 4, 5, 6]);
-    const base = new Float32Array(BLADES * 3), brnd = new Float32Array(BLADES * 3);
-    for (let i = 0; i < BLADES; i++){
-      const s = Math.random() < 0.5 ? -1 : 1;
-      const x = i < SHORT ? 5.1 + Math.random() * (MOWN + 1 - 5.1) : MOWN - 1 + Math.pow(Math.random(), 1.4) * 34;
-      base.set([s * x, 0, -Math.random() * DEEP], i * 3);
-      brnd.set([Math.random(), Math.random(), Math.random()], i * 3);
-    }
-    bladeG.setAttribute("aBase", new T.InstancedBufferAttribute(base, 3));
-    bladeG.setAttribute("aRand", new T.InstancedBufferAttribute(brnd, 3));
-    bladeG.instanceCount = BLADES;
-    const lawnKind = kinds["lawn"];
-    const bladeU = Object.assign({}, U, T.UniformsUtils.clone(T.UniformsLib.fog), {
-      uHit: lawnKind.hit, uGlow: lawnKind.glow, uCamZ: {value: 0}, uPtr: {value: new T.Vector3(0, -99, 0)}, uPtrOn: {value: 0},
-      uRoot: {value: new T.Color(0x1f6b1d)}, uTip: {value: new T.Color(0x86d64c)},
-    });
-    const bladeM = new T.ShaderMaterial({
-      uniforms: bladeU, fog: true, side: T.DoubleSide,
-      vertexShader: `
-        uniform float uCamZ, uPtrOn; uniform vec3 uPtr, uRoot, uTip;
-        attribute vec3 aBase;
-        varying float vT; varying vec3 vCol;
-        ${SPELL_GLSL}
-        #include <fog_pars_vertex>
-        void main(){
-          vec3 b = vec3(aBase.x, 0.0, uCamZ + 12.0 - mod(uCamZ + 12.0 - aBase.z, ${DEEP}.0));
-          // mown on the lawns, with a ragged edge where the mowing stops
-          float edge = ${MOWN}.0 + (fract(sin(floor(b.z * 0.8) * 91.7) * 4375.5) - 0.5) * 2.5;
-          float tall = smoothstep(edge - 0.6, edge + 0.6, abs(b.x));
-          float h = mix(0.05 + aRand.x * 0.09, 0.45 + aRand.x * 0.6, tall);
-          float wd = mix(0.07 + aRand.z * 0.05, 0.06 + aRand.z * 0.04, tall), t = position.y, a = aRand.y * 6.2832;
-          vec3 local = vec3(cos(a) * position.x * wd, t * h, sin(a) * position.x * wd);
-          vec2 wind = vec2(1.0, 0.35) * (sin(uTime * 1.6 + b.x * 0.31 + b.z * 0.23) * 0.3 + sin(uTime * 3.7 + (b.x - b.z) * 1.7) * 0.1);
-          vec2 d = b.xz - uPtr.xz;
-          vec2 push = uPtrOn * normalize(d + 1e-4) * smoothstep(3.2, 0.0, length(d)) * 1.6;
-          vec2 bend = (wind + push) * t * t * h;
-          vec3 w = b + local + vec3(bend.x, -0.4 * dot(bend, bend) / max(h, 0.1), bend.y);
-          w = spellAt(w, b, vec3(0.0, 1.0, 0.0));
-          vT = t; vCol = mix(uRoot, uTip, t) * (0.75 + 0.5 * aRand.z);
-          // the mown flecks: lighter and darker greens, a few gone straw-yellow
-          vec3 fleck = mix(uRoot, uTip, aRand.z) * (0.7 + 0.7 * aRand.x);
-          fleck = mix(fleck, vec3(0.55, 0.6, 0.12), step(0.93, fract(aRand.y * 13.0)) * 0.6);
-          vCol = mix(fleck, vCol, tall);
-          vec4 mvPosition = viewMatrix * vec4(w, 1.0);
-          gl_Position = projectionMatrix * mvPosition;
-          #include <fog_vertex>
-        }`,
-      fragmentShader: `
-        uniform float uGlow, uSpell;
-        varying float vT, vHole, vBreak, vWave; varying vec3 vCol;
-        #include <common>
-        #include <fog_pars_fragment>
-        void main(){
-          vec3 c = vCol;
-          if (uSpell > 1.5) c = mix(c, vec3(0.06, 0.3, 0.5), 0.4 * vBreak) + vec3(0.8, 0.9, 1.0) * max(vWave, 0.0) * 0.4;
-          c *= 1.0 - smoothstep(0.0, 0.9, vHole);
-          c = mix(c, vec3(0.62, 0.94, 0.78), 0.45 * uGlow);
-          gl_FragColor = vec4(c, 1.0);
-          #include <colorspace_fragment>
-          #include <fog_fragment>
-        }`,
-    });
-    const grass = new T.Mesh(bladeG, bladeM);
-    grass.frustumCulled = false;
-    scene.add(grass);
-
     const picked = new Set();
     const ray = new T.Raycaster(); ray.layers.set(2);
     const ndc = new T.Vector2(), nm = new T.Matrix3();
@@ -1070,7 +992,7 @@ function loadSuburb(){
 
     // The eye and its wake.
     const eye = new T.Vector3(0, -999, 0), eyeN = new T.Vector3(0, 1, 0);
-    let present = 0, sinceDrop = 0, part = 0;
+    let present = 0, sinceDrop = 0;
 
     suburb = {
       canvas: r.domElement, picked, hover: null,
@@ -1080,7 +1002,7 @@ function loadSuburb(){
       },
       show(v){ r.domElement.hidden = !v; },
       // One frame: walk, move the eye to the surface under the pointer, drop
-      // a wake point now and then, part the grass, set the dials, draw.
+      // a wake point now and then, set the dials, draw.
       frame(dt, o){
         camera.position.z -= o.walk;
         const cz = camera.position.z;
@@ -1113,11 +1035,6 @@ function loadSuburb(){
         tr[0].set(eye.x, eye.y, eye.z, present);
         tn[0].copy(eyeN);
         for (let i = 1; i < TRAIL; i++) tr[i].w = Math.min(tr[i].w, present * (1 - i / TRAIL));
-        // The grass parts round the pointer when it's on the lawn or the road.
-        const g = o.ptr ? hitAt(o.ptr[0], o.ptr[1]) : null;
-        if (g && (g.kind === "lawn" || g.kind === "road")) bladeU.uPtr.value.lerp(g.point, part > 0.05 ? Math.min(1, dt * 12) : 1);
-        part += ((g && (g.kind === "lawn" || g.kind === "road") ? 1 : 0) - part) * Math.min(1, dt * 5);
-        bladeU.uPtrOn.value = part; bladeU.uCamZ.value = cz;
         U.uR.value = o.R; U.uSpin.value = o.spin; U.uPull.value = o.pull; U.uSink.value = o.sink;
         U.uSpell.value = o.spell; U.uBurst.value = o.burst; U.uTumble.value = o.tumble; U.uFall.value = o.fall; U.uShrink.value = o.shrink;
         U.uAmp.value = o.amp; U.uWave.value = o.wave; U.uRipFlow.value = o.flow;
@@ -1321,7 +1238,6 @@ function frame(now){
       : spell.id === "ripple" ? {spell: 2, R: val("spread") * swell} : {spell: 0}),
     burst: val("burst") * (1 + gulp * 1.5), tumble: val("tumble"), fall: val("fall"), shrink: val("shrink"),
     amp: val("swell") * (1 + gulp * 2), wave: val("wave"), flow: val("flow"),
-    ptr: pointer,
   });
   sky += ((suburb.onSky && steer ? 1 : 0) - sky) * Math.min(1, dt * 3);
   if (sky > 0.01 && run){
