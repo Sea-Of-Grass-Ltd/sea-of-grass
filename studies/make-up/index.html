@@ -1388,7 +1388,7 @@ function newLayer(id){
 }
 function loadLayers(){
   try {
-    const s = JSON.parse(store.get("layers") || "null");
+    const s = JSON.parse(store.get("stack") || "null");
     if (Array.isArray(s) && s.length && s.every(l => BY_ID[l.fx]) && s.every(l => l.motion)){
       for (const L of s){                                  // settings lists that have changed shape start fresh
         const e = BY_ID[L.fx];
@@ -1399,13 +1399,13 @@ function loadLayers(){
       return s;
     }
   } catch (e) {}
-  // to start: watercolour washes, a pencil scribble multiplied over them, and a dreamy grade on top
-  const g = newLayer("grade"), p = newLayer("pencil"), w = newLayer("watercolour");
-  p.mode = 1; p.opacity = 0.9;
-  return [g, p, w];
+  // to start: one grade, its hues spinning fast
+  const g = newLayer("grade");
+  g.motion.spin = 0.95;
+  return [g];
 }
 layers = loadLayers();
-const save = () => store.set("layers", JSON.stringify(layers));
+const save = () => store.set("stack", JSON.stringify(layers));
 
 function renderLayers(){
   const ol = $("stack"); ol.innerHTML = "";
@@ -1699,6 +1699,7 @@ renderLayers();
 (async () => {
   await document.fonts.ready;
   useStreet();
-  if (!store.get("helped")) $("help").hidden = false; else setOn(true);
+  setOn(true);                                             // make-up starts on
+  if (!store.get("helped")) $("help").hidden = false;
 })();
 </script>
