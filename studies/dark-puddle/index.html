@@ -33,6 +33,7 @@
   /* ---------- the video, full screen, under the canvas ---------- */
   .player{position:fixed;inset:0;z-index:0;background:#000;overflow:hidden;}
   .player[hidden]{display:none;}
+  video#live{position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;}
   .player iframe{
     position:absolute;top:50%;left:50%;border:0;pointer-events:none;
     width:max(100vw, 177.78vh);height:max(100vh, 56.25vw);transform:translate(-50%,-50%);
@@ -64,6 +65,7 @@
   .dockb .dot{width:10px;height:10px;border-radius:50%;background:var(--mint);box-shadow:0 0 12px var(--mint);}
   .dockb[aria-expanded="true"] .dot{background:#000;box-shadow:none;}
   .dockb.q{padding:11px 13px;font-size:14px;}
+  .dockb#sound[aria-pressed="true"] .dot{background:#6b6966;box-shadow:none;}
 
   /* ---------- the strip ---------- */
   .ctrl{
@@ -107,6 +109,25 @@
   .feed input:focus{border-color:var(--mint);}
   .feed input::placeholder{color:rgba(255,255,255,.45);}
 
+  /* the "more" menu, above the strip */
+  .menu{
+    position:absolute;right:10px;bottom:calc(100% + 8px);min-width:210px;padding:6px;
+    background:var(--glass);border:1px solid var(--edge);border-radius:14px;box-shadow:var(--soft);
+    backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3);
+    display:flex;flex-direction:column;gap:1px;
+  }
+  .menu[hidden]{display:none;}
+  .mi{
+    font:700 10.5px/1 var(--ui);letter-spacing:.08em;text-transform:uppercase;color:#fff;text-align:left;
+    background:none;border:0;border-radius:9px;padding:9px 11px;cursor:pointer;
+    display:flex;justify-content:space-between;align-items:center;gap:14px;white-space:nowrap;
+  }
+  .mi:hover{background:rgba(255,255,255,.1);}
+  .mi:focus-visible{outline:2px solid var(--mint);outline-offset:-2px;}
+  .mi i{font-style:normal;color:var(--mint);}
+  .mi.sep{height:1px;padding:0;margin:4px 6px;background:var(--edge);pointer-events:none;}
+  @media (max-width:700px){ .menu{left:10px;right:10px;} }
+
   /* ---------- help ---------- */
   .help{
     position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:8;
@@ -117,6 +138,7 @@
   .help h2{font:800 18px var(--ui);margin:0 0 10px;}
   .help dl{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;margin:0 0 12px;font:600 12.5px/1.45 var(--ui);}
   .help dt{color:var(--mint);}
+  .help b{color:#fff;}
   .help dd{margin:0;}
   .help p{font:600 11.5px/1.55 var(--ui);margin:0 0 12px;color:rgba(255,255,255,.65);}
   .help a{color:#fff;}
@@ -153,6 +175,8 @@
   @media (prefers-reduced-motion:reduce){ .chip,.dockb{transition:none;} }
 </style>
 
+<video id="live" playsinline loop hidden></video>
+
 <div class="player" id="player" hidden>
   <iframe id="yt" title="Video" allow="autoplay; encrypted-media" referrerpolicy="strict-origin-when-cross-origin"></iframe>
 </div>
@@ -178,19 +202,17 @@
   <div class="sep"></div>
 
   <div class="page" data-page="sites">
-    <button class="chip" data-set="search" aria-pressed="false" id="searchBtn" hidden>Search</button>
-    <button class="chip" data-set="top" aria-pressed="true">Top</button>
-    <button class="chip" data-set="sog" aria-pressed="false">Sea of Grass</button>
-    <button class="chip" data-set="mine" aria-pressed="false">Mine</button>
-    <button class="chip" data-set="video" aria-pressed="false" id="videoBtn" hidden>Video</button>
-    <label class="chip" for="file" title="A browser history export, read in this tab and never uploaded">History…</label>
-    <input type="file" id="file" accept=".json,.txt,application/json,text/plain" hidden>
     <div class="feed">
-      <input id="links" spellcheck="false" autocomplete="off" aria-label="Links to feed it"
+      <input id="links" spellcheck="false" autocomplete="off" aria-label="Feed it"
         placeholder="a subject, links, or a YouTube link" />
       <button class="chip" id="feedBtn">Go</button>
     </div>
-    <button class="chip" id="shots" aria-pressed="true" title="Pictures of the sites, from WordPress mshots">Pics</button>
+    <button class="chip" id="liveYt" hidden title="Opens the video in its own window and asks to share it">Eat it live</button>
+    <label class="chip" for="add" title="Add pictures or a video from your computer">+</label>
+    <input type="file" id="add" accept="image/*,video/*" multiple hidden>
+    <button class="chip" id="more" aria-haspopup="menu" aria-expanded="false">more ▾</button>
+    <input type="file" id="file" accept=".json,.txt,application/json,text/plain" hidden>
+    <div class="menu" id="menu" hidden role="menu"></div>
   </div>
 
   <div class="page" data-page="portal" hidden id="dials-portal"></div>
@@ -208,6 +230,7 @@
 <div class="dock">
   <button class="dockb" id="open" aria-label="Controls" aria-expanded="false"><span class="dot"></span>controls</button>
   <button class="dockb q" id="ask" aria-label="How to play">?</button>
+  <button class="dockb" id="sound" aria-pressed="false" title="Mute or unmute the video"><span class="dot"></span><span id="soundLabel">sound</span></button>
 </div>
 
 <div class="help" id="help" hidden role="dialog" aria-label="How to play">
@@ -222,8 +245,12 @@
     <dt>tap</dt><dd>click the map and the eye swallows</dd>
     <dt>feed</dt><dd>type a subject and it eats pictures of it; paste links and it eats those</dd>
     <dt>controls</dt><dd>size the eye, change the spin, pick what's on the map</dd>
-    <dt>video</dt><dd>paste a YouTube link and it fills the screen: the portal tears its poster, since a page
-      can't read another site's video</dd>
+    <dt>video</dt><dd>paste a YouTube link and it fills the screen; the portal tears its poster, since a page
+      can't read another site's video. <b>Eat it live</b> opens the video in its own window and asks to share
+      it, and then the moving picture is what gets eaten</dd>
+    <dt>sound</dt><dd>videos play with sound; the sound button mutes them</dd>
+    <dt>+</dt><dd>add pictures or a video from your computer, or drop them on the page; a video is eaten
+      live, frame by frame. Share screen (under more) eats a tab, window or screen</dd>
   </dl>
   <p>The cyclone is after a TouchDesigner piece posted to
     <a href="https://www.reddit.com/r/TouchDesigner/comments/1t0wkv2/using_td_to_eat_up_worlds/">r/TouchDesigner</a>
@@ -303,7 +330,7 @@ async function searchImages(q){
       .map(pg => {
         const ii = pg.imageinfo?.[0]; if (!ii?.thumburl) return null;
         const label = pg.title.replace(/^File:/, "").replace(/\.[a-z0-9]+$/i, "").replace(/_/g, " ");
-        return {host: "commons.wikimedia.org", url: ii.descriptionurl || ii.url, label, note: "", thumb: ii.thumburl};
+        return {host: "commons.wikimedia.org", url: ii.descriptionurl || ii.url, label, note: "", thumb: ii.thumburl, bare: true};
       }).filter(Boolean);
   } catch (e) { return []; }
 }
@@ -376,7 +403,7 @@ function layoutSheet(list0, W){
 function drawTile(sheet, i, img){
   const {g, list, cols, tw, th} = sheet, s = list[i];
   const x = (i % cols) * tw, y = Math.floor(i / cols) * th, h = hashHue(s.host);
-  const px = x + 4, py = y + 4, pw = tw - 8, ph = th - 8, label = 20, picH = ph - label;
+  const px = x + 4, py = y + 4, pw = tw - 8, ph = th - 8, label = s.bare ? 0 : 20, picH = ph - label;   // bare: no caption strip
   g.fillStyle = `hsl(${h} 45% 22%)`; g.fillRect(px - 1, py - 1, pw + 2, ph + 2);
   if (img){
     const r = Math.max(pw / img.width, picH / img.height);
@@ -389,6 +416,7 @@ function drawTile(sheet, i, img){
     g.fillStyle = "#141311"; g.font = "500 12px 'IBM Plex Mono', monospace"; g.textBaseline = "top";
     g.fillText((s.yt ? "▶" : s.label[0]).toUpperCase(), px + 9, py + 8);
   }
+  if (!label) return;
   g.fillStyle = `hsl(${h} 50% 30%)`; g.fillRect(px, py + picH, pw, label);
   g.textBaseline = "top"; g.font = "500 9px 'IBM Plex Mono', monospace"; g.fillStyle = "#faf9f6";
   const note = s.note || "";
@@ -415,6 +443,17 @@ function layoutPosterSheet(img, W, H){
       g.restore();
     }
   }
+  return {c, g, list: [], cols: 1, tw: W, th: H};
+}
+
+// Live mode: the sheet is a screen-sized canvas the current video frame is
+// drawn into every frame, so what the portal eats is the moving picture.
+function layoutLiveSheet(W, H){
+  const c = document.createElement("canvas");
+  c.width = W; c.height = H;
+  const g = c.getContext("2d");
+  g.fillStyle = "#000"; g.fillRect(0, 0, W, H);
+  if (live){ live.canvas = c; live.ctx = g; }
   return {c, g, list: [], cols: 1, tw: W, th: H};
 }
 
@@ -451,7 +490,9 @@ async function picture(tile){
   return p;
 }
 function loadPictures(sheet){
-  const tiles = [...new Map(sheet.list.map(s => [s.thumb || s.url, s])).values()].slice(0, 48);
+  const tiles = [...new Map(sheet.list.map(s => [s.thumb || s.url, s])).values()]
+    .filter(t => t.thumb || picsOn())                      // the toggle only gates site screenshots
+    .slice(0, 48);
   let next = 0, active = 0;
   const pump = () => {
     while (active < 6 && next < tiles.length){
@@ -629,14 +670,17 @@ DIALS.motion.forEach(d => makeDial(d, $("dials-motion")));
 // ------------------------------------------------------------------ the loop
 let sites = [], setName = "", noun = "sites", run = null, paused = false, steer = true, gulp = 0;
 let video = null, posterImg = null;                        // video mode: a YouTube id and its poster
-const picsOn = () => $("shots").getAttribute("aria-pressed") === "true";
+let live = null;                                           // live mode: a video the page may read, eaten frame by frame
+const picsOn = () => store.get("pics") !== "0";
+const canShare = !!(navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia);
+let current = "top";                                      // what the menu ticks
 
 function build(){
-  if (!gl || (!sites.length && !video)) return;
+  if (!gl || (!sites.length && !video && !live)) return;
   const px = Math.max(1, Math.max(2, Math.round(innerWidth / 520)) + val("pixel") - 2);
   const W = Math.ceil(innerWidth / px), H = Math.ceil(innerHeight / px);
   canvas.width = W; canvas.height = H;
-  const sheet = video ? layoutPosterSheet(posterImg, W, H) : layoutSheet(sites, W);
+  const sheet = live ? layoutLiveSheet(W, H) : video ? layoutPosterSheet(posterImg, W, H) : layoutSheet(sites, W);
   if (run){ run.tex.forEach(t => gl.deleteTexture(t)); gl.deleteTexture(run.sheetTex); }
   const tex = [texture(W, H), texture(W, H)], fbo = tex.map(t => {
     const f = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, f);
@@ -647,7 +691,7 @@ function build(){
   run = {W, H, tex, fbo, i: 0, sheet, sheetTex: texture(sheet.c.width, sheet.c.height, sheet.c),
          sheetH: sheet.c.height, scroll: 0, eye, target, dirty: false, primed: false};
   shotsPainted = 0;
-  if (!video && picsOn()) loadPictures(sheet);
+  if (!video && !live) loadPictures(sheet);
   showReadout();
 }
 let rt; function rebuildSoon(){ clearTimeout(rt); rt = setTimeout(build, 250); }
@@ -666,7 +710,15 @@ function frame(now){
   if (!run || paused) return;
   clock += dt;
   const speed = val("speed");
-  run.scroll += speed * dt;
+  if (live){
+    const v = $("live");
+    if (v.readyState >= 2 && v.videoWidth && live.ctx){
+      const {canvas: c, ctx: g} = live, r = Math.max(c.width / v.videoWidth, c.height / v.videoHeight);
+      g.drawImage(v, (c.width - v.videoWidth * r) / 2, (c.height - v.videoHeight * r) / 2, v.videoWidth * r, v.videoHeight * r);
+      gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, run.sheetTex);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c);
+    }
+  } else run.scroll += speed * dt;
   run.eye[0] += (run.target[0] - run.eye[0]) * Math.min(1, dt * 2.5);
   run.eye[1] += (run.target[1] - run.eye[1]) * Math.min(1, dt * 2.5);
   gulp = Math.max(0, gulp - dt * 1.4);
@@ -704,27 +756,125 @@ function frame(now){
 requestAnimationFrame(frame);
 
 function showReadout(){
-  $("readout").textContent = video ? "video · youtube " + video :
-    `${setName} · ${sites.length} ${noun}` + (picsOn() && noun === "sites" ? ` · ${shotsPainted} pics` : "");
+  $("readout").textContent = live ? "live · " + live.name : video ? "video · youtube " + video :
+    `${setName} · ${sites.length} ${noun}` + (noun === "sites" && picsOn() ? ` · ${shotsPainted} pics` : "");
 }
+
+// ------------------------------------------------------------------ sound
+// One button mutes everything that makes sound: the YouTube embed, its
+// pop-out window and video files. A browser won't start sound without a
+// click first, so after a plain reload the embed starts muted and the
+// button turns it on.
+let muted = store.get("muted") === "1", popupWin = null;
+const hadClick = () => !navigator.userActivation || navigator.userActivation.hasBeenActive;
+const startMuted = () => { if (!hadClick() && !muted){ muted = true; paintSound(); } return muted; };
+function ytCommand(win, func){
+  try { win && win.postMessage(JSON.stringify({event: "command", func, args: []}), "*"); } catch (e) {}
+}
+function applyMute(){
+  $("live").muted = muted || (live && live.kind === "share");
+  const func = muted ? "mute" : "unMute";
+  ytCommand($("yt").contentWindow, func);
+  if (popupWin && !popupWin.closed) ytCommand(popupWin, func);
+  if (!muted){ ytCommand($("yt").contentWindow, "playVideo"); }
+}
+function paintSound(){
+  $("sound").setAttribute("aria-pressed", String(muted));
+  $("soundLabel").textContent = muted ? "muted" : "sound";
+}
+$("sound").addEventListener("click", () => { muted = !muted; store.set("muted", muted ? "1" : "0"); paintSound(); applyMute(); });
+$("yt").addEventListener("load", () => setTimeout(applyMute, 800));
+paintSound();
 
 // ------------------------------------------------------------------ the video
 // A YouTube link fills the screen, muted and looping, under the canvas. The
 // portal can't read its frames (browsers keep other sites' video private),
 // so what it tears is the video's poster, fetched as a plain image.
 function showVideo(id){
-  const f = $("yt"), src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&rel=0&playsinline=1&modestbranding=1`;
+  const f = $("yt"), src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=${startMuted() ? 1 : 0}&loop=1&playlist=${id}&controls=0&rel=0&playsinline=1&modestbranding=1&enablejsapi=1`;
   if (f.getAttribute("src") !== src) f.src = src;
   $("player").hidden = false;
 }
-function hideVideo(){ $("player").hidden = true; $("yt").removeAttribute("src"); video = null; }
+function hideVideo(){ $("player").hidden = true; $("yt").removeAttribute("src"); video = null; $("liveYt").hidden = true; }
+
+// ------------------------------------------------------------------ live video
+// A video file, or a shared tab, window or screen: the browser lets the page
+// read those, so every frame goes through the portal. Nothing is uploaded.
+function startLive(kind, name, setup){
+  stopLive(); hideVideo();
+  const v = $("live");
+  setup(v);
+  v.muted = muted || kind === "share";               // a shared tab already plays its own sound
+  v.hidden = false;
+  v.play().catch(() => {});
+  live = {kind, name, canvas: null, ctx: null};
+  sites = []; setName = "live"; noun = "";
+  current = "live"; renderMenu();
+  build();
+}
+function stopLive(){
+  if (!live) return;
+  const v = $("live");
+  if (v.srcObject){ v.srcObject.getTracks().forEach(t => t.stop()); v.srcObject = null; }
+  if (live.url) URL.revokeObjectURL(live.url);
+  v.pause(); v.removeAttribute("src"); v.load(); v.hidden = true;
+  live = null;
+}
+function liveFile(file){
+  if (!file || !file.type.startsWith("video/")) return;
+  const url = URL.createObjectURL(file);
+  startLive("file", file.name, v => { v.srcObject = null; v.loop = true; v.src = url; });
+  live.url = url;
+}
+async function liveShare(name){
+  let stream;
+  try {
+    stream = await navigator.mediaDevices.getDisplayMedia({video: {frameRate: 30}, audio: false,
+      selfBrowserSurface: "exclude", surfaceSwitching: "include"});
+  } catch (e) { return; }                                   // they cancelled
+  startLive("share", name || "screen", v => { v.loop = false; v.srcObject = stream; });
+  stream.getVideoTracks()[0].addEventListener("ended", () => { if (live && live.kind === "share"){ stopLive(); useSet(store.get("set") || "top"); } });
+}
+// Files from the visitor's computer: pictures become tiles, a video is eaten
+// live. They're read in the tab and never uploaded.
+let fileTiles = [];
+function addFiles(files){
+  const list = [...(files || [])];
+  const vid = list.find(f => f.type.startsWith("video/"));
+  const pics = list.filter(f => f.type.startsWith("image/"));
+  if (pics.length){
+    fileTiles = pics.map(f => ({host: "your computer", url: f.name, label: f.name, note: "", thumb: URL.createObjectURL(f), bare: true}))
+      .concat(fileTiles).slice(0, 120);
+    useFiles();
+  }
+  if (vid) liveFile(vid);
+}
+function useFiles(){
+  if (!fileTiles.length) return;
+  stopLive(); hideVideo();
+  sites = fileTiles; setName = "your pictures"; noun = "pictures";
+  current = "files"; renderMenu(); build();
+}
+$("add").addEventListener("change", e => { addFiles(e.target.files); e.target.value = ""; });
+addEventListener("dragover", e => e.preventDefault());
+addEventListener("drop", e => { e.preventDefault(); addFiles(e.dataTransfer.files); });
+if (canShare){
+  $("liveYt").addEventListener("click", () => {
+    // The player in its own window, so it's a plain tab to share.
+    const id = video;
+    popupWin = window.open(`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=${muted ? 1 : 0}&loop=1&playlist=${id}&controls=1&rel=0&enablejsapi=1`,
+                "darkpuddle-video", "popup,width=960,height=540");
+    liveShare("youtube " + id);
+  });
+}
 
 // ------------------------------------------------------------------ choosing sites
 function useSet(name){
+  stopLive();
   if (name === "video" && !store.get("video")) name = "mine";
   if (name === "search" && !store.get("query")) name = "top";
   noun = "sites";
-  document.querySelectorAll("[data-set]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.set === name)));
+  current = name; renderMenu();
   if (name === "top"){ hideVideo(); sites = topSites(); setName = "top sites"; }
   else if (name === "sog"){ hideVideo(); sites = sogSites(); setName = "sea of grass"; }
   else if (name === "mine"){
@@ -746,12 +896,12 @@ function useSet(name){
   else if (name === "video"){
     video = store.get("video"); sites = []; setName = "video"; posterImg = null;
     showVideo(video);
+    if (canShare) $("liveYt").hidden = false;
     loadImg(poster(video)).then(img => { if (img && video){ posterImg = img; build(); } });
   }
   store.set("set", name);
   build();
 }
-document.querySelectorAll("[data-set]").forEach(b => b.addEventListener("click", () => useSet(b.dataset.set)));
 
 // Feed adds what's in the box to "my links" (newest first). A YouTube link
 // becomes the video; anything else switches to the links.
@@ -760,21 +910,17 @@ function feed(){
   if (!fresh){ useSet("mine"); return; }
   if (!fresh.split(/[\s,]+/).some(looksLikeLink)){                 // a subject, not links
     $("links").value = "";
-    store.set("query", fresh); $("searchBtn").hidden = false; useSet("search"); return;
+    store.set("query", fresh); useSet("search"); return;
   }
   const have = store.get("links") || "";
   store.set("links", (fresh + "\n" + have).trim());
   $("links").value = "";
   const yt = linkSites(fresh).find(s => s.yt);
-  if (yt){ store.set("video", yt.yt); $("videoBtn").hidden = false; useSet("video"); }
+  if (yt){ store.set("video", yt.yt); useSet("video"); }
   else useSet("mine");
 }
 $("feedBtn").addEventListener("click", feed);
 $("links").addEventListener("keydown", e => { if (e.key === "Enter") feed(); });
-$("shots").addEventListener("click", e => {
-  const on = e.currentTarget.getAttribute("aria-pressed") !== "true";
-  e.currentTarget.setAttribute("aria-pressed", String(on)); store.set("pics", on ? "1" : "0"); build();
-});
 
 $("file").addEventListener("change", e => {
   const f = e.target.files[0]; if (!f) return;
@@ -782,13 +928,51 @@ $("file").addEventListener("change", e => {
   r.onload = () => {
     const list = historySites(String(r.result));
     if (!list.length){ alert("No websites found in that file. Is it a browser history export?"); return; }
-    document.querySelectorAll("[data-set]").forEach(b => b.setAttribute("aria-pressed", "false"));
-    $("shots").setAttribute("aria-pressed", "false");        // the visitor turns pictures on for their own history
+    store.set("pics", "0");                                  // the visitor turns pictures on for their own history
+    current = "history"; renderMenu();
     hideVideo(); sites = list; setName = "your history"; build();
   };
   r.readAsText(f);
   e.target.value = "";
 });
+
+// ------------------------------------------------------------------ the "more" menu
+// Everything that isn't the box lives here, with a tick on what's showing.
+function renderMenu(){
+  const q = store.get("query"), v = store.get("video"), mine = linkSites(store.get("links") || "").length;
+  const items = [
+    ["top", "Top sites"], ["sog", "Sea of Grass"],
+    mine ? ["mine", "My links"] : null,
+    v ? ["video", "Video"] : null,
+    q ? ["search", "Pictures of " + q] : null,
+    "sep",
+    fileTiles.length ? ["files", "Your pictures"] : null,
+    canShare ? ["share", "Share screen"] : null, ["file", "History file…"],
+    "sep",
+    ["pics", "Site pictures", picsOn() ? "on" : "off"],
+  ].filter(Boolean);
+  const m = $("menu"); m.innerHTML = "";
+  for (const it of items){
+    const el = document.createElement(it === "sep" ? "div" : "button");
+    el.className = "mi" + (it === "sep" ? " sep" : "");
+    if (it === "sep"){ m.appendChild(el); continue; }
+    const [key, label, state] = it;
+    el.setAttribute("role", "menuitem");
+    el.innerHTML = `<span>${label}</span><i>${state !== undefined ? state : (key === current ? "✓" : "")}</i>`;
+    el.addEventListener("click", () => {
+      if (key === "files") useFiles();
+      else if (key === "file") $("file").click();
+      else if (key === "share") liveShare("screen");
+      else if (key === "pics"){ store.set("pics", picsOn() ? "0" : "1"); build(); renderMenu(); return; }
+      else useSet(key);
+      openMenu(false);
+    });
+    m.appendChild(el);
+  }
+}
+function openMenu(open){ $("menu").hidden = !open; $("more").setAttribute("aria-expanded", String(open)); if (open) renderMenu(); }
+$("more").addEventListener("click", () => openMenu($("menu").hidden));
+addEventListener("pointerdown", e => { if (!$("menu").hidden && !e.target.closest("#menu, #more")) openMenu(false); });
 
 // ------------------------------------------------------------------ the controller
 function openCtrl(open){ $("ctrl").hidden = !open; $("open").setAttribute("aria-expanded", String(open)); }
@@ -823,7 +1007,7 @@ addEventListener("keydown", e => {
   if (e.key === " "){ swallow(); e.preventDefault(); }
   else if (e.key === "r" || e.key === "R") refill();
   else if (e.key === "p" || e.key === "P") $("pause").click();
-  else if (e.key === "Escape"){ openCtrl(false); $("help").hidden = true; }
+  else if (e.key === "Escape"){ openMenu(false); openCtrl(false); $("help").hidden = true; }
 });
 addEventListener("resize", rebuildSoon);
 $("ask").addEventListener("click", () => { $("help").hidden = !$("help").hidden; });
@@ -834,7 +1018,7 @@ const askGo = () => {
   if (!q) return;
   $("askq").value = "";
   if (q.split(/[\s,]+/).some(looksLikeLink)){ $("links").value = q; feed(); return; }
-  store.set("query", q); $("searchBtn").hidden = false; useSet("search");
+  store.set("query", q); useSet("search");
 };
 $("askGo").addEventListener("click", askGo);
 $("askq").addEventListener("keydown", e => { if (e.key === "Enter") askGo(); });
@@ -843,9 +1027,6 @@ $("askq").addEventListener("keydown", e => { if (e.key === "Enter") askGo(); });
 (async () => {
   if (!gl){ $("readout").textContent = "this browser doesn't support WebGL2, which the portal needs"; return; }
   await document.fonts.ready;
-  if (store.get("pics") === "0") $("shots").setAttribute("aria-pressed", "false");
-  if (store.get("video")) $("videoBtn").hidden = false;
-  if (store.get("query")) $("searchBtn").hidden = false;
   const s = store.get("set");
   const ok = s === "sog" || s === "video" && store.get("video") || s === "search" && store.get("query") ||
     s === "mine" && linkSites(store.get("links") || "").length;
