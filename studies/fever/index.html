@@ -270,7 +270,7 @@ precision highp float;
 uniform sampler2D uPrev, uSheet, uMask;
 uniform float uMasked;
 uniform vec2 uRes;
-uniform float uFlow, uPrime;
+uniform float uFlow, uPrime, uDz;
 uniform float uSpin, uPull, uTear, uDrip;
 out vec4 o;
 ${COMMON}
@@ -283,6 +283,16 @@ vec4 sheet(vec2 uv){
   vec4 c = texture(uSheet, t);
   if (uMasked > 0.5){ float m = texture(uMask, t).r; c = vec4(c.rgb * m, m); }
   return c;
+}
+// Where the surface under this pixel was a frame ago. The camera looks
+// straight down the street, so walking forward dz pushes every surface
+// outward from the middle of the screen by its distance z: it was at
+// centre + (uv - centre) * z / (z + dz). The sky (no nearness) stays put.
+vec2 back(vec2 uv){
+  float g = texture(uMask, vec2(clamp(uv.x, 0.0, 1.0), clamp(1.0 - uv.y, 0.0, 1.0))).g;
+  if (g <= 0.0 || uDz <= 0.0) return uv;
+  float z = 4.0 / g;
+  return 0.5 + (uv - 0.5) * z / (z + uDz);
 }
 void main(){
   vec2 uv = gl_FragCoord.xy / uRes;
@@ -297,7 +307,7 @@ void main(){
   float depth = smoothstep(0.0, 0.35, eaten);
 
   float speed = pow(hash(vec2(col, 9.0)), 3.0);
-  vec2 q = uv + vec2(0.0, uFlow * (0.6 + 5.0 * uDrip * speed * depth));
+  vec2 q = back(uv) + vec2(0.0, uFlow * (0.6 + 5.0 * uDrip * speed * depth));
 
   vec2 d = q - uEye; d.x *= uAspect;
   float reach = 0.45 + uEyeR * 2.0;
@@ -337,7 +347,7 @@ void main(){
   vec4 spell = texture(uTex, luv);
   float hit = uOn > 0.5 ? step(0.0, eatenAt(frag, uLow)) : 0.0;
   if (uMasked > 0.5){
-    hit *= texture(uMask, vec2(luv.x, 1.0 - luv.y)).r;
+    hit *= texture(uMask, vec2(uv.x, 1.0 - uv.y)).r;   // the sharp outline, not the coarse one
     spell += street * (1.0 - spell.a);                // gaps in the debris show the thing itself
   }
   o = mix(street, spell, hit);
@@ -485,14 +495,23 @@ function loadSuburb(){
 
     const picked = new Set();
     const isPicked = m => picked.has(m.userData.owner);
-    const black = new T.MeshBasicMaterial({color: 0x000000, fog: false}), white = new T.MeshBasicMaterial({color: 0xffffff, fog: false});
+    // The mask pass: red is "picked", green is how near the surface is (4 /
+    // its distance, so near things get the precision). The spell uses the
+    // nearness to follow surfaces as the camera walks.
+    const maskMat = p => new T.ShaderMaterial({
+      vertexShader: "varying float vz; void main(){ vec4 mv = modelViewMatrix * vec4(position, 1.0); vz = -mv.z; gl_Position = projectionMatrix * mv; }",
+      fragmentShader: `varying float vz; void main(){ gl_FragColor = vec4(${p}.0, clamp(4.0 / vz, 0.0, 1.0), 0.0, 1.0); }`,
+    });
+    const black = maskMat(0), white = maskMat(1);
     const cBlack = new T.Color(0x000000), cWhite = new T.Color(0xffffff);
     const ray = new T.Raycaster();
 
     suburb = {
       canvas: r.domElement, picked,
       size(w, h){ r.setSize(w, h, false); camera.aspect = w / h; camera.fov = w < h ? 74 : 52; camera.updateProjectionMatrix(); },
+      dz: 0,
       step(dz){
+        this.dz = dz;
         camera.position.z -= dz;
         const cz = camera.position.z;
         camera.lookAt(0, 9, cz - 100);
@@ -676,7 +695,7 @@ function frame(now){
     suburb.step(speed * 0.18 * dt);
     suburb.render();
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, suburb.canvas);
-    if (masked){
+    if (masked || on){
       suburb.renderMask();
       gl.bindTexture(gl.TEXTURE_2D, run.maskTex);
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, suburb.canvas);
@@ -697,6 +716,7 @@ function frame(now){
   gl.uniform2f(P.u.uEye, run.eye[0], run.eye[1]);
   gl.uniform1f(P.u.uTime, clock);
   gl.uniform1f(P.u.uFlow, speed * dt / run.H);
+  gl.uniform1f(P.u.uDz, film || !suburb ? 0 : suburb.dz);
   gl.uniform1f(P.u.uFront, val("height"));
   gl.uniform1f(P.u.uAspect, run.W / run.H);
   gl.uniform1f(P.u.uPrime, run.primed && on ? 0 : 1);
