@@ -600,9 +600,10 @@ vec3 spellAt(vec3 w, vec3 wc, vec3 nrm){
 // What things are made of. While whole, a thing is its plain colour; as a
 // spell works on it, its pieces show what they are, drawn in code from where
 // each corner sits in its piece: the outside on the front, what's behind it
-// on the back.
+// on the back. Under the ground is dirt, except with Shatter, where it's a
+// hole onto the same night as behind the broken sky.
 const PIECE_GLSL = `
-uniform float uSpell;
+uniform float uSpell, uTime;
 varying float vHole, vBreak, vWave, vKind, vRand;
 varying vec2 vTile;
 varying vec3 vPaint;
@@ -614,6 +615,13 @@ float sn(vec2 p){
 vec3 dirt(vec2 p){
   vec3 c = vec3(0.12, 0.06, 0.03) * (0.7 + 0.5 * sn(p * 7.0));
   return mix(c, vec3(0.25, 0.22, 0.18), step(0.9, sh(floor(p * 14.0))) * 0.7);
+}
+// What Shatter leaves where the ground was: the same night as behind the
+// broken sky, stars twinkling, lit by nothing and untouched by the haze.
+vec3 night(){
+  vec2 cell = floor(gl_FragCoord.xy / 2.0);
+  float star = step(0.996, sh(cell)) * (0.6 + 0.4 * sin(uTime * 3.0 + sh(cell + 5.0) * 40.0));
+  return mix(vec3(0.01, 0.01, 0.04), vec3(0.07, 0.02, 0.13), sn(gl_FragCoord.xy / 300.0)) + star;
 }
 vec3 woodLook(vec2 t){ return vec3(0.45, 0.27, 0.12) * (0.75 + 0.25 * sn(vec2(t.x * 3.0, t.y * 40.0 + vRand * 9.0))); }
 vec3 made(vec3 base, bool front){
@@ -724,6 +732,7 @@ function loadSuburb(){
           .replace("#include <color_fragment>", "#include <color_fragment>\n diffuseColor.rgb = look(vPaint.r < 0.0 ? diffuseColor.rgb : vPaint, gl_FrontFacing);")
           .replace("#include <dithering_fragment>", `#include <dithering_fragment>
             gl_FragColor.rgb *= 1.0 - smoothstep(0.0, 0.9, vHole);
+            if (int(vKind + 0.5) == 7 && uSpell > 0.5 && uSpell < 1.5) gl_FragColor = vec4(night(), 1.0);   // a hole, not dirt
             gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.62, 0.94, 0.78), 0.45 * uGlow);`);
       };
       return matCache[kind] = m;
