@@ -260,7 +260,7 @@
     <a href="https://developer.wordpress.com/docs/photon/">mshots</a>, which receives the addresses being shown
     (for a history file, only the site names). Your files are read in the tab and never uploaded; your links and
     settings stay in this browser.</p>
-  <button class="chip" id="gotit">Skip, eat the top sites</button>
+  <button class="chip" id="gotit">Skip</button>
 </div>
 
 <p class="readout" id="readout"></p>
@@ -277,6 +277,7 @@ const store = {
 // A tile is {host, url, label, note, thumb?}: url is what gets photographed,
 // thumb is a picture to use instead (YouTube posters), note is the small text
 // at the right of the label strip.
+const DEFAULT_Q = "The God Apollo";                       // what it eats until told otherwise
 const TOP = ["google.com", "youtube.com", "facebook.com", "instagram.com", "wikipedia.org", "x.com",
   "reddit.com", "amazon.com", "chatgpt.com", "tiktok.com", "linkedin.com", "netflix.com", "yahoo.com",
   "bing.com", "whatsapp.com", "twitch.tv", "pinterest.com", "microsoft.com", "apple.com", "github.com",
@@ -874,7 +875,7 @@ if (canShare){
 function useSet(name){
   stopLive();
   if (name === "video" && !store.get("video")) name = "mine";
-  if (name === "search" && !store.get("query")) name = "top";
+  if (name === "search" && !store.get("query")) store.set("query", DEFAULT_Q);
   noun = "sites";
   current = name; renderMenu();
   if (name === "top"){ hideVideo(); sites = topSites(); setName = "top sites"; }
@@ -1032,7 +1033,7 @@ $("askq").addEventListener("keydown", e => { if (e.key === "Enter") askGo(); });
   const s = store.get("set");
   const ok = s === "sog" || s === "video" && store.get("video") || s === "search" && store.get("query") ||
     s === "mine" && linkSites(store.get("links") || "").length;
-  useSet(ok ? s : "top");
+  useSet(ok ? s : "search");                               // first visit: pictures of Apollo
   if (!store.get("helped")){ $("help").hidden = false; $("askq").focus(); }
 })();
 </script>
