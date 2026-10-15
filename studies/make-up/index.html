@@ -336,8 +336,8 @@ const EFFECTS = [
   {id: "watercolour", name: "Watercolour", group: "Print & paint", p: [["blooms", .5], ["rims", .6], ["bleed", .4], ["pencil", .35]], boil: .06, geo: true},
   {id: "crayon",   name: "Crayon",   group: "Print & paint", p: [["scribble", .55], ["outline", .6]], boil: .3,
    marks: {style: 7, blend: 2, ground: 0, n: 14000, edge: L => L.p[1] * .3, dens: 0}},
-  {id: "scribble", name: "Scribble", group: "Line", p: [["lines", .75], ["hatching", .6]], boil: .3,
-   marks: {style: 4, blend: 1, ground: 0, n: 12000, edge: .5, dens: -1}},
+  {id: "scribble", name: "Scribble", group: "Line", p: [["strokes", .6], ["palette", .85], ["outline", .5]], boil: .35,
+   marks: {style: 4, blend: 2, ground: 0, n: 7000, edge: L => 0.12 + L.p[2] * 0.45, dens: 0}},
   {id: "pencil",   name: "Pencil",   group: "Line", p: [["density", .6], ["cross", .5]], boil: .3,
    marks: {style: 9, blend: 1, ground: 0, n: 9000, edge: .15, dens: 0}},
   {id: "chalk",    name: "Chalk",    group: "Line", p: [["strokes", .55], ["ground", 0]], boil: .2,
@@ -759,7 +759,7 @@ float spacing(int st){
   if (st == 1) return 20.0 * (0.5 + uP.x);
   if (st == 2) return 44.0;
   if (st == 3) return 24.0;
-  if (st == 4) return 24.0;
+  if (st == 4) return 17.0;
   if (st == 5) return 13.0;
   if (st == 7) return 13.0;
   if (st == 8) return 50.0 * (0.45 + uP.x);
@@ -883,7 +883,7 @@ void main(){
     if (st == 1){ float sz = 0.5 + uP.x; spc = 20.0 * sz; len = 60.0 * sz; w = 22.0 * sz; spread = 0.5; taper = 0.3; }
     else if (st == 2){ spc = 44.0; len = 150.0; w = 80.0 * (0.35 + uP.x * 1.2); spread = 3.14; a = 0.3; }
     else if (st == 3){ spc = 24.0; len = 56.0; w = 40.0 * (0.5 + uP.x); spread = 3.14; }
-    else if (st == 4){ spc = 24.0; len = 200.0; line = 1.5; spread = 3.14; a = 0.7; }
+    else if (st == 4){ len = 48.0; w = 24.0; th = 0.5 + (h1(vec2(kind, 8.0)) - 0.5) * 1.4; spread = 1.1; both = false; a = 0.95; }
     else if (st == 7){ spc = 13.0; len = 52.0; w = 10.0; th = 0.8 + (h1(vec2(kind, 2.0)) - 0.5) * 1.6; spread = 0.3; both = false; }
     else if (st == 8){ w = 100.0 * (0.45 + uP.x); spc = w * 0.5; len = w + 20.0; spread = 3.14; }
     else if (st == 9){ len = 34.0; w = 18.0; th = 0.6 + (h1(vec2(kind, 5.0)) - 0.5) * 0.8; spread = 0.15; both = false; k = 6.0; }
@@ -901,8 +901,15 @@ void main(){
     else if (st == 3){ float mx = max(c.r, max(c.g, c.b));
       col = mx > 0.05 ? c / mx : c; col = clamp(mix(vec3(lum(col)), col, 1.6) * (0.5 + 0.45 * mx), 0.0, 1.0);
       keep *= step(r(9.0), (dark * 1.1 + sat * 1.5) * (0.4 + uP.y) + 0.1); }
-    else if (st == 4){ col = vec3(0.13, 0.14, 0.24); curl = (0.55 + 0.6 * r(12.0)) * (r(13.0) < 0.5 ? -1.0 : 1.0);
-      keep *= step(r(9.0), pow(smoothstep(0.12, 0.85, dark), 1.2) * uP.y * 2.0 * (sky ? 0.12 : 1.0)); }
+    else if (st == 4){                                     // oil pastel: a warm ramp by tone, lights left as paper
+      float tone = clamp(smoothstep(0.12, 0.85, dark) + (r(18.0) - 0.5) * 0.18, 0.0, 1.0);
+      vec3 ramp = tone < 0.42 ? vec3(0.98, 0.82, 0.16) : tone < 0.62 ? vec3(0.97, 0.56, 0.14)
+                : tone < 0.8 ? vec3(0.86, 0.3, 0.14) : vec3(0.11, 0.13, 0.32);
+      if (r(19.0) < 0.05) ramp = vec3(0.16, 0.58, 0.64);  // now and then a cool accent
+      vec3 own = clamp(mix(vec3(l), c, 1.8), 0.0, 1.0);
+      col = mix(own, ramp, uP.y);
+      k = 2.0 + floor(r(17.0) * 2.5);                      // a bunch of two to four dashes
+      keep *= step(r(9.0), smoothstep(0.12, 0.45, tone) * (0.18 + 0.45 * uP.x) * (sky ? 0.0 : 1.0)); }   // plenty of paper
     else if (st == 7){ col = clamp(mix(vec3(l), c, 1.7) * (0.88 + 0.22 * r(11.0)), 0.0, 1.0); curl = (r(12.0) - 0.5) * 0.05; a = 0.95;
       keep *= step(r(9.0), 0.45 + dark * 0.8); }
     else if (st == 8){ vec3 pig = mix(vec3(l), c, 1.5);
@@ -1016,12 +1023,10 @@ void main(){
     col = mx > 0.05 ? c / mx : c; col = clamp(mix(vec3(lum(col)), col, 1.6) * (0.5 + 0.45 * mx), 0.0, 1.0);
     keep *= step(r(9.0), (dark * 1.1 + sat * 1.5) * (0.4 + uP.y) + 0.1);
     follow = 0.8; k = edge ? 1.0 : 0.0;
-  } else if (st == 4){                                     // Scribble: sketchy outlines, loops in the dark parts
-    col = vec3(0.17, 0.17, 0.22);
-    if (edge){ len = mix(40.0, 130.0, r(6.0)) * bs; w = mix(1.1, 1.8, r(7.0)) * bs; follow = 0.9; curl = (r(12.0) - 0.5) * 0.07; a = 0.8;
-               keep *= step(r(9.0), 0.2 + uP.x); }
-    else { len = mix(110.0, 240.0, r(6.0)) * bs; w = 1.2 * bs; follow = 0.12; curl = (0.55 + 0.6 * r(12.0)) * (r(13.0) < 0.5 ? -1.0 : 1.0);
-           a = 0.6; keep *= step(r(9.0), pow(dark, 1.5) * uP.y * 2.4); }
+  } else if (st == 4){                                     // Scribble: loose navy pastel contours, broken
+    col = vec3(0.1, 0.12, 0.3);
+    len = mix(40.0, 140.0, r(6.0)) * bs; w = mix(2.2, 3.8, r(7.0)) * bs; follow = 0.92; curl = (r(12.0) - 0.5) * 0.05; a = 0.95; taper = 0.5;
+    keep *= step(r(9.0), 0.35 + uP.z * 0.6);
   } else if (st == 5){                                     // Ink: brush-pen strokes along the edges, tapering
     len = mix(30.0, 110.0, r(6.0)) * bs; w = mix(2.0, 5.5, r(7.0)) * bs; taper = 1.0; col = vec3(0.03); curl = (r(12.0) - 0.5) * 0.04;
   } else if (st == 6){                                     // Neon: tubes along the strong edges, in their thing's colour
@@ -1137,7 +1142,19 @@ void main(){
     float s0 = h1(vec2(li, vSeed * 7.0)) * 0.3, s1 = 1.0 - h1(vec2(li, vSeed * 13.0)) * 0.3;
     cov *= smoothstep(s0, s0 + 0.05, t) * smoothstep(s1, s1 - 0.05, t);
     cov *= st == 9 ? smoothstep(0.12, 0.55, tooth + 0.18) : 0.85 + 0.15 * step(0.1, h1(floor(fc * 0.7)));
-  } else if (st == 4 || st == 9){                          // graphite and pencil: a thin line catching on the paper's tooth
+  } else if (st == 4){                                     // oil pastel: waxy, grainy, the paper showing through
+    float n = max(floor(vK), 1.0), u = (ay * 0.5 + 0.5) * n, li = floor(u), fu = fract(u) - 0.5;
+    float rag = (n1(vec2(ax * 0.25, li * 3.0 + vSeed)) - 0.5) * 0.14;   // the dash's sides aren't straight
+    float body = n > 1.5 ? 1.0 - smoothstep(0.24 + rag, 0.4 + rag, abs(fu)) : smoothstep(1.0, 0.6, abs(ay) + rag);
+    float across = n > 1.5 ? fu : ay * 0.5;
+    float s0 = h1(vec2(li, vSeed * 7.0)) * 0.22 + (n1(vec2(across * 6.0, li + vSeed * 3.0)) - 0.3) * 0.1;
+    float s1 = 1.0 - h1(vec2(li, vSeed * 13.0)) * 0.22 - (n1(vec2(across * 6.0 + 9.0, li + vSeed * 5.0)) - 0.3) * 0.12;
+    body *= smoothstep(s0, s0 + 0.08, t) * smoothstep(s1, s1 - 0.12, t);   // ragged ends, trailing off
+    float sk = n1(vec2(ax * 0.09, (n > 1.5 ? fu : ay) * 3.0 + li * 5.0 + vSeed * 7.0));
+    float wax = n1(fc * 0.9) * 0.45 + h1(floor(fc * 0.75)) * 0.35 + sk * 0.35;
+    cov = body * step(0.38, wax + 0.08);
+    col *= 0.92 + 0.12 * sk;
+  } else if (st == 9){                                     // pencil: a thin line catching on the paper's tooth
     cov = smoothstep(1.0, 0.35, abs(ay)) * ends * smoothstep(0.18, 0.62, tooth + 0.15);
   } else if (st == 5){                                     // brush pen, breaking up dry at the tail
     cov = smoothstep(1.0, 0.7, abs(ay));
