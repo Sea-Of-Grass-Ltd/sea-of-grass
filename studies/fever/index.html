@@ -2,7 +2,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Fever</title>
-<meta name="description" content="An endless pastel suburb. Press Fever and cast a spell on its houses, lamps, road and lawn: Cyclone wrings them into a black eye, Shatter breaks them into the pieces they're made of, Ripple turns them to water." />
+<meta name="description" content="An endless pastel suburb. Press Fever and cast a spell on its houses, lamps, road and lawn: Cyclone wrings them into a black eye, Shatter breaks them into the pieces they're made of, Ripple sends waves through them." />
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -216,7 +216,7 @@
     sky, going on forever. Press <b>Fever</b> and cast a spell on it. <b>Cyclone</b> is a black eye that rides
     over the surfaces of things and twists, sinks and tears them as it goes; <b>Shatter</b> breaks whatever it
     passes into the pieces it's made of (bricks, boards, shingles, turf, asphalt), which burst off, tumble and
-    fall, then fly back; <b>Ripple</b> turns it to water. Choose with the spell button beside Fever.</p>
+    fall, then fly back; <b>Ripple</b> sends waves rolling through it. Choose with the spell button beside Fever.</p>
   <dl>
     <dt>fever</dt><dd>the button, or F: casts the spell; press again and the street comes back whole</dd>
     <dt>steer</dt><dd>the spell sits on whatever is under the pointer and rides over it: the walls, roofs and
@@ -457,7 +457,8 @@ function texture(w, h, src){
     gl.texParameteri(gl.TEXTURE_2D, k, v);
   return t;
 }
-// The flat Ripple: the picture round the eye seen through rings of water.
+// The flat Ripple: the picture round the eye bent in rings. It only moves
+// the picture; colour belongs to Make-Up, the study that works alongside Fever.
 const RPF = `#version 300 es
 precision highp float;
 uniform sampler2D uFull;
@@ -471,10 +472,7 @@ void main(){
   float ph = dist * 6.2832 / uWave - uTime * uFlow * 6.0;
   vec2 dir = normalize(e + 1e-5) / vec2(uAspect, 1.0);
   vec2 s = uv + dir * cos(ph) * env * uAmp * 0.035;
-  vec3 col = texture(uFull, vec2(clamp(s.x, 0.0, 1.0), clamp(1.0 - s.y, 0.0, 1.0))).rgb;
-  col = mix(col, col * vec3(0.8, 0.95, 1.08), env * 0.5);
-  col += vec3(0.85, 0.95, 1.0) * max(sin(ph), 0.0) * env * uAmp * 0.35;   // crests catch the light
-  o = vec4(col, 1.0);
+  o = vec4(texture(uFull, vec2(clamp(s.x, 0.0, 1.0), clamp(1.0 - s.y, 0.0, 1.0))).rgb, 1.0);
 }`;
 let P, B, SH, RP;
 if (gl){
@@ -502,7 +500,7 @@ if (gl){
 //            roofs, chunks of asphalt, clods of turf, slabs of path. Near the
 //            eye they come away whole, tumble, shrink and fall, and fly back
 //            once it has moved on.
-//   Ripple   turns things to water: waves roll out from the eye across the
+//   Ripple   waves roll out from the eye across the
 //            lawn, the road and the walls.
 // While whole, things are their plain flat colours; what the spell is
 // working on shows what it's made of, front and back.
@@ -661,10 +659,7 @@ vec3 made(vec3 base, bool front){
 vec3 look(vec3 base, bool front){
   vec3 whole = base;
   if (int(vKind + 0.5) == 7 || int(vKind + 0.5) == 9) return made(base, front);
-  if (uSpell > 1.5){                                       // Ripple: water
-    vec3 wet = mix(base, vec3(0.06, 0.3, 0.5), 0.45 * vBreak) * (1.0 - 0.15 * vBreak);
-    return wet + vec3(0.85, 0.95, 1.0) * max(vWave, 0.0) * 0.5;
-  }
+  if (uSpell > 1.5) return whole;                          // Ripple moves things; colour is Make-Up's
   float show = smoothstep(0.02, 0.25, vBreak);
   vec3 piece = made(base, front);
   float edge = min(min(vTile.x, 1.0 - vTile.x), min(vTile.y, 1.0 - vTile.y));
@@ -1057,7 +1052,6 @@ function loadSuburb(){
         #include <fog_pars_fragment>
         void main(){
           vec3 c = vCol;
-          if (uSpell > 1.5) c = mix(c, vec3(0.06, 0.3, 0.5), 0.4 * vBreak) + vec3(0.8, 0.9, 1.0) * max(vWave, 0.0) * 0.4;
           c *= 1.0 - smoothstep(0.0, 0.9, vHole);
           c = mix(c, vec3(0.62, 0.94, 0.78), 0.45 * uGlow);
           gl_FragColor = vec4(c, 1.0);
@@ -1181,7 +1175,7 @@ const SPELLS = [
     {id: "fall",   glyph: "⇣", name: "fall",   v: 0.35, map: v => v * 2},
     {id: "shrink", glyph: "◇", name: "shrink", v: 0.3,  map: v => v},
   ]}},
-  {id: "ripple", name: "Ripple", note: "turns it to water", pages: {water: [
+  {id: "ripple", name: "Ripple", note: "sends waves through it", pages: {waves: [
     {id: "spread", glyph: "◎", name: "spread", v: 0.35, map: v => 2 + v * 14},
     {id: "swell",  glyph: "≈", name: "swell",  v: 0.4,  map: v => v * 1.4},
     {id: "wave",   glyph: "∿", name: "length", v: 0.35, map: v => 0.8 + v * 4},
