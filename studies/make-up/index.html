@@ -1,0 +1,1704 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Make-Up</title>
+<meta name="description" content="The endless pastel suburb from Fever, with a layers panel of hand-made looks (pencil, scribble, chalk, watercolour, spray, ink, neon, riso and more) and a LUT colour grade to stack over it, each with a blend mode, a mask and its own motion." />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  /* Make-Up: Fever's sister in Fantasmagoria. Fever changes the shape of
+     what's on screen; Make-Up changes how it looks, never its shape. Its
+     controls are a layers panel, as in an image editor: effects stacked over
+     the street, each with a blend mode, an opacity and a mask. Same dark
+     glass and white type as Fever, with a pink accent. */
+  :root{
+    --paper:#faf9f6; --ink:#141311; --mint:#9ff0c8; --hot:#ff5fa8;
+    --glass:rgba(16,15,14,.62); --edge:rgba(255,255,255,.16); --edge2:rgba(255,255,255,.3);
+    --soft:0 14px 40px rgba(0,0,0,.55), 0 1px 0 rgba(255,255,255,.08) inset;
+    --ui:"Figtree", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --mono:"IBM Plex Mono","SFMono-Regular",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100%;background:#000;}
+  body{color:#fff;font-family:var(--ui);overflow:hidden;}
+  /* will-change keeps the canvas on its own compositing layer; without it the
+     browser flattens the see-through parts over the video to black. */
+  canvas.street{position:fixed;inset:0;z-index:1;width:100%;height:100%;display:block;touch-action:none;}
+  canvas.street[hidden],canvas#gl[hidden]{display:none;}
+  canvas#gl{position:fixed;inset:0;z-index:1;width:100%;height:100%;display:block;image-rendering:pixelated;touch-action:none;will-change:transform;}
+
+  .home{position:fixed;top:18px;left:20px;z-index:5;color:var(--paper);mix-blend-mode:difference;}
+  .home svg{width:30px;height:auto;display:block;}
+
+
+  /* ---------- chips ---------- */
+  .chip{
+    font:700 10.5px/1 var(--ui);letter-spacing:.08em;text-transform:uppercase;color:#fff;
+    background:rgba(255,255,255,.06);border:1px solid var(--edge2);border-radius:99px;padding:8px 11px;cursor:pointer;
+    white-space:nowrap;transition:background .12s, border-color .12s, transform .08s;
+  }
+  .chip:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.5);}
+  .chip:active{transform:scale(.97);}
+  .chip[aria-pressed="true"],.chip[aria-selected="true"]{background:#fff;color:#000;border-color:#fff;}
+  .chip:focus-visible,.dial:focus-visible,.dockb:focus-visible{outline:2px solid var(--mint);outline-offset:3px;}
+  .chip[hidden]{display:none;}
+
+  /* ---------- dock ---------- */
+  .dock{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:7;display:flex;align-items:center;gap:8px;}
+  .dockb{
+    white-space:nowrap;
+    font:800 11px/1 var(--ui);letter-spacing:.1em;text-transform:uppercase;color:#fff;cursor:pointer;
+    background:var(--glass);border:1px solid var(--edge2);border-radius:99px;padding:11px 16px;
+    backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);box-shadow:var(--soft);
+    display:flex;align-items:center;gap:8px;transition:background .12s, transform .08s;
+  }
+  .dockb:hover{background:rgba(40,38,36,.75);}
+  .dockb:active{transform:scale(.97);}
+  .dockb[aria-expanded="true"]{background:#fff;color:#000;}
+  .dockb .dot{width:10px;height:10px;border-radius:50%;background:var(--mint);box-shadow:0 0 12px var(--mint);}
+  .dockb[aria-expanded="true"] .dot{background:#000;box-shadow:none;}
+  .dockb.q{padding:11px 13px;font-size:14px;}
+  .dockb#apply{padding:11px 18px;font-size:12px;}
+  .dockb#apply .dot{background:#6b6966;box-shadow:none;}
+  .dockb#apply[aria-pressed="true"]{background:var(--hot);border-color:var(--hot);color:#000;box-shadow:0 0 28px rgba(255,95,168,.55), var(--soft);}
+  .dockb#apply[aria-pressed="true"] .dot{background:#000;}
+  .dockb .caret{font-size:9px;opacity:.75;}
+  /* the Looks dropdown, opening upward from the dock */
+  .spellmenu{
+    position:absolute;left:50%;bottom:calc(100% + 10px);transform:translateX(-50%);min-width:250px;padding:6px;
+    background:var(--glass);border:1px solid var(--edge);border-radius:16px;box-shadow:var(--soft);
+    backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3);
+    display:flex;flex-direction:column;gap:2px;
+  }
+  .spellmenu[hidden]{display:none;}
+  .spellmenu .kick{font:700 9px var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--mint);padding:6px 11px 4px;}
+  .spellmenu button{
+    font:800 12px/1.2 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:#fff;text-align:left;cursor:pointer;
+    background:none;border:0;border-radius:10px;padding:10px 11px;display:flex;flex-direction:column;gap:3px;
+  }
+  .spellmenu button i{font:600 11px var(--ui);letter-spacing:0;text-transform:none;font-style:normal;color:rgba(255,255,255,.62);}
+  .spellmenu button:hover{background:rgba(255,255,255,.1);}
+  .spellmenu button[aria-selected="true"]{background:#fff;color:#000;}
+  .spellmenu button[aria-selected="true"] i{color:rgba(0,0,0,.6);}
+  .spellmenu button:focus-visible{outline:2px solid var(--mint);outline-offset:-2px;}
+  /* the menu for dressing one thing, opened where you click it */
+  .objmenu{position:fixed;left:0;top:0;bottom:auto;transform:none;z-index:9;min-width:230px;}
+
+  /* ---------- the strip ---------- */
+  .ctrl{
+    position:fixed;left:50%;bottom:70px;transform:translateX(-50%);z-index:6;
+    display:flex;align-items:center;gap:12px;max-width:calc(100vw - 16px);
+    padding:8px 10px;border:1px solid var(--edge);border-radius:20px;
+    background:var(--glass);backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3);
+    box-shadow:var(--soft);
+  }
+  .ctrl[hidden]{display:none;}
+  .tabs{display:flex;flex-direction:column;gap:4px;}
+  .tabs .chip{padding:6px 9px;font-size:9.5px;text-align:left;border-color:transparent;background:transparent;}
+  .tabs .chip:hover{background:rgba(255,255,255,.1);}
+  .tabs .chip[aria-selected="true"]{background:#fff;color:#000;}
+  .page{display:flex;align-items:center;gap:8px;}
+  .page[hidden]{display:none;}
+  .sep{width:1px;align-self:stretch;background:var(--edge);}
+
+  /* dials */
+  .dwrap{display:flex;flex-direction:column;align-items:center;gap:4px;width:58px;}
+  .dial{
+    --v:0.5;position:relative;width:44px;height:44px;border-radius:50%;cursor:ns-resize;touch-action:none;
+    background:conic-gradient(from 225deg, var(--mint) 0deg, var(--mint) calc(var(--v) * 270deg),
+      rgba(255,255,255,.14) calc(var(--v) * 270deg) 270deg, transparent 270deg 360deg);
+    box-shadow:0 6px 16px rgba(0,0,0,.5);
+  }
+  .dial::after{content:"";position:absolute;inset:5px;border-radius:50%;background:#1a1917;border:1px solid var(--edge2);}
+  .dial .g{position:absolute;inset:0;display:grid;place-items:center;font:800 14px var(--ui);color:#fff;z-index:1;pointer-events:none;}
+  .dial .ind{position:absolute;left:50%;top:50%;width:2px;height:22px;margin-left:-1px;margin-top:-22px;z-index:1;
+    transform-origin:50% 100%;transform:rotate(calc(-135deg + var(--v) * 270deg));pointer-events:none;}
+  .dial .ind::before{content:"";position:absolute;top:1px;left:-1px;width:4px;height:7px;border-radius:2px;background:var(--mint);box-shadow:0 0 6px var(--mint);}
+  .dname{font:700 9px var(--ui);letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.85);}
+  .dname b{font:500 9px var(--mono);margin-left:4px;color:var(--mint);}
+
+
+
+  /* ---------- help ---------- */
+  .help{
+    position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:8;
+    width:min(400px,calc(100vw - 24px));padding:18px 20px;border:1px solid var(--edge);border-radius:20px;
+    background:rgba(16,15,14,.78);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:var(--soft);
+  }
+  .help[hidden]{display:none;}
+  .help .kicker{font:700 10px var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--mint);margin:0 0 6px;}
+  .help h2{font:800 22px var(--ui);margin:0 0 12px;letter-spacing:-.01em;}
+  .help .lede{font:600 13px/1.55 var(--ui);color:rgba(255,255,255,.92);margin:0 0 12px;}
+  .help dl{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;margin:0 0 12px;font:600 12.5px/1.45 var(--ui);}
+  .help dt{color:var(--mint);}
+  .help b{color:#fff;}
+  .help dd{margin:0;}
+  .help p{font:600 11.5px/1.55 var(--ui);margin:0 0 12px;color:rgba(255,255,255,.65);}
+  .help a{color:#fff;}
+
+  .readout{
+    position:fixed;left:20px;bottom:20px;z-index:4;margin:0;padding:6px 10px;border:1px solid var(--edge);border-radius:99px;
+    background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    font:700 9.5px var(--ui);letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.85);
+    pointer-events:none;font-variant-numeric:tabular-nums;
+  }
+  .readout:empty{display:none;}
+
+  /* ---------- the bottom sheet, on a phone ---------- */
+  @media (max-width:700px){
+    .readout{display:none;}
+    .dock{gap:6px;bottom:12px;}
+    .dockb,.dockb#apply{padding:10px 12px;font-size:10.5px;gap:6px;}
+    .ctrl{
+      left:8px;right:8px;bottom:64px;transform:none;max-width:none;
+      flex-direction:column;align-items:stretch;gap:10px;padding:10px;border-radius:18px;
+    }
+    .sep{display:none;}
+    .tabs{flex-direction:row;gap:2px;padding:3px;border-radius:99px;background:rgba(255,255,255,.07);}
+    .tabs .chip{flex:1;text-align:center;padding:8px 4px;}
+    .page{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+    .page[hidden]{display:none;}
+    .page .chip{text-align:center;padding:10px 8px;}
+    .page.dials{grid-template-columns:repeat(4,1fr);justify-items:center;}
+    .page[data-page="cast"] .chip{padding:10px 4px;}
+    .objmenu{min-width:0;width:calc(100vw - 16px);}
+  }
+  @media (prefers-reduced-motion:reduce){ .chip,.dockb{transition:none;} }
+
+  /* ---------- the layers panel ---------- */
+  .layers{
+    position:fixed;top:16px;right:16px;bottom:76px;z-index:6;width:300px;display:flex;flex-direction:column;
+    border:1px solid var(--edge);border-radius:18px;background:var(--glass);box-shadow:var(--soft);
+    backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3);overflow:hidden;
+  }
+  .layers[hidden]{display:none;}
+  .layers header{display:flex;align-items:center;justify-content:space-between;padding:12px 12px 8px;}
+  .layers .ttl{font:800 11px var(--ui);letter-spacing:.14em;text-transform:uppercase;}
+  .addmenu{margin:0 10px 8px;padding:6px;border:1px solid var(--edge);border-radius:12px;background:rgba(0,0,0,.35);
+    display:grid;grid-template-columns:1fr 1fr;gap:2px;max-height:46vh;overflow:auto;}
+  .addmenu[hidden]{display:none;}
+  .addmenu .grp{grid-column:1/-1;font:700 9px var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--mint);padding:6px 6px 2px;}
+  .addmenu button{font:700 11px var(--ui);color:#fff;text-align:left;background:none;border:0;border-radius:8px;padding:7px 8px;cursor:pointer;}
+  .addmenu button:hover{background:rgba(255,255,255,.1);}
+  .stack{list-style:none;margin:0;padding:0 8px;overflow:auto;flex:1;display:flex;flex-direction:column;gap:4px;}
+  .layer{border:1px solid transparent;border-radius:12px;padding:8px 8px 7px;background:rgba(255,255,255,.04);cursor:pointer;}
+  .layer[aria-selected="true"]{border-color:var(--hot);background:rgba(255,95,168,.1);}
+  .layer.off{opacity:.45;}
+  .lrow{display:flex;align-items:center;gap:6px;}
+  .eye{width:22px;height:22px;border-radius:6px;border:1px solid var(--edge2);background:none;color:#fff;font:11px var(--ui);cursor:pointer;flex:none;}
+  .eye[aria-pressed="false"]{color:rgba(255,255,255,.3);}
+  .lname{flex:1;font:800 11.5px var(--ui);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .mode{font:700 10px var(--ui);color:#fff;background:rgba(0,0,0,.35);border:1px solid var(--edge2);border-radius:7px;padding:3px 4px;}
+  .tiny{width:22px;height:22px;border:0;border-radius:6px;background:none;color:rgba(255,255,255,.7);cursor:pointer;font:12px var(--ui);flex:none;}
+  .tiny:hover{background:rgba(255,255,255,.1);color:#fff;}
+  .lrow2{display:flex;align-items:center;gap:8px;margin:6px 0 0 28px;}
+  .lrow2 .lab{font:700 9px var(--ui);letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.55);width:44px;flex:none;}
+  .props .lrow2 .lab{width:74px;}
+  .mask{margin:5px 0 0 28px;font:600 10.5px var(--ui);color:rgba(255,255,255,.6);}
+  .mask b{color:var(--mint);font-weight:700;}
+  input[type=range]{flex:1;accent-color:var(--hot);height:16px;}
+  .base{display:flex;align-items:center;gap:8px;margin:6px 8px 0;padding:8px 10px;border-radius:12px;background:rgba(255,255,255,.07);
+    font:800 11px var(--ui);letter-spacing:.06em;text-transform:uppercase;}
+  .base .lab{font:700 9px var(--ui);letter-spacing:.1em;color:rgba(255,255,255,.55);}
+  .props{padding:10px 12px 12px;border-top:1px solid var(--edge);margin-top:8px;max-height:48vh;overflow:auto;}
+  .props .ttl2{font:700 9px var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--mint);margin:0 0 8px;}
+  .props .lrow2{margin:4px 0 0;}
+  .props .hint{font:600 10.5px/1.4 var(--ui);color:rgba(255,255,255,.6);margin:8px 0 0;}
+  .props .ttl2.mt{margin-top:14px;}
+  .props .files{display:flex;align-items:center;gap:6px;margin:10px 0 0;flex-wrap:wrap;}
+  .props .files button{font:700 10px var(--ui);color:#fff;background:rgba(255,255,255,.08);border:1px solid var(--edge2);border-radius:99px;padding:5px 9px;cursor:pointer;}
+  .props .files .fname{font:600 10px var(--mono);color:var(--mint);max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .props .hint button{font:700 10px var(--ui);color:#fff;background:rgba(255,255,255,.08);border:1px solid var(--edge2);border-radius:99px;padding:3px 8px;cursor:pointer;}
+  @media (max-width:700px){
+    .layers{top:auto;left:8px;right:8px;bottom:64px;width:auto;max-height:52vh;}
+  }
+
+  /* ---------- on a phone: a brief card, and type that doesn't make iOS zoom ---------- */
+  .help .morebtn{display:none;margin-right:6px;}
+  @media (max-width:700px){
+    .help{top:auto;bottom:12px;transform:translateX(-50%);max-height:calc(100dvh - 90px);overflow:auto;padding:14px 16px;}
+    .help h2{font-size:18px;margin-bottom:8px;}
+    .help .lede{font-size:12.5px;line-height:1.5;}
+    .help:not(.more) dl, .help:not(.more) > p:not(.kicker):not(.lede){display:none;}
+    .help .morebtn{display:inline-flex;}
+  }
+  /* iOS zooms into any text box under 16px and stays zoomed */
+  @media (max-width:700px), (pointer:coarse){
+    input:not([type=range]):not([type=file]):not([type=checkbox]), select, textarea{font-size:16px !important;}
+  }
+</style>
+
+<canvas id="gl" aria-label="The suburb, with Make-Up's layers of effects over it"></canvas>
+
+<a class="home" href="/" aria-label="Sea of Grass — all studies">
+  <svg viewBox="43.63 44.56 350.94 258.56" fill="currentColor" aria-hidden="true">
+    <path d="M 60.1360,299.5890 C 40.8560,283.5000 37.9720,248.8600 54.1230,229.1250 C 61.9590,219.4780 73.2066,213.0913 85.9080,212.4050 L 279.9170,212.3880 C 292.7328,211.6894 302.2259,200.5242 302.6140,188.1740 C 303.0171,175.3461 294.1087,163.3937 280.9850,162.4350 L 160.3860,162.3770 C 155.6830,162.3750 152.4580,158.1300 152.2660,154.1930 C 152.0640,150.0420 155.5000,145.5160 160.3230,145.5160 L 323.2740,145.5180 C 363.5090,146.7569 394.2264,180.5210 394.5670,220.2810 C 394.9023,259.4236 360.4620,297.7100 320.2520,299.1580 C 320.2520,299.1580 69.9310,307.7640 60.1360,299.5890 Z"/>
+    <path d="M 365.1390,47.9780 C 360.1170,47.5130 354.1470,47.1080 347.4230,46.7550 C 274.7440,42.9430 114.0820,45.2510 114.0820,45.2510 C 73.9994,46.9759 43.7290,80.8860 43.6260,120.3040 C 43.5230,159.4680 73.5199,193.9418 113.3820,195.4730 L 277.3270,195.8440 C 282.2870,195.8440 285.7460,192.0070 285.9600,187.6500 C 286.1670,183.4310 282.8680,178.9500 277.9760,178.9480 L 158.2750,178.9140 C 145.3037,178.2644 135.8119,166.8014 135.6040,154.2420 C 135.3960,141.6768 144.3477,129.9059 157.2620,128.9900 L 350.1640,128.8050 C 352.3160,128.8030 354.4280,128.6110 356.4990,128.2740 C 366.7370,126.6070 375.8830,121.0490 382.8160,113.4590 C 390.0330,105.5580 394.4238,95.7293 394.5320,85.6870 C 394.7250,67.7708 381.6430,52.8390 365.1390,47.9780 Z"/>
+    <circle cx="357.983" cy="86.686" r="36.548"/>
+  </svg>
+</a>
+
+<!-- ---------------------------------------------------------------- layers -->
+<aside class="layers" id="layers" aria-label="Layers">
+  <header>
+    <span class="ttl">Layers</span>
+    <button class="chip" id="addBtn" aria-expanded="false" title="Add an effect on top">+ effect</button>
+  </header>
+  <div class="addmenu" id="addMenu" hidden></div>
+  <ol class="stack" id="stack"></ol>
+  <div class="base"><span>Street</span><span class="lab">speed</span><input type="range" id="speed" min="0" max="1" step="0.01" aria-label="Walking speed"></div>
+  <section class="props" id="props"></section>
+</aside>
+
+<div class="dock">
+  <button class="dockb" id="apply" aria-pressed="false" title="Show the layers over the street (M)"><span class="dot"></span><span>make-up</span></button>
+  <button class="dockb" id="layersBtn" aria-expanded="true" title="Show or hide the layers panel (L)"><span class="dot"></span>layers</button>
+  <button class="dockb q" id="ask" aria-label="How to play">?</button>
+</div>
+
+<div class="help" id="help" hidden role="dialog" aria-label="About Make-Up">
+  <p class="kicker">Study 11 · Sea of Grass</p>
+  <h2 id="helpTitle">Make-Up</h2>
+  <p class="lede">The same endless street as <a href="/studies/fever/">Fever</a>, made up. Fever changes the shape of things;
+    Make-Up changes how they look, never their shape. It works like the layers in an image editor: stack effects over the
+    street, and each one works on everything beneath it.</p>
+  <dl>
+    <dt>make-up</dt><dd>the button, or M: shows the layers over the street, or takes them off</dd>
+    <dt>+ effect</dt><dd>adds a layer on top. Most are made of marks, thousands of them, laid by hand as it were along the
+      shapes in the street: pencil, scribble, chalk, crayon, watercolour, spray, airbrush, paint strokes, ink, neon, riso print</dd>
+    <dt>a layer</dt><dd>the eye shows or hides it; the mode blends it with what's below (multiply, screen, overlay…); opacity
+      sets how much; ↑ ↓ move it; × deletes it. Select it to change its settings</dd>
+    <dt>motion</dt><dd>how the look moves: boil redraws it like hand-drawn frames, jitter sets how much changes each time,
+      drift slides it across, flow streams the marks along the edges, orbit circles them</dd>
+    <dt>grade</dt><dd>a colour grade over everything below: presets and sliders, or load a .cube LUT; <b>save .cube</b>
+      keeps it for Fantasmagoria or any editor</dd>
+    <dt>mask</dt><dd>with a layer selected, click things in the street (a colour of house, the lamps, the road, the lawn, the
+      sky) and the layer only touches those. Click again to take one out; <b>everything</b> clears the mask</dd>
+  </dl>
+  <p>Make-Up is the look tool from Fantasmagoria, the studio's live show, made to be used alongside Fever, and tried out here
+    on its own. The street comes from a popular dreamcore meme, drawn live with <a href="https://threejs.org">three.js</a>.
+    The effects are after references Tristan collected: airbrushed posters, a stencil-sprayed house, a glowing neon swirl, a
+    glossy vector flower, a riso-printed plant, Fabio Catapano's Spectrum 001, a board of scribbled, rotoscoped and
+    crayoned animation, watercolour blots, a scribbled-pencil fill and a chalky brushed elephant. Nothing leaves your browser.</p>
+  <button class="chip" id="gotit">Begin</button>
+</div>
+<script>
+// On a phone the card is brief; the rest is behind "how it works".
+(() => {
+  const h = document.getElementById("help"), b = document.createElement("button");
+  b.className = "chip morebtn"; b.type = "button"; b.textContent = "how it works"; b.setAttribute("aria-expanded", "false");
+  b.onclick = () => b.setAttribute("aria-expanded", String(h.classList.toggle("more")));
+  h.lastElementChild.before(b);
+})();
+</script>
+
+<p class="readout" id="readout"></p>
+
+<script type="importmap">
+{"imports": {"three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+             "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const store = {
+  get(k){ try { return localStorage.getItem("makeup:" + k); } catch (e) { return null; } },
+  set(k, v){ try { localStorage.setItem("makeup:" + k, v); } catch (e) {} },
+};
+
+// ------------------------------------------------------------------ the effects
+// Every effect is a pass over the picture so far, as in an image editor: the
+// street is drawn, then each visible layer from the bottom up takes what's
+// beneath it, makes its effect, and blends it back in with its mode and
+// opacity, only where its mask allows. The street writes which kind of thing
+// each pixel belongs to into its alpha, which is how masks know.
+// Marks: most looks are made of marks laid down one by one, as by hand:
+// dashes, loops, zigzags, dry strokes, blots, sprays. Thousands of them are
+// placed over the picture, run along the edges and contours found in it, take
+// their colour from what's beneath, and are redrawn on every tick of boil.
+//   style   which brush (the MARKF shader)
+//   blend   how marks pile up: 1 multiply (pigment), 2 over (paint), 3 add (light)
+//   ground  what they're laid on: 0 paper, 1 the picture, 2 a navy board,
+//           3 black, 4 this effect's own flat fill, 5 the picture dark and
+//           blurred, 6 the picture blurred
+//   n       how many marks at full density, on a big screen
+//   edge    the share of marks that seek out edges
+//   dens    which setting scales the number of marks
+const EFFECTS = [
+  {id: "spectrum", name: "Spectrum", group: "Colour", p: [["bands", .4], ["drift", .35], ["strength", .8]]},
+  {id: "bleach",   name: "Bleach",   group: "Colour", p: [["drain", .85], ["warmth", .2]]},
+  {id: "gloss",    name: "Gloss",    group: "Colour", p: [["shine", .7], ["colour", .5], ["grain", .5]]},
+  {id: "glow",     name: "Glow",     group: "Colour", p: [["bloom", .5], ["threshold", .35], ["grain", .5]]},
+  {id: "vector",   name: "Vector",   group: "Colour", p: [["levels", .35], ["outline", .9], ["glints", .6]]},
+  {id: "print",    name: "Print",    group: "Print & paint", p: [["offset", .45], ["shadow", .1], ["dashes", .6]], boil: .35,
+   marks: {style: 0, blend: 2, ground: 4, n: 9000, edge: 1, dens: 2}},
+  {id: "strokes",  name: "Strokes",  group: "Print & paint", p: [["size", .5], ["density", .6], ["detail", .6]], boil: .1,
+   marks: {style: 1, blend: 2, ground: 6, n: 16000, edge: 0, dens: 1}},
+  {id: "airbrush", name: "Airbrush", group: "Print & paint", p: [["softness", .5], ["density", .55], ["grain", .6]], boil: .05,
+   marks: {style: 2, blend: 2, ground: 5, n: 3200, edge: .35, dens: 1}},
+  {id: "spray",    name: "Spray",    group: "Print & paint", p: [["spread", .45], ["coverage", .55]], boil: .25,
+   marks: {style: 3, blend: 2, ground: 0, n: 9000, edge: .3, dens: 1}},
+  {id: "watercolour", name: "Watercolour", group: "Print & paint", p: [["wash", .5], ["rims", .6], ["density", .55]], boil: .12,
+   marks: {style: 8, blend: 1, ground: 0, n: 1300, edge: .2, dens: 2}},
+  {id: "crayon",   name: "Crayon",   group: "Print & paint", p: [["scribble", .55], ["outline", .6]], boil: .3,
+   marks: {style: 7, blend: 2, ground: 0, n: 14000, edge: L => L.p[1] * .3, dens: 0}},
+  {id: "scribble", name: "Scribble", group: "Line", p: [["lines", .75], ["hatching", .6]], boil: .3,
+   marks: {style: 4, blend: 1, ground: 0, n: 12000, edge: .5, dens: -1}},
+  {id: "pencil",   name: "Pencil",   group: "Line", p: [["density", .6], ["loops", .3]], boil: .3,
+   marks: {style: 9, blend: 1, ground: 0, n: 9000, edge: .15, dens: 0}},
+  {id: "chalk",    name: "Chalk",    group: "Line", p: [["strokes", .55], ["ground", 0]], boil: .2,
+   marks: {style: 10, blend: 2, ground: 2, n: 9000, edge: 0, dens: 0}},
+  {id: "ink",      name: "Ink",      group: "Line", p: [["threshold", .3], ["colour", 0], ["brush", .6]], boil: .25,
+   marks: {style: 5, blend: 2, ground: 4, n: 7000, edge: 1, dens: 2}},
+  {id: "neon",     name: "Neon",     group: "Line", p: [["glow", .5], ["tint", .5], ["lines", .6]], boil: 0,
+   marks: {style: 6, blend: 3, ground: 3, n: 6000, edge: 1, dens: 2}},
+  {id: "grade",    name: "Grade",    group: "Grade", p: []},
+];
+const SHADER_TYPE = {spectrum: 0, bleach: 1, print: 2, gloss: 3, strokes: 4, airbrush: 5, spray: 6, glow: 7, vector: 8,
+  scribble: 9, ink: 10, neon: 11, crayon: 12, watercolour: 13, pencil: 14, chalk: 15, grade: 16};
+const BY_ID = Object.fromEntries(EFFECTS.map(e => [e.id, Object.assign(e, {type: SHADER_TYPE[e.id]})]));
+const MODES = ["Normal", "Multiply", "Screen", "Overlay", "Lighten", "Darken", "Difference"];
+
+const canvas = $("gl");
+const gl = canvas.getContext("webgl2", {antialias: false, preserveDrawingBuffer: false, alpha: false});
+const VS = `#version 300 es
+in vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }`;
+const FXF = `#version 300 es
+precision highp float;
+uniform sampler2D uSrc, uBase;
+uniform vec2 uRes;
+uniform float uSrcFlip, uTime, uType, uMode, uOpacity, uAll;
+uniform vec4 uP;
+uniform float uMask[16];
+uniform sampler2D uMarks;
+uniform highp sampler3D uLut;
+uniform float uTick, uMarkMode, uGround, uLutN, uSpin;
+uniform vec2 uMove;
+out vec4 o;
+// ---- helpers
+float h1(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+float n1(vec2 p){
+  vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
+  return mix(mix(h1(i), h1(i + vec2(1, 0)), f.x), mix(h1(i + vec2(0, 1)), h1(i + vec2(1, 1)), f.x), f.y);
+}
+float lum(vec3 c){ return dot(c, vec3(0.299, 0.587, 0.114)); }
+vec3 pal(float t){ return 0.55 + 0.45 * cos(6.2832 * (t + vec3(0.0, 0.33, 0.67))); }
+vec3 src(vec2 uv){ uv = clamp(uv, 0.0, 1.0); return texture(uSrc, uSrcFlip > 0.5 ? vec2(uv.x, 1.0 - uv.y) : uv).rgb; }
+float kindAt(vec2 uv){ return floor((1.0 - texture(uBase, vec2(clamp(uv.x, 0.0, 1.0), 1.0 - clamp(uv.y, 0.0, 1.0))).a) / 0.03 + 0.5); }
+// How strongly an outline runs through here: a change of brightness, or the
+// edge of one thing against another.
+float edgeAt(vec2 uv, float w){
+  vec2 px = w / uRes;
+  float l = lum(src(uv)), k = kindAt(uv);
+  float d = abs(lum(src(uv + vec2(px.x, 0.0))) - l) + abs(lum(src(uv + vec2(0.0, px.y))) - l)
+          + abs(lum(src(uv - vec2(px.x, 0.0))) - l) + abs(lum(src(uv - vec2(0.0, px.y))) - l);
+  float ke = step(0.5, abs(kindAt(uv + vec2(px.x, 0.0)) - k) + abs(kindAt(uv + vec2(0.0, px.y)) - k));
+  return max(smoothstep(0.08, 0.35, d), ke);
+}
+vec3 blurAt(vec2 uv, float r){
+  vec3 s = src(uv); float n = 1.0;
+  for (int i = 0; i < 12; i++){
+    float a = float(i) * 2.39996, d = sqrt(float(i) + 0.5) / sqrt(12.0);
+    s += src(uv + vec2(cos(a), sin(a)) * d * r / uRes); n += 1.0;
+  }
+  return s / n;
+}
+// paper: a warm white with fibres and a little tooth
+vec3 paper(vec2 fc){
+  float f = n1(fc * vec2(0.9, 0.11)) * 0.5 + n1(fc * vec2(0.13, 0.8)) * 0.5, t = n1(fc * 0.45), g = h1(floor(fc));
+  return vec3(0.957, 0.945, 0.912) * (0.955 + 0.03 * f + 0.025 * t + 0.015 * g);
+}
+
+// ---- the effects, each on the picture so far
+vec3 effect(vec2 uv){
+  vec2 fc = gl_FragCoord.xy + uMove;
+  vec3 c = src(uv);
+  float l = lum(c), tick = uTick;
+  int k = int(uType + 0.5);
+  if (k == 0){                                             // Spectrum: bands, drift, strength
+    float t = l * (0.5 + uP.x * 3.0) + n1((uv + uMove / uRes) * 3.0) * 0.3 - uTime * uP.y * 0.15;
+    vec3 col = mix(pal(t), vec3(1.0), smoothstep(0.8, 1.0, fract(t * 2.0)) * 0.5);
+    return mix(c, col * (0.45 + 1.05 * l), uP.z);
+  }
+  if (k == 1){                                             // Bleach: drain, warmth
+    vec3 g = mix(vec3(l), l * vec3(1.08, 0.96, 0.78), uP.y);
+    return mix(c, g, uP.x);
+  }
+  if (k == 2){                                             // Print: offset, shadow (boil is w)
+    vec2 px = 1.0 / uRes, g = floor(fc / 2.0) * 2.0 * px;
+    vec2 jog = vec2(h1(vec2(tick, 1.0)), h1(vec2(tick, 2.0))) - 0.5;
+    vec3 o = paper(fc);
+    for (int i = 1; i >= 0; i--){
+      vec2 off = (vec2(float(i) * 2.0 - 1.0, 0.3 * float(i)) * 6.0 + jog * 4.0) * uP.x * 2.0 * px;
+      vec3 s = src(g + off);
+      float sat = max(s.r, max(s.g, s.b)) - min(s.r, min(s.g, s.b));
+      if (lum(s) > uP.y && sat > 0.12){
+        float hue = atan(s.g - s.b, s.r - 0.5 * (s.g + s.b)) / 6.2832 + 0.5;
+        float ink = mod(floor(hue * 5.0) + floor(h1(vec2(tick, 3.0)) * 2.0) + float(i) * 2.0, 5.0);
+        vec3 inkc = ink < 0.5 ? vec3(0.98, 0.8, 0.12) : ink < 1.5 ? vec3(0.36, 0.74, 0.24) : ink < 2.5 ? vec3(0.32, 0.76, 0.93)
+                  : ink < 3.5 ? vec3(0.95, 0.38, 0.76) : vec3(0.98, 0.47, 0.2);
+        o = paper(fc) * inkc;
+      }
+    }
+    vec2 ob = jog * 3.0 * uP.x * 2.0 * px;
+    float dash = step(0.3, n1(fc * 0.35 + tick * 7.0));
+    if (lum(src(g + ob)) < uP.y || (uMarkMode < 0.5 && edgeAt(g + ob, 2.0) * dash > 0.5)) o = mix(o, vec3(0.07), 0.92);
+    return o;
+  }
+  if (k == 3){                                             // Gloss: shine, colour, grain
+    float t = l * 2.6 + n1(uv * vec2(4.0, 2.0) + kindAt(uv) * 1.7) * 1.2;
+    float b = fract(t);
+    vec3 tint = mix(vec3(l), c, 1.0 + uP.y * 1.5) * 1.2;
+    vec3 col = b < 0.3 ? mix(vec3(0.02), tint * 0.45, b / 0.3) : b < 0.65 ? mix(tint * 0.45, tint, (b - 0.3) / 0.35)
+             : mix(tint, vec3(1.0), smoothstep(0.65, 0.95, b) * uP.x * 1.4);
+    col *= smoothstep(0.0, 0.05, b) * 0.9 + 0.1;
+    return clamp(col + (h1(fc + uTime) - 0.5) * 0.22 * uP.z, 0.0, 1.0);
+  }
+  if (k == 4){                                             // Strokes: density, length, crawl
+    vec2 q = fc / 18.0;
+    float a = n1(q * 0.08 + uTime * 0.03) * 3.2;
+    vec2 f = vec2(cos(a), sin(a));
+    float lw = 0.4 + 1.6 * (1.0 - uP.x), perp = dot(q, vec2(-f.y, f.x)), along = dot(q, f);
+    float lane = floor(perp / lw);
+    float s = fract(along / (1.0 + uP.y * 5.0) - uTime * uP.z * 0.8 + h1(vec2(lane, 0.0)) * 3.0);
+    float body = smoothstep(0.0, 0.08, s) * smoothstep(0.75, 0.55, s) * step(0.45, h1(vec2(lane, 3.0)));
+    float across = 1.0 - abs(fract(perp / lw) - 0.5) * 2.0;
+    vec3 col = mix(pal(h1(vec2(lane, 11.0))), vec3(1.0), 0.3 * across);
+    return mix(c, col, body * smoothstep(0.15, 0.45, across));
+  }
+  if (k == 5){                                             // Airbrush: softness, bands, grain
+    vec3 b = blurAt(uv, 4.0 + uP.x * 28.0);
+    float bl = lum(b);
+    float band = smoothstep(0.0, 1.0, fract(bl * (2.0 + uP.y * 6.0)));   // soft, sprayed steps of shade
+    vec3 col = b * (0.75 + 0.5 * band);
+    col = mix(vec3(lum(col)), col, 1.25);                  // a little richer
+    return clamp(col + (h1(fc + uTime * 0.0) - 0.5) * 0.2 * uP.z, 0.0, 1.0);
+  }
+  if (k == 6){                                             // Spray: spread, coverage, (boil)
+    vec2 j = (vec2(h1(fc + tick), h1(fc.yx + tick * 1.3)) - 0.5) * (2.0 + uP.x * 24.0) / uRes;
+    vec3 s = src(uv + j);
+    vec3 prim = s;                                         // pushed toward a few strong colours
+    float mx = max(s.r, max(s.g, s.b));
+    prim = mx > 0.05 ? s / mx : s;
+    prim = mix(vec3(lum(prim)), prim, 1.6);
+    float dens = (1.0 - lum(s)) * 1.2 + (mx - min(s.r, min(s.g, s.b))) * 1.4;
+    float spot = step(h1(fc * 1.7 + tick), dens * (0.4 + uP.y));
+    return mix(paper(fc), clamp(prim * (0.55 + 0.4 * mx), 0.0, 1.0), spot);
+  }
+  if (k == 7){                                             // Glow: bloom, threshold, grain
+    vec3 big = blurAt(uv, 30.0 + uP.x * 60.0), mid = blurAt(uv, 10.0 + uP.x * 20.0);
+    vec3 bright = max(mid - (0.4 + uP.y * 0.5), 0.0) + max(big - (0.35 + uP.y * 0.5), 0.0);
+    vec3 col = mix(c, mid, 0.35) + bright * 2.2;
+    col = mix(col, vec3(1.0), smoothstep(0.75, 1.0, lum(col)) * 0.6);   // blown-out cores
+    return clamp(col + (h1(fc + uTime) - 0.5) * 0.18 * uP.z, 0.0, 1.0);
+  }
+  if (k == 8){                                             // Vector: levels, outline, glints
+    vec3 b = blurAt(uv, 3.0);
+    float lv = 2.0 + floor(uP.x * 6.0);
+    vec3 col = floor(b * lv + 0.5) / lv;
+    col = mix(vec3(lum(col)), col, 1.5);                   // bright, flat colour
+    float e = edgeAt(uv, 1.0);
+    col = mix(col, vec3(0.08, 0.08, 0.1), step(0.55, e) * uP.y);
+    float glint = smoothstep(0.82, 0.95, lum(b)) * step(0.7, fract((fc.x + fc.y) / 90.0 + kindAt(uv) * 0.3));
+    return clamp(col + glint * uP.z, 0.0, 1.0);
+  }
+  if (k == 9){                                             // Scribble: lines, hatching, (boil)
+    vec2 w = (vec2(n1(fc * 0.05 + tick * 3.1), n1(fc * 0.05 + tick * 5.7 + 9.0)) - 0.5) * 6.0 / uRes;
+    float line = edgeAt(uv + w, 1.5) * step(0.25, n1(fc * 0.2 + tick));
+    float dark = 1.0 - l;
+    float hx = fract((fc.x + fc.y) / (5.0 + (1.0 - uP.y) * 10.0) + n1(fc * 0.03 + tick) * 0.6);
+    float hatch = step(hx, 0.22) * smoothstep(0.35, 0.75, dark) * uP.y;
+    float hy = fract((fc.x - fc.y) / 7.0 + n1(fc * 0.03 + tick + 4.0) * 0.6);
+    hatch = max(hatch, step(hy, 0.2) * smoothstep(0.6, 0.9, dark) * uP.y);
+    float g = clamp(line * uP.x * 1.4 + hatch * 0.7, 0.0, 1.0);
+    return mix(paper(fc), vec3(0.18, 0.18, 0.2), g);
+  }
+  if (k == 10){                                            // Ink: threshold, colour, (boil)
+    float th = 0.08 + uP.x * 0.5 + (n1(fc * 0.02 + tick * 2.3) - 0.5) * 0.05;
+    float ink = max(step(lum(blurAt(uv, 5.0)), th), uMarkMode > 0.5 ? 0.0 : step(0.6, edgeAt(uv, 2.0)));
+    vec3 under = mix(paper(fc), c, uP.y);
+    return mix(under, vec3(0.04), ink);
+  }
+  if (k == 11){                                            // Neon: glow, tint, (boil)
+    float e = edgeAt(uv, 1.0), eb = 0.0;
+    for (int i = 0; i < 8; i++){
+      float a = float(i) * 0.785;
+      eb += edgeAt(uv + vec2(cos(a), sin(a)) * (3.0 + uP.x * 8.0) / uRes, 1.0);
+    }
+    eb /= 8.0;
+    vec3 tint = mix(vec3(1.0), pal(uP.y + l * 0.3), uP.y);
+    return clamp(tint * (e * 1.1 + eb * 0.9 * (0.6 + uP.x)), 0.0, 1.0) + vec3(0.02, 0.02, 0.03);
+  }
+  if (k == 16){                                            // Grade: a LUT, then the hues turned by spin
+    vec3 g = texture(uLut, clamp(c, 0.0, 1.0) * (uLutN - 1.0) / uLutN + 0.5 / uLutN).rgb;
+    if (abs(uSpin) > 0.001){
+      float a = uTime * uSpin * 1.5, Y = dot(g, vec3(0.299, 0.587, 0.114));
+      vec2 iq = vec2(dot(g, vec3(0.596, -0.274, -0.322)), dot(g, vec3(0.211, -0.523, 0.312)));
+      iq = mat2(cos(a), sin(a), -sin(a), cos(a)) * iq;
+      g = clamp(vec3(Y + 0.956 * iq.x + 0.621 * iq.y, Y - 0.272 * iq.x - 0.647 * iq.y, Y - 1.106 * iq.x + 1.703 * iq.y), 0.0, 1.0);
+    }
+    return g;
+  }
+  if (k == 13){                                            // Watercolour: wash, rims, (boil)
+    vec3 b = blurAt(uv + (vec2(n1(fc * 0.01 + tick), n1(fc * 0.01 + tick + 3.0)) - 0.5) * 10.0 / uRes, 6.0 + uP.x * 22.0);
+    vec3 pig = floor(b * 4.0 + 0.5) / 4.0;                 // a few pigments
+    float rim = clamp(length(blurAt(uv, 3.0) - blurAt(uv, 14.0)) * 3.5, 0.0, 1.0);   // dried, darker edges
+    float gran = (n1(fc * 0.35) - 0.5) * 0.18 + (n1(fc * 0.06 + tick) - 0.5) * 0.12;
+    vec3 wash = mix(vec3(1.0), clamp(pig + gran, 0.0, 1.0), 0.8) * (1.0 - rim * 0.4 * uP.y);
+    vec3 col = paper(fc) * wash;
+    return mix(col, paper(fc), smoothstep(0.78, 0.95, lum(b)));   // the whites are left as paper
+  }
+  if (k == 14){                                            // Pencil: density, loops, (boil)
+    vec3 col = paper(fc);
+    float dark = 1.0 - l;
+    vec3 pc = mix(vec3(l), c, 1.6);
+    for (int i = 0; i < 3; i++){
+      float a = h1(vec2(float(i), tick)) * 3.14159 + kindAt(uv) * 0.7;
+      vec2 r = mat2(cos(a), -sin(a), sin(a), cos(a)) * fc;
+      float wob = n1(r * (0.02 + uP.y * 0.03) + float(i) * 7.0 + tick) * (10.0 + uP.y * 30.0);
+      float line = smoothstep(0.55, 0.95, sin(r.x * 0.75 + wob));
+      float layer = step(float(i) * 0.25, dark * (0.6 + uP.x * 0.9));
+      vec3 sc = clamp(pc * (0.7 + 0.3 * h1(vec2(float(i), 9.0))) - float(i) * 0.08, 0.0, 1.0);
+      col = mix(col, sc, line * layer * 0.85);
+    }
+    return col;
+  }
+  if (k == 15){                                            // Chalk: strokes, ground, (boil)
+    vec2 px = 1.5 / uRes;
+    vec2 g = vec2(lum(src(uv + vec2(px.x, 0.0))) - lum(src(uv - vec2(px.x, 0.0))), lum(src(uv + vec2(0.0, px.y))) - lum(src(uv - vec2(0.0, px.y))));
+    vec2 dir = length(g) > 0.01 ? normalize(vec2(-g.y, g.x)) : normalize(vec2(1.0, 0.3));
+    vec2 q = vec2(dot(fc, dir), dot(fc, vec2(-dir.y, dir.x)));
+    float streak = n1(vec2(q.x * 0.03, q.y * (0.5 + uP.x)) + tick * 3.0);
+    float amt = smoothstep(0.25, 0.85, lum(blurAt(uv, 3.0)) + (streak - 0.5) * 0.8);
+    vec3 ground = mix(vec3(0.08, 0.15, 0.24), c * 0.25, uP.y);
+    return mix(ground, vec3(0.93, 0.94, 0.92) * (0.85 + 0.15 * streak), amt);
+  }
+  // 12, Crayon: scribble, outline, (boil)
+  float ang = 0.8 + (h1(vec2(kindAt(uv), 2.0)) - 0.5) * 1.4;
+  vec2 r = mat2(cos(ang), -sin(ang), sin(ang), cos(ang)) * fc;
+  float strokes = max(sin(r.x * 0.5 + n1(r * 0.05 + tick) * 14.0), sin(r.y * 0.42 + n1(r * 0.04 + tick + 7.0) * 16.0) * 0.8) * 0.5 + 0.5;
+  float cover = smoothstep(0.35, 0.65, strokes + (lum(c) - 0.5) * -0.4 + (uP.x - 0.5));
+  vec3 wax = mix(vec3(lum(c)), c, 1.7) * (0.85 + 0.25 * n1(fc * 0.5));
+  vec3 col = mix(paper(fc), clamp(wax, 0.0, 1.0), cover);
+  return mix(col, wax * 0.35, step(0.6, edgeAt(uv + (vec2(n1(fc * 0.04 + tick), n1(fc * 0.04 + tick + 5.0)) - 0.5) * 4.0 / uRes, 2.0)) * uP.y);
+}
+
+// ---- blend modes, as in Photoshop
+vec3 blend(vec3 a, vec3 b, int m){
+  if (m == 1) return a * b;                                // Multiply
+  if (m == 2) return 1.0 - (1.0 - a) * (1.0 - b);          // Screen
+  if (m == 3) return mix(2.0 * a * b, 1.0 - 2.0 * (1.0 - a) * (1.0 - b), step(0.5, a));   // Overlay
+  if (m == 4) return max(a, b);                            // Lighten
+  if (m == 5) return min(a, b);                            // Darken
+  if (m == 6) return abs(a - b);                           // Difference
+  return b;                                                // Normal
+}
+
+void main(){
+  vec2 uv = gl_FragCoord.xy / uRes;
+  vec3 below = src(uv);
+  if (uType < -0.5){ o = vec4(below, 1.0); return; }      // a plain copy
+  int k = int(kindAt(uv));
+  float m = uAll > 0.5 ? 1.0 : uMask[clamp(k, 0, 15)];
+  if (m * uOpacity < 0.002){ o = vec4(below, 1.0); return; }
+  vec3 fx;
+  if (uMarkMode > 0.5){                                    // marks, laid on their ground
+    int gr = int(uGround + 0.5);
+    vec3 g = gr == 0 ? paper(gl_FragCoord.xy) : gr == 1 ? below
+           : gr == 2 ? mix(vec3(0.07, 0.13, 0.22) * (0.9 + 0.12 * n1(gl_FragCoord.xy * 0.02) + 0.04 * h1(gl_FragCoord.xy)), below * 0.3, uP.y)
+           : gr == 3 ? vec3(0.012, 0.012, 0.02) : gr == 4 ? effect(uv)
+           : gr == 5 ? blurAt(uv, 8.0) * 0.22 : blurAt(uv, 7.0);
+    vec4 mk = texture(uMarks, uv);
+    fx = uMarkMode < 1.5 ? g * mk.rgb : uMarkMode < 2.5 ? g * (1.0 - mk.a) + mk.rgb : g + mk.rgb;
+    fx = clamp(fx, 0.0, 1.0);
+  } else fx = effect(uv);
+  o = vec4(mix(below, blend(below, fx, int(uMode + 0.5)), uOpacity * m), 1.0);
+}`;
+// The picture is looked at before marks are laid: which way its edges run
+// (a structure tensor, smoothed, so the direction carries into flat areas)
+// and how near an edge each place is. A quarter of the size, in floats.
+const ANAF = `#version 300 es
+precision highp float;
+uniform sampler2D uSrc, uBase, uIn;
+uniform vec2 uRes, uDim;
+uniform float uSrcFlip, uPass;
+out vec4 o;
+float lum(vec3 c){ return dot(c, vec3(0.299, 0.587, 0.114)); }
+float L(vec2 uv){ uv = clamp(uv, 0.0, 1.0); return lum(texture(uSrc, uSrcFlip > 0.5 ? vec2(uv.x, 1.0 - uv.y) : uv).rgb); }
+float K(vec2 uv){ return floor((1.0 - texture(uBase, vec2(clamp(uv.x, 0.0, 1.0), 1.0 - clamp(uv.y, 0.0, 1.0))).a) / 0.03 + 0.5); }
+void main(){
+  vec2 uv = gl_FragCoord.xy / uDim;
+  if (uPass < 0.5){
+    vec2 dx = vec2(3.0 / uRes.x, 0.0), dy = vec2(0.0, 3.0 / uRes.y);
+    float gx = (L(uv + dx + dy) + 2.0 * L(uv + dx) + L(uv + dx - dy)) - (L(uv - dx + dy) + 2.0 * L(uv - dx) + L(uv - dx - dy));
+    float gy = (L(uv + dy + dx) + 2.0 * L(uv + dy) + L(uv + dy - dx)) - (L(uv - dy + dx) + 2.0 * L(uv - dy) + L(uv - dy - dx));
+    vec2 g = vec2(gx, gy) * 0.25;
+    float k = K(uv);                                       // the edge of one thing against another counts too
+    g += vec2(sign(K(uv + dx) - K(uv - dx)), sign(K(uv + dy) - K(uv - dy))) * 0.35;
+    o = vec4(g.x * g.x, g.x * g.y, g.y * g.y, clamp(length(g) * 4.0, 0.0, 1.0));
+  } else {
+    vec2 d = (uPass < 1.5 ? vec2(1.0, 0.0) : vec2(0.0, 1.0)) / uDim;
+    vec3 s = vec3(0.0); float n = 0.0, mx = 0.0;
+    for (int i = -7; i <= 7; i++){
+      float w = exp(-float(i * i) / 24.0);
+      vec4 v = texture(uIn, uv + d * float(i) * 1.5);
+      s += v.xyz * w; n += w; mx = max(mx, v.w * w);       // nearness to an edge: a soft ridge, peaking on it
+    }
+    o = vec4(s / n, mx);
+  }
+}`;
+
+// A mark is a ribbon of 13 points. Each instance finds its place (a cell of
+// a jittered grid, moved by the layer's motion, edge marks climbing onto the
+// nearest edge), takes its colour from beneath, then walks: along the flow,
+// curling, or zigzagging, as its brush asks.
+const MARKV = `#version 300 es
+precision highp float;
+uniform sampler2D uFlow, uSrc, uBase;
+uniform vec2 uRes, uDir;
+uniform float uSrcFlip, uTick, uTime, uStyle, uCount, uCols, uEdge;
+uniform vec4 uP, uMo;                                      // uMo: jitter, drift, flow, orbit
+out vec2 vL; out float vLen, vW, vSeed, vK; out vec4 vC;
+const int SEG = 12;
+float h1(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+float lum(vec3 c){ return dot(c, vec3(0.299, 0.587, 0.114)); }
+vec3 pal(float t){ return 0.55 + 0.45 * cos(6.2832 * (t + vec3(0.0, 0.33, 0.67))); }
+vec3 src(vec2 px, float lod){ vec2 uv = clamp(px / uRes, 0.0, 1.0); return textureLod(uSrc, uSrcFlip > 0.5 ? vec2(uv.x, 1.0 - uv.y) : uv, lod).rgb; }
+float kindAt(vec2 px){ vec2 uv = clamp(px / uRes, 0.0, 1.0); return floor((1.0 - textureLod(uBase, vec2(uv.x, 1.0 - uv.y), 0.0).a) / 0.03 + 0.5); }
+float edgeAt(vec2 px){ return textureLod(uFlow, px / uRes, 0.0).w; }
+// which way things run here (along edges, not across), and how surely
+vec3 tangent(vec2 px){
+  vec4 t = textureLod(uFlow, px / uRes, 0.0);
+  float E = t.x, F = t.y, G = t.z, d = sqrt((E - G) * (E - G) + 4.0 * F * F), l1 = 0.5 * (E + G + d);
+  vec2 a = vec2(F, l1 - E), b = vec2(l1 - G, F), g = dot(a, a) > dot(b, b) ? a : b;
+  if (dot(g, g) < 1e-12) return vec3(1.0, 0.0, 0.0);
+  g = normalize(g);
+  return vec3(-g.y, g.x, clamp(d / (E + G + 1e-6), 0.0, 1.0) * smoothstep(0.0, 0.0004, E + G));
+}
+float S; float TK;
+float r(float k){ return fract(h1(vec2(S, k)) + uMo.x * h1(vec2(S + TK * 17.13, k + TK * 3.1))); }
+mat2 rot(float a){ return mat2(cos(a), sin(a), -sin(a), cos(a)); }
+void main(){
+  int id = gl_InstanceID, n = int(uCount), seg = gl_VertexID / 2;
+  float side = float(gl_VertexID % 2) * 2.0 - 1.0;
+  S = float(id); TK = uTick;
+  float bs = uRes.y / 1000.0;
+  int st = int(uStyle + 0.5);
+  // where: a cell of a jittered grid (cells handed out in a scrambled order)
+  int ci = (id * 7919) % n;
+  float rows = ceil(uCount / uCols);
+  vec2 uv = (vec2(mod(float(ci), uCols), floor(float(ci) / uCols)) + vec2(r(1.0), r(2.0))) / vec2(uCols, rows);
+  uv = fract(uv + uDir * uMo.y * uTime * 0.035);           // drift
+  vec2 p = uv * uRes;
+  float cell = uRes.x / uCols, an = uTime * 1.4 + h1(vec2(S, 4.0)) * 6.2832;
+  p += vec2(cos(an), sin(an)) * uMo.w * cell * 1.6;        // orbit
+  bool edge = h1(vec2(S, 0.5)) < uEdge;
+  float keep = 1.0;
+  if (edge){                                               // climb onto the nearest edge
+    for (int i = 0; i < 7; i++){
+      vec2 e = vec2(3.0 * bs, 0.0);
+      vec2 g = vec2(edgeAt(p + e.xy) - edgeAt(p - e.xy), edgeAt(p + e.yx) - edgeAt(p - e.yx));
+      if (dot(g, g) > 1e-10) p += normalize(g) * (14.0 - 1.8 * float(i)) * bs;
+    }
+    keep = smoothstep(0.25, 0.6, edgeAt(p));
+  }
+  float alive = 1.0;
+  if (uMo.z > 0.001){                                      // flow: marks stream along the contours, and fade
+    float age = fract(uTime * 0.22 + h1(vec2(S, 9.0)));
+    vec2 d = vec2(h1(vec2(S, 8.0)) < 0.5 ? 1.0 : -1.0, 0.0);
+    for (int i = 0; i < 6; i++){
+      vec2 t = tangent(p).xy; if (dot(t, d) < 0.0) t = -t; d = t;
+      p += d * uMo.z * age * 34.0 * bs;
+    }
+    alive = smoothstep(0.0, 0.18, age) * smoothstep(1.0, 0.72, age);
+  }
+  vec3 c = src(p, 2.0);
+  float l = lum(c), dark = 1.0 - l, sat = max(c.r, max(c.g, c.b)) - min(c.r, min(c.g, c.b));
+  // the brush
+  float len = 40.0 * bs, w = 3.0 * bs, curl = 0.0, follow = 1.0, zig = 0.0, taper = 0.0, a = 1.0, k = 0.0;
+  vec2 d0 = vec2(1.0, 0.0);
+  vec3 col = c;
+  if (st == 0){                                            // Print: dashes and dot-chains in riso inks, misregistered
+    len = mix(8.0, 36.0, r(6.0)) * bs; w = mix(3.5, 6.5, r(7.0)) * bs;
+    float ink = floor(r(8.0) * 3.0);
+    col = ink < 0.5 ? vec3(0.27, 0.72, 0.92) : ink < 1.5 ? vec3(0.96, 0.36, 0.74) : vec3(0.05, 0.05, 0.07);
+    p += (ink - 1.0) * vec2(1.0, 0.35) * uP.x * 16.0 * bs;
+    k = step(0.62, r(10.0));
+  } else if (st == 1){                                     // Strokes: coarse strokes first, then fine ones where there's detail
+    float sz = 0.5 + uP.x;
+    if (float(id) < uCount * 0.45){ len = mix(26.0, 60.0, r(6.0)) * bs * sz; w = mix(11.0, 22.0, r(7.0)) * bs * sz; c = src(p, 3.0); }
+    else { len = mix(10.0, 26.0, r(6.0)) * bs * sz; w = mix(4.0, 8.0, r(7.0)) * bs * sz; c = src(p, 1.0);
+           keep *= step(r(9.0), edgeAt(p) * (0.4 + uP.z * 1.6)); }
+    col = c * (0.93 + 0.14 * r(11.0)); curl = (r(12.0) - 0.5) * 0.08; taper = 0.3;
+  } else if (st == 2){                                     // Airbrush: wide soft passes, colour pushed and lit
+    len = mix(50.0, 150.0, r(6.0)) * bs; w = mix(24.0, 70.0, r(7.0)) * bs * (0.35 + uP.x * 1.2); k = edge ? 1.0 : 0.0;
+    c = src(p, 4.0); l = lum(c);
+    col = clamp(mix(vec3(l), c, 1.7) * 1.3 + 0.04, 0.0, 1.0); a = 0.3; follow = 0.6; curl = (r(12.0) - 0.5) * 0.12;
+  } else if (st == 3){                                     // Spray: clouds of dots; edge passes are stencilled, hard on one side
+    len = mix(20.0, 64.0, r(6.0)) * bs; w = mix(18.0, 46.0, r(7.0)) * bs * (0.5 + uP.x);
+    float mx = max(c.r, max(c.g, c.b));
+    col = mx > 0.05 ? c / mx : c; col = clamp(mix(vec3(lum(col)), col, 1.6) * (0.5 + 0.45 * mx), 0.0, 1.0);
+    keep *= step(r(9.0), (dark * 1.1 + sat * 1.5) * (0.4 + uP.y) + 0.1);
+    follow = 0.8; k = edge ? 1.0 : 0.0;
+  } else if (st == 4){                                     // Scribble: sketchy outlines, loops in the dark parts
+    col = vec3(0.17, 0.17, 0.22);
+    if (edge){ len = mix(40.0, 130.0, r(6.0)) * bs; w = mix(1.1, 1.8, r(7.0)) * bs; follow = 0.9; curl = (r(12.0) - 0.5) * 0.07; a = 0.8;
+               keep *= step(r(9.0), 0.2 + uP.x); }
+    else { len = mix(110.0, 240.0, r(6.0)) * bs; w = 1.2 * bs; follow = 0.12; curl = (0.55 + 0.6 * r(12.0)) * (r(13.0) < 0.5 ? -1.0 : 1.0);
+           a = 0.6; keep *= step(r(9.0), pow(dark, 1.5) * uP.y * 2.4); }
+  } else if (st == 5){                                     // Ink: brush-pen strokes along the edges, tapering
+    len = mix(30.0, 110.0, r(6.0)) * bs; w = mix(2.0, 5.5, r(7.0)) * bs; taper = 1.0; col = vec3(0.03); curl = (r(12.0) - 0.5) * 0.04;
+  } else if (st == 6){                                     // Neon: glowing tubes along the edges
+    len = mix(40.0, 170.0, r(6.0)) * bs; w = 30.0 * bs * (0.35 + uP.x); k = 1.8 * bs / w;
+    col = mix(vec3(1.0), pal(uP.y * 2.0 + r(14.0) * 0.22 + uTime * 0.03), 0.3 + uP.y * 0.7);
+    curl = (r(12.0) - 0.5) * 0.1;
+  } else if (st == 7){                                     // Crayon: waxy hatching at an angle for each thing, dark outlines
+    float kd = kindAt(p);
+    d0 = rot(0.8 + (h1(vec2(kd, 2.0)) - 0.5) * 1.6) * vec2(1.0, 0.0);
+    col = clamp(mix(vec3(l), c, 1.7) * (0.88 + 0.22 * r(11.0)), 0.0, 1.0);
+    if (edge){ len = mix(40.0, 100.0, r(6.0)) * bs; w = mix(2.5, 4.0, r(7.0)) * bs; col *= 0.35; }
+    else { len = mix(25.0, 70.0, r(6.0)) * bs; w = mix(6.0, 11.0, r(7.0)) * bs; follow = 0.3; curl = (r(12.0) - 0.5) * 0.06;
+           keep *= step(r(9.0), 0.45 + dark * 0.8); }
+  } else if (st == 8){                                     // Watercolour: wet blots that dry with darker rims
+    vec3 pig = mix(vec3(l), c, 1.5);
+    if (edge){ len = mix(30.0, 80.0, r(6.0)) * bs; w = mix(1.5, 2.6, r(7.0)) * bs; col = clamp(pig * 0.55, 0.0, 1.0); a = 0.5 * uP.y; k = -1.0; }
+    else { w = mix(50.0, 130.0, r(7.0)) * bs * (0.45 + uP.x); len = w + mix(4.0, 34.0, r(6.0)) * bs;
+           col = clamp(mix(vec3(1.0), pig, 0.28 + 0.22 * r(11.0)), 0.0, 1.0); a = 0.85; follow = 0.7; k = uP.y;
+           keep *= 1.0 - smoothstep(0.84, 0.96, l); }
+  } else if (st == 9){                                     // Pencil: coloured zigzag scribble, or loops
+    col = clamp(mix(vec3(l), c, 1.9) * (0.7 + 0.3 * r(11.0)), 0.0, 1.0);
+    if (edge){ len = mix(50.0, 120.0, r(6.0)) * bs; w = 1.6 * bs; col *= 0.5; a = 0.85; }
+    else { len = mix(50.0, 110.0, r(6.0)) * bs; w = mix(1.3, 2.1, r(7.0)) * bs; zig = mix(6.0, 16.0, r(13.0)) * bs * (1.0 - uP.y);
+           curl = uP.y * (0.6 + 0.5 * r(12.0)) * (r(14.0) < 0.5 ? -1.0 : 1.0); follow = 0.6 * (1.0 - uP.y); a = 0.8;
+           keep *= step(r(9.0), 0.3 + dark * 0.9); }
+  } else {                                                 // Chalk: dry strokes along the forms, the lights picked out
+    len = mix(40.0, 130.0, r(6.0)) * bs; w = mix(7.0, 15.0, r(7.0)) * bs; curl = (r(12.0) - 0.5) * 0.05;
+    col = mix(vec3(0.95, 0.95, 0.92), clamp(mix(vec3(l), c, 1.5), 0.0, 1.0), 0.35); a = 0.92;
+    keep *= step(r(9.0), pow(l, 1.1) * 1.5 + 0.04);
+  }
+  // the walk: a polyline of SEG+1 points; this vertex needs its point and its neighbours
+  vec3 t0 = tangent(p);
+  vec2 d = normalize(mix(d0, t0.xy, follow * t0.z));
+  if (st != 7 && r(15.0) < 0.5) d = -d;
+  vec2 ctr = p, prv = p, cur = p, nxt = p, adv = abs(curl) > 0.2 ? d * 0.75 : vec2(0.0);
+  float cs = h1(vec2(S, 21.0)) * 6.28;
+  float stepL = len / float(SEG);
+  for (int i = 0; i <= SEG + 1; i++){
+    vec2 nrm = vec2(-d.y, d.x);
+    vec2 pt = ctr + nrm * zig * (i % 2 == 0 ? -0.5 : 0.5);
+    if (i == seg - 1) prv = pt;
+    if (i == seg) cur = pt;
+    if (i == seg + 1){ nxt = pt; break; }
+    vec3 t = tangent(ctr);
+    vec2 td = dot(t.xy, d) < 0.0 ? -t.xy : t.xy;
+    d = normalize(mix(d, td, follow * t.z) + 1e-5);
+    d = rot(curl * (1.0 + 0.6 * sin(float(i) * 0.9 + cs))) * d;
+    ctr += (d + adv) * stepL;
+  }
+  if (seg == 0) prv = cur - (nxt - cur);
+  vec2 tg = normalize(nxt - prv + 1e-5), nm = vec2(-tg.y, tg.x);
+  float tt = float(seg) / float(SEG);
+  float ww = w * mix(1.0, pow(sin(3.1416 * mix(0.05, 0.95, tt)), 0.6), taper);
+  vec2 pos = cur + nm * side * ww * 0.5;
+  vL = vec2(tt * len, side); vLen = len; vW = w; vSeed = h1(vec2(S, TK + 0.37)); vK = k;
+  vC = vec4(col, a * alive);
+  gl_Position = keep * alive < 0.02 ? vec4(-9.0, -9.0, 0.0, 1.0) : vec4(pos / uRes * 2.0 - 1.0, 0.0, 1.0);
+}`;
+
+// The brushes: what a mark looks like across and along itself.
+const MARKF = `#version 300 es
+precision highp float;
+uniform float uStyle, uBlend;
+in vec2 vL; in float vLen, vW, vSeed, vK; in vec4 vC;
+out vec4 o;
+float h1(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+float n1(vec2 p){
+  vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
+  return mix(mix(h1(i), h1(i + vec2(1, 0)), f.x), mix(h1(i + vec2(0, 1)), h1(i + vec2(1, 1)), f.x), f.y);
+}
+void main(){
+  vec2 fc = gl_FragCoord.xy;
+  int st = int(uStyle + 0.5);
+  float ax = vL.x, ay = vL.y, t = ax / max(vLen, 1.0), cov = 1.0;
+  vec3 col = vC.rgb;
+  float ends = smoothstep(0.0, 0.06, t) * smoothstep(1.0, 0.94, t);
+  float tooth = n1(fc * 0.8) * 0.55 + h1(floor(fc * 0.6)) * 0.45;
+  if (st == 0){                                            // round-capped dashes, or chains of dots, with riso grain
+    float hw = vW * 0.5, py = ay * hw;
+    float dx = max(0.0, max(hw - ax, ax - (vLen - hw)));
+    cov = smoothstep(hw, hw - 1.3, length(vec2(dx, py)));
+    if (vK > 0.5){ float sp = vW * 1.8; cov = smoothstep(hw, hw - 1.3, length(vec2(mod(ax, sp) - sp * 0.5, py))); }
+    cov *= step(0.12, n1(fc * 0.7) * 0.8 + h1(floor(fc)) * 0.3);
+  } else if (st == 1){                                     // bristles
+    float b = n1(vec2(ax * 0.04, ay * 5.0 + vSeed * 13.0));
+    cov = smoothstep(1.0, 0.72 - 0.25 * b, abs(ay)) * smoothstep(0.0, 0.08 + 0.2 * b, t) * smoothstep(1.0, 0.7 - 0.2 * b, t);
+    col *= 0.86 + 0.24 * b + 0.06 * (h1(vec2(floor(ay * 6.0), vSeed)) - 0.5);
+  } else if (st == 2){                                     // airbrush: a soft gaussian, grainy
+    float side = vK > 0.5 ? step(ay, 0.0) : 1.0;           // stencilled passes stop hard at an edge
+    cov = side * exp(-ay * ay * (vK > 0.5 ? 1.6 : 3.2)) * smoothstep(0.0, 0.3, t) * smoothstep(1.0, 0.7, t) * (0.65 + 0.7 * h1(fc));
+  } else if (st == 3){                                     // spray dots, stencilled on edges
+    float dens = exp(-ay * ay * 3.0);
+    if (vK > 0.5) dens = ay > 0.0 ? 0.0 : exp(-ay * ay * 1.4);
+    vec2 cl = floor(fc / 1.6);
+    cov = step(h1(cl + vSeed * 91.7), dens * 0.6 * smoothstep(0.0, 0.2, t) * smoothstep(1.0, 0.8, t));
+  } else if (st == 4 || st == 9){                          // graphite and pencil: a thin line catching on the paper's tooth
+    cov = smoothstep(1.0, 0.35, abs(ay)) * ends * smoothstep(0.18, 0.62, tooth + 0.15);
+  } else if (st == 5){                                     // brush pen, breaking up dry at the tail
+    cov = smoothstep(1.0, 0.7, abs(ay));
+    cov *= mix(1.0, step(0.3, n1(vec2(ax * 0.06, ay * 3.0 + vSeed * 9.0))), smoothstep(0.55, 1.0, t));
+  } else if (st == 6){                                     // a tube of light: a hot core in a wide halo
+    float core = smoothstep(vK, vK * 0.3, abs(ay)), halo = exp(-ay * ay * 7.0) * 0.32 + exp(-ay * ay * 45.0) * 0.45;
+    float e2 = smoothstep(0.0, 0.12, t) * smoothstep(1.0, 0.88, t);
+    o = vec4((col * halo + mix(col, vec3(1.0), 0.7) * core) * e2, 1.0); return;
+  } else if (st == 7){                                     // wax: broken by the paper, streaky
+    float sk = n1(vec2(ax * 0.07, ay * 4.0 + vSeed * 7.0));
+    cov = smoothstep(1.0, 0.7, abs(ay)) * ends * step(0.45, tooth * 0.75 + sk * 0.4 + 0.12);
+  } else if (st == 8){                                     // a blot: ragged, darker where it dried, granulating
+    if (vK < 0.0){ cov = smoothstep(1.0, 0.4, abs(ay)) * ends; }
+    else {
+      vec2 q = vec2((ax - vLen * 0.5) / (vLen * 0.5), ay);
+      float rr = length(q) + (n1(fc * 0.03 + vSeed * 17.0) - 0.5) * 0.4 + (n1(fc * 0.11 + vSeed * 5.0) - 0.5) * 0.14;
+      float body = smoothstep(1.0, 0.92, rr), rim = smoothstep(0.62, 0.96, rr) * body;
+      float gran = n1(fc * 0.45) * 0.5 + h1(floor(fc * 0.5)) * 0.5;
+      cov = body * (0.62 + 0.38 * gran);
+      col = col * (1.0 - rim * vK * 0.55) * (0.94 + 0.12 * n1(fc * 0.02 + vSeed));
+    }
+  } else {                                                 // chalk: dry, streaked along its length, ragged ends
+    float b = n1(vec2(ax * 0.012, ay * 7.0 + vSeed * 11.0)), g = h1(floor(fc * 0.8));
+    cov = smoothstep(0.38, 0.72, b * 0.75 + g * 0.45 - 0.1 + (1.0 - abs(ay)) * 0.28) * smoothstep(1.0, 0.82, abs(ay))
+        * smoothstep(0.0, 0.1 + 0.25 * b, t) * smoothstep(1.0, 0.55 + 0.35 * b, t);
+  }
+  float a = clamp(vC.a * cov, 0.0, 1.0);
+  if (uBlend < 1.5) o = vec4(mix(vec3(1.0), col, a), 1.0);   // pigment: multiplies
+  else o = vec4(col * a, a);                               // paint (over) or light (added)
+}`;
+
+function program(fs, vs = VS){
+  const p = gl.createProgram();
+  for (const [type, src] of [[gl.VERTEX_SHADER, vs], [gl.FRAGMENT_SHADER, fs]]){
+    const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+    gl.attachShader(p, s);
+  }
+  gl.bindAttribLocation(p, 0, "p"); gl.linkProgram(p);
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+  const u = {}; const n = gl.getProgramParameter(p, gl.ACTIVE_UNIFORMS);
+  for (let i = 0; i < n; i++){ const name = gl.getActiveUniform(p, i).name; u[name] = gl.getUniformLocation(p, name); }
+  return {p, u};
+}
+function texture(w, h, src){
+  const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t);
+  if (src) gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, src);
+  else gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+  for (const [k, v] of [[gl.TEXTURE_MIN_FILTER, gl.LINEAR], [gl.TEXTURE_MAG_FILTER, gl.LINEAR],
+                        [gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE], [gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE]])
+    gl.texParameteri(gl.TEXTURE_2D, k, v);
+  return t;
+}
+let FXP, ANAP, MARKP, floatOK = false, emptyVao = null;
+if (gl){
+  FXP = program(FXF);
+  floatOK = !!gl.getExtension("EXT_color_buffer_float");
+  try { ANAP = program(ANAF); MARKP = program(MARKF, MARKV); emptyVao = gl.createVertexArray(); }
+  catch (e){ console.warn("marks unavailable", e); ANAP = MARKP = null; }
+  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+}
+
+// ------------------------------------------------------------------ the suburb
+// Fever's street: pastel houses down both sides of a grey road, lamps on the
+// right, flat green lawns, a hard blue sky (a dome here), the camera walking
+// toward the vanishing point forever. three.js comes from a CDN on first use.
+// The street draws itself plainly, writing into its alpha which kind of thing
+// each pixel is (1 - kind * 0.03), for the layers' masks.
+let suburb = null, suburbLoading = null, street = false;
+const KIND_GLSL = `uniform float uKindId, uGlow, uWriteId;`;
+
+function loadSuburb(){
+  if (suburb) return Promise.resolve(suburb);
+  return suburbLoading = suburbLoading || (async () => {
+    const T = await import("three");
+    const r = new T.WebGLRenderer({antialias: true, alpha: true, premultipliedAlpha: false});
+    r.shadowMap.enabled = true;
+    r.domElement.className = "street";
+    r.domElement.setAttribute("aria-label", "An endless suburb");
+    document.body.insertBefore(r.domElement, $("gl"));
+    const scene = new T.Scene();
+
+    // The sky's gradient, wrapped round a dome: top to bottom is straight up to
+    // straight down, so the horizon sits halfway and the deep blue starts
+    // about 26 degrees up, where the top of the screen is.
+    const sky = document.createElement("canvas"); sky.width = 2; sky.height = 2048;
+    const sg = sky.getContext("2d"), grad = sg.createLinearGradient(0, 0, 0, 2048);
+    grad.addColorStop(0, "#0716c9"); grad.addColorStop(0.356, "#0716c9"); grad.addColorStop(0.444, "#0d34e6");
+    grad.addColorStop(0.492, "#2f78f2"); grad.addColorStop(0.5, "#a6cff3"); grad.addColorStop(1, "#a6cff3");
+    sg.fillStyle = grad; sg.fillRect(0, 0, 2, 2048);
+    const skyTex = new T.CanvasTexture(sky); skyTex.colorSpace = T.SRGBColorSpace;
+    scene.fog = new T.Fog(0xa6cff3, 90, 330);
+
+    const camera = new T.PerspectiveCamera(52, 1, 0.5, 600);
+    camera.position.set(0, 9, 0);
+    scene.add(new T.HemisphereLight(0xe4eeff, 0x3f7d33, 1.35));
+    const sun = new T.DirectionalLight(0xfffaf0, 2.8);
+    sun.castShadow = true; sun.shadow.mapSize.set(1024, 1024); sun.shadow.normalBias = 0.04; sun.shadow.bias = -0.0006;
+    Object.assign(sun.shadow.camera, {left: -50, right: 50, top: 70, bottom: -70, near: 1, far: 220});
+    scene.add(sun, sun.target);
+
+    const writeId = {value: 0};
+    // Materials, one per kind. The colour of a piece comes from the geometry
+    // (aPaint), or from the material when the paint is negative: that's how
+    // one house shape serves every colour of house. The sky is unlit.
+    const kinds = {};                                      // kind -> {id, glow}
+    const matCache = {};
+    function mat(kind, color, sky){
+      if (matCache[kind]) return matCache[kind];
+      const k = kinds[kind] = {id: {value: Object.keys(kinds).length}, glow: {value: 0}};
+      const m = sky ? new T.MeshBasicMaterial({map: skyTex, side: T.BackSide, fog: false, depthWrite: false})
+                    : new T.MeshLambertMaterial({color, side: T.DoubleSide, shadowSide: T.FrontSide});
+      m.onBeforeCompile = sh => {
+        Object.assign(sh.uniforms, {uKindId: k.id, uGlow: k.glow, uWriteId: writeId});
+        if (!sky) sh.vertexShader = sh.vertexShader
+          .replace("#include <common>", "#include <common>\nattribute vec3 aPaint;\nvarying vec3 vPaint;")
+          .replace("#include <begin_vertex>", "#include <begin_vertex>\n vPaint = aPaint;");
+        sh.fragmentShader = sh.fragmentShader
+          .replace("#include <common>", "#include <common>\n" + KIND_GLSL + (sky ? "" : "\nvarying vec3 vPaint;"))
+          .replace("#include <color_fragment>", "#include <color_fragment>\n" + (sky ? "" : " if (vPaint.r >= 0.0) diffuseColor.rgb = vPaint;"))
+          .replace("#include <dithering_fragment>", `#include <dithering_fragment>
+            gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.62, 0.94, 0.78), 0.45 * uGlow);
+            gl_FragColor.a = uWriteId > 0.5 ? 1.0 - uKindId * 0.03 : 1.0;`);
+      };
+      return matCache[kind] = m;
+    }
+    // The sky: a dome round the camera, behind everything, a kind like any other.
+    const dome = new T.Mesh(new T.SphereGeometry(450, 48, 24), mat("sky", 0xffffff, true));
+    dome.renderOrder = -1;
+    scene.add(dome);
+    const lin = hex => { const c = new T.Color(hex); return [c.r, c.g, c.b]; };
+    const OWN = [-1, -1, -1];                              // the material's own colour
+
+    // ---- building out of pieces
+    const P3 = (f, u, v) => [f.O[0] + f.U[0] * u + f.V[0] * v, f.O[1] + f.U[1] * u + f.V[1] * v, f.O[2] + f.U[2] * u + f.V[2] * v];
+    const crs = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+    const dt3 = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+    function clipHalf(poly, a, b, c){                      // keep a*u + b*v + c >= 0
+      const out = [];
+      for (let i = 0; i < poly.length; i++){
+        const p = poly[i], q = poly[(i + 1) % poly.length];
+        const dp = a * p[0] + b * p[1] + c, dq = a * q[0] + b * q[1] + c;
+        if (dp >= 0) out.push(p);
+        if ((dp >= 0) !== (dq >= 0)){ const s = dp / (dp - dq); out.push([p[0] + (q[0] - p[0]) * s, p[1] + (q[1] - p[1]) * s]); }
+      }
+      return out;
+    }
+    function clipConvex(poly, clip){                       // clip is convex and anticlockwise
+      for (let i = 0; i < clip.length && poly.length >= 3; i++){
+        const p = clip[i], q = clip[(i + 1) % clip.length], a = -(q[1] - p[1]), b = q[0] - p[0];
+        poly = clipHalf(poly, a, b, -(a * p[0] + b * p[1]));
+      }
+      return poly;
+    }
+    // A builder: pieces are a few triangles sharing a centre and three random
+    // numbers (so Shatter moves them as one), each corner knowing where it
+    // sits in its piece (aTile) and what the piece is (aKind) and its paint.
+    function Builder(){
+      const A = {p: [], n: [], c: [], r: [], t: [], k: [], pa: []};
+      // face: {O, U, V, N}, a plane; parts: convex polygons in its (u, v).
+      function piece(f, parts, tile, kind, paint){
+        let cu = 0, cv = 0, m = 0;
+        for (const poly of parts) for (const q of poly){ cu += q[0]; cv += q[1]; m++; }
+        if (!m) return;
+        const C = P3(f, cu / m, cv / m), rnd = [Math.random(), Math.random(), Math.random()];
+        const flip = dt3(crs(f.U, f.V), f.N) < 0;
+        for (const poly of parts) for (let i = 1; i < poly.length - 1; i++){
+          const tri = flip ? [poly[0], poly[i + 1], poly[i]] : [poly[0], poly[i], poly[i + 1]];
+          for (const q of tri){
+            A.p.push(...P3(f, q[0], q[1])); A.n.push(...f.N); A.c.push(...C); A.r.push(...rnd);
+            A.t.push((q[0] - tile.u0) / tile.w, (q[1] - tile.v0) / tile.h); A.k.push(kind); A.pa.push(...paint);
+          }
+        }
+      }
+      // Rows of pieces across a face: rows(v, row) -> {h, w, kind, paint, off}.
+      // Pieces are cut into parts no bigger than seg, so the other spells can bend them.
+      function tile(f, u0, u1, v0, v1, rows, clip, seg = 0.6){
+        for (let v = v0, row = 0; v < v1 - 1e-6; row++){
+          const R = rows(v, row), h = Math.min(R.h, v1 - v);
+          for (let u = u0 - (R.off && row % 2 ? R.w / 2 : 0); u < u1 - 1e-6; u += R.w){
+            const ua = Math.max(u, u0), ub = Math.min(u + R.w, u1);
+            if (ub - ua < 1e-4) continue;
+            const parts = [], nu = Math.ceil((ub - ua) / seg), nv = Math.ceil(h / seg);
+            for (let i = 0; i < nu; i++) for (let j = 0; j < nv; j++){
+              const a0 = ua + (ub - ua) * i / nu, a1 = ua + (ub - ua) * (i + 1) / nu, b0 = v + h * j / nv, b1 = v + h * (j + 1) / nv;
+              let poly = [[a0, b0], [a1, b0], [a1, b1], [a0, b1]];
+              if (clip) poly = clipConvex(poly, clip);
+              if (poly.length >= 3) parts.push(poly);
+            }
+            if (parts.length) piece(f, parts, {u0: u, v0: v, w: R.w, h}, R.kind, R.paint);
+          }
+          v += h;
+        }
+      }
+      // A box, each face one piece.
+      function box(cx, cy, cz, sx, sy, sz, kind, paint){
+        const c = [cx, cy, cz], s = [sx / 2, sy / 2, sz / 2];
+        for (let a = 0; a < 3; a++) for (const sg of [1, -1]){
+          const b = (a + 1) % 3, d = (a + 2) % 3, N = [0, 0, 0], Uv = [0, 0, 0], Vv = [0, 0, 0], O = c.slice();
+          N[a] = sg; Uv[b] = 1; Vv[d] = 1; O[a] += sg * s[a];
+          piece({O, U: Uv, V: Vv, N}, [[[-s[b], -s[d]], [s[b], -s[d]], [s[b], s[d]], [-s[b], s[d]]]],
+                {u0: -s[b], v0: -s[d], w: 2 * s[b], h: 2 * s[d]}, kind, paint);
+        }
+      }
+      function geometry(){
+        const g = new T.BufferGeometry();
+        g.setAttribute("position", new T.Float32BufferAttribute(A.p, 3));
+        g.setAttribute("normal", new T.Float32BufferAttribute(A.n, 3));
+        g.setAttribute("aCenter", new T.Float32BufferAttribute(A.c, 3));
+        g.setAttribute("aRand", new T.Float32BufferAttribute(A.r, 3));
+        g.setAttribute("aTile", new T.Float32BufferAttribute(A.t, 2));
+        g.setAttribute("aKind", new T.Float32BufferAttribute(A.k, 1));
+        g.setAttribute("aPaint", new T.Float32BufferAttribute(A.pa, 3));
+        g.computeBoundingSphere();
+        return g;
+      }
+      return {piece, tile, box, geometry};
+    }
+
+    // Each thing is a visible built mesh and an invisible plain twin on
+    // layer 2 for rays (rays against all those pieces would be slow).
+    const proxies = [];
+    function place(geo, kind, color, parent, x, y, z){
+      const m = new T.Mesh(geo, mat(kind, color));
+      m.castShadow = m.receiveShadow = true; m.userData.owner = kind;
+      m.position.set(x, y, z); parent.add(m);
+      return m;
+    }
+    function twin(geo, kind, parent, x, y, z, rx){
+      const p = new T.Mesh(geo, new T.MeshBasicMaterial());
+      p.visible = false; p.layers.set(2); p.userData.owner = kind;
+      p.position.set(x, y, z); if (rx) p.rotation.x = rx;
+      parent.add(p); proxies.push(p);
+    }
+
+    // ---- the ground: lawn, road, curbs, and dirt under it all. It goes
+    // with the camera; it's all one colour, so nobody can tell.
+    const ground = new T.Group(); scene.add(ground);
+    const flat = -Math.PI / 2;
+    const span = (a, b, step) => { const out = []; for (let v = a; step > 0 ? v < b - 1e-9 : v > b + 1e-9; v += step) out.push(v); return out; };
+    // Rows along the street: fine (1 unit) where the spell can reach, coarse beyond.
+    const zs = [50, ...span(30, -150, -1), ...span(-150, -650, -25), -650];
+    const hash2 = (i, j) => { const s = Math.sin(i * 127.1 + j * 311.7) * 43758.5453; return s - Math.floor(s); };
+    // A grid of pieces in the ground, its inner corners nudged so each piece
+    // is its own irregular shape.
+    function groundGrid(B, xs, y, kind, paint){
+      const f = {O: [0, y, 0], U: [1, 0, 0], V: [0, 0, -1], N: [0, 1, 0]};
+      const fineX = i => i > 0 && i < xs.length - 1 && xs[i + 1] - xs[i] < 1.2 && xs[i] - xs[i - 1] < 1.2;
+      const fineZ = j => j > 0 && j < zs.length - 1 && zs[j] - zs[j + 1] < 1.2 && zs[j - 1] - zs[j] < 1.2;
+      const pt = (i, j) => {
+        const nudge = fineX(i) && fineZ(j);
+        return [xs[i] + (nudge ? (hash2(i, j) - 0.5) * 0.5 : 0), -zs[j] + (nudge ? (hash2(j, i + 9) - 0.5) * 0.5 : 0)];
+      };
+      for (let j = 0; j < zs.length - 1; j++) for (let i = 0; i < xs.length - 1; i++){
+        const a = pt(i, j), b = pt(i + 1, j), c = pt(i + 1, j + 1), d = pt(i, j + 1);
+        B.piece(f, [[a, b, c, d]], {u0: xs[i], v0: -zs[j], w: xs[i + 1] - xs[i], h: zs[j] - zs[j + 1]}, kind, paint);
+      }
+    }
+    const LG = Builder();
+    groundGrid(LG, [-350, ...span(-325, -50, 25), ...span(-50, -5, 1), -4.9], 0, 4, OWN);
+    groundGrid(LG, [4.9, ...span(5, 50, 1), ...span(50, 350, 25), 350], 0, 4, OWN);
+    place(LG.geometry(), "lawn", 0x3aa836, ground, 0, 0, 0);
+    twin(new T.PlaneGeometry(700, 700), "lawn", ground, 0, 0, -300, flat);
+    const RG = Builder();
+    groundGrid(RG, span(-4.5, 4.6, 0.9), 0.03, 5, OWN);
+    // Curbs: tops and the faces toward the road, in lengths.
+    const CURB = lin(0xd8d5cb);
+    for (const s of [-1, 1]){
+      const top = {O: [s * 4.7, 0.3, 0], U: [1, 0, 0], V: [0, 0, -1], N: [0, 1, 0]};
+      const side = {O: [s * 4.5, 0, 0], U: [0, 1, 0], V: [0, 0, -1], N: [-s, 0, 0]};
+      for (let j = 0; j < zs.length - 1; j++){
+        const v0 = -zs[j], v1 = -zs[j + 1], tl = {u0: -0.2, v0, w: 0.4, h: v1 - v0};
+        RG.piece(top, [[[-0.2, v0], [0.2, v0], [0.2, v1], [-0.2, v1]]], tl, 6, CURB);
+        RG.piece(side, [[[0, v0], [0.3, v0], [0.3, v1], [0, v1]]], {u0: 0, v0, w: 0.3, h: v1 - v0}, 6, CURB);
+      }
+    }
+    place(RG.geometry(), "road", 0x8e8e8b, ground, 0, 0, 0);
+    twin(new T.PlaneGeometry(9.8, 700), "road", ground, 0, 0.03, -300, flat);
+    // ---- a house: two gable walls (one facing the road, with a door and a
+    // window), two side walls, a roof of two shingled slabs, and a path to
+    // the curb. Walls are bricks up to 0.85, siding boards above. All the
+    // houses on one side share one shape; the colour is the material's.
+    const Dp = 8.5, Wd = 8, Hw = 3.2, Rg = 1.7;
+    const ang = Math.atan(Rg / (Dp / 2)), slab = (Dp / 2 + 0.7) / Math.cos(ang);
+    const ROOF = lin(0x7b6d62), WHITE = lin(0xf4f2ec), GLASS = lin(0x2b2d33), CONCRETE = lin(0xd9d4c4);
+    const wallRows = v => v < 0.85 - 1e-6 ? {h: 0.2125, w: 0.5, kind: 1, paint: OWN, off: true}
+                                          : {h: 0.3, w: 1.7, kind: 2, paint: OWN, off: true};
+    const pathLen = 16 - Wd / 2 - 4.9;
+    function houseShape(side){
+      const B = Builder();
+      const gable = [[-Dp / 2, 0], [Dp / 2, 0], [Dp / 2, Hw], [0, Hw + Rg], [-Dp / 2, Hw]];
+      for (const s of [1, -1]){
+        B.tile({O: [s * Wd / 2, 0, 0], U: [0, 0, -s], V: [0, 1, 0], N: [s, 0, 0]}, -Dp / 2, Dp / 2, 0, Hw + Rg, wallRows, gable, 0.4);
+        B.tile({O: [0, 0, s * Dp / 2], U: [s, 0, 0], V: [0, 1, 0], N: [0, 0, s]}, -Wd / 2, Wd / 2, 0, Hw, wallRows, null, 0.4);
+        // A roof slab: shingles on top, deck boards under, timber at its edges.
+        const cs = Math.cos(ang), sn = Math.sin(ang), yR = Hw + Rg + 0.36;
+        const S = [0, -sn, s * cs], Nt = [0, cs, s * sn], O = [0, yR, 0];
+        const under = [O[0] - Nt[0] * 0.32, O[1] - Nt[1] * 0.32, O[2] - Nt[2] * 0.32];
+        const eave = [O[0] + S[0] * slab, O[1] + S[1] * slab, O[2] + S[2] * slab];
+        B.tile({O, U: [1, 0, 0], V: S, N: Nt}, -(Wd + 0.9) / 2, (Wd + 0.9) / 2, 0, slab,
+               () => ({h: 0.32, w: 0.6, kind: 3, paint: ROOF, off: true}));
+        B.tile({O: under, U: [1, 0, 0], V: S, N: Nt.map(x => -x)}, -(Wd + 0.9) / 2, (Wd + 0.9) / 2, 0, slab,
+               () => ({h: 0.6, w: 1.5, kind: 8, paint: ROOF}));
+        B.tile({O: eave, U: [1, 0, 0], V: Nt.map(x => -x), N: S}, -(Wd + 0.9) / 2, (Wd + 0.9) / 2, 0, 0.32,
+               () => ({h: 0.32, w: 1.5, kind: 8, paint: ROOF}));
+        for (const e of [1, -1])
+          B.tile({O: [e * (Wd + 0.9) / 2, yR, 0], U: S, V: Nt.map(x => -x), N: [e, 0, 0]}, 0, slab, 0, 0.32,
+                 () => ({h: 0.32, w: 1.5, kind: 8, paint: ROOF}));
+      }
+      const fx = -side * (Wd / 2 + 0.02);
+      B.box(fx, 1.1, 1.6, 0.12, 2.2, 1.05, 2, WHITE);       // the door
+      B.box(fx, 2.1, -1.7, 0.12, 1.1, 1.3, 2, WHITE);       // the window frame
+      B.box(fx - side * 0.02, 2.1, -1.7, 0.14, 0.8, 1.0, 0, GLASS);
+      B.tile({O: [-side * (Wd / 2 + pathLen / 2), 0.08, 1.6], U: [1, 0, 0], V: [0, 0, -1], N: [0, 1, 0]},
+             -pathLen / 2, pathLen / 2, -0.75, 0.75, () => ({h: 1.5, w: 1.5, kind: 6, paint: CONCRETE}));
+      return B.geometry();
+    }
+    const HOUSE = {[-1]: houseShape(-1), [1]: houseShape(1)};
+    // Plain twins for rays: the body, the two slabs, the path.
+    const prof = new T.Shape([new T.Vector2(-Dp / 2, 0), new T.Vector2(Dp / 2, 0), new T.Vector2(Dp / 2, Hw),
+                              new T.Vector2(0, Hw + Rg), new T.Vector2(-Dp / 2, Hw)]);
+    const bodyG = new T.ExtrudeGeometry(prof, {depth: Wd, bevelEnabled: false});
+    bodyG.translate(0, 0, -Wd / 2); bodyG.rotateY(Math.PI / 2);
+    const slabG = new T.BoxGeometry(Wd + 0.9, 0.32, slab), pathG = new T.BoxGeometry(pathLen, 0.08, 1.5);
+    const NAMES = ["blue", "green", "salmon", "pink", "yellow", "orange", "red", "lilac", "aqua", "white"];
+    const WALLS = [0x4f7fe0, 0x3caf48, 0xe9806f, 0xf2a6cb, 0xf2c431, 0xf07b39, 0xe24a3b, 0xb48ce4, 0x6fcfe6, 0xf6efe4];
+    function house(side, seed){
+      const g = new T.Group(), c = seed % WALLS.length, kind = NAMES[c] + " houses";
+      place(HOUSE[side], kind, WALLS[c], g, 0, 0, 0);
+      twin(bodyG, kind, g, 0, 0, 0);
+      for (const s of [1, -1]){
+        const zc = s * (Dp / 2 + 0.7) / 2;
+        twin(slabG, kind, g, 0, Hw + Rg - Math.tan(ang) * Math.abs(zc) + 0.2, zc, s * ang);
+      }
+      twin(pathG, kind, g, -side * (Wd / 2 + pathLen / 2), 0.04, 1.6);
+      return g;
+    }
+    // ---- a lamp: an eight-sided pole in lengths, an arm, a head.
+    const METAL = lin(0xc9ccd2);
+    const LB = Builder();
+    for (let i = 0; i < 8; i++){
+      const a0 = i / 8 * Math.PI * 2, a1 = (i + 1) / 8 * Math.PI * 2, am = (a0 + a1) / 2, rr = 0.16;
+      const A0 = [rr * Math.cos(a0), 0, rr * Math.sin(a0)], A1 = [rr * Math.cos(a1), 0, rr * Math.sin(a1)];
+      const len = Math.hypot(A1[0] - A0[0], A1[2] - A0[2]);
+      LB.tile({O: A0, U: [(A1[0] - A0[0]) / len, 0, (A1[2] - A0[2]) / len], V: [0, 1, 0], N: [Math.cos(am), 0, Math.sin(am)]},
+              0, len, 0, 12.5, () => ({h: 0.7, w: 1, kind: 0, paint: METAL}));
+    }
+    LB.box(-1, 12.4, 0, 2.2, 0.12, 0.14, 0, METAL);
+    LB.box(-2.1, 12.3, 0, 0.9, 0.22, 0.4, 0, WHITE);
+    const LAMP = LB.geometry(), poleG = new T.CylinderGeometry(0.16, 0.16, 12.5, 8), armG = new T.BoxGeometry(2.2, 0.3, 0.4);
+    function lamp(){
+      const g = new T.Group();
+      place(LAMP, "lamps", 0xc9ccd2, g, 0, 0, 0);
+      twin(poleG, "lamps", g, 0, 6.25, 0); twin(armG, "lamps", g, -1.4, 12.35, 0);
+      return g;
+    }
+
+    // Lots, LOT apart, N deep; one row of houses a side, a lamp every
+    // third lot on the right.
+    const LOT = 12, N = 26, things = [];
+    let seed = 7;
+    const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    for (let i = 0; i < N; i++){
+      for (const side of [-1, 1]){
+        const h = house(side, Math.floor(rnd() * 1000));
+        h.position.set(side * 16, 0, -i * LOT);
+        scene.add(h); things.push(h);
+      }
+      if (i % 3 === 1){ const l = lamp(); l.position.set(6.2, 0, -i * LOT + 3); scene.add(l); things.push(l); }
+    }
+
+    const ray = new T.Raycaster(); ray.layers.set(2);
+    const ndc = new T.Vector2(), nm = new T.Matrix3();
+    // The thing under a point on the screen: {kind, point, normal} or null (the sky).
+    function hitAt(x, y, only){
+      ray.setFromCamera(ndc.set(x * 2 - 1, 1 - y * 2), camera);
+      for (const h of ray.intersectObjects(proxies, false)){
+        const kind = h.object.userData.owner;
+        if (only && !only(kind)) continue;
+        const n = h.face.normal.clone().applyMatrix3(nm.getNormalMatrix(h.object.matrixWorld)).normalize();
+        return {kind, point: h.point, normal: n};
+      }
+      return null;
+    }
+
+    suburb = {
+      canvas: r.domElement, kinds,
+      size(w, h){
+        r.setPixelRatio(Math.min(devicePixelRatio || 1, w < 700 ? 1.5 : 2, quality));
+        r.setSize(w, h); camera.aspect = w / h; camera.fov = w < h ? 74 : 52; camera.updateProjectionMatrix();
+      },
+      // One frame: walk, light up the kinds in the selected layer's mask, draw.
+      frame(dt, o){
+        camera.position.z -= o.walk;
+        const cz = camera.position.z;
+        camera.lookAt(0, 9, cz - 100);
+        ground.position.z = cz; dome.position.copy(camera.position);
+        sun.position.set(40, 45, cz + 55); sun.target.position.set(0, 0, cz - 55);
+        for (const t of things) if (t.position.z > cz + LOT) t.position.z -= N * LOT;
+        for (const kind in kinds) kinds[kind].glow.value = o.glowKinds.has(kind) ? o.glow : 0;
+        writeId.value = o.ids ? 1 : 0;
+        r.render(scene, camera);
+      },
+      keyAt(x, y){ const h = hitAt(x, y); return h ? h.kind : "sky"; },
+      idOf(kind){ return kinds[kind] ? kinds[kind].id.value : -1; },
+    };
+    return suburb;
+  })();
+}
+
+// ------------------------------------------------------------------ grade
+// A grade is a 3D LUT: every colour in, the colour out, on a 33-step lattice.
+// It's built from the sliders, over a .cube file if one's loaded, and can be
+// saved as a .cube for Fantasm (or any editor) to read.
+const LUTN = 33;
+const GRADE_P = [["exposure", .5], ["contrast", .5], ["saturation", .5], ["temperature", .5], ["tint", .5], ["hue", .5],
+  ["fade", 0], ["shadows", .55], ["shadow tint", 0], ["highlights", .08], ["highlight tint", 0]];
+const PRESETS = {
+  "Neutral": {},
+  "Dreamcore": {exposure: .56, contrast: .42, saturation: .62, temperature: .44, fade: .45, shadows: .52, "shadow tint": .5, highlights: .9, "highlight tint": .45},
+  "Teal & orange": {contrast: .62, saturation: .6, shadows: .5, "shadow tint": .65, highlights: .07, "highlight tint": .55},
+  "Bleach bypass": {exposure: .47, contrast: .78, saturation: .22, fade: .1},
+  "Cross process": {contrast: .68, saturation: .68, tint: .38, shadows: .62, "shadow tint": .5, highlights: .15, "highlight tint": .6},
+  "Night": {exposure: .36, contrast: .6, saturation: .35, temperature: .22, shadows: .62, "shadow tint": .55},
+  "Sodium": {contrast: .6, saturation: .4, temperature: .85, tint: .42, highlights: .1, "highlight tint": .5},
+  "Infrared": {contrast: .6, saturation: .75, hue: .82, highlights: .92, "highlight tint": .35},
+};
+const hueRGB = h => [0, 1 / 3, 2 / 3].map(o => 0.5 + 0.5 * Math.cos(6.2832 * (h - o)));
+function sampleLut(u8, N, c){                               // trilinear, from a u8 lattice
+  const f = c.map(x => Math.min(Math.max(x, 0), 1) * (N - 1)), i = f.map(x => Math.min(Math.floor(x), N - 2)), t = f.map((x, j) => x - i[j]);
+  const at = (r, g, b, k) => u8[((b * N + g) * N + r) * 3 + k] / 255;
+  return [0, 1, 2].map(k => {
+    let v = 0;
+    for (let dz = 0; dz < 2; dz++) for (let dy = 0; dy < 2; dy++) for (let dx = 0; dx < 2; dx++)
+      v += at(i[0] + dx, i[1] + dy, i[2] + dz, k) * (dx ? t[0] : 1 - t[0]) * (dy ? t[1] : 1 - t[1]) * (dz ? t[2] : 1 - t[2]);
+    return v;
+  });
+}
+const b64 = { to(u8){ let s = ""; for (let i = 0; i < u8.length; i += 0x8000) s += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000)); return btoa(s); },
+              from(str){ const s = atob(str), u = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) u[i] = s.charCodeAt(i); return u; } };
+const fileCache = new Map();
+function bakeGrade(g){
+  const v = Object.fromEntries(GRADE_P.map(([k, d]) => [k, g[k] ?? d]));
+  let file = null;
+  if (g.file){ file = fileCache.get(g.file); if (!file){ file = b64.from(g.file); fileCache.set(g.file, file); } }
+  const ex = Math.pow(2, (v.exposure - .5) * 3), con = (v.contrast - .5) * 2, sat = v.saturation * 2,
+        tmp = (v.temperature - .5) * 2, tnt = (v.tint - .5) * 2, hue = (v.hue - .5) * 2 * Math.PI, fade = v.fade;
+  const sh = hueRGB(v.shadows), hi = hueRGB(v.highlights), ch = Math.cos(hue), sn = Math.sin(hue);
+  const N = LUTN, out = new Float32Array(N * N * N * 3);
+  let o = 0;
+  for (let b = 0; b < N; b++) for (let gg = 0; gg < N; gg++) for (let r = 0; r < N; r++){
+    let c = [r / (N - 1), gg / (N - 1), b / (N - 1)];
+    if (file) c = sampleLut(file, N, c);
+    c = c.map(x => x * ex);
+    c[0] *= 1 + 0.18 * tmp + 0.08 * tnt; c[1] *= 1 - 0.12 * tnt; c[2] *= 1 - 0.18 * tmp + 0.08 * tnt;
+    c = c.map(x => { x = Math.min(Math.max(x, 0), 1); const sc = x < .5 ? 2 * x * x : 1 - 2 * (1 - x) * (1 - x);
+                     return con >= 0 ? x + (sc - x) * con * 1.4 : x + (.5 - x) * -con * .6; });
+    let l = .299 * c[0] + .587 * c[1] + .114 * c[2];
+    c = c.map(x => l + (x - l) * sat);
+    if (hue){
+      const Y = .299 * c[0] + .587 * c[1] + .114 * c[2], I0 = .596 * c[0] - .274 * c[1] - .322 * c[2], Q0 = .211 * c[0] - .523 * c[1] + .312 * c[2];
+      const I = I0 * ch - Q0 * sn, Q = I0 * sn + Q0 * ch;
+      c = [Y + .956 * I + .621 * Q, Y - .272 * I - .647 * Q, Y - 1.106 * I + 1.703 * Q];
+    }
+    l = Math.min(Math.max(.299 * c[0] + .587 * c[1] + .114 * c[2], 0), 1);
+    const ws = (1 - l) * (1 - l), wh = l * l;
+    c = c.map((x, k) => x + (sh[k] - .5) * v["shadow tint"] * .7 * ws + (hi[k] - .5) * v["highlight tint"] * .7 * wh);
+    c = c.map(x => Math.min(Math.max(x * (1 - fade * .3) + fade * .15, 0), 1));
+    out[o++] = c[0]; out[o++] = c[1]; out[o++] = c[2];
+  }
+  return out;
+}
+const lutCache = new WeakMap();
+function lutFor(L){
+  let e = lutCache.get(L);
+  if (!e){ e = {tex: gl.createTexture(), ver: -1}; lutCache.set(L, e); }
+  gl.activeTexture(gl.TEXTURE3); gl.bindTexture(gl.TEXTURE_3D, e.tex);
+  if (e.ver !== L.gv){
+    const f = bakeGrade(L.g), u8 = new Uint8Array(f.length);
+    for (let i = 0; i < f.length; i++) u8[i] = Math.round(f[i] * 255);
+    gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+    gl.texImage3D(gl.TEXTURE_3D, 0, gl.RGB8, LUTN, LUTN, LUTN, 0, gl.RGB, gl.UNSIGNED_BYTE, u8);
+    gl.pixelStorei(gl.UNPACK_ALIGNMENT, 4);
+    for (const [k, v] of [[gl.TEXTURE_MIN_FILTER, gl.LINEAR], [gl.TEXTURE_MAG_FILTER, gl.LINEAR], [gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE],
+                          [gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE], [gl.TEXTURE_WRAP_R, gl.CLAMP_TO_EDGE]]) gl.texParameteri(gl.TEXTURE_3D, k, v);
+    e.ver = L.gv;
+  }
+}
+// .cube in: any size, resampled to the 33 lattice. .cube out: the grade as it stands.
+function readCube(text){
+  let N = 0; const vals = [];
+  for (const line of text.split(/\r?\n/)){
+    const t = line.trim(); if (!t || t[0] === "#") continue;
+    if (/^LUT_3D_SIZE/i.test(t)){ N = parseInt(t.split(/\s+/)[1], 10); continue; }
+    if (/^[A-Z_]/i.test(t)) continue;
+    const p = t.split(/\s+/).map(Number); if (p.length >= 3 && p.every(x => !isNaN(x))) vals.push(p[0], p[1], p[2]);
+  }
+  if (!N || vals.length < N * N * N * 3) throw new Error("not a 3D .cube");
+  const src = new Uint8Array(N * N * N * 3); for (let i = 0; i < src.length; i++) src[i] = Math.round(Math.min(Math.max(vals[i], 0), 1) * 255);
+  const out = new Uint8Array(LUTN * LUTN * LUTN * 3); let o = 0;
+  for (let b = 0; b < LUTN; b++) for (let g = 0; g < LUTN; g++) for (let r = 0; r < LUTN; r++){
+    const c = sampleLut(src, N, [r, g, b].map(x => x / (LUTN - 1)));
+    out[o++] = Math.round(c[0] * 255); out[o++] = Math.round(c[1] * 255); out[o++] = Math.round(c[2] * 255);
+  }
+  return out;
+}
+function writeCube(L){
+  const f = bakeGrade(L.g), lines = [`TITLE "Make-Up grade"`, `# made in Make-Up, seaofgrass.studio/studies/make-up/`, `LUT_3D_SIZE ${LUTN}`, `DOMAIN_MIN 0 0 0`, `DOMAIN_MAX 1 1 1`];
+  for (let i = 0; i < f.length; i += 3) lines.push(`${f[i].toFixed(6)} ${f[i + 1].toFixed(6)} ${f[i + 2].toFixed(6)}`);
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([lines.join("\n") + "\n"], {type: "text/plain"}));
+  a.download = (L.g.preset || "grade").toLowerCase().replace(/[^a-z0-9]+/g, "-") + ".cube";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+// ------------------------------------------------------------------ the layers
+// A layer: {fx, on, mode, opacity, mask (kinds; empty = everything), p: [..], boil}.
+// The list is drawn top first, as in an image editor; the stack is applied
+// bottom first.
+let layers = [], selected = 0;
+// Motion: how the look moves, apart from the street moving under it.
+//   boil    how often the marks are redrawn, from never to 15 times a second
+//   jitter  how much each redraw changes them, from a shimmer to all new
+//   drift   the whole look slides across, at angle ("direction")
+//   flow    marks stream along the edges and contours, and fade
+//   orbit   marks circle where they are
+//   spin    (a grade) the hues turn round
+const MOTION = {boil: "how often it's redrawn", jitter: "how much each redraw changes", drift: "slides the look across",
+  angle: "which way it drifts", flow: "marks stream along edges and contours", orbit: "marks circle where they are", spin: "turns the hues round"};
+const motionKeys = e => e.id === "grade" ? ["spin"] : e.marks ? ["boil", "jitter", "drift", "angle", "flow", "orbit"] : ["boil", "drift", "angle"];
+const motionLabel = k => k === "angle" ? "direction" : k;
+const newMotion = e => ({boil: e.boil ?? 0, jitter: e.marks ? 0.85 : 0, drift: 0, angle: 0.25, flow: 0, orbit: 0, spin: 0.5});
+function newLayer(id){
+  const e = BY_ID[id];
+  const L = {fx: id, on: true, mode: 0, opacity: 1, mask: [], p: e.p.map(x => x[1]), motion: newMotion(e)};
+  if (id === "grade"){ L.g = Object.assign({preset: "Dreamcore"}, PRESETS.Dreamcore); L.gv = 0; }
+  return L;
+}
+function loadLayers(){
+  try {
+    const s = JSON.parse(store.get("layers") || "null");
+    if (Array.isArray(s) && s.length && s.every(l => BY_ID[l.fx]) && s.every(l => l.motion)){
+      for (const L of s){                                  // settings lists that have changed shape start fresh
+        const e = BY_ID[L.fx];
+        if (!Array.isArray(L.p) || L.p.length !== e.p.length) L.p = e.p.map(x => x[1]);
+        L.motion = Object.assign(newMotion(e), L.motion);
+        if (L.fx === "grade"){ L.g = L.g || {}; L.gv = (L.gv | 0) + 1; }
+      }
+      return s;
+    }
+  } catch (e) {}
+  // to start: watercolour washes, a pencil scribble multiplied over them, and a dreamy grade on top
+  const g = newLayer("grade"), p = newLayer("pencil"), w = newLayer("watercolour");
+  p.mode = 1; p.opacity = 0.9;
+  return [g, p, w];
+}
+layers = loadLayers();
+const save = () => store.set("layers", JSON.stringify(layers));
+
+function renderLayers(){
+  const ol = $("stack"); ol.innerHTML = "";
+  layers.forEach((L, i) => {
+    const e = BY_ID[L.fx];
+    const li = document.createElement("li");
+    li.className = "layer" + (L.on ? "" : " off");
+    li.setAttribute("aria-selected", String(i === selected));
+    li.innerHTML = `
+      <div class="lrow">
+        <button class="eye" aria-pressed="${L.on}" title="Show or hide this layer">${L.on ? "◉" : "○"}</button>
+        <span class="lname">${e.name}</span>
+        <select class="mode" title="Blend mode">${MODES.map((m, j) => `<option value="${j}"${j === L.mode ? " selected" : ""}>${m}</option>`).join("")}</select>
+        <button class="tiny up" title="Move up">↑</button><button class="tiny down" title="Move down">↓</button><button class="tiny del" title="Delete">×</button>
+      </div>
+      <div class="lrow2"><span class="lab">opacity</span><input type="range" class="op" min="0" max="1" step="0.01" value="${L.opacity}" aria-label="Opacity"></div>
+      <div class="mask">mask: <b>${L.mask.length ? L.mask.join(", ") : "everything"}</b></div>`;
+    li.addEventListener("click", ev => { if (ev.target.closest("button, select, input")) return; selected = i; renderLayers(); });
+    li.querySelector(".eye").onclick = () => { L.on = !L.on; save(); renderLayers(); };
+    li.querySelector(".mode").onchange = ev => { L.mode = +ev.target.value; save(); };
+    li.querySelector(".op").oninput = ev => { L.opacity = +ev.target.value; save(); };
+    li.querySelector(".up").onclick = () => { if (i > 0){ [layers[i - 1], layers[i]] = [layers[i], layers[i - 1]]; selected = i - 1; save(); renderLayers(); } };
+    li.querySelector(".down").onclick = () => { if (i < layers.length - 1){ [layers[i + 1], layers[i]] = [layers[i], layers[i + 1]]; selected = i + 1; save(); renderLayers(); } };
+    li.querySelector(".del").onclick = () => { layers.splice(i, 1); selected = Math.min(selected, layers.length - 1); save(); renderLayers(); };
+    ol.appendChild(li);
+  });
+  renderProps(); showReadout();
+}
+// The selected layer's settings, and its mask.
+function renderProps(){
+  const box = $("props"), L = layers[selected];
+  if (!L){ box.innerHTML = '<p class="hint">No layers. Add an effect with <b>+ effect</b>.</p>'; return; }
+  const e = BY_ID[L.fx];
+  const row = (name, val, attr, title = "") => `<div class="lrow2"${title ? ` title="${title}"` : ""}><span class="lab">${name}</span><input type="range" min="0" max="1" step="0.01" value="${val}" ${attr} aria-label="${name}"></div>`;
+  let h = `<p class="ttl2">${e.name} settings</p>`;
+  if (e.id === "grade"){
+    h += `<div class="lrow2"><span class="lab">preset</span><select class="mode" id="gpre">${["(custom)", ...Object.keys(PRESETS)].map(k => `<option${k === (L.g.preset || "(custom)") ? " selected" : ""}>${k}</option>`).join("")}</select></div>`;
+    h += GRADE_P.map(([k, d]) => row(k, L.g[k] ?? d, `data-g="${k}"`)).join("");
+    h += `<div class="files"><button id="gload" title="Read a 3D LUT (.cube) and grade over it">load .cube</button><button id="gsave" title="Save this grade as a 33-point .cube LUT">save .cube</button>` +
+         (L.g.file ? `<span class="fname" title="${L.g.fileName || ""}">${L.g.fileName || "LUT"}</span><button id="gclear" title="Take the LUT file off">×</button>` : "") +
+         `<input type="file" id="gfile" accept=".cube,text/plain" hidden></div>`;
+  } else h += e.p.map(([name], j) => row(name, L.p[j], `data-j="${j}"`)).join("");
+  h += `<p class="ttl2 mt">Motion</p>` + motionKeys(e).map(k => row(motionLabel(k), L.motion[k], `data-m="${k}"`, MOTION[k])).join("");
+  h += `<p class="hint">Click things in the street to mask this layer to them. ${L.mask.length ? '<button id="unmask">everything</button>' : ""}</p>`;
+  box.innerHTML = h;
+  box.querySelectorAll("input[data-j]").forEach(inp => inp.oninput = () => { L.p[+inp.dataset.j] = +inp.value; save(); });
+  box.querySelectorAll("input[data-m]").forEach(inp => inp.oninput = () => { L.motion[inp.dataset.m] = +inp.value; save(); });
+  box.querySelectorAll("input[data-g]").forEach(inp => inp.oninput = () => {
+    L.g[inp.dataset.g] = +inp.value; L.gv = (L.gv | 0) + 1;
+    if (L.g.preset !== undefined){ delete L.g.preset; $("gpre").value = "(custom)"; }
+    saveSoon();
+  });
+  const pre = $("gpre");
+  if (pre) pre.onchange = () => {
+    if (pre.value === "(custom)") return;
+    const keep = {file: L.g.file, fileName: L.g.fileName};
+    L.g = Object.assign({preset: pre.value}, PRESETS[pre.value], keep.file ? keep : {}); L.gv = (L.gv | 0) + 1;
+    save(); renderProps();
+  };
+  if ($("gload")){
+    $("gload").onclick = () => $("gfile").click();
+    $("gfile").onchange = async ev => {
+      const f = ev.target.files[0]; if (!f) return;
+      try { L.g.file = b64.to(readCube(await f.text())); L.g.fileName = f.name; L.gv = (L.gv | 0) + 1; save(); renderProps(); }
+      catch (err){ $("readout").textContent = "that file isn't a 3D .cube LUT"; }
+    };
+    $("gsave").onclick = () => writeCube(L);
+    const gc = $("gclear"); if (gc) gc.onclick = () => { delete L.g.file; delete L.g.fileName; L.gv = (L.gv | 0) + 1; save(); renderProps(); };
+  }
+  const um = $("unmask"); if (um) um.onclick = () => { L.mask = []; save(); renderLayers(); };
+}
+let st2; function saveSoon(){ clearTimeout(st2); st2 = setTimeout(save, 300); }
+function renderAdd(){
+  const m = $("addMenu"); m.innerHTML = "";
+  for (const g of ["Print & paint", "Line", "Colour", "Grade"]){
+    m.insertAdjacentHTML("beforeend", `<div class="grp">${g}</div>`);
+    for (const e of EFFECTS.filter(x => x.group === g)){
+      const b = document.createElement("button"); b.textContent = e.name;
+      b.onclick = () => { layers.unshift(newLayer(e.id)); selected = 0; openAdd(false); save(); renderLayers(); if (!on) setOn(true); };
+      m.appendChild(b);
+    }
+  }
+}
+function openAdd(v){ $("addMenu").hidden = !v; $("addBtn").setAttribute("aria-expanded", String(v)); }
+$("addBtn").onclick = () => openAdd($("addMenu").hidden);
+renderAdd();
+
+// ------------------------------------------------------------------ the loop
+let run = null, paused = false, on = false, glow = 0;
+let speed = parseFloat(store.get("speed")); if (isNaN(speed)) speed = 0.3;
+$("speed").value = speed;
+$("speed").oninput = ev => { speed = +ev.target.value; store.set("speed", speed); };
+
+// The layers draw on a canvas over the street's, ping-ponging between two
+// pictures at the street's size.
+function build(){
+  if (!innerWidth || !innerHeight || !street || !suburb) return;
+  suburb.size(innerWidth, innerHeight);
+  if (!gl){ showReadout(); return; }
+  const src = suburb.canvas, W = src.width, H = src.height;
+  canvas.width = W; canvas.height = H;
+  if (run) [run.base, run.mark, ...run.tex, ...run.ana].forEach(t => gl.deleteTexture(t));
+  const target = t => {
+    const f = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, f);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t, 0); return f;
+  };
+  const tex = [texture(W, H), texture(W, H)], fbo = tex.map(target);
+  // the looking-at, a quarter of the size, in floats where the GPU allows
+  const AW = Math.ceil(W / 4), AH = Math.ceil(H / 4);
+  const ana = [0, 1].map(() => {
+    const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t);
+    if (floatOK) gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA16F, AW, AH, 0, gl.RGBA, gl.HALF_FLOAT, null);
+    else gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, AW, AH, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    for (const [k, v] of [[gl.TEXTURE_MIN_FILTER, gl.LINEAR], [gl.TEXTURE_MAG_FILTER, gl.LINEAR],
+                          [gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE], [gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE]]) gl.texParameteri(gl.TEXTURE_2D, k, v);
+    return t;
+  });
+  const mark = texture(W, H);
+  run = {W, H, base: texture(W, H, src), tex, fbo, ana, anaFbo: ana.map(target), AW, AH, mark, markFbo: target(mark)};
+  // sources are mipmapped, so a mark can take the colour of an area, not a pixel
+  for (const t of [run.base, ...run.tex]){ gl.bindTexture(gl.TEXTURE_2D, t); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR); }
+  showReadout();
+}
+let rt; function rebuildSoon(){ clearTimeout(rt); rt = setTimeout(build, 250); }
+
+// Sharpness looks after itself: if frames keep running slow, the street is
+// drawn a notch less sharp (2x, 1.75x ... down to 1x) until it keeps up.
+let quality = 2, slow = 0;
+function keepUp(dt){
+  slow = dt > 0.024 ? slow + dt : Math.max(0, slow - dt * 0.5);
+  if (slow > 1.5 && quality > 1 && Math.min(devicePixelRatio || 1, 2) > 1){
+    quality = Math.max(1, quality - 0.25); slow = 0;
+    build();
+  }
+}
+
+let last = 0, clock = 0, maskFlash = 0;
+function frame(now){
+  requestAnimationFrame(frame);
+  const dt = Math.min(0.05, (now - last) / 1000 || 0.016); last = now;
+  if (!document.hidden && document.hasFocus()) keepUp(dt);   // a throttled, unfocused page isn't a slow one
+  if (paused) return;
+  clock += dt;
+  if (!street || !suburb) return;
+  maskFlash = Math.max(0, maskFlash - dt / 1.2);
+  const L = layers[selected];
+  const glowKinds = new Set(L && maskFlash > 0 ? L.mask : []);
+  // ids go in the street's alpha only while the layers cover it; otherwise
+  // the street shows itself, and must be opaque
+  const live = !!(on && run && layers.some(l => l.on && l.opacity > 0));
+  suburb.frame(dt, {walk: speed * 60 * 0.18 * dt, glowKinds, glow: maskFlash, ids: live});
+  canvas.hidden = !live;
+  if (live) drawLayers();
+}
+
+const tickOf = L => L.motion.boil > 0.005 ? Math.floor(clock * (0.6 + L.motion.boil * 14)) : 0;
+function markCount(L){
+  const m = BY_ID[L.fx].marks, area = Math.min(1.6, Math.max(0.2, run.W * run.H / (2560 * 1440)));
+  return Math.max(64, Math.round(m.n * area * (m.dens >= 0 ? 0.25 + 1.5 * L.p[m.dens] : 1)));
+}
+// Marks for one layer, into run.mark: look at the picture beneath, then lay them.
+function drawMarks(L, srcTex, flip){
+  const {W, H, AW, AH} = run, m = BY_ID[L.fx].marks;
+  gl.useProgram(ANAP.p);
+  gl.uniform1i(ANAP.u.uSrc, 0); gl.uniform1i(ANAP.u.uBase, 1); gl.uniform1i(ANAP.u.uIn, 4);
+  gl.uniform2f(ANAP.u.uRes, W, H); gl.uniform2f(ANAP.u.uDim, AW, AH); gl.uniform1f(ANAP.u.uSrcFlip, flip ? 1 : 0);
+  gl.viewport(0, 0, AW, AH);
+  [[0, -1, 0], [1, 0, 1], [2, 1, 0]].forEach(([pass, from, to]) => {
+    gl.bindFramebuffer(gl.FRAMEBUFFER, run.anaFbo[to]);
+    gl.activeTexture(gl.TEXTURE4); gl.bindTexture(gl.TEXTURE_2D, from < 0 ? null : run.ana[from]);
+    gl.uniform1f(ANAP.u.uPass, pass);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  });
+  gl.activeTexture(gl.TEXTURE4); gl.bindTexture(gl.TEXTURE_2D, run.ana[0]);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, run.markFbo); gl.viewport(0, 0, W, H);
+  if (m.blend === 1) gl.clearColor(1, 1, 1, 1); else gl.clearColor(0, 0, 0, 0);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+  gl.enable(gl.BLEND);
+  if (m.blend === 1) gl.blendFunc(gl.DST_COLOR, gl.ZERO);
+  else if (m.blend === 2) gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+  else gl.blendFunc(gl.ONE, gl.ONE);
+  const u = MARKP.u, n = markCount(L), M = L.motion;
+  gl.useProgram(MARKP.p);
+  gl.uniform1i(u.uFlow, 4); gl.uniform1i(u.uSrc, 0); gl.uniform1i(u.uBase, 1);
+  gl.uniform2f(u.uRes, W, H);
+  gl.uniform2f(u.uDir, Math.cos(M.angle * 6.2832), Math.sin(M.angle * 6.2832));
+  gl.uniform1f(u.uSrcFlip, flip ? 1 : 0); gl.uniform1f(u.uTick, tickOf(L)); gl.uniform1f(u.uTime, clock);
+  gl.uniform1f(u.uStyle, m.style); gl.uniform1f(u.uCount, n); gl.uniform1f(u.uCols, Math.max(1, Math.round(Math.sqrt(n * W / H))));
+  gl.uniform1f(u.uEdge, typeof m.edge === "function" ? m.edge(L) : m.edge);
+  gl.uniform4f(u.uP, L.p[0] ?? 0, L.p[1] ?? 0, L.p[2] ?? 0, 0);
+  gl.uniform4f(u.uMo, M.jitter, M.drift, M.flow, M.orbit);
+  gl.uniform1f(u.uBlend, m.blend);
+  gl.bindVertexArray(emptyVao);
+  gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 26, n);
+  gl.bindVertexArray(null);
+  gl.disable(gl.BLEND);
+}
+
+function drawLayers(){
+  const {W, H} = run;
+  gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, run.base);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, suburb.canvas);
+  gl.generateMipmap(gl.TEXTURE_2D);
+  const stack = layers.filter(l => l.on && l.opacity > 0).reverse();   // bottom first
+  let from = -1;                                           // -1: the street itself
+  stack.forEach((L, n) => {
+    const fx = BY_ID[L.fx], last = n === stack.length - 1, to = from === 0 ? 1 : 0;
+    const srcTex = from < 0 ? run.base : run.tex[from], flip = from < 0;
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, srcTex);
+    if (from >= 0) gl.generateMipmap(gl.TEXTURE_2D);
+    const marks = !!(fx.marks && MARKP);
+    if (marks) drawMarks(L, srcTex, flip);
+    if (fx.id === "grade") lutFor(L);
+    gl.useProgram(FXP.p); gl.viewport(0, 0, W, H);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, last ? null : run.fbo[to]);
+    gl.activeTexture(gl.TEXTURE2); gl.bindTexture(gl.TEXTURE_2D, run.mark);
+    gl.uniform1i(FXP.u.uSrc, 0); gl.uniform1i(FXP.u.uBase, 1); gl.uniform1i(FXP.u.uMarks, 2); gl.uniform1i(FXP.u.uLut, 3);
+    gl.uniform2f(FXP.u.uRes, W, H);
+    gl.uniform1f(FXP.u.uTime, clock);
+    gl.uniform1f(FXP.u.uSrcFlip, flip ? 1 : 0);
+    gl.uniform1f(FXP.u.uType, fx.type);
+    gl.uniform1f(FXP.u.uMode, L.mode);
+    gl.uniform1f(FXP.u.uOpacity, L.opacity);
+    gl.uniform4f(FXP.u.uP, L.p[0] ?? 0, L.p[1] ?? 0, L.p[2] ?? 0, L.motion.boil);
+    gl.uniform1f(FXP.u.uTick, tickOf(L));
+    const M = L.motion, sp = M.drift * clock * 160;
+    gl.uniform2f(FXP.u.uMove, Math.cos(M.angle * 6.2832) * sp, Math.sin(M.angle * 6.2832) * sp);
+    gl.uniform1f(FXP.u.uMarkMode, marks ? fx.marks.blend : 0);
+    gl.uniform1f(FXP.u.uGround, marks ? fx.marks.ground : 0);
+    gl.uniform1f(FXP.u.uLutN, LUTN);
+    gl.uniform1f(FXP.u.uSpin, (M.spin - 0.5) * 2);
+    const ids = L.mask.map(k => suburb.idOf(k)).filter(i => i >= 0);
+    gl.uniform1f(FXP.u.uAll, ids.length ? 0 : 1);
+    gl.uniform1fv(FXP.u["uMask[0]"], Array.from({length: 16}, (_, i) => ids.includes(i) ? 1 : 0));
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    from = to;
+  });
+}
+
+requestAnimationFrame(frame);
+
+function showReadout(){
+  const vis = layers.filter(l => l.on).map(l => BY_ID[l.fx].name.toLowerCase());
+  $("readout").textContent = on ? (vis.length ? vis.join(" over ") : "no layers showing") : "make-up off";
+}
+
+// ------------------------------------------------------------------ the street
+function useStreet(){
+  $("readout").textContent = "building the street…";
+  loadSuburb().then(() => { street = true; build(); })
+    .catch(() => { $("readout").textContent = "couldn't load the 3D street"; });
+}
+
+// ------------------------------------------------------------------ the controls
+function setOn(v){
+  on = v;
+  $("apply").setAttribute("aria-pressed", String(on));
+  showReadout();
+}
+$("apply").addEventListener("click", () => setOn(!on));
+function showPanel(v){ $("layers").hidden = !v; $("layersBtn").setAttribute("aria-expanded", String(v)); store.set("panel", v ? "1" : "0"); }
+$("layersBtn").addEventListener("click", () => showPanel($("layers").hidden));
+// on a phone the panel starts closed, so the street is seen first
+if (store.get("panel") === "0" || (store.get("panel") === null && matchMedia("(max-width:700px)").matches)) showPanel(false);
+
+// Masking: with a layer selected, click a thing in the street to put it in
+// the layer's mask, or take it out. The things in the mask glow for a moment.
+addEventListener("click", e => {
+  if (!(e.target instanceof HTMLCanvasElement) || !suburb) return;
+  const L = layers[selected]; if (!L) return;
+  const kind = suburb.keyAt(e.clientX / innerWidth, e.clientY / innerHeight);
+  const i = L.mask.indexOf(kind);
+  if (i >= 0) L.mask.splice(i, 1); else L.mask.push(kind);
+  maskFlash = 1; if (!on) setOn(true);
+  save(); renderLayers();
+});
+addEventListener("pointerdown", e => { if (!$("addMenu").hidden && !e.target.closest("#addMenu, #addBtn")) openAdd(false); });
+addEventListener("keydown", e => {
+  if (e.target.closest && e.target.closest("input, select")) return;
+  if (e.key === "m" || e.key === "M") setOn(!on);
+  else if (e.key === "l" || e.key === "L") showPanel($("layers").hidden);
+  else if (e.key === "p" || e.key === "P") paused = !paused;
+  else if (e.key === "Escape"){ openAdd(false); $("help").hidden = true; }
+});
+addEventListener("resize", rebuildSoon);
+$("ask").addEventListener("click", () => { $("help").hidden = !$("help").hidden; });
+$("gotit").addEventListener("click", () => { $("help").hidden = true; store.set("helped", "1"); setOn(true); });
+
+// ------------------------------------------------------------------ go
+renderLayers();
+(async () => {
+  await document.fonts.ready;
+  useStreet();
+  if (!store.get("helped")) $("help").hidden = false; else setOn(true);
+})();
+</script>

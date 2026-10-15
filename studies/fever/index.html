@@ -50,6 +50,7 @@
   /* ---------- dock ---------- */
   .dock{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:7;display:flex;align-items:center;gap:8px;}
   .dockb{
+    white-space:nowrap;
     font:800 11px/1 var(--ui);letter-spacing:.1em;text-transform:uppercase;color:#fff;cursor:pointer;
     background:var(--glass);border:1px solid var(--edge2);border-radius:99px;padding:11px 16px;
     backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);box-shadow:var(--soft);
@@ -164,6 +165,20 @@
     .page[data-page="cast"] .chip{padding:10px 4px;}
   }
   @media (prefers-reduced-motion:reduce){ .chip,.dockb{transition:none;} }
+
+  /* ---------- on a phone: a brief card, and type that doesn't make iOS zoom ---------- */
+  .help .morebtn{display:none;margin-right:6px;}
+  @media (max-width:700px){
+    .help{top:auto;bottom:12px;transform:translateX(-50%);max-height:calc(100dvh - 90px);overflow:auto;padding:14px 16px;}
+    .help h2{font-size:18px;margin-bottom:8px;}
+    .help .lede{font-size:12.5px;line-height:1.5;}
+    .help:not(.more) dl, .help:not(.more) > p:not(.kicker):not(.lede){display:none;}
+    .help .morebtn{display:inline-flex;}
+  }
+  /* iOS zooms into any text box under 16px and stays zoomed */
+  @media (max-width:700px), (pointer:coarse){
+    input:not([type=range]):not([type=file]):not([type=checkbox]), select, textarea{font-size:16px !important;}
+  }
 </style>
 
 
@@ -237,6 +252,15 @@
     Fabio Catapano's Spectrum 001. Nothing leaves your browser.</p>
   <button class="chip" id="gotit">Begin</button>
 </div>
+<script>
+// On a phone the card is brief; the rest is behind "how it works".
+(() => {
+  const h = document.getElementById("help"), b = document.createElement("button");
+  b.className = "chip morebtn"; b.type = "button"; b.textContent = "how it works"; b.setAttribute("aria-expanded", "false");
+  b.onclick = () => b.setAttribute("aria-expanded", String(h.classList.toggle("more")));
+  h.lastElementChild.before(b);
+})();
+</script>
 
 <p class="readout" id="readout"></p>
 
@@ -1137,7 +1161,7 @@ function loadSuburb(){
     suburb = {
       canvas: r.domElement, picked, hover: null,
       size(w, h){
-        r.setPixelRatio(Math.min(devicePixelRatio || 1, w < 700 ? 1.5 : 2));
+        r.setPixelRatio(Math.min(devicePixelRatio || 1, w < 700 ? 1.5 : 2, quality));
         r.setSize(w, h); camera.aspect = w / h; camera.fov = w < h ? 74 : 52; camera.updateProjectionMatrix();
       },
       show(v){ r.domElement.hidden = !v; },
@@ -1363,10 +1387,22 @@ function build(){
 }
 let rt; function rebuildSoon(){ clearTimeout(rt); rt = setTimeout(build, 250); }
 
+// Sharpness looks after itself: if frames keep running slow, the street is
+// drawn a notch less sharp (2x, 1.75x ... down to 1x) until it keeps up.
+let quality = 2, slow = 0;
+function keepUp(dt){
+  slow = dt > 0.024 ? slow + dt : Math.max(0, slow - dt * 0.5);
+  if (slow > 1.5 && quality > 1 && Math.min(devicePixelRatio || 1, 2) > 1){
+    quality = Math.max(1, quality - 0.25); slow = 0;
+    build();
+  }
+}
+
 let last = 0, clock = 0;
 function frame(now){
   requestAnimationFrame(frame);
   const dt = Math.min(0.05, (now - last) / 1000 || 0.016); last = now;
+  if (!document.hidden && document.hasFocus()) keepUp(dt);   // a throttled, unfocused page isn't a slow one
   if (paused) return;
   clock += dt;
   gulp = Math.max(0, gulp - dt * 1.4);
