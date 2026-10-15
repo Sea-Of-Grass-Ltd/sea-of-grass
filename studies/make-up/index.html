@@ -1,0 +1,1158 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Make-Up</title>
+<meta name="description" content="The endless pastel suburb from Fever, for colour. Press Make-Up and put a look on its houses, lamps, road and lawn: Spectrum floods them with oil-slick colour, Bleach drains it away, Print reprints them in loose inks, Gloss turns them to chrome, Strokes paints bright strands over them." />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  /* Make-Up: Fever's sister in Fantasmagoria. Fever changes the shape of
+     what's on screen; Make-Up changes its colour, and never its shape. Same
+     street, same dark glass: a slim strip on a desktop, a bottom sheet on a
+     phone, white type, one accent, which turns pink while Make-Up is on. */
+  :root{
+    --paper:#faf9f6; --ink:#141311; --mint:#9ff0c8; --hot:#ff5fa8;
+    --glass:rgba(16,15,14,.62); --edge:rgba(255,255,255,.16); --edge2:rgba(255,255,255,.3);
+    --soft:0 14px 40px rgba(0,0,0,.55), 0 1px 0 rgba(255,255,255,.08) inset;
+    --ui:"Figtree", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --mono:"IBM Plex Mono","SFMono-Regular",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100%;background:#000;}
+  body{color:#fff;font-family:var(--ui);overflow:hidden;}
+  /* will-change keeps the canvas on its own compositing layer; without it the
+     browser flattens the see-through parts over the video to black. */
+  canvas.street{position:fixed;inset:0;z-index:1;width:100%;height:100%;display:block;touch-action:none;}
+  canvas.street[hidden],canvas#gl[hidden]{display:none;}
+  canvas#gl{position:fixed;inset:0;z-index:1;width:100%;height:100%;display:block;image-rendering:pixelated;touch-action:none;will-change:transform;}
+
+  .home{position:fixed;top:18px;left:20px;z-index:5;color:var(--paper);mix-blend-mode:difference;}
+  .home svg{width:30px;height:auto;display:block;}
+
+
+  /* ---------- chips ---------- */
+  .chip{
+    font:700 10.5px/1 var(--ui);letter-spacing:.08em;text-transform:uppercase;color:#fff;
+    background:rgba(255,255,255,.06);border:1px solid var(--edge2);border-radius:99px;padding:8px 11px;cursor:pointer;
+    white-space:nowrap;transition:background .12s, border-color .12s, transform .08s;
+  }
+  .chip:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.5);}
+  .chip:active{transform:scale(.97);}
+  .chip[aria-pressed="true"],.chip[aria-selected="true"]{background:#fff;color:#000;border-color:#fff;}
+  .chip:focus-visible,.dial:focus-visible,.dockb:focus-visible{outline:2px solid var(--mint);outline-offset:3px;}
+  .chip[hidden]{display:none;}
+
+  /* ---------- dock ---------- */
+  .dock{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:7;display:flex;align-items:center;gap:8px;}
+  .dockb{
+    font:800 11px/1 var(--ui);letter-spacing:.1em;text-transform:uppercase;color:#fff;cursor:pointer;
+    background:var(--glass);border:1px solid var(--edge2);border-radius:99px;padding:11px 16px;
+    backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);box-shadow:var(--soft);
+    display:flex;align-items:center;gap:8px;transition:background .12s, transform .08s;
+  }
+  .dockb:hover{background:rgba(40,38,36,.75);}
+  .dockb:active{transform:scale(.97);}
+  .dockb[aria-expanded="true"]{background:#fff;color:#000;}
+  .dockb .dot{width:10px;height:10px;border-radius:50%;background:var(--mint);box-shadow:0 0 12px var(--mint);}
+  .dockb[aria-expanded="true"] .dot{background:#000;box-shadow:none;}
+  .dockb.q{padding:11px 13px;font-size:14px;}
+  .dockb#apply{padding:11px 18px;font-size:12px;}
+  .dockb#apply .dot{background:#6b6966;box-shadow:none;}
+  .dockb#apply[aria-pressed="true"]{background:var(--hot);border-color:var(--hot);color:#000;box-shadow:0 0 28px rgba(255,95,168,.55), var(--soft);}
+  .dockb#apply[aria-pressed="true"] .dot{background:#000;}
+  .dockb .caret{font-size:9px;opacity:.75;}
+  /* the Looks dropdown, opening upward from the dock */
+  .spellmenu{
+    position:absolute;left:50%;bottom:calc(100% + 10px);transform:translateX(-50%);min-width:250px;padding:6px;
+    background:var(--glass);border:1px solid var(--edge);border-radius:16px;box-shadow:var(--soft);
+    backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3);
+    display:flex;flex-direction:column;gap:2px;
+  }
+  .spellmenu[hidden]{display:none;}
+  .spellmenu .kick{font:700 9px var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--mint);padding:6px 11px 4px;}
+  .spellmenu button{
+    font:800 12px/1.2 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:#fff;text-align:left;cursor:pointer;
+    background:none;border:0;border-radius:10px;padding:10px 11px;display:flex;flex-direction:column;gap:3px;
+  }
+  .spellmenu button i{font:600 11px var(--ui);letter-spacing:0;text-transform:none;font-style:normal;color:rgba(255,255,255,.62);}
+  .spellmenu button:hover{background:rgba(255,255,255,.1);}
+  .spellmenu button[aria-selected="true"]{background:#fff;color:#000;}
+  .spellmenu button[aria-selected="true"] i{color:rgba(0,0,0,.6);}
+  .spellmenu button:focus-visible{outline:2px solid var(--mint);outline-offset:-2px;}
+
+  /* ---------- the strip ---------- */
+  .ctrl{
+    position:fixed;left:50%;bottom:70px;transform:translateX(-50%);z-index:6;
+    display:flex;align-items:center;gap:12px;max-width:calc(100vw - 16px);
+    padding:8px 10px;border:1px solid var(--edge);border-radius:20px;
+    background:var(--glass);backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3);
+    box-shadow:var(--soft);
+  }
+  .ctrl[hidden]{display:none;}
+  .tabs{display:flex;flex-direction:column;gap:4px;}
+  .tabs .chip{padding:6px 9px;font-size:9.5px;text-align:left;border-color:transparent;background:transparent;}
+  .tabs .chip:hover{background:rgba(255,255,255,.1);}
+  .tabs .chip[aria-selected="true"]{background:#fff;color:#000;}
+  .page{display:flex;align-items:center;gap:8px;}
+  .page[hidden]{display:none;}
+  .sep{width:1px;align-self:stretch;background:var(--edge);}
+
+  /* dials */
+  .dwrap{display:flex;flex-direction:column;align-items:center;gap:4px;width:58px;}
+  .dial{
+    --v:0.5;position:relative;width:44px;height:44px;border-radius:50%;cursor:ns-resize;touch-action:none;
+    background:conic-gradient(from 225deg, var(--mint) 0deg, var(--mint) calc(var(--v) * 270deg),
+      rgba(255,255,255,.14) calc(var(--v) * 270deg) 270deg, transparent 270deg 360deg);
+    box-shadow:0 6px 16px rgba(0,0,0,.5);
+  }
+  .dial::after{content:"";position:absolute;inset:5px;border-radius:50%;background:#1a1917;border:1px solid var(--edge2);}
+  .dial .g{position:absolute;inset:0;display:grid;place-items:center;font:800 14px var(--ui);color:#fff;z-index:1;pointer-events:none;}
+  .dial .ind{position:absolute;left:50%;top:50%;width:2px;height:22px;margin-left:-1px;margin-top:-22px;z-index:1;
+    transform-origin:50% 100%;transform:rotate(calc(-135deg + var(--v) * 270deg));pointer-events:none;}
+  .dial .ind::before{content:"";position:absolute;top:1px;left:-1px;width:4px;height:7px;border-radius:2px;background:var(--mint);box-shadow:0 0 6px var(--mint);}
+  .dname{font:700 9px var(--ui);letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.85);}
+  .dname b{font:500 9px var(--mono);margin-left:4px;color:var(--mint);}
+
+
+
+  /* ---------- help ---------- */
+  .help{
+    position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:8;
+    width:min(400px,calc(100vw - 24px));padding:18px 20px;border:1px solid var(--edge);border-radius:20px;
+    background:rgba(16,15,14,.78);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:var(--soft);
+  }
+  .help[hidden]{display:none;}
+  .help .kicker{font:700 10px var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--mint);margin:0 0 6px;}
+  .help h2{font:800 22px var(--ui);margin:0 0 12px;letter-spacing:-.01em;}
+  .help .lede{font:600 13px/1.55 var(--ui);color:rgba(255,255,255,.92);margin:0 0 12px;}
+  .help dl{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;margin:0 0 12px;font:600 12.5px/1.45 var(--ui);}
+  .help dt{color:var(--mint);}
+  .help b{color:#fff;}
+  .help dd{margin:0;}
+  .help p{font:600 11.5px/1.55 var(--ui);margin:0 0 12px;color:rgba(255,255,255,.65);}
+  .help a{color:#fff;}
+
+  .readout{
+    position:fixed;left:20px;bottom:20px;z-index:4;margin:0;padding:6px 10px;border:1px solid var(--edge);border-radius:99px;
+    background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    font:700 9.5px var(--ui);letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.85);
+    pointer-events:none;font-variant-numeric:tabular-nums;
+  }
+  .readout:empty{display:none;}
+
+  /* ---------- the bottom sheet, on a phone ---------- */
+  @media (max-width:700px){
+    .readout{display:none;}
+    .dock{gap:6px;bottom:12px;}
+    .dockb,.dockb#apply{padding:10px 12px;font-size:10.5px;gap:6px;}
+    .ctrl{
+      left:8px;right:8px;bottom:64px;transform:none;max-width:none;
+      flex-direction:column;align-items:stretch;gap:10px;padding:10px;border-radius:18px;
+    }
+    .sep{display:none;}
+    .tabs{flex-direction:row;gap:2px;padding:3px;border-radius:99px;background:rgba(255,255,255,.07);}
+    .tabs .chip{flex:1;text-align:center;padding:8px 4px;}
+    .page{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+    .page[hidden]{display:none;}
+    .page .chip{text-align:center;padding:10px 8px;}
+    .page.dials{grid-template-columns:repeat(4,1fr);justify-items:center;}
+    .page[data-page="cast"] .chip{padding:10px 4px;}
+  }
+  @media (prefers-reduced-motion:reduce){ .chip,.dockb{transition:none;} }
+</style>
+
+
+<canvas id="gl" aria-label="An endless suburb, and whatever look Make-Up is putting on it"></canvas>
+
+<a class="home" href="/" aria-label="Sea of Grass — all studies">
+  <svg viewBox="43.63 44.56 350.94 258.56" fill="currentColor" aria-hidden="true">
+    <path d="M 60.1360,299.5890 C 40.8560,283.5000 37.9720,248.8600 54.1230,229.1250 C 61.9590,219.4780 73.2066,213.0913 85.9080,212.4050 L 279.9170,212.3880 C 292.7328,211.6894 302.2259,200.5242 302.6140,188.1740 C 303.0171,175.3461 294.1087,163.3937 280.9850,162.4350 L 160.3860,162.3770 C 155.6830,162.3750 152.4580,158.1300 152.2660,154.1930 C 152.0640,150.0420 155.5000,145.5160 160.3230,145.5160 L 323.2740,145.5180 C 363.5090,146.7569 394.2264,180.5210 394.5670,220.2810 C 394.9023,259.4236 360.4620,297.7100 320.2520,299.1580 C 320.2520,299.1580 69.9310,307.7640 60.1360,299.5890 Z"/>
+    <path d="M 365.1390,47.9780 C 360.1170,47.5130 354.1470,47.1080 347.4230,46.7550 C 274.7440,42.9430 114.0820,45.2510 114.0820,45.2510 C 73.9994,46.9759 43.7290,80.8860 43.6260,120.3040 C 43.5230,159.4680 73.5199,193.9418 113.3820,195.4730 L 277.3270,195.8440 C 282.2870,195.8440 285.7460,192.0070 285.9600,187.6500 C 286.1670,183.4310 282.8680,178.9500 277.9760,178.9480 L 158.2750,178.9140 C 145.3037,178.2644 135.8119,166.8014 135.6040,154.2420 C 135.3960,141.6768 144.3477,129.9059 157.2620,128.9900 L 350.1640,128.8050 C 352.3160,128.8030 354.4280,128.6110 356.4990,128.2740 C 366.7370,126.6070 375.8830,121.0490 382.8160,113.4590 C 390.0330,105.5580 394.4238,95.7293 394.5320,85.6870 C 394.7250,67.7708 381.6430,52.8390 365.1390,47.9780 Z"/>
+    <circle cx="357.983" cy="86.686" r="36.548"/>
+  </svg>
+</a>
+
+<!-- ---------------------------------------------------------------- controller -->
+<div class="ctrl" id="ctrl" hidden role="dialog" aria-label="Make-Up controls">
+  <div class="tabs" role="tablist" id="tabs">
+    <button class="chip" role="tab" aria-selected="true" data-tab="street">Street</button>
+  </div>
+  <div class="sep"></div>
+
+  <div class="page" data-page="street">
+    <div id="streetDials" style="display:contents"></div>
+    <button class="chip" id="pickBtn" aria-pressed="false" title="Then click one thing in the street for the look to go on (K)">Pick</button>
+    <button class="chip" id="pickAll" title="Pick every house, or unpick them">Houses</button>
+    <button class="chip" id="pickNone" title="Clear the picks: the look goes on everything">Clear</button>
+  </div>
+
+  <div id="spellPages" style="display:contents"></div>
+
+  <div class="page" data-page="cast" hidden>
+    <button class="chip" id="surge" title="The look flares for a moment, as when you click (space)">Flare</button>
+    <button class="chip" id="freeze" aria-pressed="false" title="Stop everything where it is (P)">Freeze</button>
+    <button class="chip" id="follow" aria-pressed="true" title="The look follows the pointer; off, it stays ahead in the middle">Follow</button>
+    <button class="chip" id="reset" title="Every dial back where it started">Reset dials</button>
+  </div>
+</div>
+
+<div class="dock">
+  <button class="dockb" id="apply" aria-pressed="false" title="Put the look on the street (M)"><span class="dot"></span><span>make-up</span></button>
+  <button class="dockb" id="spellBtn" aria-haspopup="listbox" aria-expanded="false" title="Choose the look"><span id="spellName">look</span><span class="caret" aria-hidden="true">▾</span></button>
+  <div class="spellmenu" id="spellMenu" role="listbox" aria-label="Looks" hidden></div>
+  <button class="dockb" id="open" aria-label="Controls" aria-expanded="false"><span class="dot"></span>controls</button>
+  <button class="dockb q" id="ask" aria-label="How to play">?</button>
+</div>
+
+<div class="help" id="help" hidden role="dialog" aria-label="About Make-Up">
+  <p class="kicker">Study 11 · Sea of Grass</p>
+  <h2 id="helpTitle">Make-Up</h2>
+  <p class="lede">The same endless street as <a href="/studies/fever/">Fever</a>, for colour. Fever changes the shape of
+    things; Make-Up changes their colour and leaves their shape alone. Press <b>Make-Up</b> and put a look on the
+    street. <b>Spectrum</b> floods what the pointer passes with oil-slick colour that drifts and shifts as you
+    look at it from different angles; <b>Bleach</b> drains the colour out, and it seeps back slowly behind you;
+    <b>Print</b> reprints it in a few loose spot inks, out of register, with black that breaks into dashes;
+    <b>Gloss</b> turns it to glossy, inflated chrome; <b>Strokes</b> paints bright strands that crawl along the
+    surfaces. Choose with the look button beside
+    Make-Up.</p>
+  <dl>
+    <dt>make-up</dt><dd>the button, or M: puts the look on; press again and the street comes back as it was</dd>
+    <dt>steer</dt><dd>the look sits on whatever is under the pointer, with a wake behind it; click and it flares</dd>
+    <dt>pick</dt><dd>in controls, press <b>Pick</b> (or K), then click one thing: a colour of house, the lamps, the
+      road, the lawn, the sky. The look then goes only on that. <b>Clear</b> lets it go on everything</dd>
+    <dt>look</dt><dd>the button beside Make-Up opens the list of looks; on the sky, each has a flat form</dd>
+    <dt>controls</dt><dd>turn the look's dials, the speed you walk at, and under Cast: flare, freeze, follow</dd>
+  </dl>
+  <p>Make-Up is the colour tool from Fantasmagoria, the studio's live show, made to be used alongside Fever,
+    and tried out here on its own. The street comes from a popular dreamcore meme; it is drawn live with
+    <a href="https://threejs.org">three.js</a>. Spectrum is after the colour of Fabio Catapano's Spectrum 001;
+    Print after a clip of a riso-printed houseplant; Gloss after an airbrushed chrome flower; Strokes after a clip of bright strands crawling over a
+    black stone. Nothing leaves your browser.</p>
+  <button class="chip" id="gotit">Begin</button>
+</div>
+
+<p class="readout" id="readout"></p>
+
+<script type="importmap">
+{"imports": {"three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+             "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const store = {
+  get(k){ try { return localStorage.getItem("makeup:" + k); } catch (e) { return null; } },
+  set(k, v){ try { localStorage.setItem("makeup:" + k, v); } catch (e) {} },
+};
+
+// ------------------------------------------------------------------ WebGL
+// The flat looks, for the sky: the street's picture with the same look laid
+// on it round the pointer, as if the screen were a surface facing you.
+const canvas = $("gl");
+const gl = canvas.getContext("webgl2", {antialias: false, preserveDrawingBuffer: false, alpha: true, premultipliedAlpha: true});
+const LOOK_CORE = `
+float mh(float n){ return fract(sin(n * 127.1) * 43758.5453); }
+float mn(vec2 p){
+  vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
+  return mix(mix(mh(i.x + i.y * 57.0), mh(i.x + 1.0 + i.y * 57.0), f.x), mix(mh(i.x + (i.y + 1.0) * 57.0), mh(i.x + 1.0 + (i.y + 1.0) * 57.0), f.x), f.y);
+}
+vec3 pal(float t){ return 0.55 + 0.45 * cos(6.2832 * (t + vec3(0.0, 0.33, 0.67))); }
+float lum(vec3 c){ return dot(c, vec3(0.299, 0.587, 0.114)); }
+float gh(vec2 p){ return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
+// One look on colour c at point p (normal n, seen from direction v), as much
+// as m (0..1). facing is how squarely the surface faces you.
+vec3 paint(vec3 c, vec3 p, vec3 n, vec3 v, float m, float facing){
+  if (m <= 0.001) return c;
+  int k = int(uLook + 0.5);
+  if (k == 4){                                             // Gloss: uA shine, uB colour, uC grain
+    // polished, inflated chrome: the surface reflects a made-up world (white
+    // sky, a black horizon, its own colour in between), with airbrush grain
+    vec3 r = reflect(-v, n);
+    // the world it reflects: bands that wave round the horizon and wobble
+    // with position, so even a flat wall shows a run of reflections
+    float t = r.y * 2.2 + sin(atan(r.z, r.x) * 3.0) * 0.35 + mn(p.xz * 0.18 + p.y * 0.2) * 1.3;
+    float b = fract(t);
+    vec3 tint = mix(vec3(lum(c)), c, 1.0 + uB) * 1.2;      // its own colour, pushed
+    vec3 col = b < 0.3 ? mix(vec3(0.02), tint * 0.45, b / 0.3)
+             : b < 0.65 ? mix(tint * 0.45, tint, (b - 0.3) / 0.35)
+             : mix(tint, vec3(1.0), smoothstep(0.65, 0.95, b) * uA);
+    col *= smoothstep(0.0, 0.05, b) * 0.9 + 0.1;          // a black seam where each band starts
+    col += vec3(1.0) * pow(1.0 - facing, 3.0) * 0.4 * uA;  // the rim catches the light
+    col += (gh(gl_FragCoord.xy) - 0.5) * 0.22 * uC;        // grain
+    return mix(c, clamp(col, 0.0, 1.0), clamp(m * 1.4, 0.0, 1.0));
+  }
+  if (k == 0){                                             // Spectrum: uA bands, uB drift, uC strength (Print, look 3, is a screen pass: see PRF)
+    float t = dot(p, vec3(0.11, 0.19, 0.07)) * uA + (1.0 - facing) * 0.9 + mn(p.xz * 0.3 + p.y * 0.2) * 0.6 - uTime * uB * 0.15;
+    vec3 col = mix(pal(t), vec3(1.0), smoothstep(0.78, 1.0, fract(t * 2.0)) * 0.55);   // white seams
+    return mix(c, col * (0.45 + 1.05 * lum(c)), clamp(m * uC, 0.0, 1.0));
+  }
+  if (k == 1){                                             // Bleach: uA drain, uB warmth
+    float g = lum(c);
+    vec3 t = mix(vec3(g), g * vec3(1.08, 0.96, 0.78), uB);
+    return mix(c, mix(t, vec3(1.0), 0.18 * m), clamp(m * uA, 0.0, 1.0));
+  }
+  // Strokes: uA density, uB length, uC crawl
+  vec3 t1 = abs(n.y) > 0.9 ? vec3(1.0, 0.0, 0.0) : normalize(cross(n, vec3(0.0, 1.0, 0.0)));
+  vec3 t2 = cross(n, t1);
+  vec2 q = vec2(dot(p, t1), dot(p, t2));
+  float a = mn(q * 0.08 + uTime * 0.03) * 3.2;             // the current the strands follow, curving gently
+  vec2 f = vec2(cos(a), sin(a));
+  float lw = 0.14 + 0.6 * (1.0 - uA), perp = dot(q, vec2(-f.y, f.x)), along = dot(q, f);
+  float lane = floor(perp / lw);
+  float strand = fract(along / (0.5 + uB * 2.5) - uTime * uC * 0.5 + mh(lane) * 3.0);
+  float body = smoothstep(0.0, 0.08, strand) * smoothstep(0.75, 0.55, strand) * step(0.45, mh(lane + 3.0));
+  float across = 1.0 - abs(fract(perp / lw) - 0.5) * 2.0;
+  vec3 col = mix(pal(mh(lane + 11.0)), vec3(1.0), 0.3 * across);   // rounded, catching the light
+  return mix(c, col, body * smoothstep(0.15, 0.45, across) * m);
+}`;
+const VS = `#version 300 es
+in vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }`;
+// Print, after a clip of a riso-printed plant: wherever the look is, the
+// picture is reprinted in a few loose spot inks on paper. Each ink is pulled
+// from a slightly different spot (misregistered), shadows and edges go down
+// in black that breaks into dashes, and every few frames the inks shift
+// (boiling). The street marks where the look is in its alpha channel; the
+// sky, which isn't a surface, gets a patch round the pointer instead.
+const PRF = `#version 300 es
+precision highp float;
+uniform sampler2D uFull;
+uniform vec2 uRes, uEye;
+uniform float uAspect, uR, uAmt, uTime, uOff, uBoil, uShadow;
+out vec4 o;
+float h2(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+float n2(vec2 p){
+  vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
+  return mix(mix(h2(i), h2(i + vec2(1, 0)), f.x), mix(h2(i + vec2(0, 1)), h2(i + vec2(1, 1)), f.x), f.y);
+}
+float lum(vec3 c){ return dot(c, vec3(0.299, 0.587, 0.114)); }
+vec4 at(vec2 uv){ return texture(uFull, vec2(clamp(uv.x, 0.0, 1.0), clamp(1.0 - uv.y, 0.0, 1.0))); }
+float wanted(vec2 uv){
+  float surf = smoothstep(0.12, 0.3, (1.0 - at(uv).a) * 2.0);   // a crisp printed patch
+  float skyPatch = smoothstep(uR, uR * 0.1, length((uv - uEye) * vec2(uAspect, 1.0))) * uAmt;
+  return max(surf, skyPatch);
+}
+// The spot inks: yellow, green, cyan, magenta, orange.
+vec3 ink(float i){
+  int k = int(mod(i, 5.0));
+  if (k == 0) return vec3(0.98, 0.8, 0.12);
+  if (k == 1) return vec3(0.36, 0.74, 0.24);
+  if (k == 2) return vec3(0.32, 0.76, 0.93);
+  if (k == 3) return vec3(0.95, 0.38, 0.76);
+  return vec3(0.98, 0.47, 0.2);
+}
+// Which ink a colour takes: by its hue, reshuffled at every tick.
+float inkFor(vec3 c, float tick){
+  float mx = max(c.r, max(c.g, c.b)), mn = min(c.r, min(c.g, c.b)), d = mx - mn + 1e-4, hue;
+  if (mx == c.r) hue = mod((c.g - c.b) / d, 6.0); else if (mx == c.g) hue = (c.b - c.r) / d + 2.0; else hue = (c.r - c.g) / d + 4.0;
+  return floor(hue / 6.0 * 5.0) + floor(h2(vec2(tick, 3.0)) * 2.0);
+}
+void main(){
+  vec2 px = 1.0 / uRes, uv = gl_FragCoord.xy * px;
+  vec4 base = at(uv);
+  float m = wanted(uv);
+  if (m < 0.02){ o = vec4(base.rgb, 1.0); return; }
+  vec2 g = floor(gl_FragCoord.xy / 2.0) * 2.0 * px;      // a coarse print grain
+  float tick = floor(uTime * (2.0 + uBoil * 10.0));
+  vec2 jog = vec2(h2(vec2(tick, 1.0)), h2(vec2(tick, 2.0))) - 0.5;
+  vec3 paper = vec3(0.95, 0.94, 0.9) * (0.96 + 0.05 * n2(gl_FragCoord.xy * 0.6));
+  vec3 c = paper;
+  // Two colour passes, each pulled from its own offset. The second goes down
+  // first and shows only where it slips out from under the first: a fringe.
+  // Greys take no ink (paper); only real colour does.
+  for (int k = 1; k >= 0; k--){
+    vec2 off = (vec2(float(k) * 2.0 - 1.0, 0.3 * float(k)) * 6.0 + jog * 4.0) * uOff * px;
+    vec3 s = at(g + off).rgb;
+    float l = lum(s), sat = max(s.r, max(s.g, s.b)) - min(s.r, min(s.g, s.b));
+    if (l > uShadow && sat > 0.12) c = paper * ink(inkFor(s, tick) + float(k) * 2.0);
+  }
+  // the black: shadows and edges, broken into dashes
+  vec2 ob = jog * 3.0 * uOff * px;
+  float lb = lum(at(g + ob).rgb);
+  float edge = abs(lum(at(g + ob + vec2(2.0, 0.0) * px).rgb) - lb) + abs(lum(at(g + ob + vec2(0.0, 2.0) * px).rgb) - lb);
+  float dash = step(0.3, n2(gl_FragCoord.xy * 0.35 + tick * 7.0));
+  if (lb < uShadow || edge > 0.12 * dash + (1.0 - dash)) c = mix(c, vec3(0.07, 0.07, 0.08), 0.92);
+  // the printed patch has a ragged, dotted edge of its own
+  float edgeIn = step(0.5, m + (n2(gl_FragCoord.xy * 0.3 + tick) - 0.5) * 0.4);
+  o = vec4(mix(base.rgb, c, edgeIn), 1.0);
+}`;
+const MUF = `#version 300 es
+precision highp float;
+uniform sampler2D uFull;
+uniform vec2 uRes, uEye;
+uniform float uAspect, uR, uAmt, uLook, uA, uB, uC, uTime;
+out vec4 o;
+${LOOK_CORE}
+void main(){
+  vec2 uv = gl_FragCoord.xy / uRes;
+  vec3 c = texture(uFull, vec2(uv.x, 1.0 - uv.y)).rgb;
+  float m = smoothstep(uR, uR * 0.1, length((uv - uEye) * vec2(uAspect, 1.0))) * uAmt;
+  vec3 p = vec3(uv * vec2(uAspect, 1.0) * 12.0, 0.0);
+  vec3 n = normalize(vec3((uv - uEye) * 1.5, 1.0));         // the sky as a gently domed surface
+  o = vec4(paint(c, vec3(p.x, p.y, 0.0), n, vec3(0.0, 0.0, 1.0), m, n.z), 1.0);
+}`;
+function program(fs){
+  const p = gl.createProgram();
+  for (const [type, src] of [[gl.VERTEX_SHADER, VS], [gl.FRAGMENT_SHADER, fs]]){
+    const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+    gl.attachShader(p, s);
+  }
+  gl.bindAttribLocation(p, 0, "p"); gl.linkProgram(p);
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+  const u = {}; const n = gl.getProgramParameter(p, gl.ACTIVE_UNIFORMS);
+  for (let i = 0; i < n; i++){ const name = gl.getActiveUniform(p, i).name; u[name] = gl.getUniformLocation(p, name); }
+  return {p, u};
+}
+function texture(w, h, src){
+  const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t);
+  if (src) gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, src);
+  else gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+  for (const [k, v] of [[gl.TEXTURE_MIN_FILTER, gl.NEAREST], [gl.TEXTURE_MAG_FILTER, gl.NEAREST],
+                        [gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE], [gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE]])
+    gl.texParameteri(gl.TEXTURE_2D, k, v);
+  return t;
+}
+let MU, PR;
+if (gl){
+  MU = program(MUF); PR = program(PRF);
+  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+}
+
+// ------------------------------------------------------------------ the suburb
+// Fever's street: pastel houses down both sides of a grey road, lamps on the
+// right, flat green lawns, a hard blue sky, the camera walking toward the
+// vanishing point forever. three.js comes from a CDN on first use.
+//
+// The look lives in the scene. Its eye sits on whatever surface is under the
+// pointer and rides over it, with a wake of earlier eye positions behind it,
+// and every material colours itself by how near it is to the eye and the
+// wake. Three looks, all colour, never shape:
+//   Spectrum  oil-slick colour floods what the eye passes, drifting, and
+//             shifting with the angle you see it from.
+//   Bleach    the colour drains out to grey (or sepia), and seeps back slowly.
+//   Strokes   bright strands crawl along the surfaces, following currents.
+// A per-kind switch says whether that kind takes the look: everything, or
+// only what's picked. A pick is a kind, not one object: pick a pink house
+// and every pink house down the street takes it.
+let suburb = null, suburbLoading = null, street = false, pickMode = false;
+const TRAIL = 24;                                          // eye positions in the wake
+// How much of the look is on a point: near the eye, less along the wake.
+// Worked out per vertex (it changes smoothly) and blended across each face,
+// so the pixels don't each have to visit the whole wake.
+const FIELD_GLSL = `
+uniform vec4 uTrail[${TRAIL}];
+uniform float uR, uOn, uHit, uFade;
+varying float vField;
+float field(vec3 p){
+  float m = 0.0;
+  for (int i = 0; i < ${TRAIL}; i++){
+    float s = uTrail[i].w * uOn * uHit * pow(1.0 - float(i) / ${TRAIL}.0, uFade);
+    if (s <= 0.002) continue;
+    m = max(m, s * smoothstep(uR * 1.5, uR * 0.15, length(p - uTrail[i].xyz)));
+  }
+  return m;
+}`;
+const MAKEUP_GLSL = `
+uniform float uLook, uA, uB, uC, uTime, uGlow;
+varying vec3 vW, vN, vPaint;
+varying float vField;
+${LOOK_CORE}`;
+
+function loadSuburb(){
+  if (suburb) return Promise.resolve(suburb);
+  return suburbLoading = suburbLoading || (async () => {
+    const T = await import("three");
+    // alpha: Print marks where it's wanted in the street's alpha channel
+    const r = new T.WebGLRenderer({antialias: true, alpha: true, premultipliedAlpha: false});
+    r.shadowMap.enabled = true;
+    r.domElement.className = "street";
+    r.domElement.setAttribute("aria-label", "An endless suburb, and whatever spell Fever is casting on it");
+    document.body.insertBefore(r.domElement, $("gl"));
+    const scene = new T.Scene();
+
+    const sky = document.createElement("canvas"); sky.width = 2; sky.height = 512;
+    const sg = sky.getContext("2d"), grad = sg.createLinearGradient(0, 0, 0, 512);
+    grad.addColorStop(0, "#0716c9"); grad.addColorStop(0.3, "#0d34e6"); grad.addColorStop(0.47, "#2f78f2");
+    grad.addColorStop(0.5, "#a6cff3"); grad.addColorStop(1, "#a6cff3");
+    sg.fillStyle = grad; sg.fillRect(0, 0, 2, 512);
+    const skyTex = new T.CanvasTexture(sky); skyTex.colorSpace = T.SRGBColorSpace;
+    scene.background = skyTex;
+    scene.fog = new T.Fog(0xa6cff3, 90, 330);
+
+    const camera = new T.PerspectiveCamera(52, 1, 0.5, 600);
+    camera.position.set(0, 9, 0);
+    scene.add(new T.HemisphereLight(0xe4eeff, 0x3f7d33, 1.35));
+    const sun = new T.DirectionalLight(0xfffaf0, 2.8);
+    sun.castShadow = true; sun.shadow.mapSize.set(1024, 1024); sun.shadow.normalBias = 0.04; sun.shadow.bias = -0.0006;
+    Object.assign(sun.shadow.camera, {left: -50, right: 50, top: 70, bottom: -70, near: 1, far: 220});
+    scene.add(sun, sun.target);
+
+    // The look's uniforms, shared by every material.
+    const U = {
+      uTrail: {value: Array.from({length: TRAIL}, () => new T.Vector4(0, -999, 0, 0))},
+      uR: {value: 3}, uOn: {value: 0}, uLook: {value: 0}, uA: {value: 1}, uB: {value: 1}, uC: {value: 1},
+      uTime: {value: 0}, uFade: {value: 1.5},
+    };
+    // Materials, one per kind, so each kind can be switched on or off. The
+    // colour of a piece comes from the geometry (aPaint), or from the
+    // material when the paint is negative: that's how one house shape serves
+    // every colour of house.
+    const kinds = {};                                      // kind -> {hit, glow}
+    const matCache = {};
+    function mat(kind, color){
+      if (matCache[kind]) return matCache[kind];
+      const k = kinds[kind] = {hit: {value: 1}, glow: {value: 0}};
+      // Both sides draw; shadows come from the front side only, or
+      // double-sided surfaces shadow themselves in stripes.
+      const m = new T.MeshLambertMaterial({color, side: T.DoubleSide, shadowSide: T.FrontSide});
+      m.onBeforeCompile = sh => {
+        Object.assign(sh.uniforms, U, {uHit: k.hit, uGlow: k.glow});
+        sh.vertexShader = sh.vertexShader
+          .replace("#include <common>", "#include <common>\nattribute vec3 aPaint;\nvarying vec3 vW, vN, vPaint;\n" + FIELD_GLSL)
+          .replace("#include <begin_vertex>", `#include <begin_vertex>
+            vW = (modelMatrix * vec4(transformed, 1.0)).xyz; vN = normalize(mat3(modelMatrix) * objectNormal); vPaint = aPaint;
+            vField = field(vW);`);
+        sh.fragmentShader = sh.fragmentShader
+          .replace("#include <common>", "#include <common>\n" + MAKEUP_GLSL)
+          .replace("#include <color_fragment>", "#include <color_fragment>\n if (vPaint.r >= 0.0) diffuseColor.rgb = vPaint;")
+          .replace("#include <dithering_fragment>", `#include <dithering_fragment>
+            { vec3 n = normalize(vN);
+              if (int(uLook + 0.5) == 3) gl_FragColor.a = 1.0 - 0.5 * clamp(vField, 0.0, 1.0);   // Print: mark it
+              else if (vField > 0.002){
+                vec3 v = normalize(cameraPosition - vW);
+                gl_FragColor.rgb = paint(gl_FragColor.rgb, vW, n, v, vField, abs(dot(n, v)));
+              } }
+            gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.62, 0.94, 0.78), 0.45 * uGlow);`);
+      };
+      return matCache[kind] = m;
+    }
+    const lin = hex => { const c = new T.Color(hex); return [c.r, c.g, c.b]; };
+    const OWN = [-1, -1, -1];                              // the material's own colour
+
+    // ---- building out of pieces
+    const P3 = (f, u, v) => [f.O[0] + f.U[0] * u + f.V[0] * v, f.O[1] + f.U[1] * u + f.V[1] * v, f.O[2] + f.U[2] * u + f.V[2] * v];
+    const crs = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+    const dt3 = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+    function clipHalf(poly, a, b, c){                      // keep a*u + b*v + c >= 0
+      const out = [];
+      for (let i = 0; i < poly.length; i++){
+        const p = poly[i], q = poly[(i + 1) % poly.length];
+        const dp = a * p[0] + b * p[1] + c, dq = a * q[0] + b * q[1] + c;
+        if (dp >= 0) out.push(p);
+        if ((dp >= 0) !== (dq >= 0)){ const s = dp / (dp - dq); out.push([p[0] + (q[0] - p[0]) * s, p[1] + (q[1] - p[1]) * s]); }
+      }
+      return out;
+    }
+    function clipConvex(poly, clip){                       // clip is convex and anticlockwise
+      for (let i = 0; i < clip.length && poly.length >= 3; i++){
+        const p = clip[i], q = clip[(i + 1) % clip.length], a = -(q[1] - p[1]), b = q[0] - p[0];
+        poly = clipHalf(poly, a, b, -(a * p[0] + b * p[1]));
+      }
+      return poly;
+    }
+    // A builder: pieces are a few triangles sharing a centre and three random
+    // numbers (so Shatter moves them as one), each corner knowing where it
+    // sits in its piece (aTile) and what the piece is (aKind) and its paint.
+    function Builder(){
+      const A = {p: [], n: [], c: [], r: [], t: [], k: [], pa: []};
+      // face: {O, U, V, N}, a plane; parts: convex polygons in its (u, v).
+      function piece(f, parts, tile, kind, paint){
+        let cu = 0, cv = 0, m = 0;
+        for (const poly of parts) for (const q of poly){ cu += q[0]; cv += q[1]; m++; }
+        if (!m) return;
+        const C = P3(f, cu / m, cv / m), rnd = [Math.random(), Math.random(), Math.random()];
+        const flip = dt3(crs(f.U, f.V), f.N) < 0;
+        for (const poly of parts) for (let i = 1; i < poly.length - 1; i++){
+          const tri = flip ? [poly[0], poly[i + 1], poly[i]] : [poly[0], poly[i], poly[i + 1]];
+          for (const q of tri){
+            A.p.push(...P3(f, q[0], q[1])); A.n.push(...f.N); A.c.push(...C); A.r.push(...rnd);
+            A.t.push((q[0] - tile.u0) / tile.w, (q[1] - tile.v0) / tile.h); A.k.push(kind); A.pa.push(...paint);
+          }
+        }
+      }
+      // Rows of pieces across a face: rows(v, row) -> {h, w, kind, paint, off}.
+      // Pieces are cut into parts no bigger than seg, so the other spells can bend them.
+      function tile(f, u0, u1, v0, v1, rows, clip, seg = 0.6){
+        for (let v = v0, row = 0; v < v1 - 1e-6; row++){
+          const R = rows(v, row), h = Math.min(R.h, v1 - v);
+          for (let u = u0 - (R.off && row % 2 ? R.w / 2 : 0); u < u1 - 1e-6; u += R.w){
+            const ua = Math.max(u, u0), ub = Math.min(u + R.w, u1);
+            if (ub - ua < 1e-4) continue;
+            const parts = [], nu = Math.ceil((ub - ua) / seg), nv = Math.ceil(h / seg);
+            for (let i = 0; i < nu; i++) for (let j = 0; j < nv; j++){
+              const a0 = ua + (ub - ua) * i / nu, a1 = ua + (ub - ua) * (i + 1) / nu, b0 = v + h * j / nv, b1 = v + h * (j + 1) / nv;
+              let poly = [[a0, b0], [a1, b0], [a1, b1], [a0, b1]];
+              if (clip) poly = clipConvex(poly, clip);
+              if (poly.length >= 3) parts.push(poly);
+            }
+            if (parts.length) piece(f, parts, {u0: u, v0: v, w: R.w, h}, R.kind, R.paint);
+          }
+          v += h;
+        }
+      }
+      // A box, each face one piece.
+      function box(cx, cy, cz, sx, sy, sz, kind, paint){
+        const c = [cx, cy, cz], s = [sx / 2, sy / 2, sz / 2];
+        for (let a = 0; a < 3; a++) for (const sg of [1, -1]){
+          const b = (a + 1) % 3, d = (a + 2) % 3, N = [0, 0, 0], Uv = [0, 0, 0], Vv = [0, 0, 0], O = c.slice();
+          N[a] = sg; Uv[b] = 1; Vv[d] = 1; O[a] += sg * s[a];
+          piece({O, U: Uv, V: Vv, N}, [[[-s[b], -s[d]], [s[b], -s[d]], [s[b], s[d]], [-s[b], s[d]]]],
+                {u0: -s[b], v0: -s[d], w: 2 * s[b], h: 2 * s[d]}, kind, paint);
+        }
+      }
+      function geometry(){
+        const g = new T.BufferGeometry();
+        g.setAttribute("position", new T.Float32BufferAttribute(A.p, 3));
+        g.setAttribute("normal", new T.Float32BufferAttribute(A.n, 3));
+        g.setAttribute("aCenter", new T.Float32BufferAttribute(A.c, 3));
+        g.setAttribute("aRand", new T.Float32BufferAttribute(A.r, 3));
+        g.setAttribute("aTile", new T.Float32BufferAttribute(A.t, 2));
+        g.setAttribute("aKind", new T.Float32BufferAttribute(A.k, 1));
+        g.setAttribute("aPaint", new T.Float32BufferAttribute(A.pa, 3));
+        g.computeBoundingSphere();
+        return g;
+      }
+      return {piece, tile, box, geometry};
+    }
+
+    // Each thing is a visible built mesh and an invisible plain twin on
+    // layer 2 for rays (rays against all those pieces would be slow).
+    const proxies = [];
+    function place(geo, kind, color, parent, x, y, z){
+      const m = new T.Mesh(geo, mat(kind, color));
+      m.castShadow = m.receiveShadow = true; m.userData.owner = kind;
+      m.position.set(x, y, z); parent.add(m);
+      return m;
+    }
+    function twin(geo, kind, parent, x, y, z, rx){
+      const p = new T.Mesh(geo, new T.MeshBasicMaterial());
+      p.visible = false; p.layers.set(2); p.userData.owner = kind;
+      p.position.set(x, y, z); if (rx) p.rotation.x = rx;
+      parent.add(p); proxies.push(p);
+    }
+
+    // ---- the ground: lawn, road, curbs, and dirt under it all. It goes
+    // with the camera; it's all one colour, so nobody can tell.
+    const ground = new T.Group(); scene.add(ground);
+    const flat = -Math.PI / 2;
+    const span = (a, b, step) => { const out = []; for (let v = a; step > 0 ? v < b - 1e-9 : v > b + 1e-9; v += step) out.push(v); return out; };
+    // Rows along the street: fine (1 unit) where the spell can reach, coarse beyond.
+    const zs = [50, ...span(30, -150, -1), ...span(-150, -650, -25), -650];
+    const hash2 = (i, j) => { const s = Math.sin(i * 127.1 + j * 311.7) * 43758.5453; return s - Math.floor(s); };
+    // A grid of pieces in the ground, its inner corners nudged so each piece
+    // is its own irregular shape.
+    function groundGrid(B, xs, y, kind, paint){
+      const f = {O: [0, y, 0], U: [1, 0, 0], V: [0, 0, -1], N: [0, 1, 0]};
+      const fineX = i => i > 0 && i < xs.length - 1 && xs[i + 1] - xs[i] < 1.2 && xs[i] - xs[i - 1] < 1.2;
+      const fineZ = j => j > 0 && j < zs.length - 1 && zs[j] - zs[j + 1] < 1.2 && zs[j - 1] - zs[j] < 1.2;
+      const pt = (i, j) => {
+        const nudge = fineX(i) && fineZ(j);
+        return [xs[i] + (nudge ? (hash2(i, j) - 0.5) * 0.5 : 0), -zs[j] + (nudge ? (hash2(j, i + 9) - 0.5) * 0.5 : 0)];
+      };
+      for (let j = 0; j < zs.length - 1; j++) for (let i = 0; i < xs.length - 1; i++){
+        const a = pt(i, j), b = pt(i + 1, j), c = pt(i + 1, j + 1), d = pt(i, j + 1);
+        B.piece(f, [[a, b, c, d]], {u0: xs[i], v0: -zs[j], w: xs[i + 1] - xs[i], h: zs[j] - zs[j + 1]}, kind, paint);
+      }
+    }
+    const LG = Builder();
+    groundGrid(LG, [-350, ...span(-325, -50, 25), ...span(-50, -5, 1), -4.9], 0, 4, OWN);
+    groundGrid(LG, [4.9, ...span(5, 50, 1), ...span(50, 350, 25), 350], 0, 4, OWN);
+    place(LG.geometry(), "lawn", 0x3aa836, ground, 0, 0, 0);
+    twin(new T.PlaneGeometry(700, 700), "lawn", ground, 0, 0, -300, flat);
+    const RG = Builder();
+    groundGrid(RG, span(-4.5, 4.6, 0.9), 0.03, 5, OWN);
+    // Curbs: tops and the faces toward the road, in lengths.
+    const CURB = lin(0xd8d5cb);
+    for (const s of [-1, 1]){
+      const top = {O: [s * 4.7, 0.3, 0], U: [1, 0, 0], V: [0, 0, -1], N: [0, 1, 0]};
+      const side = {O: [s * 4.5, 0, 0], U: [0, 1, 0], V: [0, 0, -1], N: [-s, 0, 0]};
+      for (let j = 0; j < zs.length - 1; j++){
+        const v0 = -zs[j], v1 = -zs[j + 1], tl = {u0: -0.2, v0, w: 0.4, h: v1 - v0};
+        RG.piece(top, [[[-0.2, v0], [0.2, v0], [0.2, v1], [-0.2, v1]]], tl, 6, CURB);
+        RG.piece(side, [[[0, v0], [0.3, v0], [0.3, v1], [0, v1]]], {u0: 0, v0, w: 0.3, h: v1 - v0}, 6, CURB);
+      }
+    }
+    place(RG.geometry(), "road", 0x8e8e8b, ground, 0, 0, 0);
+    twin(new T.PlaneGeometry(9.8, 700), "road", ground, 0, 0.03, -300, flat);
+    // ---- a house: two gable walls (one facing the road, with a door and a
+    // window), two side walls, a roof of two shingled slabs, and a path to
+    // the curb. Walls are bricks up to 0.85, siding boards above. All the
+    // houses on one side share one shape; the colour is the material's.
+    const Dp = 8.5, Wd = 8, Hw = 3.2, Rg = 1.7;
+    const ang = Math.atan(Rg / (Dp / 2)), slab = (Dp / 2 + 0.7) / Math.cos(ang);
+    const ROOF = lin(0x7b6d62), WHITE = lin(0xf4f2ec), GLASS = lin(0x2b2d33), CONCRETE = lin(0xd9d4c4);
+    const wallRows = v => v < 0.85 - 1e-6 ? {h: 0.2125, w: 0.5, kind: 1, paint: OWN, off: true}
+                                          : {h: 0.3, w: 1.7, kind: 2, paint: OWN, off: true};
+    const pathLen = 16 - Wd / 2 - 4.9;
+    function houseShape(side){
+      const B = Builder();
+      const gable = [[-Dp / 2, 0], [Dp / 2, 0], [Dp / 2, Hw], [0, Hw + Rg], [-Dp / 2, Hw]];
+      for (const s of [1, -1]){
+        B.tile({O: [s * Wd / 2, 0, 0], U: [0, 0, -s], V: [0, 1, 0], N: [s, 0, 0]}, -Dp / 2, Dp / 2, 0, Hw + Rg, wallRows, gable, 0.4);
+        B.tile({O: [0, 0, s * Dp / 2], U: [s, 0, 0], V: [0, 1, 0], N: [0, 0, s]}, -Wd / 2, Wd / 2, 0, Hw, wallRows, null, 0.4);
+        // A roof slab: shingles on top, deck boards under, timber at its edges.
+        const cs = Math.cos(ang), sn = Math.sin(ang), yR = Hw + Rg + 0.36;
+        const S = [0, -sn, s * cs], Nt = [0, cs, s * sn], O = [0, yR, 0];
+        const under = [O[0] - Nt[0] * 0.32, O[1] - Nt[1] * 0.32, O[2] - Nt[2] * 0.32];
+        const eave = [O[0] + S[0] * slab, O[1] + S[1] * slab, O[2] + S[2] * slab];
+        B.tile({O, U: [1, 0, 0], V: S, N: Nt}, -(Wd + 0.9) / 2, (Wd + 0.9) / 2, 0, slab,
+               () => ({h: 0.32, w: 0.6, kind: 3, paint: ROOF, off: true}));
+        B.tile({O: under, U: [1, 0, 0], V: S, N: Nt.map(x => -x)}, -(Wd + 0.9) / 2, (Wd + 0.9) / 2, 0, slab,
+               () => ({h: 0.6, w: 1.5, kind: 8, paint: ROOF}));
+        B.tile({O: eave, U: [1, 0, 0], V: Nt.map(x => -x), N: S}, -(Wd + 0.9) / 2, (Wd + 0.9) / 2, 0, 0.32,
+               () => ({h: 0.32, w: 1.5, kind: 8, paint: ROOF}));
+        for (const e of [1, -1])
+          B.tile({O: [e * (Wd + 0.9) / 2, yR, 0], U: S, V: Nt.map(x => -x), N: [e, 0, 0]}, 0, slab, 0, 0.32,
+                 () => ({h: 0.32, w: 1.5, kind: 8, paint: ROOF}));
+      }
+      const fx = -side * (Wd / 2 + 0.02);
+      B.box(fx, 1.1, 1.6, 0.12, 2.2, 1.05, 2, WHITE);       // the door
+      B.box(fx, 2.1, -1.7, 0.12, 1.1, 1.3, 2, WHITE);       // the window frame
+      B.box(fx - side * 0.02, 2.1, -1.7, 0.14, 0.8, 1.0, 0, GLASS);
+      B.tile({O: [-side * (Wd / 2 + pathLen / 2), 0.08, 1.6], U: [1, 0, 0], V: [0, 0, -1], N: [0, 1, 0]},
+             -pathLen / 2, pathLen / 2, -0.75, 0.75, () => ({h: 1.5, w: 1.5, kind: 6, paint: CONCRETE}));
+      return B.geometry();
+    }
+    const HOUSE = {[-1]: houseShape(-1), [1]: houseShape(1)};
+    // Plain twins for rays: the body, the two slabs, the path.
+    const prof = new T.Shape([new T.Vector2(-Dp / 2, 0), new T.Vector2(Dp / 2, 0), new T.Vector2(Dp / 2, Hw),
+                              new T.Vector2(0, Hw + Rg), new T.Vector2(-Dp / 2, Hw)]);
+    const bodyG = new T.ExtrudeGeometry(prof, {depth: Wd, bevelEnabled: false});
+    bodyG.translate(0, 0, -Wd / 2); bodyG.rotateY(Math.PI / 2);
+    const slabG = new T.BoxGeometry(Wd + 0.9, 0.32, slab), pathG = new T.BoxGeometry(pathLen, 0.08, 1.5);
+    const NAMES = ["blue", "green", "salmon", "pink", "yellow", "orange", "red", "lilac", "aqua", "white"];
+    const WALLS = [0x4f7fe0, 0x3caf48, 0xe9806f, 0xf2a6cb, 0xf2c431, 0xf07b39, 0xe24a3b, 0xb48ce4, 0x6fcfe6, 0xf6efe4];
+    function house(side, seed){
+      const g = new T.Group(), c = seed % WALLS.length, kind = NAMES[c] + " houses";
+      place(HOUSE[side], kind, WALLS[c], g, 0, 0, 0);
+      twin(bodyG, kind, g, 0, 0, 0);
+      for (const s of [1, -1]){
+        const zc = s * (Dp / 2 + 0.7) / 2;
+        twin(slabG, kind, g, 0, Hw + Rg - Math.tan(ang) * Math.abs(zc) + 0.2, zc, s * ang);
+      }
+      twin(pathG, kind, g, -side * (Wd / 2 + pathLen / 2), 0.04, 1.6);
+      return g;
+    }
+    // ---- a lamp: an eight-sided pole in lengths, an arm, a head.
+    const METAL = lin(0xc9ccd2);
+    const LB = Builder();
+    for (let i = 0; i < 8; i++){
+      const a0 = i / 8 * Math.PI * 2, a1 = (i + 1) / 8 * Math.PI * 2, am = (a0 + a1) / 2, rr = 0.16;
+      const A0 = [rr * Math.cos(a0), 0, rr * Math.sin(a0)], A1 = [rr * Math.cos(a1), 0, rr * Math.sin(a1)];
+      const len = Math.hypot(A1[0] - A0[0], A1[2] - A0[2]);
+      LB.tile({O: A0, U: [(A1[0] - A0[0]) / len, 0, (A1[2] - A0[2]) / len], V: [0, 1, 0], N: [Math.cos(am), 0, Math.sin(am)]},
+              0, len, 0, 12.5, () => ({h: 0.7, w: 1, kind: 0, paint: METAL}));
+    }
+    LB.box(-1, 12.4, 0, 2.2, 0.12, 0.14, 0, METAL);
+    LB.box(-2.1, 12.3, 0, 0.9, 0.22, 0.4, 0, WHITE);
+    const LAMP = LB.geometry(), poleG = new T.CylinderGeometry(0.16, 0.16, 12.5, 8), armG = new T.BoxGeometry(2.2, 0.3, 0.4);
+    function lamp(){
+      const g = new T.Group();
+      place(LAMP, "lamps", 0xc9ccd2, g, 0, 0, 0);
+      twin(poleG, "lamps", g, 0, 6.25, 0); twin(armG, "lamps", g, -1.4, 12.35, 0);
+      return g;
+    }
+
+    // Lots, LOT apart, N deep; one row of houses a side, a lamp every
+    // third lot on the right.
+    const LOT = 12, N = 26, things = [];
+    let seed = 7;
+    const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    for (let i = 0; i < N; i++){
+      for (const side of [-1, 1]){
+        const h = house(side, Math.floor(rnd() * 1000));
+        h.position.set(side * 16, 0, -i * LOT);
+        scene.add(h); things.push(h);
+      }
+      if (i % 3 === 1){ const l = lamp(); l.position.set(6.2, 0, -i * LOT + 3); scene.add(l); things.push(l); }
+    }
+
+    const picked = new Set();
+    const ray = new T.Raycaster(); ray.layers.set(2);
+    const ndc = new T.Vector2(), nm = new T.Matrix3();
+    // The thing under a point on the screen: {kind, point, normal} or null (the sky).
+    function hitAt(x, y, only){
+      ray.setFromCamera(ndc.set(x * 2 - 1, 1 - y * 2), camera);
+      for (const h of ray.intersectObjects(proxies, false)){
+        const kind = h.object.userData.owner;
+        if (only && !only(kind)) continue;
+        const n = h.face.normal.clone().applyMatrix3(nm.getNormalMatrix(h.object.matrixWorld)).normalize();
+        return {kind, point: h.point, normal: n};
+      }
+      return null;
+    }
+
+    // The eye and its wake.
+    const eye = new T.Vector3(0, -999, 0), eyeN = new T.Vector3(0, 1, 0);
+    let present = 0, sinceDrop = 0;
+
+    suburb = {
+      canvas: r.domElement, picked, hover: null,
+      size(w, h){
+        r.setPixelRatio(Math.min(devicePixelRatio || 1, w < 700 ? 1.5 : 2));
+        r.setSize(w, h); camera.aspect = w / h; camera.fov = w < h ? 74 : 52; camera.updateProjectionMatrix();
+      },
+      show(v){ r.domElement.hidden = !v; },
+      // One frame: walk, move the eye to the surface under the pointer, drop
+      // a wake point now and then, set the look's dials, draw.
+      frame(dt, o){
+        camera.position.z -= o.walk;
+        const cz = camera.position.z;
+        camera.lookAt(0, 9, cz - 100);
+        ground.position.z = cz;
+        sun.position.set(40, 45, cz + 55); sun.target.position.set(0, 0, cz - 55);
+        for (const t of things) if (t.position.z > cz + LOT) t.position.z -= N * LOT;
+        scene.updateMatrixWorld();
+
+        const all = picked.size === 0;
+        const hits = kind => all || picked.has(kind);
+        for (const kind in kinds){
+          kinds[kind].hit.value = hits(kind) ? 1 : 0;
+          kinds[kind].glow.value = Math.max(pickMode && picked.has(kind) ? 1 : 0, this.hover === kind ? o.glow : 0);
+        }
+        const h = o.on && o.pointer ? hitAt(o.pointer[0], o.pointer[1], hits) : null;
+        // The sky has no surface to bend: when the pointer is on it, the
+        // flat spell takes over there (see the loop).
+        this.onSky = !!(o.on && o.pointer && !h && hits("sky") && !hitAt(o.pointer[0], o.pointer[1]));
+        if (h){
+          if (present < 0.05){ eye.copy(h.point); eyeN.copy(h.normal); }
+          else { eye.lerp(h.point, Math.min(1, dt * 10)); eyeN.lerp(h.normal, Math.min(1, dt * 8)).normalize(); }
+        }
+        present += ((h ? 1 : 0) - present) * Math.min(1, dt * 4);
+        const tr = U.uTrail.value;
+        if ((sinceDrop += dt) > 0.12){
+          sinceDrop = 0;
+          for (let i = TRAIL - 1; i > 0; i--) tr[i].copy(tr[i - 1]);
+        }
+        tr[0].set(eye.x, eye.y, eye.z, present);
+        U.uR.value = o.R; U.uLook.value = o.look; U.uA.value = o.a; U.uB.value = o.b; U.uC.value = o.c;
+        U.uFade.value = o.fade; U.uTime.value = o.time;
+        U.uOn.value += ((o.on ? 1 : 0) - U.uOn.value) * Math.min(1, dt * 3);
+        r.render(scene, camera);
+      },
+      onSky: false,
+      keyAt(x, y){ const h = hitAt(x, y); return h ? h.kind : "sky"; },
+      // Pick or unpick the kind under a point; returns it.
+      pick(x, y){
+        const key = this.keyAt(x, y);
+        if (picked.has(key)) picked.delete(key); else picked.add(key);
+        return key;
+      },
+      pickHouses(){
+        const all = NAMES.map(n => n + " houses"), every = all.every(k => picked.has(k));
+        all.forEach(k => every ? picked.delete(k) : picked.add(k));
+      },
+      describe(){
+        const houses = NAMES.map(n => n + " houses"), all = houses.every(k => picked.has(k));
+        return [...(all ? ["every house"] : []), ...[...picked].filter(k => !all || !houses.includes(k))].join(", ");
+      },
+    };
+    return suburb;
+  })();
+}
+
+// ------------------------------------------------------------------ looks
+// A look is Make-Up's spell: a way of colouring, and its dials. Make-Up shows
+// the chosen look's dials in the controller.
+const SPELLS = [
+  {id: "spectrum", name: "Spectrum", note: "floods it with oil-slick colour", pages: {colour: [
+    {id: "reach",  glyph: "◎", name: "reach",  v: 0.35, map: v => 1.5 + v * 12},
+    {id: "bands",  glyph: "≋", name: "bands",  v: 0.4,  map: v => 0.3 + v * 3},
+    {id: "drift",  glyph: "→", name: "drift",  v: 0.35, map: v => v * 3},
+    {id: "flood",  glyph: "◐", name: "strength", v: 0.75, map: v => v * 1.3},
+  ]}},
+  {id: "bleach", name: "Bleach", note: "drains the colour, which seeps back", pages: {colour: [
+    {id: "breach", glyph: "◎", name: "reach",  v: 0.4,  map: v => 1.5 + v * 12},
+    {id: "drain",  glyph: "◐", name: "drain",  v: 0.8,  map: v => v * 1.4},
+    {id: "warmth", glyph: "☼", name: "warmth", v: 0.2,  map: v => v},
+    {id: "linger", glyph: "⧗", name: "linger", v: 0.6,  map: v => 2.8 - v * 2.6},
+  ]}},
+  {id: "print", name: "Print", note: "reprints it in a few loose inks", pages: {colour: [
+    {id: "preach", glyph: "◎", name: "reach",  v: 0.45, map: v => 1.5 + v * 12},
+    {id: "offset", glyph: "⇉", name: "offset", v: 0.45, map: v => v * 2},
+    {id: "boil",   glyph: "≈", name: "boil",   v: 0.35, map: v => v},
+    {id: "shadow", glyph: "◑", name: "shadow", v: 0.35, map: v => 0.1 + v * 0.45},
+  ]}},
+  {id: "gloss", name: "Gloss", note: "turns it to glossy, inflated chrome", pages: {colour: [
+    {id: "greach", glyph: "◎", name: "reach",  v: 0.45, map: v => 1.5 + v * 12},
+    {id: "shine",  glyph: "✦", name: "shine",  v: 0.7,  map: v => v * 1.4},
+    {id: "gcol",   glyph: "◐", name: "colour", v: 0.5,  map: v => v * 1.5},
+    {id: "grain",  glyph: "░", name: "grain",  v: 0.5,  map: v => v},
+  ]}},
+  {id: "strokes", name: "Strokes", note: "paints bright strands over it", pages: {colour: [
+    {id: "sreach", glyph: "◎", name: "reach",  v: 0.4,  map: v => 1.5 + v * 12},
+    {id: "dense",  glyph: "≡", name: "density", v: 0.55, map: v => v},
+    {id: "slen",   glyph: "∿", name: "length", v: 0.45, map: v => v},
+    {id: "crawl",  glyph: "→", name: "crawl",  v: 0.4,  map: v => v * 2},
+  ]}},
+];
+// The street's own dial, whatever the spell.
+const STREET = [{id: "speed", glyph: "→", name: "speed", v: 0.3, map: v => v * 60}];
+let spell = SPELLS.find(x => x.id === store.get("spell")) || SPELLS[0];
+let on = false;
+const D = {};
+for (const d of [...STREET, ...SPELLS.flatMap(sp => Object.values(sp.pages).flat())]){
+  d.def = d.v;
+  const saved = parseFloat(store.get("knob:" + d.id));
+  if (!isNaN(saved)) d.v = Math.min(1, Math.max(0, saved));
+  D[d.id] = d;
+}
+const val = id => D[id].map(D[id].v);
+
+function makeDial(d, host){
+  const wrap = document.createElement("div"); wrap.className = "dwrap";
+  wrap.innerHTML = `<div class="dial" tabindex="0" role="slider" aria-label="${d.name}" aria-valuemin="0" aria-valuemax="100">
+      <span class="g" aria-hidden="true">${d.glyph}</span><i class="ind"></i></div>
+    <span class="dname">${d.name}<b></b></span>`;
+  host.appendChild(wrap);
+  const el = wrap.querySelector(".dial"), out = wrap.querySelector("b");
+  d.paint = () => {
+    el.style.setProperty("--v", d.v);
+    out.textContent = Math.round(d.v * 100);
+    el.setAttribute("aria-valuenow", Math.round(d.v * 100));
+  };
+  const set = v => {
+    d.v = Math.min(1, Math.max(0, v)); d.paint(); store.set("knob:" + d.id, d.v.toFixed(3));
+    if (d.id === "pixel") rebuildSoon();
+  };
+  let start = null;
+  el.addEventListener("pointerdown", e => { el.setPointerCapture(e.pointerId); start = {y: e.clientY, v: d.v}; el.focus(); e.preventDefault(); });
+  el.addEventListener("pointermove", e => { if (start) set(start.v + (start.y - e.clientY) / 140); });
+  el.addEventListener("pointerup", () => { start = null; });
+  el.addEventListener("pointercancel", () => { start = null; });
+  el.addEventListener("wheel", e => { e.preventDefault(); set(d.v - Math.sign(e.deltaY) * 0.03); }, {passive: false});
+  el.addEventListener("keydown", e => {
+    const step = e.shiftKey ? 0.1 : 0.02;
+    if (e.key === "ArrowUp" || e.key === "ArrowRight"){ set(d.v + step); e.preventDefault(); }
+    if (e.key === "ArrowDown" || e.key === "ArrowLeft"){ set(d.v - step); e.preventDefault(); }
+    if (e.key === "Home"){ set(0); e.preventDefault(); }
+    if (e.key === "End"){ set(1); e.preventDefault(); }
+  });
+  d.paint();
+}
+// The controller's tabs: Street, the chosen spell's pages, then Cast.
+function renderSpell(){
+  const tabs = $("tabs"), pages = $("spellPages");
+  tabs.querySelectorAll("[data-spell-tab]").forEach(t => t.remove());
+  pages.innerHTML = "";
+  for (const group in spell.pages){
+    const t = document.createElement("button");
+    t.className = "chip"; t.setAttribute("role", "tab"); t.setAttribute("aria-selected", "false");
+    t.dataset.tab = group; t.dataset.spellTab = "";
+    t.textContent = group[0].toUpperCase() + group.slice(1);
+    tabs.appendChild(t);
+    const pg = document.createElement("div");
+    pg.className = "page dials"; pg.dataset.page = group; pg.hidden = true;
+    pages.appendChild(pg);
+    spell.pages[group].forEach(d => makeDial(d, pg));
+  }
+  const fx = document.createElement("button");
+  fx.className = "chip"; fx.setAttribute("role", "tab"); fx.setAttribute("aria-selected", "false");
+  fx.dataset.tab = "cast"; fx.dataset.spellTab = ""; fx.textContent = "Cast";
+  tabs.appendChild(fx);
+  // The dropdown in the dock.
+  $("spellName").textContent = spell.name;
+  const menu = $("spellMenu"); menu.innerHTML = '<div class="kick">Looks</div>';
+  for (const sp of SPELLS){
+    const b = document.createElement("button");
+    b.setAttribute("role", "option"); b.setAttribute("aria-selected", String(sp === spell));
+    b.innerHTML = `${sp.name}<i>${sp.note}</i>`;
+    b.addEventListener("click", () => {
+      spell = sp; store.set("spell", sp.id); renderSpell(); openSpells(false); showReadout();
+      if (!$("ctrl").hidden) showTab(Object.keys(sp.pages)[0]);
+    });
+    menu.appendChild(b);
+  }
+  tabs.querySelectorAll("[data-tab]").forEach(t => t.onclick = () => showTab(t.dataset.tab));
+}
+function openSpells(open){
+  $("spellMenu").hidden = !open; $("spellBtn").setAttribute("aria-expanded", String(open));
+  if (open) ($("spellMenu").querySelector('[aria-selected="true"]') || {focus(){}}).focus();
+}
+$("spellBtn").addEventListener("click", () => openSpells($("spellMenu").hidden));
+addEventListener("pointerdown", e => { if (!$("spellMenu").hidden && !e.target.closest("#spellMenu, #spellBtn")) openSpells(false); });
+function showTab(name){
+  document.querySelectorAll("[data-tab]").forEach(o => o.setAttribute("aria-selected", String(o.dataset.tab === name)));
+  document.querySelectorAll("[data-page]").forEach(p => p.hidden = p.dataset.page !== name);
+}
+renderSpell();
+STREET.forEach(d => makeDial(d, $("streetDials")));
+
+// ------------------------------------------------------------------ the loop
+// The look lives in the 3D street; only on the sky, which isn't a surface,
+// does a flat form of it take over.
+let run = null, paused = false, steer = true, gulp = 0;
+let glow = 0;                                              // the hovered / just-picked kind's glow, 0..1
+let pointer = null;                                        // where the pointer is, 0..1 across and down
+let sky = 0;                                               // how far the flat look has opened in the sky, 0..1
+
+// The flat look draws on a canvas over the street's, shown only while the
+// pointer is on the sky.
+function build(){
+  if (!innerWidth || !innerHeight || !street || !suburb) return;
+  suburb.size(innerWidth, innerHeight);
+  canvas.hidden = true;
+  if (!gl){ showReadout(); return; }
+  const src = suburb.canvas, FW = src.width, FH = src.height;
+  canvas.width = FW; canvas.height = FH;
+  if (run) gl.deleteTexture(run.sheetTex);
+  const eye = run ? run.eye : [0.5, 0.7], target = run ? run.target : [0.5, 0.7];
+  run = {FW, FH, sheetTex: texture(FW, FH, src), eye, target};
+  showReadout();
+}
+let rt; function rebuildSoon(){ clearTimeout(rt); rt = setTimeout(build, 250); }
+
+// Each look's dials, as the shader's A, B, C and how fast its wake fades.
+function dials(){
+  if (spell.id === "spectrum") return {look: 0, reach: val("reach"), a: val("bands"), b: val("drift"), c: val("flood"), fade: 1.6};
+  if (spell.id === "bleach") return {look: 1, reach: val("breach"), a: val("drain"), b: val("warmth"), c: 0, fade: val("linger")};
+  if (spell.id === "gloss") return {look: 4, reach: val("greach"), a: val("shine"), b: val("gcol"), c: val("grain"), fade: 1.4};
+  if (spell.id === "print") return {look: 3, reach: val("preach"), a: val("offset"), b: val("boil"), c: val("shadow"), fade: 1.4};
+  return {look: 2, reach: val("sreach"), a: val("dense"), b: val("slen"), c: val("crawl"), fade: 1.4};
+}
+
+let last = 0, clock = 0;
+function frame(now){
+  requestAnimationFrame(frame);
+  const dt = Math.min(0.05, (now - last) / 1000 || 0.016); last = now;
+  if (paused) return;
+  clock += dt;
+  gulp = Math.max(0, gulp - dt * 1.4);
+  const flare = 1 + Math.sin(Math.min(1, gulp) * Math.PI) * 1.2;
+  if (!street || !suburb) return;
+  if (pickMode) glow = 1;
+  else if (glow > 0 && (glow -= dt / 0.9) <= 0){ glow = 0; suburb.hover = null; }
+  const k = dials();
+  suburb.frame(dt, {on, glow, time: clock, walk: val("speed") * 0.18 * dt, pointer: steer ? pointer : [0.5, 0.62],
+                    R: k.reach * flare, look: k.look, a: k.a, b: k.b, c: k.c, fade: k.fade});
+  sky += ((suburb.onSky && steer ? 1 : 0) - sky) * Math.min(1, dt * 3);
+  if (run && (sky > 0.01 || (k.look === 3 && on))){       // Print always works on the picture
+    if (pointer) run.target = [pointer[0], 1 - pointer[1]];
+    canvas.hidden = false;
+    flatFrame(dt, flare, sky, k);
+  } else if (!canvas.hidden) canvas.hidden = true;
+}
+
+// The flat look on the street's picture; amt is how far it has opened in the sky.
+function flatFrame(dt, flare, amt, k){
+  gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, run.sheetTex);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, suburb.canvas);
+  run.eye[0] += (run.target[0] - run.eye[0]) * Math.min(1, dt * 8);
+  run.eye[1] += (run.target[1] - run.eye[1]) * Math.min(1, dt * 8);
+  if (k.look === 3){
+    gl.useProgram(PR.p); gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0, 0, run.FW, run.FH);
+    gl.uniform1i(PR.u.uFull, 1);
+    gl.uniform2f(PR.u.uRes, run.FW, run.FH);
+    gl.uniform2f(PR.u.uEye, run.eye[0], run.eye[1]);
+    gl.uniform1f(PR.u.uAspect, run.FW / run.FH);
+    gl.uniform1f(PR.u.uR, (0.04 + k.reach * 0.022) * flare);
+    gl.uniform1f(PR.u.uAmt, on ? amt : 0);
+    gl.uniform1f(PR.u.uOff, k.a); gl.uniform1f(PR.u.uBoil, k.b); gl.uniform1f(PR.u.uShadow, k.c);
+    gl.uniform1f(PR.u.uTime, clock);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    return;
+  }
+  gl.useProgram(MU.p); gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0, 0, run.FW, run.FH);
+  gl.uniform1i(MU.u.uFull, 1);
+  gl.uniform2f(MU.u.uRes, run.FW, run.FH);
+  gl.uniform2f(MU.u.uEye, run.eye[0], run.eye[1]);
+  gl.uniform1f(MU.u.uAspect, run.FW / run.FH);
+  gl.uniform1f(MU.u.uR, (0.04 + k.reach * 0.022) * flare);
+  gl.uniform1f(MU.u.uAmt, on ? amt : 0);
+  gl.uniform1f(MU.u.uLook, k.look);
+  gl.uniform1f(MU.u.uA, k.a); gl.uniform1f(MU.u.uB, k.b); gl.uniform1f(MU.u.uC, k.c);
+  gl.uniform1f(MU.u.uTime, clock);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+}
+requestAnimationFrame(frame);
+
+function showReadout(){
+  const what = suburb && suburb.picked.size ? suburb.describe() : "all of it";
+  $("readout").textContent = (on ? spell.name.toLowerCase() : "make-up off") + " · " + what + (pickMode ? " · picking" : "");
+}
+
+// ------------------------------------------------------------------ the street
+function useStreet(){
+  $("readout").textContent = "building the street…";
+  loadSuburb().then(() => { street = true; build(); })
+    .catch(() => { $("readout").textContent = "couldn't load the 3D street"; });
+}
+function setPick(v){
+  pickMode = v;
+  $("pickBtn").setAttribute("aria-pressed", String(v));
+  showReadout();
+}
+
+// ------------------------------------------------------------------ the controller
+function openCtrl(open){ $("ctrl").hidden = !open; $("open").setAttribute("aria-expanded", String(open)); }
+$("open").addEventListener("click", () => openCtrl($("ctrl").hidden));
+
+// Make-Up itself: on, the look goes on the street; off, the street is as it was.
+function setOn(v){
+  on = v;
+  $("apply").setAttribute("aria-pressed", String(on));
+  showReadout();
+}
+$("apply").addEventListener("click", () => setOn(!on));
+$("pickBtn").addEventListener("click", () => setPick(!pickMode));
+$("pickAll").addEventListener("click", () => { loadSuburb().then(() => { suburb.pickHouses(); showReadout(); }); });
+$("pickNone").addEventListener("click", () => { if (suburb){ suburb.picked.clear(); showReadout(); } });
+
+const surge = () => { if (on) gulp = 1; };
+$("surge").addEventListener("click", surge);
+$("freeze").addEventListener("click", e => { paused = !paused; e.currentTarget.setAttribute("aria-pressed", String(paused)); });
+$("follow").addEventListener("click", e => {
+  steer = !steer; e.currentTarget.setAttribute("aria-pressed", String(steer));
+});
+$("reset").addEventListener("click", () => {
+  for (const id in D){ D[id].v = D[id].def; D[id].paint(); store.set("knob:" + id, D[id].v); }
+  build();
+});
+
+const overUI = t => t.closest && t.closest(".ctrl, .dock, .help, .home");
+addEventListener("pointermove", e => {
+  if (overUI(e.target)){ if (pickMode && suburb) suburb.hover = null; return; }
+  pointer = [e.clientX / innerWidth, e.clientY / innerHeight];
+  if (pickMode && suburb) suburb.hover = suburb.keyAt(pointer[0], pointer[1]);
+});
+document.addEventListener("pointerleave", () => { pointer = null; });
+// Pick is one click: the thing under it is picked (or unpicked, if it
+// already was), Pick turns itself off and Make-Up comes on, so the look
+// goes straight onto what you picked.
+addEventListener("click", e => {
+  if (!(e.target instanceof HTMLCanvasElement)) return;
+  pointer = [e.clientX / innerWidth, e.clientY / innerHeight];
+  if (pickMode && suburb){
+    const key = suburb.pick(e.clientX / innerWidth, e.clientY / innerHeight);
+    suburb.hover = key && suburb.picked.has(key) ? key : null;   // the one just picked glows, then fades
+    setPick(false);
+    if (suburb.picked.size && !on) setOn(true);
+    showReadout();
+  }
+  else surge();
+});
+addEventListener("keydown", e => {
+  if (e.target.closest && e.target.closest(".dial")) return;
+  if (e.key === " "){ surge(); e.preventDefault(); }
+  else if (e.key === "m" || e.key === "M") setOn(!on);
+  else if (e.key === "k" || e.key === "K") setPick(!pickMode);
+  else if (e.key === "p" || e.key === "P") $("freeze").click();
+  else if (e.key === "Escape"){ openSpells(false); openCtrl(false); $("help").hidden = true; }
+});
+addEventListener("resize", rebuildSoon);
+$("ask").addEventListener("click", () => { $("help").hidden = !$("help").hidden; });
+$("gotit").addEventListener("click", () => { $("help").hidden = true; store.set("helped", "1"); });
+
+// ------------------------------------------------------------------ go
+(async () => {
+  await document.fonts.ready;
+  useStreet();
+  if (!store.get("helped")) $("help").hidden = false;
+})();
+</script>
