@@ -170,7 +170,7 @@
   <div class="sep"></div>
 
   <div class="page" data-page="street">
-    <button class="chip" id="pickBtn" aria-pressed="false" title="Click things in the street to choose what the spell hits (K)">Pick</button>
+    <button class="chip" id="pickBtn" aria-pressed="false" title="Then click one thing in the street for the spell to hit (K)">Pick</button>
     <button class="chip" id="pickAll" title="Pick every house, or unpick them">Houses</button>
     <button class="chip" id="pickNone" title="Clear the picks: the spell hits everything">Clear</button>
     <button class="chip" id="filmBtn" aria-pressed="false" title="Swap the 3D street for a film of it">Film</button>
@@ -205,8 +205,9 @@
   <dl>
     <dt>fever</dt><dd>the button, or F: casts the spell; press again and the street comes back whole</dd>
     <dt>steer</dt><dd>move the pointer and the eye follows; click and it swallows</dd>
-    <dt>pick</dt><dd>in controls, turn on <b>Pick</b> (or K) and click things: a colour of house, the lamps, the
-      road, the lawn, the sky. The spell then hits only those</dd>
+    <dt>pick</dt><dd>in controls, press <b>Pick</b> (or K), then click one thing: a colour of house, the lamps, the
+      road, the lawn, the sky. The spell then hits only that, and clicking casts it. Pick again to add more;
+      <b>Clear</b> lets it hit everything</dd>
     <dt>controls</dt><dd>pick the spell, turn its dials, or swap the street for a film of it</dd>
   </dl>
   <p>Fever is the picture-treating tool from Fantasmagoria, the studio's live show, tried out here on its own.
@@ -796,7 +797,7 @@ function setFever(v){
 }
 $("fever").addEventListener("click", () => setFever(!on));
 $("pickBtn").addEventListener("click", () => setPick(!pickMode));
-$("pickAll").addEventListener("click", () => { setPick(true); loadSuburb().then(() => { suburb.pickHouses(); showReadout(); }); });
+$("pickAll").addEventListener("click", () => { loadSuburb().then(() => { if (film) useStreet(); suburb.pickHouses(); showReadout(); }); });
 $("pickNone").addEventListener("click", () => { if (suburb){ suburb.picked.clear(); showReadout(); } });
 
 const swallow = () => { if (on) gulp = 1; };
@@ -818,8 +819,16 @@ addEventListener("pointermove", e => {
   if (!run || !steer || !on || overUI(e.target)) return;
   run.target = [e.clientX / innerWidth, Math.max(0.08, Math.min(0.75, 1 - e.clientY / innerHeight))];
 });
+// Pick is one click: the thing under it is picked (or unpicked, if it
+// already was), Pick turns itself off and Fever comes on, so the next
+// clicks cast the spell on what you picked.
 canvas.addEventListener("click", e => {
-  if (pickMode && suburb && !film){ suburb.pick(e.clientX / innerWidth, e.clientY / innerHeight); showReadout(); }
+  if (pickMode && suburb && !film){
+    suburb.pick(e.clientX / innerWidth, e.clientY / innerHeight);
+    setPick(false);
+    if (suburb.picked.size && !on) setFever(true);
+    showReadout();
+  }
   else swallow();
 });
 addEventListener("keydown", e => {
