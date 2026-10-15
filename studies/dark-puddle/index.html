@@ -175,6 +175,20 @@
     .page[data-page="fx"] .chip{padding:10px 4px;}
   }
   @media (prefers-reduced-motion:reduce){ .chip,.dockb{transition:none;} }
+
+  /* ---------- on a phone: a brief card, and type that doesn't make iOS zoom ---------- */
+  .help .morebtn{display:none;margin-right:6px;}
+  @media (max-width:700px){
+    .help{top:auto;bottom:12px;transform:translateX(-50%);max-height:calc(100dvh - 90px);overflow:auto;padding:14px 16px;}
+    .help h2{font-size:18px;margin-bottom:8px;}
+    .help .lede{font-size:12.5px;line-height:1.5;}
+    .help:not(.more) dl, .help:not(.more) > p:not(.kicker):not(.lede){display:none;}
+    .help .morebtn{display:inline-flex;}
+  }
+  /* iOS zooms into any text box under 16px and stays zoomed */
+  @media (max-width:700px), (pointer:coarse){
+    input:not([type=range]):not([type=file]):not([type=checkbox]), select, textarea{font-size:16px !important;}
+  }
 </style>
 
 <video id="live" playsinline loop hidden></video>
@@ -262,6 +276,15 @@
     settings stay in this browser.</p>
   <button class="chip" id="gotit">Skip</button>
 </div>
+<script>
+// On a phone the card is brief; the rest is behind "how it works".
+(() => {
+  const h = document.getElementById("help"), b = document.createElement("button");
+  b.className = "chip morebtn"; b.type = "button"; b.textContent = "how it works"; b.setAttribute("aria-expanded", "false");
+  b.onclick = () => b.setAttribute("aria-expanded", String(h.classList.toggle("more")));
+  h.lastElementChild.before(b);
+})();
+</script>
 
 <p class="readout" id="readout"></p>
 
