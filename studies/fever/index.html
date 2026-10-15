@@ -337,7 +337,7 @@ const BLIT = `#version 300 es
 precision highp float;
 uniform sampler2D uTex, uMask, uFull;
 uniform vec2 uRes, uLow;
-uniform float uTint, uMasked, uOn;
+uniform float uTint, uGlow, uMasked, uOn;
 out vec4 o;
 ${COMMON}
 void main(){
@@ -352,7 +352,8 @@ void main(){
     spell += street * (1.0 - spell.a);                // gaps in the debris show the thing itself
   }
   o = mix(street, spell, hit);
-  if (uTint > 0.5) o.rgb = mix(o.rgb, vec3(0.62, 0.94, 0.78), 0.45 * texture(uMask, vec2(uv.x, 1.0 - uv.y)).r);
+  vec4 mk = texture(uMask, vec2(uv.x, 1.0 - uv.y));
+  o.rgb = mix(o.rgb, vec3(0.62, 0.94, 0.78), 0.45 * max(uTint * mk.r, uGlow * mk.b));
   o.a = 1.0;
 }`;
 
@@ -497,18 +498,19 @@ function loadSuburb(){
     const picked = new Set();
     const isPicked = m => picked.has(m.userData.owner);
     // The mask pass: red is "picked", green is how near the surface is (4 /
-    // its distance, so near things get the precision). The spell uses the
-    // nearness to follow surfaces as the camera walks.
-    const maskMat = p => new T.ShaderMaterial({
+    // its distance, so near things get the precision), blue is the kind under
+    // the pointer while picking (or the one just picked, while its glow fades).
+    // The spell uses the nearness to follow surfaces as the camera walks.
+    const maskMat = (p, h) => new T.ShaderMaterial({
       vertexShader: "varying float vz; void main(){ vec4 mv = modelViewMatrix * vec4(position, 1.0); vz = -mv.z; gl_Position = projectionMatrix * mv; }",
-      fragmentShader: `varying float vz; void main(){ gl_FragColor = vec4(${p}.0, clamp(4.0 / vz, 0.0, 1.0), 0.0, 1.0); }`,
+      fragmentShader: `varying float vz; void main(){ gl_FragColor = vec4(${p}.0, clamp(4.0 / vz, 0.0, 1.0), ${h}.0, 1.0); }`,
     });
-    const black = maskMat(0), white = maskMat(1);
-    const cBlack = new T.Color(0x000000), cWhite = new T.Color(0xffffff);
+    const mats = [[maskMat(0, 0), maskMat(0, 1)], [maskMat(1, 0), maskMat(1, 1)]];
+    const skyColor = new T.Color();
     const ray = new T.Raycaster();
 
     suburb = {
-      canvas: r.domElement, picked,
+      canvas: r.domElement, picked, hover: null,
       size(w, h){ r.setSize(w, h, false); camera.aspect = w / h; camera.fov = w < h ? 74 : 52; camera.updateProjectionMatrix(); },
       dz: 0,
       step(dz){
@@ -523,19 +525,25 @@ function loadSuburb(){
       render(){ r.render(scene, camera); },
       renderMask(){
         const bg = scene.background, fog = scene.fog;
-        scene.background = picked.has("sky") ? cWhite : cBlack; scene.fog = null;
+        const hv = this.hover;
+        scene.background = skyColor.setRGB(picked.has("sky") ? 1 : 0, 0, hv === "sky" ? 1 : 0); scene.fog = null;
         r.shadowMap.autoUpdate = false;
-        scene.traverse(m => { if (m.isMesh){ m.userData.mat = m.material; m.material = isPicked(m) ? white : black; } });
+        scene.traverse(m => { if (m.isMesh){ m.userData.mat = m.material; m.material = mats[isPicked(m) ? 1 : 0][hv && m.userData.owner === hv ? 1 : 0]; } });
         r.render(scene, camera);
         scene.traverse(m => { if (m.isMesh) m.material = m.userData.mat; });
         scene.background = bg; scene.fog = fog; r.shadowMap.autoUpdate = true;
       },
-      // Pick or unpick whatever is under a point on the screen.
-      pick(x, y){
+      // The kind of thing under a point on the screen.
+      keyAt(x, y){
         ray.setFromCamera(new T.Vector2(x * 2 - 1, 1 - y * 2), camera);
         const hit = ray.intersectObjects(scene.children, true)[0];
-        const key = hit ? hit.object.userData.owner : "sky";
+        return hit ? hit.object.userData.owner : "sky";
+      },
+      // Pick or unpick it; returns the kind.
+      pick(x, y){
+        const key = this.keyAt(x, y);
         if (picked.has(key)) picked.delete(key); else picked.add(key);
+        return key;
       },
       pickHouses(){
         const all = NAMES.map(n => n + " houses"), every = all.every(k => picked.has(k));
@@ -650,6 +658,7 @@ renderSpell();
 // Two ways to see the street: the 3D one (the default, and the only one you
 // can pick in) and the film of it, drawn into a canvas each frame.
 let run = null, paused = false, steer = true, gulp = 0, film = null;
+let glow = 0;                                              // the hovered / just-picked kind's glow, 0..1
 
 function build(){
   if (!gl || !innerWidth || !innerHeight || !(film || (street && suburb))) return;
@@ -696,7 +705,9 @@ function frame(now){
     suburb.step(speed * 0.18 * dt);
     suburb.render();
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, suburb.canvas);
-    if (masked || on){
+    if (pickMode) glow = 1;
+    else if (glow > 0 && (glow -= dt / 0.9) <= 0){ glow = 0; suburb.hover = null; }
+    if (masked || on || glow > 0){
       suburb.renderMask();
       gl.bindTexture(gl.TEXTURE_2D, run.maskTex);
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, suburb.canvas);
@@ -736,6 +747,7 @@ function frame(now){
   gl.activeTexture(gl.TEXTURE3); gl.bindTexture(gl.TEXTURE_2D, run.sheetTex); gl.uniform1i(B.u.uFull, 3);
   gl.activeTexture(gl.TEXTURE1);
   gl.uniform1i(B.u.uMask, 2); gl.uniform1f(B.u.uMasked, masked ? 1 : 0); gl.uniform1f(B.u.uTint, masked && pickMode ? 1 : 0);
+  gl.uniform1f(B.u.uGlow, !film && suburb && suburb.hover ? glow : 0);
   gl.uniform2f(B.u.uRes, run.FW, run.FH);
   gl.uniform2f(B.u.uLow, run.W, run.H);
   gl.uniform1f(B.u.uOn, on ? 1 : 0);
@@ -816,6 +828,7 @@ $("reset").addEventListener("click", () => {
 
 const overUI = t => t.closest && t.closest(".ctrl, .dock, .help, .home");
 addEventListener("pointermove", e => {
+  if (pickMode && suburb && !film) suburb.hover = overUI(e.target) ? null : suburb.keyAt(e.clientX / innerWidth, e.clientY / innerHeight);
   if (!run || !steer || !on || overUI(e.target)) return;
   run.target = [e.clientX / innerWidth, Math.max(0.08, Math.min(0.75, 1 - e.clientY / innerHeight))];
 });
@@ -824,7 +837,8 @@ addEventListener("pointermove", e => {
 // clicks cast the spell on what you picked.
 canvas.addEventListener("click", e => {
   if (pickMode && suburb && !film){
-    suburb.pick(e.clientX / innerWidth, e.clientY / innerHeight);
+    const key = suburb.pick(e.clientX / innerWidth, e.clientY / innerHeight);
+    suburb.hover = suburb.picked.has(key) ? key : null;      // the one just picked glows, then fades
     setPick(false);
     if (suburb.picked.size && !on) setFever(true);
     showReadout();
