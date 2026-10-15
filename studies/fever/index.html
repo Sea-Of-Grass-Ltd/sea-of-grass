@@ -65,8 +65,25 @@
   .dockb#fever .dot{background:#6b6966;box-shadow:none;}
   .dockb#fever[aria-pressed="true"]{background:var(--hot);border-color:var(--hot);color:#000;box-shadow:0 0 28px rgba(255,106,61,.55), var(--soft);}
   .dockb#fever[aria-pressed="true"] .dot{background:#000;}
-  .spells{display:flex;gap:6px;}
-  .spells .chip i{font-style:normal;opacity:.6;margin-left:6px;}
+  .dockb .caret{font-size:9px;opacity:.75;}
+  /* the Spells dropdown, opening upward from the dock */
+  .spellmenu{
+    position:absolute;left:50%;bottom:calc(100% + 10px);transform:translateX(-50%);min-width:250px;padding:6px;
+    background:var(--glass);border:1px solid var(--edge);border-radius:16px;box-shadow:var(--soft);
+    backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3);
+    display:flex;flex-direction:column;gap:2px;
+  }
+  .spellmenu[hidden]{display:none;}
+  .spellmenu .kick{font:700 9px var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--mint);padding:6px 11px 4px;}
+  .spellmenu button{
+    font:800 12px/1.2 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:#fff;text-align:left;cursor:pointer;
+    background:none;border:0;border-radius:10px;padding:10px 11px;display:flex;flex-direction:column;gap:3px;
+  }
+  .spellmenu button i{font:600 11px var(--ui);letter-spacing:0;text-transform:none;font-style:normal;color:rgba(255,255,255,.62);}
+  .spellmenu button:hover{background:rgba(255,255,255,.1);}
+  .spellmenu button[aria-selected="true"]{background:#fff;color:#000;}
+  .spellmenu button[aria-selected="true"] i{color:rgba(0,0,0,.6);}
+  .spellmenu button:focus-visible{outline:2px solid var(--mint);outline-offset:-2px;}
 
   /* ---------- the strip ---------- */
   .ctrl{
@@ -144,7 +161,6 @@
     .page[hidden]{display:none;}
     .page .chip{text-align:center;padding:10px 8px;}
     .page.dials{grid-template-columns:repeat(4,1fr);justify-items:center;}
-    .page[data-page="spells"] .spells{grid-column:1 / -1;}
     .page[data-page="fx"]{grid-template-columns:repeat(3,1fr);}
     .page[data-page="fx"] .chip{padding:10px 4px;}
   }
@@ -167,7 +183,6 @@
 <div class="ctrl" id="ctrl" hidden role="dialog" aria-label="Fever controls">
   <div class="tabs" role="tablist" id="tabs">
     <button class="chip" role="tab" aria-selected="true" data-tab="street">Street</button>
-    <button class="chip" role="tab" aria-selected="false" data-tab="spells">Spells</button>
   </div>
   <div class="sep"></div>
 
@@ -179,9 +194,6 @@
     <button class="chip" id="filmBtn" aria-pressed="false" title="Swap the 3D street for a film of it">Film</button>
   </div>
 
-  <div class="page" data-page="spells" hidden>
-    <div class="spells" id="spells"></div>
-  </div>
   <div id="spellPages" style="display:contents"></div>
 
   <div class="page" data-page="fx" hidden>
@@ -195,6 +207,8 @@
 
 <div class="dock">
   <button class="dockb" id="fever" aria-pressed="false" title="Cast the spell on the street (F)"><span class="dot"></span><span id="feverLabel">fever</span></button>
+  <button class="dockb" id="spellBtn" aria-haspopup="listbox" aria-expanded="false" title="Choose the spell"><span id="spellName">spell</span><span class="caret" aria-hidden="true">▾</span></button>
+  <div class="spellmenu" id="spellMenu" role="listbox" aria-label="Spells" hidden></div>
   <button class="dockb" id="open" aria-label="Controls" aria-expanded="false"><span class="dot"></span>controls</button>
   <button class="dockb q" id="ask" aria-label="How to play">?</button>
 </div>
@@ -205,7 +219,7 @@
   <p class="lede">An examination of one street: pastel houses down both sides of a grey road, under a hard blue
     sky, going on forever. Press <b>Fever</b> and cast a spell on it. <b>Cyclone</b> is a black eye that rides
     over the surfaces of things and twists, sinks and tears them as it goes; <b>Shatter</b> breaks whatever it
-    passes into shards that burst off, tumble and fall, then fly back. Choose in controls, under Spells.</p>
+    passes into shards that burst off, tumble and fall, then fly back. Choose with the spell button beside Fever.</p>
   <dl>
     <dt>fever</dt><dd>the button, or F: casts the spell; press again and the street comes back whole</dd>
     <dt>steer</dt><dd>the spell sits on whatever is under the pointer and rides over it: the walls, roofs and
@@ -213,7 +227,8 @@
     <dt>pick</dt><dd>in controls, press <b>Pick</b> (or K), then click one thing: a colour of house, the lamps, the
       road, the lawn. The spell then hits only that, and clicking casts it. Pick again to add more;
       <b>Clear</b> lets it hit everything</dd>
-    <dt>controls</dt><dd>pick the spell, turn its dials, or swap the street for a film of it</dd>
+    <dt>spell</dt><dd>the button beside Fever opens the list of spells; on the sky, each has a flat form</dd>
+    <dt>controls</dt><dd>turn the spell's dials, or swap the street for a film of it</dd>
   </dl>
   <p>Fever is the picture-treating tool from Fantasmagoria, the studio's live show, tried out here on its own.
     The street comes from a popular dreamcore meme: an endless suburban street of pastel houses under a
@@ -258,6 +273,7 @@ in vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }`;
 const COMMON = `
 uniform vec2 uEye;
 uniform float uTime, uFront, uAspect, uEyeR;
+uniform float uSky;                                        // -1: the film (a front); 0..1: a patch of sky, this big
 float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 float noise(vec2 p){
   vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
@@ -273,8 +289,63 @@ float eatenAt(vec2 frag, vec2 res){
   float col = floor(frag.x / 4.0);
   float ragged = (hash(vec2(col, floor(uTime * 0.7))) - 0.5) * 0.05;
   float blob = fbm(vec2(uv.x * uAspect * 2.5, yd * 2.5 - uTime * 0.08));
+  if (uSky >= 0.0){                                     // in the sky: a blobby patch round the eye
+    float rad = max((0.18 + uEyeR * 3.6) * uSky, 1e-4);
+    return 1.0 - length(e) / rad + (blob - 0.5) * 0.6 + ragged * 2.0;
+  }
   float halo = smoothstep(0.18 + uEyeR * 3.0, 0.0, length(e)) * 0.3;
   return yd - uFront + (blob - 0.5) * 0.55 + ragged + halo;
+}`;
+
+// The flat Shatter: the picture round the eye cracks like a pane of glass.
+// The screen is cut into cells; near the eye each cell's piece slides away
+// from it, turns and drops, the cracks catch the light, and where a piece
+// has moved off its cell you see the night behind the sky.
+const SHF = `#version 300 es
+precision highp float;
+uniform sampler2D uFull;
+uniform vec2 uRes, uEye;
+uniform float uAspect, uR, uBurst, uTumble, uFall, uShrink, uAmt, uTime;
+out vec4 o;
+vec2 h2(vec2 p){ return fract(sin(vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)))) * 43758.5453); }
+void cell(vec2 q, out vec2 id, out vec2 c, out float edge){
+  vec2 g = floor(q); float d1 = 1e9, d2 = 1e9;
+  for (int j = -1; j <= 1; j++) for (int i = -1; i <= 1; i++){
+    vec2 k = g + vec2(i, j), pt = k + 0.15 + 0.7 * h2(k);
+    float d = distance(q, pt);
+    if (d < d1){ d2 = d1; d1 = d; id = k; c = pt; } else if (d < d2) d2 = d;
+  }
+  edge = d2 - d1;
+}
+vec3 night(vec2 uv){
+  vec3 c = mix(vec3(0.01, 0.01, 0.04), vec3(0.07, 0.02, 0.13), uv.y);
+  float star = step(0.996, h2(floor(gl_FragCoord.xy / 2.0)).x) * (0.6 + 0.4 * sin(uTime * 3.0 + h2(floor(gl_FragCoord.xy / 2.0)).y * 40.0));
+  return c + star;
+}
+void main(){
+  vec2 uv = gl_FragCoord.xy / uRes;
+  vec4 base = texture(uFull, vec2(uv.x, 1.0 - uv.y));
+  float cells = 7.0 / uR;
+  vec2 S = vec2(uAspect, 1.0) * cells, q = uv * S, eq = uEye * S;
+  vec2 id, c; float edge; cell(q, id, c, edge);
+  float k = clamp(1.0 - distance(c, eq) / cells / max(uR * uAmt, 1e-4), 0.0, 1.0);
+  k = k * k * (3.0 - 2.0 * k);
+  if (k <= 0.001){ o = base; return; }
+  vec2 rnd = h2(id + 7.0), dir = normalize(c - eq + 1e-4);
+  vec2 disp = dir * uBurst * k * 0.8 * (0.5 + rnd.x) - vec2(0.0, uFall * k * k * 1.3 * (0.4 + rnd.y));
+  float ang = (rnd.x - 0.5) * uTumble * k * 1.8, sc = 1.0 - uShrink * 0.6 * k;
+  vec2 rel = q - c - disp;
+  rel = mat2(cos(ang), sin(ang), -sin(ang), cos(ang)) * rel / sc;
+  vec2 sq = c + rel;                                   // where this bit of the piece came from
+  vec2 id2, c2; float e2; cell(sq, id2, c2, e2);
+  vec3 col;
+  if (id2 != id) col = night(uv);                      // off its cell: the gap behind
+  else {
+    col = texture(uFull, vec2(clamp(sq.x / S.x, 0.0, 1.0), clamp(1.0 - sq.y / S.y, 0.0, 1.0))).rgb;
+    col *= 1.0 + 0.25 * k * (rnd.y - 0.5);             // each pane catches the light its own way
+    col = mix(col, vec3(1.0), smoothstep(0.07, 0.0, e2) * k * 0.85);   // the cracks glint
+  }
+  o = vec4(col, 1.0);
 }`;
 
 const FS = `#version 300 es
@@ -390,9 +461,9 @@ function texture(w, h, src){
     gl.texParameteri(gl.TEXTURE_2D, k, v);
   return t;
 }
-let P, B;
+let P, B, SH;
 if (gl){
-  P = program(FS); B = program(BLIT);
+  P = program(FS); B = program(BLIT); SH = program(SHF);
   gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
   gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
@@ -707,6 +778,9 @@ function loadSuburb(){
           kinds[kind].glow.value = Math.max(pickMode && picked.has(kind) ? 1 : 0, this.hover === kind ? o.glow : 0);
         }
         const h = o.on && o.pointer ? hitAt(o.pointer[0], o.pointer[1], hits) : null;
+        // The sky has no surface to bend: when the pointer is on it, the
+        // flat spell takes over there (see the loop).
+        this.onSky = !!(o.on && o.pointer && !h && hits("sky") && !hitAt(o.pointer[0], o.pointer[1]));
         if (h){
           if (present < 0.05){ eye.copy(h.point); eyeN.copy(h.normal); }
           else { eye.lerp(h.point, Math.min(1, dt * 10)); eyeN.lerp(h.normal, Math.min(1, dt * 8)).normalize(); }
@@ -726,11 +800,12 @@ function loadSuburb(){
         U.uOn.value += ((o.on ? 1 : 0) - U.uOn.value) * Math.min(1, dt * 3);
         r.render(scene, camera);
       },
-      keyAt(x, y){ const h = hitAt(x, y); return h ? h.kind : null; },
-      // Pick or unpick the kind under a point; returns it (null for the sky).
+      onSky: false,
+      keyAt(x, y){ const h = hitAt(x, y); return h ? h.kind : "sky"; },
+      // Pick or unpick the kind under a point; returns it.
       pick(x, y){
         const key = this.keyAt(x, y);
-        if (key){ if (picked.has(key)) picked.delete(key); else picked.add(key); }
+        if (picked.has(key)) picked.delete(key); else picked.add(key);
         return key;
       },
       pickHouses(){
@@ -894,16 +969,27 @@ function renderSpell(){
   fx.className = "chip"; fx.setAttribute("role", "tab"); fx.setAttribute("aria-selected", "false");
   fx.dataset.tab = "fx"; fx.dataset.spellTab = ""; fx.textContent = "FX";
   tabs.appendChild(fx);
-  const host = $("spells"); host.innerHTML = "";
+  // The dropdown in the dock.
+  $("spellName").textContent = spell.name;
+  const menu = $("spellMenu"); menu.innerHTML = '<div class="kick">Spells</div>';
   for (const sp of SPELLS){
     const b = document.createElement("button");
-    b.className = "chip"; b.setAttribute("aria-pressed", String(sp === spell));
+    b.setAttribute("role", "option"); b.setAttribute("aria-selected", String(sp === spell));
     b.innerHTML = `${sp.name}<i>${sp.note}</i>`;
-    b.addEventListener("click", () => { spell = sp; store.set("spell", sp.id); renderSpell(); showTab("spells"); refill(); showReadout(); });
-    host.appendChild(b);
+    b.addEventListener("click", () => {
+      spell = sp; store.set("spell", sp.id); renderSpell(); openSpells(false); refill(); showReadout();
+      if (!$("ctrl").hidden) showTab(Object.keys(sp.pages)[0]);
+    });
+    menu.appendChild(b);
   }
   tabs.querySelectorAll("[data-tab]").forEach(t => t.onclick = () => showTab(t.dataset.tab));
 }
+function openSpells(open){
+  $("spellMenu").hidden = !open; $("spellBtn").setAttribute("aria-expanded", String(open));
+  if (open) ($("spellMenu").querySelector('[aria-selected="true"]') || {focus(){}}).focus();
+}
+$("spellBtn").addEventListener("click", () => openSpells($("spellMenu").hidden));
+addEventListener("pointerdown", e => { if (!$("spellMenu").hidden && !e.target.closest("#spellMenu, #spellBtn")) openSpells(false); });
 function showTab(name){
   document.querySelectorAll("[data-tab]").forEach(o => o.setAttribute("aria-selected", String(o.dataset.tab === name)));
   document.querySelectorAll("[data-page]").forEach(p => p.hidden = p.dataset.page !== name);
@@ -918,26 +1004,27 @@ STREET.forEach(d => makeDial(d, $("streetDials")));
 let run = null, paused = false, steer = true, gulp = 0, film = null;
 let glow = 0;                                              // the hovered / just-picked kind's glow, 0..1
 let pointer = null;                                        // where the pointer is, 0..1 across and down
+let sky = 0;                                               // how far the flat spell has opened in the sky, 0..1
 
+// The flat spells run on the film, and on the street's picture when the
+// pointer is on the sky; the canvas they draw on lies over the street's and
+// is hidden the rest of the time.
 function build(){
   if (!innerWidth || !innerHeight) return;
-  if (!film){
-    if (street && suburb){ suburb.size(innerWidth, innerHeight); suburb.show(true); }
-    canvas.hidden = true;
-    showReadout();
-    return;
-  }
-  if (!gl) return;
-  if (suburb) suburb.show(false);
-  canvas.hidden = false;
+  if (suburb){ if (!film && street) suburb.size(innerWidth, innerHeight); suburb.show(!film); }
+  canvas.hidden = !film;
+  if (!gl || !(film || (street && suburb))){ showReadout(); return; }
   const px = Math.max(1, Math.max(2, Math.round(innerWidth / 520)) + val("pixel") - 2);
   const W = Math.ceil(innerWidth / px), H = Math.ceil(innerHeight / px);       // the spell's pixels
-  const dpr = Math.min(devicePixelRatio || 1, innerWidth < 700 ? 1.5 : 2);
-  const FW = Math.round(innerWidth * dpr), FH = Math.round(innerHeight * dpr);  // the film's
+  let src, FW, FH;
+  if (film){
+    const dpr = Math.min(devicePixelRatio || 1, innerWidth < 700 ? 1.5 : 2);
+    FW = Math.round(innerWidth * dpr); FH = Math.round(innerHeight * dpr);
+    src = document.createElement("canvas"); src.width = FW; src.height = FH;
+    film.canvas = src; film.ctx = src.getContext("2d");
+    film.ctx.fillStyle = "#000"; film.ctx.fillRect(0, 0, FW, FH);
+  } else { src = suburb.canvas; FW = src.width; FH = src.height; }
   canvas.width = FW; canvas.height = FH;
-  const src = document.createElement("canvas"); src.width = FW; src.height = FH;
-  film.canvas = src; film.ctx = src.getContext("2d");
-  film.ctx.fillStyle = "#000"; film.ctx.fillRect(0, 0, FW, FH);
   if (run){ run.tex.forEach(t => gl.deleteTexture(t)); gl.deleteTexture(run.sheetTex); gl.deleteTexture(run.maskTex); }
   const tex = [texture(W, H), texture(W, H)], fbo = tex.map(t => {
     const f = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, f);
@@ -971,24 +1058,51 @@ function frame(now){
       ...(spell.id === "shatter" ? {spell: 1, R: val("reach") * swell} : {spell: 0}),
       burst: val("burst") * (1 + gulp * 1.5), tumble: val("tumble"), fall: val("fall"), shrink: val("shrink"),
     });
+    sky += ((suburb.onSky && steer ? 1 : 0) - sky) * Math.min(1, dt * 3);
+    if (sky > 0.01 && run){
+      if (pointer) run.target = [pointer[0], 1 - pointer[1]];
+      canvas.hidden = false;
+      flatFrame(dt, swell, sky);
+    } else if (!canvas.hidden){ canvas.hidden = true; if (run) run.primed = false; }
     return;
   }
-  if (run) flatFrame(dt, swell);
+  if (run) flatFrame(dt, swell, -1);
 }
 
-// The flat spell, for the film: a picture laid over the screen.
-function flatFrame(dt, swell){
+// The flat spells: a picture laid over the screen. amt is -1 for the film,
+// or how far the spell has opened in the street's sky.
+function flatFrame(dt, swell, amt){
   const speed = val("speed");
   gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, run.sheetTex);
-  const v = $("film");
-  if (v.readyState >= 2 && v.videoWidth){
-    const {canvas: c, ctx: g} = film, r = Math.max(c.width / v.videoWidth, c.height / v.videoHeight);
-    g.drawImage(v, (c.width - v.videoWidth * r) / 2, (c.height - v.videoHeight * r) / 2, v.videoWidth * r, v.videoHeight * r);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c);
-  }
-  run.eye[0] += (run.target[0] - run.eye[0]) * Math.min(1, dt * 2.5);
-  run.eye[1] += (run.target[1] - run.eye[1]) * Math.min(1, dt * 2.5);
+  if (film){
+    const v = $("film");
+    if (v.readyState >= 2 && v.videoWidth){
+      const {canvas: c, ctx: g} = film, r = Math.max(c.width / v.videoWidth, c.height / v.videoHeight);
+      g.drawImage(v, (c.width - v.videoWidth * r) / 2, (c.height - v.videoHeight * r) / 2, v.videoWidth * r, v.videoHeight * r);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c);
+    }
+  } else gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, suburb.canvas);
+  const ease = amt < 0 ? 2.5 : 8;                          // in the sky the eye keeps up with the pointer
+  run.eye[0] += (run.target[0] - run.eye[0]) * Math.min(1, dt * ease);
+  run.eye[1] += (run.target[1] - run.eye[1]) * Math.min(1, dt * ease);
   const eyeR = val("eye") * swell;
+
+  if (spell.id === "shatter"){
+    gl.useProgram(SH.p); gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0, 0, run.FW, run.FH);
+    gl.uniform1i(SH.u.uFull, 1);
+    gl.uniform2f(SH.u.uRes, run.FW, run.FH);
+    gl.uniform2f(SH.u.uEye, run.eye[0], run.eye[1]);
+    gl.uniform1f(SH.u.uAspect, run.FW / run.FH);
+    gl.uniform1f(SH.u.uR, (0.06 + D.reach.v * 0.35) * swell);
+    gl.uniform1f(SH.u.uBurst, val("burst") * (1 + gulp * 1.5));
+    gl.uniform1f(SH.u.uTumble, val("tumble"));
+    gl.uniform1f(SH.u.uFall, val("fall"));
+    gl.uniform1f(SH.u.uShrink, val("shrink"));
+    gl.uniform1f(SH.u.uAmt, on ? (amt < 0 ? 1 : amt) : 0);
+    gl.uniform1f(SH.u.uTime, clock);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    return;
+  }
 
   const a = run.i, b = 1 - a;
   gl.useProgram(P.p); gl.viewport(0, 0, run.W, run.H);
@@ -1004,8 +1118,9 @@ function flatFrame(dt, swell){
   gl.uniform1f(P.u.uDz, 0);
   gl.uniform1f(P.u.uFront, val("height"));
   gl.uniform1f(P.u.uAspect, run.W / run.H);
-  gl.uniform1f(P.u.uPrime, run.primed && on && spell.id === "cyclone" ? 0 : 1);
+  gl.uniform1f(P.u.uPrime, run.primed && on ? 0 : 1);
   gl.uniform1f(P.u.uEyeR, eyeR);
+  gl.uniform1f(P.u.uSky, amt);
   gl.uniform1f(P.u.uSpin, val("spin") * (1 + gulp * 2));
   gl.uniform1f(P.u.uPull, val("pull") * (1 + gulp * 3));
   gl.uniform1f(P.u.uTear, val("tear"));
@@ -1021,12 +1136,13 @@ function flatFrame(dt, swell){
   gl.uniform1i(B.u.uMask, 2); gl.uniform1f(B.u.uMasked, 0); gl.uniform1f(B.u.uTint, 0); gl.uniform1f(B.u.uGlow, 0);
   gl.uniform2f(B.u.uRes, run.FW, run.FH);
   gl.uniform2f(B.u.uLow, run.W, run.H);
-  gl.uniform1f(B.u.uOn, on && spell.id === "cyclone" ? 1 : 0);
+  gl.uniform1f(B.u.uOn, on ? 1 : 0);
   gl.uniform2f(B.u.uEye, run.eye[0], run.eye[1]);
   gl.uniform1f(B.u.uTime, clock);
   gl.uniform1f(B.u.uFront, val("height"));
   gl.uniform1f(B.u.uAspect, run.W / run.H);
   gl.uniform1f(B.u.uEyeR, eyeR);
+  gl.uniform1f(B.u.uSky, amt);
   gl.drawArrays(gl.TRIANGLES, 0, 3);
   run.i = b;
 }
@@ -1074,7 +1190,7 @@ $("open").addEventListener("click", () => openCtrl($("ctrl").hidden));
 function setFever(v){
   on = v;
   $("fever").setAttribute("aria-pressed", String(on));
-  $("feverLabel").textContent = on && innerWidth > 700 ? spell.name : "fever";
+  $("feverLabel").textContent = "fever";
   if (!on && run) run.target = [0.5, 0.24];
   showReadout();
 }
@@ -1128,7 +1244,7 @@ addEventListener("keydown", e => {
   else if (e.key === "f" || e.key === "F") setFever(!on);
   else if (e.key === "k" || e.key === "K") setPick(!pickMode);
   else if (e.key === "p" || e.key === "P") $("pause").click();
-  else if (e.key === "Escape"){ openCtrl(false); $("help").hidden = true; }
+  else if (e.key === "Escape"){ openSpells(false); openCtrl(false); $("help").hidden = true; }
 });
 addEventListener("resize", rebuildSoon);
 $("ask").addEventListener("click", () => { $("help").hidden = !$("help").hidden; });
