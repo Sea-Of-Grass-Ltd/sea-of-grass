@@ -344,8 +344,8 @@ const EFFECTS = [
    marks: {style: 10, blend: 2, ground: 2, n: 9000, edge: 0, dens: 0}},
   {id: "ink",      name: "Ink",      group: "Line", p: [["hatching", .6], ["outline", .6]], boil: .25,
    marks: {style: 5, blend: 2, ground: 0, n: 7000, edge: L => 0.12 + L.p[1] * 0.5, dens: 0}},
-  {id: "neon",     name: "Neon",     group: "Line", p: [["glow", .5], ["tint", .5], ["lines", .6]], boil: 0,
-   marks: {style: 6, blend: 3, ground: 7, n: 3200, edge: 1, dens: 2}},
+  {id: "neon",     name: "Neon",     group: "Line", p: [["glow", .6], ["tint", .3], ["tubes", .5], ["spill", .6]], boil: .12, jitter: .15,
+   marks: {style: 6, blend: 3, ground: 7, n: 1500, edge: 1, dens: 2, bloom: true}},
   {id: "grade",    name: "Grade",    group: "Grade", p: []},
 ];
 const SHADER_TYPE = {spectrum: 0, bleach: 1, print: 2, gloss: 3, strokes: 4, airbrush: 5, spray: 6, glow: 7, vector: 8,
@@ -363,7 +363,7 @@ const FXF = `#version 300 es
 precision highp float;
 precision highp sampler2D;
 uniform sampler2D uSrc, uBase, uG;
-uniform float uGOn, uPaper;
+uniform float uGOn, uPaper, uBloom;
 uniform vec3 uCam;
 uniform vec4 uP2;
 uniform vec2 uRes;
@@ -700,6 +700,13 @@ void main(){
            : gr == 5 ? blurAt(uv, 8.0) * 0.22 : gr == 7 ? below * 0.13 + 0.008 : blurAt(uv, 7.0);
     if (gr == 0 || gr == 2 || gr == 3 || gr == 7) g = mix(below, g, uPaper);   // paper, or straight onto the street
     vec4 mk = texture(uMarks, uv);
+    if (uBloom > 0.5){
+      vec3 bl = vec3(0.0);
+      for (int i = 1; i <= 8; i++) bl += textureLod(uMarks, uv, float(i)).rgb * (0.5 + 0.3 * float(i));
+      bl *= 0.12 * (0.2 + uP.x * 1.8);
+      vec3 light = mk.rgb * 1.3 + bl;
+      fx = clamp(g + below * bl * uP2.x * 0.9 + (1.0 - exp(-light * 1.5)), 0.0, 1.0);   // lit by the tubes; no flat clipping
+    } else
     fx = uMarkMode < 1.5 ? g * mk.rgb : uMarkMode < 2.5 ? g * (1.0 - mk.a) + mk.rgb : g + mk.rgb;
     fx = clamp(fx, 0.0, 1.0);
   } else fx = effect(uv);
@@ -1059,11 +1066,12 @@ void main(){
   } else if (st == 5){                                     // Ink: brush-pen strokes along the edges, tapering
     len = mix(30.0, 110.0, r(6.0)) * bs; w = mix(2.0, 5.5, r(7.0)) * bs; taper = 1.0; col = vec3(0.03); curl = (r(12.0) - 0.5) * 0.04;
   } else if (st == 6){                                     // Neon: tubes along the strong edges, in their thing's colour
-    len = mix(90.0, 240.0, r(6.0)) * bs; w = 34.0 * bs * (0.35 + uP.x); k = 2.0 * bs / w;
+    len = mix(90.0, 240.0, r(6.0)) * bs; w = 6.0 * bs; curl = 0.0;
     vec3 own = clamp(mix(vec3(lum(src(p, 3.0))), src(p, 3.0), 2.4), 0.0, 1.0);
     own = own / max(max(own.r, max(own.g, own.b)), 0.05);
     col = mix(own, pal(uP.y * 2.0 + r(14.0) * 0.15 + uTime * 0.02), uP.y * 0.8);
     keep *= smoothstep(0.5, 0.85, edgeAt(p)) * smoothstep(0.25, 0.55, tangent(p).z);   // only where an edge really runs
+    keep *= smoothstep(0.3, 0.75, fD);                    // the near street's signs; far off, the haze
     alive *= mix(1.0, 0.3, step(0.965, h1(vec2(S, floor(uTime * 11.0)))));   // a tube that flickers now and then
   } else if (st == 7){                                     // Crayon: waxy hatching at an angle for each thing, dark outlines
     float kd = kindAt(p);
@@ -1118,6 +1126,60 @@ void main(){
   vL = vec2(tt * len, side); vLen = len; vW = w; vSeed = h1(vec2(S, TK + 0.37)); vK = k; vKey = 0.0;
   vC = vec4(col, a * alive);
   gl_Position = keep * alive < 0.02 ? vec4(-9.0, -9.0, 0.0, 1.0) : vec4(pos / uRes * 2.0 - 1.0, 0.0, 1.0);
+}`;
+
+// Neon, drawn from the street's own edges: every pixel near where one face
+// meets another (or a thing stands against what's behind it) is part of a
+// tube of even glass along that edge, white-hot in the core, in the neon
+// colour of the nearer thing; segments painted out, fixed to the world; each
+// sign flickering now and then; fading into the haze far off. The glow is
+// added afterwards from all the tubes together.
+const NEONF = `#version 300 es
+precision highp float;
+precision highp sampler2D;
+uniform sampler2D uG;
+uniform vec2 uRes;
+uniform vec3 uCam;
+uniform float uTime;
+uniform vec4 uP;                                           // glow, tint, tubes, spill
+out vec4 o;
+float h1(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+float n1(vec2 p){
+  vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
+  return mix(mix(h1(i), h1(i + vec2(1, 0)), f.x), mix(h1(i + vec2(0, 1)), h1(i + vec2(1, 1)), f.x), f.y);
+}
+vec3 neonOf(float kind){
+  float i = floor(fract(h1(vec2(kind, 3.0)) + uP.y * 0.9 + uTime * 0.02 * step(0.5, uP.y)) * 6.0);
+  return i < 1.0 ? vec3(1.0, 0.22, 0.62) : i < 2.0 ? vec3(0.18, 0.88, 1.0) : i < 3.0 ? vec3(0.62, 0.32, 1.0)
+       : i < 4.0 ? vec3(1.0, 0.62, 0.12) : i < 5.0 ? vec3(1.0, 0.18, 0.2) : vec3(0.55, 1.0, 0.22);
+}
+void main(){
+  vec2 uv = gl_FragCoord.xy / uRes;
+  float bs = uRes.y / 1000.0;
+  vec4 g0 = texture(uG, uv);
+  o = vec4(0.0, 0.0, 0.0, 1.0);
+  if (g0.w < 0.5) return;
+  float d0 = length(g0.xyz);
+  float w = (1.4 + uP.z * 2.6) * bs * clamp(20.0 / max(d0, 1.0), 0.35, 1.8);   // the tube's half-width, nearer is thicker
+  float best = 1e9, keyN = g0.w, dN = d0;
+  for (int i = 1; i <= 4; i++) for (int j = 0; j < 8; j++){
+    float rr = w * 1.5 * float(i) / 4.0, a = float(j) * 0.7854 + float(i) * 0.39;
+    vec4 g1 = texture(uG, uv + vec2(cos(a), sin(a)) * rr / uRes);
+    float d1 = length(g1.xyz);
+    bool edge = abs(g1.w - g0.w) > 0.001 || abs(d1 - d0) / d0 > 0.05;
+    if (edge){ if (rr < best) best = rr; if (d1 < dN){ dN = d1; keyN = g1.w; } }
+  }
+  if (best > 1e8) return;
+  float x = best / (w * 1.5);
+  float body = smoothstep(1.0, 0.55, x), core = smoothstep(0.5, 0.0, x);
+  float kind = floor(keyN);
+  vec3 col = neonOf(kind);
+  vec3 P = g0.xyz + uCam;
+  float gap = step(0.86, n1(vec2(P.x + P.z, P.y + P.z * 0.5) * 0.6));                  // painted-out segments
+  float flick = mix(1.0, 0.2, step(0.975, h1(vec2(kind + fract(keyN) * 37.0, floor(uTime * 9.0)))));
+  float fade = 1.0 - smoothstep(55.0, 150.0, dN);                                      // far signs melt into the haze
+  vec3 lit = mix(col, vec3(1.0), core * 0.45) * body;
+  o = vec4(lit * mix(1.0, 0.04, gap) * flick * fade * 0.9, 1.0);
 }`;
 
 // The brushes: what a mark looks like across and along itself.
@@ -1188,10 +1250,12 @@ void main(){
   } else if (st == 5){                                     // brush pen, breaking up dry at the tail
     cov = smoothstep(1.0, 0.7, abs(ay));
     cov *= mix(1.0, step(0.3, n1(vec2(ax * 0.06, ay * 3.0 + vSeed * 9.0))), smoothstep(0.55, 1.0, t));
-  } else if (st == 6){                                     // a tube of light: a hot core in a wide halo
-    float core = smoothstep(vK, vK * 0.3, abs(ay)), halo = exp(-ay * ay * 7.0) * 0.32 + exp(-ay * ay * 45.0) * 0.45;
-    float e2 = smoothstep(0.0, 0.12, t) * smoothstep(1.0, 0.88, t);
-    o = vec4((col * halo + mix(col, vec3(1.0), 0.7) * core) * e2, 1.0); return;
+  } else if (st == 6){                                     // a neon tube: even glass, a white-hot core, here and there painted out
+    float body = smoothstep(1.0, 0.6, abs(ay)), core = smoothstep(0.6, 0.0, abs(ay));
+    float gap = step(0.84, n1(vec2(ax * 0.01, vSeed * 9.0)));
+    float e2 = smoothstep(0.0, 0.03, t) * smoothstep(1.0, 0.97, t);
+    vec3 lit = mix(col, vec3(1.0), core * 0.35) * body;
+    o = vec4(lit * e2 * mix(1.0, 0.03, gap) * vC.a * 0.7, 1.0); return;
   } else if (st == 7){                                     // wax: broken by the paper, streaky
     float sk = n1(vec2(ax * 0.07, ay * 4.0 + vSeed * 7.0));
     cov = smoothstep(1.0, 0.7, abs(ay)) * ends * step(0.45, tooth * 0.75 + sk * 0.4 + 0.12);
@@ -1237,13 +1301,13 @@ function texture(w, h, src){
     gl.texParameteri(gl.TEXTURE_2D, k, v);
   return t;
 }
-let FXP, ANAP, MARKP, ANCP = null, floatOK = false, emptyVao = null, quadVao = null;
+let FXP, ANAP, MARKP, ANCP = null, NEONP = null, floatOK = false, emptyVao = null, quadVao = null;
 if (gl){
   FXP = program(FXF);
   gl.useProgram(FXP.p);
   for (const [k, v] of [["uSrc", 0], ["uBase", 1], ["uMarks", 2], ["uLut", 3], ["uG", 5]]) gl.uniform1i(FXP.u[k], v);
   floatOK = !!gl.getExtension("EXT_color_buffer_float");
-  try { ANAP = program(ANAF); MARKP = program(MARKF, MARKV); ANCP = floatOK ? program(ANCF) : null; emptyVao = gl.createVertexArray(); }
+  try { ANAP = program(ANAF); MARKP = program(MARKF, MARKV); ANCP = floatOK ? program(ANCF) : null; NEONP = floatOK ? program(NEONF) : null; emptyVao = gl.createVertexArray(); }
   catch (e){ console.warn("marks unavailable", e); ANAP = MARKP = null; }
   if (MARKP){ gl.useProgram(MARKP.p); for (const [k, v] of [["uSrc", 0], ["uBase", 1], ["uFlow", 4], ["uG", 5], ["uAnc0", 6], ["uAnc1", 7]]) gl.uniform1i(MARKP.u[k], v); }
   quadVao = gl.createVertexArray(); gl.bindVertexArray(quadVao);
@@ -1764,7 +1828,7 @@ const motionLabel = k => k === "angle" ? "direction" : k;
 // down only as far as the paper setting says; at 0 they go straight onto the
 // street, so they work in Normal mode.
 const hasPaper = e => e.id === "watercolour" || !!(e.marks && [0, 2, 3, 7].includes(e.marks.ground));
-const newMotion = e => ({boil: e.boil ?? 0, jitter: e.marks ? 0.85 : 0, drift: 0, angle: 0.25, flow: 0, orbit: 0, spin: 0.5});
+const newMotion = e => ({boil: e.boil ?? 0, jitter: e.jitter ?? (e.marks ? 0.85 : 0), drift: 0, angle: 0.25, flow: 0, orbit: 0, spin: 0.5});
 function newLayer(id){
   const e = BY_ID[id];
   const L = {fx: id, on: true, mode: 0, opacity: 1, mask: [], p: e.p.map(x => x[1]), motion: newMotion(e), paper: 0};
@@ -1911,6 +1975,7 @@ function build(){
     return t;
   });
   const mark = texture(W, H);
+  gl.bindTexture(gl.TEXTURE_2D, mark); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR); gl.generateMipmap(gl.TEXTURE_2D);
   run = {W, H, tex, fbo, ana, anaFbo: ana.map(target), AW, AH, mark, markFbo: target(mark)};
   if (ANCP){
     const c = Math.max(4, 5 * H / 1000), cols = Math.ceil(W / c), rows = Math.ceil(H / c);
@@ -2073,7 +2138,17 @@ function drawLayers(){
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, srcTex);
     if (from >= 0) gl.generateMipmap(gl.TEXTURE_2D);
     const marks = !!(fx.marks && MARKP);
-    if (marks){ drawMarks(L, srcTex, flip); gl.bindVertexArray(quadVao); }
+    if (marks){
+      if (fx.id === "neon" && NEONP && run.g){             // neon comes straight from the geometry
+        gl.useProgram(NEONP.p); gl.bindFramebuffer(gl.FRAMEBUFFER, run.markFbo); gl.viewport(0, 0, W, H);
+        const v = suburb.view();
+        gl.uniform1i(NEONP.u.uG, 5); gl.uniform2f(NEONP.u.uRes, W, H); gl.uniform3f(NEONP.u.uCam, v.cam.x, v.cam.y, v.cam.z);
+        gl.uniform1f(NEONP.u.uTime, clock); gl.uniform4f(NEONP.u.uP, L.p[0] ?? 0, L.p[1] ?? 0, L.p[2] ?? 0, L.p[3] ?? 0);
+        gl.drawArrays(gl.TRIANGLES, 0, 3);
+      } else drawMarks(L, srcTex, flip);
+      gl.bindVertexArray(quadVao);
+      gl.activeTexture(gl.TEXTURE2); gl.bindTexture(gl.TEXTURE_2D, run.mark); gl.generateMipmap(gl.TEXTURE_2D);
+    }
     if (fx.id === "grade") lutFor(L);
     gl.useProgram(FXP.p); gl.viewport(0, 0, W, H);
     gl.bindFramebuffer(gl.FRAMEBUFFER, last ? null : run.fbo[to]);
@@ -2097,6 +2172,7 @@ function drawLayers(){
     { const v = suburb.view(); gl.uniform3f(FXP.u.uCam, v.cam.x, v.cam.y, v.cam.z); }
     gl.uniform1f(FXP.u.uGOn, run.g ? 1 : 0);
     gl.uniform1f(FXP.u.uPaper, L.paper ?? 0);
+    gl.uniform1f(FXP.u.uBloom, marks && fx.marks.bloom ? 1 : 0);
     const ids = L.mask.map(k => suburb.idOf(k)).filter(i => i >= 0);
     gl.uniform1f(FXP.u.uAll, ids.length ? 0 : 1);
     gl.uniform1fv(FXP.u["uMask[0]"], Array.from({length: 16}, (_, i) => ids.includes(i) ? 1 : 0));
