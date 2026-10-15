@@ -2,7 +2,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Make-Up</title>
-<meta name="description" content="The endless pastel suburb from Fever, for colour. Press Make-Up and dress the whole scene in a look, then give any thing a look of its own: Spectrum floods them with oil-slick colour, Bleach drains it away, Print reprints them in loose inks, Gloss turns them to chrome, Strokes paints bright strands over them." />
+<meta name="description" content="The endless pastel suburb from Fever, with a layers panel of effects (spray, airbrush, glow, vector, scribble, ink, neon, crayon, print, chrome and more) to stack over it, each with a blend mode, an opacity and a mask." />
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,9 +11,10 @@
 
 <style>
   /* Make-Up: Fever's sister in Fantasmagoria. Fever changes the shape of
-     what's on screen; Make-Up changes its colour, and never its shape. Same
-     street, same dark glass: a slim strip on a desktop, a bottom sheet on a
-     phone, white type, one accent, which turns pink while Make-Up is on. */
+     what's on screen; Make-Up changes how it looks, never its shape. Its
+     controls are a layers panel, as in an image editor: effects stacked over
+     the street, each with a blend mode, an opacity and a mask. Same dark
+     glass and white type as Fever, with a pink accent. */
   :root{
     --paper:#faf9f6; --ink:#141311; --mint:#9ff0c8; --hot:#ff5fa8;
     --glass:rgba(16,15,14,.62); --edge:rgba(255,255,255,.16); --edge2:rgba(255,255,255,.3);
@@ -167,10 +168,52 @@
     .objmenu{min-width:0;width:calc(100vw - 16px);}
   }
   @media (prefers-reduced-motion:reduce){ .chip,.dockb{transition:none;} }
+
+  /* ---------- the layers panel ---------- */
+  .layers{
+    position:fixed;top:16px;right:16px;bottom:76px;z-index:6;width:300px;display:flex;flex-direction:column;
+    border:1px solid var(--edge);border-radius:18px;background:var(--glass);box-shadow:var(--soft);
+    backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3);overflow:hidden;
+  }
+  .layers[hidden]{display:none;}
+  .layers header{display:flex;align-items:center;justify-content:space-between;padding:12px 12px 8px;}
+  .layers .ttl{font:800 11px var(--ui);letter-spacing:.14em;text-transform:uppercase;}
+  .addmenu{margin:0 10px 8px;padding:6px;border:1px solid var(--edge);border-radius:12px;background:rgba(0,0,0,.35);
+    display:grid;grid-template-columns:1fr 1fr;gap:2px;max-height:46vh;overflow:auto;}
+  .addmenu[hidden]{display:none;}
+  .addmenu .grp{grid-column:1/-1;font:700 9px var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--mint);padding:6px 6px 2px;}
+  .addmenu button{font:700 11px var(--ui);color:#fff;text-align:left;background:none;border:0;border-radius:8px;padding:7px 8px;cursor:pointer;}
+  .addmenu button:hover{background:rgba(255,255,255,.1);}
+  .stack{list-style:none;margin:0;padding:0 8px;overflow:auto;flex:1;display:flex;flex-direction:column;gap:4px;}
+  .layer{border:1px solid transparent;border-radius:12px;padding:8px 8px 7px;background:rgba(255,255,255,.04);cursor:pointer;}
+  .layer[aria-selected="true"]{border-color:var(--hot);background:rgba(255,95,168,.1);}
+  .layer.off{opacity:.45;}
+  .lrow{display:flex;align-items:center;gap:6px;}
+  .eye{width:22px;height:22px;border-radius:6px;border:1px solid var(--edge2);background:none;color:#fff;font:11px var(--ui);cursor:pointer;flex:none;}
+  .eye[aria-pressed="false"]{color:rgba(255,255,255,.3);}
+  .lname{flex:1;font:800 11.5px var(--ui);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .mode{font:700 10px var(--ui);color:#fff;background:rgba(0,0,0,.35);border:1px solid var(--edge2);border-radius:7px;padding:3px 4px;}
+  .tiny{width:22px;height:22px;border:0;border-radius:6px;background:none;color:rgba(255,255,255,.7);cursor:pointer;font:12px var(--ui);flex:none;}
+  .tiny:hover{background:rgba(255,255,255,.1);color:#fff;}
+  .lrow2{display:flex;align-items:center;gap:8px;margin:6px 0 0 28px;}
+  .lrow2 .lab{font:700 9px var(--ui);letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.55);width:44px;}
+  .mask{margin:5px 0 0 28px;font:600 10.5px var(--ui);color:rgba(255,255,255,.6);}
+  .mask b{color:var(--mint);font-weight:700;}
+  input[type=range]{flex:1;accent-color:var(--hot);height:16px;}
+  .base{display:flex;align-items:center;gap:8px;margin:6px 8px 0;padding:8px 10px;border-radius:12px;background:rgba(255,255,255,.07);
+    font:800 11px var(--ui);letter-spacing:.06em;text-transform:uppercase;}
+  .base .lab{font:700 9px var(--ui);letter-spacing:.1em;color:rgba(255,255,255,.55);}
+  .props{padding:10px 12px 12px;border-top:1px solid var(--edge);margin-top:8px;}
+  .props .ttl2{font:700 9px var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--mint);margin:0 0 8px;}
+  .props .lrow2{margin:4px 0 0;}
+  .props .hint{font:600 10.5px/1.4 var(--ui);color:rgba(255,255,255,.6);margin:8px 0 0;}
+  .props .hint button{font:700 10px var(--ui);color:#fff;background:rgba(255,255,255,.08);border:1px solid var(--edge2);border-radius:99px;padding:3px 8px;cursor:pointer;}
+  @media (max-width:700px){
+    .layers{top:auto;left:8px;right:8px;bottom:64px;width:auto;max-height:52vh;}
+  }
 </style>
 
-
-<canvas id="gl" aria-label="An endless suburb, and whatever look Make-Up is putting on it"></canvas>
+<canvas id="gl" aria-label="The suburb, with Make-Up's layers of effects over it"></canvas>
 
 <a class="home" href="/" aria-label="Sea of Grass — all studies">
   <svg viewBox="43.63 44.56 350.94 258.56" fill="currentColor" aria-hidden="true">
@@ -180,58 +223,46 @@
   </svg>
 </a>
 
-<!-- ---------------------------------------------------------------- controller -->
-<div class="ctrl" id="ctrl" hidden role="dialog" aria-label="Make-Up controls">
-  <div class="tabs" role="tablist" id="tabs">
-    <button class="chip" role="tab" aria-selected="true" data-tab="street">Street</button>
-  </div>
-  <div class="sep"></div>
-
-  <div class="page" data-page="street">
-    <div id="streetDials" style="display:contents"></div>
-    <button class="chip" id="pickNone" title="Everything back to wearing the scene's look">Undress all</button>
-  </div>
-
-  <div id="spellPages" style="display:contents"></div>
-
-  <div class="page" data-page="cast" hidden>
-    <button class="chip" id="freeze" aria-pressed="false" title="Stop everything where it is (P)">Freeze</button>
-    <button class="chip" id="reset" title="Every dial back where it started">Reset dials</button>
-  </div>
-</div>
+<!-- ---------------------------------------------------------------- layers -->
+<aside class="layers" id="layers" aria-label="Layers">
+  <header>
+    <span class="ttl">Layers</span>
+    <button class="chip" id="addBtn" aria-expanded="false" title="Add an effect on top">+ effect</button>
+  </header>
+  <div class="addmenu" id="addMenu" hidden></div>
+  <ol class="stack" id="stack"></ol>
+  <div class="base"><span>Street</span><span class="lab">speed</span><input type="range" id="speed" min="0" max="1" step="0.01" aria-label="Walking speed"></div>
+  <section class="props" id="props"></section>
+</aside>
 
 <div class="dock">
-  <button class="dockb" id="apply" aria-pressed="false" title="Put the look on the scene (M)"><span class="dot"></span><span>make-up</span></button>
-  <button class="dockb" id="spellBtn" aria-haspopup="listbox" aria-expanded="false" title="Choose the scene's look"><span id="spellName">look</span><span class="caret" aria-hidden="true">▾</span></button>
-  <div class="spellmenu" id="spellMenu" role="listbox" aria-label="Looks" hidden></div>
-  <button class="dockb" id="open" aria-label="Controls" aria-expanded="false"><span class="dot"></span>controls</button>
+  <button class="dockb" id="apply" aria-pressed="false" title="Show the layers over the street (M)"><span class="dot"></span><span>make-up</span></button>
+  <button class="dockb" id="layersBtn" aria-expanded="true" title="Show or hide the layers panel (L)"><span class="dot"></span>layers</button>
   <button class="dockb q" id="ask" aria-label="How to play">?</button>
 </div>
 
 <div class="help" id="help" hidden role="dialog" aria-label="About Make-Up">
   <p class="kicker">Study 11 · Sea of Grass</p>
   <h2 id="helpTitle">Make-Up</h2>
-  <p class="lede">The same endless street as <a href="/studies/fever/">Fever</a>, for colour. Fever changes the shape of
-    things; Make-Up changes their colour and leaves their shape alone. Press <b>Make-Up</b> and the whole scene puts
-    on a look: <b>Spectrum</b> (oil-slick colour), <b>Bleach</b> (the colour drained out), <b>Print</b> (loose riso
-    inks, out of register), <b>Gloss</b> (inflated chrome) or <b>Strokes</b> (bright crawling strands). Then click
-    any thing to give it a look of its own, or leave it bare.</p>
+  <p class="lede">The same endless street as <a href="/studies/fever/">Fever</a>, made up. Fever changes the shape of things;
+    Make-Up changes how they look, never their shape. It works like the layers in an image editor: stack effects over the
+    street, and each one works on everything beneath it.</p>
   <dl>
-    <dt>make-up</dt><dd>the button, or M: the scene puts on its look; press again and it comes off</dd>
-    <dt>look</dt><dd>the button beside Make-Up chooses the scene's look</dd>
-    <dt>click</dt><dd>click a thing (a colour of house, the lamps, the road, the lawn, the sky) and choose what it
-      wears: the scene's look, a look of its own, or bare. <b>Undress all</b>, in controls, puts everything back</dd>
-    <dt>controls</dt><dd>the looks' dials, the speed you walk at, and Freeze</dd>
+    <dt>make-up</dt><dd>the button, or M: shows the layers over the street, or takes them off</dd>
+    <dt>+ effect</dt><dd>adds a layer on top: spray, airbrush, watercolour, glow, vector, scribble, pencil, chalk, ink, crayon,
+      neon, print, gloss and more</dd>
+    <dt>a layer</dt><dd>the eye shows or hides it; the mode blends it with what's below (multiply, screen, overlay…); opacity
+      sets how much; ↑ ↓ move it; × deletes it. Select it to change its settings</dd>
+    <dt>mask</dt><dd>with a layer selected, click things in the street (a colour of house, the lamps, the road, the lawn, the
+      sky) and the layer only touches those. Click again to take one out; <b>everything</b> clears the mask</dd>
   </dl>
-  <p>Make-Up is the colour tool from Fantasmagoria, the studio's live show, made to be used alongside Fever,
-    and tried out here on its own. The street comes from a popular dreamcore meme; it is drawn live with
-    <a href="https://threejs.org">three.js</a>. Spectrum is after the colour of Fabio Catapano's Spectrum 001;
-    Print after a clip of a riso-printed houseplant; Gloss after an airbrushed chrome flower; Strokes after a clip of bright strands crawling over a
-    black stone. Nothing leaves your browser.</p>
+  <p>Make-Up is the look tool from Fantasmagoria, the studio's live show, made to be used alongside Fever, and tried out here
+    on its own. The street comes from a popular dreamcore meme, drawn live with <a href="https://threejs.org">three.js</a>.
+    The effects are after references Tristan collected: airbrushed posters, a stencil-sprayed house, a glowing neon swirl, a
+    glossy vector flower, a riso-printed plant, Fabio Catapano's Spectrum 001, a board of scribbled, rotoscoped and
+    crayoned animation, watercolour blots, a scribbled-pencil fill and a chalky brushed elephant. Nothing leaves your browser.</p>
   <button class="chip" id="gotit">Begin</button>
 </div>
-
-<div class="spellmenu objmenu" id="objMenu" role="listbox" aria-label="What this wears" hidden></div>
 
 <p class="readout" id="readout"></p>
 
@@ -247,131 +278,258 @@ const store = {
   set(k, v){ try { localStorage.setItem("makeup:" + k, v); } catch (e) {} },
 };
 
-// ------------------------------------------------------------------ WebGL
-// Print works on the finished picture, on a canvas laid over the street's.
+// ------------------------------------------------------------------ the effects
+// Every effect is a pass over the picture so far, as in an image editor: the
+// street is drawn, then each visible layer from the bottom up takes what's
+// beneath it, makes its effect, and blends it back in with its mode and
+// opacity, only where its mask allows. The street writes which kind of thing
+// each pixel belongs to into its alpha, which is how masks know.
+const EFFECTS = [
+  {id: "spectrum", name: "Spectrum", group: "Colour", p: [["bands", .4], ["drift", .35], ["strength", .8]]},
+  {id: "bleach",   name: "Bleach",   group: "Colour", p: [["drain", .85], ["warmth", .2]]},
+  {id: "print",    name: "Print",    group: "Print & paint", p: [["offset", .45], ["shadow", .35]], boil: .35},
+  {id: "gloss",    name: "Gloss",    group: "Colour", p: [["shine", .7], ["colour", .5], ["grain", .5]]},
+  {id: "strokes",  name: "Strokes",  group: "Line", p: [["density", .55], ["length", .45], ["crawl", .4]]},
+  {id: "airbrush", name: "Airbrush", group: "Colour", p: [["softness", .45], ["bands", .35], ["grain", .6]]},
+  {id: "spray",    name: "Spray",    group: "Print & paint", p: [["spread", .4], ["coverage", .55]], boil: .25},
+  {id: "glow",     name: "Glow",     group: "Colour", p: [["bloom", .5], ["threshold", .35], ["grain", .5]]},
+  {id: "vector",   name: "Vector",   group: "Print & paint", p: [["levels", .35], ["outline", .9], ["glints", .6]]},
+  {id: "scribble", name: "Scribble", group: "Line", p: [["lines", .8], ["hatching", .6]], boil: .3},
+  {id: "ink",      name: "Ink",      group: "Line", p: [["threshold", .35], ["colour", .0]], boil: .3},
+  {id: "neon",     name: "Neon",     group: "Line", p: [["glow", .5], ["tint", .4]], boil: 0},
+  {id: "crayon",   name: "Crayon",   group: "Print & paint", p: [["scribble", .5], ["outline", .7]], boil: .25},
+  {id: "watercolour", name: "Watercolour", group: "Print & paint", p: [["wash", .45], ["rims", .6]], boil: .15},
+  {id: "pencil",   name: "Pencil",   group: "Line", p: [["density", .55], ["loops", .5]], boil: .3},
+  {id: "chalk",    name: "Chalk",    group: "Line", p: [["strokes", .4], ["ground", .0]], boil: .2},
+];
+const BY_ID = Object.fromEntries(EFFECTS.map((e, i) => [e.id, Object.assign(e, {type: i})]));
+const MODES = ["Normal", "Multiply", "Screen", "Overlay", "Lighten", "Darken", "Difference"];
+
 const canvas = $("gl");
-const gl = canvas.getContext("webgl2", {antialias: false, preserveDrawingBuffer: false, alpha: true, premultipliedAlpha: true});
-const LOOK_CORE = `
-float mh(float n){ return fract(sin(n * 127.1) * 43758.5453); }
-float mn(vec2 p){
-  vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
-  return mix(mix(mh(i.x + i.y * 57.0), mh(i.x + 1.0 + i.y * 57.0), f.x), mix(mh(i.x + (i.y + 1.0) * 57.0), mh(i.x + 1.0 + (i.y + 1.0) * 57.0), f.x), f.y);
-}
-vec3 pal(float t){ return 0.55 + 0.45 * cos(6.2832 * (t + vec3(0.0, 0.33, 0.67))); }
-float lum(vec3 c){ return dot(c, vec3(0.299, 0.587, 0.114)); }
-float gh(vec2 p){ return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
-// Look k on colour c at point p (normal n, seen from direction v), as much as
-// m (0..1), with that look's three dials in P. facing is how squarely the
-// surface faces you. Looks: 0 Spectrum, 1 Bleach, 2 Strokes, 3 Print (a
-// screen pass, see PRF), 4 Gloss.
-vec3 paint(vec3 c, vec3 p, vec3 n, vec3 v, float m, float facing, int k, vec3 P){
-  if (m <= 0.001) return c;
-  float uA = P.x, uB = P.y, uC = P.z;
-  if (k == 4){                                             // Gloss: shine, colour, grain
-    // polished, inflated chrome: the surface reflects a made-up world (white
-    // sky, a black horizon, its own colour in between), with airbrush grain
-    vec3 r = reflect(-v, n);
-    // the world it reflects: bands that wave round the horizon and wobble
-    // with position, so even a flat wall shows a run of reflections
-    float t = r.y * 2.2 + sin(atan(r.z, r.x) * 3.0) * 0.35 + mn(p.xz * 0.18 + p.y * 0.2) * 1.3;
-    float b = fract(t);
-    vec3 tint = mix(vec3(lum(c)), c, 1.0 + uB) * 1.2;      // its own colour, pushed
-    vec3 col = b < 0.3 ? mix(vec3(0.02), tint * 0.45, b / 0.3)
-             : b < 0.65 ? mix(tint * 0.45, tint, (b - 0.3) / 0.35)
-             : mix(tint, vec3(1.0), smoothstep(0.65, 0.95, b) * uA);
-    col *= smoothstep(0.0, 0.05, b) * 0.9 + 0.1;          // a black seam where each band starts
-    col += vec3(1.0) * pow(1.0 - facing, 3.0) * 0.4 * uA;  // the rim catches the light
-    col += (gh(gl_FragCoord.xy) - 0.5) * 0.22 * uC;        // grain
-    return mix(c, clamp(col, 0.0, 1.0), clamp(m * 1.4, 0.0, 1.0));
-  }
-  if (k == 0){                                             // Spectrum: bands, drift, strength
-    float t = dot(p, vec3(0.11, 0.19, 0.07)) * uA + (1.0 - facing) * 0.9 + mn(p.xz * 0.3 + p.y * 0.2) * 0.6 - uTime * uB * 0.15;
-    vec3 col = mix(pal(t), vec3(1.0), smoothstep(0.78, 1.0, fract(t * 2.0)) * 0.55);   // white seams
-    return mix(c, col * (0.45 + 1.05 * lum(c)), clamp(m * uC, 0.0, 1.0));
-  }
-  if (k == 1){                                             // Bleach: drain, warmth
-    float g = lum(c);
-    vec3 t = mix(vec3(g), g * vec3(1.08, 0.96, 0.78), uB);
-    return mix(c, mix(t, vec3(1.0), 0.18 * m), clamp(m * uA, 0.0, 1.0));
-  }
-  // Strokes: density, length, crawl
-  vec3 t1 = abs(n.y) > 0.9 ? vec3(1.0, 0.0, 0.0) : normalize(cross(n, vec3(0.0, 1.0, 0.0)));
-  vec3 t2 = cross(n, t1);
-  vec2 q = vec2(dot(p, t1), dot(p, t2));
-  float a = mn(q * 0.08 + uTime * 0.03) * 3.2;             // the current the strands follow, curving gently
-  vec2 f = vec2(cos(a), sin(a));
-  float lw = 0.14 + 0.6 * (1.0 - uA), perp = dot(q, vec2(-f.y, f.x)), along = dot(q, f);
-  float lane = floor(perp / lw);
-  float strand = fract(along / (0.5 + uB * 2.5) - uTime * uC * 0.5 + mh(lane) * 3.0);
-  float body = smoothstep(0.0, 0.08, strand) * smoothstep(0.75, 0.55, strand) * step(0.45, mh(lane + 3.0));
-  float across = 1.0 - abs(fract(perp / lw) - 0.5) * 2.0;
-  vec3 col = mix(pal(mh(lane + 11.0)), vec3(1.0), 0.3 * across);   // rounded, catching the light
-  return mix(c, col, body * smoothstep(0.15, 0.45, across) * m);
-}`;
+const gl = canvas.getContext("webgl2", {antialias: false, preserveDrawingBuffer: false, alpha: false});
 const VS = `#version 300 es
 in vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }`;
-// Print, after a clip of a riso-printed plant: wherever the look is, the
-// picture is reprinted in a few loose spot inks on paper. Each ink is pulled
-// from a slightly different spot (misregistered), shadows and edges go down
-// in black that breaks into dashes, and every few frames the inks shift
-// (boiling). The street marks what's wearing Print in its alpha channel.
-const PRF = `#version 300 es
+const FXF = `#version 300 es
 precision highp float;
-uniform sampler2D uFull;
+uniform sampler2D uSrc, uBase;
 uniform vec2 uRes;
-uniform float uTime, uOff, uBoil, uShadow;
+uniform float uSrcFlip, uTime, uType, uMode, uOpacity, uAll;
+uniform vec4 uP;
+uniform float uMask[16];
 out vec4 o;
-float h2(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
-float n2(vec2 p){
+// ---- helpers
+float h1(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+float n1(vec2 p){
   vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
-  return mix(mix(h2(i), h2(i + vec2(1, 0)), f.x), mix(h2(i + vec2(0, 1)), h2(i + vec2(1, 1)), f.x), f.y);
+  return mix(mix(h1(i), h1(i + vec2(1, 0)), f.x), mix(h1(i + vec2(0, 1)), h1(i + vec2(1, 1)), f.x), f.y);
 }
 float lum(vec3 c){ return dot(c, vec3(0.299, 0.587, 0.114)); }
-vec4 at(vec2 uv){ return texture(uFull, vec2(clamp(uv.x, 0.0, 1.0), clamp(1.0 - uv.y, 0.0, 1.0))); }
-float wanted(vec2 uv){ return smoothstep(0.12, 0.3, (1.0 - at(uv).a) * 2.0); }
-// The spot inks: yellow, green, cyan, magenta, orange.
-vec3 ink(float i){
-  int k = int(mod(i, 5.0));
-  if (k == 0) return vec3(0.98, 0.8, 0.12);
-  if (k == 1) return vec3(0.36, 0.74, 0.24);
-  if (k == 2) return vec3(0.32, 0.76, 0.93);
-  if (k == 3) return vec3(0.95, 0.38, 0.76);
-  return vec3(0.98, 0.47, 0.2);
+vec3 pal(float t){ return 0.55 + 0.45 * cos(6.2832 * (t + vec3(0.0, 0.33, 0.67))); }
+vec3 src(vec2 uv){ uv = clamp(uv, 0.0, 1.0); return texture(uSrc, uSrcFlip > 0.5 ? vec2(uv.x, 1.0 - uv.y) : uv).rgb; }
+float kindAt(vec2 uv){ return floor((1.0 - texture(uBase, vec2(clamp(uv.x, 0.0, 1.0), 1.0 - clamp(uv.y, 0.0, 1.0))).a) / 0.03 + 0.5); }
+// How strongly an outline runs through here: a change of brightness, or the
+// edge of one thing against another.
+float edgeAt(vec2 uv, float w){
+  vec2 px = w / uRes;
+  float l = lum(src(uv)), k = kindAt(uv);
+  float d = abs(lum(src(uv + vec2(px.x, 0.0))) - l) + abs(lum(src(uv + vec2(0.0, px.y))) - l)
+          + abs(lum(src(uv - vec2(px.x, 0.0))) - l) + abs(lum(src(uv - vec2(0.0, px.y))) - l);
+  float ke = step(0.5, abs(kindAt(uv + vec2(px.x, 0.0)) - k) + abs(kindAt(uv + vec2(0.0, px.y)) - k));
+  return max(smoothstep(0.08, 0.35, d), ke);
 }
-// Which ink a colour takes: by its hue, reshuffled at every tick.
-float inkFor(vec3 c, float tick){
-  float mx = max(c.r, max(c.g, c.b)), mn = min(c.r, min(c.g, c.b)), d = mx - mn + 1e-4, hue;
-  if (mx == c.r) hue = mod((c.g - c.b) / d, 6.0); else if (mx == c.g) hue = (c.b - c.r) / d + 2.0; else hue = (c.r - c.g) / d + 4.0;
-  return floor(hue / 6.0 * 5.0) + floor(h2(vec2(tick, 3.0)) * 2.0);
-}
-void main(){
-  vec2 px = 1.0 / uRes, uv = gl_FragCoord.xy * px;
-  vec4 base = at(uv);
-  float m = wanted(uv);
-  if (m < 0.02){ o = vec4(base.rgb, 1.0); return; }
-  vec2 g = floor(gl_FragCoord.xy / 2.0) * 2.0 * px;      // a coarse print grain
-  float tick = floor(uTime * (2.0 + uBoil * 10.0));
-  vec2 jog = vec2(h2(vec2(tick, 1.0)), h2(vec2(tick, 2.0))) - 0.5;
-  vec3 paper = vec3(0.95, 0.94, 0.9) * (0.96 + 0.05 * n2(gl_FragCoord.xy * 0.6));
-  vec3 c = paper;
-  // Two colour passes, each pulled from its own offset. The second goes down
-  // first and shows only where it slips out from under the first: a fringe.
-  // Greys take no ink (paper); only real colour does.
-  for (int k = 1; k >= 0; k--){
-    vec2 off = (vec2(float(k) * 2.0 - 1.0, 0.3 * float(k)) * 6.0 + jog * 4.0) * uOff * px;
-    vec3 s = at(g + off).rgb;
-    float l = lum(s), sat = max(s.r, max(s.g, s.b)) - min(s.r, min(s.g, s.b));
-    if (l > uShadow && sat > 0.12) c = paper * ink(inkFor(s, tick) + float(k) * 2.0);
+vec3 blurAt(vec2 uv, float r){
+  vec3 s = src(uv); float n = 1.0;
+  for (int i = 0; i < 12; i++){
+    float a = float(i) * 2.39996, d = sqrt(float(i) + 0.5) / sqrt(12.0);
+    s += src(uv + vec2(cos(a), sin(a)) * d * r / uRes); n += 1.0;
   }
-  // the black: shadows and edges, broken into dashes
-  vec2 ob = jog * 3.0 * uOff * px;
-  float lb = lum(at(g + ob).rgb);
-  float edge = abs(lum(at(g + ob + vec2(2.0, 0.0) * px).rgb) - lb) + abs(lum(at(g + ob + vec2(0.0, 2.0) * px).rgb) - lb);
-  float dash = step(0.3, n2(gl_FragCoord.xy * 0.35 + tick * 7.0));
-  if (lb < uShadow || edge > 0.12 * dash + (1.0 - dash)) c = mix(c, vec3(0.07, 0.07, 0.08), 0.92);
-  // the printed patch has a ragged, dotted edge of its own
-  float edgeIn = step(0.5, m + (n2(gl_FragCoord.xy * 0.3 + tick) - 0.5) * 0.4);
-  o = vec4(mix(base.rgb, c, edgeIn), 1.0);
+  return s / n;
+}
+vec3 paper(vec2 fc){ return vec3(0.95, 0.94, 0.9) * (0.96 + 0.05 * n1(fc * 0.6)); }
+
+// ---- the effects, each on the picture so far
+vec3 effect(vec2 uv){
+  vec2 fc = gl_FragCoord.xy;
+  vec3 c = src(uv);
+  float l = lum(c), tick = floor(uTime * (1.0 + uP.w * 10.0));
+  int k = int(uType + 0.5);
+  if (k == 0){                                             // Spectrum: bands, drift, strength
+    float t = l * (0.5 + uP.x * 3.0) + n1(uv * 3.0) * 0.3 - uTime * uP.y * 0.15;
+    vec3 col = mix(pal(t), vec3(1.0), smoothstep(0.8, 1.0, fract(t * 2.0)) * 0.5);
+    return mix(c, col * (0.45 + 1.05 * l), uP.z);
+  }
+  if (k == 1){                                             // Bleach: drain, warmth
+    vec3 g = mix(vec3(l), l * vec3(1.08, 0.96, 0.78), uP.y);
+    return mix(c, g, uP.x);
+  }
+  if (k == 2){                                             // Print: offset, shadow (boil is w)
+    vec2 px = 1.0 / uRes, g = floor(fc / 2.0) * 2.0 * px;
+    vec2 jog = vec2(h1(vec2(tick, 1.0)), h1(vec2(tick, 2.0))) - 0.5;
+    vec3 o = paper(fc);
+    for (int i = 1; i >= 0; i--){
+      vec2 off = (vec2(float(i) * 2.0 - 1.0, 0.3 * float(i)) * 6.0 + jog * 4.0) * uP.x * 2.0 * px;
+      vec3 s = src(g + off);
+      float sat = max(s.r, max(s.g, s.b)) - min(s.r, min(s.g, s.b));
+      if (lum(s) > uP.y && sat > 0.12){
+        float hue = atan(s.g - s.b, s.r - 0.5 * (s.g + s.b)) / 6.2832 + 0.5;
+        float ink = mod(floor(hue * 5.0) + floor(h1(vec2(tick, 3.0)) * 2.0) + float(i) * 2.0, 5.0);
+        vec3 inkc = ink < 0.5 ? vec3(0.98, 0.8, 0.12) : ink < 1.5 ? vec3(0.36, 0.74, 0.24) : ink < 2.5 ? vec3(0.32, 0.76, 0.93)
+                  : ink < 3.5 ? vec3(0.95, 0.38, 0.76) : vec3(0.98, 0.47, 0.2);
+        o = paper(fc) * inkc;
+      }
+    }
+    vec2 ob = jog * 3.0 * uP.x * 2.0 * px;
+    float dash = step(0.3, n1(fc * 0.35 + tick * 7.0));
+    if (lum(src(g + ob)) < uP.y || edgeAt(g + ob, 2.0) * dash > 0.5) o = mix(o, vec3(0.07), 0.92);
+    return o;
+  }
+  if (k == 3){                                             // Gloss: shine, colour, grain
+    float t = l * 2.6 + n1(uv * vec2(4.0, 2.0) + kindAt(uv) * 1.7) * 1.2;
+    float b = fract(t);
+    vec3 tint = mix(vec3(l), c, 1.0 + uP.y * 1.5) * 1.2;
+    vec3 col = b < 0.3 ? mix(vec3(0.02), tint * 0.45, b / 0.3) : b < 0.65 ? mix(tint * 0.45, tint, (b - 0.3) / 0.35)
+             : mix(tint, vec3(1.0), smoothstep(0.65, 0.95, b) * uP.x * 1.4);
+    col *= smoothstep(0.0, 0.05, b) * 0.9 + 0.1;
+    return clamp(col + (h1(fc + uTime) - 0.5) * 0.22 * uP.z, 0.0, 1.0);
+  }
+  if (k == 4){                                             // Strokes: density, length, crawl
+    vec2 q = fc / 18.0;
+    float a = n1(q * 0.08 + uTime * 0.03) * 3.2;
+    vec2 f = vec2(cos(a), sin(a));
+    float lw = 0.4 + 1.6 * (1.0 - uP.x), perp = dot(q, vec2(-f.y, f.x)), along = dot(q, f);
+    float lane = floor(perp / lw);
+    float s = fract(along / (1.0 + uP.y * 5.0) - uTime * uP.z * 0.8 + h1(vec2(lane, 0.0)) * 3.0);
+    float body = smoothstep(0.0, 0.08, s) * smoothstep(0.75, 0.55, s) * step(0.45, h1(vec2(lane, 3.0)));
+    float across = 1.0 - abs(fract(perp / lw) - 0.5) * 2.0;
+    vec3 col = mix(pal(h1(vec2(lane, 11.0))), vec3(1.0), 0.3 * across);
+    return mix(c, col, body * smoothstep(0.15, 0.45, across));
+  }
+  if (k == 5){                                             // Airbrush: softness, bands, grain
+    vec3 b = blurAt(uv, 4.0 + uP.x * 28.0);
+    float bl = lum(b);
+    float band = smoothstep(0.0, 1.0, fract(bl * (2.0 + uP.y * 6.0)));   // soft, sprayed steps of shade
+    vec3 col = b * (0.75 + 0.5 * band);
+    col = mix(vec3(lum(col)), col, 1.25);                  // a little richer
+    return clamp(col + (h1(fc + uTime * 0.0) - 0.5) * 0.2 * uP.z, 0.0, 1.0);
+  }
+  if (k == 6){                                             // Spray: spread, coverage, (boil)
+    vec2 j = (vec2(h1(fc + tick), h1(fc.yx + tick * 1.3)) - 0.5) * (2.0 + uP.x * 24.0) / uRes;
+    vec3 s = src(uv + j);
+    vec3 prim = s;                                         // pushed toward a few strong colours
+    float mx = max(s.r, max(s.g, s.b));
+    prim = mx > 0.05 ? s / mx : s;
+    prim = mix(vec3(lum(prim)), prim, 1.6);
+    float dens = (1.0 - lum(s)) * 1.2 + (mx - min(s.r, min(s.g, s.b))) * 1.4;
+    float spot = step(h1(fc * 1.7 + tick), dens * (0.4 + uP.y));
+    return mix(paper(fc), clamp(prim * (0.55 + 0.4 * mx), 0.0, 1.0), spot);
+  }
+  if (k == 7){                                             // Glow: bloom, threshold, grain
+    vec3 big = blurAt(uv, 30.0 + uP.x * 60.0), mid = blurAt(uv, 10.0 + uP.x * 20.0);
+    vec3 bright = max(mid - (0.4 + uP.y * 0.5), 0.0) + max(big - (0.35 + uP.y * 0.5), 0.0);
+    vec3 col = mix(c, mid, 0.35) + bright * 2.2;
+    col = mix(col, vec3(1.0), smoothstep(0.75, 1.0, lum(col)) * 0.6);   // blown-out cores
+    return clamp(col + (h1(fc + uTime) - 0.5) * 0.18 * uP.z, 0.0, 1.0);
+  }
+  if (k == 8){                                             // Vector: levels, outline, glints
+    vec3 b = blurAt(uv, 3.0);
+    float lv = 2.0 + floor(uP.x * 6.0);
+    vec3 col = floor(b * lv + 0.5) / lv;
+    col = mix(vec3(lum(col)), col, 1.5);                   // bright, flat colour
+    float e = edgeAt(uv, 1.0);
+    col = mix(col, vec3(0.08, 0.08, 0.1), step(0.55, e) * uP.y);
+    float glint = smoothstep(0.82, 0.95, lum(b)) * step(0.7, fract((fc.x + fc.y) / 90.0 + kindAt(uv) * 0.3));
+    return clamp(col + glint * uP.z, 0.0, 1.0);
+  }
+  if (k == 9){                                             // Scribble: lines, hatching, (boil)
+    vec2 w = (vec2(n1(fc * 0.05 + tick * 3.1), n1(fc * 0.05 + tick * 5.7 + 9.0)) - 0.5) * 6.0 / uRes;
+    float line = edgeAt(uv + w, 1.5) * step(0.25, n1(fc * 0.2 + tick));
+    float dark = 1.0 - l;
+    float hx = fract((fc.x + fc.y) / (5.0 + (1.0 - uP.y) * 10.0) + n1(fc * 0.03 + tick) * 0.6);
+    float hatch = step(hx, 0.22) * smoothstep(0.35, 0.75, dark) * uP.y;
+    float hy = fract((fc.x - fc.y) / 7.0 + n1(fc * 0.03 + tick + 4.0) * 0.6);
+    hatch = max(hatch, step(hy, 0.2) * smoothstep(0.6, 0.9, dark) * uP.y);
+    float g = clamp(line * uP.x * 1.4 + hatch * 0.7, 0.0, 1.0);
+    return mix(paper(fc), vec3(0.18, 0.18, 0.2), g);
+  }
+  if (k == 10){                                            // Ink: threshold, colour, (boil)
+    float th = 0.25 + uP.x * 0.5 + (n1(fc * 0.04 + tick * 2.3) - 0.5) * 0.12;
+    float ink = max(step(lum(blurAt(uv, 5.0)), th), step(0.6, edgeAt(uv, 2.0)));
+    vec3 under = mix(paper(fc), c, uP.y);
+    return mix(under, vec3(0.04), ink);
+  }
+  if (k == 11){                                            // Neon: glow, tint, (boil)
+    float e = edgeAt(uv, 1.0), eb = 0.0;
+    for (int i = 0; i < 8; i++){
+      float a = float(i) * 0.785;
+      eb += edgeAt(uv + vec2(cos(a), sin(a)) * (3.0 + uP.x * 8.0) / uRes, 1.0);
+    }
+    eb /= 8.0;
+    vec3 tint = mix(vec3(1.0), pal(uP.y + l * 0.3), uP.y);
+    return clamp(tint * (e * 1.1 + eb * 0.9 * (0.6 + uP.x)), 0.0, 1.0) + vec3(0.02, 0.02, 0.03);
+  }
+  if (k == 13){                                            // Watercolour: wash, rims, (boil)
+    vec3 b = blurAt(uv + (vec2(n1(fc * 0.01 + tick), n1(fc * 0.01 + tick + 3.0)) - 0.5) * 10.0 / uRes, 6.0 + uP.x * 22.0);
+    vec3 pig = floor(b * 4.0 + 0.5) / 4.0;                 // a few pigments
+    float rim = clamp(length(blurAt(uv, 3.0) - blurAt(uv, 14.0)) * 3.5, 0.0, 1.0);   // dried, darker edges
+    float gran = (n1(fc * 0.35) - 0.5) * 0.18 + (n1(fc * 0.06 + tick) - 0.5) * 0.12;
+    vec3 wash = mix(vec3(1.0), clamp(pig + gran, 0.0, 1.0), 0.8) * (1.0 - rim * 0.4 * uP.y);
+    vec3 col = paper(fc) * wash;
+    return mix(col, paper(fc), smoothstep(0.78, 0.95, lum(b)));   // the whites are left as paper
+  }
+  if (k == 14){                                            // Pencil: density, loops, (boil)
+    vec3 col = paper(fc);
+    float dark = 1.0 - l;
+    vec3 pc = mix(vec3(l), c, 1.6);
+    for (int i = 0; i < 3; i++){
+      float a = h1(vec2(float(i), tick)) * 3.14159 + kindAt(uv) * 0.7;
+      vec2 r = mat2(cos(a), -sin(a), sin(a), cos(a)) * fc;
+      float wob = n1(r * (0.02 + uP.y * 0.03) + float(i) * 7.0 + tick) * (10.0 + uP.y * 30.0);
+      float line = smoothstep(0.55, 0.95, sin(r.x * 0.75 + wob));
+      float layer = step(float(i) * 0.25, dark * (0.6 + uP.x * 0.9));
+      vec3 sc = clamp(pc * (0.7 + 0.3 * h1(vec2(float(i), 9.0))) - float(i) * 0.08, 0.0, 1.0);
+      col = mix(col, sc, line * layer * 0.85);
+    }
+    return col;
+  }
+  if (k == 15){                                            // Chalk: strokes, ground, (boil)
+    vec2 px = 1.5 / uRes;
+    vec2 g = vec2(lum(src(uv + vec2(px.x, 0.0))) - lum(src(uv - vec2(px.x, 0.0))), lum(src(uv + vec2(0.0, px.y))) - lum(src(uv - vec2(0.0, px.y))));
+    vec2 dir = length(g) > 0.01 ? normalize(vec2(-g.y, g.x)) : normalize(vec2(1.0, 0.3));
+    vec2 q = vec2(dot(fc, dir), dot(fc, vec2(-dir.y, dir.x)));
+    float streak = n1(vec2(q.x * 0.03, q.y * (0.5 + uP.x)) + tick * 3.0);
+    float amt = smoothstep(0.25, 0.85, lum(blurAt(uv, 3.0)) + (streak - 0.5) * 0.8);
+    vec3 ground = mix(vec3(0.08, 0.15, 0.24), c * 0.25, uP.y);
+    return mix(ground, vec3(0.93, 0.94, 0.92) * (0.85 + 0.15 * streak), amt);
+  }
+  // 12, Crayon: scribble, outline, (boil)
+  float ang = 0.8 + (h1(vec2(kindAt(uv), 2.0)) - 0.5) * 1.4;
+  vec2 r = mat2(cos(ang), -sin(ang), sin(ang), cos(ang)) * fc;
+  float strokes = max(sin(r.x * 0.5 + n1(r * 0.05 + tick) * 14.0), sin(r.y * 0.42 + n1(r * 0.04 + tick + 7.0) * 16.0) * 0.8) * 0.5 + 0.5;
+  float cover = smoothstep(0.35, 0.65, strokes + (lum(c) - 0.5) * -0.4 + (uP.x - 0.5));
+  vec3 wax = mix(vec3(lum(c)), c, 1.7) * (0.85 + 0.25 * n1(fc * 0.5));
+  vec3 col = mix(paper(fc), clamp(wax, 0.0, 1.0), cover);
+  return mix(col, wax * 0.35, step(0.6, edgeAt(uv + (vec2(n1(fc * 0.04 + tick), n1(fc * 0.04 + tick + 5.0)) - 0.5) * 4.0 / uRes, 2.0)) * uP.y);
+}
+
+// ---- blend modes, as in Photoshop
+vec3 blend(vec3 a, vec3 b, int m){
+  if (m == 1) return a * b;                                // Multiply
+  if (m == 2) return 1.0 - (1.0 - a) * (1.0 - b);          // Screen
+  if (m == 3) return mix(2.0 * a * b, 1.0 - 2.0 * (1.0 - a) * (1.0 - b), step(0.5, a));   // Overlay
+  if (m == 4) return max(a, b);                            // Lighten
+  if (m == 5) return min(a, b);                            // Darken
+  if (m == 6) return abs(a - b);                           // Difference
+  return b;                                                // Normal
+}
+
+void main(){
+  vec2 uv = gl_FragCoord.xy / uRes;
+  vec3 below = src(uv);
+  if (uType < -0.5){ o = vec4(below, 1.0); return; }      // a plain copy
+  int k = int(kindAt(uv));
+  float m = uAll > 0.5 ? 1.0 : uMask[clamp(k, 0, 15)];
+  if (m * uOpacity < 0.002){ o = vec4(below, 1.0); return; }
+  o = vec4(mix(below, blend(below, effect(uv), int(uMode + 0.5)), uOpacity * m), 1.0);
 }`;
 function program(fs){
   const p = gl.createProgram();
@@ -390,14 +548,14 @@ function texture(w, h, src){
   const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t);
   if (src) gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, src);
   else gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-  for (const [k, v] of [[gl.TEXTURE_MIN_FILTER, gl.NEAREST], [gl.TEXTURE_MAG_FILTER, gl.NEAREST],
+  for (const [k, v] of [[gl.TEXTURE_MIN_FILTER, gl.LINEAR], [gl.TEXTURE_MAG_FILTER, gl.LINEAR],
                         [gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE], [gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE]])
     gl.texParameteri(gl.TEXTURE_2D, k, v);
   return t;
 }
-let PR;
+let FXP;
 if (gl){
-  PR = program(PRF);
+  FXP = program(FXF);
   gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
   gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
@@ -405,39 +563,21 @@ if (gl){
 
 // ------------------------------------------------------------------ the suburb
 // Fever's street: pastel houses down both sides of a grey road, lamps on the
-// right, flat green lawns, a hard blue sky, the camera walking toward the
-// vanishing point forever. three.js comes from a CDN on first use.
-//
-// Make-Up dresses the whole scene in a look at once: the houses, the road,
-// the lawn, the lamps and the sky (a real dome here, so it can wear looks
-// too). Any kind of thing can be given a look of its own, or be left bare:
-// click it and choose. Kinds, not single objects, since the camera walks
-// past any one house in seconds: dress a pink house and every pink house
-// down the street wears it. Looks change colour, never shape:
-//   Spectrum  oil-slick colour, drifting, shifting with the angle you see it from.
-//   Bleach    the colour drained to grey, or sepia.
-//   Print     reprinted in a few loose spot inks, out of register.
-//   Gloss     glossy, inflated chrome.
-//   Strokes   bright strands crawling along the surfaces.
+// right, flat green lawns, a hard blue sky (a dome here), the camera walking
+// toward the vanishing point forever. three.js comes from a CDN on first use.
+// The street draws itself plainly, writing into its alpha which kind of thing
+// each pixel is (1 - kind * 0.03), for the layers' masks.
 let suburb = null, suburbLoading = null, street = false;
-const LOOK_IDS = ["spectrum", "bleach", "strokes", "print", "gloss"];   // the shader's numbering
-const MAKEUP_GLSL = `
-uniform float uOn, uTime, uGlow, uScene, uKindLook;
-uniform vec3 uP[5];
-varying vec3 vW, vN, vPaint;
-${LOOK_CORE}
-// What this thing wears: its own look (0..4), the scene's (-1) or none (-2).
-int lookHere(){ return uKindLook < -1.5 ? -1 : uKindLook < -0.5 ? int(uScene + 0.5) : int(uKindLook + 0.5); }`;
+const KIND_GLSL = `uniform float uKindId, uGlow, uWriteId;`;
 
 function loadSuburb(){
   if (suburb) return Promise.resolve(suburb);
   return suburbLoading = suburbLoading || (async () => {
     const T = await import("three");
-    // alpha: Print marks where it's wanted in the street's alpha channel
     const r = new T.WebGLRenderer({antialias: true, alpha: true, premultipliedAlpha: false});
     r.shadowMap.enabled = true;
     r.domElement.className = "street";
-    r.domElement.setAttribute("aria-label", "An endless suburb, and whatever spell Fever is casting on it");
+    r.domElement.setAttribute("aria-label", "An endless suburb");
     document.body.insertBefore(r.domElement, $("gl"));
     const scene = new T.Scene();
 
@@ -460,52 +600,28 @@ function loadSuburb(){
     Object.assign(sun.shadow.camera, {left: -50, right: 50, top: 70, bottom: -70, near: 1, far: 220});
     scene.add(sun, sun.target);
 
-    // The look's uniforms, shared by every material: how far Make-Up is on,
-    // the scene's look, and every look's three dials.
-    const U = {
-      uOn: {value: 0}, uTime: {value: 0}, uScene: {value: 0},
-      uP: {value: Array.from({length: 5}, () => new T.Vector3(1, 1, 1))},
-    };
-    // Materials, one per kind, each with its own look: -1 the scene's, -2
-    // none, 0..4 a look of its own. The colour of a piece comes from the
-    // geometry (aPaint), or from the material when the paint is negative:
-    // that's how one house shape serves every colour of house. The sky is
-    // unlit and has no paint.
-    const kinds = {};                                      // kind -> {look, glow}
+    const writeId = {value: 0};
+    // Materials, one per kind. The colour of a piece comes from the geometry
+    // (aPaint), or from the material when the paint is negative: that's how
+    // one house shape serves every colour of house. The sky is unlit.
+    const kinds = {};                                      // kind -> {id, glow}
     const matCache = {};
     function mat(kind, color, sky){
       if (matCache[kind]) return matCache[kind];
-      const k = kinds[kind] = {look: {value: -1}, glow: {value: 0}};
-      // Both sides draw; shadows come from the front side only, or
-      // double-sided surfaces shadow themselves in stripes.
+      const k = kinds[kind] = {id: {value: Object.keys(kinds).length}, glow: {value: 0}};
       const m = sky ? new T.MeshBasicMaterial({map: skyTex, side: T.BackSide, fog: false, depthWrite: false})
                     : new T.MeshLambertMaterial({color, side: T.DoubleSide, shadowSide: T.FrontSide});
       m.onBeforeCompile = sh => {
-        Object.assign(sh.uniforms, U, {uKindLook: k.look, uGlow: k.glow});
-        sh.vertexShader = sh.vertexShader
-          .replace("#include <common>", "#include <common>\n" + (sky ? "" : "attribute vec3 aPaint;\n") + "varying vec3 vW, vN, vPaint;")
-          .replace("#include <begin_vertex>", `#include <begin_vertex>
-            vW = (modelMatrix * vec4(transformed, 1.0)).xyz;
-            ${sky ? "vN = -normalize(mat3(modelMatrix) * normal); vPaint = vec3(-1.0);"
-                  : "vN = normalize(mat3(modelMatrix) * objectNormal); vPaint = aPaint;"}`);
+        Object.assign(sh.uniforms, {uKindId: k.id, uGlow: k.glow, uWriteId: writeId});
+        if (!sky) sh.vertexShader = sh.vertexShader
+          .replace("#include <common>", "#include <common>\nattribute vec3 aPaint;\nvarying vec3 vPaint;")
+          .replace("#include <begin_vertex>", "#include <begin_vertex>\n vPaint = aPaint;");
         sh.fragmentShader = sh.fragmentShader
-          .replace("#include <common>", "#include <common>\n" + MAKEUP_GLSL)
-          .replace("#include <color_fragment>", "#include <color_fragment>\n if (vPaint.r >= 0.0) diffuseColor.rgb = vPaint;")
+          .replace("#include <common>", "#include <common>\n" + KIND_GLSL + (sky ? "" : "\nvarying vec3 vPaint;"))
+          .replace("#include <color_fragment>", "#include <color_fragment>\n" + (sky ? "" : " if (vPaint.r >= 0.0) diffuseColor.rgb = vPaint;"))
           .replace("#include <dithering_fragment>", `#include <dithering_fragment>
-            { int k = lookHere();
-              if (k >= 0 && uOn > 0.001){
-                vec3 n = normalize(vN), v = normalize(cameraPosition - vW);
-                if (k == 3) gl_FragColor.a = 1.0 - 0.5 * uOn;      // Print: mark it for the screen pass
-                else {
-                  vec3 pp = vW, nn = n;
-                  ${sky ? `// seen from inside, the dome barely moves across itself: pattern it by
-                  // the direction you look instead, and lay Strokes flat on that
-                  vec3 d = -v; pp = vec3(atan(d.z, d.x) * 9.0, d.y * 18.0, d.y * 9.0);
-                  if (k == 2) nn = vec3(0.0, 0.0, 1.0);` : ""}
-                  gl_FragColor.rgb = paint(gl_FragColor.rgb, pp, nn, v, uOn, abs(dot(n, v)), k, uP[k]);
-                }
-              } }
-            gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.62, 0.94, 0.78), 0.45 * uGlow);`);
+            gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.62, 0.94, 0.78), 0.45 * uGlow);
+            gl_FragColor.a = uWriteId > 0.5 ? 1.0 - uKindId * 0.03 : 1.0;`);
       };
       return matCache[kind] = m;
     }
@@ -754,8 +870,6 @@ function loadSuburb(){
       if (i % 3 === 1){ const l = lamp(); l.position.set(6.2, 0, -i * LOT + 3); scene.add(l); things.push(l); }
     }
 
-    // What each kind wears, when it isn't the scene's look: a look id, or "bare".
-    const dressed = {};
     const ray = new T.Raycaster(); ray.layers.set(2);
     const ndc = new T.Vector2(), nm = new T.Matrix3();
     // The thing under a point on the screen: {kind, point, normal} or null (the sky).
@@ -771,13 +885,12 @@ function loadSuburb(){
     }
 
     suburb = {
-      canvas: r.domElement, dressed, hover: null,
+      canvas: r.domElement, kinds,
       size(w, h){
         r.setPixelRatio(Math.min(devicePixelRatio || 1, w < 700 ? 1.5 : 2, quality));
         r.setSize(w, h); camera.aspect = w / h; camera.fov = w < h ? 74 : 52; camera.updateProjectionMatrix();
       },
-      show(v){ r.domElement.hidden = !v; },
-      // One frame: walk, dress each kind, set the looks' dials, draw.
+      // One frame: walk, light up the kinds in the selected layer's mask, draw.
       frame(dt, o){
         camera.position.z -= o.walk;
         const cz = camera.position.z;
@@ -785,180 +898,113 @@ function loadSuburb(){
         ground.position.z = cz; dome.position.copy(camera.position);
         sun.position.set(40, 45, cz + 55); sun.target.position.set(0, 0, cz - 55);
         for (const t of things) if (t.position.z > cz + LOT) t.position.z -= N * LOT;
-        for (const kind in kinds){
-          const d = dressed[kind];
-          kinds[kind].look.value = d === undefined ? -1 : d === "bare" ? -2 : LOOK_IDS.indexOf(d);
-          kinds[kind].glow.value = this.hover === kind ? o.glow : 0;
-        }
-        U.uScene.value = LOOK_IDS.indexOf(o.scene);
-        o.dials.forEach((d, i) => U.uP.value[i].set(d[0], d[1], d[2]));
-        U.uTime.value = o.time;
-        U.uOn.value += ((o.on ? 1 : 0) - U.uOn.value) * Math.min(1, dt * 3);
+        for (const kind in kinds) kinds[kind].glow.value = o.glowKinds.has(kind) ? o.glow : 0;
+        writeId.value = o.ids ? 1 : 0;
         r.render(scene, camera);
       },
-      // Whether anything is wearing Print, which needs the screen pass.
-      printing(scene){ return Object.keys(kinds).some(k => (dressed[k] === undefined ? scene : dressed[k]) === "print"); },
       keyAt(x, y){ const h = hitAt(x, y); return h ? h.kind : "sky"; },
-      // Dress a kind: a look id, "bare", or undefined for the scene's look.
-      dress(kind, look){ if (look === undefined) delete dressed[kind]; else dressed[kind] = look; },
-      describe(){
-        return Object.entries(dressed).map(([k, v]) => k + ": " + (v === "bare" ? "bare" : v)).join(", ");
-      },
+      idOf(kind){ return kinds[kind] ? kinds[kind].id.value : -1; },
     };
     return suburb;
   })();
 }
 
-// ------------------------------------------------------------------ looks
-// A look is Make-Up's spell: a way of colouring, and its dials. Make-Up shows
-// the chosen look's dials in the controller.
-const SPELLS = [
-  {id: "spectrum", name: "Spectrum", note: "oil-slick colour all over it", pages: {colour: [
-    {id: "bands",  glyph: "≋", name: "bands",  v: 0.4,  map: v => 0.3 + v * 3},
-    {id: "drift",  glyph: "→", name: "drift",  v: 0.35, map: v => v * 3},
-    {id: "flood",  glyph: "◐", name: "strength", v: 0.75, map: v => v * 1.3},
-  ]}},
-  {id: "bleach", name: "Bleach", note: "the colour drained out of it", pages: {colour: [
-    {id: "drain",  glyph: "◐", name: "drain",  v: 0.8,  map: v => v},
-    {id: "warmth", glyph: "☼", name: "warmth", v: 0.2,  map: v => v},
-  ]}},
-  {id: "print", name: "Print", note: "reprinted in a few loose inks", pages: {colour: [
-    {id: "offset", glyph: "⇉", name: "offset", v: 0.45, map: v => v * 2},
-    {id: "boil",   glyph: "≈", name: "boil",   v: 0.35, map: v => v},
-    {id: "shadow", glyph: "◑", name: "shadow", v: 0.35, map: v => 0.1 + v * 0.45},
-  ]}},
-  {id: "gloss", name: "Gloss", note: "glossy, inflated chrome", pages: {colour: [
-    {id: "shine",  glyph: "✦", name: "shine",  v: 0.7,  map: v => v * 1.4},
-    {id: "gcol",   glyph: "◐", name: "colour", v: 0.5,  map: v => v * 1.5},
-    {id: "grain",  glyph: "░", name: "grain",  v: 0.5,  map: v => v},
-  ]}},
-  {id: "strokes", name: "Strokes", note: "bright strands crawling over it", pages: {colour: [
-    {id: "dense",  glyph: "≡", name: "density", v: 0.55, map: v => v},
-    {id: "slen",   glyph: "∿", name: "length", v: 0.45, map: v => v},
-    {id: "crawl",  glyph: "→", name: "crawl",  v: 0.4,  map: v => v * 2},
-  ]}},
-];
-// The street's own dial, whatever the spell.
-const STREET = [{id: "speed", glyph: "→", name: "speed", v: 0.3, map: v => v * 60}];
-let spell = SPELLS.find(x => x.id === store.get("spell")) || SPELLS[0];
-let on = false;
-const D = {};
-for (const d of [...STREET, ...SPELLS.flatMap(sp => Object.values(sp.pages).flat())]){
-  d.def = d.v;
-  const saved = parseFloat(store.get("knob:" + d.id));
-  if (!isNaN(saved)) d.v = Math.min(1, Math.max(0, saved));
-  D[d.id] = d;
+// ------------------------------------------------------------------ the layers
+// A layer: {fx, on, mode, opacity, mask (kinds; empty = everything), p: [..], boil}.
+// The list is drawn top first, as in an image editor; the stack is applied
+// bottom first.
+let layers = [], selected = 0;
+function newLayer(id){
+  const e = BY_ID[id];
+  return {fx: id, on: true, mode: 0, opacity: 1, mask: [], p: e.p.map(x => x[1]), boil: e.boil ?? 0};
 }
-const val = id => D[id].map(D[id].v);
+function loadLayers(){
+  try { const s = JSON.parse(store.get("layers") || "null"); if (Array.isArray(s) && s.every(l => BY_ID[l.fx])) return s; } catch (e) {}
+  // to start: a sprayed street with scribbled lines multiplied over it
+  const a = newLayer("scribble"); a.mode = 1; a.opacity = 0.85;
+  return [a, newLayer("spray")];
+}
+layers = loadLayers();
+const save = () => store.set("layers", JSON.stringify(layers));
 
-function makeDial(d, host){
-  const wrap = document.createElement("div"); wrap.className = "dwrap";
-  wrap.innerHTML = `<div class="dial" tabindex="0" role="slider" aria-label="${d.name}" aria-valuemin="0" aria-valuemax="100">
-      <span class="g" aria-hidden="true">${d.glyph}</span><i class="ind"></i></div>
-    <span class="dname">${d.name}<b></b></span>`;
-  host.appendChild(wrap);
-  const el = wrap.querySelector(".dial"), out = wrap.querySelector("b");
-  d.paint = () => {
-    el.style.setProperty("--v", d.v);
-    out.textContent = Math.round(d.v * 100);
-    el.setAttribute("aria-valuenow", Math.round(d.v * 100));
-  };
-  const set = v => {
-    d.v = Math.min(1, Math.max(0, v)); d.paint(); store.set("knob:" + d.id, d.v.toFixed(3));
-    if (d.id === "pixel") rebuildSoon();
-  };
-  let start = null;
-  el.addEventListener("pointerdown", e => { el.setPointerCapture(e.pointerId); start = {y: e.clientY, v: d.v}; el.focus(); e.preventDefault(); });
-  el.addEventListener("pointermove", e => { if (start) set(start.v + (start.y - e.clientY) / 140); });
-  el.addEventListener("pointerup", () => { start = null; });
-  el.addEventListener("pointercancel", () => { start = null; });
-  el.addEventListener("wheel", e => { e.preventDefault(); set(d.v - Math.sign(e.deltaY) * 0.03); }, {passive: false});
-  el.addEventListener("keydown", e => {
-    const step = e.shiftKey ? 0.1 : 0.02;
-    if (e.key === "ArrowUp" || e.key === "ArrowRight"){ set(d.v + step); e.preventDefault(); }
-    if (e.key === "ArrowDown" || e.key === "ArrowLeft"){ set(d.v - step); e.preventDefault(); }
-    if (e.key === "Home"){ set(0); e.preventDefault(); }
-    if (e.key === "End"){ set(1); e.preventDefault(); }
+function renderLayers(){
+  const ol = $("stack"); ol.innerHTML = "";
+  layers.forEach((L, i) => {
+    const e = BY_ID[L.fx];
+    const li = document.createElement("li");
+    li.className = "layer" + (L.on ? "" : " off");
+    li.setAttribute("aria-selected", String(i === selected));
+    li.innerHTML = `
+      <div class="lrow">
+        <button class="eye" aria-pressed="${L.on}" title="Show or hide this layer">${L.on ? "◉" : "○"}</button>
+        <span class="lname">${e.name}</span>
+        <select class="mode" title="Blend mode">${MODES.map((m, j) => `<option value="${j}"${j === L.mode ? " selected" : ""}>${m}</option>`).join("")}</select>
+        <button class="tiny up" title="Move up">↑</button><button class="tiny down" title="Move down">↓</button><button class="tiny del" title="Delete">×</button>
+      </div>
+      <div class="lrow2"><span class="lab">opacity</span><input type="range" class="op" min="0" max="1" step="0.01" value="${L.opacity}" aria-label="Opacity"></div>
+      <div class="mask">mask: <b>${L.mask.length ? L.mask.join(", ") : "everything"}</b></div>`;
+    li.addEventListener("click", ev => { if (ev.target.closest("button, select, input")) return; selected = i; renderLayers(); });
+    li.querySelector(".eye").onclick = () => { L.on = !L.on; save(); renderLayers(); };
+    li.querySelector(".mode").onchange = ev => { L.mode = +ev.target.value; save(); };
+    li.querySelector(".op").oninput = ev => { L.opacity = +ev.target.value; save(); };
+    li.querySelector(".up").onclick = () => { if (i > 0){ [layers[i - 1], layers[i]] = [layers[i], layers[i - 1]]; selected = i - 1; save(); renderLayers(); } };
+    li.querySelector(".down").onclick = () => { if (i < layers.length - 1){ [layers[i + 1], layers[i]] = [layers[i], layers[i + 1]]; selected = i + 1; save(); renderLayers(); } };
+    li.querySelector(".del").onclick = () => { layers.splice(i, 1); selected = Math.min(selected, layers.length - 1); save(); renderLayers(); };
+    ol.appendChild(li);
   });
-  d.paint();
+  renderProps(); showReadout();
 }
-// The controller's tabs: Street, the chosen spell's pages, then Cast.
-function renderSpell(){
-  const tabs = $("tabs"), pages = $("spellPages");
-  tabs.querySelectorAll("[data-spell-tab]").forEach(t => t.remove());
-  pages.innerHTML = "";
-  for (const group in spell.pages){
-    const t = document.createElement("button");
-    t.className = "chip"; t.setAttribute("role", "tab"); t.setAttribute("aria-selected", "false");
-    t.dataset.tab = group; t.dataset.spellTab = "";
-    t.textContent = group[0].toUpperCase() + group.slice(1);
-    tabs.appendChild(t);
-    const pg = document.createElement("div");
-    pg.className = "page dials"; pg.dataset.page = group; pg.hidden = true;
-    pages.appendChild(pg);
-    spell.pages[group].forEach(d => makeDial(d, pg));
+// The selected layer's settings, and its mask.
+function renderProps(){
+  const box = $("props"), L = layers[selected];
+  if (!L){ box.innerHTML = '<p class="hint">No layers. Add an effect with <b>+ effect</b>.</p>'; return; }
+  const e = BY_ID[L.fx];
+  box.innerHTML = `<p class="ttl2">${e.name} settings</p>` +
+    e.p.map(([name], j) => `<div class="lrow2"><span class="lab">${name}</span><input type="range" min="0" max="1" step="0.01" value="${L.p[j]}" data-j="${j}" aria-label="${name}"></div>`).join("") +
+    (e.boil !== undefined ? `<div class="lrow2"><span class="lab">boil</span><input type="range" min="0" max="1" step="0.01" value="${L.boil}" data-boil aria-label="boil"></div>` : "") +
+    `<p class="hint">Click things in the street to mask this layer to them. ${L.mask.length ? '<button id="unmask">everything</button>' : ""}</p>`;
+  box.querySelectorAll("input[data-j]").forEach(inp => inp.oninput = () => { L.p[+inp.dataset.j] = +inp.value; save(); });
+  const b = box.querySelector("input[data-boil]"); if (b) b.oninput = () => { L.boil = +b.value; save(); };
+  const um = $("unmask"); if (um) um.onclick = () => { L.mask = []; save(); renderLayers(); };
+}
+function renderAdd(){
+  const m = $("addMenu"); m.innerHTML = "";
+  for (const g of ["Colour", "Print & paint", "Line"]){
+    m.insertAdjacentHTML("beforeend", `<div class="grp">${g}</div>`);
+    for (const e of EFFECTS.filter(x => x.group === g)){
+      const b = document.createElement("button"); b.textContent = e.name;
+      b.onclick = () => { layers.unshift(newLayer(e.id)); selected = 0; openAdd(false); save(); renderLayers(); if (!on) setOn(true); };
+      m.appendChild(b);
+    }
   }
-  const fx = document.createElement("button");
-  fx.className = "chip"; fx.setAttribute("role", "tab"); fx.setAttribute("aria-selected", "false");
-  fx.dataset.tab = "cast"; fx.dataset.spellTab = ""; fx.textContent = "Cast";
-  tabs.appendChild(fx);
-  // The dropdown in the dock.
-  $("spellName").textContent = spell.name;
-  const menu = $("spellMenu"); menu.innerHTML = '<div class="kick">The scene\'s look</div>';
-  for (const sp of SPELLS){
-    const b = document.createElement("button");
-    b.setAttribute("role", "option"); b.setAttribute("aria-selected", String(sp === spell));
-    b.innerHTML = `${sp.name}<i>${sp.note}</i>`;
-    b.addEventListener("click", () => {
-      spell = sp; store.set("spell", sp.id); renderSpell(); openSpells(false); showReadout();
-      if (!$("ctrl").hidden) showTab(Object.keys(sp.pages)[0]);
-    });
-    menu.appendChild(b);
-  }
-  tabs.querySelectorAll("[data-tab]").forEach(t => t.onclick = () => showTab(t.dataset.tab));
 }
-function openSpells(open){
-  $("spellMenu").hidden = !open; $("spellBtn").setAttribute("aria-expanded", String(open));
-  if (open) ($("spellMenu").querySelector('[aria-selected="true"]') || {focus(){}}).focus();
-}
-$("spellBtn").addEventListener("click", () => openSpells($("spellMenu").hidden));
-addEventListener("pointerdown", e => { if (!$("spellMenu").hidden && !e.target.closest("#spellMenu, #spellBtn")) openSpells(false); });
-function showTab(name){
-  document.querySelectorAll("[data-tab]").forEach(o => o.setAttribute("aria-selected", String(o.dataset.tab === name)));
-  document.querySelectorAll("[data-page]").forEach(p => p.hidden = p.dataset.page !== name);
-}
-renderSpell();
-STREET.forEach(d => makeDial(d, $("streetDials")));
+function openAdd(v){ $("addMenu").hidden = !v; $("addBtn").setAttribute("aria-expanded", String(v)); }
+$("addBtn").onclick = () => openAdd($("addMenu").hidden);
+renderAdd();
 
 // ------------------------------------------------------------------ the loop
-let run = null, paused = false;
-let glow = 0;                                              // the glow on the kind being dressed, 0..1
+let run = null, paused = false, on = false, glow = 0;
+let speed = parseFloat(store.get("speed")); if (isNaN(speed)) speed = 0.3;
+$("speed").value = speed;
+$("speed").oninput = ev => { speed = +ev.target.value; store.set("speed", speed); };
 
-// Print's canvas lies over the street's; it's shown only while something is
-// wearing Print.
+// The layers draw on a canvas over the street's, ping-ponging between two
+// pictures at the street's size.
 function build(){
   if (!innerWidth || !innerHeight || !street || !suburb) return;
   suburb.size(innerWidth, innerHeight);
-  canvas.hidden = true;
   if (!gl){ showReadout(); return; }
-  const src = suburb.canvas, FW = src.width, FH = src.height;
-  canvas.width = FW; canvas.height = FH;
-  if (run) gl.deleteTexture(run.sheetTex);
-  run = {FW, FH, sheetTex: texture(FW, FH, src)};
+  const src = suburb.canvas, W = src.width, H = src.height;
+  canvas.width = W; canvas.height = H;
+  if (run){ gl.deleteTexture(run.base); run.tex.forEach(t => gl.deleteTexture(t)); }
+  const tex = [texture(W, H), texture(W, H)], fbo = tex.map(t => {
+    const f = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, f);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t, 0); return f;
+  });
+  run = {W, H, base: texture(W, H, src), tex, fbo};
   showReadout();
 }
 let rt; function rebuildSoon(){ clearTimeout(rt); rt = setTimeout(build, 250); }
-
-// Every look's three dials, in the shader's numbering.
-function allDials(){
-  return [
-    [val("bands"), val("drift"), val("flood")],            // Spectrum
-    [val("drain"), val("warmth"), 0],                        // Bleach
-    [val("dense"), val("slen"), val("crawl")],              // Strokes
-    [val("offset"), val("boil"), val("shadow")],            // Print (used by the screen pass)
-    [val("shine"), val("gcol"), val("grain")],              // Gloss
-  ];
-}
 
 // Sharpness looks after itself: if frames keep running slow, the street is
 // drawn a notch less sharp (2x, 1.75x ... down to 1x) until it keeps up.
@@ -971,7 +1017,7 @@ function keepUp(dt){
   }
 }
 
-let last = 0, clock = 0;
+let last = 0, clock = 0, maskFlash = 0;
 function frame(now){
   requestAnimationFrame(frame);
   const dt = Math.min(0.05, (now - last) / 1000 || 0.016); last = now;
@@ -979,31 +1025,49 @@ function frame(now){
   if (paused) return;
   clock += dt;
   if (!street || !suburb) return;
-  glow = objKind ? 1 : Math.max(0, glow - dt / 0.9);
-  if (!objKind && glow === 0) suburb.hover = null;
-  suburb.frame(dt, {on, glow, time: clock, walk: val("speed") * 0.18 * dt, scene: spell.id, dials: allDials()});
-  if (run && on && suburb.printing(spell.id)){
-    canvas.hidden = false;
-    printFrame();
-  } else if (!canvas.hidden) canvas.hidden = true;
+  maskFlash = Math.max(0, maskFlash - dt / 1.2);
+  const L = layers[selected];
+  const glowKinds = new Set(L && maskFlash > 0 ? L.mask : []);
+  // ids go in the street's alpha only while the layers cover it; otherwise
+  // the street shows itself, and must be opaque
+  const live = !!(on && run && layers.some(l => l.on && l.opacity > 0));
+  suburb.frame(dt, {walk: speed * 60 * 0.18 * dt, glowKinds, glow: maskFlash, ids: live});
+  canvas.hidden = !live;
+  if (live) drawLayers();
 }
 
-// Print, on the finished picture.
-function printFrame(){
-  gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, run.sheetTex);
+function drawLayers(){
+  const {W, H} = run;
+  gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, run.base);
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, suburb.canvas);
-  gl.useProgram(PR.p); gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0, 0, run.FW, run.FH);
-  gl.uniform1i(PR.u.uFull, 1);
-  gl.uniform2f(PR.u.uRes, run.FW, run.FH);
-  gl.uniform1f(PR.u.uOff, val("offset")); gl.uniform1f(PR.u.uBoil, val("boil")); gl.uniform1f(PR.u.uShadow, val("shadow"));
-  gl.uniform1f(PR.u.uTime, clock);
-  gl.drawArrays(gl.TRIANGLES, 0, 3);
+  gl.useProgram(FXP.p); gl.viewport(0, 0, W, H);
+  gl.uniform1i(FXP.u.uBase, 1);
+  gl.uniform2f(FXP.u.uRes, W, H);
+  gl.uniform1f(FXP.u.uTime, clock);
+  const stack = layers.filter(l => l.on && l.opacity > 0).reverse();   // bottom first
+  let from = -1;                                           // -1: the street itself
+  stack.forEach((L, n) => {
+    const last = n === stack.length - 1, to = from === 0 ? 1 : 0;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, last ? null : run.fbo[to]);
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, from < 0 ? run.base : run.tex[from]);
+    gl.uniform1i(FXP.u.uSrc, 0);
+    gl.uniform1f(FXP.u.uSrcFlip, from < 0 ? 1 : 0);
+    gl.uniform1f(FXP.u.uType, BY_ID[L.fx].type);
+    gl.uniform1f(FXP.u.uMode, L.mode);
+    gl.uniform1f(FXP.u.uOpacity, L.opacity);
+    gl.uniform4f(FXP.u.uP, L.p[0] ?? 0, L.p[1] ?? 0, L.p[2] ?? 0, L.boil);
+    const ids = L.mask.map(k => suburb.idOf(k)).filter(i => i >= 0);
+    gl.uniform1f(FXP.u.uAll, ids.length ? 0 : 1);
+    gl.uniform1fv(FXP.u["uMask[0]"], Array.from({length: 16}, (_, i) => ids.includes(i) ? 1 : 0));
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    from = to;
+  });
 }
 requestAnimationFrame(frame);
 
 function showReadout(){
-  const own = suburb ? suburb.describe() : "";
-  $("readout").textContent = (on ? spell.name.toLowerCase() : "make-up off") + (own ? " · " + own : "");
+  const vis = layers.filter(l => l.on).map(l => BY_ID[l.fx].name.toLowerCase());
+  $("readout").textContent = on ? (vis.length ? vis.join(" over ") : "no layers showing") : "make-up off";
 }
 
 // ------------------------------------------------------------------ the street
@@ -1012,69 +1076,46 @@ function useStreet(){
   loadSuburb().then(() => { street = true; build(); })
     .catch(() => { $("readout").textContent = "couldn't load the 3D street"; });
 }
-// ------------------------------------------------------------------ the controller
-function openCtrl(open){ $("ctrl").hidden = !open; $("open").setAttribute("aria-expanded", String(open)); }
-$("open").addEventListener("click", () => openCtrl($("ctrl").hidden));
 
-// Make-Up itself: on, the look goes on the street; off, the street is as it was.
+// ------------------------------------------------------------------ the controls
 function setOn(v){
   on = v;
   $("apply").setAttribute("aria-pressed", String(on));
   showReadout();
 }
 $("apply").addEventListener("click", () => setOn(!on));
-$("pickNone").addEventListener("click", () => {
-  if (suburb){ for (const k of Object.keys(suburb.dressed)) suburb.dress(k); showReadout(); }
-});
-$("freeze").addEventListener("click", e => { paused = !paused; e.currentTarget.setAttribute("aria-pressed", String(paused)); });
-$("reset").addEventListener("click", () => {
-  for (const id in D){ D[id].v = D[id].def; D[id].paint(); store.set("knob:" + id, D[id].v); }
-  build();
-});
+function showPanel(v){ $("layers").hidden = !v; $("layersBtn").setAttribute("aria-expanded", String(v)); store.set("panel", v ? "1" : "0"); }
+$("layersBtn").addEventListener("click", () => showPanel($("layers").hidden));
+if (store.get("panel") === "0") showPanel(false);
 
-// Dressing one thing: click it, and a little menu opens where you clicked.
-let objKind = null;
-function openObj(kind, x, y){
-  objKind = kind; suburb.hover = kind;
-  const m = $("objMenu"), cur = suburb.dressed[kind];
-  m.innerHTML = `<div class="kick">${kind}</div>`;
-  const add = (label, note, value, sel) => {
-    const b = document.createElement("button");
-    b.setAttribute("role", "option"); b.setAttribute("aria-selected", String(sel));
-    b.innerHTML = `${label}<i>${note}</i>`;
-    b.addEventListener("click", () => { suburb.dress(kind, value); closeObj(); if (!on) setOn(true); showReadout(); });
-    m.appendChild(b);
-  };
-  add("The scene's look", spell.name, undefined, cur === undefined);
-  for (const sp of SPELLS) add(sp.name, sp.note, sp.id, cur === sp.id);
-  add("Bare", "as it was", "bare", cur === "bare");
-  m.hidden = false;
-  const r = m.getBoundingClientRect();
-  m.style.left = Math.min(innerWidth - r.width - 8, Math.max(8, x + 12)) + "px";
-  m.style.top = Math.min(innerHeight - r.height - 8, Math.max(8, y - r.height / 2)) + "px";
-}
-function closeObj(){ $("objMenu").hidden = true; objKind = null; }
-addEventListener("pointerdown", e => { if (!$("objMenu").hidden && !e.target.closest("#objMenu")) closeObj(); });
-
-
+// Masking: with a layer selected, click a thing in the street to put it in
+// the layer's mask, or take it out. The things in the mask glow for a moment.
 addEventListener("click", e => {
   if (!(e.target instanceof HTMLCanvasElement) || !suburb) return;
-  openObj(suburb.keyAt(e.clientX / innerWidth, e.clientY / innerHeight), e.clientX, e.clientY);
+  const L = layers[selected]; if (!L) return;
+  const kind = suburb.keyAt(e.clientX / innerWidth, e.clientY / innerHeight);
+  const i = L.mask.indexOf(kind);
+  if (i >= 0) L.mask.splice(i, 1); else L.mask.push(kind);
+  maskFlash = 1; if (!on) setOn(true);
+  save(); renderLayers();
 });
+addEventListener("pointerdown", e => { if (!$("addMenu").hidden && !e.target.closest("#addMenu, #addBtn")) openAdd(false); });
 addEventListener("keydown", e => {
-  if (e.target.closest && e.target.closest(".dial")) return;
+  if (e.target.closest && e.target.closest("input, select")) return;
   if (e.key === "m" || e.key === "M") setOn(!on);
-  else if (e.key === "p" || e.key === "P") $("freeze").click();
-  else if (e.key === "Escape"){ openSpells(false); closeObj(); openCtrl(false); $("help").hidden = true; }
+  else if (e.key === "l" || e.key === "L") showPanel($("layers").hidden);
+  else if (e.key === "p" || e.key === "P") paused = !paused;
+  else if (e.key === "Escape"){ openAdd(false); $("help").hidden = true; }
 });
 addEventListener("resize", rebuildSoon);
 $("ask").addEventListener("click", () => { $("help").hidden = !$("help").hidden; });
-$("gotit").addEventListener("click", () => { $("help").hidden = true; store.set("helped", "1"); });
+$("gotit").addEventListener("click", () => { $("help").hidden = true; store.set("helped", "1"); setOn(true); });
 
 // ------------------------------------------------------------------ go
+renderLayers();
 (async () => {
   await document.fonts.ready;
   useStreet();
-  if (!store.get("helped")) $("help").hidden = false;
+  if (!store.get("helped")) $("help").hidden = false; else setOn(true);
 })();
 </script>
