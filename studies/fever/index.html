@@ -2,7 +2,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Fever</title>
-<meta name="description" content="An endless pastel suburb. Press Fever and cast a spell on its houses, lamps, road and lawn: Cyclone wrings them into a black eye, Shatter breaks them into the pieces they're made of, Liquify ripples, melts or stirs them." />
+<meta name="description" content="An endless pastel suburb. Press Fever and cast a spell on its houses, lamps, road and lawn: Cyclone wrings them into a black eye, Shatter breaks them into the pieces they're made of, Liquify ripples, melts and stirs them." />
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -84,8 +84,6 @@
   .spellmenu button[aria-selected="true"]{background:#fff;color:#000;}
   .spellmenu button[aria-selected="true"] i{color:rgba(0,0,0,.6);}
   .spellmenu button:focus-visible{outline:2px solid var(--mint);outline-offset:-2px;}
-  .spellmenu button.way{margin-left:16px;padding:7px 11px;font-size:10.5px;}
-  .spellmenu button.way i{font-size:10px;}
 
   /* ---------- the strip ---------- */
   .ctrl{
@@ -218,8 +216,8 @@
     sky, going on forever. Press <b>Fever</b> and cast a spell on it. <b>Cyclone</b> is a black eye that rides
     over the surfaces of things and twists, sinks and tears them as it goes; <b>Shatter</b> breaks whatever it
     passes into the pieces it's made of (bricks, boards, shingles, turf, asphalt), which burst off, tumble and
-    fall, then fly back; <b>Liquify</b> ripples it, melts it into drips, or sets
-    worms crawling over it. Choose with the spell button beside Fever.</p>
+    fall, then fly back; <b>Liquify</b> ripples it, melts it into drips and sets
+    worms crawling over it, all at once, in whatever mix you like. Choose with the spell button beside Fever.</p>
   <dl>
     <dt>fever</dt><dd>the button, or F: casts the spell; press again and the street comes back whole</dd>
     <dt>steer</dt><dd>the spell sits on whatever is under the pointer and rides over it: the walls, roofs and
@@ -461,15 +459,16 @@ function texture(w, h, src){
     gl.texParameteri(gl.TEXTURE_2D, k, v);
   return t;
 }
-// The flat Liquify, the same three ways on the picture round the eye: bent
-// in rings, smeared downward in drips, or stirred along currents. It only
+// The flat Liquify, the same three motions on the picture round the eye,
+// mixed: bent in rings, smeared downward in drips, stirred along currents. It only
 // moves the picture; colour belongs to Make-Up, the study that works
 // alongside Fever.
 const RPF = `#version 300 es
 precision highp float;
 uniform sampler2D uFull;
 uniform vec2 uRes, uEye;
-uniform float uAspect, uR, uAmp, uWave, uFlow, uAmt, uTime, uWay;
+uniform float uAspect, uR, uAmp, uWave, uFlow, uAmt, uTime;
+uniform vec3 uMix;
 out vec4 o;
 float h1(float n){ return fract(sin(n * 127.1) * 43758.5453); }
 float vn(vec2 p){
@@ -480,20 +479,15 @@ void main(){
   vec2 uv = gl_FragCoord.xy / uRes;
   vec2 e = (uv - uEye) * vec2(uAspect, 1.0);
   float dist = length(e), env = exp(-dist / max(uR, 1e-4)) * uAmt;
-  vec2 s;
-  if (uWay < 0.5){
-    float ph = dist * 6.2832 / uWave - uTime * uFlow * 6.0;
-    s = uv + normalize(e + 1e-5) / vec2(uAspect, 1.0) * cos(ph) * env * uAmp * 0.035;
-  } else if (uWay < 1.5){
-    float col = floor(gl_FragCoord.x / (4.0 + uWave * 60.0));          // each column drips its own length
-    float len = 0.25 + 1.75 * h1(col * 3.7) * h1(col * 3.7);
-    float sway = 0.8 + 0.2 * sin(uTime * uFlow * 2.5 + h1(col + 7.0) * 6.2832);
-    s = uv + vec2(0.0, env * uAmp * 0.12 * len * sway);               // read from above: it runs down
-  } else {
-    vec2 p = uv * vec2(uAspect, 1.0);
-    float a = vn(p * 3.0 + uTime * 0.1) * 9.42;
-    s = uv + vec2(cos(a), sin(a)) / vec2(uAspect, 1.0) * env * uAmp * 0.045 * (0.6 + 0.4 * sin(uTime * uFlow * 3.0 + vn(p * 6.0) * 6.2832));
-  }
+  float ph = dist * 6.2832 / uWave - uTime * uFlow * 6.0;
+  vec2 s = uv + normalize(e + 1e-5) / vec2(uAspect, 1.0) * cos(ph) * env * uAmp * 0.035 * uMix.x;   // rings
+  float col = floor(gl_FragCoord.x / (4.0 + uWave * 60.0));          // each column drips its own length
+  float len = 0.25 + 1.75 * h1(col * 3.7) * h1(col * 3.7);
+  float sway = 0.8 + 0.2 * sin(uTime * uFlow * 2.5 + h1(col + 7.0) * 6.2832);
+  s += vec2(0.0, env * uAmp * 0.12 * len * sway * uMix.y);           // read from above: it runs down
+  vec2 p = uv * vec2(uAspect, 1.0);
+  float a = vn(p * 3.0 + uTime * 0.1) * 9.42;
+  s += vec2(cos(a), sin(a)) / vec2(uAspect, 1.0) * env * uAmp * 0.045 * (0.6 + 0.4 * sin(uTime * uFlow * 3.0 + vn(p * 6.0) * 6.2832)) * uMix.z;
   o = vec4(texture(uFull, vec2(clamp(s.x, 0.0, 1.0), clamp(1.0 - s.y, 0.0, 1.0))).rgb, 1.0);
 }`;
 let P, B, SH, RP;
@@ -522,8 +516,8 @@ if (gl){
 //            roofs, chunks of asphalt, clods of turf, slabs of path. Near the
 //            eye they come away whole, tumble, shrink and fall, and fly back
 //            once it has moved on.
-//   Liquify  waves roll through things, or they melt into drips, or
-//            worms crawl over them (see ripple() below).
+//   Liquify  waves roll through things as they melt into drips and
+//            worms crawl over them, mixed (see ripple() below).
 // While whole, things are their plain flat colours; what the spell is
 // working on shows what it's made of, front and back.
 //
@@ -537,7 +531,7 @@ const SPELL_GLSL = `
 uniform vec4 uTrail[${TRAIL}];
 uniform vec3 uTrailN[${TRAIL}];
 uniform float uR, uSpin, uPull, uSink, uDrip, uTear, uSnap, uTime, uOn, uHit;
-uniform float uSpell, uBurst, uTumble, uFall, uShrink, uAmp, uWave, uRipFlow, uWay;
+uniform float uSpell, uBurst, uTumble, uFall, uShrink, uAmp, uWave, uRipFlow, uMixR, uMixM, uMixC;
 attribute vec3 aCenter, aRand;                             // each piece's centre, and three random numbers
 varying float vHole, vBreak, vWave;
 float ph(float n){ return fract(sin(n * 127.1) * 43758.5453); }
@@ -598,12 +592,13 @@ float vn2(vec2 p){
   float a = ph(i.x + i.y * 57.0), b = ph(i.x + 1.0 + i.y * 57.0), c = ph(i.x + (i.y + 1.0) * 57.0), d = ph(i.x + 1.0 + (i.y + 1.0) * 57.0);
   return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
 }
-// Liquify, three ways, all near the eye and its wake:
-//   Ripple  waves roll out along each surface's normal: the ground heaves,
+// Liquify, near the eye and its wake, is three motions at once, each with
+// its own amount (the Mix dials):
+//   ripple  waves roll out along each surface's normal: the ground heaves,
 //           walls bulge in and out.
-//   Melt    things run downward in drips of uneven length that sway slowly,
+//   melt    things run downward in drips of uneven length that sway slowly,
 //           like a picture melting (after Fabio Catapano's Spectrum 001).
-//   Crawl   the surface flows along currents that curl across it, and
+//   crawl   the surface flows along currents that curl across it, and
 //           ridges crawl along them like worms over a stone.
 vec3 ripple(vec3 w, vec3 nrm){
   float s0 = uOn * uHit;
@@ -618,20 +613,21 @@ vec3 ripple(vec3 w, vec3 nrm){
     most = max(most, env);
   }
   vBreak = most; vWave = sum;
-  if (uWay < 0.5) return w + nrm * sum * uAmp;
-  if (uWay < 1.5){
-    vec3 side = abs(nrm.y) > 0.7 ? vec3(1.0, 0.0, 0.0) : normalize(cross(nrm, vec3(0.0, 1.0, 0.0)));
-    float col = floor(dot(w, side) / (0.15 + uWave * 0.12));          // the drips, side by side
-    float len = 0.25 + 1.75 * ph(col * 3.7) * ph(col * 3.7);
-    float sway = 0.8 + 0.2 * sin(uTime * uRipFlow * 2.5 + ph(col + 7.0) * 6.2832);
-    w.y -= most * uAmp * uR * 0.8 * len * sway;
-    w += nrm * most * uAmp * 0.3 * (len - 0.6);
-    if (nrm.y > 0.7) w.y = max(w.y, -0.42);                          // the ground sags but stays above the earth
-    return w;
-  }
+  if (most <= 0.001) return w;
+  vec3 w0 = w;
+  // ripple
+  w += nrm * sum * uAmp * uMixR;
+  // melt
+  vec3 side = abs(nrm.y) > 0.7 ? vec3(1.0, 0.0, 0.0) : normalize(cross(nrm, vec3(0.0, 1.0, 0.0)));
+  float col = floor(dot(w0, side) / (0.15 + uWave * 0.12));         // the drips, side by side
+  float len = 0.25 + 1.75 * ph(col * 3.7) * ph(col * 3.7);
+  float sway = 0.8 + 0.2 * sin(uTime * uRipFlow * 2.5 + ph(col + 7.0) * 6.2832);
+  w.y -= most * uAmp * uR * 0.8 * len * sway * uMixM;
+  w += nrm * most * uAmp * 0.3 * (len - 0.6) * uMixM;
+  // crawl
   vec3 t1 = abs(nrm.y) > 0.9 ? vec3(1.0, 0.0, 0.0) : normalize(cross(nrm, vec3(0.0, 1.0, 0.0)));
   vec3 t2 = cross(nrm, t1);
-  vec2 q = vec2(dot(w, t1), dot(w, t2));
+  vec2 q = vec2(dot(w0, t1), dot(w0, t2));
   float a = vn2(q * 0.22 + uTime * 0.05) * 9.42;                     // the current, curling
   vec2 f = vec2(cos(a), sin(a));
   float lw = 0.3 + uWave * 0.25, perp = dot(q, vec2(-f.y, f.x)), along = dot(q, f);
@@ -639,9 +635,9 @@ vec3 ripple(vec3 w, vec3 nrm){
   float worm = fract(along / (1.0 + uWave) - uTime * uRipFlow * 0.6 + ph(lane) * 3.0);
   float body = smoothstep(0.0, 0.25, worm) * smoothstep(0.85, 0.5, worm) * step(0.35, ph(lane + 3.0));
   float bulge = 1.0 - abs(fract(perp / lw) - 0.5) * 2.0;
-  w += nrm * body * bulge * most * uAmp * 0.9;                          // the worms
-  w += (f.x * t1 + f.y * t2) * most * uAmp * 0.5 * sin(uTime * uRipFlow * 1.5 + along * 0.5);   // the surface slides
-  if (nrm.y > 0.7) w.y = max(w.y, -0.42);
+  w += nrm * body * bulge * most * uAmp * 0.9 * uMixC;                 // the worms
+  w += (f.x * t1 + f.y * t2) * most * uAmp * 0.5 * sin(uTime * uRipFlow * 1.5 + along * 0.5) * uMixC;   // the surface slides
+  if (nrm.y > 0.7) w.y = max(w.y, -0.42);                          // the ground sags but stays above the earth
   return w;
 }
 // deep: the earth under the lawn, which only Shatter touches, and in a
@@ -759,7 +755,7 @@ function loadSuburb(){
       uR: {value: 3}, uSpin: {value: 1}, uPull: {value: 1}, uSink: {value: 0.5}, uDrip: {value: 1},
       uTear: {value: 1}, uSnap: {value: 0.15}, uTime: {value: 0}, uOn: {value: 0},
       uSpell: {value: 0}, uBurst: {value: 1}, uTumble: {value: 1}, uFall: {value: 0.5}, uShrink: {value: 0.3},
-      uAmp: {value: 0.5}, uWave: {value: 2}, uRipFlow: {value: 1}, uWay: {value: 0},
+      uAmp: {value: 0.5}, uWave: {value: 2}, uRipFlow: {value: 1}, uMixR: {value: 1}, uMixM: {value: 1}, uMixC: {value: 1},
     };
     // Materials, one per kind, so each kind can be switched on or off. The
     // colour of a piece comes from the geometry (aPaint), or from the
@@ -1182,7 +1178,8 @@ function loadSuburb(){
         U.uR.value = o.R; U.uSpin.value = o.spin; U.uPull.value = o.pull; U.uSink.value = o.sink;
         U.uSpell.value = o.spell; U.uBurst.value = o.burst; U.uTumble.value = o.tumble; U.uFall.value = o.fall; U.uShrink.value = o.shrink;
         grass.visible = o.spell === 1; bladeU.uCamZ.value = cz;   // the blades are only ever Shatter's debris
-        U.uAmp.value = o.amp; U.uWave.value = o.wave; U.uRipFlow.value = o.flow; U.uWay.value = o.way;
+        U.uAmp.value = o.amp; U.uWave.value = o.wave; U.uRipFlow.value = o.flow;
+        U.uMixR.value = o.mix[0]; U.uMixM.value = o.mix[1]; U.uMixC.value = o.mix[2];
         U.uDrip.value = o.drip; U.uTear.value = o.tear; U.uSnap.value = o.snap; U.uTime.value = o.time;
         U.uOn.value += ((o.on ? 1 : 0) - U.uOn.value) * Math.min(1, dt * 3);
         r.render(scene, camera);
@@ -1231,18 +1228,17 @@ const SPELLS = [
     {id: "fall",   glyph: "⇣", name: "fall",   v: 0.35, map: v => v * 2},
     {id: "shrink", glyph: "◇", name: "shrink", v: 0.3,  map: v => v},
   ]}},
-  {id: "ripple", name: "Liquify", note: "ripples it, melts it, sets it crawling", pages: {liquid: [
+  {id: "ripple", name: "Liquify", note: "ripples it, melts it and sets it crawling", pages: {liquid: [
     {id: "spread", glyph: "◎", name: "spread", v: 0.35, map: v => 2 + v * 14},
     {id: "swell",  glyph: "≈", name: "swell",  v: 0.4,  map: v => v * 1.4},
     {id: "wave",   glyph: "∿", name: "length", v: 0.35, map: v => 0.8 + v * 4},
     {id: "flow",   glyph: "→", name: "flow",   v: 0.4,  map: v => 0.2 + v * 1.8},
+  ], mix: [
+    {id: "mixR",   glyph: "≈", name: "ripple", v: 0.6,  map: v => v * 1.6},
+    {id: "mixM",   glyph: "⇣", name: "melt",   v: 0.6,  map: v => v * 1.6},
+    {id: "mixC",   glyph: "∿", name: "crawl",  v: 0.5,  map: v => v * 1.6},
   ]}},
 ];
-// Liquify's three ways, chosen under it in the dropdown.
-const WAYS = ["ripple", "melt", "crawl"];
-const WAY_NOTES = {ripple: "waves roll through it", melt: "it runs down in drips", crawl: "worms crawl over it"};
-let way = WAYS.includes(store.get("way")) ? store.get("way") : "ripple";
-const spellLabel = () => spell.id === "ripple" ? way[0].toUpperCase() + way.slice(1) : spell.name;
 // The street's own dial, whatever the spell.
 const STREET = [{id: "speed", glyph: "→", name: "speed", v: 0.3, map: v => v * 60}];
 let spell = SPELLS.find(x => x.id === store.get("spell")) || SPELLS[0];
@@ -1308,7 +1304,7 @@ function renderSpell(){
   fx.dataset.tab = "cast"; fx.dataset.spellTab = ""; fx.textContent = "Cast";
   tabs.appendChild(fx);
   // The dropdown in the dock.
-  $("spellName").textContent = spellLabel();
+  $("spellName").textContent = spell.name;
   const menu = $("spellMenu"); menu.innerHTML = '<div class="kick">Spells</div>';
   for (const sp of SPELLS){
     const b = document.createElement("button");
@@ -1319,17 +1315,6 @@ function renderSpell(){
       if (!$("ctrl").hidden) showTab(Object.keys(sp.pages)[0]);
     });
     menu.appendChild(b);
-    if (sp.id === "ripple") for (const w of WAYS){              // Liquify's ways, under it
-      const c = document.createElement("button");
-      c.className = "way"; c.setAttribute("role", "option");
-      c.setAttribute("aria-selected", String(sp === spell && w === way));
-      c.innerHTML = `${w}<i>${WAY_NOTES[w]}</i>`;
-      c.addEventListener("click", () => {
-        spell = sp; way = w; store.set("spell", sp.id); store.set("way", w);
-        renderSpell(); openSpells(false); showReadout();
-      });
-      menu.appendChild(c);
-    }
   }
   tabs.querySelectorAll("[data-tab]").forEach(t => t.onclick = () => showTab(t.dataset.tab));
 }
@@ -1398,7 +1383,8 @@ function frame(now){
     ...(spell.id === "shatter" ? {spell: 1, R: val("reach") * swell}
       : spell.id === "ripple" ? {spell: 2, R: val("spread") * swell} : {spell: 0}),
     burst: val("burst") * (1 + gulp * 1.5), tumble: val("tumble"), fall: val("fall"), shrink: val("shrink"),
-    amp: val("swell") * (1 + gulp * 2), wave: val("wave"), flow: val("flow"), way: WAYS.indexOf(way),
+    amp: val("swell") * (1 + gulp * 2), wave: val("wave"), flow: val("flow"),
+    mix: [val("mixR"), val("mixM"), val("mixC")],
   });
   sky += ((suburb.onSky && steer ? 1 : 0) - sky) * Math.min(1, dt * 3);
   if (sky > 0.01 && run){
@@ -1430,7 +1416,7 @@ function flatFrame(dt, swell, amt){
     gl.uniform1f(RP.u.uFlow, val("flow"));
     gl.uniform1f(RP.u.uAmt, on ? (amt < 0 ? 1 : amt) : 0);
     gl.uniform1f(RP.u.uTime, clock);
-    gl.uniform1f(RP.u.uWay, WAYS.indexOf(way));
+    gl.uniform3f(RP.u.uMix, val("mixR"), val("mixM"), val("mixC"));
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     return;
   }
@@ -1497,7 +1483,7 @@ requestAnimationFrame(frame);
 
 function showReadout(){
   const what = suburb && suburb.picked.size ? suburb.describe() : "all of it";
-  $("readout").textContent = (on ? spellLabel().toLowerCase() : "fever off") + " · " + what + (pickMode ? " · picking" : "");
+  $("readout").textContent = (on ? spell.name.toLowerCase() : "fever off") + " · " + what + (pickMode ? " · picking" : "");
 }
 
 // ------------------------------------------------------------------ the street
