@@ -161,13 +161,11 @@
     .page[hidden]{display:none;}
     .page .chip{text-align:center;padding:10px 8px;}
     .page.dials{grid-template-columns:repeat(4,1fr);justify-items:center;}
-    .page[data-page="fx"]{grid-template-columns:repeat(3,1fr);}
-    .page[data-page="fx"] .chip{padding:10px 4px;}
+    .page[data-page="cast"] .chip{padding:10px 4px;}
   }
   @media (prefers-reduced-motion:reduce){ .chip,.dockb{transition:none;} }
 </style>
 
-<video id="film" playsinline loop muted hidden></video>
 
 <canvas id="gl" aria-label="An endless suburb, and whatever spell Fever is casting on it"></canvas>
 
@@ -191,17 +189,15 @@
     <button class="chip" id="pickBtn" aria-pressed="false" title="Then click one thing in the street for the spell to hit (K)">Pick</button>
     <button class="chip" id="pickAll" title="Pick every house, or unpick them">Houses</button>
     <button class="chip" id="pickNone" title="Clear the picks: the spell hits everything">Clear</button>
-    <button class="chip" id="filmBtn" aria-pressed="false" title="Swap the 3D street for a film of it">Film</button>
   </div>
 
   <div id="spellPages" style="display:contents"></div>
 
-  <div class="page" data-page="fx" hidden>
-    <button class="chip" id="swallow">Swallow</button>
-    <button class="chip" id="refill">Refill</button>
-    <button class="chip" id="pause" aria-pressed="false">Pause</button>
-    <button class="chip" id="steer" aria-pressed="true">Steer</button>
-    <button class="chip" id="reset">Reset</button>
+  <div class="page" data-page="cast" hidden>
+    <button class="chip" id="surge" title="The spell surges for a moment, as when you click (space)">Surge</button>
+    <button class="chip" id="freeze" aria-pressed="false" title="Stop everything where it is (P)">Freeze</button>
+    <button class="chip" id="follow" aria-pressed="true" title="The spell follows the pointer; off, it stays ahead in the middle">Follow</button>
+    <button class="chip" id="reset" title="Every dial back where it started">Reset dials</button>
   </div>
 </div>
 
@@ -229,12 +225,11 @@
       road, the lawn. The spell then hits only that, and clicking casts it. Pick again to add more;
       <b>Clear</b> lets it hit everything</dd>
     <dt>spell</dt><dd>the button beside Fever opens the list of spells; on the sky, each has a flat form</dd>
-    <dt>controls</dt><dd>turn the spell's dials, or swap the street for a film of it</dd>
+    <dt>controls</dt><dd>turn the spell's dials, the speed you walk at, and under Cast: surge, freeze, follow</dd>
   </dl>
   <p>Fever is the picture-treating tool from Fantasmagoria, the studio's live show, tried out here on its own.
     The street comes from a popular dreamcore meme: an endless suburban street of pastel houses under a
-    too-blue sky. It is drawn live with <a href="https://threejs.org">three.js</a>; the film of it was made
-    with Higgsfield from a still. Cyclone is after a TouchDesigner piece posted to
+    too-blue sky. It is drawn live with <a href="https://threejs.org">three.js</a>. Cyclone is after a TouchDesigner piece posted to
     <a href="https://www.reddit.com/r/TouchDesigner/comments/1t0wkv2/using_td_to_eat_up_worlds/">r/TouchDesigner</a>
     ("using TD to eat up worlds"), rebuilt in WebGL; Shatter after the Voronoi-fracture
     pieces common in TouchDesigner, and Ripple after its fluid displacement work. Nothing leaves your browser.</p>
@@ -262,7 +257,7 @@ const gl = canvas.getContext("webgl2", {antialias: false, preserveDrawingBuffer:
 const VS = `#version 300 es
 in vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }`;
 
-// The flat Cyclone, for the film. Above a blobby front the picture is intact; behind it,
+// The flat Cyclone, for the sky. Above a blobby front the picture is intact; behind it,
 // last frame is dripped, spun around the eye, drawn in, slipped and eaten.
 // While Fever is off uPrime holds, so the whole frame is the plain picture
 // and switching on starts from exactly what was showing.
@@ -274,7 +269,7 @@ in vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }`;
 const COMMON = `
 uniform vec2 uEye;
 uniform float uTime, uFront, uAspect, uEyeR;
-uniform float uSky;                                        // -1: the film (a front); 0..1: a patch of sky, this big
+uniform float uSky;                                        // -1: below a front; 0..1: a patch of sky, this big
 float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 float noise(vec2 p){
   vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
@@ -1170,7 +1165,7 @@ const SPELLS = [
   ]}},
 ];
 // The street's own dial, whatever the spell.
-const STREET = [{id: "speed", glyph: "→", name: "walk", v: 0.3, map: v => v * 60}];
+const STREET = [{id: "speed", glyph: "→", name: "speed", v: 0.3, map: v => v * 60}];
 let spell = SPELLS.find(x => x.id === store.get("spell")) || SPELLS[0];
 let on = false;
 const D = {};
@@ -1213,7 +1208,7 @@ function makeDial(d, host){
   });
   d.paint();
 }
-// The controller's tabs: Street, Spells, then the chosen spell's pages, then FX.
+// The controller's tabs: Street, the chosen spell's pages, then Cast.
 function renderSpell(){
   const tabs = $("tabs"), pages = $("spellPages");
   tabs.querySelectorAll("[data-spell-tab]").forEach(t => t.remove());
@@ -1231,7 +1226,7 @@ function renderSpell(){
   }
   const fx = document.createElement("button");
   fx.className = "chip"; fx.setAttribute("role", "tab"); fx.setAttribute("aria-selected", "false");
-  fx.dataset.tab = "fx"; fx.dataset.spellTab = ""; fx.textContent = "FX";
+  fx.dataset.tab = "cast"; fx.dataset.spellTab = ""; fx.textContent = "Cast";
   tabs.appendChild(fx);
   // The dropdown in the dock.
   $("spellName").textContent = spell.name;
@@ -1241,7 +1236,7 @@ function renderSpell(){
     b.setAttribute("role", "option"); b.setAttribute("aria-selected", String(sp === spell));
     b.innerHTML = `${sp.name}<i>${sp.note}</i>`;
     b.addEventListener("click", () => {
-      spell = sp; store.set("spell", sp.id); renderSpell(); openSpells(false); refill(); showReadout();
+      spell = sp; store.set("spell", sp.id); renderSpell(); openSpells(false); showReadout();
       if (!$("ctrl").hidden) showTab(Object.keys(sp.pages)[0]);
     });
     menu.appendChild(b);
@@ -1262,32 +1257,24 @@ renderSpell();
 STREET.forEach(d => makeDial(d, $("streetDials")));
 
 // ------------------------------------------------------------------ the loop
-// Two ways to see the street: the 3D one (the default; the spell lives in
-// the scene, and you can pick in it) and the film of it, which has no
-// surfaces, so the spell there is the flat one, laid over the picture.
-let run = null, paused = false, steer = true, gulp = 0, film = null;
+// The spell lives in the 3D street; only on the sky, which has no surface
+// to bend, does a flat form of it take over.
+let run = null, paused = false, steer = true, gulp = 0;
 let glow = 0;                                              // the hovered / just-picked kind's glow, 0..1
 let pointer = null;                                        // where the pointer is, 0..1 across and down
 let sky = 0;                                               // how far the flat spell has opened in the sky, 0..1
 
-// The flat spells run on the film, and on the street's picture when the
-// pointer is on the sky; the canvas they draw on lies over the street's and
-// is hidden the rest of the time.
+// The flat spells run on the street's picture when the pointer is on the
+// sky; the canvas they draw on lies over the street's and is hidden the rest
+// of the time.
 function build(){
-  if (!innerWidth || !innerHeight) return;
-  if (suburb){ if (!film && street) suburb.size(innerWidth, innerHeight); suburb.show(!film); }
-  canvas.hidden = !film;
-  if (!gl || !(film || (street && suburb))){ showReadout(); return; }
+  if (!innerWidth || !innerHeight || !street || !suburb) return;
+  suburb.size(innerWidth, innerHeight);
+  canvas.hidden = true;
+  if (!gl){ showReadout(); return; }
   const px = Math.max(1, Math.max(2, Math.round(innerWidth / 520)) + val("pixel") - 2);
   const W = Math.ceil(innerWidth / px), H = Math.ceil(innerHeight / px);       // the spell's pixels
-  let src, FW, FH;
-  if (film){
-    const dpr = Math.min(devicePixelRatio || 1, innerWidth < 700 ? 1.5 : 2);
-    FW = Math.round(innerWidth * dpr); FH = Math.round(innerHeight * dpr);
-    src = document.createElement("canvas"); src.width = FW; src.height = FH;
-    film.canvas = src; film.ctx = src.getContext("2d");
-    film.ctx.fillStyle = "#000"; film.ctx.fillRect(0, 0, FW, FH);
-  } else { src = suburb.canvas; FW = src.width; FH = src.height; }
+  const src = suburb.canvas, FW = src.width, FH = src.height;
   canvas.width = FW; canvas.height = FH;
   if (run){ run.tex.forEach(t => gl.deleteTexture(t)); gl.deleteTexture(run.sheetTex); gl.deleteTexture(run.maskTex); }
   const tex = [texture(W, H), texture(W, H)], fbo = tex.map(t => {
@@ -1309,49 +1296,37 @@ function frame(now){
   clock += dt;
   gulp = Math.max(0, gulp - dt * 1.4);
   const swell = 1 + Math.sin(Math.min(1, gulp) * Math.PI) * 1.6;
-  if (!film){
-    if (!street || !suburb) return;
-    if (pickMode) glow = 1;
-    else if (glow > 0 && (glow -= dt / 0.9) <= 0){ glow = 0; suburb.hover = null; }
-    suburb.frame(dt, {
-      on, glow, time: clock, walk: val("speed") * 0.18 * dt,
-      pointer: steer ? pointer : [0.5, 0.62],
-      R: (1 + D.eye.v * 12) * swell,
-      spin: val("spin") * (1 + gulp * 2), pull: val("pull") * (1 + gulp * 2), sink: D.height.v * 1.6 * (1 + gulp),
-      drip: val("drip"), tear: val("tear"), snap: (val("pixel") - 1) * 0.15,
-      ...(spell.id === "shatter" ? {spell: 1, R: val("reach") * swell}
-        : spell.id === "ripple" ? {spell: 2, R: val("spread") * swell} : {spell: 0}),
-      burst: val("burst") * (1 + gulp * 1.5), tumble: val("tumble"), fall: val("fall"), shrink: val("shrink"),
-      amp: val("swell") * (1 + gulp * 2), wave: val("wave"), flow: val("flow"),
-      ptr: pointer,
-    });
-    sky += ((suburb.onSky && steer ? 1 : 0) - sky) * Math.min(1, dt * 3);
-    if (sky > 0.01 && run){
-      if (pointer) run.target = [pointer[0], 1 - pointer[1]];
-      canvas.hidden = false;
-      flatFrame(dt, swell, sky);
-    } else if (!canvas.hidden){ canvas.hidden = true; if (run) run.primed = false; }
-    return;
-  }
-  if (run) flatFrame(dt, swell, -1);
+  if (!street || !suburb) return;
+  if (pickMode) glow = 1;
+  else if (glow > 0 && (glow -= dt / 0.9) <= 0){ glow = 0; suburb.hover = null; }
+  suburb.frame(dt, {
+    on, glow, time: clock, walk: val("speed") * 0.18 * dt,
+    pointer: steer ? pointer : [0.5, 0.62],
+    R: (1 + D.eye.v * 12) * swell,
+    spin: val("spin") * (1 + gulp * 2), pull: val("pull") * (1 + gulp * 2), sink: D.height.v * 1.6 * (1 + gulp),
+    drip: val("drip"), tear: val("tear"), snap: (val("pixel") - 1) * 0.15,
+    ...(spell.id === "shatter" ? {spell: 1, R: val("reach") * swell}
+      : spell.id === "ripple" ? {spell: 2, R: val("spread") * swell} : {spell: 0}),
+    burst: val("burst") * (1 + gulp * 1.5), tumble: val("tumble"), fall: val("fall"), shrink: val("shrink"),
+    amp: val("swell") * (1 + gulp * 2), wave: val("wave"), flow: val("flow"),
+    ptr: pointer,
+  });
+  sky += ((suburb.onSky && steer ? 1 : 0) - sky) * Math.min(1, dt * 3);
+  if (sky > 0.01 && run){
+    if (pointer) run.target = [pointer[0], 1 - pointer[1]];
+    canvas.hidden = false;
+    flatFrame(dt, swell, sky);
+  } else if (!canvas.hidden){ canvas.hidden = true; if (run) run.primed = false; }
 }
 
-// The flat spells: a picture laid over the screen. amt is -1 for the film,
-// or how far the spell has opened in the street's sky.
+// The flat spells: a picture laid over the screen. amt is how far the spell
+// has opened in the sky.
 function flatFrame(dt, swell, amt){
   const speed = val("speed");
   gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, run.sheetTex);
-  if (film){
-    const v = $("film");
-    if (v.readyState >= 2 && v.videoWidth){
-      const {canvas: c, ctx: g} = film, r = Math.max(c.width / v.videoWidth, c.height / v.videoHeight);
-      g.drawImage(v, (c.width - v.videoWidth * r) / 2, (c.height - v.videoHeight * r) / 2, v.videoWidth * r, v.videoHeight * r);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c);
-    }
-  } else gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, suburb.canvas);
-  const ease = amt < 0 ? 2.5 : 8;                          // in the sky the eye keeps up with the pointer
-  run.eye[0] += (run.target[0] - run.eye[0]) * Math.min(1, dt * ease);
-  run.eye[1] += (run.target[1] - run.eye[1]) * Math.min(1, dt * ease);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, suburb.canvas);
+  run.eye[0] += (run.target[0] - run.eye[0]) * Math.min(1, dt * 8);   // the eye keeps up with the pointer
+  run.eye[1] += (run.target[1] - run.eye[1]) * Math.min(1, dt * 8);
   const eyeR = val("eye") * swell;
 
   if (spell.id === "ripple"){
@@ -1431,38 +1406,21 @@ function flatFrame(dt, swell, amt){
 requestAnimationFrame(frame);
 
 function showReadout(){
-  const what = film ? "the film" : suburb && suburb.picked.size ? suburb.describe() : "all of it";
+  const what = suburb && suburb.picked.size ? suburb.describe() : "all of it";
   $("readout").textContent = (on ? spell.name.toLowerCase() : "fever off") + " · " + what + (pickMode ? " · picking" : "");
 }
 
-// ------------------------------------------------------------------ the street or the film
+// ------------------------------------------------------------------ the street
 function useStreet(){
-  stopFilm();
   $("readout").textContent = "building the street…";
   loadSuburb().then(() => { street = true; build(); })
     .catch(() => { $("readout").textContent = "couldn't load the 3D street"; });
 }
-function useFilm(){
-  setPick(false);
-  const v = $("film");
-  v.src = "suburb.mp4"; v.play().catch(() => {});
-  film = {canvas: null, ctx: null};
-  $("filmBtn").setAttribute("aria-pressed", "true");
-  build();
-}
-function stopFilm(){
-  if (!film) return;
-  const v = $("film"); v.pause(); v.removeAttribute("src"); v.load();
-  film = null;
-  $("filmBtn").setAttribute("aria-pressed", "false");
-}
 function setPick(v){
-  if (v && film) useStreet();                              // you can only pick in the 3D street
   pickMode = v;
   $("pickBtn").setAttribute("aria-pressed", String(v));
   showReadout();
 }
-$("filmBtn").addEventListener("click", () => { if (film){ store.set("film", "0"); useStreet(); } else { store.set("film", "1"); useFilm(); } });
 
 // ------------------------------------------------------------------ the controller
 function openCtrl(open){ $("ctrl").hidden = !open; $("open").setAttribute("aria-expanded", String(open)); }
@@ -1478,15 +1436,13 @@ function setFever(v){
 }
 $("fever").addEventListener("click", () => setFever(!on));
 $("pickBtn").addEventListener("click", () => setPick(!pickMode));
-$("pickAll").addEventListener("click", () => { loadSuburb().then(() => { if (film) useStreet(); suburb.pickHouses(); showReadout(); }); });
+$("pickAll").addEventListener("click", () => { loadSuburb().then(() => { suburb.pickHouses(); showReadout(); }); });
 $("pickNone").addEventListener("click", () => { if (suburb){ suburb.picked.clear(); showReadout(); } });
 
-const swallow = () => { if (on) gulp = 1; };
-const refill = () => { if (run) run.primed = false; };
-$("swallow").addEventListener("click", swallow);
-$("refill").addEventListener("click", refill);
-$("pause").addEventListener("click", e => { paused = !paused; e.currentTarget.setAttribute("aria-pressed", String(paused)); });
-$("steer").addEventListener("click", e => {
+const surge = () => { if (on) gulp = 1; };
+$("surge").addEventListener("click", surge);
+$("freeze").addEventListener("click", e => { paused = !paused; e.currentTarget.setAttribute("aria-pressed", String(paused)); });
+$("follow").addEventListener("click", e => {
   steer = !steer; e.currentTarget.setAttribute("aria-pressed", String(steer));
   if (!steer && run) run.target = [0.5, 0.24];
 });
@@ -1499,7 +1455,7 @@ const overUI = t => t.closest && t.closest(".ctrl, .dock, .help, .home");
 addEventListener("pointermove", e => {
   if (overUI(e.target)){ if (pickMode && suburb) suburb.hover = null; return; }
   pointer = [e.clientX / innerWidth, e.clientY / innerHeight];
-  if (pickMode && suburb && !film) suburb.hover = suburb.keyAt(pointer[0], pointer[1]);
+  if (pickMode && suburb) suburb.hover = suburb.keyAt(pointer[0], pointer[1]);
   if (!run || !steer || !on) return;
   run.target = [e.clientX / innerWidth, Math.max(0.08, Math.min(0.75, 1 - e.clientY / innerHeight))];
 });
@@ -1510,22 +1466,21 @@ document.addEventListener("pointerleave", () => { pointer = null; });
 addEventListener("click", e => {
   if (!(e.target instanceof HTMLCanvasElement)) return;
   pointer = [e.clientX / innerWidth, e.clientY / innerHeight];
-  if (pickMode && suburb && !film){
+  if (pickMode && suburb){
     const key = suburb.pick(e.clientX / innerWidth, e.clientY / innerHeight);
     suburb.hover = key && suburb.picked.has(key) ? key : null;   // the one just picked glows, then fades
     setPick(false);
     if (suburb.picked.size && !on) setFever(true);
     showReadout();
   }
-  else swallow();
+  else surge();
 });
 addEventListener("keydown", e => {
   if (e.target.closest && e.target.closest(".dial")) return;
-  if (e.key === " "){ swallow(); e.preventDefault(); }
-  else if (e.key === "r" || e.key === "R") refill();
+  if (e.key === " "){ surge(); e.preventDefault(); }
   else if (e.key === "f" || e.key === "F") setFever(!on);
   else if (e.key === "k" || e.key === "K") setPick(!pickMode);
-  else if (e.key === "p" || e.key === "P") $("pause").click();
+  else if (e.key === "p" || e.key === "P") $("freeze").click();
   else if (e.key === "Escape"){ openSpells(false); openCtrl(false); $("help").hidden = true; }
 });
 addEventListener("resize", rebuildSoon);
@@ -1535,7 +1490,7 @@ $("gotit").addEventListener("click", () => { $("help").hidden = true; store.set(
 // ------------------------------------------------------------------ go
 (async () => {
   await document.fonts.ready;
-  if (store.get("film") === "1") useFilm(); else useStreet();
+  useStreet();
   if (!store.get("helped")) $("help").hidden = false;
 })();
 </script>
