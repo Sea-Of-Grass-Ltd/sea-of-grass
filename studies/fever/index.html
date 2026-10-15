@@ -252,7 +252,16 @@ float noise(vec2 p){
   return mix(mix(hash(i), hash(i + vec2(1, 0)), f.x), mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), f.x), f.y);
 }
 float fbm(vec2 p){ float v = 0.0, a = 0.5; for (int i = 0; i < 4; i++){ v += a * noise(p); p *= 2.03; a *= 0.5; } return v; }
-vec4 sheet(vec2 uv){ return texture(uSheet, vec2(clamp(uv.x, 0.0, 1.0), clamp(1.0 - uv.y, 0.0, 1.0))); }
+// What the spell eats. With picks, that's only the picked things, as a
+// premultiplied layer that is clear everywhere else, and the result is cut
+// back to their outlines: the spell happens on their surface, made only of
+// them, and the street around them is never dragged in.
+vec4 sheet(vec2 uv){
+  vec2 t = vec2(clamp(uv.x, 0.0, 1.0), clamp(1.0 - uv.y, 0.0, 1.0));
+  vec4 c = texture(uSheet, t);
+  if (uMasked > 0.5){ float m = texture(uMask, t).r; c = vec4(c.rgb * m, m); }
+  return c;
+}
 void main(){
   vec2 uv = gl_FragCoord.xy / uRes;
   float yd = 1.0 - uv.y;
@@ -288,16 +297,16 @@ void main(){
   float feed = 1.0 - smoothstep(0.0, 0.025, eaten);
   o = mix(prev, sheet(uv), feed);
   o.rgb *= smoothstep(uEyeR * 0.25, uEyeR, r);
-  o.a = 1.0;
-  // Picked things only: wherever the mask is black the picture stays whole.
-  if (uMasked > 0.5) o = mix(sheet(uv), o, texture(uMask, vec2(uv.x, yd)).r);
+  if (uMasked < 0.5) o.a = 1.0;
+  else o *= texture(uMask, vec2(uv.x, yd)).r;
 }`;
 const BLIT = `#version 300 es
 precision highp float;
-uniform sampler2D uTex, uMask; uniform vec2 uRes; uniform float uTint; out vec4 o;
+uniform sampler2D uTex, uMask, uPlate; uniform vec2 uRes; uniform float uTint, uMasked; out vec4 o;
 void main(){
   vec2 uv = gl_FragCoord.xy / uRes;
   o = texture(uTex, uv);
+  if (uMasked > 0.5) o += texture(uPlate, vec2(uv.x, 1.0 - uv.y)) * (1.0 - o.a);   // the whole street underneath
   if (uTint > 0.5) o.rgb = mix(o.rgb, vec3(0.62, 0.94, 0.78), 0.45 * texture(uMask, vec2(uv.x, 1.0 - uv.y)).r);
 }`;
 
@@ -665,7 +674,9 @@ function frame(now){
   gl.useProgram(B.p); gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
   gl.bindTexture(gl.TEXTURE_2D, run.tex[b]); gl.uniform1i(B.u.uTex, 1);
-  gl.uniform1i(B.u.uMask, 2); gl.uniform1f(B.u.uTint, masked && pickMode ? 1 : 0);
+  gl.activeTexture(gl.TEXTURE3); gl.bindTexture(gl.TEXTURE_2D, run.sheetTex); gl.uniform1i(B.u.uPlate, 3);
+  gl.activeTexture(gl.TEXTURE1);
+  gl.uniform1i(B.u.uMask, 2); gl.uniform1f(B.u.uMasked, masked ? 1 : 0); gl.uniform1f(B.u.uTint, masked && pickMode ? 1 : 0);
   gl.uniform2f(B.u.uRes, run.W, run.H);
   gl.drawArrays(gl.TRIANGLES, 0, 3);
   run.i = b;
