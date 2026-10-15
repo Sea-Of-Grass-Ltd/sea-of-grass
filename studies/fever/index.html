@@ -2,7 +2,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Fever</title>
-<meta name="description" content="Put something moving on screen, press Fever, and cast a spell on it. The first spell is Dark Puddle, a portal that eats the picture." />
+<meta name="description" content="An endless pastel suburb. Press Fever and cast a spell on its houses, lamps, road and sky. The first spell is Dark Puddle, a portal that eats the picture." />
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -10,9 +10,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
-  /* Fever: the picture-treating tool from Fantasmagoria, alone on a page.
-     Whatever is on screen (pictures, websites, a video, your screen) plays
-     untouched until Fever is on; then the chosen spell works on it. Same
+  /* Fever: the picture-treating tool from Fantasmagoria, alone on a page,
+     examining one endless street. The street plays untouched until Fever
+     is on; then the chosen spell works on it, or on the things you pick. Same
      dark glass as Dark Puddle: a slim strip on a desktop, a bottom sheet on
      a phone, white type, one accent, which turns hot while Fever is on. */
   :root{
@@ -32,14 +32,6 @@
   .home{position:fixed;top:18px;left:20px;z-index:5;color:var(--paper);mix-blend-mode:difference;}
   .home svg{width:30px;height:auto;display:block;}
 
-  /* ---------- the video, full screen, under the canvas ---------- */
-  .player{position:fixed;inset:0;z-index:0;background:#000;overflow:hidden;}
-  .player[hidden]{display:none;}
-  video#live{position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;}
-  .player iframe{
-    position:absolute;top:50%;left:50%;border:0;pointer-events:none;
-    width:max(100vw, 177.78vh);height:max(100vh, 56.25vw);transform:translate(-50%,-50%);
-  }
 
   /* ---------- chips ---------- */
   .chip{
@@ -67,7 +59,6 @@
   .dockb .dot{width:10px;height:10px;border-radius:50%;background:var(--mint);box-shadow:0 0 12px var(--mint);}
   .dockb[aria-expanded="true"] .dot{background:#000;box-shadow:none;}
   .dockb.q{padding:11px 13px;font-size:14px;}
-  .dockb#sound[aria-pressed="true"] .dot{background:#6b6966;box-shadow:none;}
   .dockb#fever{padding:11px 18px;font-size:12px;}
   .dockb#fever .dot{background:#6b6966;box-shadow:none;}
   .dockb#fever[aria-pressed="true"]{background:var(--hot);border-color:var(--hot);color:#000;box-shadow:0 0 28px rgba(255,106,61,.55), var(--soft);}
@@ -108,33 +99,7 @@
   .dname{font:700 9px var(--ui);letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.85);}
   .dname b{font:500 9px var(--mono);margin-left:4px;color:var(--mint);}
 
-  /* sites page */
-  .feed{display:flex;align-items:center;gap:6px;}
-  .feed input{
-    width:min(300px,42vw);font:600 11px var(--ui);color:#fff;border:1px solid var(--edge2);border-radius:99px;
-    padding:8px 12px;background:rgba(0,0,0,.35);outline:none;
-  }
-  .feed input:focus{border-color:var(--mint);}
-  .feed input::placeholder{color:rgba(255,255,255,.45);}
 
-  /* the "more" menu, above the strip */
-  .menu{
-    position:absolute;right:10px;bottom:calc(100% + 8px);min-width:210px;padding:6px;
-    background:var(--glass);border:1px solid var(--edge);border-radius:14px;box-shadow:var(--soft);
-    backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3);
-    display:flex;flex-direction:column;gap:1px;
-  }
-  .menu[hidden]{display:none;}
-  .mi{
-    font:700 10.5px/1 var(--ui);letter-spacing:.08em;text-transform:uppercase;color:#fff;text-align:left;
-    background:none;border:0;border-radius:9px;padding:9px 11px;cursor:pointer;
-    display:flex;justify-content:space-between;align-items:center;gap:14px;white-space:nowrap;
-  }
-  .mi:hover{background:rgba(255,255,255,.1);}
-  .mi:focus-visible{outline:2px solid var(--mint);outline-offset:-2px;}
-  .mi i{font-style:normal;color:var(--mint);}
-  .mi.sep{height:1px;padding:0;margin:4px 6px;background:var(--edge);pointer-events:none;}
-  @media (max-width:700px){ .menu{left:10px;right:10px;} }
 
   /* ---------- help ---------- */
   .help{
@@ -152,8 +117,6 @@
   .help dd{margin:0;}
   .help p{font:600 11.5px/1.55 var(--ui);margin:0 0 12px;color:rgba(255,255,255,.65);}
   .help a{color:#fff;}
-  .help .feed{margin:0 0 14px;}
-  .help .feed input{flex:1;width:auto;min-width:0;font-size:13px;padding:10px 14px;}
 
   .readout{
     position:fixed;left:20px;bottom:20px;z-index:4;margin:0;padding:6px 10px;border:1px solid var(--edge);border-radius:99px;
@@ -178,8 +141,6 @@
     .page{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
     .page[hidden]{display:none;}
     .page .chip{text-align:center;padding:10px 8px;}
-    .page[data-page="sites"] .feed{grid-column:1 / -1;}
-    .feed input{flex:1;width:auto;min-width:0;}
     .page.dials{grid-template-columns:repeat(4,1fr);justify-items:center;}
     .page[data-page="spells"] .spells{grid-column:1 / -1;}
     .page[data-page="fx"]{grid-template-columns:repeat(3,1fr);}
@@ -188,13 +149,9 @@
   @media (prefers-reduced-motion:reduce){ .chip,.dockb{transition:none;} }
 </style>
 
-<video id="live" playsinline loop hidden></video>
+<video id="film" playsinline loop muted hidden></video>
 
-<div class="player" id="player" hidden>
-  <iframe id="yt" title="Video" allow="autoplay; encrypted-media" referrerpolicy="strict-origin-when-cross-origin"></iframe>
-</div>
-
-<canvas id="gl" aria-label="The picture on screen, and whatever spell Fever is casting on it"></canvas>
+<canvas id="gl" aria-label="An endless suburb, and whatever spell Fever is casting on it"></canvas>
 
 <a class="home" href="/" aria-label="Sea of Grass — all studies">
   <svg viewBox="43.63 44.56 350.94 258.56" fill="currentColor" aria-hidden="true">
@@ -207,26 +164,16 @@
 <!-- ---------------------------------------------------------------- controller -->
 <div class="ctrl" id="ctrl" hidden role="dialog" aria-label="Fever controls">
   <div class="tabs" role="tablist" id="tabs">
-    <button class="chip" role="tab" aria-selected="true" data-tab="sites">Picture</button>
+    <button class="chip" role="tab" aria-selected="true" data-tab="street">Street</button>
     <button class="chip" role="tab" aria-selected="false" data-tab="spells">Spells</button>
   </div>
   <div class="sep"></div>
 
-  <div class="page" data-page="sites">
-    <div class="feed">
-      <input id="links" spellcheck="false" autocomplete="off" aria-label="Feed it"
-        placeholder="a subject, links, or a YouTube link" />
-      <button class="chip" id="feedBtn">Go</button>
-    </div>
-    <button class="chip" id="pickBtn" hidden aria-pressed="false" title="Click things in the street to choose what the spell hits (K)">Pick</button>
-    <button class="chip" id="pickAll" hidden title="Pick every house, or unpick them">Houses</button>
-    <button class="chip" id="pickNone" hidden title="Clear the picks: the spell hits everything">Clear</button>
-    <button class="chip" id="liveYt" hidden title="Opens the video in its own window and asks to share it">Eat it live</button>
-    <label class="chip" for="add" title="Add pictures or a video from your computer">+</label>
-    <input type="file" id="add" accept="image/*,video/*" multiple hidden>
-    <button class="chip" id="more" aria-haspopup="menu" aria-expanded="false">more ▾</button>
-    <input type="file" id="file" accept=".json,.txt,application/json,text/plain" hidden>
-    <div class="menu" id="menu" hidden role="menu"></div>
+  <div class="page" data-page="street">
+    <button class="chip" id="pickBtn" aria-pressed="false" title="Click things in the street to choose what the spell hits (K)">Pick</button>
+    <button class="chip" id="pickAll" title="Pick every house, or unpick them">Houses</button>
+    <button class="chip" id="pickNone" title="Clear the picks: the spell hits everything">Clear</button>
+    <button class="chip" id="filmBtn" aria-pressed="false" title="Swap the 3D street for a film of it">Film</button>
   </div>
 
   <div class="page" data-page="spells" hidden>
@@ -244,44 +191,30 @@
 </div>
 
 <div class="dock">
-  <button class="dockb" id="fever" aria-pressed="false" title="Cast the spell on what's on screen (F)"><span class="dot"></span><span id="feverLabel">fever</span></button>
+  <button class="dockb" id="fever" aria-pressed="false" title="Cast the spell on the street (F)"><span class="dot"></span><span id="feverLabel">fever</span></button>
   <button class="dockb" id="open" aria-label="Controls" aria-expanded="false"><span class="dot"></span>controls</button>
   <button class="dockb q" id="ask" aria-label="How to play">?</button>
-  <button class="dockb" id="sound" aria-pressed="false" title="Mute or unmute the video"><span class="dot"></span><span id="soundLabel">sound</span></button>
 </div>
 
 <div class="help" id="help" hidden role="dialog" aria-label="About Fever">
   <p class="kicker">Study 10 · Sea of Grass</p>
   <h2 id="helpTitle">Fever</h2>
-  <div class="feed">
-    <input id="askq" spellcheck="false" autocomplete="off" aria-label="A subject"
-      placeholder="what should it eat? frogs, cathedrals, neon signs…" />
-    <button class="chip" id="askGo">Go</button>
-  </div>
-  <p class="lede">A tool for treating a moving picture. It opens on an endless suburb; press <b>Fever</b> and
-    cast a spell on it. The first spell is Dark Puddle: a portal that drags the picture, row by row, into a
-    black eye you steer. You can swap the street for pictures of a subject, websites, a YouTube video or your
-    own files.</p>
+  <p class="lede">An examination of one street: pastel houses down both sides of a grey road, under a hard blue
+    sky, going on forever. Press <b>Fever</b> and cast a spell on it. The first spell is Dark Puddle, a portal
+    that drags the street, row by row, into a black eye you steer.</p>
   <dl>
-    <dt>fever</dt><dd>the button, or F: casts the spell; press again and the picture comes back whole</dd>
+    <dt>fever</dt><dd>the button, or F: casts the spell; press again and the street comes back whole</dd>
     <dt>steer</dt><dd>move the pointer and the eye follows; click and it swallows</dd>
-    <dt>pick</dt><dd>in the street, turn on <b>Pick</b> (or K) and click things: a colour of house, the lamps,
-      the road, the lawn, the sky. The spell then hits only those</dd>
-    <dt>controls</dt><dd>pick the picture, pick the spell, turn its dials</dd>
-    <dt>+</dt><dd>add pictures or a video from your computer, or drop them on the page</dd>
-    <dt>video</dt><dd>paste a YouTube link and it fills the screen; <b>Eat it live</b> lets the portal tear the
-      moving picture</dd>
+    <dt>pick</dt><dd>in controls, turn on <b>Pick</b> (or K) and click things: a colour of house, the lamps, the
+      road, the lawn, the sky. The spell then hits only those</dd>
+    <dt>controls</dt><dd>pick the spell, turn its dials, or swap the street for a film of it</dd>
   </dl>
   <p>Fever is the picture-treating tool from Fantasmagoria, the studio's live show, tried out here on its own.
     The street is drawn live with <a href="https://threejs.org">three.js</a>; the film of it was made with
     Higgsfield from a still. The portal is after a TouchDesigner piece posted to
     <a href="https://www.reddit.com/r/TouchDesigner/comments/1t0wkv2/using_td_to_eat_up_worlds/">r/TouchDesigner</a>
-    ("using TD to eat up worlds"), rebuilt in WebGL. Subject pictures come from
-    <a href="https://commons.wikimedia.org">Wikimedia Commons</a>; site pictures from WordPress's
-    <a href="https://developer.wordpress.com/docs/photon/">mshots</a>, which receives the addresses being shown
-    (for a history file, only the site names). Your files are read in the tab and never uploaded; your links and
-    settings stay in this browser.</p>
-  <button class="chip" id="gotit">Skip</button>
+    ("using TD to eat up worlds"), rebuilt in WebGL. Nothing leaves your browser.</p>
+  <button class="chip" id="gotit">Begin</button>
 </div>
 
 <p class="readout" id="readout"></p>
@@ -294,244 +227,6 @@ const store = {
   set(k, v){ try { localStorage.setItem("fever:" + k, v); } catch (e) {} },
 };
 
-// ------------------------------------------------------------------ the sites
-// A tile is {host, url, label, note, thumb?}: url is what gets photographed,
-// thumb is a picture to use instead (YouTube posters), note is the small text
-// at the right of the label strip.
-const DEFAULT_Q = "The God Apollo";                       // what it eats until told otherwise
-const TOP = ["google.com", "youtube.com", "facebook.com", "instagram.com", "wikipedia.org", "x.com",
-  "reddit.com", "amazon.com", "chatgpt.com", "tiktok.com", "linkedin.com", "netflix.com", "yahoo.com",
-  "bing.com", "whatsapp.com", "twitch.tv", "pinterest.com", "microsoft.com", "apple.com", "github.com",
-  "spotify.com", "nytimes.com", "bbc.com", "ebay.com"];
-const SOG = ["scrollwork", "front-door", "looking-glass", "packfold", "beacon", "grasset", "windrow",
-  "murmuration", "dark-puddle", "fever"];
-
-const topSites = () => TOP.map((h, i) => ({host: h, url: `https://${h}/`, label: h, note: "#" + (i + 1)}));
-const sogSites = () =>
-  [{host: "seaofgrass.studio", url: "https://seaofgrass.studio/", label: "seaofgrass.studio", note: "index"}]
-  .concat(SOG.map((s, i) => ({host: "seaofgrass.studio", url: `https://seaofgrass.studio/studies/${s}/`,
-                              label: s.replace(/-/g, " "), note: String(i + 1).padStart(2, "0")})))
-  .concat([{host: "tristan.design", url: "https://tristan.design/", label: "tristan.design", note: ""}]);
-
-function youtubeId(u){
-  try {
-    const x = new URL(u), host = x.hostname.replace(/^(www|m)\./, "");
-    let id = null;
-    if (host === "youtu.be") id = x.pathname.slice(1).split("/")[0];
-    else if (/(^|\.)youtube(-nocookie)?\.com$/.test(host))
-      id = x.searchParams.get("v") || (x.pathname.match(/\/(shorts|embed|live|v)\/([\w-]+)/) || [])[2];
-    return id && /^[\w-]{6,}$/.test(id) ? id : null;
-  } catch (e) { return null; }
-}
-const poster = id => `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
-function linkSites(text){
-  const out = [];
-  for (let raw of text.split(/[\s,]+/)){
-    raw = raw.trim(); if (!raw) continue;
-    if (!/^https?:\/\//i.test(raw)) raw = "https://" + raw;
-    try {
-      const u = new URL(raw);
-      if (!u.hostname.includes(".")) continue;
-      const host = u.hostname.replace(/^www\./, ""), yt = youtubeId(u.href);
-      if (yt){ out.push({host: "youtube.com", url: u.href, label: "▶ youtube " + yt, note: "video", yt, thumb: poster(yt)}); continue; }
-      const path = (u.pathname + u.search).replace(/\/$/, "");
-      out.push({host, url: u.href, label: host + path, note: ""});
-    } catch (e) {}
-  }
-  return out.slice(0, 120);
-}
-
-// A subject becomes pictures of it, from Wikimedia Commons: free, no key,
-// and its thumbnails may be drawn into WebGL.
-async function searchImages(q){
-  const url = "https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrlimit=30" +
-    "&gsrsearch=" + encodeURIComponent(q + " filetype:bitmap") +
-    "&prop=imageinfo&iiprop=url&iiurlwidth=480&format=json&origin=*";
-  try {
-    const j = await (await fetch(url)).json();
-    return Object.values(j.query?.pages || {})
-      .sort((a, b) => a.index - b.index)
-      .map(pg => {
-        const ii = pg.imageinfo?.[0]; if (!ii?.thumburl) return null;
-        const label = pg.title.replace(/^File:/, "").replace(/\.[a-z0-9]+$/i, "").replace(/_/g, " ");
-        return {host: "commons.wikimedia.org", url: ii.descriptionurl || ii.url, label, note: "", thumb: ii.thumburl, bare: true};
-      }).filter(Boolean);
-  } catch (e) { return []; }
-}
-const looksLikeLink = t => /^(https?:\/\/|www\.)/i.test(t) || /^[\w.-]+\.[a-z]{2,}(\/|$)/i.test(t);
-
-// History exports differ (Safari's History.json, Chrome's BrowserHistory.json,
-// or a plain list of links), so look for any object with a web url and a time.
-function historySites(text){
-  const visits = [];
-  let data = null;
-  try { data = JSON.parse(text); } catch (e) {}
-  if (data){
-    (function walk(o){
-      if (Array.isArray(o)) { o.forEach(walk); return; }
-      if (!o || typeof o !== "object") return;
-      const url = o.url || o.destination_url || o.URL;
-      if (typeof url === "string" && /^https?:\/\//i.test(url)){
-        visits.push({url, t: toMs(o.time_usec ?? o.visit_time ?? o.lastVisitTime ?? o.visitTime ?? o.last_visit_time ?? o.date ?? 0)});
-        return;
-      }
-      for (const k in o) walk(o[k]);
-    })(data);
-  } else {
-    (text.match(/https?:\/\/[^\s"'<>]+/g) || []).forEach((url, i) => visits.push({url, t: -i}));
-  }
-  visits.sort((a, b) => b.t - a.t);
-  const seen = new Map();
-  for (const v of visits){
-    let host;
-    try { host = new URL(v.url).hostname.replace(/^www\./, ""); } catch (e) { continue; }
-    if (!host || seen.has(host)) continue;
-    seen.set(host, {host, url: `https://${host}/`, label: host, note: ago(v.t)});   // home page only, never the page visited
-    if (seen.size >= 240) break;
-  }
-  return [...seen.values()];
-}
-function toMs(t){
-  t = Number(t) || 0;
-  if (t > 1e17) return (t / 1000 - 11644473600000000) / 1000;
-  if (t > 1e14) return t / 1000;
-  if (t > 1e11) return t;
-  if (t > 1e8)  return t * 1000;
-  return t;
-}
-function ago(t){
-  if (!t || t < 1e11) return "";
-  const s = Math.max(0, (Date.now() - t) / 1000);
-  if (s < 3600) return Math.max(1, Math.round(s / 60)) + "m ago";
-  if (s < 86400) return Math.round(s / 3600) + "h ago";
-  return Math.round(s / 86400) + "d ago";
-}
-
-// ------------------------------------------------------------------ the map
-function hashHue(s){ let h = 2166136261; for (const c of s) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return (h >>> 0) % 360; }
-
-function layoutSheet(list0, W){
-  const cols = Math.max(2, Math.round(W / 150)), tw = Math.floor(W / cols), th = Math.round(tw * 0.78);
-  const maxRows = Math.floor(4000 / th);
-  let list = list0.slice(0, cols * maxRows);
-  while (list.length < cols * 10) list = list.concat(list0);
-  const rows = Math.ceil(list.length / cols);
-  const c = document.createElement("canvas");
-  c.width = W; c.height = rows * th;
-  const g = c.getContext("2d");
-  g.fillStyle = "#c9b48a"; g.fillRect(0, 0, c.width, c.height);
-  const sheet = {c, g, list, cols, tw, th};
-  list.forEach((s, i) => drawTile(sheet, i, null));
-  return sheet;
-}
-function drawTile(sheet, i, img){
-  const {g, list, cols, tw, th} = sheet, s = list[i];
-  const x = (i % cols) * tw, y = Math.floor(i / cols) * th, h = hashHue(s.host);
-  const px = x + 4, py = y + 4, pw = tw - 8, ph = th - 8, label = s.bare ? 0 : 20, picH = ph - label;   // bare: no caption strip
-  g.fillStyle = `hsl(${h} 45% 22%)`; g.fillRect(px - 1, py - 1, pw + 2, ph + 2);
-  if (img){
-    const r = Math.max(pw / img.width, picH / img.height);
-    g.save(); g.beginPath(); g.rect(px, py, pw, picH); g.clip();
-    g.drawImage(img, px + (pw - img.width * r) / 2, py, img.width * r, img.height * r);
-    g.restore();
-  } else {
-    g.fillStyle = `hsl(${h} 60% 46%)`; g.fillRect(px, py, pw, picH);
-    g.fillStyle = `hsl(${(h + 180) % 360} 70% 80%)`; g.fillRect(px + 6, py + 6, 16, 16);
-    g.fillStyle = "#141311"; g.font = "500 12px 'IBM Plex Mono', monospace"; g.textBaseline = "top";
-    g.fillText((s.yt ? "▶" : s.label[0]).toUpperCase(), px + 9, py + 8);
-  }
-  if (!label) return;
-  g.fillStyle = `hsl(${h} 50% 30%)`; g.fillRect(px, py + picH, pw, label);
-  g.textBaseline = "top"; g.font = "500 9px 'IBM Plex Mono', monospace"; g.fillStyle = "#faf9f6";
-  const note = s.note || "";
-  g.fillText(fit(g, s.label, pw - 12 - (note ? g.measureText(note).width + 6 : 0)), px + 5, py + picH + 6);
-  if (note){ g.fillStyle = "rgba(250,249,246,.65)"; g.fillText(note, px + pw - 5 - g.measureText(note).width, py + picH + 6); }
-}
-function fit(g, s, w){
-  if (g.measureText(s).width <= w) return s;
-  while (s.length > 1 && g.measureText(s + "…").width > w) s = s.slice(0, -1);
-  return s + "…";
-}
-// Video mode: the sheet is the video's poster, screen-wide, stacked three
-// high so it can scroll. Black until the poster arrives.
-function layoutPosterSheet(img, W, H){
-  const c = document.createElement("canvas");
-  c.width = W; c.height = H * 3;
-  const g = c.getContext("2d");
-  g.fillStyle = "#000"; g.fillRect(0, 0, c.width, c.height);
-  if (img){
-    const r = Math.max(W / img.width, H / img.height);
-    for (let i = 0; i < 3; i++){
-      g.save(); g.beginPath(); g.rect(0, i * H, W, H); g.clip();
-      g.drawImage(img, (W - img.width * r) / 2, i * H + (H - img.height * r) / 2, img.width * r, img.height * r);
-      g.restore();
-    }
-  }
-  return {c, g, list: [], cols: 1, tw: W, th: H};
-}
-
-// Live mode: the sheet is a screen-sized canvas the current video frame is
-// drawn into every frame, so what the portal eats is the moving picture.
-function layoutLiveSheet(W, H){
-  const c = document.createElement("canvas");
-  c.width = W; c.height = H;
-  const g = c.getContext("2d");
-  g.fillStyle = "#000"; g.fillRect(0, 0, W, H);
-  if (live){ live.canvas = c; live.ctx = g; }
-  return {c, g, list: [], cols: 1, tw: W, th: H};
-}
-
-// ------------------------------------------------------------------ pictures
-// WordPress's mshots photographs a page on request. While it's still working
-// it answers with a 400x300 placeholder, which the browser then caches, so
-// each retry asks at a width one pixel wider: a new address, a fresh answer.
-// thum.io is the fallback. YouTube tiles use the video's own poster.
-const picCache = new Map();
-let shotsPainted = 0;
-const sleep = ms => new Promise(r => setTimeout(r, ms));
-function loadImg(url){
-  return new Promise(res => {
-    const img = new Image();
-    img.crossOrigin = "anonymous";                       // so WebGL may use it
-    img.onload = () => res(img);
-    img.onerror = () => res(null);
-    img.src = url;
-  });
-}
-async function picture(tile){
-  const key = tile.thumb || tile.url;
-  if (picCache.has(key)) return picCache.get(key);
-  const p = (async () => {
-    if (tile.thumb) return loadImg(tile.thumb);
-    for (let i = 0; i < 5; i++){
-      const img = await loadImg(`https://s0.wp.com/mshots/v1/${encodeURIComponent(tile.url)}?w=${480 + i}&h=${360}`);
-      if (img && !(img.width === 400 && img.height === 300)) return img;
-      await sleep(2500 + i * 1500);
-    }
-    return loadImg(`https://image.thum.io/get/width/480/crop/360/noanimate/${tile.url}`);
-  })();
-  picCache.set(key, p);
-  return p;
-}
-function loadPictures(sheet){
-  const tiles = [...new Map(sheet.list.map(s => [s.thumb || s.url, s])).values()]
-    .filter(t => t.thumb || picsOn())                      // the toggle only gates site screenshots
-    .slice(0, 48);
-  let next = 0, active = 0;
-  const pump = () => {
-    while (active < 6 && next < tiles.length){
-      const t = tiles[next++]; active++;
-      picture(t).then(img => {
-        if (img && run && sheet === run.sheet){
-          sheet.list.forEach((s, i) => { if ((s.thumb || s.url) === (t.thumb || t.url)) drawTile(sheet, i, img); });
-          shotsPainted++; run.dirty = true; showReadout();
-        }
-      }).finally(() => { active--; pump(); });
-    }
-  };
-  pump();
-}
-
 // ------------------------------------------------------------------ WebGL
 const canvas = $("gl");
 const gl = canvas.getContext("webgl2", {antialias: false, preserveDrawingBuffer: false, alpha: true, premultipliedAlpha: true});
@@ -541,8 +236,6 @@ in vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }`;
 
 // Spell: Dark Puddle. Above a blobby front the picture is intact; behind it,
 // last frame is dripped, spun around the eye, drawn in, slipped and eaten.
-// In video mode the intact part is left clear, so the live video shows
-// through from underneath, and what gets eaten is the video's poster.
 // While Fever is off uPrime holds, so the whole frame is the plain picture
 // and switching on starts from exactly what was showing.
 const FS = `#version 300 es
@@ -550,7 +243,7 @@ precision highp float;
 uniform sampler2D uPrev, uSheet, uMask;
 uniform float uMasked;
 uniform vec2 uRes, uEye;
-uniform float uTime, uScroll, uSheetH, uFlow, uFront, uAspect, uPrime, uVideo;
+uniform float uTime, uFlow, uFront, uAspect, uPrime;
 uniform float uEyeR, uSpin, uPull, uTear, uDrip;
 out vec4 o;
 float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
@@ -559,16 +252,13 @@ float noise(vec2 p){
   return mix(mix(hash(i), hash(i + vec2(1, 0)), f.x), mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), f.x), f.y);
 }
 float fbm(vec2 p){ float v = 0.0, a = 0.5; for (int i = 0; i < 4; i++){ v += a * noise(p); p *= 2.03; a *= 0.5; } return v; }
-vec4 sheet(vec2 uv){
-  float yd = (1.0 - uv.y) * uRes.y;
-  return texture(uSheet, vec2(clamp(uv.x, 0.0, 1.0), mod(yd - uScroll, uSheetH) / uSheetH));
-}
+vec4 sheet(vec2 uv){ return texture(uSheet, vec2(clamp(uv.x, 0.0, 1.0), clamp(1.0 - uv.y, 0.0, 1.0))); }
 void main(){
   vec2 uv = gl_FragCoord.xy / uRes;
   float yd = 1.0 - uv.y;
   vec2 e = uv - uEye; e.x *= uAspect;
   float r = length(e);
-  vec4 intact = uVideo > 0.5 ? vec4(0.0) : sheet(uv);
+  vec4 intact = sheet(uv);
 
   float col = floor(gl_FragCoord.x / 4.0);
   float ragged = (hash(vec2(col, floor(uTime * 0.7))) - 0.5) * 0.05;
@@ -597,7 +287,6 @@ void main(){
   vec4 prev = texture(uPrev, clamp(q, 0.0, 1.0));
   float feed = 1.0 - smoothstep(0.0, 0.025, eaten);
   o = mix(prev, sheet(uv), feed);
-  o = mix(o, sheet(uv), 1.0 - o.a);                     // whatever was clear fills with poster
   o.rgb *= smoothstep(uEyeR * 0.25, uEyeR, r);
   o.a = 1.0;
   // Picked things only: wherever the mask is black the picture stays whole.
@@ -788,7 +477,10 @@ function loadSuburb(){
         const all = NAMES.map(n => n + " houses"), every = all.every(k => picked.has(k));
         all.forEach(k => every ? picked.delete(k) : picked.add(k));
       },
-      describe(){ return [...picked].join(", "); },
+      describe(){
+        const houses = NAMES.map(n => n + " houses"), all = houses.every(k => picked.has(k));
+        return [...(all ? ["every house"] : []), ...[...picked].filter(k => !all || !houses.includes(k))].join(", ");
+      },
     };
     suburb.step(0);
     return suburb;
@@ -854,7 +546,7 @@ function makeDial(d, host){
   });
   d.paint();
 }
-// The controller's tabs: Picture, Spells, then the chosen spell's pages, then FX.
+// The controller's tabs: Street, Spells, then the chosen spell's pages, then FX.
 function renderSpell(){
   const tabs = $("tabs"), pages = $("spellPages");
   tabs.querySelectorAll("[data-spell-tab]").forEach(t => t.remove());
@@ -891,20 +583,21 @@ function showTab(name){
 renderSpell();
 
 // ------------------------------------------------------------------ the loop
-let sites = [], setName = "", noun = "sites", run = null, paused = false, steer = true, gulp = 0;
-let video = null, posterImg = null;                        // video mode: a YouTube id and its poster
-let live = null;                                           // live mode: a video the page may read, eaten frame by frame
-const picsOn = () => store.get("pics") !== "0";
-const canShare = !!(navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia);
-let current = "top";                                      // what the menu ticks
+// Two ways to see the street: the 3D one (the default, and the only one you
+// can pick in) and the film of it, drawn into a canvas each frame.
+let run = null, paused = false, steer = true, gulp = 0, film = null;
 
 function build(){
-  if (!gl || !innerWidth || !innerHeight || (!sites.length && !video && !live && !(street && suburb))) return;
+  if (!gl || !innerWidth || !innerHeight || !(film || (street && suburb))) return;
   const px = Math.max(1, Math.max(2, Math.round(innerWidth / 520)) + val("pixel") - 2);
   const W = Math.ceil(innerWidth / px), H = Math.ceil(innerHeight / px);
   canvas.width = W; canvas.height = H;
-  if (street) suburb.size(W, H);
-  const sheet = street ? {c: suburb.canvas, list: []} : live ? layoutLiveSheet(W, H) : video ? layoutPosterSheet(posterImg, W, H) : layoutSheet(sites, W);
+  let src;
+  if (film){
+    src = document.createElement("canvas"); src.width = W; src.height = H;
+    film.canvas = src; film.ctx = src.getContext("2d");
+    film.ctx.fillStyle = "#000"; film.ctx.fillRect(0, 0, W, H);
+  } else { suburb.size(W, H); src = suburb.canvas; }
   if (run){ run.tex.forEach(t => gl.deleteTexture(t)); gl.deleteTexture(run.sheetTex); gl.deleteTexture(run.maskTex); }
   const tex = [texture(W, H), texture(W, H)], fbo = tex.map(t => {
     const f = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, f);
@@ -912,20 +605,10 @@ function build(){
     gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT); return f;
   });
   const eye = run ? run.eye : [0.5, 0.24], target = run ? run.target : [0.5, 0.24];
-  run = {W, H, tex, fbo, i: 0, sheet, sheetTex: texture(sheet.c.width, sheet.c.height, sheet.c),
-         sheetH: sheet.c.height, scroll: 0, eye, target, dirty: false, primed: false, maskTex: texture(W, H)};
-  shotsPainted = 0;
-  if (!video && !live && !street) loadPictures(sheet);
+  run = {W, H, tex, fbo, i: 0, sheetTex: texture(W, H, src), maskTex: texture(W, H), eye, target, primed: false};
   showReadout();
 }
 let rt; function rebuildSoon(){ clearTimeout(rt); rt = setTimeout(build, 250); }
-
-setInterval(() => {
-  if (!run || !run.dirty) return;
-  run.dirty = false;
-  gl.bindTexture(gl.TEXTURE_2D, run.sheetTex);
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, run.sheet.c);
-}, 300);
 
 let last = 0, clock = 0;
 function frame(now){
@@ -934,26 +617,25 @@ function frame(now){
   if (!run || paused) return;
   clock += dt;
   const speed = val("speed");
-  const masked = street && suburb && suburb.picked.size > 0;
-  if (street && suburb){
+  const masked = !film && suburb && suburb.picked.size > 0;
+  gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, run.sheetTex);
+  if (film){
+    const v = $("film");
+    if (v.readyState >= 2 && v.videoWidth){
+      const {canvas: c, ctx: g} = film, r = Math.max(c.width / v.videoWidth, c.height / v.videoHeight);
+      g.drawImage(v, (c.width - v.videoWidth * r) / 2, (c.height - v.videoHeight * r) / 2, v.videoWidth * r, v.videoHeight * r);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c);
+    }
+  } else {
     suburb.step(speed * 0.18 * dt);
     suburb.render();
-    gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, run.sheetTex);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, suburb.canvas);
     if (masked){
       suburb.renderMask();
       gl.bindTexture(gl.TEXTURE_2D, run.maskTex);
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, suburb.canvas);
     }
-  } else if (live){
-    const v = $("live");
-    if (v.readyState >= 2 && v.videoWidth && live.ctx){
-      const {canvas: c, ctx: g} = live, r = Math.max(c.width / v.videoWidth, c.height / v.videoHeight);
-      g.drawImage(v, (c.width - v.videoWidth * r) / 2, (c.height - v.videoHeight * r) / 2, v.videoWidth * r, v.videoHeight * r);
-      gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, run.sheetTex);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c);
-    }
-  } else run.scroll += speed * dt;
+  }
   run.eye[0] += (run.target[0] - run.eye[0]) * Math.min(1, dt * 2.5);
   run.eye[1] += (run.target[1] - run.eye[1]) * Math.min(1, dt * 2.5);
   gulp = Math.max(0, gulp - dt * 1.4);
@@ -968,13 +650,10 @@ function frame(now){
   gl.uniform2f(P.u.uRes, run.W, run.H);
   gl.uniform2f(P.u.uEye, run.eye[0], run.eye[1]);
   gl.uniform1f(P.u.uTime, clock);
-  gl.uniform1f(P.u.uScroll, run.scroll);
-  gl.uniform1f(P.u.uSheetH, run.sheetH);
   gl.uniform1f(P.u.uFlow, speed * dt / run.H);
   gl.uniform1f(P.u.uFront, val("height"));
   gl.uniform1f(P.u.uAspect, run.W / run.H);
   gl.uniform1f(P.u.uPrime, run.primed && on ? 0 : 1);
-  gl.uniform1f(P.u.uVideo, video ? 1 : 0);
   gl.uniform1f(P.u.uEyeR, val("eye") * (1 + Math.sin(Math.min(1, gulp) * Math.PI) * 1.6));
   gl.uniform1f(P.u.uSpin, val("spin") * (1 + gulp * 2));
   gl.uniform1f(P.u.uPull, val("pull") * (1 + gulp * 3));
@@ -994,254 +673,44 @@ function frame(now){
 requestAnimationFrame(frame);
 
 function showReadout(){
-  $("readout").textContent = (on ? spell.name.toLowerCase() : "fever off") + " · " + (street ?
-    "suburb · " + (suburb && suburb.picked.size ? suburb.describe() : "all of it") + (pickMode ? " · picking" : "") : live ? "live · " + live.name : video ? "video · youtube " + video :
-    `${setName} · ${sites.length} ${noun}` + (noun === "sites" && picsOn() ? ` · ${shotsPainted} pics` : ""));
+  const what = film ? "the film" : suburb && suburb.picked.size ? suburb.describe() : "all of it";
+  $("readout").textContent = (on ? spell.name.toLowerCase() : "fever off") + " · " + what + (pickMode ? " · picking" : "");
 }
 
-// ------------------------------------------------------------------ sound
-// One button mutes everything that makes sound: the YouTube embed, its
-// pop-out window and video files. A browser won't start sound without a
-// click first, so after a plain reload the embed starts muted and the
-// button turns it on.
-let muted = store.get("muted") === "1", popupWin = null;
-const hadClick = () => !navigator.userActivation || navigator.userActivation.hasBeenActive;
-const startMuted = () => { if (!hadClick() && !muted){ muted = true; paintSound(); } return muted; };
-function ytCommand(win, func){
-  try { win && win.postMessage(JSON.stringify({event: "command", func, args: []}), "*"); } catch (e) {}
+// ------------------------------------------------------------------ the street or the film
+function useStreet(){
+  stopFilm();
+  $("readout").textContent = "building the street…";
+  loadSuburb().then(() => { street = true; build(); })
+    .catch(() => { $("readout").textContent = "couldn't load the 3D street"; });
 }
-function applyMute(){
-  $("live").muted = muted || (live && live.kind === "share");
-  const func = muted ? "mute" : "unMute";
-  ytCommand($("yt").contentWindow, func);
-  if (popupWin && !popupWin.closed) ytCommand(popupWin, func);
-  if (!muted){ ytCommand($("yt").contentWindow, "playVideo"); }
-}
-function paintSound(){
-  $("sound").setAttribute("aria-pressed", String(muted));
-  $("soundLabel").textContent = muted ? "muted" : "sound";
-}
-$("sound").addEventListener("click", () => { muted = !muted; store.set("muted", muted ? "1" : "0"); paintSound(); applyMute(); });
-$("yt").addEventListener("load", () => setTimeout(applyMute, 800));
-paintSound();
-
-// ------------------------------------------------------------------ the video
-// A YouTube link fills the screen, muted and looping, under the canvas. The
-// portal can't read its frames (browsers keep other sites' video private),
-// so what it tears is the video's poster, fetched as a plain image.
-function showVideo(id){
-  const f = $("yt"), src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=${startMuted() ? 1 : 0}&loop=1&playlist=${id}&controls=0&rel=0&playsinline=1&modestbranding=1&enablejsapi=1`;
-  if (f.getAttribute("src") !== src) f.src = src;
-  $("player").hidden = false;
-}
-function hideVideo(){ $("player").hidden = true; $("yt").removeAttribute("src"); video = null; $("liveYt").hidden = true; }
-
-// ------------------------------------------------------------------ live video
-// A video file, or a shared tab, window or screen: the browser lets the page
-// read those, so every frame goes through the portal. Nothing is uploaded.
-function startLive(kind, name, setup){
-  stopLive(); hideVideo(); leaveStreet();
-  const v = $("live");
-  setup(v);
-  v.muted = muted || kind === "share";               // a shared tab already plays its own sound
-  v.hidden = false;
-  v.play().catch(() => {});
-  live = {kind, name, canvas: null, ctx: null};
-  sites = []; setName = "live"; noun = "";
-  current = "live"; renderMenu();
+function useFilm(){
+  setPick(false);
+  const v = $("film");
+  v.src = "suburb.mp4"; v.play().catch(() => {});
+  film = {canvas: null, ctx: null};
+  $("filmBtn").setAttribute("aria-pressed", "true");
   build();
 }
-function stopLive(){
-  if (!live) return;
-  const v = $("live");
-  if (v.srcObject){ v.srcObject.getTracks().forEach(t => t.stop()); v.srcObject = null; }
-  if (live.url) URL.revokeObjectURL(live.url);
-  v.pause(); v.removeAttribute("src"); v.load(); v.hidden = true;
-  live = null;
+function stopFilm(){
+  if (!film) return;
+  const v = $("film"); v.pause(); v.removeAttribute("src"); v.load();
+  film = null;
+  $("filmBtn").setAttribute("aria-pressed", "false");
 }
-function liveFile(file){
-  if (!file || !file.type.startsWith("video/")) return;
-  const url = URL.createObjectURL(file);
-  startLive("file", file.name, v => { v.srcObject = null; v.loop = true; v.src = url; });
-  live.url = url;
-}
-async function liveShare(name){
-  let stream;
-  try {
-    stream = await navigator.mediaDevices.getDisplayMedia({video: {frameRate: 30}, audio: false,
-      selfBrowserSurface: "exclude", surfaceSwitching: "include"});
-  } catch (e) { return; }                                   // they cancelled
-  startLive("share", name || "screen", v => { v.loop = false; v.srcObject = stream; });
-  stream.getVideoTracks()[0].addEventListener("ended", () => { if (live && live.kind === "share"){ stopLive(); useSet(store.get("set") || "top"); } });
-}
-// Files from the visitor's computer: pictures become tiles, a video is eaten
-// live. They're read in the tab and never uploaded.
-let fileTiles = [];
-function addFiles(files){
-  const list = [...(files || [])];
-  const vid = list.find(f => f.type.startsWith("video/"));
-  const pics = list.filter(f => f.type.startsWith("image/"));
-  if (pics.length){
-    fileTiles = pics.map(f => ({host: "your computer", url: f.name, label: f.name, note: "", thumb: URL.createObjectURL(f), bare: true}))
-      .concat(fileTiles).slice(0, 120);
-    useFiles();
-  }
-  if (vid) liveFile(vid);
-}
-function useFiles(){
-  if (!fileTiles.length) return;
-  stopLive(); hideVideo(); leaveStreet();
-  sites = fileTiles; setName = "your pictures"; noun = "pictures";
-  current = "files"; renderMenu(); build();
-}
-$("add").addEventListener("change", e => { addFiles(e.target.files); e.target.value = ""; });
-addEventListener("dragover", e => e.preventDefault());
-addEventListener("drop", e => { e.preventDefault(); addFiles(e.dataTransfer.files); });
-if (canShare){
-  $("liveYt").addEventListener("click", () => {
-    // The player in its own window, so it's a plain tab to share.
-    const id = video;
-    popupWin = window.open(`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=${muted ? 1 : 0}&loop=1&playlist=${id}&controls=1&rel=0&enablejsapi=1`,
-                "fever-video", "popup,width=960,height=540");
-    liveShare("youtube " + id);
-  });
-}
-
-// ------------------------------------------------------------------ choosing sites
-function leaveStreet(){ street = false; setPick(false); $("pickBtn").hidden = $("pickAll").hidden = $("pickNone").hidden = true; }
 function setPick(v){
+  if (v && film) useStreet();                              // you can only pick in the 3D street
   pickMode = v;
   $("pickBtn").setAttribute("aria-pressed", String(v));
   showReadout();
 }
-function useSet(name){
-  stopLive(); leaveStreet();
-  if (name === "suburb"){
-    hideVideo(); sites = []; current = name; renderMenu(); store.set("set", name);
-    setName = "suburb"; $("readout").textContent = "building the suburb…";
-    loadSuburb().then(() => {
-      if (store.get("set") !== "suburb") return;
-      street = true; $("pickBtn").hidden = $("pickAll").hidden = $("pickNone").hidden = false;
-      build();
-    }).catch(() => { $("readout").textContent = "couldn't load the 3D street"; });
-    return;
-  }
-  if (name === "film"){
-    current = name; store.set("set", name);
-    startLive("film", "suburb film", v => { v.srcObject = null; v.loop = true; v.src = "suburb.mp4"; });
-    current = "film"; renderMenu();
-    return;
-  }
-  if (name === "video" && !store.get("video")) name = "mine";
-  if (name === "search" && !store.get("query")) store.set("query", DEFAULT_Q);
-  noun = "sites";
-  current = name; renderMenu();
-  if (name === "top"){ hideVideo(); sites = topSites(); setName = "top sites"; }
-  else if (name === "sog"){ hideVideo(); sites = sogSites(); setName = "sea of grass"; }
-  else if (name === "mine"){
-    const list = linkSites(store.get("links") || "");
-    if (!list.length){ $("links").focus(); $("links").placeholder = "paste a few links first, then Feed"; return; }
-    hideVideo(); sites = list; setName = "my links";
-  }
-  else if (name === "search"){
-    const q = store.get("query");
-    hideVideo(); sites = []; setName = "searching " + q; noun = "pictures"; showReadout();
-    store.set("set", name);
-    searchImages(q).then(list => {
-      if (store.get("set") !== "search" || store.get("query") !== q) return;   // they moved on
-      if (!list.length){ setName = "nothing found for " + q; showReadout(); return; }
-      sites = list; setName = q; build();
-    });
-    return;
-  }
-  else if (name === "video"){
-    video = store.get("video"); sites = []; setName = "video"; posterImg = null;
-    showVideo(video);
-    if (canShare) $("liveYt").hidden = false;
-    loadImg(poster(video)).then(img => { if (img && video){ posterImg = img; build(); } });
-  }
-  store.set("set", name);
-  build();
-}
-
-// Feed adds what's in the box to "my links" (newest first). A YouTube link
-// becomes the video; anything else switches to the links.
-function feed(){
-  const fresh = $("links").value.trim();
-  if (!fresh){ useSet("mine"); return; }
-  if (!fresh.split(/[\s,]+/).some(looksLikeLink)){                 // a subject, not links
-    $("links").value = "";
-    store.set("query", fresh); useSet("search"); return;
-  }
-  const have = store.get("links") || "";
-  store.set("links", (fresh + "\n" + have).trim());
-  $("links").value = "";
-  const yt = linkSites(fresh).find(s => s.yt);
-  if (yt){ store.set("video", yt.yt); useSet("video"); }
-  else useSet("mine");
-}
-$("feedBtn").addEventListener("click", feed);
-$("links").addEventListener("keydown", e => { if (e.key === "Enter") feed(); });
-
-$("file").addEventListener("change", e => {
-  const f = e.target.files[0]; if (!f) return;
-  const r = new FileReader();
-  r.onload = () => {
-    const list = historySites(String(r.result));
-    if (!list.length){ alert("No websites found in that file. Is it a browser history export?"); return; }
-    store.set("pics", "0");                                  // the visitor turns pictures on for their own history
-    current = "history"; renderMenu();
-    hideVideo(); sites = list; setName = "your history"; build();
-  };
-  r.readAsText(f);
-  e.target.value = "";
-});
-
-// ------------------------------------------------------------------ the "more" menu
-// Everything that isn't the box lives here, with a tick on what's showing.
-function renderMenu(){
-  const q = store.get("query"), v = store.get("video"), mine = linkSites(store.get("links") || "").length;
-  const items = [
-    ["suburb", "The suburb, 3D"], ["film", "The suburb, film"],
-    "sep",
-    ["top", "Top sites"], ["sog", "Sea of Grass"],
-    mine ? ["mine", "My links"] : null,
-    v ? ["video", "Video"] : null,
-    q ? ["search", "Pictures of " + q] : null,
-    "sep",
-    fileTiles.length ? ["files", "Your pictures"] : null,
-    canShare ? ["share", "Share screen"] : null, ["file", "History file…"],
-    "sep",
-    ["pics", "Site pictures", picsOn() ? "on" : "off"],
-  ].filter(Boolean);
-  const m = $("menu"); m.innerHTML = "";
-  for (const it of items){
-    const el = document.createElement(it === "sep" ? "div" : "button");
-    el.className = "mi" + (it === "sep" ? " sep" : "");
-    if (it === "sep"){ m.appendChild(el); continue; }
-    const [key, label, state] = it;
-    el.setAttribute("role", "menuitem");
-    el.innerHTML = `<span>${label}</span><i>${state !== undefined ? state : (key === current ? "✓" : "")}</i>`;
-    el.addEventListener("click", () => {
-      if (key === "files") useFiles();
-      else if (key === "file") $("file").click();
-      else if (key === "share") liveShare("screen");
-      else if (key === "pics"){ store.set("pics", picsOn() ? "0" : "1"); build(); renderMenu(); return; }
-      else useSet(key);
-      openMenu(false);
-    });
-    m.appendChild(el);
-  }
-}
-function openMenu(open){ $("menu").hidden = !open; $("more").setAttribute("aria-expanded", String(open)); if (open) renderMenu(); }
-$("more").addEventListener("click", () => openMenu($("menu").hidden));
-addEventListener("pointerdown", e => { if (!$("menu").hidden && !e.target.closest("#menu, #more")) openMenu(false); });
+$("filmBtn").addEventListener("click", () => { if (film){ store.set("film", "0"); useStreet(); } else { store.set("film", "1"); useFilm(); } });
 
 // ------------------------------------------------------------------ the controller
 function openCtrl(open){ $("ctrl").hidden = !open; $("open").setAttribute("aria-expanded", String(open)); }
 $("open").addEventListener("click", () => openCtrl($("ctrl").hidden));
 
-// Fever itself: on, the spell works on the picture; off, the picture is whole.
+// Fever itself: on, the spell works on the street; off, the street is whole.
 function setFever(v){
   on = v;
   $("fever").setAttribute("aria-pressed", String(on));
@@ -1251,7 +720,7 @@ function setFever(v){
 }
 $("fever").addEventListener("click", () => setFever(!on));
 $("pickBtn").addEventListener("click", () => setPick(!pickMode));
-$("pickAll").addEventListener("click", () => { if (suburb){ suburb.pickHouses(); setPick(true); } });
+$("pickAll").addEventListener("click", () => { setPick(true); loadSuburb().then(() => { suburb.pickHouses(); showReadout(); }); });
 $("pickNone").addEventListener("click", () => { if (suburb){ suburb.picked.clear(); showReadout(); } });
 
 const swallow = () => { if (on) gulp = 1; };
@@ -1274,40 +743,27 @@ addEventListener("pointermove", e => {
   run.target = [e.clientX / innerWidth, Math.max(0.08, Math.min(0.75, 1 - e.clientY / innerHeight))];
 });
 canvas.addEventListener("click", e => {
-  if (street && suburb && pickMode){ suburb.pick(e.clientX / innerWidth, e.clientY / innerHeight); showReadout(); }
+  if (pickMode && suburb && !film){ suburb.pick(e.clientX / innerWidth, e.clientY / innerHeight); showReadout(); }
   else swallow();
 });
 addEventListener("keydown", e => {
-  if (e.target.closest && e.target.closest("input, .dial")) return;
+  if (e.target.closest && e.target.closest(".dial")) return;
   if (e.key === " "){ swallow(); e.preventDefault(); }
   else if (e.key === "r" || e.key === "R") refill();
   else if (e.key === "f" || e.key === "F") setFever(!on);
-  else if ((e.key === "k" || e.key === "K") && street) setPick(!pickMode);
+  else if (e.key === "k" || e.key === "K") setPick(!pickMode);
   else if (e.key === "p" || e.key === "P") $("pause").click();
-  else if (e.key === "Escape"){ openMenu(false); openCtrl(false); $("help").hidden = true; }
+  else if (e.key === "Escape"){ openCtrl(false); $("help").hidden = true; }
 });
 addEventListener("resize", rebuildSoon);
 $("ask").addEventListener("click", () => { $("help").hidden = !$("help").hidden; });
 $("gotit").addEventListener("click", () => { $("help").hidden = true; store.set("helped", "1"); });
-const askGo = () => {
-  const q = $("askq").value.trim();
-  $("help").hidden = true; store.set("helped", "1");
-  if (!q) return;
-  $("askq").value = "";
-  if (q.split(/[\s,]+/).some(looksLikeLink)){ $("links").value = q; feed(); return; }
-  store.set("query", q); useSet("search");
-};
-$("askGo").addEventListener("click", askGo);
-$("askq").addEventListener("keydown", e => { if (e.key === "Enter") askGo(); });
 
 // ------------------------------------------------------------------ go
 (async () => {
   if (!gl){ $("readout").textContent = "this browser doesn't support WebGL2, which the portal needs"; return; }
   await document.fonts.ready;
-  const s = store.get("set");
-  const ok = s === "sog" || s === "top" || s === "suburb" || s === "film" || s === "video" && store.get("video") || s === "search" && store.get("query") ||
-    s === "mine" && linkSites(store.get("links") || "").length;
-  useSet(ok ? s : "suburb");                               // first visit: the suburb
-  if (!store.get("helped")){ $("help").hidden = false; $("askq").focus(); }
+  if (store.get("film") === "1") useFilm(); else useStreet();
+  if (!store.get("helped")) $("help").hidden = false;
 })();
 </script>
