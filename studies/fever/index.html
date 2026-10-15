@@ -27,6 +27,8 @@
   body{color:#fff;font-family:var(--ui);overflow:hidden;}
   /* will-change keeps the canvas on its own compositing layer; without it the
      browser flattens the see-through parts over the video to black. */
+  canvas.street{position:fixed;inset:0;z-index:1;width:100%;height:100%;display:block;touch-action:none;}
+  canvas.street[hidden],canvas#gl[hidden]{display:none;}
   canvas#gl{position:fixed;inset:0;z-index:1;width:100%;height:100%;display:block;image-rendering:pixelated;touch-action:none;will-change:transform;}
 
   .home{position:fixed;top:18px;left:20px;z-index:5;color:var(--paper);mix-blend-mode:difference;}
@@ -200,13 +202,14 @@
   <p class="kicker">Study 10 · Sea of Grass</p>
   <h2 id="helpTitle">Fever</h2>
   <p class="lede">An examination of one street: pastel houses down both sides of a grey road, under a hard blue
-    sky, going on forever. Press <b>Fever</b> and cast a spell on it. The first spell is Dark Puddle, a portal
-    that drags the street, row by row, into a black eye you steer.</p>
+    sky, going on forever. Press <b>Fever</b> and cast a spell on it. The first spell is Dark Puddle: a black
+    eye that rides over the surfaces of things and twists, sinks and tears them as it goes.</p>
   <dl>
     <dt>fever</dt><dd>the button, or F: casts the spell; press again and the street comes back whole</dd>
-    <dt>steer</dt><dd>move the pointer and the eye follows; click and it swallows</dd>
+    <dt>steer</dt><dd>the eye sits on whatever is under the pointer and rides over it, twisting and sinking
+      the walls, roofs and lawn around it; click and it swallows</dd>
     <dt>pick</dt><dd>in controls, press <b>Pick</b> (or K), then click one thing: a colour of house, the lamps, the
-      road, the lawn, the sky. The spell then hits only that, and clicking casts it. Pick again to add more;
+      road, the lawn. The spell then hits only that, and clicking casts it. Pick again to add more;
       <b>Clear</b> lets it hit everything</dd>
     <dt>controls</dt><dd>pick the spell, turn its dials, or swap the street for a film of it</dd>
   </dl>
@@ -220,6 +223,10 @@
 
 <p class="readout" id="readout"></p>
 
+<script type="importmap">
+{"imports": {"three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+             "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
 <script>
 "use strict";
 const $ = id => document.getElementById(id);
@@ -391,19 +398,69 @@ if (gl){
 // An endless liminal street in 3D: pastel houses down both sides of a grey
 // road, lamps on the right, a hard blue sky. The camera walks toward the
 // vanishing point and lots behind it are moved to the far end, so it never
-// runs out. Because it's a real scene, not a film, every house, lamp, the
-// road, the lawn and the sky can be picked, and the spell then works only on
-// what's picked. A pick is a kind, not one object, since the camera walks
-// past any one house in seconds: pick a pink house and every pink house down
-// the street is hit. A second render paints picked things white, the rest black,
-// and the shader uses that as a mask. three.js comes from a CDN on first use.
+// runs out. three.js comes from a CDN on first use.
+//
+// Here the spell is not a picture laid over the screen: Dark Puddle lives in
+// the scene. Its eye sits on whatever surface is under the pointer (a wall,
+// a roof, the lawn) and rides over surfaces as you move. Around it the actual
+// geometry is twisted about the surface, pulled in, sunk into a funnel,
+// dripped, slipped in bands and snapped into blocks, with a black hole at the
+// middle; a short wake of earlier eye positions trails behind it. Every
+// material carries the same vertex shader, and a per-kind switch says
+// whether that kind is hit: everything, or only what's picked. The models
+// are subdivided so they have enough points to bend.
+//
+// A pick is a kind, not one object, since the camera walks past any one
+// house in seconds: pick a pink house and every pink house down the street
+// is hit.
 let suburb = null, suburbLoading = null, street = false, pickMode = false;
+const TRAIL = 8;                                           // eye positions in the wake
+const PUDDLE_GLSL = `
+uniform vec4 uTrail[${TRAIL}];
+uniform vec3 uTrailN[${TRAIL}];
+uniform float uR, uSpin, uPull, uSink, uDrip, uTear, uSnap, uTime, uOn, uHit;
+varying float vHole;
+float ph(float n){ return fract(sin(n * 127.1) * 43758.5453); }
+vec3 spinAbout(vec3 v, vec3 a, float t){ return v * cos(t) + cross(a, v) * sin(t) + a * dot(a, v) * (1.0 - cos(t)); }
+vec3 puddle(vec3 w){
+  vHole = 0.0;
+  float s0 = uOn * uHit;
+  if (s0 <= 0.0) return w;
+  float most = 0.0;
+  for (int i = 0; i < ${TRAIL}; i++){
+    float s = uTrail[i].w * s0;
+    if (s <= 0.002) continue;
+    vec3 c = uTrail[i].xyz, n = uTrailN[i];
+    vec3 d = w - c;
+    float dist = length(d), R = uR;
+    float k = clamp(1.0 - dist / (R * 2.4), 0.0, 1.0);
+    k = k * k * s;
+    if (k <= 0.0) continue;
+    most = max(most, k);
+    d = spinAbout(d, n, uSpin * k * 2.8);                  // twisted about the surface
+    d *= 1.0 - uPull * 0.42 * k;                           // drawn in
+    d -= n * uSink * R * 1.1 * k;                          // sunk into a funnel
+    w = c + d;
+    w.y -= uDrip * k * R * 0.6 * ph(floor(w.x * 1.4) + floor(w.z * 1.4) * 17.0);   // some columns run
+    vec3 tang = abs(n.y) > 0.9 ? vec3(1.0, 0.0, 0.0) : normalize(cross(n, vec3(0.0, 1.0, 0.0)));
+    float band = floor(w.y * 2.5), tick = floor(uTime * 6.0);
+    w += tang * step(0.72, ph(band * 7.0 + tick)) * (ph(band + tick * 3.0) - 0.5) * uTear * k * 1.6;   // bands slip
+    vHole = max(vHole, s * (1.0 - smoothstep(R * 0.2, R * 0.85, dist)));
+  }
+  if (uSnap > 0.0 && most > 0.05) w = mix(w, floor(w / uSnap + 0.5) * uSnap, min(1.0, most * 3.0));   // hard blocks
+  return w;
+}`;
+
 function loadSuburb(){
   if (suburb) return Promise.resolve(suburb);
   return suburbLoading = suburbLoading || (async () => {
-    const T = await import("https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js");
-    const r = new T.WebGLRenderer({antialias: false, preserveDrawingBuffer: true});
-    r.setPixelRatio(1); r.shadowMap.enabled = true;
+    const T = await import("three");
+    const {TessellateModifier} = await import("three/addons/modifiers/TessellateModifier.js");
+    const r = new T.WebGLRenderer({antialias: true});
+    r.shadowMap.enabled = true;
+    r.domElement.className = "street";
+    r.domElement.setAttribute("aria-label", "An endless suburb, and whatever spell Fever is casting on it");
+    document.body.insertBefore(r.domElement, $("gl"));
     const scene = new T.Scene();
 
     const sky = document.createElement("canvas"); sky.width = 2; sky.height = 512;
@@ -423,62 +480,94 @@ function loadSuburb(){
     Object.assign(sun.shadow.camera, {left: -50, right: 50, top: 70, bottom: -70, near: 1, far: 220});
     scene.add(sun, sun.target);
 
-    const lambert = c => new T.MeshLambertMaterial({color: c});
-    const own = (o, holder) => { o.traverse(m => { if (m.isMesh){ m.userData.owner = holder; m.castShadow = m.receiveShadow = true; } }); return o; };
+    // The spell's uniforms, shared by every material.
+    const U = {
+      uTrail: {value: Array.from({length: TRAIL}, () => new T.Vector4(0, -999, 0, 0))},
+      uTrailN: {value: Array.from({length: TRAIL}, () => new T.Vector3(0, 1, 0))},
+      uR: {value: 3}, uSpin: {value: 1}, uPull: {value: 1}, uSink: {value: 0.5}, uDrip: {value: 1},
+      uTear: {value: 1}, uSnap: {value: 0.15}, uTime: {value: 0}, uOn: {value: 0},
+    };
+    // Materials, one set per kind, so each kind can be switched on or off.
+    const kinds = {};                                      // kind -> {hit, glow}
+    const matCache = {};
+    function mat(kind, color){
+      const key = kind + ":" + color;
+      if (matCache[key]) return matCache[key];
+      const k = kinds[kind] = kinds[kind] || {hit: {value: 1}, glow: {value: 0}};
+      const m = new T.MeshLambertMaterial({color});
+      m.onBeforeCompile = sh => {
+        Object.assign(sh.uniforms, U, {uHit: k.hit, uGlow: k.glow});
+        sh.vertexShader = sh.vertexShader
+          .replace("#include <common>", "#include <common>\n" + PUDDLE_GLSL)
+          .replace("#include <begin_vertex>", `#include <begin_vertex>
+            { vec4 wp = modelMatrix * vec4(transformed, 1.0); wp.xyz = puddle(wp.xyz); transformed = (inverse(modelMatrix) * wp).xyz; }`);
+        sh.fragmentShader = sh.fragmentShader
+          .replace("#include <common>", "#include <common>\nvarying float vHole;\nuniform float uGlow;")
+          .replace("#include <dithering_fragment>", `#include <dithering_fragment>
+            gl_FragColor.rgb *= 1.0 - smoothstep(0.0, 0.9, vHole);
+            gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.62, 0.94, 0.78), 0.45 * uGlow);`);
+      };
+      return matCache[key] = m;
+    }
+    // Subdivide a shape so it has points to bend; keep the plain one for
+    // pointing at (rays against the fine one would be slow). Each piece is a
+    // visible fine mesh and an invisible plain twin on layer 2 for rays.
+    const tess = new TessellateModifier(0.7, 8);
+    const FINE = new Map();
+    const fine = g => { if (!FINE.has(g)) FINE.set(g, tess.modify(g)); return FINE.get(g); };
+    const proxies = [];
+    function piece(fineG, plainG, kind, color, parent, x, y, z, rx){
+      const m = new T.Mesh(fineG, mat(kind, color));
+      const p = new T.Mesh(plainG, new T.MeshBasicMaterial());
+      p.visible = false; p.layers.set(2); p.userData.owner = m.userData.owner = kind;
+      m.castShadow = m.receiveShadow = true;
+      for (const o of [m, p]){ o.position.set(x, y, z); if (rx) o.rotation.x = rx; }
+      parent.add(m, p); proxies.push(p);
+    }
 
     // The ground goes with the camera; it's all one colour, so nobody can tell.
+    // Grids already have the points to bend.
     const ground = new T.Group(); scene.add(ground);
-    const lawn = new T.Mesh(new T.PlaneGeometry(900, 900), lambert(0x3aa836));
-    lawn.rotation.x = -Math.PI / 2; lawn.position.z = -350; ground.add(own(lawn, "lawn"));
-    const road = new T.Group(); ground.add(road);
-    const tar = new T.Mesh(new T.PlaneGeometry(9, 900), lambert(0x8e8e8b));
-    tar.rotation.x = -Math.PI / 2; tar.position.set(0, 0.03, -350); road.add(tar);
-    for (const x of [-4.7, 4.7]){
-      const curb = new T.Mesh(new T.BoxGeometry(0.4, 0.3, 900), lambert(0xd8d5cb));
-      curb.position.set(x, 0.15, -350); road.add(curb);
-    }
-    own(road, "road");
+    const flat = -Math.PI / 2;
+    piece(new T.PlaneGeometry(700, 700, 280, 280), new T.PlaneGeometry(700, 700), "lawn", 0x3aa836, ground, 0, 0, -300, flat);
+    piece(new T.PlaneGeometry(9, 700, 10, 700), new T.PlaneGeometry(9, 700), "road", 0x8e8e8b, ground, 0, 0.03, -300, flat);
+    for (const x of [-4.7, 4.7])
+      piece(new T.BoxGeometry(0.4, 0.3, 700, 1, 1, 700), new T.BoxGeometry(0.4, 0.3, 700), "road", 0xd8d5cb, ground, x, 0.15, -300);
 
     // A house: walls and gables in one piece, two roof slabs, a door and a
     // window on the side that faces the road, and a path to the curb.
-    const D = 8.5, Wd = 8, Hw = 3.2, Rg = 1.7;
-    const prof = new T.Shape([new T.Vector2(-D / 2, 0), new T.Vector2(D / 2, 0), new T.Vector2(D / 2, Hw),
-                              new T.Vector2(0, Hw + Rg), new T.Vector2(-D / 2, Hw)]);
+    const Dp = 8.5, Wd = 8, Hw = 3.2, Rg = 1.7;
+    const prof = new T.Shape([new T.Vector2(-Dp / 2, 0), new T.Vector2(Dp / 2, 0), new T.Vector2(Dp / 2, Hw),
+                              new T.Vector2(0, Hw + Rg), new T.Vector2(-Dp / 2, Hw)]);
     const bodyG = new T.ExtrudeGeometry(prof, {depth: Wd, bevelEnabled: false});
     bodyG.translate(0, 0, -Wd / 2); bodyG.rotateY(Math.PI / 2);
-    const ang = Math.atan(Rg / (D / 2)), slab = (D / 2 + 0.7) / Math.cos(ang);
+    const ang = Math.atan(Rg / (Dp / 2)), slab = (Dp / 2 + 0.7) / Math.cos(ang);
     const slabG = new T.BoxGeometry(Wd + 0.9, 0.32, slab);
-    const roofM = lambert(0x7b6d62), whiteM = lambert(0xf4f2ec), pathM = lambert(0xd9d4c4), darkM = lambert(0x2b2d33);
     const NAMES = ["blue", "green", "salmon", "pink", "yellow", "orange", "red", "lilac", "aqua", "white"];
-    const WALLS = [0x4f7fe0, 0x3caf48, 0xe9806f, 0xf2a6cb, 0xf2c431, 0xf07b39, 0xe24a3b, 0xb48ce4, 0x6fcfe6, 0xf6efe4].map(lambert);
+    const WALLS = [0x4f7fe0, 0x3caf48, 0xe9806f, 0xf2a6cb, 0xf2c431, 0xf07b39, 0xe24a3b, 0xb48ce4, 0x6fcfe6, 0xf6efe4];
     const doorG = new T.BoxGeometry(0.12, 2.2, 1.05), winG = new T.BoxGeometry(0.12, 1.1, 1.3), paneG = new T.BoxGeometry(0.14, 0.8, 1.0);
-    function house(side, front, seed){
-      const g = new T.Group(); g.userData.house = true;
-      g.add(new T.Mesh(bodyG, WALLS[seed % WALLS.length]));
+    const pathLen = 16 - Wd / 2 - 4.9, pathG = new T.BoxGeometry(pathLen, 0.08, 1.5);
+    function house(side, seed){
+      const g = new T.Group(), c = seed % WALLS.length, kind = NAMES[c] + " houses";
+      piece(fine(bodyG), bodyG, kind, WALLS[c], g, 0, 0, 0);
       for (const sgn of [1, -1]){
-        const m = new T.Mesh(slabG, roofM);
-        m.rotation.x = sgn * ang;
-        const zc = sgn * (D / 2 + 0.7) / 2;
-        m.position.set(0, Hw + Rg - Math.tan(ang) * Math.abs(zc) + 0.2, zc);
-        g.add(m);
+        const zc = sgn * (Dp / 2 + 0.7) / 2;
+        piece(fine(slabG), slabG, kind, 0x7b6d62, g, 0, Hw + Rg - Math.tan(ang) * Math.abs(zc) + 0.2, zc, sgn * ang);
       }
-      if (front){
-        const fx = -side * (Wd / 2 + 0.02);
-        const door = new T.Mesh(doorG, whiteM); door.position.set(fx, 1.1, 1.6); g.add(door);
-        const win = new T.Mesh(winG, whiteM); win.position.set(fx, 2.1, -1.7); g.add(win);
-        const pane = new T.Mesh(paneG, darkM); pane.position.set(fx - side * 0.02, 2.1, -1.7); g.add(pane);
-        const len = 16 - Wd / 2 - 4.9;
-        const path = new T.Mesh(new T.BoxGeometry(len, 0.08, 1.5), pathM);
-        path.position.set(-side * (Wd / 2 + len / 2), 0.04, 1.6); g.add(path);
-      }
-      return own(g, NAMES[seed % WALLS.length] + " houses");
+      const fx = -side * (Wd / 2 + 0.02);
+      piece(fine(doorG), doorG, kind, 0xf4f2ec, g, fx, 1.1, 1.6);
+      piece(fine(winG), winG, kind, 0xf4f2ec, g, fx, 2.1, -1.7);
+      piece(fine(paneG), paneG, kind, 0x2b2d33, g, fx - side * 0.02, 2.1, -1.7);
+      piece(fine(pathG), pathG, kind, 0xd9d4c4, g, -side * (Wd / 2 + pathLen / 2), 0.04, 1.6);
+      return g;
     }
+    const poleG = new T.CylinderGeometry(0.14, 0.18, 12.5, 8, 24), armG = new T.BoxGeometry(2.2, 0.12, 0.14), headG = new T.BoxGeometry(0.9, 0.22, 0.4);
     function lamp(){
       const g = new T.Group();
-      const pole = new T.Mesh(new T.CylinderGeometry(0.14, 0.18, 12.5, 8), lambert(0xc9ccd2)); pole.position.y = 6.25; g.add(pole);
-      const arm = new T.Mesh(new T.BoxGeometry(2.2, 0.12, 0.14), lambert(0xc9ccd2)); arm.position.set(-1, 12.4, 0); g.add(arm);
-      const head = new T.Mesh(new T.BoxGeometry(0.9, 0.22, 0.4), whiteM); head.position.set(-2.1, 12.3, 0); g.add(head);
-      return own(g, "lamps");
+      piece(poleG, poleG, "lamps", 0xc9ccd2, g, 0, 6.25, 0);
+      piece(fine(armG), armG, "lamps", 0xc9ccd2, g, -1, 12.4, 0);
+      piece(fine(headG), headG, "lamps", 0xf4f2ec, g, -2.1, 12.3, 0);
+      return g;
     }
 
     // Lots, LOT apart, N deep; one row of houses a side, a lamp every
@@ -488,7 +577,7 @@ function loadSuburb(){
     const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
     for (let i = 0; i < N; i++){
       for (const side of [-1, 1]){
-        const h = house(side, true, Math.floor(rnd() * 1000));
+        const h = house(side, Math.floor(rnd() * 1000));
         h.position.set(side * 16, 0, -i * LOT);
         scene.add(h); things.push(h);
       }
@@ -496,53 +585,72 @@ function loadSuburb(){
     }
 
     const picked = new Set();
-    const isPicked = m => picked.has(m.userData.owner);
-    // The mask pass: red is "picked", green is how near the surface is (4 /
-    // its distance, so near things get the precision), blue is the kind under
-    // the pointer while picking (or the one just picked, while its glow fades).
-    // The spell uses the nearness to follow surfaces as the camera walks.
-    const maskMat = (p, h) => new T.ShaderMaterial({
-      vertexShader: "varying float vz; void main(){ vec4 mv = modelViewMatrix * vec4(position, 1.0); vz = -mv.z; gl_Position = projectionMatrix * mv; }",
-      fragmentShader: `varying float vz; void main(){ gl_FragColor = vec4(${p}.0, clamp(4.0 / vz, 0.0, 1.0), ${h}.0, 1.0); }`,
-    });
-    const mats = [[maskMat(0, 0), maskMat(0, 1)], [maskMat(1, 0), maskMat(1, 1)]];
-    const skyColor = new T.Color();
-    const ray = new T.Raycaster();
+    const ray = new T.Raycaster(); ray.layers.set(2);
+    const ndc = new T.Vector2(), nm = new T.Matrix3();
+    // The thing under a point on the screen: {kind, point, normal} or null (the sky).
+    function hitAt(x, y, only){
+      ray.setFromCamera(ndc.set(x * 2 - 1, 1 - y * 2), camera);
+      for (const h of ray.intersectObjects(proxies, false)){
+        const kind = h.object.userData.owner;
+        if (only && !only(kind)) continue;
+        const n = h.face.normal.clone().applyMatrix3(nm.getNormalMatrix(h.object.matrixWorld)).normalize();
+        return {kind, point: h.point, normal: n};
+      }
+      return null;
+    }
+
+    // The eye and its wake.
+    const eye = new T.Vector3(0, -999, 0), eyeN = new T.Vector3(0, 1, 0);
+    let present = 0, sinceDrop = 0;
 
     suburb = {
       canvas: r.domElement, picked, hover: null,
-      size(w, h){ r.setSize(w, h, false); camera.aspect = w / h; camera.fov = w < h ? 74 : 52; camera.updateProjectionMatrix(); },
-      dz: 0,
-      step(dz){
-        this.dz = dz;
-        camera.position.z -= dz;
+      size(w, h){
+        r.setPixelRatio(Math.min(devicePixelRatio || 1, w < 700 ? 1.5 : 2));
+        r.setSize(w, h); camera.aspect = w / h; camera.fov = w < h ? 74 : 52; camera.updateProjectionMatrix();
+      },
+      show(v){ r.domElement.hidden = !v; },
+      // One frame: walk, move the eye to the surface under the pointer, drop
+      // a wake point now and then, set the spell's dials, draw.
+      frame(dt, o){
+        camera.position.z -= o.walk;
         const cz = camera.position.z;
         camera.lookAt(0, 9, cz - 100);
         ground.position.z = cz;
         sun.position.set(40, 45, cz + 55); sun.target.position.set(0, 0, cz - 55);
         for (const t of things) if (t.position.z > cz + LOT) t.position.z -= N * LOT;
-      },
-      render(){ r.render(scene, camera); },
-      renderMask(){
-        const bg = scene.background, fog = scene.fog;
-        const hv = this.hover;
-        scene.background = skyColor.setRGB(picked.has("sky") ? 1 : 0, 0, hv === "sky" ? 1 : 0); scene.fog = null;
-        r.shadowMap.autoUpdate = false;
-        scene.traverse(m => { if (m.isMesh){ m.userData.mat = m.material; m.material = mats[isPicked(m) ? 1 : 0][hv && m.userData.owner === hv ? 1 : 0]; } });
+        scene.updateMatrixWorld();
+
+        const all = picked.size === 0;
+        const hits = kind => all || picked.has(kind);
+        for (const kind in kinds){
+          kinds[kind].hit.value = hits(kind) ? 1 : 0;
+          kinds[kind].glow.value = Math.max(pickMode && picked.has(kind) ? 1 : 0, this.hover === kind ? o.glow : 0);
+        }
+        const h = o.on && o.pointer ? hitAt(o.pointer[0], o.pointer[1], hits) : null;
+        if (h){
+          if (present < 0.05){ eye.copy(h.point); eyeN.copy(h.normal); }
+          else { eye.lerp(h.point, Math.min(1, dt * 10)); eyeN.lerp(h.normal, Math.min(1, dt * 8)).normalize(); }
+        }
+        present += ((h ? 1 : 0) - present) * Math.min(1, dt * 4);
+        const tr = U.uTrail.value, tn = U.uTrailN.value;
+        if ((sinceDrop += dt) > 0.09){
+          sinceDrop = 0;
+          for (let i = TRAIL - 1; i > 0; i--){ tr[i].copy(tr[i - 1]); tn[i].copy(tn[i - 1]); }
+        }
+        tr[0].set(eye.x, eye.y, eye.z, present);
+        tn[0].copy(eyeN);
+        for (let i = 1; i < TRAIL; i++) tr[i].w = Math.min(tr[i].w, present * (1 - i / TRAIL));
+        U.uR.value = o.R; U.uSpin.value = o.spin; U.uPull.value = o.pull; U.uSink.value = o.sink;
+        U.uDrip.value = o.drip; U.uTear.value = o.tear; U.uSnap.value = o.snap; U.uTime.value = o.time;
+        U.uOn.value += ((o.on ? 1 : 0) - U.uOn.value) * Math.min(1, dt * 3);
         r.render(scene, camera);
-        scene.traverse(m => { if (m.isMesh) m.material = m.userData.mat; });
-        scene.background = bg; scene.fog = fog; r.shadowMap.autoUpdate = true;
       },
-      // The kind of thing under a point on the screen.
-      keyAt(x, y){
-        ray.setFromCamera(new T.Vector2(x * 2 - 1, 1 - y * 2), camera);
-        const hit = ray.intersectObjects(scene.children, true)[0];
-        return hit ? hit.object.userData.owner : "sky";
-      },
-      // Pick or unpick it; returns the kind.
+      keyAt(x, y){ const h = hitAt(x, y); return h ? h.kind : null; },
+      // Pick or unpick the kind under a point; returns it (null for the sky).
       pick(x, y){
         const key = this.keyAt(x, y);
-        if (picked.has(key)) picked.delete(key); else picked.add(key);
+        if (key){ if (picked.has(key)) picked.delete(key); else picked.add(key); }
         return key;
       },
       pickHouses(){
@@ -554,7 +662,6 @@ function loadSuburb(){
         return [...(all ? ["every house"] : []), ...[...picked].filter(k => !all || !houses.includes(k))].join(", ");
       },
     };
-    suburb.step(0);
     return suburb;
   })();
 }
@@ -655,24 +762,32 @@ function showTab(name){
 renderSpell();
 
 // ------------------------------------------------------------------ the loop
-// Two ways to see the street: the 3D one (the default, and the only one you
-// can pick in) and the film of it, drawn into a canvas each frame.
+// Two ways to see the street: the 3D one (the default; the spell lives in
+// the scene, and you can pick in it) and the film of it, which has no
+// surfaces, so the spell there is the flat one, laid over the picture.
 let run = null, paused = false, steer = true, gulp = 0, film = null;
 let glow = 0;                                              // the hovered / just-picked kind's glow, 0..1
+let pointer = null;                                        // where the pointer is, 0..1 across and down
 
 function build(){
-  if (!gl || !innerWidth || !innerHeight || !(film || (street && suburb))) return;
+  if (!innerWidth || !innerHeight) return;
+  if (!film){
+    if (street && suburb){ suburb.size(innerWidth, innerHeight); suburb.show(true); }
+    canvas.hidden = true;
+    showReadout();
+    return;
+  }
+  if (!gl) return;
+  if (suburb) suburb.show(false);
+  canvas.hidden = false;
   const px = Math.max(1, Math.max(2, Math.round(innerWidth / 520)) + val("pixel") - 2);
   const W = Math.ceil(innerWidth / px), H = Math.ceil(innerHeight / px);       // the spell's pixels
   const dpr = Math.min(devicePixelRatio || 1, innerWidth < 700 ? 1.5 : 2);
-  const FW = Math.round(innerWidth * dpr), FH = Math.round(innerHeight * dpr);  // the street's
+  const FW = Math.round(innerWidth * dpr), FH = Math.round(innerHeight * dpr);  // the film's
   canvas.width = FW; canvas.height = FH;
-  let src;
-  if (film){
-    src = document.createElement("canvas"); src.width = FW; src.height = FH;
-    film.canvas = src; film.ctx = src.getContext("2d");
-    film.ctx.fillStyle = "#000"; film.ctx.fillRect(0, 0, FW, FH);
-  } else { suburb.size(FW, FH); src = suburb.canvas; }
+  const src = document.createElement("canvas"); src.width = FW; src.height = FH;
+  film.canvas = src; film.ctx = src.getContext("2d");
+  film.ctx.fillStyle = "#000"; film.ctx.fillRect(0, 0, FW, FH);
   if (run){ run.tex.forEach(t => gl.deleteTexture(t)); gl.deleteTexture(run.sheetTex); gl.deleteTexture(run.maskTex); }
   const tex = [texture(W, H), texture(W, H)], fbo = tex.map(t => {
     const f = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, f);
@@ -689,50 +804,56 @@ let last = 0, clock = 0;
 function frame(now){
   requestAnimationFrame(frame);
   const dt = Math.min(0.05, (now - last) / 1000 || 0.016); last = now;
-  if (!run || paused) return;
+  if (paused) return;
   clock += dt;
-  const speed = val("speed");
-  const masked = !film && suburb && suburb.picked.size > 0;
-  gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, run.sheetTex);
-  if (film){
-    const v = $("film");
-    if (v.readyState >= 2 && v.videoWidth){
-      const {canvas: c, ctx: g} = film, r = Math.max(c.width / v.videoWidth, c.height / v.videoHeight);
-      g.drawImage(v, (c.width - v.videoWidth * r) / 2, (c.height - v.videoHeight * r) / 2, v.videoWidth * r, v.videoHeight * r);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c);
-    }
-  } else {
-    suburb.step(speed * 0.18 * dt);
-    suburb.render();
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, suburb.canvas);
+  gulp = Math.max(0, gulp - dt * 1.4);
+  const swell = 1 + Math.sin(Math.min(1, gulp) * Math.PI) * 1.6;
+  if (!film){
+    if (!street || !suburb) return;
     if (pickMode) glow = 1;
     else if (glow > 0 && (glow -= dt / 0.9) <= 0){ glow = 0; suburb.hover = null; }
-    if (masked || on || glow > 0){
-      suburb.renderMask();
-      gl.bindTexture(gl.TEXTURE_2D, run.maskTex);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, suburb.canvas);
-    }
+    suburb.frame(dt, {
+      on, glow, time: clock, walk: val("speed") * 0.18 * dt,
+      pointer: steer ? pointer : [0.5, 0.62],
+      R: (1 + D.eye.v * 12) * swell,
+      spin: val("spin") * (1 + gulp * 2), pull: val("pull") * (1 + gulp * 2), sink: D.height.v * 1.6 * (1 + gulp),
+      drip: val("drip"), tear: val("tear"), snap: (val("pixel") - 1) * 0.15,
+    });
+    return;
+  }
+  if (run) flatFrame(dt, swell);
+}
+
+// The flat spell, for the film: a picture laid over the screen.
+function flatFrame(dt, swell){
+  const speed = val("speed");
+  gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, run.sheetTex);
+  const v = $("film");
+  if (v.readyState >= 2 && v.videoWidth){
+    const {canvas: c, ctx: g} = film, r = Math.max(c.width / v.videoWidth, c.height / v.videoHeight);
+    g.drawImage(v, (c.width - v.videoWidth * r) / 2, (c.height - v.videoHeight * r) / 2, v.videoWidth * r, v.videoHeight * r);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c);
   }
   run.eye[0] += (run.target[0] - run.eye[0]) * Math.min(1, dt * 2.5);
   run.eye[1] += (run.target[1] - run.eye[1]) * Math.min(1, dt * 2.5);
-  gulp = Math.max(0, gulp - dt * 1.4);
+  const eyeR = val("eye") * swell;
 
   const a = run.i, b = 1 - a;
   gl.useProgram(P.p); gl.viewport(0, 0, run.W, run.H);
   gl.bindFramebuffer(gl.FRAMEBUFFER, run.fbo[b]);
   gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, run.tex[a]); gl.uniform1i(P.u.uPrev, 0);
   gl.activeTexture(gl.TEXTURE2); gl.bindTexture(gl.TEXTURE_2D, run.maskTex); gl.uniform1i(P.u.uMask, 2);
-  gl.uniform1f(P.u.uMasked, masked ? 1 : 0);
+  gl.uniform1f(P.u.uMasked, 0);
   gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, run.sheetTex); gl.uniform1i(P.u.uSheet, 1);
   gl.uniform2f(P.u.uRes, run.W, run.H);
   gl.uniform2f(P.u.uEye, run.eye[0], run.eye[1]);
   gl.uniform1f(P.u.uTime, clock);
   gl.uniform1f(P.u.uFlow, speed * dt / run.H);
-  gl.uniform1f(P.u.uDz, film || !suburb ? 0 : suburb.dz);
+  gl.uniform1f(P.u.uDz, 0);
   gl.uniform1f(P.u.uFront, val("height"));
   gl.uniform1f(P.u.uAspect, run.W / run.H);
   gl.uniform1f(P.u.uPrime, run.primed && on ? 0 : 1);
-  gl.uniform1f(P.u.uEyeR, val("eye") * (1 + Math.sin(Math.min(1, gulp) * Math.PI) * 1.6));   // the last pass uses the same
+  gl.uniform1f(P.u.uEyeR, eyeR);
   gl.uniform1f(P.u.uSpin, val("spin") * (1 + gulp * 2));
   gl.uniform1f(P.u.uPull, val("pull") * (1 + gulp * 3));
   gl.uniform1f(P.u.uTear, val("tear"));
@@ -740,14 +861,12 @@ function frame(now){
   run.primed = true;
   gl.drawArrays(gl.TRIANGLES, 0, 3);
 
-  const eyeR = val("eye") * (1 + Math.sin(Math.min(1, gulp) * Math.PI) * 1.6);
   gl.useProgram(B.p); gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0, 0, run.FW, run.FH);
   gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
   gl.bindTexture(gl.TEXTURE_2D, run.tex[b]); gl.uniform1i(B.u.uTex, 1);
   gl.activeTexture(gl.TEXTURE3); gl.bindTexture(gl.TEXTURE_2D, run.sheetTex); gl.uniform1i(B.u.uFull, 3);
   gl.activeTexture(gl.TEXTURE1);
-  gl.uniform1i(B.u.uMask, 2); gl.uniform1f(B.u.uMasked, masked ? 1 : 0); gl.uniform1f(B.u.uTint, masked && pickMode ? 1 : 0);
-  gl.uniform1f(B.u.uGlow, !film && suburb && suburb.hover ? glow : 0);
+  gl.uniform1i(B.u.uMask, 2); gl.uniform1f(B.u.uMasked, 0); gl.uniform1f(B.u.uTint, 0); gl.uniform1f(B.u.uGlow, 0);
   gl.uniform2f(B.u.uRes, run.FW, run.FH);
   gl.uniform2f(B.u.uLow, run.W, run.H);
   gl.uniform1f(B.u.uOn, on ? 1 : 0);
@@ -828,17 +947,22 @@ $("reset").addEventListener("click", () => {
 
 const overUI = t => t.closest && t.closest(".ctrl, .dock, .help, .home");
 addEventListener("pointermove", e => {
-  if (pickMode && suburb && !film) suburb.hover = overUI(e.target) ? null : suburb.keyAt(e.clientX / innerWidth, e.clientY / innerHeight);
-  if (!run || !steer || !on || overUI(e.target)) return;
+  if (overUI(e.target)){ if (pickMode && suburb) suburb.hover = null; return; }
+  pointer = [e.clientX / innerWidth, e.clientY / innerHeight];
+  if (pickMode && suburb && !film) suburb.hover = suburb.keyAt(pointer[0], pointer[1]);
+  if (!run || !steer || !on) return;
   run.target = [e.clientX / innerWidth, Math.max(0.08, Math.min(0.75, 1 - e.clientY / innerHeight))];
 });
+document.addEventListener("pointerleave", () => { pointer = null; });
 // Pick is one click: the thing under it is picked (or unpicked, if it
 // already was), Pick turns itself off and Fever comes on, so the next
 // clicks cast the spell on what you picked.
-canvas.addEventListener("click", e => {
+addEventListener("click", e => {
+  if (!(e.target instanceof HTMLCanvasElement)) return;
+  pointer = [e.clientX / innerWidth, e.clientY / innerHeight];
   if (pickMode && suburb && !film){
     const key = suburb.pick(e.clientX / innerWidth, e.clientY / innerHeight);
-    suburb.hover = suburb.picked.has(key) ? key : null;      // the one just picked glows, then fades
+    suburb.hover = key && suburb.picked.has(key) ? key : null;   // the one just picked glows, then fades
     setPick(false);
     if (suburb.picked.size && !on) setFever(true);
     showReadout();
@@ -860,7 +984,6 @@ $("gotit").addEventListener("click", () => { $("help").hidden = true; store.set(
 
 // ------------------------------------------------------------------ go
 (async () => {
-  if (!gl){ $("readout").textContent = "this browser doesn't support WebGL2, which the portal needs"; return; }
   await document.fonts.ready;
   if (store.get("film") === "1") useFilm(); else useStreet();
   if (!store.get("helped")) $("help").hidden = false;
