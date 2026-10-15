@@ -1,0 +1,991 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Fever</title>
+<meta name="description" content="An endless pastel suburb. Press Fever and cast a spell on its houses, lamps, road and sky. The first spell is Dark Puddle, a portal that eats the picture." />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  /* Fever: the picture-treating tool from Fantasmagoria, alone on a page,
+     examining one endless street. The street plays untouched until Fever
+     is on; then the chosen spell works on it, or on the things you pick. Same
+     dark glass as Dark Puddle: a slim strip on a desktop, a bottom sheet on
+     a phone, white type, one accent, which turns hot while Fever is on. */
+  :root{
+    --paper:#faf9f6; --ink:#141311; --mint:#9ff0c8; --hot:#ff6a3d;
+    --glass:rgba(16,15,14,.62); --edge:rgba(255,255,255,.16); --edge2:rgba(255,255,255,.3);
+    --soft:0 14px 40px rgba(0,0,0,.55), 0 1px 0 rgba(255,255,255,.08) inset;
+    --ui:"Figtree", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --mono:"IBM Plex Mono","SFMono-Regular",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100%;background:#000;}
+  body{color:#fff;font-family:var(--ui);overflow:hidden;}
+  /* will-change keeps the canvas on its own compositing layer; without it the
+     browser flattens the see-through parts over the video to black. */
+  canvas.street{position:fixed;inset:0;z-index:1;width:100%;height:100%;display:block;touch-action:none;}
+  canvas.street[hidden],canvas#gl[hidden]{display:none;}
+  canvas#gl{position:fixed;inset:0;z-index:1;width:100%;height:100%;display:block;image-rendering:pixelated;touch-action:none;will-change:transform;}
+
+  .home{position:fixed;top:18px;left:20px;z-index:5;color:var(--paper);mix-blend-mode:difference;}
+  .home svg{width:30px;height:auto;display:block;}
+
+
+  /* ---------- chips ---------- */
+  .chip{
+    font:700 10.5px/1 var(--ui);letter-spacing:.08em;text-transform:uppercase;color:#fff;
+    background:rgba(255,255,255,.06);border:1px solid var(--edge2);border-radius:99px;padding:8px 11px;cursor:pointer;
+    white-space:nowrap;transition:background .12s, border-color .12s, transform .08s;
+  }
+  .chip:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.5);}
+  .chip:active{transform:scale(.97);}
+  .chip[aria-pressed="true"],.chip[aria-selected="true"]{background:#fff;color:#000;border-color:#fff;}
+  .chip:focus-visible,.dial:focus-visible,.dockb:focus-visible{outline:2px solid var(--mint);outline-offset:3px;}
+  .chip[hidden]{display:none;}
+
+  /* ---------- dock ---------- */
+  .dock{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:7;display:flex;align-items:center;gap:8px;}
+  .dockb{
+    font:800 11px/1 var(--ui);letter-spacing:.1em;text-transform:uppercase;color:#fff;cursor:pointer;
+    background:var(--glass);border:1px solid var(--edge2);border-radius:99px;padding:11px 16px;
+    backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);box-shadow:var(--soft);
+    display:flex;align-items:center;gap:8px;transition:background .12s, transform .08s;
+  }
+  .dockb:hover{background:rgba(40,38,36,.75);}
+  .dockb:active{transform:scale(.97);}
+  .dockb[aria-expanded="true"]{background:#fff;color:#000;}
+  .dockb .dot{width:10px;height:10px;border-radius:50%;background:var(--mint);box-shadow:0 0 12px var(--mint);}
+  .dockb[aria-expanded="true"] .dot{background:#000;box-shadow:none;}
+  .dockb.q{padding:11px 13px;font-size:14px;}
+  .dockb#fever{padding:11px 18px;font-size:12px;}
+  .dockb#fever .dot{background:#6b6966;box-shadow:none;}
+  .dockb#fever[aria-pressed="true"]{background:var(--hot);border-color:var(--hot);color:#000;box-shadow:0 0 28px rgba(255,106,61,.55), var(--soft);}
+  .dockb#fever[aria-pressed="true"] .dot{background:#000;}
+  .spells{display:flex;gap:6px;}
+  .spells .chip i{font-style:normal;opacity:.6;margin-left:6px;}
+
+  /* ---------- the strip ---------- */
+  .ctrl{
+    position:fixed;left:50%;bottom:70px;transform:translateX(-50%);z-index:6;
+    display:flex;align-items:center;gap:12px;max-width:calc(100vw - 16px);
+    padding:8px 10px;border:1px solid var(--edge);border-radius:20px;
+    background:var(--glass);backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3);
+    box-shadow:var(--soft);
+  }
+  .ctrl[hidden]{display:none;}
+  .tabs{display:flex;flex-direction:column;gap:4px;}
+  .tabs .chip{padding:6px 9px;font-size:9.5px;text-align:left;border-color:transparent;background:transparent;}
+  .tabs .chip:hover{background:rgba(255,255,255,.1);}
+  .tabs .chip[aria-selected="true"]{background:#fff;color:#000;}
+  .page{display:flex;align-items:center;gap:8px;}
+  .page[hidden]{display:none;}
+  .sep{width:1px;align-self:stretch;background:var(--edge);}
+
+  /* dials */
+  .dwrap{display:flex;flex-direction:column;align-items:center;gap:4px;width:58px;}
+  .dial{
+    --v:0.5;position:relative;width:44px;height:44px;border-radius:50%;cursor:ns-resize;touch-action:none;
+    background:conic-gradient(from 225deg, var(--mint) 0deg, var(--mint) calc(var(--v) * 270deg),
+      rgba(255,255,255,.14) calc(var(--v) * 270deg) 270deg, transparent 270deg 360deg);
+    box-shadow:0 6px 16px rgba(0,0,0,.5);
+  }
+  .dial::after{content:"";position:absolute;inset:5px;border-radius:50%;background:#1a1917;border:1px solid var(--edge2);}
+  .dial .g{position:absolute;inset:0;display:grid;place-items:center;font:800 14px var(--ui);color:#fff;z-index:1;pointer-events:none;}
+  .dial .ind{position:absolute;left:50%;top:50%;width:2px;height:22px;margin-left:-1px;margin-top:-22px;z-index:1;
+    transform-origin:50% 100%;transform:rotate(calc(-135deg + var(--v) * 270deg));pointer-events:none;}
+  .dial .ind::before{content:"";position:absolute;top:1px;left:-1px;width:4px;height:7px;border-radius:2px;background:var(--mint);box-shadow:0 0 6px var(--mint);}
+  .dname{font:700 9px var(--ui);letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.85);}
+  .dname b{font:500 9px var(--mono);margin-left:4px;color:var(--mint);}
+
+
+
+  /* ---------- help ---------- */
+  .help{
+    position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:8;
+    width:min(400px,calc(100vw - 24px));padding:18px 20px;border:1px solid var(--edge);border-radius:20px;
+    background:rgba(16,15,14,.78);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:var(--soft);
+  }
+  .help[hidden]{display:none;}
+  .help .kicker{font:700 10px var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--mint);margin:0 0 6px;}
+  .help h2{font:800 22px var(--ui);margin:0 0 12px;letter-spacing:-.01em;}
+  .help .lede{font:600 13px/1.55 var(--ui);color:rgba(255,255,255,.92);margin:0 0 12px;}
+  .help dl{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;margin:0 0 12px;font:600 12.5px/1.45 var(--ui);}
+  .help dt{color:var(--mint);}
+  .help b{color:#fff;}
+  .help dd{margin:0;}
+  .help p{font:600 11.5px/1.55 var(--ui);margin:0 0 12px;color:rgba(255,255,255,.65);}
+  .help a{color:#fff;}
+
+  .readout{
+    position:fixed;left:20px;bottom:20px;z-index:4;margin:0;padding:6px 10px;border:1px solid var(--edge);border-radius:99px;
+    background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    font:700 9.5px var(--ui);letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.85);
+    pointer-events:none;font-variant-numeric:tabular-nums;
+  }
+  .readout:empty{display:none;}
+
+  /* ---------- the bottom sheet, on a phone ---------- */
+  @media (max-width:700px){
+    .readout{display:none;}
+    .dock{gap:6px;bottom:12px;}
+    .dockb,.dockb#fever{padding:10px 12px;font-size:10.5px;gap:6px;}
+    .ctrl{
+      left:8px;right:8px;bottom:64px;transform:none;max-width:none;
+      flex-direction:column;align-items:stretch;gap:10px;padding:10px;border-radius:18px;
+    }
+    .sep{display:none;}
+    .tabs{flex-direction:row;gap:2px;padding:3px;border-radius:99px;background:rgba(255,255,255,.07);}
+    .tabs .chip{flex:1;text-align:center;padding:8px 4px;}
+    .page{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+    .page[hidden]{display:none;}
+    .page .chip{text-align:center;padding:10px 8px;}
+    .page.dials{grid-template-columns:repeat(4,1fr);justify-items:center;}
+    .page[data-page="spells"] .spells{grid-column:1 / -1;}
+    .page[data-page="fx"]{grid-template-columns:repeat(3,1fr);}
+    .page[data-page="fx"] .chip{padding:10px 4px;}
+  }
+  @media (prefers-reduced-motion:reduce){ .chip,.dockb{transition:none;} }
+</style>
+
+<video id="film" playsinline loop muted hidden></video>
+
+<canvas id="gl" aria-label="An endless suburb, and whatever spell Fever is casting on it"></canvas>
+
+<a class="home" href="/" aria-label="Sea of Grass — all studies">
+  <svg viewBox="43.63 44.56 350.94 258.56" fill="currentColor" aria-hidden="true">
+    <path d="M 60.1360,299.5890 C 40.8560,283.5000 37.9720,248.8600 54.1230,229.1250 C 61.9590,219.4780 73.2066,213.0913 85.9080,212.4050 L 279.9170,212.3880 C 292.7328,211.6894 302.2259,200.5242 302.6140,188.1740 C 303.0171,175.3461 294.1087,163.3937 280.9850,162.4350 L 160.3860,162.3770 C 155.6830,162.3750 152.4580,158.1300 152.2660,154.1930 C 152.0640,150.0420 155.5000,145.5160 160.3230,145.5160 L 323.2740,145.5180 C 363.5090,146.7569 394.2264,180.5210 394.5670,220.2810 C 394.9023,259.4236 360.4620,297.7100 320.2520,299.1580 C 320.2520,299.1580 69.9310,307.7640 60.1360,299.5890 Z"/>
+    <path d="M 365.1390,47.9780 C 360.1170,47.5130 354.1470,47.1080 347.4230,46.7550 C 274.7440,42.9430 114.0820,45.2510 114.0820,45.2510 C 73.9994,46.9759 43.7290,80.8860 43.6260,120.3040 C 43.5230,159.4680 73.5199,193.9418 113.3820,195.4730 L 277.3270,195.8440 C 282.2870,195.8440 285.7460,192.0070 285.9600,187.6500 C 286.1670,183.4310 282.8680,178.9500 277.9760,178.9480 L 158.2750,178.9140 C 145.3037,178.2644 135.8119,166.8014 135.6040,154.2420 C 135.3960,141.6768 144.3477,129.9059 157.2620,128.9900 L 350.1640,128.8050 C 352.3160,128.8030 354.4280,128.6110 356.4990,128.2740 C 366.7370,126.6070 375.8830,121.0490 382.8160,113.4590 C 390.0330,105.5580 394.4238,95.7293 394.5320,85.6870 C 394.7250,67.7708 381.6430,52.8390 365.1390,47.9780 Z"/>
+    <circle cx="357.983" cy="86.686" r="36.548"/>
+  </svg>
+</a>
+
+<!-- ---------------------------------------------------------------- controller -->
+<div class="ctrl" id="ctrl" hidden role="dialog" aria-label="Fever controls">
+  <div class="tabs" role="tablist" id="tabs">
+    <button class="chip" role="tab" aria-selected="true" data-tab="street">Street</button>
+    <button class="chip" role="tab" aria-selected="false" data-tab="spells">Spells</button>
+  </div>
+  <div class="sep"></div>
+
+  <div class="page" data-page="street">
+    <button class="chip" id="pickBtn" aria-pressed="false" title="Then click one thing in the street for the spell to hit (K)">Pick</button>
+    <button class="chip" id="pickAll" title="Pick every house, or unpick them">Houses</button>
+    <button class="chip" id="pickNone" title="Clear the picks: the spell hits everything">Clear</button>
+    <button class="chip" id="filmBtn" aria-pressed="false" title="Swap the 3D street for a film of it">Film</button>
+  </div>
+
+  <div class="page" data-page="spells" hidden>
+    <div class="spells" id="spells"></div>
+  </div>
+  <div id="spellPages" style="display:contents"></div>
+
+  <div class="page" data-page="fx" hidden>
+    <button class="chip" id="swallow">Swallow</button>
+    <button class="chip" id="refill">Refill</button>
+    <button class="chip" id="pause" aria-pressed="false">Pause</button>
+    <button class="chip" id="steer" aria-pressed="true">Steer</button>
+    <button class="chip" id="reset">Reset</button>
+  </div>
+</div>
+
+<div class="dock">
+  <button class="dockb" id="fever" aria-pressed="false" title="Cast the spell on the street (F)"><span class="dot"></span><span id="feverLabel">fever</span></button>
+  <button class="dockb" id="open" aria-label="Controls" aria-expanded="false"><span class="dot"></span>controls</button>
+  <button class="dockb q" id="ask" aria-label="How to play">?</button>
+</div>
+
+<div class="help" id="help" hidden role="dialog" aria-label="About Fever">
+  <p class="kicker">Study 10 · Sea of Grass</p>
+  <h2 id="helpTitle">Fever</h2>
+  <p class="lede">An examination of one street: pastel houses down both sides of a grey road, under a hard blue
+    sky, going on forever. Press <b>Fever</b> and cast a spell on it. The first spell is Dark Puddle: a black
+    eye that rides over the surfaces of things and twists, sinks and tears them as it goes.</p>
+  <dl>
+    <dt>fever</dt><dd>the button, or F: casts the spell; press again and the street comes back whole</dd>
+    <dt>steer</dt><dd>the eye sits on whatever is under the pointer and rides over it, twisting and sinking
+      the walls, roofs and lawn around it; click and it swallows</dd>
+    <dt>pick</dt><dd>in controls, press <b>Pick</b> (or K), then click one thing: a colour of house, the lamps, the
+      road, the lawn. The spell then hits only that, and clicking casts it. Pick again to add more;
+      <b>Clear</b> lets it hit everything</dd>
+    <dt>controls</dt><dd>pick the spell, turn its dials, or swap the street for a film of it</dd>
+  </dl>
+  <p>Fever is the picture-treating tool from Fantasmagoria, the studio's live show, tried out here on its own.
+    The street is drawn live with <a href="https://threejs.org">three.js</a>; the film of it was made with
+    Higgsfield from a still. The portal is after a TouchDesigner piece posted to
+    <a href="https://www.reddit.com/r/TouchDesigner/comments/1t0wkv2/using_td_to_eat_up_worlds/">r/TouchDesigner</a>
+    ("using TD to eat up worlds"), rebuilt in WebGL. Nothing leaves your browser.</p>
+  <button class="chip" id="gotit">Begin</button>
+</div>
+
+<p class="readout" id="readout"></p>
+
+<script type="importmap">
+{"imports": {"three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+             "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const store = {
+  get(k){ try { return localStorage.getItem("fever:" + k); } catch (e) { return null; } },
+  set(k, v){ try { localStorage.setItem("fever:" + k, v); } catch (e) {} },
+};
+
+// ------------------------------------------------------------------ WebGL
+const canvas = $("gl");
+const gl = canvas.getContext("webgl2", {antialias: false, preserveDrawingBuffer: false, alpha: true, premultipliedAlpha: true});
+
+const VS = `#version 300 es
+in vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }`;
+
+// Spell: Dark Puddle. Above a blobby front the picture is intact; behind it,
+// last frame is dripped, spun around the eye, drawn in, slipped and eaten.
+// While Fever is off uPrime holds, so the whole frame is the plain picture
+// and switching on starts from exactly what was showing.
+// The spell runs at a coarse size (the pixels dial); the street is drawn at
+// full resolution. The last pass shows the coarse spell only where it is
+// actually eating (below the front, and on picked things when there are
+// picks) and the crisp street everywhere else, so both passes need to agree
+// on where the front is: that's eatenAt, shared by both.
+const COMMON = `
+uniform vec2 uEye;
+uniform float uTime, uFront, uAspect, uEyeR;
+float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+float noise(vec2 p){
+  vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
+  return mix(mix(hash(i), hash(i + vec2(1, 0)), f.x), mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), f.x), f.y);
+}
+float fbm(vec2 p){ float v = 0.0, a = 0.5; for (int i = 0; i < 4; i++){ v += a * noise(p); p *= 2.03; a *= 0.5; } return v; }
+// How far into the eaten part a coarse pixel is (below 0: untouched).
+// frag is the coarse pixel's centre, res the coarse size.
+float eatenAt(vec2 frag, vec2 res){
+  vec2 uv = frag / res;
+  float yd = 1.0 - uv.y;
+  vec2 e = uv - uEye; e.x *= uAspect;
+  float col = floor(frag.x / 4.0);
+  float ragged = (hash(vec2(col, floor(uTime * 0.7))) - 0.5) * 0.05;
+  float blob = fbm(vec2(uv.x * uAspect * 2.5, yd * 2.5 - uTime * 0.08));
+  float halo = smoothstep(0.18 + uEyeR * 3.0, 0.0, length(e)) * 0.3;
+  return yd - uFront + (blob - 0.5) * 0.55 + ragged + halo;
+}`;
+
+const FS = `#version 300 es
+precision highp float;
+uniform sampler2D uPrev, uSheet, uMask;
+uniform float uMasked;
+uniform vec2 uRes;
+uniform float uFlow, uPrime, uDz;
+uniform float uSpin, uPull, uTear, uDrip;
+out vec4 o;
+${COMMON}
+// What the spell eats. With picks, that's only the picked things, as a
+// premultiplied layer that is clear everywhere else, and the result is cut
+// back to their outlines: the spell happens on their surface, made only of
+// them, and the street around them is never dragged in.
+vec4 sheet(vec2 uv){
+  vec2 t = vec2(clamp(uv.x, 0.0, 1.0), clamp(1.0 - uv.y, 0.0, 1.0));
+  vec4 c = texture(uSheet, t);
+  if (uMasked > 0.5){ float m = texture(uMask, t).r; c = vec4(c.rgb * m, m); }
+  return c;
+}
+// Where the surface under this pixel was a frame ago. The camera looks
+// straight down the street, so walking forward dz pushes every surface
+// outward from the middle of the screen by its distance z: it was at
+// centre + (uv - centre) * z / (z + dz). The sky (no nearness) stays put.
+vec2 back(vec2 uv){
+  float g = texture(uMask, vec2(clamp(uv.x, 0.0, 1.0), clamp(1.0 - uv.y, 0.0, 1.0))).g;
+  if (g <= 0.0 || uDz <= 0.0) return uv;
+  float z = 4.0 / g;
+  return 0.5 + (uv - 0.5) * z / (z + uDz);
+}
+void main(){
+  vec2 uv = gl_FragCoord.xy / uRes;
+  float yd = 1.0 - uv.y;
+  vec2 e = uv - uEye; e.x *= uAspect;
+  float r = length(e);
+  vec4 intact = sheet(uv);
+
+  float col = floor(gl_FragCoord.x / 4.0);
+  float eaten = eatenAt(gl_FragCoord.xy, uRes);
+  if (eaten < 0.0 || uPrime > 0.5){ o = intact; return; }
+  float depth = smoothstep(0.0, 0.35, eaten);
+
+  float speed = pow(hash(vec2(col, 9.0)), 3.0);
+  vec2 q = back(uv) + vec2(0.0, uFlow * (0.6 + 5.0 * uDrip * speed * depth));
+
+  vec2 d = q - uEye; d.x *= uAspect;
+  float reach = 0.45 + uEyeR * 2.0;
+  float k = clamp(1.0 - length(d) / reach, 0.0, 1.0);
+  float a = uSpin * (0.035 * k * k * k + 0.006 * k);
+  d = mat2(cos(a), -sin(a), sin(a), cos(a)) * d;
+  d *= 1.0 + 0.006 * uPull * k;
+  d.x /= uAspect;
+  q = uEye + d;
+
+  float band = floor(gl_FragCoord.y / 5.0), tick = floor(uTime * 6.0);
+  float slip = step(1.0 - (0.1 + 0.08 * depth) * uTear, hash(vec2(band, tick)));
+  q.x += slip * (hash(vec2(band, tick + 3.0)) - 0.5) * 0.02 * depth * min(uTear, 1.5);
+
+  vec4 prev = texture(uPrev, clamp(q, 0.0, 1.0));
+  float feed = 1.0 - smoothstep(0.0, 0.025, eaten);
+  o = mix(prev, sheet(uv), feed);
+  o.rgb *= smoothstep(uEyeR * 0.25, uEyeR, r);
+  if (uMasked < 0.5) o.a = 1.0;
+  else o *= texture(uMask, vec2(uv.x, yd)).r;
+}`;
+
+// The last pass, at full resolution: the crisp street, with the coarse spell
+// put back only where it's eating.
+const BLIT = `#version 300 es
+precision highp float;
+uniform sampler2D uTex, uMask, uFull;
+uniform vec2 uRes, uLow;
+uniform float uTint, uGlow, uMasked, uOn;
+out vec4 o;
+${COMMON}
+void main(){
+  vec2 uv = gl_FragCoord.xy / uRes;
+  vec2 frag = floor(uv * uLow) + 0.5;                 // the coarse pixel this lands in
+  vec2 luv = frag / uLow;
+  vec4 street = texture(uFull, vec2(uv.x, 1.0 - uv.y));
+  vec4 spell = texture(uTex, luv);
+  float hit = uOn > 0.5 ? step(0.0, eatenAt(frag, uLow)) : 0.0;
+  if (uMasked > 0.5){
+    hit *= texture(uMask, vec2(uv.x, 1.0 - uv.y)).r;   // the sharp outline, not the coarse one
+    spell += street * (1.0 - spell.a);                // gaps in the debris show the thing itself
+  }
+  o = mix(street, spell, hit);
+  vec4 mk = texture(uMask, vec2(uv.x, 1.0 - uv.y));
+  o.rgb = mix(o.rgb, vec3(0.62, 0.94, 0.78), 0.45 * max(uTint * mk.r, uGlow * mk.b));
+  o.a = 1.0;
+}`;
+
+function program(fs){
+  const p = gl.createProgram();
+  for (const [type, src] of [[gl.VERTEX_SHADER, VS], [gl.FRAGMENT_SHADER, fs]]){
+    const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+    gl.attachShader(p, s);
+  }
+  gl.bindAttribLocation(p, 0, "p"); gl.linkProgram(p);
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+  const u = {}; const n = gl.getProgramParameter(p, gl.ACTIVE_UNIFORMS);
+  for (let i = 0; i < n; i++){ const name = gl.getActiveUniform(p, i).name; u[name] = gl.getUniformLocation(p, name); }
+  return {p, u};
+}
+function texture(w, h, src){
+  const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t);
+  if (src) gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, src);
+  else gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+  for (const [k, v] of [[gl.TEXTURE_MIN_FILTER, gl.NEAREST], [gl.TEXTURE_MAG_FILTER, gl.NEAREST],
+                        [gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE], [gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE]])
+    gl.texParameteri(gl.TEXTURE_2D, k, v);
+  return t;
+}
+let P, B;
+if (gl){
+  P = program(FS); B = program(BLIT);
+  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+}
+
+// ------------------------------------------------------------------ the suburb
+// An endless liminal street in 3D: pastel houses down both sides of a grey
+// road, lamps on the right, a hard blue sky. The camera walks toward the
+// vanishing point and lots behind it are moved to the far end, so it never
+// runs out. three.js comes from a CDN on first use.
+//
+// Here the spell is not a picture laid over the screen: Dark Puddle lives in
+// the scene. Its eye sits on whatever surface is under the pointer (a wall,
+// a roof, the lawn) and rides over surfaces as you move. Around it the actual
+// geometry is twisted about the surface, pulled in, sunk into a funnel,
+// dripped, slipped in bands and snapped into blocks, with a black hole at the
+// middle; a short wake of earlier eye positions trails behind it. Every
+// material carries the same vertex shader, and a per-kind switch says
+// whether that kind is hit: everything, or only what's picked. The models
+// are subdivided so they have enough points to bend.
+//
+// A pick is a kind, not one object, since the camera walks past any one
+// house in seconds: pick a pink house and every pink house down the street
+// is hit.
+let suburb = null, suburbLoading = null, street = false, pickMode = false;
+const TRAIL = 8;                                           // eye positions in the wake
+const PUDDLE_GLSL = `
+uniform vec4 uTrail[${TRAIL}];
+uniform vec3 uTrailN[${TRAIL}];
+uniform float uR, uSpin, uPull, uSink, uDrip, uTear, uSnap, uTime, uOn, uHit;
+varying float vHole;
+float ph(float n){ return fract(sin(n * 127.1) * 43758.5453); }
+vec3 spinAbout(vec3 v, vec3 a, float t){ return v * cos(t) + cross(a, v) * sin(t) + a * dot(a, v) * (1.0 - cos(t)); }
+vec3 puddle(vec3 w){
+  vHole = 0.0;
+  float s0 = uOn * uHit;
+  if (s0 <= 0.0) return w;
+  float most = 0.0;
+  for (int i = 0; i < ${TRAIL}; i++){
+    float s = uTrail[i].w * s0;
+    if (s <= 0.002) continue;
+    vec3 c = uTrail[i].xyz, n = uTrailN[i];
+    vec3 d = w - c;
+    float dist = length(d), R = uR;
+    float k = clamp(1.0 - dist / (R * 2.4), 0.0, 1.0);
+    k = k * k * s;
+    if (k <= 0.0) continue;
+    most = max(most, k);
+    d = spinAbout(d, n, uSpin * k * 2.8);                  // twisted about the surface
+    d *= 1.0 - uPull * 0.42 * k;                           // drawn in
+    d -= n * uSink * R * 1.1 * k;                          // sunk into a funnel
+    w = c + d;
+    w.y -= uDrip * k * R * 0.6 * ph(floor(w.x * 1.4) + floor(w.z * 1.4) * 17.0);   // some columns run
+    vec3 tang = abs(n.y) > 0.9 ? vec3(1.0, 0.0, 0.0) : normalize(cross(n, vec3(0.0, 1.0, 0.0)));
+    float band = floor(w.y * 2.5), tick = floor(uTime * 6.0);
+    w += tang * step(0.72, ph(band * 7.0 + tick)) * (ph(band + tick * 3.0) - 0.5) * uTear * k * 1.6;   // bands slip
+    vHole = max(vHole, s * (1.0 - smoothstep(R * 0.2, R * 0.85, dist)));
+  }
+  if (uSnap > 0.0 && most > 0.05) w = mix(w, floor(w / uSnap + 0.5) * uSnap, min(1.0, most * 3.0));   // hard blocks
+  return w;
+}`;
+
+function loadSuburb(){
+  if (suburb) return Promise.resolve(suburb);
+  return suburbLoading = suburbLoading || (async () => {
+    const T = await import("three");
+    const {TessellateModifier} = await import("three/addons/modifiers/TessellateModifier.js");
+    const r = new T.WebGLRenderer({antialias: true});
+    r.shadowMap.enabled = true;
+    r.domElement.className = "street";
+    r.domElement.setAttribute("aria-label", "An endless suburb, and whatever spell Fever is casting on it");
+    document.body.insertBefore(r.domElement, $("gl"));
+    const scene = new T.Scene();
+
+    const sky = document.createElement("canvas"); sky.width = 2; sky.height = 512;
+    const sg = sky.getContext("2d"), grad = sg.createLinearGradient(0, 0, 0, 512);
+    grad.addColorStop(0, "#0716c9"); grad.addColorStop(0.3, "#0d34e6"); grad.addColorStop(0.47, "#2f78f2");
+    grad.addColorStop(0.5, "#a6cff3"); grad.addColorStop(1, "#a6cff3");
+    sg.fillStyle = grad; sg.fillRect(0, 0, 2, 512);
+    const skyTex = new T.CanvasTexture(sky); skyTex.colorSpace = T.SRGBColorSpace;
+    scene.background = skyTex;
+    scene.fog = new T.Fog(0xa6cff3, 90, 330);
+
+    const camera = new T.PerspectiveCamera(52, 1, 0.5, 600);
+    camera.position.set(0, 9, 0);
+    scene.add(new T.HemisphereLight(0xe4eeff, 0x3f7d33, 1.35));
+    const sun = new T.DirectionalLight(0xfffaf0, 2.8);
+    sun.castShadow = true; sun.shadow.mapSize.set(1024, 1024);
+    Object.assign(sun.shadow.camera, {left: -50, right: 50, top: 70, bottom: -70, near: 1, far: 220});
+    scene.add(sun, sun.target);
+
+    // The spell's uniforms, shared by every material.
+    const U = {
+      uTrail: {value: Array.from({length: TRAIL}, () => new T.Vector4(0, -999, 0, 0))},
+      uTrailN: {value: Array.from({length: TRAIL}, () => new T.Vector3(0, 1, 0))},
+      uR: {value: 3}, uSpin: {value: 1}, uPull: {value: 1}, uSink: {value: 0.5}, uDrip: {value: 1},
+      uTear: {value: 1}, uSnap: {value: 0.15}, uTime: {value: 0}, uOn: {value: 0},
+    };
+    // Materials, one set per kind, so each kind can be switched on or off.
+    const kinds = {};                                      // kind -> {hit, glow}
+    const matCache = {};
+    function mat(kind, color){
+      const key = kind + ":" + color;
+      if (matCache[key]) return matCache[key];
+      const k = kinds[kind] = kinds[kind] || {hit: {value: 1}, glow: {value: 0}};
+      const m = new T.MeshLambertMaterial({color});
+      m.onBeforeCompile = sh => {
+        Object.assign(sh.uniforms, U, {uHit: k.hit, uGlow: k.glow});
+        sh.vertexShader = sh.vertexShader
+          .replace("#include <common>", "#include <common>\n" + PUDDLE_GLSL)
+          .replace("#include <begin_vertex>", `#include <begin_vertex>
+            { vec4 wp = modelMatrix * vec4(transformed, 1.0); wp.xyz = puddle(wp.xyz); transformed = (inverse(modelMatrix) * wp).xyz; }`);
+        sh.fragmentShader = sh.fragmentShader
+          .replace("#include <common>", "#include <common>\nvarying float vHole;\nuniform float uGlow;")
+          .replace("#include <dithering_fragment>", `#include <dithering_fragment>
+            gl_FragColor.rgb *= 1.0 - smoothstep(0.0, 0.9, vHole);
+            gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.62, 0.94, 0.78), 0.45 * uGlow);`);
+      };
+      return matCache[key] = m;
+    }
+    // Subdivide a shape so it has points to bend; keep the plain one for
+    // pointing at (rays against the fine one would be slow). Each piece is a
+    // visible fine mesh and an invisible plain twin on layer 2 for rays.
+    const tess = new TessellateModifier(0.7, 8);
+    const FINE = new Map();
+    const fine = g => { if (!FINE.has(g)) FINE.set(g, tess.modify(g)); return FINE.get(g); };
+    const proxies = [];
+    function piece(fineG, plainG, kind, color, parent, x, y, z, rx){
+      const m = new T.Mesh(fineG, mat(kind, color));
+      const p = new T.Mesh(plainG, new T.MeshBasicMaterial());
+      p.visible = false; p.layers.set(2); p.userData.owner = m.userData.owner = kind;
+      m.castShadow = m.receiveShadow = true;
+      for (const o of [m, p]){ o.position.set(x, y, z); if (rx) o.rotation.x = rx; }
+      parent.add(m, p); proxies.push(p);
+    }
+
+    // The ground goes with the camera; it's all one colour, so nobody can tell.
+    // Grids already have the points to bend.
+    const ground = new T.Group(); scene.add(ground);
+    const flat = -Math.PI / 2;
+    piece(new T.PlaneGeometry(700, 700, 280, 280), new T.PlaneGeometry(700, 700), "lawn", 0x3aa836, ground, 0, 0, -300, flat);
+    piece(new T.PlaneGeometry(9, 700, 10, 700), new T.PlaneGeometry(9, 700), "road", 0x8e8e8b, ground, 0, 0.03, -300, flat);
+    for (const x of [-4.7, 4.7])
+      piece(new T.BoxGeometry(0.4, 0.3, 700, 1, 1, 700), new T.BoxGeometry(0.4, 0.3, 700), "road", 0xd8d5cb, ground, x, 0.15, -300);
+
+    // A house: walls and gables in one piece, two roof slabs, a door and a
+    // window on the side that faces the road, and a path to the curb.
+    const Dp = 8.5, Wd = 8, Hw = 3.2, Rg = 1.7;
+    const prof = new T.Shape([new T.Vector2(-Dp / 2, 0), new T.Vector2(Dp / 2, 0), new T.Vector2(Dp / 2, Hw),
+                              new T.Vector2(0, Hw + Rg), new T.Vector2(-Dp / 2, Hw)]);
+    const bodyG = new T.ExtrudeGeometry(prof, {depth: Wd, bevelEnabled: false});
+    bodyG.translate(0, 0, -Wd / 2); bodyG.rotateY(Math.PI / 2);
+    const ang = Math.atan(Rg / (Dp / 2)), slab = (Dp / 2 + 0.7) / Math.cos(ang);
+    const slabG = new T.BoxGeometry(Wd + 0.9, 0.32, slab);
+    const NAMES = ["blue", "green", "salmon", "pink", "yellow", "orange", "red", "lilac", "aqua", "white"];
+    const WALLS = [0x4f7fe0, 0x3caf48, 0xe9806f, 0xf2a6cb, 0xf2c431, 0xf07b39, 0xe24a3b, 0xb48ce4, 0x6fcfe6, 0xf6efe4];
+    const doorG = new T.BoxGeometry(0.12, 2.2, 1.05), winG = new T.BoxGeometry(0.12, 1.1, 1.3), paneG = new T.BoxGeometry(0.14, 0.8, 1.0);
+    const pathLen = 16 - Wd / 2 - 4.9, pathG = new T.BoxGeometry(pathLen, 0.08, 1.5);
+    function house(side, seed){
+      const g = new T.Group(), c = seed % WALLS.length, kind = NAMES[c] + " houses";
+      piece(fine(bodyG), bodyG, kind, WALLS[c], g, 0, 0, 0);
+      for (const sgn of [1, -1]){
+        const zc = sgn * (Dp / 2 + 0.7) / 2;
+        piece(fine(slabG), slabG, kind, 0x7b6d62, g, 0, Hw + Rg - Math.tan(ang) * Math.abs(zc) + 0.2, zc, sgn * ang);
+      }
+      const fx = -side * (Wd / 2 + 0.02);
+      piece(fine(doorG), doorG, kind, 0xf4f2ec, g, fx, 1.1, 1.6);
+      piece(fine(winG), winG, kind, 0xf4f2ec, g, fx, 2.1, -1.7);
+      piece(fine(paneG), paneG, kind, 0x2b2d33, g, fx - side * 0.02, 2.1, -1.7);
+      piece(fine(pathG), pathG, kind, 0xd9d4c4, g, -side * (Wd / 2 + pathLen / 2), 0.04, 1.6);
+      return g;
+    }
+    const poleG = new T.CylinderGeometry(0.14, 0.18, 12.5, 8, 24), armG = new T.BoxGeometry(2.2, 0.12, 0.14), headG = new T.BoxGeometry(0.9, 0.22, 0.4);
+    function lamp(){
+      const g = new T.Group();
+      piece(poleG, poleG, "lamps", 0xc9ccd2, g, 0, 6.25, 0);
+      piece(fine(armG), armG, "lamps", 0xc9ccd2, g, -1, 12.4, 0);
+      piece(fine(headG), headG, "lamps", 0xf4f2ec, g, -2.1, 12.3, 0);
+      return g;
+    }
+
+    // Lots, LOT apart, N deep; one row of houses a side, a lamp every
+    // third lot on the right.
+    const LOT = 12, N = 26, things = [];
+    let seed = 7;
+    const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    for (let i = 0; i < N; i++){
+      for (const side of [-1, 1]){
+        const h = house(side, Math.floor(rnd() * 1000));
+        h.position.set(side * 16, 0, -i * LOT);
+        scene.add(h); things.push(h);
+      }
+      if (i % 3 === 1){ const l = lamp(); l.position.set(6.2, 0, -i * LOT + 3); scene.add(l); things.push(l); }
+    }
+
+    const picked = new Set();
+    const ray = new T.Raycaster(); ray.layers.set(2);
+    const ndc = new T.Vector2(), nm = new T.Matrix3();
+    // The thing under a point on the screen: {kind, point, normal} or null (the sky).
+    function hitAt(x, y, only){
+      ray.setFromCamera(ndc.set(x * 2 - 1, 1 - y * 2), camera);
+      for (const h of ray.intersectObjects(proxies, false)){
+        const kind = h.object.userData.owner;
+        if (only && !only(kind)) continue;
+        const n = h.face.normal.clone().applyMatrix3(nm.getNormalMatrix(h.object.matrixWorld)).normalize();
+        return {kind, point: h.point, normal: n};
+      }
+      return null;
+    }
+
+    // The eye and its wake.
+    const eye = new T.Vector3(0, -999, 0), eyeN = new T.Vector3(0, 1, 0);
+    let present = 0, sinceDrop = 0;
+
+    suburb = {
+      canvas: r.domElement, picked, hover: null,
+      size(w, h){
+        r.setPixelRatio(Math.min(devicePixelRatio || 1, w < 700 ? 1.5 : 2));
+        r.setSize(w, h); camera.aspect = w / h; camera.fov = w < h ? 74 : 52; camera.updateProjectionMatrix();
+      },
+      show(v){ r.domElement.hidden = !v; },
+      // One frame: walk, move the eye to the surface under the pointer, drop
+      // a wake point now and then, set the spell's dials, draw.
+      frame(dt, o){
+        camera.position.z -= o.walk;
+        const cz = camera.position.z;
+        camera.lookAt(0, 9, cz - 100);
+        ground.position.z = cz;
+        sun.position.set(40, 45, cz + 55); sun.target.position.set(0, 0, cz - 55);
+        for (const t of things) if (t.position.z > cz + LOT) t.position.z -= N * LOT;
+        scene.updateMatrixWorld();
+
+        const all = picked.size === 0;
+        const hits = kind => all || picked.has(kind);
+        for (const kind in kinds){
+          kinds[kind].hit.value = hits(kind) ? 1 : 0;
+          kinds[kind].glow.value = Math.max(pickMode && picked.has(kind) ? 1 : 0, this.hover === kind ? o.glow : 0);
+        }
+        const h = o.on && o.pointer ? hitAt(o.pointer[0], o.pointer[1], hits) : null;
+        if (h){
+          if (present < 0.05){ eye.copy(h.point); eyeN.copy(h.normal); }
+          else { eye.lerp(h.point, Math.min(1, dt * 10)); eyeN.lerp(h.normal, Math.min(1, dt * 8)).normalize(); }
+        }
+        present += ((h ? 1 : 0) - present) * Math.min(1, dt * 4);
+        const tr = U.uTrail.value, tn = U.uTrailN.value;
+        if ((sinceDrop += dt) > 0.09){
+          sinceDrop = 0;
+          for (let i = TRAIL - 1; i > 0; i--){ tr[i].copy(tr[i - 1]); tn[i].copy(tn[i - 1]); }
+        }
+        tr[0].set(eye.x, eye.y, eye.z, present);
+        tn[0].copy(eyeN);
+        for (let i = 1; i < TRAIL; i++) tr[i].w = Math.min(tr[i].w, present * (1 - i / TRAIL));
+        U.uR.value = o.R; U.uSpin.value = o.spin; U.uPull.value = o.pull; U.uSink.value = o.sink;
+        U.uDrip.value = o.drip; U.uTear.value = o.tear; U.uSnap.value = o.snap; U.uTime.value = o.time;
+        U.uOn.value += ((o.on ? 1 : 0) - U.uOn.value) * Math.min(1, dt * 3);
+        r.render(scene, camera);
+      },
+      keyAt(x, y){ const h = hitAt(x, y); return h ? h.kind : null; },
+      // Pick or unpick the kind under a point; returns it (null for the sky).
+      pick(x, y){
+        const key = this.keyAt(x, y);
+        if (key){ if (picked.has(key)) picked.delete(key); else picked.add(key); }
+        return key;
+      },
+      pickHouses(){
+        const all = NAMES.map(n => n + " houses"), every = all.every(k => picked.has(k));
+        all.forEach(k => every ? picked.delete(k) : picked.add(k));
+      },
+      describe(){
+        const houses = NAMES.map(n => n + " houses"), all = houses.every(k => picked.has(k));
+        return [...(all ? ["every house"] : []), ...[...picked].filter(k => !all || !houses.includes(k))].join(", ");
+      },
+    };
+    return suburb;
+  })();
+}
+
+// ------------------------------------------------------------------ spells
+// A spell is a shader and its dials, grouped into pages. Fever shows the
+// chosen spell's pages in the controller. Dark Puddle is the first; the next
+// ones (fluid stir, kaleidoscope, pixel sort) slot in here.
+const SPELLS = [
+  {id: "puddle", name: "Dark Puddle", note: "a portal that eats it", pages: {portal: [
+    {id: "eye",    glyph: "◉", name: "eye",    v: 0.22, map: v => 0.01 + v * 0.24},
+    {id: "spin",   glyph: "↻", name: "spin",   v: 0.5,  map: v => v * 2},
+    {id: "pull",   glyph: "⊙", name: "pull",   v: 0.5,  map: v => v * 2},
+    {id: "height", glyph: "▲", name: "height", v: 0.6,  map: v => 0.65 - v * 0.55},
+  ], motion: [
+    {id: "speed",  glyph: "→", name: "speed",  v: 0.3,  map: v => v * 60},
+    {id: "drip",   glyph: "⇣", name: "drip",   v: 0.5,  map: v => v * 2},
+    {id: "tear",   glyph: "≋", name: "tear",   v: 0.5,  map: v => v * 2},
+    {id: "pixel",  glyph: "▦", name: "pixels", v: 0.25, map: v => 1 + Math.round(v * 4)},
+  ]}},
+];
+let spell = SPELLS.find(x => x.id === store.get("spell")) || SPELLS[0];
+let on = false;
+const D = {};
+for (const sp of SPELLS) for (const group in sp.pages) for (const d of sp.pages[group]){
+  d.def = d.v;
+  const saved = parseFloat(store.get("knob:" + d.id));
+  if (!isNaN(saved)) d.v = Math.min(1, Math.max(0, saved));
+  D[d.id] = d;
+}
+const val = id => D[id].map(D[id].v);
+
+function makeDial(d, host){
+  const wrap = document.createElement("div"); wrap.className = "dwrap";
+  wrap.innerHTML = `<div class="dial" tabindex="0" role="slider" aria-label="${d.name}" aria-valuemin="0" aria-valuemax="100">
+      <span class="g" aria-hidden="true">${d.glyph}</span><i class="ind"></i></div>
+    <span class="dname">${d.name}<b></b></span>`;
+  host.appendChild(wrap);
+  const el = wrap.querySelector(".dial"), out = wrap.querySelector("b");
+  d.paint = () => {
+    el.style.setProperty("--v", d.v);
+    out.textContent = Math.round(d.v * 100);
+    el.setAttribute("aria-valuenow", Math.round(d.v * 100));
+  };
+  const set = v => {
+    d.v = Math.min(1, Math.max(0, v)); d.paint(); store.set("knob:" + d.id, d.v.toFixed(3));
+    if (d.id === "pixel") rebuildSoon();
+  };
+  let start = null;
+  el.addEventListener("pointerdown", e => { el.setPointerCapture(e.pointerId); start = {y: e.clientY, v: d.v}; el.focus(); e.preventDefault(); });
+  el.addEventListener("pointermove", e => { if (start) set(start.v + (start.y - e.clientY) / 140); });
+  el.addEventListener("pointerup", () => { start = null; });
+  el.addEventListener("pointercancel", () => { start = null; });
+  el.addEventListener("wheel", e => { e.preventDefault(); set(d.v - Math.sign(e.deltaY) * 0.03); }, {passive: false});
+  el.addEventListener("keydown", e => {
+    const step = e.shiftKey ? 0.1 : 0.02;
+    if (e.key === "ArrowUp" || e.key === "ArrowRight"){ set(d.v + step); e.preventDefault(); }
+    if (e.key === "ArrowDown" || e.key === "ArrowLeft"){ set(d.v - step); e.preventDefault(); }
+    if (e.key === "Home"){ set(0); e.preventDefault(); }
+    if (e.key === "End"){ set(1); e.preventDefault(); }
+  });
+  d.paint();
+}
+// The controller's tabs: Street, Spells, then the chosen spell's pages, then FX.
+function renderSpell(){
+  const tabs = $("tabs"), pages = $("spellPages");
+  tabs.querySelectorAll("[data-spell-tab]").forEach(t => t.remove());
+  pages.innerHTML = "";
+  for (const group in spell.pages){
+    const t = document.createElement("button");
+    t.className = "chip"; t.setAttribute("role", "tab"); t.setAttribute("aria-selected", "false");
+    t.dataset.tab = group; t.dataset.spellTab = "";
+    t.textContent = group[0].toUpperCase() + group.slice(1);
+    tabs.appendChild(t);
+    const pg = document.createElement("div");
+    pg.className = "page dials"; pg.dataset.page = group; pg.hidden = true;
+    pages.appendChild(pg);
+    spell.pages[group].forEach(d => makeDial(d, pg));
+  }
+  const fx = document.createElement("button");
+  fx.className = "chip"; fx.setAttribute("role", "tab"); fx.setAttribute("aria-selected", "false");
+  fx.dataset.tab = "fx"; fx.dataset.spellTab = ""; fx.textContent = "FX";
+  tabs.appendChild(fx);
+  const host = $("spells"); host.innerHTML = "";
+  for (const sp of SPELLS){
+    const b = document.createElement("button");
+    b.className = "chip"; b.setAttribute("aria-pressed", String(sp === spell));
+    b.innerHTML = `${sp.name}<i>${sp.note}</i>`;
+    b.addEventListener("click", () => { spell = sp; store.set("spell", sp.id); renderSpell(); showTab("spells"); refill(); showReadout(); });
+    host.appendChild(b);
+  }
+  tabs.querySelectorAll("[data-tab]").forEach(t => t.onclick = () => showTab(t.dataset.tab));
+}
+function showTab(name){
+  document.querySelectorAll("[data-tab]").forEach(o => o.setAttribute("aria-selected", String(o.dataset.tab === name)));
+  document.querySelectorAll("[data-page]").forEach(p => p.hidden = p.dataset.page !== name);
+}
+renderSpell();
+
+// ------------------------------------------------------------------ the loop
+// Two ways to see the street: the 3D one (the default; the spell lives in
+// the scene, and you can pick in it) and the film of it, which has no
+// surfaces, so the spell there is the flat one, laid over the picture.
+let run = null, paused = false, steer = true, gulp = 0, film = null;
+let glow = 0;                                              // the hovered / just-picked kind's glow, 0..1
+let pointer = null;                                        // where the pointer is, 0..1 across and down
+
+function build(){
+  if (!innerWidth || !innerHeight) return;
+  if (!film){
+    if (street && suburb){ suburb.size(innerWidth, innerHeight); suburb.show(true); }
+    canvas.hidden = true;
+    showReadout();
+    return;
+  }
+  if (!gl) return;
+  if (suburb) suburb.show(false);
+  canvas.hidden = false;
+  const px = Math.max(1, Math.max(2, Math.round(innerWidth / 520)) + val("pixel") - 2);
+  const W = Math.ceil(innerWidth / px), H = Math.ceil(innerHeight / px);       // the spell's pixels
+  const dpr = Math.min(devicePixelRatio || 1, innerWidth < 700 ? 1.5 : 2);
+  const FW = Math.round(innerWidth * dpr), FH = Math.round(innerHeight * dpr);  // the film's
+  canvas.width = FW; canvas.height = FH;
+  const src = document.createElement("canvas"); src.width = FW; src.height = FH;
+  film.canvas = src; film.ctx = src.getContext("2d");
+  film.ctx.fillStyle = "#000"; film.ctx.fillRect(0, 0, FW, FH);
+  if (run){ run.tex.forEach(t => gl.deleteTexture(t)); gl.deleteTexture(run.sheetTex); gl.deleteTexture(run.maskTex); }
+  const tex = [texture(W, H), texture(W, H)], fbo = tex.map(t => {
+    const f = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, f);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t, 0);
+    gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT); return f;
+  });
+  const eye = run ? run.eye : [0.5, 0.24], target = run ? run.target : [0.5, 0.24];
+  run = {W, H, FW, FH, tex, fbo, i: 0, sheetTex: texture(FW, FH, src), maskTex: texture(FW, FH), eye, target, primed: false};
+  showReadout();
+}
+let rt; function rebuildSoon(){ clearTimeout(rt); rt = setTimeout(build, 250); }
+
+let last = 0, clock = 0;
+function frame(now){
+  requestAnimationFrame(frame);
+  const dt = Math.min(0.05, (now - last) / 1000 || 0.016); last = now;
+  if (paused) return;
+  clock += dt;
+  gulp = Math.max(0, gulp - dt * 1.4);
+  const swell = 1 + Math.sin(Math.min(1, gulp) * Math.PI) * 1.6;
+  if (!film){
+    if (!street || !suburb) return;
+    if (pickMode) glow = 1;
+    else if (glow > 0 && (glow -= dt / 0.9) <= 0){ glow = 0; suburb.hover = null; }
+    suburb.frame(dt, {
+      on, glow, time: clock, walk: val("speed") * 0.18 * dt,
+      pointer: steer ? pointer : [0.5, 0.62],
+      R: (1 + D.eye.v * 12) * swell,
+      spin: val("spin") * (1 + gulp * 2), pull: val("pull") * (1 + gulp * 2), sink: D.height.v * 1.6 * (1 + gulp),
+      drip: val("drip"), tear: val("tear"), snap: (val("pixel") - 1) * 0.15,
+    });
+    return;
+  }
+  if (run) flatFrame(dt, swell);
+}
+
+// The flat spell, for the film: a picture laid over the screen.
+function flatFrame(dt, swell){
+  const speed = val("speed");
+  gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, run.sheetTex);
+  const v = $("film");
+  if (v.readyState >= 2 && v.videoWidth){
+    const {canvas: c, ctx: g} = film, r = Math.max(c.width / v.videoWidth, c.height / v.videoHeight);
+    g.drawImage(v, (c.width - v.videoWidth * r) / 2, (c.height - v.videoHeight * r) / 2, v.videoWidth * r, v.videoHeight * r);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c);
+  }
+  run.eye[0] += (run.target[0] - run.eye[0]) * Math.min(1, dt * 2.5);
+  run.eye[1] += (run.target[1] - run.eye[1]) * Math.min(1, dt * 2.5);
+  const eyeR = val("eye") * swell;
+
+  const a = run.i, b = 1 - a;
+  gl.useProgram(P.p); gl.viewport(0, 0, run.W, run.H);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, run.fbo[b]);
+  gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, run.tex[a]); gl.uniform1i(P.u.uPrev, 0);
+  gl.activeTexture(gl.TEXTURE2); gl.bindTexture(gl.TEXTURE_2D, run.maskTex); gl.uniform1i(P.u.uMask, 2);
+  gl.uniform1f(P.u.uMasked, 0);
+  gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, run.sheetTex); gl.uniform1i(P.u.uSheet, 1);
+  gl.uniform2f(P.u.uRes, run.W, run.H);
+  gl.uniform2f(P.u.uEye, run.eye[0], run.eye[1]);
+  gl.uniform1f(P.u.uTime, clock);
+  gl.uniform1f(P.u.uFlow, speed * dt / run.H);
+  gl.uniform1f(P.u.uDz, 0);
+  gl.uniform1f(P.u.uFront, val("height"));
+  gl.uniform1f(P.u.uAspect, run.W / run.H);
+  gl.uniform1f(P.u.uPrime, run.primed && on ? 0 : 1);
+  gl.uniform1f(P.u.uEyeR, eyeR);
+  gl.uniform1f(P.u.uSpin, val("spin") * (1 + gulp * 2));
+  gl.uniform1f(P.u.uPull, val("pull") * (1 + gulp * 3));
+  gl.uniform1f(P.u.uTear, val("tear"));
+  gl.uniform1f(P.u.uDrip, val("drip"));
+  run.primed = true;
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+  gl.useProgram(B.p); gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0, 0, run.FW, run.FH);
+  gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
+  gl.bindTexture(gl.TEXTURE_2D, run.tex[b]); gl.uniform1i(B.u.uTex, 1);
+  gl.activeTexture(gl.TEXTURE3); gl.bindTexture(gl.TEXTURE_2D, run.sheetTex); gl.uniform1i(B.u.uFull, 3);
+  gl.activeTexture(gl.TEXTURE1);
+  gl.uniform1i(B.u.uMask, 2); gl.uniform1f(B.u.uMasked, 0); gl.uniform1f(B.u.uTint, 0); gl.uniform1f(B.u.uGlow, 0);
+  gl.uniform2f(B.u.uRes, run.FW, run.FH);
+  gl.uniform2f(B.u.uLow, run.W, run.H);
+  gl.uniform1f(B.u.uOn, on ? 1 : 0);
+  gl.uniform2f(B.u.uEye, run.eye[0], run.eye[1]);
+  gl.uniform1f(B.u.uTime, clock);
+  gl.uniform1f(B.u.uFront, val("height"));
+  gl.uniform1f(B.u.uAspect, run.W / run.H);
+  gl.uniform1f(B.u.uEyeR, eyeR);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+  run.i = b;
+}
+requestAnimationFrame(frame);
+
+function showReadout(){
+  const what = film ? "the film" : suburb && suburb.picked.size ? suburb.describe() : "all of it";
+  $("readout").textContent = (on ? spell.name.toLowerCase() : "fever off") + " · " + what + (pickMode ? " · picking" : "");
+}
+
+// ------------------------------------------------------------------ the street or the film
+function useStreet(){
+  stopFilm();
+  $("readout").textContent = "building the street…";
+  loadSuburb().then(() => { street = true; build(); })
+    .catch(() => { $("readout").textContent = "couldn't load the 3D street"; });
+}
+function useFilm(){
+  setPick(false);
+  const v = $("film");
+  v.src = "suburb.mp4"; v.play().catch(() => {});
+  film = {canvas: null, ctx: null};
+  $("filmBtn").setAttribute("aria-pressed", "true");
+  build();
+}
+function stopFilm(){
+  if (!film) return;
+  const v = $("film"); v.pause(); v.removeAttribute("src"); v.load();
+  film = null;
+  $("filmBtn").setAttribute("aria-pressed", "false");
+}
+function setPick(v){
+  if (v && film) useStreet();                              // you can only pick in the 3D street
+  pickMode = v;
+  $("pickBtn").setAttribute("aria-pressed", String(v));
+  showReadout();
+}
+$("filmBtn").addEventListener("click", () => { if (film){ store.set("film", "0"); useStreet(); } else { store.set("film", "1"); useFilm(); } });
+
+// ------------------------------------------------------------------ the controller
+function openCtrl(open){ $("ctrl").hidden = !open; $("open").setAttribute("aria-expanded", String(open)); }
+$("open").addEventListener("click", () => openCtrl($("ctrl").hidden));
+
+// Fever itself: on, the spell works on the street; off, the street is whole.
+function setFever(v){
+  on = v;
+  $("fever").setAttribute("aria-pressed", String(on));
+  $("feverLabel").textContent = on && innerWidth > 700 ? spell.name : "fever";
+  if (!on && run) run.target = [0.5, 0.24];
+  showReadout();
+}
+$("fever").addEventListener("click", () => setFever(!on));
+$("pickBtn").addEventListener("click", () => setPick(!pickMode));
+$("pickAll").addEventListener("click", () => { loadSuburb().then(() => { if (film) useStreet(); suburb.pickHouses(); showReadout(); }); });
+$("pickNone").addEventListener("click", () => { if (suburb){ suburb.picked.clear(); showReadout(); } });
+
+const swallow = () => { if (on) gulp = 1; };
+const refill = () => { if (run) run.primed = false; };
+$("swallow").addEventListener("click", swallow);
+$("refill").addEventListener("click", refill);
+$("pause").addEventListener("click", e => { paused = !paused; e.currentTarget.setAttribute("aria-pressed", String(paused)); });
+$("steer").addEventListener("click", e => {
+  steer = !steer; e.currentTarget.setAttribute("aria-pressed", String(steer));
+  if (!steer && run) run.target = [0.5, 0.24];
+});
+$("reset").addEventListener("click", () => {
+  for (const id in D){ D[id].v = D[id].def; D[id].paint(); store.set("knob:" + id, D[id].v); }
+  build();
+});
+
+const overUI = t => t.closest && t.closest(".ctrl, .dock, .help, .home");
+addEventListener("pointermove", e => {
+  if (overUI(e.target)){ if (pickMode && suburb) suburb.hover = null; return; }
+  pointer = [e.clientX / innerWidth, e.clientY / innerHeight];
+  if (pickMode && suburb && !film) suburb.hover = suburb.keyAt(pointer[0], pointer[1]);
+  if (!run || !steer || !on) return;
+  run.target = [e.clientX / innerWidth, Math.max(0.08, Math.min(0.75, 1 - e.clientY / innerHeight))];
+});
+document.addEventListener("pointerleave", () => { pointer = null; });
+// Pick is one click: the thing under it is picked (or unpicked, if it
+// already was), Pick turns itself off and Fever comes on, so the next
+// clicks cast the spell on what you picked.
+addEventListener("click", e => {
+  if (!(e.target instanceof HTMLCanvasElement)) return;
+  pointer = [e.clientX / innerWidth, e.clientY / innerHeight];
+  if (pickMode && suburb && !film){
+    const key = suburb.pick(e.clientX / innerWidth, e.clientY / innerHeight);
+    suburb.hover = key && suburb.picked.has(key) ? key : null;   // the one just picked glows, then fades
+    setPick(false);
+    if (suburb.picked.size && !on) setFever(true);
+    showReadout();
+  }
+  else swallow();
+});
+addEventListener("keydown", e => {
+  if (e.target.closest && e.target.closest(".dial")) return;
+  if (e.key === " "){ swallow(); e.preventDefault(); }
+  else if (e.key === "r" || e.key === "R") refill();
+  else if (e.key === "f" || e.key === "F") setFever(!on);
+  else if (e.key === "k" || e.key === "K") setPick(!pickMode);
+  else if (e.key === "p" || e.key === "P") $("pause").click();
+  else if (e.key === "Escape"){ openCtrl(false); $("help").hidden = true; }
+});
+addEventListener("resize", rebuildSoon);
+$("ask").addEventListener("click", () => { $("help").hidden = !$("help").hidden; });
+$("gotit").addEventListener("click", () => { $("help").hidden = true; store.set("helped", "1"); });
+
+// ------------------------------------------------------------------ go
+(async () => {
+  await document.fonts.ready;
+  if (store.get("film") === "1") useFilm(); else useStreet();
+  if (!store.get("helped")) $("help").hidden = false;
+})();
+</script>
