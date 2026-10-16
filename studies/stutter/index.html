@@ -708,9 +708,9 @@ function loadSuburb(){
           const wb = local(n);
           let cur = tfOf(scaleMo(motionAt(chain, stutterTime(chain, t, b.seed), wz, b.seed), wb), [0, 0, 0], 1);
           setTf(m, b, cur);
-          // the loop, on sixteenths of the tempo: echoes slide out one at a time, each from the one
+          // the loop, on thirty-second notes of the tempo: echoes slide out one at a time, each from the one
           // before; then fold back in on themselves, the last into the one before, down to the house; and out again
-          const step = (o.beat || 1) / 4, P = n ? (t / step) % (2 * n) : 0, sk = Math.floor(P % n || 0), fr = P % 1;
+          const step = (o.beat || 1) / 8, P = n ? (t / step) % (2 * n) : 0, sk = Math.floor(P % n || 0), fr = P % 1;
           const e = 1 - Math.pow(1 - Math.min(1, fr * 1.6), 3);
           const reveal = i => P < n ? (i <= sk ? 1 : i === sk + 1 ? e : 0) : (i < n - sk ? 1 : i === n - sk ? 1 - e : 0);
           for (let i = 1; i <= n; i++){
@@ -935,7 +935,7 @@ const DIALS = {
   shape: [{id: "depth", glyph: "⤢", name: "depth", get: () => (S().vec[2] + 1) / 2, set: v => { S().vec[2] = v * 2 - 1; },
             show: () => { const d = Math.round(S().vec[2] * 100); return d > 0 ? "away " + d : d < 0 ? "near " + -d : "0"; }}],
   echo: [{id: "echoes", glyph: "⋯", name: "echoes", get: () => S().echoes, set: v => { S().echoes = v; }}],
-  street: [{id: "tempo", glyph: "♩", name: "tempo", get: () => (bpm - 60) / 120, set: v => { bpm = Math.round(60 + v * 120); store.set("bpm", bpm); },
+  street: [{id: "tempo", glyph: "♩", name: "tempo", get: () => (bpm - 60) / 180, set: v => { bpm = Math.round(60 + v * 180); store.set("bpm", bpm); },
             show: () => bpm},
            {id: "speed", glyph: "⇄", name: "speed", get: () => speed, set: v => { speed = Math.abs(v - 0.5) < 0.03 ? 0.5 : v; store.set("speed2", speed); },
             show: () => { const s = Math.round((speed - 0.5) * 200); return s > 0 ? "+" + s : String(s); }}],
