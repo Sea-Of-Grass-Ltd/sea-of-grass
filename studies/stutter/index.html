@@ -673,23 +673,28 @@ function loadSuburb(){
       o.rotation.set(0, mo[3], mo[4]);
       o.scale.setScalar(mo[5] * s);
     }
-    function runRacks(racks, t, cz){
+    // wet: how far out the effects are, 0 to 1. Stopping eases it to 0, so the
+    // echoes draw back into the house (their offsets, delays and sizes shrink
+    // to nothing) instead of vanishing, like a pedal's trails.
+    function wetMotion(m, w){ return [m[0] * w, m[1] * w, m[2] * w, m[3] * w, m[4] * w, 1 + (m[5] - 1) * w]; }
+    function runRacks(racks, t, cz, w){
       for (const b of bodies){
-        const chain = (racks[b.kind] || []).filter(E => E.on), m = b.mesh;
+        const chain = w > 0.002 ? (racks[b.kind] || []).filter(E => E.on) : [], m = b.mesh;
         let used = 0;
         if (chain.length){
           const wz = b.parent.position.z + b.z, side = Math.sign(b.parent.position.x) || 1;
-          place3(m, b, motionAt(chain, stutterTime(chain, t, b.seed), wz, b.seed), [0, 0, 0], 1);
+          place3(m, b, wetMotion(motionAt(chain, stutterTime(chain, t, b.seed), wz, b.seed), w), [0, 0, 0], 1);
           const ahead = cz - wz;                           // how far down the street it is
           if (Math.abs(ahead) > 6 && Math.abs(ahead) < 120 || b.parent === ground){   // not for what's right beside the camera
             const copies = copiesOf(chain, side);
             for (let i = 1; i < copies.length; i++){
-              const c = copies[i];
-              if (c.a < 0.04) continue;
+              const c = copies[i], a = c.a * Math.min(1, w * 1.6);
+              if (a < 0.04) continue;
               let p = b.pool[used];
               if (!p){ p = new T.Mesh(m.geometry, m.material); p.receiveShadow = true; b.parent.add(p); b.pool.push(p); }
-              p.material = c.a > 0.95 ? m.material : echoMat(m.material, Math.max(1, Math.round(c.a * 8)));
-              place3(p, b, motionAt(chain, stutterTime(chain, t - c.dt, b.seed), wz, b.seed), c.off, c.s);
+              p.material = a > 0.95 ? m.material : echoMat(m.material, Math.max(1, Math.round(a * 8)));
+              place3(p, b, wetMotion(motionAt(chain, stutterTime(chain, t - c.dt * w, b.seed), wz, b.seed), w),
+                     [c.off[0] * w, c.off[1] * w, c.off[2] * w], 1 + (c.s - 1) * w);
               p.visible = true; used++;
             }
           }
@@ -723,7 +728,7 @@ function loadSuburb(){
           else if (t.position.z < cz - 150 && o.walk < 0) t.position.z = cz + 6;
         }
         for (const kind in kinds) kinds[kind].glow.value = kind === o.selected ? o.glow : 0;
-        runRacks(o.racks, o.t, cz);
+        runRacks(o.racks, o.t, cz, o.wet ?? 1);
         r.render(scene, camera);
       },
       keyAt(x, y){ const h = hitAt(x, y); return h ? h.kind : "sky"; },
@@ -994,7 +999,7 @@ function curveDrag(cv, E){
 }
 
 // ------------------------------------------------------------------ the loop
-let paused = false, on = false, flash = 0, clock = 0, last = 0;
+let paused = false, on = false, flash = 0, clock = 0, last = 0, wet = 0;
 let quality = 2, slow = 0;
 function keepUp(dt){
   slow = dt > 0.024 ? slow + dt : Math.max(0, slow - dt * 0.5);
@@ -1010,9 +1015,11 @@ function frame(now){
   if (paused || !street || !suburb) return;
   clock += dt;
   flash = Math.max(0, flash - dt / 1.2);
+  // stopping or starting eases the effects in or out over about a second
+  wet = on ? Math.min(1, wet + dt / 0.9) : Math.max(0, wet - dt / 1.1);
   // speed: from standing still to a brisk run, eased so the low end is fine
   const sv = (speed - 0.5) * 2;                           // -1 back .. 1 forward, eased so the middle is gentle
-  suburb.frame(dt, {walk: Math.sign(sv) * sv * sv * 26 * dt, racks: on ? racks : {}, t: clock, selected: current, glow: flash, yaw, pitch, zoom});
+  suburb.frame(dt, {walk: Math.sign(sv) * sv * sv * 26 * dt, racks, wet: wet * wet * (3 - 2 * wet), t: clock, selected: current, glow: flash, yaw, pitch, zoom});
 }
 requestAnimationFrame(frame);
 
