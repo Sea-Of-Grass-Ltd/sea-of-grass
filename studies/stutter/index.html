@@ -301,6 +301,7 @@
   <p class="lede">Two houses coming down <a href="/studies/fever/">Fever</a>'s street, in time: give each its own stutter, echoes and reverb.</p>
   <dl>
     <dt>controls</dt><dd>left or right picks the house (or click one); move it, give it echoes, shape them</dd>
+    <dt>look</dt><dd>click, hold and drag on the street; double-click to look ahead again. Speed runs both ways</dd>
     <dt>stutter</dt><dd>the button, or S, runs it all or stops it</dd>
   </dl>
   <p>Fantasmagoria's time tool. Drawn with <a href="https://threejs.org">three.js</a>. Nothing leaves your browser.</p>
@@ -680,7 +681,7 @@ function loadSuburb(){
           const wz = b.parent.position.z + b.z, side = Math.sign(b.parent.position.x) || 1;
           place3(m, b, motionAt(chain, stutterTime(chain, t, b.seed), wz, b.seed), [0, 0, 0], 1);
           const ahead = cz - wz;                           // how far down the street it is
-          if (ahead > 6 && ahead < 120 || b.parent === ground){   // not for what's beside or behind the camera
+          if (Math.abs(ahead) > 6 && Math.abs(ahead) < 120 || b.parent === ground){   // not for what's right beside the camera
             const copies = copiesOf(chain, side);
             for (let i = 1; i < copies.length; i++){
               const c = copies[i];
@@ -710,10 +711,14 @@ function loadSuburb(){
       frame(dt, o){
         camera.position.z -= o.walk;
         const cz = camera.position.z;
-        camera.lookAt(0, 9, cz - 100);
+        const yw = o.yaw || 0, pt = o.pitch || 0;
+        camera.lookAt(camera.position.x + Math.sin(yw) * Math.cos(pt) * 100, 9 + Math.sin(pt) * 100, cz - Math.cos(yw) * Math.cos(pt) * 100);
         ground.position.z = cz; dome.position.copy(camera.position);
         sun.position.set(40, 45, cz + 55); sun.target.position.set(0, 0, cz - 55);
-        for (const t of things) if (t.position.z > cz + 6) t.position.z = cz - 150;   // round again, out of the haze
+        for (const t of things){                         // round again, out of the haze (or, walking back, from behind)
+          if (t.position.z > cz + 6 && o.walk > 0) t.position.z = cz - 150;
+          else if (t.position.z < cz - 150 && o.walk < 0) t.position.z = cz + 6;
+        }
         for (const kind in kinds) kinds[kind].glow.value = kind === o.selected ? o.glow : 0;
         runRacks(o.racks, o.t, cz);
         r.render(scene, camera);
@@ -883,14 +888,16 @@ rebuild();
 // As in Dark Puddle: a strip at the bottom, behind "controls". Left or right
 // picks the house; the tabs show a few dials or chips at a time.
 let bpm2 = parseFloat(store.get("bpm")); bpm = isNaN(bpm2) ? 112 : bpm2;
-let speed = parseFloat(store.get("speed")); if (isNaN(speed)) speed = 0.35;
+// speed: the middle of the dial stands still; right walks forward, left walks back
+let speed = parseFloat(store.get("speed2")); if (isNaN(speed)) speed = 0.68;
 const S = () => things[current];
 const DIALS = {
   move: [{id: "stutter", glyph: "◫", name: "stutter", get: () => S().stutter, set: v => { S().stutter = v; }}],
   echo: [{id: "echoes", glyph: "⋯", name: "echoes", get: () => S().echoes, set: v => { S().echoes = v; }},
          {id: "spacing", glyph: "↔", name: "spacing", get: () => S().spacing, set: v => { S().spacing = v; }},
          {id: "reverb", glyph: "◌", name: "reverb", get: () => S().reverb, set: v => { S().reverb = v; }}],
-  street: [{id: "speed", glyph: "→", name: "speed", get: () => speed, set: v => { speed = v; store.set("speed", v); }},
+  street: [{id: "speed", glyph: "⇄", name: "speed", get: () => speed, set: v => { speed = Math.abs(v - 0.5) < 0.03 ? 0.5 : v; store.set("speed2", speed); },
+             show: () => { const s = Math.round((speed - 0.5) * 200); return s > 0 ? "+" + s : String(s); }},
            {id: "tempo", glyph: "♩", name: "tempo", get: () => (bpm - 60) / 120, set: v => { bpm = Math.round(60 + v * 120); store.set("bpm", bpm); },
             show: () => bpm}],
 };
@@ -1001,7 +1008,8 @@ function frame(now){
   clock += dt;
   flash = Math.max(0, flash - dt / 1.2);
   // speed: from standing still to a brisk run, eased so the low end is fine
-  suburb.frame(dt, {walk: speed * speed * 26 * dt, racks: on ? racks : {}, t: clock, selected: current, glow: flash});
+  const sv = (speed - 0.5) * 2;                           // -1 back .. 1 forward, eased so the middle is gentle
+  suburb.frame(dt, {walk: Math.sign(sv) * sv * sv * 26 * dt, racks: on ? racks : {}, t: clock, selected: current, glow: flash, yaw, pitch});
 }
 requestAnimationFrame(frame);
 
@@ -1010,9 +1018,24 @@ function showReadout(){ $("readout").textContent = on ? `${current} · ${bpm} bp
 // ------------------------------------------------------------------ the controls
 function setOn(v){ on = v; $("apply").setAttribute("aria-pressed", String(on)); showReadout(); }
 $("apply").addEventListener("click", () => setOn(!on));
-// Click a house to set it.
+// Click, hold and drag on the street to look about; double-click to look
+// straight down the street again.
+let yaw = 0, pitch = 0, drag = null, dragged = false;
+$("gl").addEventListener("pointerdown", e => { drag = {x: e.clientX, y: e.clientY, yaw, pitch}; dragged = false; $("gl").setPointerCapture(e.pointerId); });
+$("gl").addEventListener("pointermove", e => {
+  if (!drag) return;
+  const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+  if (!dragged && Math.hypot(dx, dy) < 5) return;
+  dragged = true; $("gl").style.cursor = "grabbing";
+  yaw = drag.yaw + dx * 0.005; pitch = Math.min(0.9, Math.max(-0.9, drag.pitch - dy * 0.004));
+});
+const endDrag = () => { drag = null; $("gl").style.cursor = ""; };
+$("gl").addEventListener("pointerup", endDrag);
+$("gl").addEventListener("pointercancel", endDrag);
+$("gl").addEventListener("dblclick", () => { yaw = 0; pitch = 0; });
+// Click a house (without dragging) to set it.
 addEventListener("click", e => {
-  if (!(e.target instanceof HTMLCanvasElement) || !suburb) return;
+  if (!(e.target instanceof HTMLCanvasElement) || !suburb || dragged) return;
   const kind = suburb.keyAt(e.clientX / innerWidth, e.clientY / innerHeight);
   if (!SIDES.includes(kind)) return;
   current = kind; flash = 1; saveAll(); paintAll(); openCtrl(true);
