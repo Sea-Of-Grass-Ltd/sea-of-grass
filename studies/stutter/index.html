@@ -935,7 +935,8 @@ const DIALS = {
   shape: [{id: "depth", glyph: "⤢", name: "depth", get: () => (S().vec[2] + 1) / 2, set: v => { S().vec[2] = v * 2 - 1; },
             show: () => { const d = Math.round(S().vec[2] * 100); return d > 0 ? "away " + d : d < 0 ? "near " + -d : "0"; }}],
   echo: [{id: "echoes", glyph: "⋯", name: "echoes", get: () => S().echoes, set: v => { S().echoes = v; }}],
-  street: [{id: "tempo", glyph: "♩", name: "tempo", get: () => (bpm - 60) / 180, set: v => { bpm = Math.round(60 + v * 180); store.set("bpm", bpm); },
+  // tempo rises faster toward the top of the dial: 60 at the bottom, 600 at the top
+  street: [{id: "tempo", glyph: "♩", name: "tempo", get: () => Math.log10(bpm / 60), set: v => { bpm = Math.round(60 * Math.pow(10, v)); store.set("bpm", bpm); },
             show: () => bpm},
            {id: "speed", glyph: "⇄", name: "speed", get: () => speed, set: v => { speed = Math.abs(v - 0.5) < 0.03 ? 0.5 : v; store.set("speed2", speed); },
             show: () => { const s = Math.round((speed - 0.5) * 200); return s > 0 ? "+" + s : String(s); }}],
