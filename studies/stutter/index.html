@@ -238,7 +238,18 @@
   .dialhost{display:flex;}
   #curve{width:150px;height:60px;border-radius:10px;background:rgba(0,0,0,.35);touch-action:none;cursor:ns-resize;}
   .ctrl .chip[aria-pressed="true"]{background:#fff;color:#000;border-color:#fff;}
-  @media (max-width:700px){ .ctrl .sides{flex-direction:row;} .ctrl .chips{max-width:none;} #curve{width:100%;} }
+  .ctrl .dname{white-space:nowrap;}
+  .ctrl .dwrap{width:auto;min-width:58px;}
+  /* one neat row, even on a phone: house, echoes, aim, depth */
+  @media (max-width:700px){
+    .ctrl{left:50%;right:auto;transform:translateX(-50%);flex-direction:row;align-items:center;gap:10px;
+      padding:8px 12px;border-radius:20px;max-width:calc(100vw - 16px);bottom:70px;}
+    .ctrl .sep{display:block;}
+    .ctrl .sides{flex-direction:column;}
+    .ctrl .sides .chip{padding:6px 10px;}
+    .ctrl #page-echo{display:flex;}
+    #pad{width:72px;height:72px;}
+  }
   .base .num{font:600 10px var(--mono);color:var(--mint);width:28px;text-align:right;}
   .addrow{margin:8px 10px 6px;}
   .stack .hint{font:600 11px/1.5 var(--ui);color:rgba(255,255,255,.6);padding:8px 6px;list-style:none;}
