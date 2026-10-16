@@ -236,13 +236,17 @@
   .addrow{margin:8px 10px 6px;}
   .stack .hint{font:600 11px/1.5 var(--ui);color:rgba(255,255,255,.6);padding:8px 6px;list-style:none;}
   .layer .lrow2 select.mode{flex:1;}
-  .curve{margin:8px 0 2px 28px;}
+  .curve{margin:10px 0 2px;}
   .curve .lab{font:700 9px var(--ui);letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.55);}
   .curve canvas{display:block;width:100%;height:60px;margin-top:4px;border-radius:8px;background:rgba(0,0,0,.35);touch-action:none;cursor:ns-resize;}
   .curve .presets{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px;}
   .curve .presets button{font:700 9.5px var(--ui);color:#fff;background:rgba(255,255,255,.08);border:1px solid var(--edge2);border-radius:99px;padding:3px 7px;cursor:pointer;}
+  .curve .presets .clear{margin-left:auto;border-color:var(--hot);}
   .curve .presets button:hover{background:rgba(255,255,255,.18);}
-  .layers{width:320px;}
+  .layers{width:300px;bottom:auto;max-height:calc(100vh - 92px);overflow-y:auto;}
+  .layers .stack{flex:none;overflow:visible;padding-bottom:10px;}
+  @media (max-width:700px){ .layers{max-height:58vh;} }
+  .layer .lrow2{margin-left:0;}
 </style>
 
 <canvas id="gl" aria-label="The suburb, its things stuttering"></canvas>
@@ -258,30 +262,28 @@
 <!-- ---------------------------------------------------------------- the rack -->
 <aside class="layers" id="layers" aria-label="Rack">
   <header>
-    <span class="ttl">Rack</span>
+    <span class="ttl">Stutter</span>
     <select class="mode kindsel" id="kindSel" aria-label="Which thing this rack is for" title="Which thing this rack is for (or click one in the street)"></select>
   </header>
   <div class="base"><span class="lab">bpm</span><input type="range" id="bpm" min="60" max="180" step="1" aria-label="Tempo"><b id="bpmVal" class="num"></b></div>
   <div class="base"><span>Street</span><span class="lab">speed</span><input type="range" id="speed" min="0" max="1" step="0.01" aria-label="Walking speed"></div>
-  <div class="addrow"><button class="chip" id="addBtn" aria-expanded="false" title="Add an effect to the end of this thing's chain">+ effect</button></div>
-  <div class="addmenu" id="addMenu" hidden></div>
   <ol class="stack" id="stack"></ol>
 </aside>
 
 <div class="dock">
-  <button class="dockb" id="apply" aria-pressed="false" title="Run the racks (S)"><span class="dot"></span><span>stutter</span></button>
-  <button class="dockb" id="layersBtn" aria-expanded="true" title="Show or hide the rack (L)"><span class="dot"></span>rack</button>
+  <button class="dockb" id="apply" aria-pressed="false" title="Run it all, or stop (S)"><span class="dot"></span><span>stutter</span></button>
+  <button class="dockb" id="layersBtn" aria-expanded="true" title="Show or hide the settings (L)"><span class="dot"></span>settings</button>
   <button class="dockb q" id="ask" aria-label="How to play">?</button>
 </div>
 
 <div class="help" id="help" hidden role="dialog" aria-label="About Stutter">
   <p class="kicker">Study 12 · Sea of Grass</p>
   <h2 id="helpTitle">Stutter</h2>
-  <p class="lede"><a href="/studies/fever/">Fever</a>'s street, in time: each thing gets a rack of effects, like an audio chain.</p>
+  <p class="lede"><a href="/studies/fever/">Fever</a>'s street, in time: give each thing its own stutter, echoes and reverb.</p>
   <dl>
-    <dt>a thing</dt><dd>click it in the street (or pick it in the rack) to see its chain</dd>
-    <dt>+ effect</dt><dd>motion, stutter, delay, reverb, array; drag a curve to shape its copies</dd>
-    <dt>stutter</dt><dd>the button, or S, runs the racks or stops them</dd>
+    <dt>a thing</dt><dd>click it in the street (or pick it at the top of the panel) to set it</dd>
+    <dt>settings</dt><dd>move it, stutter it, give it echoes or reverb; drag the curve to fade the echoes</dd>
+    <dt>stutter</dt><dd>the button, or S, runs it all or stops it</dd>
   </dl>
   <p>Fantasmagoria's time tool. Drawn with <a href="https://threejs.org">three.js</a>. Nothing leaves your browser.</p>
   <button class="chip" id="gotit">Begin</button>
@@ -825,71 +827,74 @@ function copiesOf(chain, side){
   return list;
 }
 
-// ------------------------------------------------------------------ the racks
-// {kind: [effect]}, an effect {fx, on, p: [..], c: [5 heights]}, kept in this browser.
-const KIND_NAME = k => k;
-function newEffect(fx){
-  const d = FX[fx];
-  return {fx, on: true, p: d.p.map(x => x[1]), c: d.curve ? CURVES[d.curve === "size" ? "flat" : "fade"].slice() : null};
+// ------------------------------------------------------------------ the settings
+// Each thing has one short set of settings (no chains to manage):
+//   move       none, bounce, sway, spin or pulse: something for time to act on
+//   stutter    how much its motion catches, holding still then jumping on
+//   echoes     how many copies trail behind it, each a beat earlier
+//   spacing    how far apart the copies are
+//   direction  which way they trail: back, up, or rise (back and up, a staircase)
+//   reverb     a soft cloud of ghosts around it
+//   curve      how the copies fade, first to last
+// They're turned into a chain for the engine above.
+const MOVES = ["none", "bounce", "sway", "spin", "pulse"], DIRS = ["back", "up", "rise"];
+const blank = () => ({move: 0, stutter: 0, echoes: 0, spacing: 0.35, dir: 2, reverb: 0, curve: CURVES.fade.slice()});
+function chainOf(S){
+  if (!S) return [];
+  const c = [], e = (fx, p) => ({fx, on: true, p, c: S.curve});
+  if (S.stutter > 0.01) c.push(e("stutter", [0, 5, 0.4, S.stutter]));
+  if (S.move) c.push(e("motion", [[0, 0, 1, 3, 4][S.move], 0, 2, 0.5, 0.5]));
+  if (S.echoes > 0.01) c.push(e("delay", [4, S.echoes, S.spacing, [0, 1, 2][S.dir], 0, 0.5]));
+  if (S.reverb > 0.01) c.push(e("reverb", [S.reverb, S.reverb, 0.6, 0.5]));
+  return c;
 }
-function demoRacks(){
-  const R = {};
-  const fx = (f, p, c) => Object.assign(newEffect(f), p ? {p} : {}, c ? {c: CURVES[c].slice()} : {});
-  R["red houses"] = [fx("motion", [0, 0, 2, .45, .6]), fx("delay", [4, .45, .25, 2, 0, .5], "flat")];
-  R["blue houses"] = [fx("motion", [1, 1, 3, .5, .4]), fx("delay", [4, .55, .35, 3, 1, .4], "ease")];
-  R["yellow houses"] = [fx("stutter", [0, 5, .4, .75]), fx("motion", [4, 2, 3, .4, .2]), fx("array", [.4, .2, .25, .5], "grow")];
-  R["pink houses"] = [fx("motion", [3, 0, 1, .35, .7]), fx("reverb", [.45, .5, .6, .4], "fade")];
-  R["lamps"] = [fx("stutter", [1, 5, .5, .6]), fx("motion", [5, 3, 3, .6, .8]), fx("delay", [5, .5, .15, 0, 0, .6], "fade")];
-  return R;
+function demo(){
+  const T = (o) => Object.assign(blank(), o);
+  return {
+    "red houses": T({move: 1, echoes: 0.45, spacing: 0.25, dir: 2, curve: CURVES.flat.slice()}),
+    "blue houses": T({move: 2, echoes: 0.5, spacing: 0.4, dir: 0}),
+    "pink houses": T({move: 3, reverb: 0.5}),
+    "yellow houses": T({move: 4, stutter: 0.75}),
+    "lamps": T({stutter: 0.6, echoes: 0.4, spacing: 0.15, dir: 0}),
+  };
 }
-let racks = (() => { try { const r = JSON.parse(store.get("racks") || "null"); if (r && typeof r === "object") return r; } catch (e) {} return demoRacks(); })();
-for (const k in racks) racks[k] = racks[k].filter(E => FX[E.fx]).map(E => Object.assign(newEffect(E.fx), E));
+let things = (() => { try { const r = JSON.parse(store.get("things") || "null"); if (r && typeof r === "object") return r; } catch (e) {} return demo(); })();
+for (const k in things) things[k] = Object.assign(blank(), things[k]);
 let current = store.get("current") || "red houses";
-const saveRacks = () => { store.set("racks", JSON.stringify(racks)); store.set("current", current); };
-let rt2; const saveSoon = () => { clearTimeout(rt2); rt2 = setTimeout(saveRacks, 300); };
+const saveAll = () => { store.set("things", JSON.stringify(things)); store.set("current", current); };
+let rt2; const saveSoon = () => { clearTimeout(rt2); rt2 = setTimeout(saveAll, 300); };
+// the chains the engine runs, rebuilt when a setting changes
+let racks = {};
+const rebuild = () => { racks = {}; for (const k in things) racks[k] = chainOf(things[k]); };
+rebuild();
+const isSet = S => S && (S.move || S.stutter > 0.01 || S.echoes > 0.01 || S.reverb > 0.01);
 
-function renderKinds(){
+function renderRack(){
   const sel = $("kindSel"), names = suburb ? Object.keys(suburb.kinds).filter(k => k !== "sky") : [current];
   if (!names.includes(current)) names.unshift(current);
-  sel.innerHTML = names.map(k => `<option${k === current ? " selected" : ""}>${k}${(racks[k] || []).length ? " •" : ""}</option>`).join("");
-  sel.onchange = () => { current = sel.value.replace(/ •$/, ""); flash = 1; saveRacks(); renderRack(); };
+  sel.innerHTML = names.map(k => `<option value="${k}"${k === current ? " selected" : ""}>${k}${isSet(things[k]) ? " •" : ""}</option>`).join("");
+  sel.onchange = () => { current = sel.value; flash = 1; saveAll(); renderRack(); };
+  const S = things[current] = things[current] || blank();
+  const slider = (key, label) => `<div class="lrow2"><span class="lab">${label}</span><input type="range" min="0" max="1" step="0.01" value="${S[key]}" data-k="${key}" aria-label="${label}"></div>`;
+  const choose = (key, label, opts) => `<div class="lrow2"><span class="lab">${label}</span><select class="mode" data-k="${key}" aria-label="${label}">${opts.map((o, i) => `<option value="${i}"${i === S[key] ? " selected" : ""}>${o}</option>`).join("")}</select></div>`;
+  const box = $("stack");
+  box.innerHTML = `<li class="layer">
+      ${choose("move", "move", MOVES)}${slider("stutter", "stutter")}${slider("echoes", "echoes")}${slider("spacing", "spacing")}
+      ${choose("dir", "direction", DIRS)}${slider("reverb", "reverb")}
+      <div class="curve"><span class="lab">fade curve</span><canvas width="520" height="120" aria-label="Curve: drag the points"></canvas>
+        <div class="presets">${Object.keys(CURVES).map(k => `<button data-c="${k}">${k}</button>`).join("")}<button class="clear" id="clearThing">clear</button></div></div>
+    </li>`;
+  box.querySelectorAll("[data-k]").forEach(el => el.oninput = () => { S[el.dataset.k] = +el.value; rebuild(); saveSoon(); refreshDot(); });
+  const cv = box.querySelector("canvas"), E = {get c(){ return S.curve; }};
+  drawCurve(cv, S.curve);
+  curveDrag(cv, E);
+  box.querySelectorAll("[data-c]").forEach(b => b.onclick = () => { S.curve = CURVES[b.dataset.c].slice(); drawCurve(cv, S.curve); rebuild(); saveAll(); });
+  $("clearThing").onclick = () => { things[current] = blank(); rebuild(); saveAll(); renderRack(); };
+  showReadout();
 }
-function renderRack(){
-  renderKinds();
-  const ol = $("stack"), chain = racks[current] || [];
-  ol.innerHTML = chain.length ? "" : `<li class="hint">No effects on the ${current}. Add one with <b>+ effect</b>.</li>`;
-  chain.forEach((E, i) => {
-    const d = FX[E.fx], li = document.createElement("li");
-    li.className = "layer" + (E.on ? "" : " off");
-    const rows = d.p.map(([name, def, kind], j) => {
-      if (Array.isArray(kind) || kind === "div"){
-        const opts = kind === "div" ? DIVS.map(x => x[0]) : kind;
-        return `<div class="lrow2"><span class="lab">${name}</span><select class="mode" data-j="${j}" aria-label="${name}">${opts.map((o, k) => `<option value="${k}"${k === E.p[j] ? " selected" : ""}>${o}</option>`).join("")}</select></div>`;
-      }
-      return `<div class="lrow2"><span class="lab">${name}</span><input type="range" min="0" max="1" step="0.01" value="${E.p[j]}" data-j="${j}" aria-label="${name}"></div>`;
-    }).join("");
-    li.innerHTML = `
-      <div class="lrow">
-        <button class="eye" aria-pressed="${E.on}" title="Bypass or run this effect">${E.on ? "◉" : "○"}</button>
-        <span class="lname">${d.name}</span>
-        <button class="tiny up" title="Earlier in the chain">↑</button><button class="tiny down" title="Later in the chain">↓</button><button class="tiny del" title="Remove">×</button>
-      </div>${rows}` + (E.c ? `
-      <div class="curve"><span class="lab">${d.curve === "size" ? "size" : "fade"} curve</span>
-        <canvas width="520" height="120" aria-label="Curve: drag the points"></canvas>
-        <div class="presets">${Object.keys(CURVES).map(k => `<button data-c="${k}">${k}</button>`).join("")}</div></div>` : "");
-    li.querySelector(".eye").onclick = () => { E.on = !E.on; saveRacks(); renderRack(); };
-    li.querySelector(".up").onclick = () => { if (i > 0){ [chain[i - 1], chain[i]] = [chain[i], chain[i - 1]]; saveRacks(); renderRack(); } };
-    li.querySelector(".down").onclick = () => { if (i < chain.length - 1){ [chain[i + 1], chain[i]] = [chain[i], chain[i + 1]]; saveRacks(); renderRack(); } };
-    li.querySelector(".del").onclick = () => { chain.splice(i, 1); saveRacks(); renderRack(); };
-    li.querySelectorAll("[data-j]").forEach(el => el.oninput = () => { E.p[+el.dataset.j] = +el.value; saveSoon(); });
-    if (E.c){
-      const cv = li.querySelector("canvas");
-      drawCurve(cv, E.c);
-      curveDrag(cv, E);
-      li.querySelectorAll("[data-c]").forEach(b => b.onclick = () => { E.c = CURVES[b.dataset.c].slice(); drawCurve(cv, E.c); saveRacks(); });
-    }
-    ol.appendChild(li);
-  });
+function refreshDot(){
+  const o = $("kindSel").selectedOptions[0];
+  if (o) o.textContent = current + (isSet(things[current]) ? " •" : "");
   showReadout();
 }
 // The curve: five points at fixed places across, dragged up and down.
@@ -911,25 +916,10 @@ function curveDrag(cv, E){
   let pt = -1;
   const at = ev => { const r = cv.getBoundingClientRect(); return [(ev.clientX - r.left) / r.width, 1 - ((ev.clientY - r.top) / r.height - 0.1) / 0.8]; };
   cv.addEventListener("pointerdown", ev => { const [x] = at(ev); pt = Math.round(Math.min(Math.max(x, 0), 1) * 4); cv.setPointerCapture(ev.pointerId); move(ev); });
-  const move = ev => { if (pt < 0) return; E.c[pt] = Math.min(Math.max(at(ev)[1], 0), 1); drawCurve(cv, E.c); saveSoon(); };
+  const move = ev => { if (pt < 0) return; E.c[pt] = Math.min(Math.max(at(ev)[1], 0), 1); drawCurve(cv, E.c); rebuild(); saveSoon(); };
   cv.addEventListener("pointermove", move);
   cv.addEventListener("pointerup", () => { pt = -1; });
 }
-function renderAdd(){
-  const m = $("addMenu"); m.innerHTML = "";
-  for (const [g, label] of [["time", "Time"], ["copies", "Copies"]]){
-    m.insertAdjacentHTML("beforeend", `<div class="grp">${label}</div>`);
-    for (const id in FX) if (FX[id].kind === g){
-      const b = document.createElement("button"); b.textContent = FX[id].name;
-      b.onclick = () => { (racks[current] = racks[current] || []).push(newEffect(id)); openAdd(false); saveRacks(); renderRack(); if (!on) setOn(true); };
-      m.appendChild(b);
-    }
-  }
-}
-function openAdd(v){ $("addMenu").hidden = !v; $("addBtn").setAttribute("aria-expanded", String(v)); }
-$("addBtn").onclick = () => openAdd($("addMenu").hidden);
-renderAdd();
-
 // ------------------------------------------------------------------ the loop
 let paused = false, on = false, flash = 0, clock = 0, last = 0;
 let speed = parseFloat(store.get("speed")); if (isNaN(speed)) speed = 0.3;
@@ -959,7 +949,7 @@ function frame(now){
 requestAnimationFrame(frame);
 
 function showReadout(){
-  const n = Object.values(racks).filter(c => c.some(E => E.on)).length;
+  const n = Object.values(things).filter(isSet).length;
   $("readout").textContent = on ? `${n} thing${n === 1 ? "" : "s"} stuttering · ${bpm} bpm` : "stutter off";
 }
 
@@ -975,16 +965,15 @@ addEventListener("click", e => {
   if (!(e.target instanceof HTMLCanvasElement) || !suburb) return;
   const kind = suburb.keyAt(e.clientX / innerWidth, e.clientY / innerHeight);
   if (kind === "sky") return;
-  current = kind; flash = 1; saveRacks(); renderRack();
+  current = kind; flash = 1; saveAll(); renderRack();
   if ($("layers").hidden) showPanel(true);
 });
-addEventListener("pointerdown", e => { if (!$("addMenu").hidden && !e.target.closest("#addMenu, #addBtn")) openAdd(false); });
 addEventListener("keydown", e => {
   if (e.target.closest && e.target.closest("input, select")) return;
   if (e.key === "s" || e.key === "S") setOn(!on);
   else if (e.key === "l" || e.key === "L") showPanel($("layers").hidden);
   else if (e.key === "p" || e.key === "P") paused = !paused;
-  else if (e.key === "Escape"){ openAdd(false); $("help").hidden = true; }
+  else if (e.key === "Escape") $("help").hidden = true;
 });
 addEventListener("resize", rebuildSoon);
 $("ask").addEventListener("click", () => { $("help").hidden = !$("help").hidden; });
