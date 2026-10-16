@@ -231,7 +231,8 @@
   }
 
   /* ---------- the rack ---------- */
-  .layers header .kindsel{max-width:170px;font-size:11px;padding:5px 6px;}
+  .layers header .sides{display:flex;gap:4px;}
+  .layers header .sides .chip{padding:7px 12px;}
   .base .num{font:600 10px var(--mono);color:var(--mint);width:28px;text-align:right;}
   .addrow{margin:8px 10px 6px;}
   .stack .hint{font:600 11px/1.5 var(--ui);color:rgba(255,255,255,.6);padding:8px 6px;list-style:none;}
@@ -263,10 +264,9 @@
 <aside class="layers" id="layers" aria-label="Rack">
   <header>
     <span class="ttl">Stutter</span>
-    <select class="mode kindsel" id="kindSel" aria-label="Which thing this rack is for" title="Which thing this rack is for (or click one in the street)"></select>
+    <span class="sides" id="sides" role="group" aria-label="Which house"><button class="chip" data-side="left house">left</button><button class="chip" data-side="right house">right</button></span>
   </header>
   <div class="base"><span class="lab">bpm</span><input type="range" id="bpm" min="60" max="180" step="1" aria-label="Tempo"><b id="bpmVal" class="num"></b></div>
-  <div class="base"><span>Street</span><span class="lab">speed</span><input type="range" id="speed" min="0" max="1" step="0.01" aria-label="Walking speed"></div>
   <ol class="stack" id="stack"></ol>
 </aside>
 
@@ -279,9 +279,9 @@
 <div class="help" id="help" hidden role="dialog" aria-label="About Stutter">
   <p class="kicker">Study 12 · Sea of Grass</p>
   <h2 id="helpTitle">Stutter</h2>
-  <p class="lede"><a href="/studies/fever/">Fever</a>'s street, in time: give each thing its own stutter, echoes and reverb.</p>
+  <p class="lede">Two houses on <a href="/studies/fever/">Fever</a>'s street, in time: give each its own stutter, echoes and reverb.</p>
   <dl>
-    <dt>a thing</dt><dd>click it in the street (or pick it at the top of the panel) to set it</dd>
+    <dt>a house</dt><dd>pick left or right at the top of the panel, or click a house</dd>
     <dt>settings</dt><dd>move it, stutter it, give it echoes or reverb; drag the curve to fade the echoes</dd>
     <dt>stutter</dt><dd>the button, or S, runs it all or stops it</dd>
   </dl>
@@ -578,7 +578,7 @@ function loadSuburb(){
     const NAMES = ["blue", "green", "salmon", "pink", "yellow", "orange", "red", "lilac", "aqua", "white"];
     const WALLS = [0x4f7fe0, 0x3caf48, 0xe9806f, 0xf2a6cb, 0xf2c431, 0xf07b39, 0xe24a3b, 0xb48ce4, 0x6fcfe6, 0xf6efe4];
     function house(side, seed){
-      const g = new T.Group(), c = seed % WALLS.length, kind = NAMES[c] + " houses";
+      const g = new T.Group(), c = seed % WALLS.length, kind = (side < 0 ? "left" : "right") + " house";
       place(HOUSE[side], kind, WALLS[c], g, 0, 0, 0);
       twin(bodyG, kind, g, 0, 0, 0);
       for (const s of [1, -1]){
@@ -613,13 +613,12 @@ function loadSuburb(){
     const LOT = 12, N = 26, things = [];
     let seed = 7;
     const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-    for (let i = 0; i < N; i++){
-      for (const side of [-1, 1]){
-        const h = house(side, Math.floor(rnd() * 1000));
-        h.position.set(side * 16, 0, -i * LOT);
-        scene.add(h); things.push(h);
-      }
-      if (i % 3 === 1){ const l = lamp(); l.position.set(6.2, 0, -i * LOT + 3); scene.add(l); things.push(l); }
+    // Just two houses, one either side, a little way down the street: pink on
+    // the left, yellow on the right.
+    for (const side of [-1, 1]){
+      const h = house(side, side < 0 ? 3 : 4);
+      h.position.set(side * 16, 0, -26);
+      scene.add(h); things.push(h);
     }
 
     const ray = new T.Raycaster(); ray.layers.set(2);
@@ -688,6 +687,7 @@ function loadSuburb(){
       size(w, h){
         r.setPixelRatio(Math.min(devicePixelRatio || 1, w < 700 ? 1.5 : 2, quality));
         r.setSize(w, h); camera.aspect = w / h; camera.fov = w < h ? 74 : 52; camera.updateProjectionMatrix();
+        camera.position.z = w < h ? 24 : 0;                // a tall screen stands further back, to see both
       },
       // One frame: walk, run the racks, light up the thing whose rack is open, draw.
       frame(dt, o){
@@ -851,17 +851,15 @@ function chainOf(S){
 function demo(){
   const T = (o) => Object.assign(blank(), o);
   return {
-    "red houses": T({move: 1, echoes: 0.45, spacing: 0.25, dir: 2, curve: CURVES.flat.slice()}),
-    "blue houses": T({move: 2, echoes: 0.5, spacing: 0.4, dir: 0}),
-    "pink houses": T({move: 3, reverb: 0.5}),
-    "yellow houses": T({move: 4, stutter: 0.75}),
-    "lamps": T({stutter: 0.6, echoes: 0.4, spacing: 0.15, dir: 0}),
+    "left house": T({move: 1, echoes: 0.45, spacing: 0.25, dir: 2, curve: CURVES.flat.slice()}),
+    "right house": T({move: 3, stutter: 0.5, echoes: 0.35, spacing: 0.3, dir: 0}),
   };
 }
-let things = (() => { try { const r = JSON.parse(store.get("things") || "null"); if (r && typeof r === "object") return r; } catch (e) {} return demo(); })();
-for (const k in things) things[k] = Object.assign(blank(), things[k]);
-let current = store.get("current") || "red houses";
-const saveAll = () => { store.set("things", JSON.stringify(things)); store.set("current", current); };
+const SIDES = ["left house", "right house"];
+let things = (() => { try { const r = JSON.parse(store.get("houses") || "null"); if (r && typeof r === "object") return r; } catch (e) {} return demo(); })();
+for (const k of SIDES) things[k] = Object.assign(blank(), things[k]);
+let current = SIDES.includes(store.get("current")) ? store.get("current") : "left house";
+const saveAll = () => { store.set("houses", JSON.stringify(things)); store.set("current", current); };
 let rt2; const saveSoon = () => { clearTimeout(rt2); rt2 = setTimeout(saveAll, 300); };
 // the chains the engine runs, rebuilt when a setting changes
 let racks = {};
@@ -870,10 +868,10 @@ rebuild();
 const isSet = S => S && (S.move || S.stutter > 0.01 || S.echoes > 0.01 || S.reverb > 0.01);
 
 function renderRack(){
-  const sel = $("kindSel"), names = suburb ? Object.keys(suburb.kinds).filter(k => k !== "sky") : [current];
-  if (!names.includes(current)) names.unshift(current);
-  sel.innerHTML = names.map(k => `<option value="${k}"${k === current ? " selected" : ""}>${k}${isSet(things[k]) ? " •" : ""}</option>`).join("");
-  sel.onchange = () => { current = sel.value; flash = 1; saveAll(); renderRack(); };
+  $("sides").querySelectorAll("button").forEach(b => {
+    b.setAttribute("aria-pressed", String(b.dataset.side === current));
+    b.onclick = () => { current = b.dataset.side; flash = 1; saveAll(); renderRack(); };
+  });
   const S = things[current] = things[current] || blank();
   const slider = (key, label) => `<div class="lrow2"><span class="lab">${label}</span><input type="range" min="0" max="1" step="0.01" value="${S[key]}" data-k="${key}" aria-label="${label}"></div>`;
   const choose = (key, label, opts) => `<div class="lrow2"><span class="lab">${label}</span><select class="mode" data-k="${key}" aria-label="${label}">${opts.map((o, i) => `<option value="${i}"${i === S[key] ? " selected" : ""}>${o}</option>`).join("")}</select></div>`;
@@ -892,11 +890,7 @@ function renderRack(){
   $("clearThing").onclick = () => { things[current] = blank(); rebuild(); saveAll(); renderRack(); };
   showReadout();
 }
-function refreshDot(){
-  const o = $("kindSel").selectedOptions[0];
-  if (o) o.textContent = current + (isSet(things[current]) ? " •" : "");
-  showReadout();
-}
+function refreshDot(){ showReadout(); }
 // The curve: five points at fixed places across, dragged up and down.
 function drawCurve(cv, c){
   const g = cv.getContext("2d"), W = cv.width, H = cv.height, pad = 12;
@@ -922,9 +916,7 @@ function curveDrag(cv, E){
 }
 // ------------------------------------------------------------------ the loop
 let paused = false, on = false, flash = 0, clock = 0, last = 0;
-let speed = parseFloat(store.get("speed")); if (isNaN(speed)) speed = 0.3;
-$("speed").value = speed;
-$("speed").oninput = ev => { speed = +ev.target.value; store.set("speed", speed); };
+const speed = 0;                                           // the street stands still
 bpm = parseFloat(store.get("bpm")) || 112;
 $("bpm").value = bpm; $("bpmVal").textContent = bpm;
 $("bpm").oninput = ev => { bpm = +ev.target.value; $("bpmVal").textContent = bpm; store.set("bpm", bpm); };
@@ -949,8 +941,7 @@ function frame(now){
 requestAnimationFrame(frame);
 
 function showReadout(){
-  const n = Object.values(things).filter(isSet).length;
-  $("readout").textContent = on ? `${n} thing${n === 1 ? "" : "s"} stuttering · ${bpm} bpm` : "stutter off";
+  $("readout").textContent = on ? `${bpm} bpm` : "stutter off";
 }
 
 // ------------------------------------------------------------------ the controls
@@ -964,7 +955,7 @@ if (store.get("panel") === "0" || (store.get("panel") === null && matchMedia("(m
 addEventListener("click", e => {
   if (!(e.target instanceof HTMLCanvasElement) || !suburb) return;
   const kind = suburb.keyAt(e.clientX / innerWidth, e.clientY / innerHeight);
-  if (kind === "sky") return;
+  if (!SIDES.includes(kind)) return;
   current = kind; flash = 1; saveAll(); renderRack();
   if ($("layers").hidden) showPanel(true);
 });
