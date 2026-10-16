@@ -21,6 +21,7 @@ studies/
   dark-puddle/index.html      Study 09 — self-contained, ~25 KB, WebGL2; optional site pictures from Microlink
   fever/                      Study 10 — self-contained, ~80 KB, WebGL2; three.js from a CDN
   make-up/index.html          Study 11 — self-contained, ~60 KB, WebGL2; Fever's street for colour; three.js from a CDN
+  stutter/index.html          Study 12 — self-contained, ~60 KB, WebGL2; Fever's street for time; three.js from a CDN
 talaria/index.html            download page for Talaria, the studio's task app (unlisted)
 404.html                      not-found page; also sends /Talaria/ etc. to /talaria/
 assets/
