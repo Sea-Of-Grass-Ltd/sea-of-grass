@@ -673,30 +673,43 @@ function loadSuburb(){
       o.rotation.set(0, mo[3], mo[4]);
       o.scale.setScalar(mo[5] * s);
     }
-    // wet: how far out the effects are, 0 to 1. Stopping eases it to 0, so the
-    // echoes draw back into the house (their offsets, delays and sizes shrink
-    // to nothing) instead of vanishing, like a pedal's trails.
-    function wetMotion(m, w){ return [m[0] * w, m[1] * w, m[2] * w, m[3] * w, m[4] * w, 1 + (m[5] - 1) * w]; }
+    // wet: how far out the effects are, 0 to 1. Stopping folds them back in
+    // like a pedal's tail dying: the farthest echo first, sliding into the one
+    // in front of it, then that one into the next, until the last folds into
+    // the house and its own motion settles. Starting unfolds them front to back.
+    function tfOf(mo, off, s){ return [mo[0] + off[0], mo[1] + off[1], mo[2] + off[2], mo[3], mo[4], mo[5] * s]; }
+    const lerpTf = (a, b, k) => a.map((v, i) => v + (b[i] - v) * k);
+    const scaleMo = (m, k) => [m[0] * k, m[1] * k, m[2] * k, m[3] * k, m[4] * k, 1 + (m[5] - 1) * k];
+    function setTf(o, b, tf){
+      o.position.set(b.x + tf[0], b.y + tf[1], b.z + tf[2]);
+      o.rotation.set(0, tf[3], tf[4]);
+      o.scale.setScalar(tf[5]);
+    }
     function runRacks(racks, t, cz, w){
       for (const b of bodies){
         const chain = w > 0.002 ? (racks[b.kind] || []).filter(E => E.on) : [], m = b.mesh;
         let used = 0;
         if (chain.length){
           const wz = b.parent.position.z + b.z, side = Math.sign(b.parent.position.x) || 1;
-          place3(m, b, wetMotion(motionAt(chain, stutterTime(chain, t, b.seed), wz, b.seed), w), [0, 0, 0], 1);
-          const ahead = cz - wz;                           // how far down the street it is
-          if (Math.abs(ahead) > 6 && Math.abs(ahead) < 120 || b.parent === ground){   // not for what's right beside the camera
-            const copies = copiesOf(chain, side);
-            for (let i = 1; i < copies.length; i++){
-              const c = copies[i], a = c.a * Math.min(1, w * 1.6);
-              if (a < 0.04) continue;
-              let p = b.pool[used];
-              if (!p){ p = new T.Mesh(m.geometry, m.material); p.receiveShadow = true; b.parent.add(p); b.pool.push(p); }
-              p.material = a > 0.95 ? m.material : echoMat(m.material, Math.max(1, Math.round(a * 8)));
-              place3(p, b, wetMotion(motionAt(chain, stutterTime(chain, t - c.dt * w, b.seed), wz, b.seed), w),
-                     [c.off[0] * w, c.off[1] * w, c.off[2] * w], 1 + (c.s - 1) * w);
-              p.visible = true; used++;
-            }
+          const ahead = cz - wz;
+          const copies = (Math.abs(ahead) > 6 && Math.abs(ahead) < 120) ? copiesOf(chain, side) : [copiesOf(chain, side)[0]];
+          const n = copies.length - 1, items = n + 1, f = 1 - w;
+          // each folds in its own stretch of the way: k = 0 (the farthest echo) first, the house's motion last
+          const len = Math.min(1, 2.2 / items), local = k => 1 - Math.min(1, Math.max(0, (f - k * (1 - len) / Math.max(1, items - 1)) / len));
+          const wb = local(n);
+          let cur = tfOf(scaleMo(motionAt(chain, stutterTime(chain, t, b.seed), wz, b.seed), wb), [0, 0, 0], 1);
+          setTf(m, b, cur);
+          for (let i = 1; i <= n; i++){
+            const c = copies[i], wi = local(n - i);
+            const full = tfOf(scaleMo(motionAt(chain, stutterTime(chain, t - c.dt, b.seed), wz, b.seed), wb), c.off, c.s);
+            cur = lerpTf(cur, full, wi);                   // slides toward the one in front as it folds
+            const a = c.a * Math.min(1, wi * 4);
+            if (a < 0.04) continue;
+            let p = b.pool[used];
+            if (!p){ p = new T.Mesh(m.geometry, m.material); p.receiveShadow = true; b.parent.add(p); b.pool.push(p); }
+            p.material = a > 0.95 ? m.material : echoMat(m.material, Math.max(1, Math.round(a * 8)));
+            setTf(p, b, cur);
+            p.visible = true; used++;
           }
         } else if (m.position.x !== b.x || m.position.y !== b.y || m.position.z !== b.z || m.scale.x !== 1 || m.rotation.y || m.rotation.z){
           m.position.set(b.x, b.y, b.z); m.rotation.set(0, 0, 0); m.scale.setScalar(1);
@@ -705,7 +718,7 @@ function loadSuburb(){
       }
     }
 
-    let baseFov = 52;
+    let baseFov = 52;                                      // the lens for the screen's shape, before zoom
     suburb = {
       canvas: r.domElement, kinds,
       size(w, h){
@@ -1016,10 +1029,10 @@ function frame(now){
   clock += dt;
   flash = Math.max(0, flash - dt / 1.2);
   // stopping or starting eases the effects in or out over about a second
-  wet = on ? Math.min(1, wet + dt / 0.9) : Math.max(0, wet - dt / 1.1);
+  wet = on ? Math.min(1, wet + dt / 1.3) : Math.max(0, wet - dt / 1.6);
   // speed: from standing still to a brisk run, eased so the low end is fine
   const sv = (speed - 0.5) * 2;                           // -1 back .. 1 forward, eased so the middle is gentle
-  suburb.frame(dt, {walk: Math.sign(sv) * sv * sv * 26 * dt, racks, wet: wet * wet * (3 - 2 * wet), t: clock, selected: current, glow: flash, yaw, pitch, zoom});
+  suburb.frame(dt, {walk: Math.sign(sv) * sv * sv * 26 * dt, racks, wet, t: clock, selected: current, glow: flash, yaw, pitch, zoom});
 }
 requestAnimationFrame(frame);
 
