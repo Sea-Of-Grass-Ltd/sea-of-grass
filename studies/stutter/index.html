@@ -708,9 +708,11 @@ function loadSuburb(){
           const wb = local(n);
           let cur = tfOf(scaleMo(motionAt(chain, stutterTime(chain, t, b.seed), wz, b.seed), wb), [0, 0, 0], 1);
           setTf(m, b, cur);
-          // the loop: one echo out each beat, sliding from the one before; then they clear and it begins again
-          const pos = o.beat ? (t / o.beat) % (n + 1) : n + 1, kb = Math.floor(pos), fr = pos - kb;
-          const reveal = i => i < kb ? 1 : i === kb ? 1 - Math.pow(1 - Math.min(1, fr * 3), 3) : 0;
+          // the loop, on sixteenths of the tempo: echoes slide out one at a time, each from the one
+          // before; then fold back in on themselves, the last into the one before, down to the house; and out again
+          const step = (o.beat || 1) / 4, P = n ? (t / step) % (2 * n) : 0, sk = Math.floor(P % n || 0), fr = P % 1;
+          const e = 1 - Math.pow(1 - Math.min(1, fr * 1.6), 3);
+          const reveal = i => P < n ? (i <= sk ? 1 : i === sk + 1 ? e : 0) : (i < n - sk ? 1 : i === n - sk ? 1 - e : 0);
           for (let i = 1; i <= n; i++){
             const c = copies[i], wi = Math.min(local(n - i), reveal(i));
             const full = tfOf(scaleMo(motionAt(chain, stutterTime(chain, t - c.dt, b.seed), wz, b.seed), wb), c.off, c.s);
