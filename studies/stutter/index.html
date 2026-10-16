@@ -663,7 +663,9 @@ function loadSuburb(){
       const key = base.uuid + ":" + level;
       if (!echoMats[key]){
         const m = base.clone(); m.onBeforeCompile = base.onBeforeCompile;
-        m.transparent = true; m.opacity = level / 8; m.depthWrite = false;
+        // a faint copy shows only its outsides and hides what's behind it, so ghosts
+        // read as pale houses, not every wall seen through every other
+        m.transparent = true; m.opacity = level / 8; m.depthWrite = true; m.side = T.FrontSide;
         echoMats[key] = m;
       }
       return echoMats[key];
