@@ -342,8 +342,7 @@ const EFFECTS = [
    marks: {style: 9, blend: 1, ground: 0, n: 9000, edge: .15, dens: 0}},
   {id: "chalk",    name: "Chalk",    group: "Line", p: [["strokes", .55], ["ground", 0]], boil: .2,
    marks: {style: 10, blend: 2, ground: 2, n: 9000, edge: 0, dens: 0}},
-  {id: "ink",      name: "Ink",      group: "Line", p: [["hatching", .6], ["outline", .6]], boil: .25,
-   marks: {style: 5, blend: 2, ground: 0, n: 7000, edge: L => 0.12 + L.p[1] * 0.5, dens: 0}},
+  {id: "ink",      name: "Ink",      group: "Line", p: [["bleed", .55], ["water", .6], ["fibres", .6], ["colour", 0], ["drops", .55], ["sky", .7]], boil: .08},
   {id: "neon",     name: "Neon",     group: "Line", p: [["glow", .6], ["tint", .3], ["tubes", .5], ["spill", .6]], boil: .12, jitter: .15,
    marks: {style: 6, blend: 3, ground: 7, n: 1500, edge: 1, dens: 2, bloom: true}},
   {id: "grade",    name: "Grade",    group: "Grade", p: []},
@@ -374,6 +373,7 @@ uniform sampler2D uMarks;
 uniform highp sampler3D uLut;
 uniform float uTick, uMarkMode, uGround, uLutN, uSpin;
 uniform vec2 uMove;
+uniform vec4 uLamps[8];                                    // Ink's sky: the lamps on screen (head x, y, foot y, size)
 out vec4 o;
 // ---- helpers
 float h1(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
@@ -421,6 +421,30 @@ float nearness(vec2 uv){ return uGOn > 0.5 ? clamp(20.0 / max(length(texture(uG,
 vec3 paper(vec2 fc){
   float f = n1(fc * vec2(0.9, 0.11)) * 0.5 + n1(fc * vec2(0.13, 0.8)) * 0.5, t = n1(fc * 0.45), g = h1(floor(fc));
   return vec3(0.957, 0.945, 0.912) * (0.955 + 0.03 * f + 0.025 * t + 0.015 * g);
+}
+
+// Ink: how much a thing takes, by its tone, in the few dilutions of sumi
+// (paper, a pale wash, a mid wash, a dark one, black); the sky takes none.
+// A thing here, solidly: not the sky, and not a smoothed pixel on an edge
+// against it, whose colour is half sky and whose kind is a blend of two.
+bool solidAt(vec2 uv){
+  float kr = (1.0 - texture(uBase, clamp(uv, 0.0, 1.0)).a) / 0.03;
+  if (kr < 0.5 || abs(kr - floor(kr + 0.5)) > 0.12) return false;
+  if (kindAt(uv + 1.0 / uRes) < 0.5 || kindAt(uv - 1.0 / uRes) < 0.5) return false;
+  return !(uGOn > 0.5 && length(texture(uG, uv).xyz) > 400.0);
+}
+// A colour as a pigment: a filter on the paper, kept in logs so pigments mix
+// as paint does (greys stay grey: a grey thing's ink is a grey).
+vec3 pigOf(vec3 s){
+  float mx = max(s.r, max(s.g, s.b));
+  return log(clamp(mix(vec3(0.5), mix(vec3(lum(s)), s, 1.15) / max(mx, 0.2), smoothstep(0.12, 0.32, mx - min(s.r, min(s.g, s.b))) * smoothstep(0.3, 0.55, mx)), 0.04, 1.0));   // and shade is grey
+}
+float fbm(vec2 p){ return n1(p) * 0.5 + n1(p * 2.03 + 3.1) * 0.3 + n1(p * 4.1 + 7.7) * 0.2; }
+float inkAt(vec2 uv, float lo, out vec3 s){
+  s = src(uv);
+  if (!solidAt(uv)) return 0.0;
+  float t = pow(clamp((1.0 - lum(s) - lo) / 0.72, 0.0, 1.0), 1.8) * 4.0;
+  return (floor(t) + smoothstep(0.25, 0.75, fract(t))) / 4.0;
 }
 
 // ---- the effects, each on the picture so far
@@ -544,11 +568,149 @@ vec3 effect(vec2 uv){
     float g = clamp(line * uP.x * 1.4 + hatch * 0.7, 0.0, 1.0);
     return mix(paper(fc), vec3(0.18, 0.18, 0.2), g);
   }
-  if (k == 10){                                            // Ink: threshold, colour, (boil)
-    float th = 0.08 + uP.x * 0.5 + (n1(fc * 0.02 + tick * 2.3) - 0.5) * 0.05;
-    float ink = max(step(lum(blurAt(uv, 5.0)), th), uMarkMode > 0.5 ? 0.0 : step(0.6, edgeAt(uv, 2.0)));
-    vec3 under = mix(paper(fc), c, uP.y);
-    return mix(under, vec3(0.04), ink);
+  if (k == 10){                                            // Ink: bleed, water, fibres, colour (boil)
+    // Sumi on washi, after i-mage's SUMI: each face takes ink by its tone,
+    // and the ink travels through the paper into its lighter neighbours, a
+    // different distance in every direction as the fibres carry it: a dark
+    // mass, grey hairs feathering out of it, and ahead of them the water,
+    // which dries to a pale halo with a tide line at its edge. The fibres are
+    // on the street's surfaces, so the bleed stays put as you walk; it
+    // breathes slowly, each face in its own time.
+    float bs = uRes.y / 1000.0;
+    vec2 px = 1.0 / uRes;
+    vec2 fq = surf(uv) + vec2(tick * 3.1, tick * 1.7);
+    float key = uGOn > 0.5 ? texture(uG, uv).w : kindAt(uv);
+    float lo = mix(mix(0.3, 0.2, uPaper), 0.1, uP2.x);   // on the street, more of it stays clear; in colour, every thing takes some
+    // how far the ink gets to here: ragged, and stringy along the fibres
+    float hair = max(n1(mat2(0.8, -0.6, 0.6, 0.8) * fq * vec2(2.0, 16.0)), n1(mat2(0.8, 0.6, -0.6, 0.8) * fq * vec2(2.0, 16.0) + 7.0));
+    float fib = mix(1.0, 0.2 + 1.15 * (0.55 * hair + 0.45 * n1(fq * 0.9 + 3.0)), uP.z);
+    // The sky: one graded wash, laid wet, as in sumi: deepest overhead and
+    // thinning to nothing at the horizon, where it meets the white of the
+    // paper. It went down as many soft blooms that ran together, each a
+    // little darker where it landed, lobed at its edge, with fine streaks out
+    // from its middle and a faint tide line where its water stopped. They
+    // keep blooming and fading, slowly, and the lamps push them about as you
+    // pass, so the sky is never quite the same.
+    vec4 Gs = uGOn > 0.5 ? texture(uG, uv) : vec4(0.0);
+    if (uP2.z > 0.01 && (uGOn > 0.5 ? length(Gs.xyz) > 400.0 : kindAt(uv) < 0.5)){
+      float el = uGOn > 0.5 ? Gs.y / length(Gs.xyz) : uv.y * 2.0 - 1.0;
+      vec2 sq = uGOn > 0.5 ? vec2(atan(Gs.x, -Gs.z) * 2.2, el * 4.0) : fc / (300.0 * bs);
+      float tt = uTime * 0.04;
+      // each lamp pushes the wash away from its head and pole, and turns it
+      vec2 push = vec2(0.0), P = vec2(uv.x * uRes.x / uRes.y, uv.y);
+      for (int i = 0; i < 8; i++){
+        vec4 Lm = uLamps[i];
+        if (Lm.w <= 0.0) continue;
+        vec2 dh = P - Lm.xy, dp = P - vec2(Lm.x, clamp(P.y, Lm.z, Lm.y));
+        float r = Lm.w * (0.7 + 0.8 * uP.x);
+        push += dh / r * exp(-dot(dh, dh) / (r * r)) * 1.6 + dp / r * exp(-dot(dp, dp) / (r * r * 0.3)) * 0.8;
+      }
+      vec2 g0 = sq * (1.0 - 0.4 * uP.x) + push * 0.45 + vec2(-push.y, push.x) * 0.5 * sin(uTime * 0.4);
+      float bl = 0.0, tideB = 0.0;
+      for (int sc = 0; sc < 2; sc++){
+        vec2 g = g0 * (sc == 0 ? 1.0 : 1.8) + float(sc) * 7.3, gi = floor(g);
+        for (int y = -1; y <= 1; y++) for (int x = -1; x <= 1; x++){
+          vec2 cell = gi + vec2(x, y);
+          float h = h1(cell + float(sc) * 19.0), h2 = h1(cell + 3.3), h3 = h1(cell + 8.1);
+          float age = fract(uTime / (16.0 + 14.0 * h2) + h);
+          vec2 cen = cell + 0.5 + (vec2(h1(cell + 5.1), h1(cell + 9.3)) - 0.5) * 0.7
+                   + vec2(sin(tt * 2.0 + h * 6.3), cos(tt * 1.7 + h2 * 6.3)) * 0.15;
+          vec2 dv = g - cen;
+          float dist = length(dv);
+          vec2 dir = dv / max(dist, 1e-4);
+          float grow = 1.0 - pow(1.0 - min(age * 1.5, 1.0), 3.0);
+          float R = (0.45 + 0.55 * h3) * grow * (0.82 + 0.3 * n1(dir * 2.5 + h * 40.0) + uP.z * 0.1 * (n1(dir * 18.0 + h * 9.0) - 0.5));
+          float body = 1.0 - smoothstep(R * 0.55, R, dist);                 // soft, thinning to its edge
+          float streak = 0.88 + 0.24 * n1(dir * 34.0 + h * 13.0) * smoothstep(0.0, 0.6, dist / max(R, 1e-3));
+          float life = smoothstep(0.0, 0.12, age) * (1.0 - smoothstep(0.65, 1.0, age));
+          bl += body * (0.55 + 0.45 * (1.0 - dist / max(R, 1e-3))) * streak * life * (0.45 + 0.55 * h2);
+          tideB = max(tideB, (smoothstep(R * 0.9, R * 0.96, dist) - smoothstep(R * 0.96, R * 1.03, dist)) * life);
+        }
+      }
+      // the gradient: deep overhead, nothing at the horizon
+      float grad = pow(smoothstep(0.0, 0.9, el), 0.7);
+      float DS = grad * (0.5 + 0.55 * clamp(bl, 0.0, 1.3)) + tideB * 0.1 * uP.y * grad;
+      DS *= uP2.z * 1.25;
+      vec3 under = mix(mix(c, vec3(1.0), 0.45), paper(fc), uPaper);
+      vec3 pg = exp(pigOf(mix(c, vec3(0.45, 0.62, 0.86), 0.55)));   // the sky's own blue, as an ink
+      vec3 washS = under * pow(pg, vec3(DS * 1.3));
+      vec3 sumiS = mix(under, vec3(0.045, 0.043, 0.05), clamp(DS * 0.55, 0.0, 1.0));
+      return mix(sumiS, washS, uP2.x);
+    }
+    float near = nearness(uv);
+    float R = (4.0 + uP.x * 44.0) * bs * near * (0.82 + 0.18 * sin(uTime * 0.5 + key * 9.0));
+    float reach = R * fib, Rw = R * (1.25 + uP.y * 0.9);   // the water goes further
+    vec3 own, s;
+    float core = inkAt(uv, lo, own), wisp = core, wet = 0.0, wetIn = 0.0;
+    // the pigments that reach here, mixed as paint mixes: each a filter on
+    // the paper, so pink running into yellow makes orange where they meet
+    #define PIG(s) pigOf(s)
+    float ownW = kindAt(uv) > 0.5 ? core + 0.05 : 0.001;  // the sky is paper: no pigment of its own
+    vec3 mixL = PIG(own) * ownW;
+    float mixW = ownW;
+    float jit = n1(fq * 7.0) * 0.6 + n1(fq * 19.0) * 0.4;
+    for (int i = 1; i <= 8; i++){
+      float d = (float(i) - jit) / 8.0 * Rw;
+      for (int j = 0; j < 6; j++){
+        float an = float(j) * 1.0472 + float(i) * 0.61 + jit * 1.7;
+        float a = inkAt(uv + vec2(cos(an), sin(an)) * d * px, lo, s) * (1.0 - 0.2 * d / Rw);   // thinning as it goes
+        float c1 = a * (1.0 - smoothstep(reach * 0.32, reach * 0.42, d));   // the mass
+        float w1 = a * (1.0 - smoothstep(reach * 0.5, reach, d));           // its hairs
+        core = max(core, c1);
+        wisp = max(wisp, w1);
+        if (w1 > 0.01){ mixL += PIG(s) * w1; mixW += w1; }
+        wet = max(wet, a * (1.0 - smoothstep(Rw * 0.9, Rw, d)));
+        wetIn = max(wetIn, a * (1.0 - smoothstep(Rw * 0.72, Rw * 0.82, d)));
+      }
+    }
+    float I = max(core, wisp * 0.55) + (wisp - core) * 0.25 * step(0.01, wisp - core);
+    I = clamp(I * 1.15 * (0.88 + 0.2 * n1(fq * 0.35 + 5.0) + 0.08 * n1(fq * 2.1)), 0.0, 1.0);
+    // drops of ink let fall on the faces, no two alike: big and small, pale
+    // and black, each with its own ragged outline, a darker middle and a ring
+    // of water, spreading at its own pace, drying, and falling again
+    float D = 0.0, Dw = 0.0;
+    if (kindAt(uv) > 0.5 && uP2.y > 0.01 && near > 0.32){
+      for (int sc = 0; sc < 3; sc++){
+        float cs = sc == 0 ? 16.0 : sc == 1 ? 7.5 : 2.6;
+        vec2 g = fq / cs + key * 13.7, gi = floor(g);
+        for (int y = -1; y <= 1; y++) for (int x = -1; x <= 1; x++){
+          vec2 cell = gi + vec2(x, y) + float(sc) * 57.0;
+          float h = h1(cell);
+          // in clusters, not evenly
+          float cl = 0.25 + 1.3 * n1((gi + vec2(x, y)) * 0.37 + float(sc) * 3.0);
+          if (h > uP2.y * cl * (sc == 0 ? 0.35 : sc == 1 ? 0.5 : 0.25)) continue;
+          vec2 dv = g - (gi + vec2(x, y) + 0.5 + (vec2(h1(cell + 5.1), h1(cell + 9.3)) - 0.5) * 0.8);
+          float ra = h1(cell + 6.6) * 3.1416;               // each its own shape: stretched, turned
+          dv = mat2(cos(ra), -sin(ra), sin(ra), cos(ra)) * dv * vec2(1.0, 1.0 + 1.4 * h1(cell + 1.9));
+          float dist = length(dv);
+          float age = fract(uTime / (10.0 + 14.0 * h1(cell + 2.2)) + h1(cell + 4.4));
+          float grow = 1.0 - pow(1.0 - min(age * 1.8, 1.0), 3.0);
+          vec2 dir = dv / max(dist, 1e-4);
+          // a different distance in every direction, and hairs where the fibres carry it
+          float ef = 1.4 + 3.5 * h1(cell + 4.8);
+          float edge = 0.62 + 0.55 * n1(dir * ef + h * 50.0) + uP.z * (n1(dir * ef * 4.0 + h * 70.0) - 0.5) * (0.2 + 0.6 * h1(cell + 2.7))
+                     + uP.z * (hair - 0.5) * 0.35;
+          float r = (0.1 + 0.55 * pow(h1(cell + 7.7), 2.0)) * grow * edge;
+          float fade = (1.0 - smoothstep(0.82, 1.0, age)) * smoothstep(0.32, 0.6, near);
+          float dark = sc == 0 ? mix(0.12, 0.45, h1(cell + 8.8)) : mix(0.15, 1.0, pow(h1(cell + 8.8), 1.3));   // the big ones pale washes
+          float body = (1.0 - smoothstep(r * 0.86, r, dist)) * dark * (0.78 + 0.22 * (1.0 - dist / max(r, 1e-3)));
+          D = max(D, body * fade);
+          float rw = r * (1.15 + 0.35 * uP.y);
+          Dw = max(Dw, (1.0 - smoothstep(rw * 0.9, rw, dist)) * step(r, dist) * dark * fade);
+        }
+      }
+    }
+    float halo = max(max(wet - I, 0.0), Dw * 0.8) * uP.y, tide = max(max(wet - wetIn, 0.0), Dw * smoothstep(0.5, 1.0, Dw)) * uP.y;
+    #undef PIG
+    I = max(I, D);                                         // a drop is more of the same pigment, denser
+    vec3 under = mix(mix(c, vec3(1.0), 0.45), paper(fc), uPaper);
+    vec3 pig = exp(mixL / mixW);                           // the mixed pigment, as a filter
+    // black sumi, or the things' own colours: the halo and tide line a faint stain of the same
+    vec3 stain = mix(vec3(1.0 - halo * 0.14) * (1.0 - tide * 0.4), pow(pig, vec3(halo * 0.3 + tide * 0.3)), uP2.x);
+    vec3 col = under * stain;
+    vec3 sumi = mix(col, vec3(0.045, 0.043, 0.05), I * (0.55 + 0.45 * I));
+    vec3 wash = col * pow(pig, vec3(I * 1.7)) * (1.0 - I * I * 0.35);
+    return mix(sumi, wash, uP2.x);
   }
   if (k == 11){                                            // Neon: glow, tint, (boil)
     float e = edgeAt(uv, 1.0), eb = 0.0;
@@ -1630,7 +1792,7 @@ function loadSuburb(){
 
     // Lots, LOT apart, N deep; one row of houses a side, a lamp every
     // third lot on the right.
-    const LOT = 12, N = 26, things = [];
+    const LOT = 12, N = 26, things = [], lampList = [];
     let seed = 7;
     const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
     for (let i = 0; i < N; i++){
@@ -1639,7 +1801,7 @@ function loadSuburb(){
         h.position.set(side * 16, 0, -i * LOT);
         scene.add(h); things.push(h);
       }
-      if (i % 3 === 1){ const l = lamp(); l.position.set(6.2, 0, -i * LOT + 3); scene.add(l); things.push(l); }
+      if (i % 3 === 1){ const l = lamp(); l.position.set(6.2, 0, -i * LOT + 3); scene.add(l); things.push(l); lampList.push(l); }
     }
 
     const ray = new T.Raycaster(); ray.layers.set(2);
@@ -1671,6 +1833,24 @@ function loadSuburb(){
       // the raw textures, for the layers
       textures(){
         return {base: r.properties.get(streetRT.texture).__webglTexture, g: gRT ? r.properties.get(gRT.texture).__webglTexture : null};
+      },
+      // The lamps on the screen, nearest first, for Ink's sky to be stirred by:
+      // each its head (x, y), its foot's y, and how big it is (all in 0..1 of
+      // the screen's height, x from the left in the same units).
+      lamps(){
+        const out = new Float32Array(32), A = camera.aspect, v = new T.Vector3();
+        const near = lampList.map(l => ({l, d: camera.position.z - l.position.z})).filter(o => o.d > 1).sort((a, b) => a.d - b.d);
+        let n = 0;
+        for (const {l, d} of near){
+          if (n >= 8) break;
+          v.set(l.position.x - 1.6, 12.3, l.position.z).project(camera);
+          if (v.z > 1 || Math.abs(v.x) > 1.6) continue;
+          const hx = (v.x * 0.5 + 0.5) * A, hy = v.y * 0.5 + 0.5;
+          v.set(l.position.x, 0, l.position.z).project(camera);
+          // lamps right overhead ease out rather than fill the sky
+          out.set([hx, hy, v.y * 0.5 + 0.5, Math.min(0.3, 2.2 / d) * Math.min(1, Math.max(0, (d - 4) / 10))], n * 4); n++;
+        }
+        return out;
       },
       // the camera, for marks to find their place on the screen
       view(){ vp.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
@@ -1827,7 +2007,7 @@ const motionLabel = k => k === "angle" ? "direction" : k;
 // Looks laid on a ground of their own (paper, a navy board, black) put it
 // down only as far as the paper setting says; at 0 they go straight onto the
 // street, so they work in Normal mode.
-const hasPaper = e => e.id === "watercolour" || !!(e.marks && [0, 2, 3, 7].includes(e.marks.ground));
+const hasPaper = e => e.id === "watercolour" || e.id === "ink" || !!(e.marks && [0, 2, 3, 7].includes(e.marks.ground));
 const newMotion = e => ({boil: e.boil ?? 0, jitter: e.jitter ?? (e.marks ? 0.85 : 0), drift: 0, angle: 0.25, flow: 0, orbit: 0, spin: 0.5});
 function newLayer(id){
   const e = BY_ID[id];
@@ -2168,7 +2348,8 @@ function drawLayers(){
     gl.uniform1f(FXP.u.uGround, marks ? fx.marks.ground : 0);
     gl.uniform1f(FXP.u.uLutN, LUTN);
     gl.uniform1f(FXP.u.uSpin, (M.spin - 0.5) * 2);
-    gl.uniform4f(FXP.u.uP2, L.p[3] ?? 0, L.p[4] ?? 0, 0, 0);
+    gl.uniform4f(FXP.u.uP2, L.p[3] ?? 0, L.p[4] ?? 0, L.p[5] ?? 0, 0);
+    if (fx.id === "ink" && suburb.lamps) gl.uniform4fv(FXP.u["uLamps[0]"], suburb.lamps());
     { const v = suburb.view(); gl.uniform3f(FXP.u.uCam, v.cam.x, v.cam.y, v.cam.z); }
     gl.uniform1f(FXP.u.uGOn, run.g ? 1 : 0);
     gl.uniform1f(FXP.u.uPaper, L.paper ?? 0);
