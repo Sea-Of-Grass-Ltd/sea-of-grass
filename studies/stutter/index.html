@@ -274,22 +274,9 @@
     <button class="chip" data-side="right house">right</button>
   </div>
   <div class="sep"></div>
-  <div class="tabs" role="tablist">
-    <button class="chip" role="tab" aria-selected="true" data-tab="move">Move</button>
-    <button class="chip" role="tab" aria-selected="false" data-tab="echo">Echo</button>
-    <button class="chip" role="tab" aria-selected="false" data-tab="shape">Shape</button>
-    <button class="chip" role="tab" aria-selected="false" data-tab="street">Street</button>
-  </div>
-  <div class="sep"></div>
-  <div class="page" data-page="move" id="page-move"><div class="chips" id="moves"></div></div>
-  <div class="page dials" data-page="echo" hidden id="page-echo"></div>
-  <div class="page" data-page="shape" hidden>
-    <canvas id="pad" width="200" height="200" aria-label="Which way the echoes go: drag the dot (double-click to centre)"></canvas>
-    <div class="dialhost" id="page-shape-dials"></div>
-    <canvas id="curve" width="300" height="120" aria-label="How the echoes fade: drag the points"></canvas>
-    <button class="chip" id="preset" title="Step through the shapes">fade</button>
-  </div>
-  <div class="page dials" data-page="street" hidden id="page-street"></div>
+  <div class="page" id="page-echo"></div>
+  <canvas id="pad" width="200" height="200" aria-label="Which way the echoes go: drag the dot (double-click to centre)"></canvas>
+  <div class="dialhost" id="page-shape-dials"></div>
 </div>
 
 <div class="dock">
@@ -301,9 +288,9 @@
 <div class="help" id="help" hidden role="dialog" aria-label="About Stutter">
   <p class="kicker">Study 12 · Sea of Grass</p>
   <h2 id="helpTitle">Stutter</h2>
-  <p class="lede">Two houses coming down <a href="/studies/fever/">Fever</a>'s street, in time: give each its own stutter, echoes and reverb.</p>
+  <p class="lede">Two houses coming down <a href="/studies/fever/">Fever</a>'s street: give each its own echoes, and aim them.</p>
   <dl>
-    <dt>controls</dt><dd>left or right picks the house (or click one); move it, give it echoes; in Shape, drag the dot to aim them</dd>
+    <dt>controls</dt><dd>left or right picks the house (or click one); turn up its echoes; drag the dot to aim them, depth for away or near</dd>
     <dt>look</dt><dd>click, hold and drag on the street; pinch to zoom; double-click to look ahead again</dd>
     <dt>stutter</dt><dd>the button, or S, runs it all or stops it</dd>
   </dl>
@@ -892,13 +879,10 @@ const SIDES = ["left house", "right house"];
 // vec: which way the echoes go, as seen from the street: [right, up, away]
 const blank = () => ({move: 0, stutter: 0, echoes: 0, spacing: 0.35, dir: 2, vec: [0, 0.55, 0.83], reverb: 0, curve: CURVES.fade.slice(), preset: "fade"});
 const VEC_OF_DIR = [[0, 0, 1], [0, 1, 0], [0, 0.55, 0.83]];
+// Only the echo now: how many, and which way.
+const EASE = CURVES.ease.slice();
 function chainOf(S){
-  const c = [], e = (fx, p, more) => Object.assign({fx, on: true, p, c: S.curve}, more);
-  if (S.stutter > 0.01) c.push(e("stutter", [0, 5, 0.4, S.stutter]));
-  if (S.move) c.push(e("motion", [[0, 0, 1, 3, 4][S.move], 0, 2, 0.5, 0.5]));
-  if (S.echoes > 0.01) c.push(e("delay", [4, S.echoes, S.spacing, S.dir, 0, 0.5], {vec: S.vec}));
-  if (S.reverb > 0.01) c.push(e("reverb", [S.reverb, S.reverb, 0.6, 0.5]));
-  return c;
+  return S.echoes > 0.01 ? [{fx: "delay", on: true, p: [4, S.echoes, 0.35, 2, 0, 0.5], c: EASE, vec: S.vec}] : [];
 }
 function demo(){
   const T = o => Object.assign(blank(), o);
@@ -926,16 +910,9 @@ let bpm2 = parseFloat(store.get("bpm")); bpm = isNaN(bpm2) ? 112 : bpm2;
 let speed = parseFloat(store.get("speed2")); if (isNaN(speed)) speed = 0.68;
 const S = () => things[current];
 const DIALS = {
-  move: [{id: "stutter", glyph: "◫", name: "stutter", get: () => S().stutter, set: v => { S().stutter = v; }}],
   shape: [{id: "depth", glyph: "⤢", name: "depth", get: () => (S().vec[2] + 1) / 2, set: v => { S().vec[2] = v * 2 - 1; },
             show: () => { const d = Math.round(S().vec[2] * 100); return d > 0 ? "away " + d : d < 0 ? "near " + -d : "0"; }}],
-  echo: [{id: "echoes", glyph: "⋯", name: "echoes", get: () => S().echoes, set: v => { S().echoes = v; }},
-         {id: "spacing", glyph: "↔", name: "spacing", get: () => S().spacing, set: v => { S().spacing = v; }},
-         {id: "reverb", glyph: "◌", name: "reverb", get: () => S().reverb, set: v => { S().reverb = v; }}],
-  street: [{id: "speed", glyph: "⇄", name: "speed", get: () => speed, set: v => { speed = Math.abs(v - 0.5) < 0.03 ? 0.5 : v; store.set("speed2", speed); },
-             show: () => { const s = Math.round((speed - 0.5) * 200); return s > 0 ? "+" + s : String(s); }},
-           {id: "tempo", glyph: "♩", name: "tempo", get: () => (bpm - 60) / 120, set: v => { bpm = Math.round(60 + v * 120); store.set("bpm", bpm); },
-            show: () => bpm}],
+  echo: [{id: "echoes", glyph: "⋯", name: "echoes", get: () => S().echoes, set: v => { S().echoes = v; }}],
 };
 const dials = [];
 function makeDial(d, host){
@@ -973,10 +950,7 @@ const chips = (host, list, get, set) => {
   });
   host._paint = () => host.querySelectorAll("button[data-i]").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.i === get())));
 };
-chips($("moves"), MOVES, () => S().move, i => { S().move = i; });
-DIALS.move.forEach(d => makeDial(d, $("page-move")));
 DIALS.echo.forEach(d => makeDial(d, $("page-echo")));
-DIALS.street.forEach(d => makeDial(d, $("page-street")));
 DIALS.shape.forEach(d => makeDial(d, $("page-shape-dials")));
 // The pad: drag the dot to aim the echoes (right and left, up and down, as you see them).
 const pad = $("pad");
@@ -1002,29 +976,16 @@ pad.addEventListener("pointerdown", ev => { padDrag = true; pad.setPointerCaptur
 pad.addEventListener("pointermove", ev => { if (padDrag) aimAt(ev); });
 pad.addEventListener("pointerup", () => { padDrag = false; });
 pad.addEventListener("dblclick", () => { S().vec[0] = 0; S().vec[1] = 0; drawPad(); rebuild(); saveAll(); });
-// the curve, small: drag its points; the button steps through the shapes
-const cv = $("curve"), E = {get c(){ return S().curve; }};
-curveDrag(cv, E);
-const PRESETS = Object.keys(CURVES);
-$("preset").onclick = () => {
-  const s = S(); s.preset = PRESETS[(PRESETS.indexOf(s.preset) + 1) % PRESETS.length] || "fade";
-  s.curve = CURVES[s.preset].slice(); paintAll(); rebuild(); saveAll();
-};
 function paintAll(){
   document.querySelectorAll("[data-side]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.side === current)));
   dials.forEach(d => d.paint());
-  $("moves")._paint(); drawPad();
-  drawCurve(cv, S().curve);
-  $("preset").textContent = S().preset || "custom";
+  drawPad();
   showReadout();
 }
 document.querySelectorAll("[data-side]").forEach(b => b.onclick = () => { current = b.dataset.side; flash = 1; saveAll(); paintAll(); });
 function openCtrl(open){ $("ctrl").hidden = !open; $("open").setAttribute("aria-expanded", String(open)); }
 $("open").addEventListener("click", () => openCtrl($("ctrl").hidden));
-document.querySelectorAll("[data-tab]").forEach(t => t.addEventListener("click", () => {
-  document.querySelectorAll("[data-tab]").forEach(o => o.setAttribute("aria-selected", String(o === t)));
-  document.querySelectorAll("[data-page]").forEach(p => p.hidden = p.dataset.page !== t.dataset.tab);
-}));
+
 
 // The curve: five points at fixed places across, dragged up and down.
 function drawCurve(cv, c){
