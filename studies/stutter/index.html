@@ -234,6 +234,8 @@
   .ctrl .sides{display:flex;flex-direction:column;gap:4px;}
   .ctrl .sides .chip{padding:7px 12px;}
   .ctrl .chips{display:flex;gap:6px;flex-wrap:wrap;max-width:330px;}
+  #pad{width:84px;height:84px;touch-action:none;cursor:crosshair;}
+  .dialhost{display:flex;}
   #curve{width:150px;height:60px;border-radius:10px;background:rgba(0,0,0,.35);touch-action:none;cursor:ns-resize;}
   .ctrl .chip[aria-pressed="true"]{background:#fff;color:#000;border-color:#fff;}
   @media (max-width:700px){ .ctrl .sides{flex-direction:row;} .ctrl .chips{max-width:none;} #curve{width:100%;} }
@@ -282,7 +284,8 @@
   <div class="page" data-page="move" id="page-move"><div class="chips" id="moves"></div></div>
   <div class="page dials" data-page="echo" hidden id="page-echo"></div>
   <div class="page" data-page="shape" hidden>
-    <div class="chips" id="dirs"></div>
+    <canvas id="pad" width="200" height="200" aria-label="Which way the echoes go: drag the dot (double-click to centre)"></canvas>
+    <div class="dialhost" id="page-shape-dials"></div>
     <canvas id="curve" width="300" height="120" aria-label="How the echoes fade: drag the points"></canvas>
     <button class="chip" id="preset" title="Step through the shapes">fade</button>
   </div>
@@ -300,7 +303,7 @@
   <h2 id="helpTitle">Stutter</h2>
   <p class="lede">Two houses coming down <a href="/studies/fever/">Fever</a>'s street, in time: give each its own stutter, echoes and reverb.</p>
   <dl>
-    <dt>controls</dt><dd>left or right picks the house (or click one); move it, give it echoes, shape them</dd>
+    <dt>controls</dt><dd>left or right picks the house (or click one); move it, give it echoes; in Shape, drag the dot to aim them</dd>
     <dt>look</dt><dd>click, hold and drag on the street; pinch to zoom; double-click to look ahead again</dd>
     <dt>stutter</dt><dd>the button, or S, runs it all or stops it</dd>
   </dl>
@@ -840,7 +843,9 @@ function copiesOf(chain, side){
       out.push(c);
       if (E.fx === "delay"){
         const [time, taps, dist, dir, pp, accel] = E.p, N = 1 + Math.round(taps * 11), T = beats(time);
-        const D = [[0, 0, -1], [0, 1, 0], [0, 0.55, -0.83], [-side, 0, 0], [side, 0, 0], [0, 0, 1]][dir];   // rise: back and up, a staircase
+        let D = E.vec ? [E.vec[0], E.vec[1], -E.vec[2]]   // aimed: right, up, away down the street
+              : [[0, 0, -1], [0, 1, 0], [0, 0.55, -0.83], [-side, 0, 0], [side, 0, 0], [0, 0, 1]][dir];   // rise: back and up, a staircase
+        const dl = Math.hypot(D[0], D[1], D[2]); D = dl > 0.05 ? D.map(v => v / dl) : [0, 1, 0];
         for (let i = 1; i <= N; i++){
           const u = i / N, d = (1.2 + dist * 9) * N * Math.pow(u, 0.35 + accel * 2.2);
           const lat = pp > 0.5 ? (i % 2 ? 1 : -1) * (0.6 + dist * 3) * pp : 0;
@@ -884,12 +889,14 @@ function copiesOf(chain, side){
 // They're turned into a chain for the engine above.
 const MOVES = ["none", "bounce", "sway", "spin", "pulse"], DIRS = ["back", "up", "rise"];
 const SIDES = ["left house", "right house"];
-const blank = () => ({move: 0, stutter: 0, echoes: 0, spacing: 0.35, dir: 2, reverb: 0, curve: CURVES.fade.slice(), preset: "fade"});
+// vec: which way the echoes go, as seen from the street: [right, up, away]
+const blank = () => ({move: 0, stutter: 0, echoes: 0, spacing: 0.35, dir: 2, vec: [0, 0.55, 0.83], reverb: 0, curve: CURVES.fade.slice(), preset: "fade"});
+const VEC_OF_DIR = [[0, 0, 1], [0, 1, 0], [0, 0.55, 0.83]];
 function chainOf(S){
-  const c = [], e = (fx, p) => ({fx, on: true, p, c: S.curve});
+  const c = [], e = (fx, p, more) => Object.assign({fx, on: true, p, c: S.curve}, more);
   if (S.stutter > 0.01) c.push(e("stutter", [0, 5, 0.4, S.stutter]));
   if (S.move) c.push(e("motion", [[0, 0, 1, 3, 4][S.move], 0, 2, 0.5, 0.5]));
-  if (S.echoes > 0.01) c.push(e("delay", [4, S.echoes, S.spacing, S.dir, 0, 0.5]));
+  if (S.echoes > 0.01) c.push(e("delay", [4, S.echoes, S.spacing, S.dir, 0, 0.5], {vec: S.vec}));
   if (S.reverb > 0.01) c.push(e("reverb", [S.reverb, S.reverb, 0.6, 0.5]));
   return c;
 }
@@ -899,7 +906,11 @@ function demo(){
           "right house": T({move: 3, stutter: 0.5, echoes: 0.35, spacing: 0.3, dir: 0})};
 }
 let things = (() => { try { const r = JSON.parse(store.get("houses") || "null"); if (r && typeof r === "object") return r; } catch (e) {} return demo(); })();
-for (const k of SIDES) things[k] = Object.assign(blank(), things[k]);
+for (const k of SIDES){
+  const had = things[k] || {};
+  things[k] = Object.assign(blank(), had);
+  if (!had.vec) things[k].vec = VEC_OF_DIR[things[k].dir ?? 2].slice();   // from the old back / up / rise
+}
 let current = SIDES.includes(store.get("current")) ? store.get("current") : "left house";
 const saveAll = () => { store.set("houses", JSON.stringify(things)); store.set("current", current); };
 let rt2; const saveSoon = () => { clearTimeout(rt2); rt2 = setTimeout(saveAll, 300); };
@@ -916,6 +927,8 @@ let speed = parseFloat(store.get("speed2")); if (isNaN(speed)) speed = 0.68;
 const S = () => things[current];
 const DIALS = {
   move: [{id: "stutter", glyph: "◫", name: "stutter", get: () => S().stutter, set: v => { S().stutter = v; }}],
+  shape: [{id: "depth", glyph: "⤢", name: "depth", get: () => (S().vec[2] + 1) / 2, set: v => { S().vec[2] = v * 2 - 1; },
+            show: () => { const d = Math.round(S().vec[2] * 100); return d > 0 ? "away " + d : d < 0 ? "near " + -d : "0"; }}],
   echo: [{id: "echoes", glyph: "⋯", name: "echoes", get: () => S().echoes, set: v => { S().echoes = v; }},
          {id: "spacing", glyph: "↔", name: "spacing", get: () => S().spacing, set: v => { S().spacing = v; }},
          {id: "reverb", glyph: "◌", name: "reverb", get: () => S().reverb, set: v => { S().reverb = v; }}],
@@ -964,7 +977,31 @@ chips($("moves"), MOVES, () => S().move, i => { S().move = i; });
 DIALS.move.forEach(d => makeDial(d, $("page-move")));
 DIALS.echo.forEach(d => makeDial(d, $("page-echo")));
 DIALS.street.forEach(d => makeDial(d, $("page-street")));
-chips($("dirs"), DIRS, () => S().dir, i => { S().dir = i; });
+DIALS.shape.forEach(d => makeDial(d, $("page-shape-dials")));
+// The pad: drag the dot to aim the echoes (right and left, up and down, as you see them).
+const pad = $("pad");
+function drawPad(){
+  const g = pad.getContext("2d"), W = pad.width, c = W / 2, R = W / 2 - 14, v = S().vec;
+  g.clearRect(0, 0, W, W);
+  g.fillStyle = "rgba(0,0,0,.35)"; g.beginPath(); g.arc(c, c, R + 10, 0, 6.2832); g.fill();
+  g.strokeStyle = "rgba(255,255,255,.14)"; g.lineWidth = 2;
+  g.beginPath(); g.moveTo(c - R, c); g.lineTo(c + R, c); g.moveTo(c, c - R); g.lineTo(c, c + R); g.stroke();
+  g.beginPath(); g.arc(c, c, R, 0, 6.2832); g.stroke();
+  const x = c + v[0] * R, y = c - v[1] * R;
+  g.strokeStyle = "#9ff0c8"; g.lineWidth = 5; g.beginPath(); g.moveTo(c, c); g.lineTo(x, y); g.stroke();
+  g.fillStyle = "#fff"; g.beginPath(); g.arc(x, y, 13, 0, 6.2832); g.fill();
+}
+let padDrag = false;
+const aimAt = ev => {
+  const r = pad.getBoundingClientRect(), R = (r.width / 2) * (pad.width / 2 - 14) / (pad.width / 2);
+  let x = (ev.clientX - r.left - r.width / 2) / R, y = -(ev.clientY - r.top - r.height / 2) / R;
+  const l = Math.hypot(x, y); if (l > 1){ x /= l; y /= l; }
+  S().vec[0] = x; S().vec[1] = y; drawPad(); rebuild(); saveSoon();
+};
+pad.addEventListener("pointerdown", ev => { padDrag = true; pad.setPointerCapture(ev.pointerId); aimAt(ev); });
+pad.addEventListener("pointermove", ev => { if (padDrag) aimAt(ev); });
+pad.addEventListener("pointerup", () => { padDrag = false; });
+pad.addEventListener("dblclick", () => { S().vec[0] = 0; S().vec[1] = 0; drawPad(); rebuild(); saveAll(); });
 // the curve, small: drag its points; the button steps through the shapes
 const cv = $("curve"), E = {get c(){ return S().curve; }};
 curveDrag(cv, E);
@@ -976,7 +1013,7 @@ $("preset").onclick = () => {
 function paintAll(){
   document.querySelectorAll("[data-side]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.side === current)));
   dials.forEach(d => d.paint());
-  $("moves")._paint(); $("dirs")._paint();
+  $("moves")._paint(); drawPad();
   drawCurve(cv, S().curve);
   $("preset").textContent = S().preset || "custom";
   showReadout();
