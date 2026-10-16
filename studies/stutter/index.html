@@ -301,7 +301,7 @@
   <p class="lede">Two houses coming down <a href="/studies/fever/">Fever</a>'s street, in time: give each its own stutter, echoes and reverb.</p>
   <dl>
     <dt>controls</dt><dd>left or right picks the house (or click one); move it, give it echoes, shape them</dd>
-    <dt>look</dt><dd>click, hold and drag on the street; double-click to look ahead again. Speed runs both ways</dd>
+    <dt>look</dt><dd>click, hold and drag on the street; pinch to zoom; double-click to look ahead again</dd>
     <dt>stutter</dt><dd>the button, or S, runs it all or stops it</dd>
   </dl>
   <p>Fantasmagoria's time tool. Drawn with <a href="https://threejs.org">three.js</a>. Nothing leaves your browser.</p>
@@ -700,17 +700,20 @@ function loadSuburb(){
       }
     }
 
+    let baseFov = 52;
     suburb = {
       canvas: r.domElement, kinds,
       size(w, h){
         r.setPixelRatio(Math.min(devicePixelRatio || 1, w < 700 ? 1.5 : 2, quality));
-        r.setSize(w, h); camera.aspect = w / h; camera.fov = w < h ? 74 : 52; camera.updateProjectionMatrix();
+        r.setSize(w, h); camera.aspect = w / h; baseFov = w < h ? 74 : 52; camera.fov = 0; // set on the next frame, with the zoom
 
       },
       // One frame: walk, run the racks, light up the thing whose rack is open, draw.
       frame(dt, o){
         camera.position.z -= o.walk;
         const cz = camera.position.z;
+        const fov = Math.min(115, Math.max(18, baseFov / (o.zoom || 1)));   // pinch: wider to zoom out
+        if (camera.fov !== fov){ camera.fov = fov; camera.updateProjectionMatrix(); }
         const yw = o.yaw || 0, pt = o.pitch || 0;
         camera.lookAt(camera.position.x + Math.sin(yw) * Math.cos(pt) * 100, 9 + Math.sin(pt) * 100, cz - Math.cos(yw) * Math.cos(pt) * 100);
         ground.position.z = cz; dome.position.copy(camera.position);
@@ -1009,7 +1012,7 @@ function frame(now){
   flash = Math.max(0, flash - dt / 1.2);
   // speed: from standing still to a brisk run, eased so the low end is fine
   const sv = (speed - 0.5) * 2;                           // -1 back .. 1 forward, eased so the middle is gentle
-  suburb.frame(dt, {walk: Math.sign(sv) * sv * sv * 26 * dt, racks: on ? racks : {}, t: clock, selected: current, glow: flash, yaw, pitch});
+  suburb.frame(dt, {walk: Math.sign(sv) * sv * sv * 26 * dt, racks: on ? racks : {}, t: clock, selected: current, glow: flash, yaw, pitch, zoom});
 }
 requestAnimationFrame(frame);
 
@@ -1020,19 +1023,38 @@ function setOn(v){ on = v; $("apply").setAttribute("aria-pressed", String(on)); 
 $("apply").addEventListener("click", () => setOn(!on));
 // Click, hold and drag on the street to look about; double-click to look
 // straight down the street again.
-let yaw = 0, pitch = 0, drag = null, dragged = false;
-$("gl").addEventListener("pointerdown", e => { drag = {x: e.clientX, y: e.clientY, yaw, pitch}; dragged = false; $("gl").setPointerCapture(e.pointerId); });
+let yaw = 0, pitch = 0, drag = null, dragged = false, zoom = 1;
+const setZoom = z => { zoom = Math.min(3, Math.max(0.45, z)); };
+addEventListener("wheel", e => {
+  if (!e.ctrlKey) return;                                  // a trackpad pinch (not the page's zoom)
+  e.preventDefault();
+  setZoom(zoom * Math.exp(-e.deltaY * 0.01));
+}, {passive: false});
+const touches = new Map(); let pinch = null;
+$("gl").addEventListener("pointerdown", e => {
+  touches.set(e.pointerId, [e.clientX, e.clientY]);
+  if (touches.size === 2){                                 // two fingers: a pinch, not a look
+    const [a, b] = [...touches.values()];
+    pinch = {d: Math.hypot(a[0] - b[0], a[1] - b[1]), zoom}; drag = null; dragged = true; return;
+  }
+  drag = {x: e.clientX, y: e.clientY, yaw, pitch}; dragged = false; $("gl").setPointerCapture(e.pointerId);
+});
 $("gl").addEventListener("pointermove", e => {
+  if (touches.has(e.pointerId)) touches.set(e.pointerId, [e.clientX, e.clientY]);
+  if (pinch && touches.size === 2){
+    const [a, b] = [...touches.values()];
+    setZoom(pinch.zoom * Math.hypot(a[0] - b[0], a[1] - b[1]) / Math.max(pinch.d, 1)); return;
+  }
   if (!drag) return;
   const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
   if (!dragged && Math.hypot(dx, dy) < 5) return;
   dragged = true; $("gl").style.cursor = "grabbing";
   yaw = drag.yaw + dx * 0.005; pitch = Math.min(0.9, Math.max(-0.9, drag.pitch - dy * 0.004));
 });
-const endDrag = () => { drag = null; $("gl").style.cursor = ""; };
+const endDrag = e => { touches.delete(e.pointerId); if (touches.size < 2) pinch = null; drag = null; $("gl").style.cursor = ""; };
 $("gl").addEventListener("pointerup", endDrag);
 $("gl").addEventListener("pointercancel", endDrag);
-$("gl").addEventListener("dblclick", () => { yaw = 0; pitch = 0; });
+$("gl").addEventListener("dblclick", () => { yaw = 0; pitch = 0; zoom = 1; });
 // Click a house (without dragging) to set it.
 addEventListener("click", e => {
   if (!(e.target instanceof HTMLCanvasElement) || !suburb || dragged) return;
