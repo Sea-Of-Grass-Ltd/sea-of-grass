@@ -248,7 +248,11 @@
     .ctrl .sides{flex-direction:column;}
     .ctrl .sides .chip{padding:6px 10px;}
     .ctrl #page-echo{display:flex;}
-    #pad{width:72px;height:72px;}
+    #pad{width:64px;height:64px;}
+    .ctrl{gap:7px;padding:8px 9px;}
+    .ctrl .dwrap{min-width:48px;}
+    .ctrl .dial{width:38px;height:38px;}
+    .ctrl .dname{font-size:8px;letter-spacing:.06em;}
   }
   .base .num{font:600 10px var(--mono);color:var(--mint);width:28px;text-align:right;}
   .addrow{margin:8px 10px 6px;}
@@ -288,6 +292,8 @@
   <div class="page" id="page-echo"></div>
   <canvas id="pad" width="200" height="200" aria-label="Which way the echoes go: drag the dot (double-click to centre)"></canvas>
   <div class="dialhost" id="page-shape-dials"></div>
+  <div class="sep"></div>
+  <div class="dialhost" id="page-street"></div>
 </div>
 
 <div class="dock">
@@ -301,7 +307,7 @@
   <h2 id="helpTitle">Stutter</h2>
   <p class="lede">Two houses coming down <a href="/studies/fever/">Fever</a>'s street: give each its own echoes, and aim them.</p>
   <dl>
-    <dt>controls</dt><dd>left or right picks the house (or click one); turn up its echoes; drag the dot to aim them, depth for away or near</dd>
+    <dt>controls</dt><dd>left or right picks the house (or click one); turn up its echoes, one a beat at the tempo; drag the dot to aim them, depth for away or near; speed runs the street either way</dd>
     <dt>look</dt><dd>click, hold and drag on the street; pinch to zoom; double-click to look ahead again</dd>
     <dt>stutter</dt><dd>the button, or S, runs it all or stops it</dd>
   </dl>
@@ -688,7 +694,7 @@ function loadSuburb(){
       o.rotation.set(0, tf[3], tf[4]);
       o.scale.setScalar(tf[5]);
     }
-    function runRacks(racks, t, cz, w){
+    function runRacks(racks, t, cz, w, o){
       for (const b of bodies){
         const chain = w > 0.002 ? (racks[b.kind] || []).filter(E => E.on) : [], m = b.mesh;
         let used = 0;
@@ -702,8 +708,11 @@ function loadSuburb(){
           const wb = local(n);
           let cur = tfOf(scaleMo(motionAt(chain, stutterTime(chain, t, b.seed), wz, b.seed), wb), [0, 0, 0], 1);
           setTf(m, b, cur);
+          // the loop: one echo out each beat, sliding from the one before; then they clear and it begins again
+          const pos = o.beat ? (t / o.beat) % (n + 1) : n + 1, kb = Math.floor(pos), fr = pos - kb;
+          const reveal = i => i < kb ? 1 : i === kb ? 1 - Math.pow(1 - Math.min(1, fr * 3), 3) : 0;
           for (let i = 1; i <= n; i++){
-            const c = copies[i], wi = local(n - i);
+            const c = copies[i], wi = Math.min(local(n - i), reveal(i));
             const full = tfOf(scaleMo(motionAt(chain, stutterTime(chain, t - c.dt, b.seed), wz, b.seed), wb), c.off, c.s);
             cur = lerpTf(cur, full, wi);                   // slides toward the one in front as it folds
             const a = c.a * Math.min(1, wi * 4);
@@ -744,7 +753,7 @@ function loadSuburb(){
           else if (t.position.z < cz - 150 && o.walk < 0) t.position.z = cz + 6;
         }
         for (const kind in kinds) kinds[kind].glow.value = kind === o.selected ? o.glow : 0;
-        runRacks(o.racks, o.t, cz, o.wet ?? 1);
+        runRacks(o.racks, o.t, cz, o.wet ?? 1, o);
         r.render(scene, camera);
       },
       keyAt(x, y){ const h = hitAt(x, y); return h ? h.kind : "sky"; },
@@ -924,6 +933,10 @@ const DIALS = {
   shape: [{id: "depth", glyph: "⤢", name: "depth", get: () => (S().vec[2] + 1) / 2, set: v => { S().vec[2] = v * 2 - 1; },
             show: () => { const d = Math.round(S().vec[2] * 100); return d > 0 ? "away " + d : d < 0 ? "near " + -d : "0"; }}],
   echo: [{id: "echoes", glyph: "⋯", name: "echoes", get: () => S().echoes, set: v => { S().echoes = v; }}],
+  street: [{id: "tempo", glyph: "♩", name: "tempo", get: () => (bpm - 60) / 120, set: v => { bpm = Math.round(60 + v * 120); store.set("bpm", bpm); },
+            show: () => bpm},
+           {id: "speed", glyph: "⇄", name: "speed", get: () => speed, set: v => { speed = Math.abs(v - 0.5) < 0.03 ? 0.5 : v; store.set("speed2", speed); },
+            show: () => { const s = Math.round((speed - 0.5) * 200); return s > 0 ? "+" + s : String(s); }}],
 };
 const dials = [];
 function makeDial(d, host){
@@ -962,6 +975,7 @@ const chips = (host, list, get, set) => {
   host._paint = () => host.querySelectorAll("button[data-i]").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.i === get())));
 };
 DIALS.echo.forEach(d => makeDial(d, $("page-echo")));
+DIALS.street.forEach(d => makeDial(d, $("page-street")));
 DIALS.shape.forEach(d => makeDial(d, $("page-shape-dials")));
 // The pad: drag the dot to aim the echoes (right and left, up and down, as you see them).
 const pad = $("pad");
@@ -1043,7 +1057,7 @@ function frame(now){
   wet = on ? Math.min(1, wet + dt / 1.3) : Math.max(0, wet - dt / 1.6);
   // speed: from standing still to a brisk run, eased so the low end is fine
   const sv = (speed - 0.5) * 2;                           // -1 back .. 1 forward, eased so the middle is gentle
-  suburb.frame(dt, {walk: Math.sign(sv) * sv * sv * 26 * dt, racks, wet, t: clock, selected: current, glow: flash, yaw, pitch, zoom});
+  suburb.frame(dt, {walk: Math.sign(sv) * sv * sv * 26 * dt, racks, wet, beat: 60 / bpm, t: clock, selected: current, glow: flash, yaw, pitch, zoom});
 }
 requestAnimationFrame(frame);
 
