@@ -34,7 +34,8 @@
   canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;}
   .home{position:fixed;top:22px;left:24px;z-index:5;color:var(--ink);}
   .home svg{width:34px;height:auto;display:block;}
-  .intro{position:fixed;top:28px;left:0;right:0;text-align:center;pointer-events:none;z-index:4;}
+  .intro{position:fixed;top:28px;left:0;right:0;padding:0 72px;text-align:center;pointer-events:none;z-index:4;}
+  .intro .hint{line-height:1.5;}
   .intro .name{font-size:13px;letter-spacing:.14em;text-transform:uppercase;margin:0 0 6px;}
   .intro .hint{font-size:12px;color:var(--ink-soft);margin:0;}
   .panel{
@@ -113,7 +114,7 @@
     .grp{justify-content:space-between;}
     .bar input[type=range]{width:64px;}
     .bar{bottom:12px;}
-    .readout{top:64px;bottom:auto;left:24px;}
+    .readout{top:auto;bottom:22px;left:24px;}
     video#cam{width:84px;height:63px;}
   }
   @media (max-width:940px) and (pointer:coarse){
@@ -234,7 +235,7 @@ float n1(vec2 p){
 const SIM = COMMON + `
 uniform sampler2D uPrev;
 uniform vec2 uRes;              // the sheet, in pixels
-uniform float uAsp, uTime, uR;  // aspect, seconds, the ball's radius (in screen heights)
+uniform float uAsp, uTime;      // aspect, seconds
 uniform vec2 uOn, uLen, uFx;
 // Each hand is six parts: the palm and five fingertips. Held still they sit
 // together as one ball; as the fingers wiggle they pull apart, running
@@ -293,7 +294,8 @@ void main(){ o = vec4(trail(0, uFx.x, uLen.x), trail(1, uFx.y, uLen.y), 0.0, 1.0
 const SHOW = COMMON + `
 uniform sampler2D uSim;
 uniform vec2 uRes;
-uniform float uAsp, uR, uMode, uAmt;
+uniform float uAsp, uMode, uAmt;
+uniform vec2 uRH;               // each hand's ball radius (in screen heights)
 uniform vec2 uOn, uFx;
 // Each hand is six parts: the palm and five fingertips. Held still they sit
 // together as one ball; as the fingers wiggle they pull apart, running
@@ -336,8 +338,9 @@ vec3 colour(vec3 P[6], float v, float fx, out float a){
 vec3 ball(vec3 P[6], int i, vec3 under){
   float D = handD(i, vec2(uv.x * uAsp, uv.y), false), aa = 1.5 / uRes.y;
   float inside = (1.0 - smoothstep(-aa, aa, D)) * uOn[i];
-  float rim = exp(-pow(D / (uR * 0.08), 2.0)) * uOn[i];
-  vec3 core = mix(P[0] * 1.25, P[0], smoothstep(-uR, 0.0, D));  // a little lighter in the middle
+  float R = uRH[i];
+  float rim = exp(-pow(D / (R * 0.08), 2.0)) * uOn[i];
+  vec3 core = mix(P[0] * 1.25, P[0], smoothstep(-R, 0.0, D));  // a little lighter in the middle
   under = mix(under, P[4], rim * 0.55);
   return mix(under, core, inside);
 }
@@ -356,7 +359,7 @@ void main(){
   vec3 col = mix(layered, m, uAmt);
   col = ball(uPalA, 0, col);
   col = ball(uPalB, 1, col);
-  col += (h1(gl_FragCoord.xy + fract(uR * 1e3)) - 0.5) / 255.0;   // no banding
+  col += (h1(gl_FragCoord.xy) - 0.5) / 255.0;   // no banding
   o = vec4(col, 1.0);
 }`;
 function program(fs){
@@ -417,7 +420,7 @@ const flatPal = name => new Float32Array(PALETTES[name].flatMap(hex));
 const SPREAD = 0.6;
 const FAN = [[20, 0.11], [62, 0.15], [86, 0.16], [108, 0.15], [132, 0.12]];   // a resting hand, for the mouse
 const balls = [0, 1].map(i => ({x: i ? 0.65 : 0.35, y: 0.5, px: i ? 0.65 : 0.35, py: 0.5, tx: i ? 0.65 : 0.35, ty: 0.5,
-  on: 0, seen: false, split: 0, open: 0, openS: 0, wig: 0, wigRaw: 0, held: -1e9, force: false,
+  on: 0, seen: false, split: 0, open: 0, openS: 0, near: 1, scale: 1, wig: 0, wigRaw: 0, held: -1e9, force: false,
   rel: Array.from({length: 5}, () => [0, 0]), relT: Array.from({length: 5}, () => [0, 0]), lastRel: null, lastT: 0,
   parts: Array.from({length: 6}, () => ({x: i ? 0.65 : 0.35, y: 0.5, px: i ? 0.65 : 0.35, py: 0.5, r: 0}))}));
 function aim(i, x, y, rel, now){
@@ -439,11 +442,22 @@ function readHands(now){
   if (!landmarker || video.readyState < 2 || video.currentTime === lastVideoTime) return;
   lastVideoTime = video.currentTime;
   const res = landmarker.detectForVideo(video, now);
+  // The camera's picture fills the screen as a cover would, cropped to the
+  // screen's shape (an upright phone sees the middle of a landscape picture),
+  // so a point in the picture maps to where it would show on screen.
+  const vw = video.videoWidth || 640, vh = video.videoHeight || 480, cs = Math.max(W / vw, H / vh);
+  const mx = u => ((1 - u) * vw * cs - (vw * cs - W) / 2) / W;   // mirrored, like a mirror
+  const my = v => 1 - (v * vh * cs - (vh * cs - H) / 2) / H;     // GL's y is up
   const found = (res.landmarks || []).map((hand, h) => {
     let x = 0, y = 0;
     for (const i of PALM){ x += hand[i].x; y += hand[i].y; }
-    x = 1 - x / PALM.length; y = 1 - y / PALM.length;          // mirrored, like a mirror; GL's y is up
-    const rel = TIPS.map(k => [(1 - hand[k].x) - x, (1 - hand[k].y) - y]);
+    x /= PALM.length; y /= PALM.length;
+    const rel = TIPS.map(k => [mx(hand[k].x) - mx(x), my(hand[k].y) - my(y)]);
+    // how near: the hand's size in the picture (wrist to middle knuckle), against
+    // its size at about arm's length
+    const hs = Math.hypot((hand[0].x - hand[9].x) * vw, (hand[0].y - hand[9].y) * vh) / Math.min(vw, vh);
+    const near = Math.min(2.4, Math.max(0.45, hs / 0.2));
+    x = mx(x); y = my(y);
     // how open the hand is: the gaps between neighbouring fingertips (not the
     // thumb, which sits apart even in a closed hand), against the hand's size,
     // wrist to middle knuckle. Measured on the tracker's 3D hand, in metres,
@@ -456,14 +470,14 @@ function readHands(now){
     // the tracker names hands as if the picture were mirrored; ours isn't,
     // so its "Right" is your left hand, which shows on the left
     const label = res.handedness && res.handedness[h] && res.handedness[h][0] ? res.handedness[h][0].categoryName : "";
-    return {x, y, rel, open, side: label === "Right" ? 0 : label === "Left" ? 1 : -1};
+    return {x, y, rel, open, near, side: label === "Right" ? 0 : label === "Left" ? 1 : -1};
   });
   handCount = found.length;
   if (found.length === 2 && (found[0].side === found[1].side || found[0].side < 0))
     found.sort((a, b) => a.x - b.x).forEach((f, i) => f.side = i);
   if (found.length === 1 && found[0].side < 0) found[0].side = found[0].x < 0.5 ? 0 : 1;
   for (const b of balls) b.seen = false;
-  for (const f of found){ aim(f.side, f.x, f.y, f.rel, now); balls[f.side].open = f.open; }
+  for (const f of found){ aim(f.side, f.x, f.y, f.rel, now); balls[f.side].open = f.open; balls[f.side].near = f.near; }
 }
 async function openCamera(){
   const status = $("status"), go = $("go");
@@ -500,7 +514,9 @@ const touches = new Map();
 let started = false;
 function start(hint){
   $("panel").hidden = true; started = true;
-  $("bar").hidden = false;
+  // on a phone the controls start folded away, so the page is all yours
+  const phone = matchMedia("(max-width:700px)").matches;
+  $("bar").hidden = phone; $("toggle").hidden = !phone;
   $("hint").textContent = hint;
 }
 function useMouse(){ pointerOn = true; start(matchMedia("(pointer:coarse)").matches ? "one finger, or two" : "move the pointer · hold the button to split"); }
@@ -564,12 +580,17 @@ let last = performance.now(), frames = 0, fpsT = last, fps = 0;
 function loop(now){
   const dt = Math.min(0.05, (now - last) / 1000); last = now;
   readHands(now);
-  const asp = W / H, r = Math.min(0.09, 0.075 * Math.max(1, 0.9 / asp));
+  // the ball's size: from the screen's short side (so a phone held upright
+  // gets a ball that fits it), in screen heights, times how near the hand is
+  const asp = W / H, r0 = Math.min(64, Math.max(22, Math.min(W, H) * 0.085)) / H;
+  const rOf = b => r0 * b.scale;
   balls.forEach((b, i) => {
     b.px = b.x; b.py = b.y;
     const k = 1 - Math.pow(0.0005, dt);               // eases most of the way in a few frames
     b.x += (b.tx - b.x) * k; b.y += (b.ty - b.y) * k;
     b.on += ((b.seen ? 1 : 0) - b.on) * Math.min(1, dt * 6);
+    b.scale += (b.near - b.scale) * Math.min(1, dt * 6);
+    const r = rOf(b);
     // how much it's split: wiggling opens it quickly; it closes slowly, a
     // moment after the fingers stop
     if (b.force){                                       // the mouse: a hand, its fingers wriggling
@@ -612,7 +633,7 @@ function loop(now){
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, sheets[cur].t);
     gl.uniform1i(SIMP.u.uPrev, 0);
     gl.uniform2f(SIMP.u.uRes, SW, SH);
-    gl.uniform1f(SIMP.u.uAsp, asp); gl.uniform1f(SIMP.u.uTime, now / 1000); gl.uniform1f(SIMP.u.uR, r);
+    gl.uniform1f(SIMP.u.uAsp, asp); gl.uniform1f(SIMP.u.uTime, now / 1000);
     gl.uniform4fv(SIMP.u["uBlob[0]"], blobU); gl.uniform1fv(SIMP.u["uBR[0]"], radU); gl.uniform2f(SIMP.u.uK, balls[0].goo, balls[1].goo);
     gl.uniform2f(SIMP.u.uOn, balls[0].on > 0.5 ? 1 : 0, balls[1].on > 0.5 ? 1 : 0);
     gl.uniform2f(SIMP.u.uLen, S.hands[0].len, S.hands[1].len);
@@ -625,7 +646,7 @@ function loop(now){
     gl.bindTexture(gl.TEXTURE_2D, sheets[cur].t);
     gl.uniform1i(SHOWP.u.uSim, 0);
     gl.uniform2f(SHOWP.u.uRes, canvas.width, canvas.height);
-    gl.uniform1f(SHOWP.u.uAsp, asp); gl.uniform1f(SHOWP.u.uR, r);
+    gl.uniform1f(SHOWP.u.uAsp, asp); gl.uniform2f(SHOWP.u.uRH, rOf(balls[0]), rOf(balls[1]));
     gl.uniform1f(SHOWP.u.uMode, MODES.findIndex(m => m.id === S.mode));
     gl.uniform1f(SHOWP.u.uAmt, S.amt);
     gl.uniform4fv(SHOWP.u["uBlob[0]"], blobU); gl.uniform1fv(SHOWP.u["uBR[0]"], radU); gl.uniform2f(SHOWP.u.uK, balls[0].goo, balls[1].goo);
