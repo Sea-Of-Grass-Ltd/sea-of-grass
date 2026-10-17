@@ -164,6 +164,28 @@
     outline-offset:6px;
   }
 
+  /* ---------- groups ---------- */
+  .group{margin-top:2.6rem;}
+  .group-head{
+    display:flex;
+    align-items:baseline;
+    gap:1rem;
+    padding:0 0 .55rem;
+    border-bottom:1px solid var(--line);
+  }
+  h2{
+    margin:0;
+    font-size:12px;
+    font-weight:500;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+  }
+  .group-note{
+    margin:.7rem 0 0;
+    max-width:30rem;
+    font-size:12px;
+    color:var(--ink-soft);
+  }
   footer{
     margin-top:clamp(3.5rem,9vh,6rem);
     padding-top:1.1rem;
@@ -194,131 +216,155 @@
   <main>
     <div class="studies-head">
       <h1>Studies</h1>
-      <p class="count">09</p>
+      <p class="count">12</p>
     </div>
-
-    <ol>
-      <li>
-        <a class="study" href="/studies/scrollwork/">
-          <span class="n">01</span>
-          <span>
-            <span class="title">Scrollwork</span>
-            <span class="desc">A generative radial pattern, built from nested SVG primitives, that reshapes continuously as you scroll.</span>
-            <span class="needs">scroll</span>
-          </span>
-        </a>
-      </li>
-      <li>
-        <a class="study" href="/studies/front-door/">
-          <span class="n">02</span>
-          <span>
-            <span class="title">Front Door</span>
-            <span class="desc">tristan.design opens on a sixteen-mode visual synthesizer instead of a portfolio grid. A wordmark with two million states, and a choice that follows you across the site.</span>
-            <span class="needs">case study &middot; embeds the live site</span>
-          </span>
-        </a>
-      </li>
-      <li>
-        <a class="study" href="/studies/looking-glass/">
-          <span class="n">03</span>
-          <span>
-            <span class="title">Through The Looking Glass</span>
-            <span class="desc">A capture station for a live performance. The glass takes a face from five angles and wraps them onto one shared head — the same geometry for everybody, made particular by skin alone. Nothing leaves the tab.</span>
-            <span class="needs">camera &middot; nothing leaves your browser</span>
-          </span>
-        </a>
-      </li>
-      <li>
-        <a class="study" href="/studies/packfold/">
-          <span class="n">04</span>
-          <span>
-            <span class="title">Packfold</span>
-            <span class="desc">A folding carton built out of ordinary page elements, with no 3D library. The same numbers that fold it on screen write out a two-layer CAD dieline a flatbed cutter will accept.</span>
-            <span class="needs">fold it &middot; exports a real .dxf</span>
-          </span>
-        </a>
-      </li>
-      <li>
-        <a class="study" href="/studies/beacon/">
-          <span class="n">05</span>
-          <span>
-            <span class="title">Beacon</span>
-            <span class="desc">A street on a very small planet. Scroll to travel down it as the sun sets and a beacon rises to light the town; move across the frame and the camera rolls.</span>
-            <span class="needs">scroll &middot; move the cursor</span>
-          </span>
-        </a>
-      </li>
-      <li>
-        <a class="study" href="/studies/grasset/">
-          <span class="n">06</span>
-          <span>
-            <span class="title">Grasset</span>
-            <span class="desc">A calendar plate after Eugène Grasset, rebuilt as an instrument. Every panel plays: two visual synths, borders, tiles and rosettes, around 3D plants that turn through the four seasons.</span>
-            <span class="needs">click anything &middot; season slider &middot; microphone optional</span>
-          </span>
-        </a>
-      </li>
-      <li>
-        <a class="study" href="/studies/touch-grass/">
-          <span class="n">07</span>
-          <span>
-            <span class="title">Touch Grass</span>
-            <span class="desc">A field of grass you move with your hands. The webcam follows your fingertips and they sweep through the blades like wind: a quick pass makes a gust, a still hand parts the grass around it. Nothing leaves the tab.</span>
-            <span class="needs">camera or mouse &middot; nothing leaves your browser</span>
-          </span>
-        </a>
-      </li>
-      <li>
-        <a class="study" href="/studies/murmuration/">
-          <span class="n">08</span>
-          <span>
-            <span class="title">Murmuration</span>
-            <span class="desc">An attempt at a quick AI effect driven by hand motion: trails from your fingertips, redrawn as birds by an image model. On a 2020 M1 laptop it manages one image a second and looks bad. Notes on why.</span>
-            <span class="needs">case study &middot; a documented failure</span>
-          </span>
-        </a>
-      </li>
-      <li>
-        <a class="study" href="/studies/dark-puddle/">
-          <span class="n">09</span>
-          <span>
-            <span class="title">Dark Puddle</span>
-            <span class="desc">Your recently viewed websites, laid out as a map and fed into a portal that eats them: newest sites crisp at the top, older ones dripping, tearing and spiralling into a black eye you can steer. Your history stays in the tab.</span>
-            <span class="needs">your history file or a sample &middot; move to steer</span>
-          </span>
-        </a>
-      </li>
-      <li>
-        <a class="study" href="/studies/fever/">
-          <span class="n">10</span>
-          <span>
-            <span class="title">Fever</span>
-            <span class="desc">The picture-treating tool from Fantasmagoria, on its own. It opens on an endless pastel suburb: press Fever and cast a spell on it, on all of it or only the things you pick &mdash; the pink houses, the lamps, the lawn. Cyclone wrings what it passes into a black eye, Shatter breaks it into bricks, boards and turf, Liquify ripples it, melts it and sets it crawling.</span>
-            <span class="needs">pointer to steer &middot; click to pick</span>
-          </span>
-        </a>
-      </li>
-      <li>
-        <a class="study" href="/studies/make-up/">
-          <span class="n">11</span>
-          <span>
-            <span class="title">Make-Up</span>
-            <span class="desc">Fever's sister, for how things look. The same endless suburb under a layers panel, as in an image editor: stack hand-made looks &mdash; pencil, scribble, chalk, watercolour, spray, ink, neon, riso print and more, each made of thousands of marks laid along the street's shapes &mdash; and a LUT colour grade, each with a blend mode, a mask and its own motion.</span>
-            <span class="needs">click things to mask a layer</span>
-          </span>
-        </a>
-      </li>
-      <li>
-        <a class="study" href="/studies/stutter/">
-          <span class="n">12</span>
-          <span>
-            <span class="title">Stutter</span>
-            <span class="desc">The third of Fantasmagoria's tools, after Fever (shape) and Make-Up (colour): time. Two houses on the same street, one either side; give each its own motion, stutter, echoes and reverb, in time with a tempo, and drag a curve to fade the echoes.</span>
-            <span class="needs">pick the left or right house</span>
-          </span>
-        </a>
-      </li>
-    </ol>
+    <section class="group" aria-labelledby="g-fantasmagoria">
+      <div class="group-head">
+        <h2 id="g-fantasmagoria">For Fantasmagoria</h2>
+        <p class="count">07</p>
+      </div>
+      <p class="group-note">Tools for a live-theatre animation piece in progress: shape, colour and time on one street, worked by hand.</p>
+      <ol>
+        <li>
+          <a class="study" href="/studies/looking-glass/">
+            <span class="n">03</span>
+            <span>
+              <span class="title">Through The Looking Glass</span>
+              <span class="desc">A capture station for a live performance. The glass takes a face from five angles and wraps them onto one shared head — the same geometry for everybody, made particular by skin alone. Nothing leaves the tab.</span>
+              <span class="needs">camera &middot; nothing leaves your browser</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a class="study" href="/studies/touch-grass/">
+            <span class="n">07</span>
+            <span>
+              <span class="title">Touch Grass</span>
+              <span class="desc">A field of grass you move with your hands. The webcam follows your fingertips and they sweep through the blades like wind: a quick pass makes a gust, a still hand parts the grass around it. Nothing leaves the tab.</span>
+              <span class="needs">camera or mouse &middot; nothing leaves your browser</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a class="study" href="/studies/murmuration/">
+            <span class="n">08</span>
+            <span>
+              <span class="title">Murmuration</span>
+              <span class="desc">An attempt at a quick AI effect driven by hand motion: trails from your fingertips, redrawn as birds by an image model. On a 2020 M1 laptop it manages one image a second and looks bad. Notes on why.</span>
+              <span class="needs">case study &middot; a documented failure</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a class="study" href="/studies/dark-puddle/">
+            <span class="n">09</span>
+            <span>
+              <span class="title">Dark Puddle</span>
+              <span class="desc">Your recently viewed websites, laid out as a map and fed into a portal that eats them: newest sites crisp at the top, older ones dripping, tearing and spiralling into a black eye you can steer. Your history stays in the tab.</span>
+              <span class="needs">your history file or a sample &middot; move to steer</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a class="study" href="/studies/fever/">
+            <span class="n">10</span>
+            <span>
+              <span class="title">Fever</span>
+              <span class="desc">The picture-treating tool from Fantasmagoria, on its own. It opens on an endless pastel suburb: press Fever and cast a spell on it, on all of it or only the things you pick &mdash; the pink houses, the lamps, the lawn. Cyclone wrings what it passes into a black eye, Shatter breaks it into bricks, boards and turf, Liquify ripples it, melts it and sets it crawling.</span>
+              <span class="needs">pointer to steer &middot; click to pick</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a class="study" href="/studies/make-up/">
+            <span class="n">11</span>
+            <span>
+              <span class="title">Make-Up</span>
+              <span class="desc">Fever's sister, for how things look. The same endless suburb under a layers panel, as in an image editor: stack hand-made looks &mdash; pencil, scribble, chalk, watercolour, spray, ink, neon, riso print and more, each made of thousands of marks laid along the street's shapes &mdash; and a LUT colour grade, each with a blend mode, a mask and its own motion.</span>
+              <span class="needs">click things to mask a layer</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a class="study" href="/studies/stutter/">
+            <span class="n">12</span>
+            <span>
+              <span class="title">Stutter</span>
+              <span class="desc">The third of Fantasmagoria's tools, after Fever (shape) and Make-Up (colour): time. Two houses on the same street, one either side; give each its own motion, stutter, echoes and reverb, in time with a tempo, and drag a curve to fade the echoes.</span>
+              <span class="needs">pick the left or right house</span>
+            </span>
+          </a>
+        </li>
+      </ol>
+    </section>
+    <section class="group" aria-labelledby="g-web">
+      <div class="group-head">
+        <h2 id="g-web">Web 5.0</h2>
+        <p class="count">04</p>
+      </div>
+      <p class="group-note">Websites that behave like instruments instead of pages: you play them.</p>
+      <ol>
+        <li>
+          <a class="study" href="/studies/scrollwork/">
+            <span class="n">01</span>
+            <span>
+              <span class="title">Scrollwork</span>
+              <span class="desc">A generative radial pattern, built from nested SVG primitives, that reshapes continuously as you scroll.</span>
+              <span class="needs">scroll</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a class="study" href="/studies/front-door/">
+            <span class="n">02</span>
+            <span>
+              <span class="title">Front Door</span>
+              <span class="desc">tristan.design opens on a sixteen-mode visual synthesizer instead of a portfolio grid. A wordmark with two million states, and a choice that follows you across the site.</span>
+              <span class="needs">case study &middot; embeds the live site</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a class="study" href="/studies/beacon/">
+            <span class="n">05</span>
+            <span>
+              <span class="title">Beacon</span>
+              <span class="desc">A street on a very small planet. Scroll to travel down it as the sun sets and a beacon rises to light the town; move across the frame and the camera rolls.</span>
+              <span class="needs">scroll &middot; move the cursor</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a class="study" href="/studies/grasset/">
+            <span class="n">06</span>
+            <span>
+              <span class="title">Grasset</span>
+              <span class="desc">A calendar plate after Eugène Grasset, rebuilt as an instrument. Every panel plays: two visual synths, borders, tiles and rosettes, around 3D plants that turn through the four seasons.</span>
+              <span class="needs">click anything &middot; season slider &middot; microphone optional</span>
+            </span>
+          </a>
+        </li>
+      </ol>
+    </section>
+    <section class="group" aria-labelledby="g-other">
+      <div class="group-head">
+        <h2 id="g-other">Other</h2>
+        <p class="count">01</p>
+      </div>
+      <p class="group-note">Everything else.</p>
+      <ol>
+        <li>
+          <a class="study" href="/studies/packfold/">
+            <span class="n">04</span>
+            <span>
+              <span class="title">Packfold</span>
+              <span class="desc">A folding carton built out of ordinary page elements, with no 3D library. The same numbers that fold it on screen write out a two-layer CAD dieline a flatbed cutter will accept.</span>
+              <span class="needs">fold it &middot; exports a real .dxf</span>
+            </span>
+          </a>
+        </li>
+      </ol>
+    </section>
   </main>
 
   <footer>
