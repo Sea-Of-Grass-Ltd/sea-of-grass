@@ -23,6 +23,7 @@ studies/
   fever/                      Study 10 — self-contained, ~80 KB, WebGL2; three.js from a CDN
   make-up/index.html          Study 11 — self-contained, ~150 KB, WebGL2; Fever's street for colour; three.js from a CDN
   stutter/index.html          Study 12 — self-contained, ~60 KB, WebGL2; Fever's street for time; three.js from a CDN
+  afterglow/index.html        Study 13 — self-contained, ~28 KB, WebGL2; a ball for each hand; MediaPipe from CDNs
 talaria/index.html            download page for Talaria, the studio's task app (unlisted)
 404.html                      not-found page; also sends /Talaria/ etc. to /talaria/
 assets/
