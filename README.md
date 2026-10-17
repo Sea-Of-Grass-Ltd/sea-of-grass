@@ -16,7 +16,8 @@ studies/
   packfold/                   Study 04 — notes, the toy it embeds, and a sample .dxf
   beacon/index.html           Study 05 — self-contained, ~1 MB (inline vector buildings)
   grasset/                    Study 06 — page + painted fallbacks + 3 models, 2.9 MB; three.js from a CDN
-  windrow/index.html          Study 07 (Touch Grass) — self-contained, ~13 KB; MediaPipe and its hand model from CDNs
+  touch-grass/index.html      Study 07 (was Windrow) — self-contained, ~13 KB; MediaPipe and its hand model from CDNs
+  windrow/index.html          the old address; sends you on to touch-grass/
   murmuration/                Study 08 — prose page + 4 captured frames, ~230 KB
   dark-puddle/index.html      Study 09 — self-contained, ~25 KB, WebGL2; optional site pictures from Microlink
   fever/                      Study 10 — self-contained, ~80 KB, WebGL2; three.js from a CDN
