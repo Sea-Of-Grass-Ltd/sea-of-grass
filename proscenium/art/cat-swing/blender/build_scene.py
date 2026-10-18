@@ -245,8 +245,10 @@ def wear(obj, mat):
 # --- generated models ----------------------------------------------------------------
 
 
-def import_glb(path, coll, centre, height_px, solid):
-    """Import a generated GLB, scale it to height_px and centre it at centre.
+def import_glb(path, coll, centre, size_px, solid, fit="height", tilt=0.0, render=True):
+    """Import a generated GLB, scale it so its height (fit="height") or its
+    widest horizontal extent (fit="width") is size_px, tilt it towards the
+    camera by tilt degrees, and centre it at centre.
     solid=False shows it as wireframe, hidden from renders: a guide to model over."""
     before = set(bpy.data.objects)
     bpy.ops.import_scene.gltf(filepath=str(path))
@@ -265,9 +267,14 @@ def import_glb(path, coll, centre, height_px, solid):
     corners = [o.matrix_world @ Vector(c) for o in new if o.type == "MESH" for c in o.bound_box]
     lo = Vector(map(min, zip(*corners)))
     hi = Vector(map(max, zip(*corners)))
-    scale = height_px * PX / max(hi.z - lo.z, 1e-6)
+    extent = hi.z - lo.z if fit == "height" else max(hi.x - lo.x, hi.y - lo.y)
+    scale = size_px * PX / max(extent, 1e-6)
     root.scale = (scale,) * 3
-    root.location = centre - (lo + hi) / 2 * scale
+    root.rotation_euler = (math.radians(tilt), 0, 0)
+    root.location = centre - root.rotation_euler.to_matrix() @ ((lo + hi) / 2 * scale)
+    if not render:
+        for obj in new:
+            obj.hide_render = True
     if not solid:
         for obj in new:
             obj.display_type = "WIRE"
@@ -437,6 +444,17 @@ def build():
             stand_ins = {"shrike": [shrike], "head": [head, *ears]}.get(name, [])
             for obj in stand_ins:
                 obj.hide_viewport = obj.hide_render = True
+
+    # The rug, laid where the displaced grid is (which it replaces), and the
+    # whole cat, standing beside the frame as a proportion reference that
+    # doesn't render.
+    path = MODELS / "rug.glb"
+    if path.exists():
+        import_glb(path, floor, px(558, 1860, 80), IMG_W * 1.3, True, fit="width", tilt=68)
+        rug.hide_viewport = rug.hide_render = True
+    path = MODELS / "full_cat.glb"
+    if path.exists():
+        import_glb(path, generated, px(IMG_W + 520, 1000, 0), 1700, True, render=False)
 
     if PROJECT_STILL and proj:
         for obj in list(cat.objects) + list(bird.objects) + list(strings.objects) + [rug]:
