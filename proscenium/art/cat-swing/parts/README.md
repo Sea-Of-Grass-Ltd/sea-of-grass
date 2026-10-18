@@ -23,7 +23,7 @@ below are the full-resolution files (2752×1536).
 
 - Image-to-3D tools expect one object: crop a single view (¾ or front) per run.
 - Build the string as a Blender curve with bevel depth, textured from the twine
-  close-up, and the rug as a displaced plane with the tileable swatch.
+  close-up. The rug is modelled too; texture it with the tileable swatch.
 - Use the full cat for proportions only; the scene is assembled from separate,
   oversized parts placed over the finished still as a camera backplate.
 
@@ -42,3 +42,5 @@ Open in Blender with File → Import → glTF 2.0.
 | Hind paw | [3d853733.glb](https://d8j0ntlcm91z4.cloudfront.net/user_3JW7HGdIwMGN0sNijA1SaC53yFg/hf_20261018_135702_3d853733-fdf8-4453-8239-8a7badde91f9.glb) |
 | Tail | [6ae31f03.glb](https://d8j0ntlcm91z4.cloudfront.net/user_3JW7HGdIwMGN0sNijA1SaC53yFg/hf_20261018_135753_6ae31f03-af20-4f29-aea4-c2d0adcb766e.glb) |
 | Haunch | [93eb1e03.glb](https://d8j0ntlcm91z4.cloudfront.net/user_3JW7HGdIwMGN0sNijA1SaC53yFg/hf_20261018_135704_93eb1e03-abce-48cb-9f9a-9d9d2af76302.glb) |
+| Whole cat (four views, quad topology) | [5446582b.glb](https://d8j0ntlcm91z4.cloudfront.net/user_3JW7HGdIwMGN0sNijA1SaC53yFg/hf_20261018_150521_5446582b-7b77-4ad7-9ad8-f49911679b28.glb) |
+| Belly-fur rug (three views, quad topology) | [6f2b7008.glb](https://d8j0ntlcm91z4.cloudfront.net/user_3JW7HGdIwMGN0sNijA1SaC53yFg/hf_20261018_150636_6f2b7008-48e9-4799-8d5e-66ce5e885cd8.glb) |

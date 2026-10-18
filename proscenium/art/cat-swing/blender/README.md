@@ -56,6 +56,11 @@ wireframe guides that don't render, to model over.
 | `models/hind_paw.glb` | [hind paw](https://d8j0ntlcm91z4.cloudfront.net/user_3JW7HGdIwMGN0sNijA1SaC53yFg/hf_20261018_135702_3d853733-fdf8-4453-8239-8a7badde91f9.glb) |
 | `models/tail.glb` | [tail](https://d8j0ntlcm91z4.cloudfront.net/user_3JW7HGdIwMGN0sNijA1SaC53yFg/hf_20261018_135753_6ae31f03-af20-4f29-aea4-c2d0adcb766e.glb) |
 | `models/haunch.glb` | [haunch](https://d8j0ntlcm91z4.cloudfront.net/user_3JW7HGdIwMGN0sNijA1SaC53yFg/hf_20261018_135704_93eb1e03-abce-48cb-9f9a-9d9d2af76302.glb) |
+| `models/full_cat.glb` | [whole cat](https://d8j0ntlcm91z4.cloudfront.net/user_3JW7HGdIwMGN0sNijA1SaC53yFg/hf_20261018_150521_5446582b-7b77-4ad7-9ad8-f49911679b28.glb) |
+| `models/rug.glb` | [rug](https://d8j0ntlcm91z4.cloudfront.net/user_3JW7HGdIwMGN0sNijA1SaC53yFg/hf_20261018_150636_6f2b7008-48e9-4799-8d5e-66ce5e885cd8.glb) |
+
+The rug replaces the displaced grid, tilted to match. The whole cat stands just
+outside the frame as a proportion reference (visible, not rendered).
 
 Generated models usually arrive rotated arbitrarily: rotate each one by eye to
 match the still. Known defects: the shrike's feet face backwards, and the

@@ -17,6 +17,8 @@ get hf_20261018_135701_4f26210f-49be-4029-b92c-f5a3995fded8.glb blender/models/l
 get hf_20261018_135702_3d853733-fdf8-4453-8239-8a7badde91f9.glb blender/models/hind_paw.glb
 get hf_20261018_135753_6ae31f03-af20-4f29-aea4-c2d0adcb766e.glb blender/models/tail.glb
 get hf_20261018_135704_93eb1e03-abce-48cb-9f9a-9d9d2af76302.glb blender/models/haunch.glb
+get hf_20261018_150521_5446582b-7b77-4ad7-9ad8-f49911679b28.glb blender/models/full_cat.glb
+get hf_20261018_150636_6f2b7008-48e9-4799-8d5e-66ce5e885cd8.glb blender/models/rug.glb
 
 get hf_20261018_133901_9029bf53-7242-47da-86f3-9cd90c837203.png parts/sheets/string.png
 get hf_20261018_133901_36acc831-9b51-4389-9533-302154ed2aa7.png parts/sheets/haunch.png

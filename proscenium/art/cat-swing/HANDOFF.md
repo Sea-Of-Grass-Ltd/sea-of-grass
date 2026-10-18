@@ -69,11 +69,16 @@ posed and moved live in Fantasm (the Godot project in `proscenium/`).
    - **Arm and front leg:** the Skin-modifier chains. Re-pose them, then apply
      the modifiers and sculpt the paws and claws.
    - **Haunch and chest:** sculpt from the ellipsoids.
+   - **Whole cat:** `blender/models/full_cat.glb` (four views, quad
+     topology) stands beside the frame. Use it for proportions, or as the
+     base of a fully rigged cat for Fantasm that the oversized parts are
+     posed from.
    - **Head:** keep the generated head if it holds up; otherwise sculpt it,
      with blank pale eyes and no pupils.
    - **String:** a curve. Redraw its loops around the finished shrike mesh,
      crossing over each other the way the still shows.
-   - **Rug:** the displaced grid, textured with the fur swatch from
+   - **Rug:** the generated rug (`blender/models/rug.glb`, which replaces
+     the displaced grid), textured with the fur swatch from
      `parts/sheets/rug.png`.
    - **Feather:** a simple curved card.
 5. **Restore the look.** The generators blur the pen linework, so the
