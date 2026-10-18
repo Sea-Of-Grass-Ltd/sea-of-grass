@@ -26,3 +26,19 @@ below are the full-resolution files (2752×1536).
   close-up, and the rug as a displaced plane with the tileable swatch.
 - Use the full cat for proportions only; the scene is assembled from separate,
   oversized parts placed over the finished still as a camera backplate.
+
+## 3D models (GLB)
+
+Textured meshes from Higgsfield's multi-image-to-3D (Meshy). Each was built
+from three single views (front, side, back) isolated from the sheets above.
+Open in Blender with File → Import → glTF 2.0.
+
+| Part | Model |
+|---|---|
+| Shrike | [b1307608.glb](https://d8j0ntlcm91z4.cloudfront.net/user_3JW7HGdIwMGN0sNijA1SaC53yFg/hf_20261018_135656_b1307608-dffe-4936-803e-f0ec5cefcf9a.glb) |
+| Head | [d578e0a3.glb](https://d8j0ntlcm91z4.cloudfront.net/user_3JW7HGdIwMGN0sNijA1SaC53yFg/hf_20261018_135657_d578e0a3-6de5-41b8-9f73-9017e57dac00.glb) |
+| Raised arm | [0f376227.glb](https://d8j0ntlcm91z4.cloudfront.net/user_3JW7HGdIwMGN0sNijA1SaC53yFg/hf_20261018_135752_0f376227-b0e0-4d69-b293-d2214842b572.glb) |
+| Front leg | [4f26210f.glb](https://d8j0ntlcm91z4.cloudfront.net/user_3JW7HGdIwMGN0sNijA1SaC53yFg/hf_20261018_135701_4f26210f-49be-4029-b92c-f5a3995fded8.glb) |
+| Hind paw | [3d853733.glb](https://d8j0ntlcm91z4.cloudfront.net/user_3JW7HGdIwMGN0sNijA1SaC53yFg/hf_20261018_135702_3d853733-fdf8-4453-8239-8a7badde91f9.glb) |
+| Tail | [6ae31f03.glb](https://d8j0ntlcm91z4.cloudfront.net/user_3JW7HGdIwMGN0sNijA1SaC53yFg/hf_20261018_135753_6ae31f03-af20-4f29-aea4-c2d0adcb766e.glb) |
+| Haunch | [93eb1e03.glb](https://d8j0ntlcm91z4.cloudfront.net/user_3JW7HGdIwMGN0sNijA1SaC53yFg/hf_20261018_135704_93eb1e03-abce-48cb-9f9a-9d9d2af76302.glb) |
