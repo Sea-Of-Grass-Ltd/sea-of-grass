@@ -8,3 +8,5 @@ over the open claws of its hind foot. The light lives in the space the cat enclo
 - `cat-swing-sketch.png` / `-labeled.png` — 1080 × 1920 (9:16) layout sketch
 - `cat-swing-sketch.svg` — editable vector; every part is its own shape (useful as Fantasm layers)
 - `draw_sketch.py` — generates the SVG (`python3 draw_sketch.py [--labels] > out.svg`)
+- `cat-swing-paint-wip.png` — painted version with the raised arm repositioned in Photoshop
+- `cat-swing-paint-current.png` — current best: pen-and-watercolour, blank uncanny eyes, arm from the top right
