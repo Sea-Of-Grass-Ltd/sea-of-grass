@@ -326,6 +326,18 @@ footer p{max-width:64ch;}
   </figure>
   <h3>The contract</h3>
   <p>Next, one agent drew every border between areas and placed every point on them: 299 points, each with a fixed position. That file is the contract. The six area agents must use those points exactly, never adding, dropping or moving one. That's what lets six meshes built separately join up later with nothing to patch.</p>
+  <h3>Four tries, one vote</h3>
+  <p>Where do the borders go? The first attempts asked Nano Banana to place dots on a plain clay render, and it guessed: a render shows no borders, so the dots landed wherever the model felt like. What it does well is paint. So the ask changed: paint the head as flat colour areas, one colour per ring set, no lines, using the topology sheet to see where each set sits. Then code finds the colour edges and puts the dots on them exactly.</p>
+  <p>One painting can't be trusted on its own, so Nano Banana made four at once from the same render and the same prompt. Code laid them over each other and measured how much they agreed, pixel by pixel. Three matched each other on at least 88% of the head. One didn't: it painted the whole back of the skull brown. That one was dropped, and the other three voted. Each pixel took the colour most of them gave it. Where three separate tries land on the same border, it's probably a real border.</p>
+  <figure>
+    <img src="img/nb-tries.jpg" alt="Four Nano Banana paintings of the cat head as flat colour areas. Three look alike; the bottom-left one has a large brown patch over the back of the head." width="1612" height="1188" loading="lazy" />
+    <figcaption><b>Four tries, same prompt.</b> Three agree. The odd one out (bottom left, the brown back of the head) was dropped.</figcaption>
+  </figure>
+  <figure>
+    <img src="img/nb-vote.jpg" alt="The voted area map: the head in flat colours, front, side and back, combined from the three agreeing tries." width="1600" height="1175" loading="lazy" />
+    <figcaption><b>The vote.</b> Each pixel takes the colour most of the three agreeing tries gave it. Six images made, about 18 credits, and the first method that held up.</figcaption>
+  </figure>
+  <p>Code then merged any strip too thin to hold a row of faces, and the map went onto the sculpt itself.</p>
   <figure>
     <img src="img/areas.jpg" alt="The head painted in flat colours, one per area: crown, temple, nose, muzzle, lips, chin, cheek, ear, neck." width="1600" height="640" loading="lazy" />
     <figcaption><b>The area map,</b> painted onto the sculpt. Each colour is one agent's patch.</figcaption>
