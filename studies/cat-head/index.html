@@ -186,6 +186,7 @@ footer p{max-width:64ch;}
   <div class="meta">
     <span><b>Built in</b> Blender</span>
     <span><b>Agents</b> Claude Code sessions</span>
+    <span><b>Sculpt</b> Meshy</span>
     <span><b>Sheets</b> Nano Banana Pro</span>
     <span><b>Started</b> 23 Oct 2026</span>
     <span><b>Phase</b> modelling, step 7 of 9</span>
@@ -204,6 +205,10 @@ footer p{max-width:64ch;}
     <img src="img/look.jpg" alt="The cat's look sheet: a tabby kitten head in front, side, back and three-quarter views." width="1600" height="893" loading="lazy" />
     <figcaption><b>The look sheet.</b> The design everything else is built to, in four views.</figcaption>
   </figure>
+  <h3>From a drawing to triangle soup</h3>
+  <p>The cat started as a character sheet: a drawing in four views. Meshy turned that drawing into a 3D sculpt, and the sculpt has the right shape. But under the surface it's triangle soup: tens of thousands of triangles, scattered with no order, no rings round the eyes or mouth, and seams where the file was split.</p>
+  <p>That's fine for a statue and useless for a face. A face bends along its rings: lids close round the eye, lips part along the mouth line, the cheek folds when the cat grins. Triangle soup has nothing to bend along, so it tears and creases in the wrong places. An automatic quad remesher was tried too. It left holes at the nose and mouth, the two places that move most.</p>
+  <p>So the sculpt is kept only as the truth for <i>shape</i>. Everything else about the head, from the skull inside to the clean skin on top, is rebuilt over it. Most of this project is turning that soup back into a face.</p>
 </section>
 
 <section>
@@ -273,7 +278,7 @@ footer p{max-width:64ch;}
   <p class="lead">Drawn reference drifts: a side view slightly turned, an eye slightly high. So every guide sheet is generated from a render of the sculpt itself, and checked by laying it back over that render.</p>
   <figure>
     <img src="img/mesh.jpg" alt="The calm mesh sheet: grey renders of the sculpted cat head with its wireframe, in four views." width="1600" height="893" loading="lazy" />
-    <figcaption><b>The calm mesh sheet.</b> Renders of the sculpt. The sculpt is the truth for shape, and every later sheet is made from this one.</figcaption>
+    <figcaption><b>The calm mesh sheet.</b> The head in four views with a clean wireframe, lined up with the Meshy sculpt. The sculpt is the truth for shape, and every later sheet is made from this one.</figcaption>
   </figure>
   <p>From that render, Nano Banana Pro made a stack of anatomy sheets, each built on the one before: the face muscles, then those muscles as clean outlines, then the skin's own lines (lid rims, lips, creases) added in colour, then the soft masses as glowing patches, like a weight map.</p>
   <figure>
@@ -317,7 +322,7 @@ footer p{max-width:64ch;}
 <section>
   <span class="num">06 — The skin</span>
   <h2>Six agents, one shared border</h2>
-  <p class="lead">Step 7 is the biggest step: building the clean mesh that gets rigged. It's split so several agents can build at once without stepping on each other.</p>
+  <p class="lead">Step 7 is the biggest step: replacing Meshy's triangle soup with a clean mesh of four-sided faces, laid in rings that follow how the face moves. It's split so several agents can build at once without stepping on each other.</p>
   <h3>One eye first</h3>
   <p>Before the whole face, the full method ran on one eye: landmarks, lines from the sheets, curves on the sculpt, then rings. It proved the approach on a small patch before betting the head on it.</p>
   <figure>
