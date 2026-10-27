@@ -24,9 +24,9 @@ body{background:var(--paper);color:var(--ink);font:16px/1.55 "IBM Plex Sans","He
 .track{position:relative;z-index:1;pointer-events:none}
 .beat{min-height:110svh;display:flex;align-items:flex-start;padding-top:max(22px,env(safe-area-inset-top,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-bottom:0}
 .beat.low{align-items:flex-end;padding-bottom:max(28px,env(safe-area-inset-bottom,0px))}
-.card{max-width:min(34ch,92vw);background:rgba(250,249,246,.86);padding:14px 16px 16px;pointer-events:auto;backdrop-filter:blur(2px)}
+.card{max-width:min(40ch,92vw);background:rgba(250,249,246,.86);padding:14px 16px 16px;pointer-events:auto;backdrop-filter:blur(2px)}
 .lab{font:500 11px/1.3 "IBM Plex Mono",Menlo,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--soft);margin:0 0 8px}
-.big{margin:0;font:800 clamp(30px,6.4vw,64px)/.95 "Anybody",Impact,sans-serif;font-stretch:125%;text-wrap:balance}
+.big{margin:0;overflow-wrap:anywhere;font:800 clamp(28px,4.6vw,56px)/.95 "Anybody",Impact,sans-serif;font-stretch:125%;text-wrap:balance}
 .card p{margin:10px 0 0;color:#3d3b36;font-size:15px}
 .cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
 .cta a{font:500 12px/1 "IBM Plex Mono",Menlo,monospace;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;padding:12px 14px}
@@ -268,7 +268,7 @@ document.getElementById('go').onclick=async()=>{
 function frame(now){
   const target=scrollT();tPrev=tShow;tShow+= (target-tShow)*.14; if(Math.abs(target-tShow)<1e-4)tShow=target;
   const t=tShow, s=S(t), head=cl(s/.42), sep=cl((s-.3)/.7);
-  const portrait=H>W; U=portrait?Math.min(W/500,H/520):Math.min(W/820,H/470); MY=portrait?.5:.42;
+  const portrait=H>W; U=portrait?Math.min(W/500,H/520):Math.min(W/900,H/540); MY=portrait?.5:.42;
   view.r=.02*Math.sin(t/TMAX*TAU); U*=1+.06*Math.sin(Math.PI*cl(t/TMAX));
   readHands(now);const tips=gusts(tPrev,t).concat(handTips); if(ptr){tips.push(ptr);ptr={...ptr,vx:ptr.vx*.6,vy:ptr.vy*.6};}
   stepField(now,tips);
