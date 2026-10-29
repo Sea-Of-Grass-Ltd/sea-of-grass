@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-61Q2DRMD3H"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-61Q2DRMD3H');
+</script>
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Prelude Packing — Sea of Grass</title>
+<meta name="description" content="Study 15. Bach's C major Prelude cuts the page into rectangles: every split, its depth and its colour come from the music, and every cut is a rung of the square-root-of-three ladder." />
+<link rel="canonical" href="https://seaofgrass.studio/studies/prelude-packing/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="Sea of Grass" />
+<meta property="og:url" content="https://seaofgrass.studio/studies/prelude-packing/" />
+<meta property="og:title" content="Prelude Packing — Sea of Grass" />
+<meta property="og:description" content="Bach's C major Prelude makes every decision in a packing of rectangles, in time with the bars." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg: #eeeeec; --ink: #2b2430; }
+  html, body { margin: 0; height: 100%; background: var(--bg); overflow: hidden; }
+  svg { display: block; width: 100vw; height: 100vh; }
+  .a { transform-box: fill-box; transform-origin: center; }
+  .pulse { animation: pulse var(--d) ease-in-out var(--o) infinite; }
+  .spin  { animation: spin  var(--d) linear      var(--o) infinite; }
+  .slide { animation: slide var(--d) ease-in-out var(--o) infinite alternate; }
+  .breathe { animation: breathe var(--d) ease-in-out var(--o) infinite alternate; }
+  @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(.78); } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes slide { from { transform: translateX(-12%); } to { transform: translateX(12%); } }
+  @keyframes breathe { from { transform: scale(1); } to { transform: scale(.72); } }
+  .leaf { transition: fill .4s; }
+  .now { stroke: #000 !important; }
+  @media (prefers-reduced-motion: reduce) { .pulse, .spin, .slide, .breathe { animation: none; } }
+
+  /* Sea of Grass: the intro card and a small dock, on the piece's own paper and ink. */
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  svg.paused .a{animation-play-state:paused}
+  .dock{position:fixed;right:max(14px,env(safe-area-inset-right,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));z-index:5;display:flex;gap:8px}
+  .dock button{width:40px;height:40px;border-radius:50%;border:1px solid var(--ink);background:var(--bg);color:var(--ink);
+    font:600 15px/1 "IBM Plex Sans",system-ui,sans-serif;cursor:pointer;display:grid;place-items:center;padding:0}
+  .dock button:focus-visible,.help button:focus-visible,.help a:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+  .help{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:8;width:min(400px,calc(100vw - 24px));
+    padding:18px 20px;border:1px solid var(--ink);border-radius:20px;background:rgba(238,238,236,.94);color:var(--ink);
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 14px 40px rgba(43,36,48,.25);
+    font:500 13px/1.55 "IBM Plex Sans",system-ui,sans-serif}
+  .help[hidden]{display:none}
+  .help .kicker{font:500 10px "IBM Plex Mono",monospace;letter-spacing:.14em;text-transform:uppercase;margin:0 0 6px;opacity:.7}
+  .help h2{font:700 22px/1.15 "IBM Plex Sans",system-ui,sans-serif;margin:0 0 10px;letter-spacing:-.01em}
+  .help .lede{margin:0 0 12px}
+  .help dl{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;margin:0 0 12px;font-size:12.5px}
+  .help dt{font:500 11px/1.6 "IBM Plex Mono",monospace;letter-spacing:.06em;text-transform:uppercase}
+  .help dd{margin:0}
+  .help p.credit{font-size:11.5px;opacity:.75;margin:0 0 12px}
+  .help a{color:inherit}
+  .help .x{float:right;width:30px;height:30px;margin:-6px -8px 0 8px;border-radius:50%;border:1px solid var(--ink);background:var(--bg);color:var(--ink);font:400 18px/1 sans-serif;cursor:pointer}
+  .help .go{border:1px solid var(--ink);background:var(--ink);color:var(--bg);border-radius:99px;padding:9px 18px;font:600 13px/1 "IBM Plex Sans",system-ui,sans-serif;cursor:pointer}
+  @media (max-width:700px){
+    .help{top:auto;bottom:12px;transform:translateX(-50%);max-height:calc(100dvh - 90px);overflow:auto;padding:14px 16px}
+    .help h2{font-size:18px;margin-bottom:8px}
+  }
+</style>
+</head>
+<body>
+<h1 class="sr">Prelude Packing</h1>
+<svg id="s" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Coloured rectangles nested inside each other, cut by Bach's C major Prelude"></svg>
+
+<div class="dock">
+  <button id="pause" type="button" aria-label="Pause" aria-pressed="false" title="Pause (space)">&#10074;&#10074;</button>
+  <button id="ask" type="button" aria-label="About this study">?</button>
+</div>
+
+<div class="help" id="help" hidden role="dialog" aria-labelledby="helpTitle">
+  <button class="x" id="x" type="button" aria-label="Close">&times;</button>
+  <p class="kicker">Study 15 · Sea of Grass</p>
+  <h2 id="helpTitle">Prelude Packing</h2>
+  <p class="lede">Bach's C major Prelude cuts this page into rectangles. The music decides every split, how deep it goes and what fills it, and every cut is a rung of the &radic;3 ladder.</p>
+  <dl>
+    <dt>window</dt><dd>a bigger window divides deeper; resize it to rebuild</dd>
+    <dt>outline</dt><dd>the bar now playing, one every 2.4 seconds, 35 in all</dd>
+    <dt>pause</dt><dd>the button, or space, stops and starts it</dd>
+  </dl>
+  <p class="credit">Johann Sebastian Bach, <i>Well-Tempered Clavier</i> I, Prelude 1 (BWV 846). Notes from the <a href="https://www.mutopiaproject.org/">Mutopia Project</a> edition, placed in the public domain by its typesetter. Nothing leaves your browser.</p>
+  <button class="go" id="gotit" type="button">Begin</button>
+</div>
+
+<script>
+// Bach, Well-Tempered Clavier I, Prelude 1: five voices (MIDI) and 35 bars (tension level, notes, lean from home).
+const SONG = {"voices": [[60, 60, 59, 60, 60, 60, 59, 59, 57, 50, 55, 55, 53, 53, 52, 52, 50, 43, 48, 48, 41, 42, 44, 43, 43, 43, 43, 43, 43, 43, 43, 36, 36, 36, 36], [64, 62, 62, 64, 64, 62, 62, 60, 60, 57, 59, 58, 57, 56, 55, 53, 53, 50, 52, 55, 53, 48, 53, 53, 52, 50, 50, 51, 52, 50, 50, 48, 48, 47, 48], [67, 69, 67, 67, 69, 66, 67, 64, 64, 62, 62, 64, 62, 62, 60, 57, 57, 55, 55, 58, 57, 57, 59, 55, 55, 55, 55, 57, 55, 55, 55, 55, 53, 67, 64], [72, 74, 74, 72, 76, 69, 74, 67, 67, 66, 67, 67, 69, 65, 67, 60, 60, 59, 60, 60, 60, 60, 60, 59, 60, 60, 59, 60, 60, 60, 59, 58, 57, 71, 67], [76, 77, 77, 76, 81, 74, 79, 72, 72, 72, 71, 73, 74, 71, 72, 65, 65, 65, 64, 64, 64, 63, 62, 62, 64, 65, 65, 66, 67, 65, 65, 64, 60, 74, 72]], "bars": [{"level": 0, "notes": [0, 4, 7], "lean": 0.0}, {"level": 0, "notes": [0, 2, 5, 9], "lean": -0.667}, {"level": 1, "notes": [2, 5, 7, 11], "lean": 0.083}, {"level": 0, "notes": [0, 4, 7], "lean": 0.0}, {"level": 0, "notes": [0, 4, 9], "lean": 0.667}, {"level": 2, "notes": [0, 2, 6, 9], "lean": 1.083}, {"level": 0, "notes": [2, 7, 11], "lean": 1.0}, {"level": 1, "notes": [0, 4, 7, 11], "lean": 0.833}, {"level": 0, "notes": [0, 4, 7, 9], "lean": 0.333}, {"level": 2, "notes": [0, 2, 6, 9], "lean": 1.083}, {"level": 0, "notes": [2, 7, 11], "lean": 1.0}, {"level": 3, "notes": [1, 4, 7, 10], "lean": -2.167}, {"level": 0, "notes": [2, 5, 9], "lean": -0.333}, {"level": 2, "notes": [2, 5, 8, 11], "lean": -1.167}, {"level": 0, "notes": [0, 4, 7], "lean": 0.0}, {"level": 1, "notes": [0, 4, 5, 9], "lean": -0.167}, {"level": 0, "notes": [0, 2, 5, 9], "lean": -0.667}, {"level": 1, "notes": [2, 5, 7, 11], "lean": 0.083}, {"level": 0, "notes": [0, 4, 7], "lean": 0.0}, {"level": 2, "notes": [0, 4, 7, 10], "lean": -0.917}, {"level": 1, "notes": [0, 4, 5, 9], "lean": -0.167}, {"level": 3, "notes": [0, 3, 6, 9], "lean": -0.167}, {"level": 2, "notes": [0, 2, 5, 8, 11], "lean": -1.267}, {"level": 1, "notes": [2, 5, 7, 11], "lean": 0.083}, {"level": 0, "notes": [0, 4, 7], "lean": 0.0}, {"level": 0, "notes": [0, 2, 5, 7], "lean": -1.167}, {"level": 1, "notes": [2, 5, 7, 11], "lean": 0.083}, {"level": 3, "notes": [0, 3, 6, 7, 9], "lean": -0.267}, {"level": 0, "notes": [0, 4, 7], "lean": 0.0}, {"level": 0, "notes": [0, 2, 5, 7], "lean": -1.167}, {"level": 1, "notes": [2, 5, 7, 11], "lean": 0.083}, {"level": 2, "notes": [0, 4, 7, 10], "lean": -0.917}, {"level": 0, "notes": [0, 2, 5, 9], "lean": -0.667}, {"level": 1, "notes": [0, 2, 4, 5, 7, 11], "lean": 0.167}, {"level": 0, "notes": [0, 4, 7], "lean": 0.0}]};
+const KEY = new Set([0,2,4,5,7,9,11]);
+const R3 = Math.sqrt(3);
+const LADDER = [1/(1+R3), 1/3, 1/2, 2/3, R3/(1+R3)];      // every cut is a rung struck from √3
+const PAL = ["#f3e6a3","#c98d62","#9d6b6a","#e7a9c8","#d7d2c8","#6f9e8c","#e3a33b","#8fb4d9","#b38fd1","#d9534f",
+             "#4f7a3a","#f0c7a0","#5b5f97","#e8d9b0","#a3c4a0","#c45ab3"];
+const INK = "#2b2430";
+const BAR = 2.4;                                            // seconds per bar while it plays
+const MIN = 22;                                             // the smallest region in screen pixels: a bigger window divides deeper
+const NS = "http://www.w3.org/2000/svg";
+// decisions come from (bar, voice) pairs in order, 175 of them, cycling
+const EV = [];
+SONG.bars.forEach((b, i) => SONG.voices.forEach(v => EV.push({bar: i, level: b.level, notes: b.notes.length, pitch: v[i], lean: b.lean})));
+let k = 0; const next = () => EV[(k++) % EV.length];
+const svg = document.getElementById("s");
+const el = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const a in attrs) e.setAttribute(a, attrs[a]); (parent || svg).appendChild(e); return e; };
+const byBar = Array.from({length: 35}, () => []);
+
+function anim(e, cls, ev, mult) {
+  e.classList.add("a", cls);
+  e.style.setProperty("--d", (BAR * mult).toFixed(2) + "s");
+  e.style.setProperty("--o", (-(ev.bar * BAR) - (ev.pitch % 5) * 0.12).toFixed(2) + "s");   // each shape keeps its bar's phase
+}
+function cross(g, cx, cy, a, b) {
+  const lw = Math.max(0.3, Math.min(a, b) * 0.05);
+  el("path", {d: `M${cx-a} ${cy}H${cx+a}M${cx} ${cy-b}V${cy+b}`, stroke: INK, "stroke-width": lw, fill: "none"}, g);
+}
+function pill(g, x, y, w, h, col) {
+  const r = Math.min(w, h) / 2;
+  return el("rect", {x, y, width: w, height: h, rx: r, ry: r, fill: col, stroke: INK, "stroke-width": Math.max(0.3, r * 0.06)}, g);
+}
+function leaf(x, y, w, h, ev, depth) {
+  const col = PAL[(ev.pitch * 5 + ev.notes) % PAL.length];
+  const lw = Math.max(0.3, Math.min(w, h) * 0.012);
+  const box = el("rect", {x, y, width: w, height: h, fill: col, stroke: INK, "stroke-width": lw, class: "leaf"});
+  byBar[ev.bar].push(box);
+  const g = el("g", {});
+  const kind = (ev.level + ev.pitch) % 5;
+  const pad = Math.min(w, h) * (1 - 1/R3) / 3.5;
+  const unit = Math.min(innerWidth, innerHeight);
+  // tension sets the speed: calm bars move slowly, the darkest chords fastest
+  const speed = [2, 1.5, 1, 0.66][ev.level];
+  if (kind === 0 && Math.min(w, h) > MIN * 1.2) {          // pills, each with a cross, pulsing in a ripple
+    const rows = Math.max(1, Math.min(ev.notes, Math.round(h / (MIN * 1.3))));
+    const cols = Math.max(1, Math.round((w / h) * rows * R3 / 2));
+    const cw = (w - 2*pad) / cols, ch = (h - 2*pad) / rows;
+    const sub = PAL[(ev.pitch * 5 + ev.notes + 3) % PAL.length];
+    for (let i = 0; i < cols; i++) for (let j = 0; j < rows; j++) {
+      const cg = el("g", {}, g);
+      const px = x + pad + i*cw + cw*0.08, py = y + pad + j*ch + ch*0.08;
+      pill(cg, px, py, cw*0.84, ch*0.84, sub); cross(cg, px + cw*0.42, py + ch*0.42, cw*0.25, ch*0.25);
+      anim(cg, "pulse", {...ev, pitch: ev.pitch + i + j}, speed);
+    }
+  } else if (kind === 1 && Math.min(w, h) > MIN) {         // a circle whose cross turns
+    const r = Math.min(w, h)/2 - pad, cx = x + w/2, cy = y + h/2;
+    el("circle", {cx, cy, r, fill: PAL[(ev.pitch + 7) % PAL.length], stroke: INK, "stroke-width": Math.max(0.3, r*0.02)}, g);
+    const cg = el("g", {}, g); cross(cg, cx, cy, r*0.6, r*0.6); anim(cg, "spin", ev, speed * 4);
+  } else if (kind === 2) {                                  // rules that slide along the long side
+    const n = 1 + ev.notes, cg = el("g", {}, g);
+    for (let i = 1; i < n; i++) {
+      const d = w >= h ? `M${x+pad} ${y+h*i/n}H${x+w-pad}` : `M${x+w*i/n} ${y+pad}V${y+h-pad}`;
+      el("path", {d, stroke: INK, "stroke-width": Math.max(0.3, lw*0.7), fill: "none"}, cg);
+    }
+    anim(cg, w >= h ? "slide" : "breathe", ev, speed);
+  } else if (kind === 3 && Math.min(w, h) > MIN * 0.6) {   // an inset panel that breathes
+    const cg = el("g", {}, g);
+    el("rect", {x: x+pad, y: y+pad, width: w-2*pad, height: h-2*pad, fill: PAL[(ev.pitch + 2) % PAL.length], stroke: INK, "stroke-width": lw*0.7}, cg);
+    cross(cg, x + w/2, y + h/2, (w-2*pad)*0.3, (h-2*pad)*0.3);
+    anim(cg, "breathe", ev, speed);
+  }
+  // kind 4: a plain field, a rest
+}
+function split(x, y, w, h, depth) {
+  const ev = next();
+  const small = Math.min(w, h) < MIN * 2;
+  if (small || (depth > 2 && ev.level === 0 && ev.pitch % 3 === 0) || depth > 14) { leaf(x, y, w, h, ev, depth); return; }
+  const vertical = (w > 1.6*h) || (h <= 1.6*w && ev.pitch % 2 === 0);
+  const t = LADDER[Math.max(0, Math.min(4, Math.round(2 + ev.lean*1.2 + ((ev.pitch % 5) - 2)*0.5)))];
+  if (vertical) { const a = w*t; split(x, y, a, h, depth+1); split(x+a, y, w-a, h, depth+1); }
+  else { const a = h*t; split(x, y, w, a, depth+1); split(x, y+a, w, h-a, depth+1); }
+}
+function build() {
+  const W = innerWidth, H = innerHeight;
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.replaceChildren(); byBar.forEach(a => a.length = 0); k = 0;
+  const m = Math.min(W, H) / (R3 ** 5);                     // the margin is a rung of the ladder too
+  split(m, m, W - 2*m, H - 2*m, 0);
+}
+let t; addEventListener("resize", () => { clearTimeout(t); t = setTimeout(build, 120); });
+build();
+// the bar that is playing outlines its regions in black
+let cur = 0;
+setInterval(() => {
+  if (paused) return;
+  byBar[cur].forEach(e => e.classList.remove("now"));
+  cur = (cur + 1) % 35;
+  byBar[cur].forEach(e => e.classList.add("now"));
+}, BAR * 1000);
+
+// Sea of Grass: pause, and the intro card (×, Begin, Escape or a tap outside closes it).
+let paused = false;
+const pb = document.getElementById("pause");
+function setPaused(p) {
+  paused = p; svg.classList.toggle("paused", p);
+  pb.innerHTML = p ? "&#9654;" : "&#10074;&#10074;"; pb.setAttribute("aria-label", p ? "Play" : "Pause"); pb.setAttribute("aria-pressed", String(p));
+}
+pb.addEventListener("click", () => setPaused(!paused));
+const help = document.getElementById("help");
+const store = { get: k => { try { return localStorage.getItem("prelude:" + k); } catch (e) { return null; } },
+                set: (k, v) => { try { localStorage.setItem("prelude:" + k, v); } catch (e) {} } };
+const closeHelp = () => { if (help.hidden) return; help.hidden = true; store.set("helped", "1"); };
+document.getElementById("gotit").addEventListener("click", closeHelp);
+document.getElementById("x").addEventListener("click", closeHelp);
+document.getElementById("ask").addEventListener("click", () => { help.hidden = !help.hidden; });
+addEventListener("pointerdown", e => { if (!help.hidden && !help.contains(e.target) && !e.target.closest("#ask")) closeHelp(); });
+addEventListener("keydown", e => {
+  if (e.key === "Escape") closeHelp();
+  else if (e.key === " " && !e.target.closest("button")) { e.preventDefault(); setPaused(!paused); }
+});
+if (!store.get("helped")) help.hidden = false;
+</script>
+</body>
+</html>
