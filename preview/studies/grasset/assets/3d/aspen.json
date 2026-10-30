@@ -1,0 +1,162 @@
+{
+ "name": "aspen",
+ "res": [
+  1080,
+  1350
+ ],
+ "polys": [
+  36420,
+  36420
+ ],
+ "camera": {
+  "x": -0.07999999821186066,
+  "z": 2.180000066757202,
+  "ortho": 4.75
+ },
+ "bbox": [
+  -1.6866108179092407,
+  -0.04738810285925865,
+  1.474865436553955,
+  4.031489849090576
+ ],
+ "panel": null,
+ "materials": {
+  "MAT_bark": {
+   "base": "#b0a782",
+   "lift": -1.0,
+   "blend": 0.45,
+   "edge": 0.45,
+   "stops": [
+    [
+     0.0,
+     "#665d3e"
+    ],
+    [
+     0.4,
+     "#968c68"
+    ],
+    [
+     0.66,
+     "#bfb690"
+    ],
+    [
+     1.0,
+     "#e3dabb"
+    ]
+   ],
+   "interp": "EASE"
+  },
+  "MAT_catkin": {
+   "base": "#8c8e4c",
+   "lift": -1.0,
+   "blend": 0.45,
+   "edge": 0.5,
+   "stops": [
+    [
+     0.0,
+     "#555729"
+    ],
+    [
+     0.5,
+     "#8c8e4c"
+    ],
+    [
+     1.0,
+     "#d2d197"
+    ]
+   ],
+   "interp": "EASE"
+  },
+  "MAT_ink": {
+   "base": "#3a3120"
+  },
+  "MAT_leaf": {
+   "base": "#a9a663",
+   "lift": -1.0,
+   "blend": 0.45,
+   "edge": 0.3,
+   "stops": [
+    [
+     0.0,
+     "#57542a"
+    ],
+    [
+     0.4,
+     "#8a8746"
+    ],
+    [
+     0.62,
+     "#b0ad69"
+    ],
+    [
+     0.8,
+     "#cdc98e"
+    ],
+    [
+     1.0,
+     "#e9e3b8"
+    ]
+   ],
+   "interp": "EASE"
+  }
+ },
+ "roles": {
+  "BR_trunk": "TREE",
+  "BR_Llow": "TREE",
+  "BR_Lmid": "TREE",
+  "BR_Rlow": "TREE",
+  "BR_Rmid": "TREE",
+  "BR_Rup": "TREE",
+  "BR_Tw_cL": "TREE",
+  "BR_Tw_cU": "TREE",
+  "BR_Tw_cR": "TREE",
+  "BR_Tw_cD": "TREE",
+  "BR_Tw_r1": "TREE",
+  "BR_Tw_r2": "TREE",
+  "BARK_marks": "TREE",
+  "KNOT": "TREE",
+  "PET_00": "TREE",
+  "PET_01": "TREE",
+  "PET_02": "TREE",
+  "PET_03": "TREE",
+  "PET_04": "TREE",
+  "PET_05": "TREE",
+  "PET_06": "TREE",
+  "PET_07": "TREE",
+  "PET_08": "TREE",
+  "PET_09": "TREE",
+  "PET_10": "TREE",
+  "PET_11": "TREE",
+  "PET_12": "TREE",
+  "PET_13": "TREE",
+  "PET_14": "TREE",
+  "PET_15": "TREE",
+  "PET_16": "TREE",
+  "PET_17": "TREE",
+  "LEAF_00": "LEAVES",
+  "LEAF_01": "LEAVES",
+  "LEAF_02": "LEAVES",
+  "LEAF_03": "LEAVES",
+  "LEAF_04": "LEAVES",
+  "LEAF_05": "LEAVES",
+  "LEAF_06": "LEAVES",
+  "LEAF_07": "LEAVES",
+  "LEAF_08": "LEAVES",
+  "LEAF_09": "LEAVES",
+  "LEAF_10": "LEAVES",
+  "LEAF_11": "LEAVES",
+  "LEAF_12": "LEAVES",
+  "LEAF_13": "LEAVES",
+  "LEAF_14": "LEAVES",
+  "LEAF_15": "LEAVES",
+  "LEAF_16": "LEAVES",
+  "LEAF_17": "LEAVES",
+  "CATK_0": "CATKINS",
+  "CATK_1": "CATKINS",
+  "CATK_2": "CATKINS",
+  "CATK_3": "CATKINS",
+  "CATK_4": "CATKINS",
+  "CATK_5": "CATKINS",
+  "CATK_6": "CATKINS"
+ }
+}

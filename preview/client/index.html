@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-61Q2DRMD3H"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-61Q2DRMD3H');
+</script>
+<meta charset="utf-8" />
+<meta name="theme-color" content="#090909" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Client login · Sea of Grass</title>
+<meta name="robots" content="noindex" />
+<link rel="icon" href="/preview/assets/favicon.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600&family=IBM+Plex+Mono:wght@400&family=Archivo+Black&family=Syne:wght@700;800&family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=Courier+Prime:ital,wght@0,400;0,700;1,700&display=swap" rel="stylesheet" />
+<style>
+/* The client area, in the front page's dusk style. Sign-in is Supabase (Google or an emailed link);
+   paying opens Stripe's own hosted invoice page, so no card details ever touch this site. */
+:root{--bg:#090909;--fg:#f7f9fa;--soft:#b4b4b8;--steel:#828384;--rule:rgba(247,249,250,.14);--violet:#9440ea;--lav:#e1bdff;
+  --display:"Instrument Serif",Georgia,serif;--sans:"Inter Tight",Inter,"Helvetica Neue",Arial,sans-serif;--mono:"IBM Plex Mono",Menlo,monospace;color-scheme:dark;--on-accent:#fff;--field:rgba(247,249,250,.04);--card:rgba(247,249,250,.02)}
+
+/* Six style families on one grammar (the root-3 ladder stays; only the vocabulary changes). */
+html[data-theme="glass"]{--bg:#0b1a24;--fg:#eef6f8;--fg2:#d8e8ec;--soft:#a9c3c9;--steel:#6f8d95;--rule:rgba(255,255,255,.16);--violet:#3ce0d0;--accent2:#2cc7b8;--on-accent:#04221f;
+  --lav:#7fe0d6;--bar:rgba(11,26,36,.45);--shadow:0 2px 24px rgba(0,0,0,.4);--card:rgba(255,255,255,.06);--field:rgba(255,255,255,.06);--panel:rgba(11,26,36,.78);--err:#ff9aa8;--r-btn:999px;--r-ctl:14px;--r-card:22px;color-scheme:dark}
+html[data-theme="neu"]{--bg:#ece7e1;--fg:#3a332c;--fg2:#463e36;--soft:#6f655b;--steel:#6e6458;--rule:rgba(58,51,44,.1);--violet:#ece7e1;--accent2:#ece7e1;--on-accent:#8f3f25;
+  --lav:#9a4529;--bar:rgba(236,231,225,.88);--shadow:none;--card:#ece7e1;--field:#ece7e1;--panel:rgba(236,231,225,.9);--err:#c0392b;--r-btn:18px;--r-ctl:14px;--r-card:24px;color-scheme:light;--neu-dark:#cdc3b8;--neu-light:#fff}
+html[data-theme="brutal"]{--bg:#FFFDF5;--fg:#000;--fg2:#000;--soft:#1f1f1f;--steel:#333;--rule:#000;--violet:#000;--accent2:#000;--on-accent:#fff;
+  --lav:#FF6B6B;--bar:#fff;--shadow:none;--card:#fff;--field:#fff;--panel:#fff;--err:#a3001b;--r-btn:0;--r-ctl:0;--r-card:0;--display:Syne,"Space Grotesk",sans-serif;--sans:Inter,"Helvetica Neue",Arial,sans-serif;--mono:"Space Mono",Menlo,monospace;--nb-y:#FFD23F;--nb-c:#FF6B6B;--nb-s:#74B9FF;--nb-g:#88D498;--nb-o:#FFA552;--nb-l:#B8A9FA;--nb-ink:#000;color-scheme:light}
+html[data-theme="simple"]{--bg:#fff;--fg:#111;--fg2:#111;--soft:#555;--steel:#6a6a6a;--rule:#111;--violet:#d02a24;--accent2:#c8241f;--on-accent:#fff;
+  --lav:#d02a24;--bar:rgba(255,255,255,.92);--shadow:none;--card:#f4f4f4;--field:#fff;--panel:rgba(255,255,255,.92);--err:#e5322d;--r-btn:0;--r-ctl:0;--r-card:0;--display:Inter,sans-serif;color-scheme:light}
+html[data-theme="editorial"]{--bg:#f3f1ea;--fg:#1f2a24;--fg2:#28342d;--soft:#53605a;--steel:#5c6560;--rule:rgba(31,42,36,.18);--violet:#1f2a24;--accent2:#000;--on-accent:#f3f1ea;
+  --lav:#9a7440;--bar:rgba(243,241,234,.9);--shadow:none;--card:#e8e6dc;--field:#f9f8f3;--panel:rgba(243,241,234,.92);--err:#9b3b2a;--r-btn:0;--r-ctl:0;--r-card:0;--display:"Cormorant Garamond",Georgia,serif;color-scheme:light}
+
+/* the three voices in each family's type */
+html[data-theme="glass"] :is(h1,h2,.svc h3,.person h3){font-family:Inter,sans-serif;font-weight:300;letter-spacing:-.03em}
+html[data-theme="glass"] :is(h1,h2,blockquote,.svc h3,.person h3) b{font-weight:600}
+html[data-theme="glass"] :is(h1,h2,blockquote,.svc h3,.person h3) em{font-family:Inter,sans-serif;font-style:normal;font-weight:400;font-size:1em;letter-spacing:-.03em}
+html[data-theme="neu"] :is(h1,h2,.svc h3,.person h3){font-family:"Inter Tight",sans-serif;font-weight:300;letter-spacing:-.03em}
+html[data-theme="neu"] :is(h1,h2,blockquote,.svc h3,.person h3) em{font-family:"Inter Tight",sans-serif;font-style:normal;font-weight:500;font-size:1em;letter-spacing:-.03em}
+html[data-theme="brutal"] :is(h1,h2,h3,blockquote){color:var(--fg);-webkit-text-stroke:0;text-shadow:none;text-wrap:balance}
+html[data-theme="brutal"] h1{font-family:Syne,"Space Grotesk",sans-serif;font-weight:800;letter-spacing:-.04em;line-height:1.16}
+html[data-theme="brutal"] :is(h2,h3,.svc h3,.person h3){font-family:"Space Grotesk",sans-serif;font-weight:700;letter-spacing:-.02em;line-height:1.14}
+html[data-theme="brutal"] :is(h1,h2,h3,blockquote) :is(b,.t){font-weight:inherit;color:inherit}
+/* the highlighter: one box per phrase, the same height on every line (cap height plus descenders), never reaching into the next line */
+html[data-theme="brutal"] :is(h1,h2,h3,blockquote) em{font:inherit;font-style:normal;color:#000;background:var(--hl,var(--nb-y));display:inline-block;line-height:1.06;padding:0 .14em .03em;margin:0 .02em;max-width:100%}
+html[data-theme="simple"] :is(h1,h2,.svc h3,.person h3){font-family:Inter,sans-serif;font-weight:400;letter-spacing:-.025em}
+html[data-theme="simple"] :is(h1,h2,blockquote,.svc h3,.person h3) b{font-weight:700}
+html[data-theme="simple"] :is(h1,h2,blockquote,.svc h3,.person h3) em{font-family:Inter,sans-serif;font-style:normal;font-weight:400;font-size:1em;letter-spacing:-.025em}
+html[data-theme="editorial"] :is(h1,h2,.svc h3,.person h3){font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;letter-spacing:-.015em;line-height:1.08}
+html[data-theme="editorial"] :is(h1,h2,blockquote,.svc h3,.person h3) b{font-weight:600;letter-spacing:-.015em}
+html[data-theme="editorial"] :is(h1,h2,blockquote,.svc h3,.person h3) em{font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;font-weight:400;font-size:1.04em;letter-spacing:-.01em}
+html:not([data-theme="dusk"]) .hero h1 .t{background:none;color:inherit}
+html[data-theme="simple"] .hero h1 .t{color:var(--soft)}
+
+/* the surfaces each family is known for */
+html[data-theme="glass"] body{background:radial-gradient(60vw 50vw at 85% 15%,rgba(60,224,208,.16),transparent 60%),radial-gradient(50vw 40vw at 10% 70%,rgba(120,90,255,.14),transparent 60%),var(--bg);background-attachment:fixed}
+html[data-theme="glass"] :is(.work .fr,.fr,.svc,.facts,.person,.box,.steps>div,.others a,input,select,textarea,.ghost.q,.dial .knob-wrap){background:rgba(255,255,255,.06);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.16);box-shadow:0 10px 30px rgba(0,0,0,.25)}
+html[data-theme="glass"] :is(.ghost:not(.q),form button,.btn,.dark,a.book){box-shadow:0 0 28px rgba(60,224,208,.45)}
+html[data-theme="glass"] :is(.svc,.person,.steps>li,.case,.bookblock){border-radius:22px;padding:24px}
+html[data-theme="glass"] :is(.case,.bookblock,.steps>li,.fys .fys-grid>.dialbox){background:rgba(255,255,255,.06);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.12)}
+/* Dark glass panels keep their content off the edges on the root-3 ladder (24px); the trust strip is one panel of four cells */
+html[data-theme="glass"] .facts>div{padding:var(--s2)!important}
+html[data-theme="neu"] :is(.work .fr,.fr,.box,.person .mono,.others a,.ghost,form button,.btn,.dark,.line,a.book,a.client,.swatches button){border:0!important;box-shadow:8px 8px 16px var(--neu-dark,#c3c8d1),-8px -8px 16px var(--neu-light,#fff)}
+html[data-theme="neu"] :is(input,select,textarea){border:0;box-shadow:inset 4px 4px 8px var(--neu-dark,#c3c8d1),inset -4px -4px 8px var(--neu-light,#fff)}
+html[data-theme="neu"] :is(.ghost:not(.q),form button,.btn,.dark,a.book){color:var(--on-accent)!important;font-weight:600}
+html[data-theme="neu"]:not([data-scheme]) .ghost:not(.q){background:#f2d3c2;color:#3a332c}html[data-theme="neu"]:not([data-scheme]) .ghost.q{background:#d3e3d8;color:#3a332c}html[data-theme="neu"]:not([data-scheme]) a.book{background:#dcd3ee;color:#3a332c}
+/* Neubrutalism, to the neubrutalism.com spec: a neutral ground, a black outline and one to three accents per area;
+   3px black borders, hard 0-blur shadows (3, 5, 8px), square corners, no gradients; Syne / Space Grotesk / Inter / Space Mono.
+   Buttons: Default yellow, Primary black, Ghost white. Hover lifts 2px onto a 7px shadow; press sinks 3px and the shadow goes. */
+html[data-theme="brutal"] body{font-family:Inter,"Helvetica Neue",Arial,sans-serif}
+/* square corners on everything (neubrutalism.com: border-radius 0); only truly round parts curve: the dial and the toggle switch with its knob */
+html[data-theme="brutal"] *,html[data-theme="brutal"] *::before,html[data-theme="brutal"] *::after{border-radius:0!important}
+html[data-theme="brutal"] body .dial,html[data-theme="brutal"] body .tiles .t-tog i::after,html[data-theme="brutal"] body .fx .knob,html[data-theme="brutal"] body .huering .wheel{border-radius:50%!important}
+html[data-theme="brutal"] body .tiles .t-tog i{border-radius:99px!important}
+html[data-theme="brutal"] :is(.ghost,.btn,.dark,a.book,a.client,form button){font:700 16px/1.15 "Space Grotesk",sans-serif!important;letter-spacing:0;text-transform:none;background:var(--nb-y)!important;color:#000!important;border:3px solid #000!important;border-radius:0!important;box-shadow:5px 5px 0 #000;padding:12px 24px;text-decoration:none;transition:all .1s;cursor:pointer}
+html[data-theme="brutal"] :is(.ghost,.btn,.dark,a.book,a.client,form button):hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000}
+html[data-theme="brutal"] :is(.ghost,.btn,.dark,a.book,a.client,form button):active{transform:translate(3px,3px);box-shadow:none}
+html[data-theme="brutal"] body :is(.hero .ghost:not(.q),.hero .btn:not(.q),.bookblock .ghost,.start .btn,.dark){background:#000!important;color:#fff!important}
+html[data-theme="brutal"] body :is(.ghost.q:not(.hero .ghost),a.client){background:#fff!important}
+html[data-theme="brutal"] :is(a,button,input,select,textarea,.dial,[tabindex]):focus-visible{outline:3px solid var(--nb-s);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){html[data-theme="brutal"] :is(.ghost,.btn,.dark,a.book,a.client,form button,.case,.others a){transition:none}}
+/* labels and tags: Space Mono on a small bordered plate; they name things, they are never controls */
+html[data-theme="brutal"] :is(.head .label,.hero .label,.fys .label,.kick,.kick2,.sec-h .label){display:inline-block;justify-self:start;font:400 12.8px/1.3 "Space Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:#000;background:#fff;border:2px solid #000;box-shadow:3px 3px 0 #000;padding:6px 12px}
+html[data-theme="brutal"] :is(.case .chip,.steps .cue,.steps2 .cue,.svc .no,.gets .no,.others .no){display:inline-block;justify-self:start;font:700 12px/1.2 "Space Mono",monospace;letter-spacing:.05em;text-transform:uppercase;color:#000;background:var(--acc,var(--nb-y));border:2px solid #000;box-shadow:3px 3px 0 #000;padding:4px 12px}
+/* inputs: 3px border, 3px shadow; focus takes the sky outline and a 5px shadow */
+html[data-theme="brutal"] :is(input,select,textarea){background:#fff;color:#000;border:3px solid #000!important;border-radius:0!important;box-shadow:3px 3px 0 #000}
+html[data-theme="brutal"] :is(input,select,textarea):focus-visible{box-shadow:5px 5px 0 #000}
+/* cards are white whatever the band or scheme, so their ink is always black */
+html[data-theme="brutal"] :is(.case,.steps>li,.person,.bookblock,form[id="f"],.facts>div,.svc,.fys .fys-grid>.dialbox,.pains li,.gets>div,.steps2 li,.tier,.faq,.exs figure.ex,.others a){--fg:#000;--fg2:#000;--soft:#1f1f1f;--steel:#333;color:#000}
+/* the bar: white, full width, a 4px rule under it */
+html[data-theme="brutal"] header.bar.wrap{top:0;left:0;right:0;background:#fff;border:0;border-bottom:4px solid #000;border-radius:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;padding-top:max(12px,env(safe-area-inset-top,0px));padding-bottom:12px}
+html[data-theme="brutal"] header.bar.wrap{--fg:#000;--soft:#000;color:#000}
+html[data-theme="brutal"] :is(.bar,.top) nav a:not(.book):not(.client){color:#000;font:700 15px/1 "Space Grotesk",sans-serif}
+html[data-theme="brutal"] :is(.bar,.top) nav :is(a.book,a.client){padding:9px 16px;font-size:15px!important;box-shadow:3px 3px 0 #000}
+html[data-theme="brutal"] :is(.bar,.top) nav :is(a.book,a.client):hover{box-shadow:5px 5px 0 #000}
+html[data-theme="brutal"] :is(.bar,.top) nav :is(a.book,a.client):active{box-shadow:none}
+html[data-theme="brutal"] header.bar .brand{color:#000;font-family:"Space Grotesk",sans-serif;font-weight:700}
+html[data-theme="simple"] :is(.work .fr,.fr){border:0}
+html[data-theme="editorial"] :is(.work .fr,.fr){border:0}
+html[data-theme="editorial"] .work .wt{font-size:32px}
+/* colour schemes (second dial): tokens on top of any style */
+html[data-scheme="dusk"]{--bg:#0e0b16;--fg:#f3eefa;--fg2:#ddd5ea;--soft:#bcb2cf;--steel:#a196b5;--rule:rgba(243,238,250,.16);--violet:#a46bff;--accent2:#b283fe;--on-accent:#0e0b16;--lav:#c9a2ff;--bar:rgba(14,11,22,.88);--card:#19141f;--field:#09070e;--panel:rgba(14,11,22,.92);--neu-dark:#07060b;--neu-light:#211f29;color-scheme:dark}
+html[data-scheme="prairie"]{--bg:#f3ead2;--fg:#1f2a1a;--fg2:#2c3826;--soft:#4a543d;--steel:#5f6447;--rule:rgba(31,42,26,.16);--violet:#2f5b2a;--accent2:#2c5227;--on-accent:#f8f1dc;--lav:#7d5300;--bar:rgba(243,234,210,.88);--card:#ebe0c3;--field:#f7f1e2;--panel:rgba(243,234,210,.92);--neu-dark:#ccc5b0;--neu-light:#fbf9f2;color-scheme:light}
+html[data-scheme="ink"]{--bg:#f6f4ee;--fg:#121212;--fg2:#1e1e1e;--soft:#454545;--steel:#5c5c5c;--rule:rgba(18,18,18,.16);--violet:#121212;--accent2:#121212;--on-accent:#f6f4ee;--lav:#1f3fbf;--bar:rgba(246,244,238,.88);--card:#ece9e0;--field:#f9f8f4;--panel:rgba(246,244,238,.92);--neu-dark:#cfcdc8;--neu-light:#fcfcfa;color-scheme:light}
+html[data-scheme="terra"]{--bg:#f2e3d5;--fg:#2b1a12;--fg2:#3a251b;--soft:#5a4337;--steel:#735749;--rule:rgba(43,26,18,.16);--violet:#9c3a1b;--accent2:#883419;--on-accent:#fff7f0;--lav:#9c3a1b;--bar:rgba(242,227,213,.88);--card:#ead6c4;--field:#f7ede4;--panel:rgba(242,227,213,.92);--neu-dark:#cbbfb3;--neu-light:#fbf7f2;color-scheme:light}
+html[data-scheme="pastel"]{--bg:#f6f3f8;--fg:#272238;--fg2:#332d47;--soft:#4d4664;--steel:#5c5575;--rule:rgba(39,34,56,.16);--violet:#4f55c4;--accent2:#484cab;--on-accent:#ffffff;--lav:#a8285f;--bar:rgba(246,243,248,.88);--card:#ede7f2;--field:#f9f7fa;--panel:rgba(246,243,248,.92);--neu-dark:#cfccd0;--neu-light:#fcfbfd;color-scheme:light}
+html[data-scheme="teal"]{--bg:#071b1e;--fg:#e4f5f2;--fg2:#c9e6e1;--soft:#a1cdc6;--steel:#86b6af;--rule:rgba(228,245,242,.16);--violet:#2db3a5;--accent2:#4ebfb3;--on-accent:#04191b;--lav:#4fd6c8;--bar:rgba(7,27,30,.88);--card:#0d262a;--field:#051214;--panel:rgba(7,27,30,.92);--neu-dark:#040e0f;--neu-light:#1b2d30;color-scheme:dark}
+html[data-scheme="riso"]{--bg:#fffbef;--fg:#151515;--fg2:#222222;--soft:#474747;--steel:#5e5e5e;--rule:rgba(21,21,21,.16);--violet:#2350e6;--accent2:#2045c0;--on-accent:#ffffff;--lav:#c92a1a;--bar:rgba(255,251,239,.88);--card:#fff1d6;--field:#fffcf5;--panel:rgba(255,251,239,.92);--neu-dark:#d6d3c9;--neu-light:#fffefa;color-scheme:light}
+html[data-theme="neu"][data-scheme]{--violet:var(--bg);--accent2:var(--bg);--on-accent:var(--lav);--card:var(--bg);--field:var(--bg)}
+/* "Your colour": the chip that follows the visitor, and the hue ring it opens */
+.yours{position:fixed;z-index:30;right:max(18px,env(safe-area-inset-right,0px));bottom:max(18px,env(safe-area-inset-bottom,0px))}
+.yours[hidden]{display:none}
+.yours .yb{display:flex;align-items:center;gap:10px;padding:6px 14px 6px 6px;border-radius:999px;background:rgba(9,9,9,.82);border:1px solid rgba(255,255,255,.2);color:#f2f2f2;font:400 11px/1 "IBM Plex Mono",Menlo,monospace;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
+.yours .yb i{width:26px;height:26px;border-radius:50%;background:var(--yc,#c47aff);box-shadow:inset 0 0 0 2px rgba(255,255,255,.6)}
+.yours .pop{position:absolute;right:0;bottom:calc(100% + 10px);padding:14px;border-radius:16px;background:rgba(9,9,9,.9);border:1px solid rgba(255,255,255,.2)}
+.yours.dot{position:relative;right:auto;bottom:auto}.yours.dot .yb{padding:0;background:none;border:0}.yours.dot .yb span{display:none}
+.yours.dot .pop{bottom:auto;top:calc(100% + 10px)}
+.huering{display:grid;justify-items:center;gap:10px}
+.huering .wheel{width:132px;height:132px;border-radius:50%;position:relative;cursor:crosshair;touch-action:none;background:conic-gradient(hsl(0 80% 55%),hsl(60 80% 55%),hsl(120 80% 55%),hsl(180 80% 55%),hsl(240 80% 55%),hsl(300 80% 55%),hsl(360 80% 55%));
+  -webkit-mask:radial-gradient(circle,transparent 0 44px,#000 45px);mask:radial-gradient(circle,transparent 0 44px,#000 45px)}
+.huering .wheel i{position:absolute;left:50%;top:0;width:4px;height:22px;margin-left:-2px;background:#fff;box-shadow:0 0 0 1px #000;transform-origin:2px 66px}
+.huering .clear{font:400 11px/1 "IBM Plex Mono",Menlo,monospace;letter-spacing:.14em;text-transform:uppercase;color:#f2f2f2;background:none;border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:7px 12px;cursor:pointer}
+/* end of theme tokens */
+html:is([data-theme="neu"],[data-theme="brutal"],[data-theme="simple"],[data-theme="editorial"]) .brand img{filter:none}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 17px/1.55 var(--sans)}
+a{color:inherit}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px),4vw);padding-right:max(20px,env(safe-area-inset-right,0px),4vw)}
+header{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-block:max(18px,env(safe-area-inset-top,0px)) 16px;border-bottom:1px solid var(--rule)}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;font:500 15px/1 var(--sans)}
+.brand img{width:30px;display:block;filter:invert(1)}
+header nav{display:flex;align-items:center;gap:24px;font-size:15px}.bar nav a.book,nav a.book{background:var(--violet);color:var(--on-accent);border-radius:var(--r-btn,999px);padding:9px 14px;text-decoration:none;white-space:nowrap}.bar nav a.book:hover,nav a.book:hover{background:var(--accent2,var(--violet))}header nav a{text-decoration:none;color:var(--soft)}header nav a:hover{color:var(--fg)}
+.label{font:400 12px/1.3 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--steel);margin:0}
+h1,h2{font-family:var(--sans);font-weight:600;letter-spacing:-.04em;margin:0}
+h1{font-size:clamp(44px,6vw,88px);line-height:.98;margin:16px 0 20px}
+h2{font-size:clamp(28px,3vw,40px);line-height:1}
+h1 em,h2 em{font-family:var(--display);font-style:italic;font-weight:400;letter-spacing:-.01em;font-size:1.08em;color:var(--lav)}
+main{padding-block:clamp(48px,8vw,96px)}
+.signin{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,420px);gap:56px;align-items:start}
+.signin p.lede{max-width:40ch;margin:0;color:var(--soft)}
+.box{border:1px solid var(--rule);border-radius:19px;padding:26px;display:grid;gap:16px;background:var(--card)}
+button,.btn{font:500 15px/1 var(--sans);border-radius:999px;padding:15px 22px;cursor:pointer;text-decoration:none;text-align:center}
+.dark{background:var(--violet);color:var(--on-accent);border:1px solid var(--violet)}
+.line{background:transparent;color:var(--fg);border:1px solid var(--rule);border-radius:8px}
+.line:hover{border-color:var(--fg)}
+button[disabled]{opacity:.4;cursor:not-allowed}
+label{display:grid;gap:8px;font:400 11px/1.3 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--steel)}
+input{font:400 17px/1.4 var(--sans);color:var(--fg);background:var(--field);border:1px solid var(--rule);border-radius:8px;padding:12px 14px}
+.or{display:flex;align-items:center;gap:12px;color:var(--steel);font-size:13px;margin:0}.or::before,.or::after{content:"";flex:1;height:1px;background:var(--rule)}
+form{display:grid;gap:14px}form p{display:none}
+.note{font-size:14px;color:var(--soft);margin:0}
+.soon{border:1px solid var(--lav);border-radius:12px;padding:14px 16px;font-size:15px;margin:0;color:var(--fg)}
+.example{display:inline-block;border:0;color:var(--fg);font:400 11px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;padding:8px 10px;border-radius:999px;margin-bottom:18px}
+.area[hidden],.signin[hidden]{display:none}
+.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:16px;margin-bottom:44px}
+.top h2{font-size:clamp(36px,4.4vw,60px);margin-top:10px}
+.cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px}
+.cols section{border-top:1px solid var(--rule);padding-top:22px}
+.cols h2{margin-bottom:12px}
+.row{display:grid;gap:6px;padding:16px 0;border-bottom:1px solid var(--rule)}
+.row b{font:400 26px/1.05 var(--display);font-style:italic}
+.row .meta{font-size:14px;color:var(--soft);display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:center}
+.pill{font:400 11px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--fg)}.pill::before{content:"";display:inline-block;width:7px;height:7px;border-radius:2px;background:var(--lav);margin-right:7px;vertical-align:1px} /* a status, not a control */
+.pill.paid{color:var(--steel)}
+.pay{font:500 14px/1 var(--sans);padding:11px 16px}
+footer{margin-top:64px;padding-block:28px max(28px,env(safe-area-inset-bottom,0px));border-top:1px solid var(--rule);font:400 12px/1.6 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--steel)}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--lav);outline-offset:3px}
+@media (max-width:860px){.signin{grid-template-columns:1fr}.cols{grid-template-columns:1fr}header nav .hide-s{display:none}}
+</style>
+<script>
+(function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#090909',glass:'#0b1a24',neu:'#ece7e1',brutal:'#FFFDF5',simple:'#ffffff',editorial:'#f3f1ea'};
+function get(){try{var v=localStorage.getItem(K);return OK[v]?v:'dusk';}catch(e){return 'dusk';}}
+function apply(t){if(!OK[t])t='dusk';var r=document.documentElement;if(r.getAttribute('data-theme')===t)return;r.setAttribute('data-theme',t);
+  var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',BG[t]);
+  document.dispatchEvent(new CustomEvent('sog-theme',{detail:t}));}
+window.sogTheme={get:get,apply:apply,set:function(t){try{localStorage.setItem(K,t);}catch(e){}apply(t);}};
+apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValue);});})();
+(function(){var K='sog-scheme',OK={"dusk": 1, "prairie": 1, "ink": 1, "terra": 1, "pastel": 1, "teal": 1, "riso": 1};function get(){try{var v=localStorage.getItem(K);return OK[v]?v:'own';}catch(e){return 'own';}}
+function apply(s){if(!OK[s])s='own';var r=document.documentElement;if((r.getAttribute('data-scheme')||'own')===s)return;
+  if(s==='own')r.removeAttribute('data-scheme');else r.setAttribute('data-scheme',s);document.dispatchEvent(new CustomEvent('sog-scheme',{detail:s}));}
+window.sogScheme={get:get,apply:apply,set:function(s){try{localStorage.setItem(K,s);}catch(e){}apply(s);}};
+apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValue);});})();
+(function(){ // "Your colour": the visitor's hue retints each style's accents on every page, remembered like the dials.
+// Each accent keeps the lightness nearest its own that still reads against what it sits on (4.5:1), so nothing loses contrast.
+var K='sog-colour',ACC={dusk:[['--violet','--on-accent'],['--accent2','--on-accent'],['--lav','--bg']],glass:[['--violet','--on-accent'],['--accent2','--on-accent'],['--lav','--bg']],
+  neu:[['--on-accent','--bg',5.4],['--lav','--bg']],brutal:[['--nb-y','#000'],['--lav','--bg']],simple:[['--violet','--on-accent'],['--accent2','--on-accent'],['--lav','--bg']],editorial:[['--lav','--bg']]},
+  ALL=['--violet','--accent2','--lav','--on-accent','--nb-y'],R=document.documentElement,base=0;
+function rgb(t){t=(t||'').trim();var m=t.match(/^#([0-9a-f]{3,8})$/i);if(m){var h=m[1];if(h.length<6)h=h.replace(/./g,'$&$&');return [0,2,4].map(function(i){return parseInt(h.substr(i,2),16);});}
+  m=t.match(/^rgba?\(([^)]+)\)/);return m?m[1].split(',').slice(0,3).map(parseFloat):null;}
+function lum(c){return c.reduce(function(s,v,i){v/=255;v=v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4);return s+v*[.2126,.7152,.0722][i];},0);}
+function ratio(a,b){var x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05);}
+function hsl(h,s,l){var f=function(n){var k=(n+h/30)%12,a=s*Math.min(l,1-l);return Math.round(255*(l-a*Math.max(-1,Math.min(k-3,9-k,1))));};return [f(0),f(8),f(4)];}
+function light(c){var mx=Math.max.apply(0,c)/255,mn=Math.min.apply(0,c)/255;return (mx+mn)/2;}
+function hueOf(c){var r=c[0]/255,g=c[1]/255,b=c[2]/255,mx=Math.max(r,g,b),mn=Math.min(r,g,b),d=mx-mn;if(!d)return 0;var h=mx===r?((g-b)/d)%6:mx===g?(b-r)/d+2:(r-g)/d+4;return (h*60+360)%360;}
+function get(){try{var v=JSON.parse(localStorage.getItem(K)||'null');return v&&v.h>=0&&v.h<360?v:null;}catch(e){return null;}}
+function apply(v){ALL.forEach(function(p){R.style.removeProperty(p);});var t=R.getAttribute('data-theme')||'dusk',cs=getComputedStyle(R),own=rgb(cs.getPropertyValue('--violet'));base=own?hueOf(own):0;
+  if(v)(ACC[t]||[]).forEach(function(pr){var o=rgb(cs.getPropertyValue(pr[0])),bg=rgb(pr[1].charAt(0)==='#'?pr[1]:cs.getPropertyValue(pr[1]));if(!o||!bg)return;
+    var l0=light(o),s=v.s||.7,best=null;for(var d=0;d<=1&&!best;d+=.01)[l0-d,l0+d].forEach(function(l){if(best||l<0||l>1)return;var c=hsl(v.h,s,l);if(ratio(c,bg)>=(pr[2]||4.5))best=c;});
+    if(best)R.style.setProperty(pr[0],'rgb('+best.join(',')+')');});
+  document.dispatchEvent(new CustomEvent('sog-colour',{detail:v}));}
+window.sogColour={get:get,set:function(h,s){var v={h:Math.round((h%360+360)%360),s:s==null?(get()||{}).s||.7:s};try{localStorage.setItem(K,JSON.stringify(v));}catch(e){}apply(v);},
+  clear:function(){try{localStorage.removeItem(K);}catch(e){}apply(null);},skyShift:function(){var v=get();return v?v.h-base:0;}};
+document.addEventListener('sog-theme',function(){apply(get());});document.addEventListener('sog-scheme',function(){apply(get());});
+addEventListener('storage',function(e){if(e.key===K)apply(get());});apply(get());})();
+</script>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="/preview/"><img src="/preview/assets/logo.svg" alt="" width="34" height="25"><span>Sea of Grass</span></a>
+    <nav aria-label="Main"><a class="hide-s" href="/preview/#services">Services</a><a class="hide-s" href="/preview/#work">Work</a><a class="hide-s" href="/preview/#contact">Contact</a><a class="book" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a meeting</a></nav>
+  </header>
+
+  <main>
+    <div class="signin" id="signin">
+      <div>
+        <p class="label">Client login</p>
+        <h1>Your projects, in <em>one</em> place.</h1>
+        <p class="lede">Sign in to see where your project is, pay an invoice, and download your files.</p>
+      </div>
+      <div class="box">
+        <p class="soon" id="soon" hidden>Client accounts open soon. Until then, write to <a href="mailto:hello@seaofgrass.studio">hello@seaofgrass.studio</a> and we&rsquo;ll send what you need.</p>
+        <button class="line" id="google" type="button">Continue with Google</button>
+        <p class="or">or</p>
+        <form id="emailform" novalidate>
+          <label>Your email<input type="email" name="email" autocomplete="email" required></label>
+          <p></p>
+          <button class="dark" type="submit">Email me a sign-in link</button>
+        </form>
+        <p class="note" id="msg" aria-live="polite">No passwords to remember. Payments open Stripe&rsquo;s secure page; we never see your card.</p>
+      </div>
+    </div>
+
+    <div class="area" id="area" hidden>
+      <div class="top">
+        <div><span class="example" id="exampleTag" hidden>Example account</span>
+          <p class="label">Signed in as <span id="who"></span></p>
+          <h2 id="hello">Welcome <em>back.</em></h2></div>
+        <button class="line" id="signout" type="button">Sign out</button>
+      </div>
+      <div class="cols">
+        <section aria-labelledby="hp"><h2 id="hp">Projects</h2><div id="projects"></div></section>
+        <section aria-labelledby="hi"><h2 id="hi">Invoices</h2><div id="invoices"></div></section>
+        <section aria-labelledby="hf"><h2 id="hf">Files</h2><div id="files"></div></section>
+      </div>
+    </div>
+  </main>
+
+  <footer>Sea of Grass &middot; Berthoud, Colorado &middot; <a href="mailto:hello@seaofgrass.studio">hello@seaofgrass.studio</a> &middot; 303.775.1333</footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+(() => {
+// Filled in once the client-accounts Supabase project exists (the anon key is public by design;
+// every table is protected by row-level security). Until then the page runs in "coming soon" mode,
+// and ?demo shows an example account so the client area can be walked through.
+const SUPABASE_URL = "";
+const SUPABASE_ANON_KEY = "";
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const money = c => "$" + (c / 100).toLocaleString("en-US", {minimumFractionDigits: 2});
+const day = d => new Date(/^\d{4}-\d{2}-\d{2}$/.test(d) ? d + "T12:00" : d).toLocaleDateString("en-US", {month: "short", day: "numeric", year: "numeric"});
+const safeUrl = u => /^https:\/\//.test(u || "") ? u : null;
+
+function render(who, data, example) {
+  $("signin").hidden = true; $("area").hidden = false; $("exampleTag").hidden = !example;
+  $("who").textContent = who;
+  $("projects").innerHTML = data.projects.length ? data.projects.map(p =>
+    `<div class="row"><b>${esc(p.name)}</b><span class="meta"><span>${esc(p.note)}</span><span class="pill">${esc(p.status)}</span></span></div>`).join("")
+    : `<p class="note">No projects yet.</p>`;
+  $("invoices").innerHTML = data.invoices.length ? data.invoices.map(i => {
+    const url = safeUrl(i.pay_url);
+    const act = i.status === "paid" ? `<span class="pill paid">Paid</span>`
+      : url ? `<a class="btn dark pay" href="${esc(url)}" rel="noopener">Pay ${money(i.amount_cents)}</a>` : `<span class="pill">Due</span>`;
+    return `<div class="row"><b>${esc(i.number)}</b><span class="meta"><span>${money(i.amount_cents)} &middot; ${day(i.issued_on)}</span>${act}</span></div>`;
+  }).join("") : `<p class="note">No invoices.</p>`;
+  $("files").innerHTML = data.files.length ? data.files.map(f => {
+    const url = safeUrl(f.url);
+    return `<div class="row"><b>${esc(f.name)}</b><span class="meta"><span>${esc(f.note)}</span>${url ? `<a href="${esc(url)}" rel="noopener">Download</a>` : ""}</span></div>`;
+  }).join("") : `<p class="note">No files yet.</p>`;
+}
+
+// ---- example account (?demo): clearly labelled, nothing real ----
+if (/[?&]demo\b/.test(location.search)) {
+  render("example@yourbusiness.com", {
+    projects: [
+      {name: "Website refresh", note: "Drafts ready to review on your phone", status: "In review"},
+      {name: "Shop sign lettering", note: "Final files delivered", status: "Done"},
+    ],
+    invoices: [
+      {number: "Invoice 0002", amount_cents: 120000, issued_on: "2026-10-28", status: "open", pay_url: "https://invoice.stripe.com/"},
+      {number: "Invoice 0001", amount_cents: 25000, issued_on: "2026-10-01", status: "paid"},
+    ],
+    files: [
+      {name: "Logo, vector files", note: "SVG, PDF and PNG", url: ""},
+      {name: "Site photos", note: "12 images", url: ""},
+    ],
+  }, true);
+  $("signout").onclick = () => { location.href = location.pathname; };
+  return;
+}
+
+if (!SUPABASE_URL || !window.supabase) {
+  $("soon").hidden = false; $("google").disabled = true;
+  $("emailform").querySelector("button").disabled = true; $("emailform").querySelector("input").disabled = true;
+  return;
+}
+
+// ---- live: Supabase sign-in and the client's own rows (row-level security does the filtering) ----
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const back = location.origin + location.pathname;
+$("google").onclick = () => sb.auth.signInWithOAuth({provider: "google", options: {redirectTo: back}});
+$("emailform").addEventListener("submit", async e => {
+  e.preventDefault(); const email = e.target.email.value.trim();
+  if (!email) { $("msg").textContent = "Please enter your email."; return; }
+  const {error} = await sb.auth.signInWithOtp({email, options: {emailRedirectTo: back, shouldCreateUser: false}});
+  $("msg").textContent = error ? "That email isn't set up yet. Write to hello@seaofgrass.studio and we'll add you."
+                               : "Check your email for a sign-in link.";
+});
+$("signout").onclick = async () => { await sb.auth.signOut(); location.reload(); };
+async function load(session) {
+  if (!session) return;
+  const [p, i, f] = await Promise.all([
+    sb.from("client_projects").select("name,note,status").order("updated_at", {ascending: false}),
+    sb.from("client_invoices").select("number,amount_cents,issued_on,status,pay_url").order("issued_on", {ascending: false}),
+    sb.from("client_files").select("name,note,url").order("created_at", {ascending: false}),
+  ]);
+  render(session.user.email, {projects: p.data || [], invoices: i.data || [], files: f.data || []}, false);
+}
+sb.auth.getSession().then(({data}) => load(data.session));
+sb.auth.onAuthStateChange((_e, session) => load(session));
+})();
+</script>
+<script>
+(()=>{ // the hue ring (shared with Find Your Style) and the "Your colour" chip that follows the visitor from page to page
+function ring(onPick){const el=document.createElement('div');el.className='huering';el.innerHTML='<div class="wheel" role="slider" tabindex="0" aria-label="Your colour, hue" aria-valuemin="0" aria-valuemax="359"><i></i></div><button type="button" class="clear">Clear</button>';
+  const wh=el.querySelector('.wheel'),th=wh.querySelector('i');
+  const show=()=>{const v=window.sogColour.get(),h=v?v.h:0;th.style.transform=`rotate(${h}deg)`;wh.setAttribute('aria-valuenow',h);wh.setAttribute('aria-valuetext',v?`hue ${h}`:'none');th.hidden=!v;};
+  const at=e=>{const r=wh.getBoundingClientRect();return Math.atan2(e.clientX-(r.left+r.width/2),-(e.clientY-(r.top+r.height/2)))*180/Math.PI;};
+  let drag=false;wh.addEventListener('pointerdown',e=>{drag=true;wh.setPointerCapture(e.pointerId);window.sogColour.set(at(e));onPick&&onPick();});
+  wh.addEventListener('pointermove',e=>{if(drag)window.sogColour.set(at(e));});wh.addEventListener('pointerup',()=>{drag=false;});
+  wh.addEventListener('keydown',e=>{const m={ArrowRight:5,ArrowUp:5,ArrowLeft:-5,ArrowDown:-5}[e.key];if(m){e.preventDefault();const v=window.sogColour.get();window.sogColour.set((v?v.h:0)+m);onPick&&onPick();}});
+  el.querySelector('.clear').addEventListener('click',()=>window.sogColour.clear());
+  document.addEventListener('sog-colour',show);show();return el;}
+window.sogColourRing=ring;
+const chip=document.createElement('div');chip.className='yours';
+chip.innerHTML='<button type="button" class="yb" aria-expanded="false" aria-label="Your colour"><i aria-hidden="true"></i><span aria-hidden="true">Your colour</span></button><div class="pop" hidden></div>';
+const btn=chip.querySelector('.yb'),pop=chip.querySelector('.pop');pop.appendChild(ring());
+btn.addEventListener('click',()=>{const o=pop.hidden;pop.hidden=!o;btn.setAttribute('aria-expanded',String(o));});
+document.addEventListener('click',e=>{if(!chip.contains(e.target)&&!pop.hidden){pop.hidden=true;btn.setAttribute('aria-expanded','false');}});
+const phone=matchMedia('(max-width:560px)');
+function place(){const nav=document.querySelector('header nav');if(phone.matches&&nav){chip.classList.add('dot');nav.insertBefore(chip,nav.querySelector('.book'));}else{chip.classList.remove('dot');document.body.appendChild(chip);}}
+function show(){const v=window.sogColour.get();chip.hidden=!v;if(v)chip.style.setProperty('--yc',`hsl(${v.h} ${Math.round((v.s||.7)*100)}% 55%)`);else{pop.hidden=true;}}
+phone.addEventListener('change',place);document.addEventListener('sog-colour',show);place();show();
+})();
+</script>
+</body>
+</html>

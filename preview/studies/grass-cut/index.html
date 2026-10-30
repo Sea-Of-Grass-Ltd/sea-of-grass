@@ -1,0 +1,293 @@
+<!doctype html>
+<meta charset="utf-8" />
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-61Q2DRMD3H"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-61Q2DRMD3H');
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="robots" content="noindex" />
+<title>Grass Cut</title>
+<meta name="description" content="Scroll and the Sea of Grass mark is cut apart by gusts of grass, then closes up. The grass bends under your pointer, finger or hands." />
+<link rel="icon" href="/preview/assets/favicon.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,100..900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap">
+<style>
+:root{--paper:#faf9f6;--ink:#141311;--soft:rgba(20,19,17,.55);--lime:#b6f200;color-scheme:light}
+html{background:var(--paper)}
+body{background:var(--paper);color:var(--ink);font:16px/1.55 "IBM Plex Sans","Helvetica Neue",Arial,sans-serif}
+#cv{position:fixed;inset:0;width:100%;height:100vh;height:100lvh;display:block;touch-action:pan-y;z-index:0}
+.track{position:relative;z-index:1;pointer-events:none}
+.beat{min-height:110svh;display:flex;align-items:flex-start;padding-top:max(22px,env(safe-area-inset-top,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-bottom:0}
+.beat.low{align-items:flex-end;padding-bottom:max(28px,env(safe-area-inset-bottom,0px))}
+.card{max-width:min(40ch,92vw);background:rgba(250,249,246,.86);padding:14px 16px 16px;pointer-events:auto;backdrop-filter:blur(2px)}
+.lab{font:500 11px/1.3 "IBM Plex Mono",Menlo,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--soft);margin:0 0 8px}
+.big{margin:0;overflow-wrap:anywhere;font:800 clamp(28px,4.6vw,56px)/.95 "Anybody",Impact,sans-serif;font-stretch:125%;text-wrap:balance}
+.card p{margin:10px 0 0;color:#3d3b36;font-size:15px}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.cta a{font:500 12px/1 "IBM Plex Mono",Menlo,monospace;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;padding:12px 14px}
+.cta a.go{background:var(--ink);color:var(--paper)}
+.cta a.alt{background:var(--lime);color:var(--ink)}
+.hud{position:fixed;z-index:2;right:max(14px,env(safe-area-inset-right,0px));bottom:max(12px,env(safe-area-inset-bottom,0px));font:400 11px/1 "IBM Plex Mono",Menlo,monospace;letter-spacing:.1em;color:var(--soft);pointer-events:none;text-transform:uppercase}
+.rail{position:fixed;z-index:2;right:max(10px,env(safe-area-inset-right,0px));top:50%;width:2px;height:28vh;transform:translateY(-50%);background:rgba(20,19,17,.12)}
+.rail i{position:absolute;left:0;top:0;width:2px;background:var(--ink);height:0}
+*{box-sizing:border-box}
+html,body{margin:0}
+.home{position:fixed;top:max(22px,env(safe-area-inset-top,0px));left:max(24px,env(safe-area-inset-left,0px));z-index:5;color:var(--ink)}
+.home svg{width:34px;height:auto;display:block}
+.beat{padding-top:max(76px,env(safe-area-inset-top,0px))}
+.ask{position:fixed;z-index:5;top:max(20px,env(safe-area-inset-top,0px));right:max(18px,env(safe-area-inset-right,0px));width:32px;height:32px;border-radius:50%;border:1px solid #d9d6cf;background:rgba(250,249,246,.9);color:var(--ink);font:500 14px/1 "IBM Plex Mono",monospace;cursor:pointer}
+.help{position:fixed;z-index:8;left:50%;top:50%;transform:translate(-50%,-50%);width:min(400px,calc(100vw - 32px));background:var(--paper);border:1px solid #d9d6cf;padding:18px 20px 16px;font-family:"IBM Plex Mono",Menlo,monospace}
+.help[hidden]{display:none}
+.help .kicker{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--soft);margin:0 0 6px}
+.help h2{font:800 24px/1 "Anybody",Impact,sans-serif;font-stretch:125%;margin:0 0 10px}
+.help .lede{font-size:13px;line-height:1.5;margin:0 0 12px}
+.help dl{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;margin:0 0 12px;font-size:12px;line-height:1.45}
+.help dt{color:var(--ink);font-weight:500}
+.help dd{margin:0;color:#3d3b36}
+.help .credit{font-size:11px;line-height:1.5;color:var(--soft);margin:0 0 12px}
+.help .credit a{color:inherit}
+.help .btns{display:grid;gap:8px}
+.help .btns button{font:500 12px/1 "IBM Plex Mono",monospace;letter-spacing:.12em;text-transform:uppercase;padding:12px 14px;cursor:pointer;border:0;background:var(--ink);color:var(--paper)}
+.help .btns button.quiet{background:none;color:var(--ink);border:1px solid #d9d6cf}
+.help .status{font-size:11px;min-height:1.4em;margin:8px 0 0;color:var(--ink)}
+.help .x{position:sticky;top:0;float:right;z-index:1;width:30px;height:30px;margin:-6px -8px 0 8px;border-radius:50%;border:1px solid #d9d6cf;background:var(--paper);color:var(--ink);font:400 18px/1 sans-serif;cursor:pointer}
+video#cam{position:fixed;z-index:4;right:max(14px,env(safe-area-inset-right,0px));top:max(62px,env(safe-area-inset-top,0px));width:120px;height:90px;object-fit:cover;transform:scaleX(-1);border:1px solid #d9d6cf;opacity:.85}
+video#cam[hidden]{display:none}
+@media (max-width:700px){
+  .help{top:auto;bottom:12px;transform:translateX(-50%);max-height:calc(100dvh - 90px);overflow:auto;padding:14px 16px}
+  video#cam{width:80px;height:60px}
+}
+@media (max-width:700px),(pointer:coarse){input:not([type=range]):not([type=file]):not([type=checkbox]),select,textarea{font-size:16px!important}}
+</style>
+
+<canvas id="cv" aria-label="The Sea of Grass mark over a field of grass; scrolling cuts it apart, the grass bends under your pointer or finger"></canvas>
+
+<a class="home" href="/preview/lab/" aria-label="Sea of Grass — all studies">
+  <svg viewBox="43.63 44.56 350.94 258.56" fill="currentColor" aria-hidden="true">
+    <path d="M 60.1360,299.5890 C 40.8560,283.5000 37.9720,248.8600 54.1230,229.1250 C 61.9590,219.4780 73.2066,213.0913 85.9080,212.4050 L 279.9170,212.3880 C 292.7328,211.6894 302.2259,200.5242 302.6140,188.1740 C 303.0171,175.3461 294.1087,163.3937 280.9850,162.4350 L 160.3860,162.3770 C 155.6830,162.3750 152.4580,158.1300 152.2660,154.1930 C 152.0640,150.0420 155.5000,145.5160 160.3230,145.5160 L 323.2740,145.5180 C 363.5090,146.7569 394.2264,180.5210 394.5670,220.2810 C 394.9023,259.4236 360.4620,297.7100 320.2520,299.1580 C 320.2520,299.1580 69.9310,307.7640 60.1360,299.5890 Z"/>
+    <path d="M 365.1390,47.9780 C 360.1170,47.5130 354.1470,47.1080 347.4230,46.7550 C 274.7440,42.9430 114.0820,45.2510 114.0820,45.2510 C 73.9994,46.9759 43.7290,80.8860 43.6260,120.3040 C 43.5230,159.4680 73.5199,193.9418 113.3820,195.4730 L 277.3270,195.8440 C 282.2870,195.8440 285.7460,192.0070 285.9600,187.6500 C 286.1670,183.4310 282.8680,178.9500 277.9760,178.9480 L 158.2750,178.9140 C 145.3037,178.2644 135.8119,166.8014 135.6040,154.2420 C 135.3960,141.6768 144.3477,129.9059 157.2620,128.9900 L 350.1640,128.8050 C 352.3160,128.8030 354.4280,128.6110 356.4990,128.2740 C 366.7370,126.6070 375.8830,121.0490 382.8160,113.4590 C 390.0330,105.5580 394.4238,95.7293 394.5320,85.6870 C 394.7250,67.7708 381.6430,52.8390 365.1390,47.9780 Z"/>
+    <circle cx="357.983" cy="86.686" r="36.548"/>
+  </svg>
+</a>
+<button class="ask" id="ask" aria-label="About this study">?</button>
+<div class="help" id="help" role="dialog" aria-label="About Grass Cut">
+  <p class="kicker">Unlisted study · Sea of Grass</p>
+  <h2>Grass Cut</h2>
+  <p class="lede">Scroll, and gusts of grass slice the mark apart in slow motion; scroll on and it closes up.</p>
+  <dl>
+    <dt>scroll</dt><dd>plays the cut forwards; scroll up to rewind</dd>
+    <dt>pointer</dt><dd>the grass parts and bends where your pointer or finger moves</dd>
+    <dt>hands</dt><dd>open the camera and your fingertips sweep the grass instead</dd>
+  </dl>
+  <p class="credit">Grass from the Windrow study; the move after a Blender fruit-cut commercial. Hand tracking: <a href="https://ai.google.dev/edge/mediapipe/solutions/vision/hand_landmarker">MediaPipe</a>, in your browser; no frame leaves this tab.</p>
+  <div class="btns"><button id="begin">Begin</button><button id="go" class="quiet">Open the camera</button></div>
+  <p class="status" id="status"></p>
+</div>
+<video id="cam" playsinline muted hidden></video>
+<div class="rail" aria-hidden="true"><i id="railfill"></i></div>
+<div class="hud" id="hud">scroll</div>
+
+<main class="track">
+  <section class="beat"><div class="card"><p class="lab">Sea of Grass · Grass Cut</p><h1 class="big">Touch the grass.</h1><p>Move your pointer or finger through the field. Then scroll.</p></div></section>
+  <section class="beat low"><div class="card"><p class="lab">01 · the gust</p><h2 class="big">Wind runs through it.</h2><p>Two gusts tear the grass up into spirals and slice the mark.</p></div></section>
+  <section class="beat"><div class="card"><p class="lab">02 · slow motion</p><h2 class="big">Cut by rule.</h2><p>Every cut sits on one angle; the torn blades spray on the golden angle. Rich, but governed.</p></div></section>
+  <section class="beat low"><div class="card"><p class="lab">03 · played live</p><h2 class="big">Nothing here is footage.</h2><p>It is drawn as you scroll, the way the studio plays visuals live.</p></div></section>
+  <section class="beat"><div class="card"><p class="lab">04 · back together</p><h2 class="big">It closes up.</h2><p>Scroll back up and it all comes apart again.</p></div></section>
+  <section class="beat low"><div class="card"><p class="lab">Sea of Grass · Northern Colorado</p><h2 class="big">Rich animation, played live.</h2>
+    <div class="cta"><a class="go" href="/preview/lab/">All the studies</a></div></div></section>
+</main>
+
+<script>
+(()=>{
+const TAU=Math.PI*2, GA=Math.PI*(3-Math.sqrt(5)), INK='20,19,17';
+const P1=new Path2D('M 60.1360,299.5890 C 40.8560,283.5000 37.9720,248.8600 54.1230,229.1250 C 61.9590,219.4780 73.2066,213.0913 85.9080,212.4050 L 279.9170,212.3880 C 292.7328,211.6894 302.2259,200.5242 302.6140,188.1740 C 303.0171,175.3461 294.1087,163.3937 280.9850,162.4350 L 160.3860,162.3770 C 155.6830,162.3750 152.4580,158.1300 152.2660,154.1930 C 152.0640,150.0420 155.5000,145.5160 160.3230,145.5160 L 323.2740,145.5180 C 363.5090,146.7569 394.2264,180.5210 394.5670,220.2810 C 394.9023,259.4236 360.4620,297.7100 320.2520,299.1580 C 320.2520,299.1580 69.9310,307.7640 60.1360,299.5890 Z'), P2=new Path2D('M 365.1390,47.9780 C 360.1170,47.5130 354.1470,47.1080 347.4230,46.7550 C 274.7440,42.9430 114.0820,45.2510 114.0820,45.2510 C 73.9994,46.9759 43.7290,80.8860 43.6260,120.3040 C 43.5230,159.4680 73.5199,193.9418 113.3820,195.4730 L 277.3270,195.8440 C 282.2870,195.8440 285.7460,192.0070 285.9600,187.6500 C 286.1670,183.4310 282.8680,178.9500 277.9760,178.9480 L 158.2750,178.9140 C 145.3037,178.2644 135.8119,166.8014 135.6040,154.2420 C 135.3960,141.6768 144.3477,129.9059 157.2620,128.9900 L 350.1640,128.8050 C 352.3160,128.8030 354.4280,128.6110 356.4990,128.2740 C 366.7370,126.6070 375.8830,121.0490 382.8160,113.4590 C 390.0330,105.5580 394.4238,95.7293 394.5320,85.6870 C 394.7250,67.7708 381.6430,52.8390 365.1390,47.9780 Z');
+const CX=216, CY=175, DOT={x:357.983,y:86.686,r:36.548};
+const cv=document.getElementById('cv'), c=cv.getContext('2d');
+let W=0,H=0,DPR=1,U=1,MY=.4;
+function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+const cl=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)), seg=(t,a,b)=>cl((t-a)/(b-a)), lerp=(a,b,x)=>a+(b-a)*x;
+const io=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2, oq=x=>1-Math.pow(1-x,4), slow=x=>1-Math.pow(1-x,2.2);
+const view={r:0};
+function markToScreen(x,y){const dx=x-CX,dy=y-CY,cr=Math.cos(view.r),sr=Math.sin(view.r);return{x:W/2+(dx*cr-dy*sr)*U,y:H*MY+(dx*sr+dy*cr)*U};}
+
+// ---- Windrow's field (css px) ----
+const BANDS=7; let blades=[];
+function plant(){
+  const r=rng(42), horizon=H*(H>W?.6:.5), count=Math.round(Math.min(6500,(W*(H-horizon))/52));
+  blades=[];
+  for(let i=0;i<count;i++){const depth=Math.pow(r(),.8),y=horizon+depth*(H-horizon)+6,x=r()*(W+40)-20,h=(10+depth*42)*(.7+r()*.6)*Math.max(.8,H/620),rest=(r()-.5)*.25;
+    blades.push({x,y,h,rest,a:rest,w:0,band:Math.min(BANDS-1,Math.floor(depth*BANDS)),phase:r()*TAU});}
+  blades.sort((p,q)=>p.y-q.y);
+}
+function stepField(now,tips){
+  const rr=Math.max(70,Math.min(W,H)*.13),r2=rr*rr;
+  for(const b of blades){
+    const breeze=Math.sin(now*.0009+b.x*.006+b.phase*.3)*.06+Math.sin(now*.0023+b.y*.01)*.025;
+    let force=(b.rest+breeze-b.a)*.045;
+    const mx=b.x+Math.sin(b.a)*b.h*.5,my=b.y-Math.cos(b.a)*b.h*.5;
+    for(const p of tips){const dx=mx-p.x,dy=my-p.y,d2=dx*dx+dy*dy;if(d2>r2)continue;const f=1-Math.sqrt(d2)/rr,f2=f*f;
+      force+=p.vx*.0045*f2*p.k;force+=Math.sign(dx||1)*.02*f2*p.k;}
+    b.w=(b.w+force)*.86;b.a=Math.max(-1.35,Math.min(1.35,b.a+b.w));
+  }
+}
+function drawField(bandFrom,bandTo){
+  c.lineCap='round';
+  for(let band=bandFrom;band<=bandTo;band++){const k=band/(BANDS-1);
+    c.strokeStyle=`rgba(${INK},${.18+k*.62})`;c.lineWidth=.6+k*.9;c.beginPath();
+    for(const b of blades){if(b.band!==band)continue;const sx=Math.sin(b.a),cy=Math.cos(b.a),tx=b.x+sx*b.h,ty=b.y-cy*b.h;
+      c.moveTo(b.x,b.y);c.quadraticCurveTo(b.x+Math.sin(b.a*.45)*b.h*.55,b.y-b.h*.6,tx,ty);}
+    c.stroke();}
+}
+
+// ---- the cut (mark units) ----
+const M=Math.tan(-12*Math.PI/180), CUTS=[112,172,236];
+const cutY=(c0,x)=>c0+M*(x-CX);
+const PIECES=[
+  {band:[-1e3,CUTS[0]], to:[-34,-62], rot:-.2, flip:.5},
+  {band:[CUTS[0],CUTS[1]], to:[40,-16], rot:.1, flip:-.45},
+  {band:[CUTS[1],CUTS[2]], to:[-44,28], rot:-.12, flip:.5},
+  {band:[CUTS[2],1e3], to:[26,74], rot:.18, flip:-.55},
+  {dot:1, to:[118,-96], rot:2.4, flip:1.4},
+];
+function bandPath(a,b){const p=new Path2D(),x0=-400,x1=800;p.moveTo(x0,cutY(a,x0));p.lineTo(x1,cutY(a,x1));p.lineTo(x1,cutY(b,x1));p.lineTo(x0,cutY(b,x0));p.closePath();return p;}
+function clipPiece(pc){
+  if(pc.dot){c.beginPath();c.arc(DOT.x,DOT.y,DOT.r+1.5,0,TAU);c.clip();return;}
+  c.clip(bandPath(pc.band[0],pc.band[1]));
+  const ex=new Path2D();ex.rect(-1e3,-1e3,3e3,3e3);ex.arc(DOT.x,DOT.y,DOT.r+1.5,0,TAU);c.clip(ex,'evenodd');
+}
+const BOTH=new Path2D();BOTH.addPath(P1);BOTH.addPath(P2);
+function drawMark(fill){c.fillStyle=fill;c.fill(P1);c.fill(P2);}
+const side=k=>`rgb(${120+k*4},${117+k*4},${110+k*4})`;
+function drawWhole(){for(let k=10;k>0;k--){c.save();c.translate(k*.45,k*.55);drawMark(side(10-k));c.restore();}drawMark('#141311');}
+function drawPiece(pc,s){
+  const flip=Math.cos(pc.flip*s*Math.PI*.5+(pc.dot?s*3:0)), sy=lerp(1,Math.max(.18,Math.abs(flip)),s);
+  const ox=pc.dot?DOT.x:CX, oy=pc.dot?DOT.y:(pc.band[0]<-500?CUTS[0]-30:pc.band[1]>500?CUTS[2]+30:(pc.band[0]+pc.band[1])/2);
+  c.save();c.translate(ox+pc.to[0]*s,oy+pc.to[1]*s);c.rotate(pc.rot*s);c.scale(1,sy);c.translate(-ox,-oy);
+  const depth=Math.round(10+14*s), dirY=flip>=0?1:-1;
+  for(let k=depth;k>0;k--){c.save();c.translate(k*.45,k*.55*dirY/Math.max(sy,.3));clipPiece(pc);drawMark(side(Math.max(0,10-k)));c.restore();}
+  c.save();clipPiece(pc);drawMark('#141311');
+  const show=cl(s*3)*(.35+.65*(1-sy));
+  if(show>0&&!pc.dot){c.globalAlpha=cl(show*3);c.strokeStyle='#b6f200';c.lineWidth=10;c.save();c.clip(BOTH);
+    for(const k of pc.band) if(Math.abs(k)<500){c.beginPath();c.moveTo(-400,cutY(k,-400));c.lineTo(800,cutY(k,800));c.stroke();}
+    c.restore();c.globalAlpha=1;}
+  if(pc.dot&&s>0){c.globalAlpha=cl(s*4*(1-Math.abs(flip))*2);c.fillStyle='#b6f200';c.beginPath();c.arc(DOT.x,DOT.y,DOT.r*.8,0,TAU);c.fill();c.globalAlpha=1;}
+  c.restore();c.restore();
+}
+
+// ---- torn blades: helix ribbons drawn as Windrow hairlines ----
+const RIB=[0,1].map(i=>{const r=rng(11+i*7),b=[];for(let X=-560;X<=560;X+=3.2)b.push({X:X+r()*3,off:(r()-.5)*2,len:.6+r()*.8,ang:(r()-.5)*.5,bend:(r()-.5)*.6,ph:r()*TAU});
+  return{b,R:i?112:152,tilt:i?.42:-.3,k:TAU/(i?330:410),ph:i?2.1:0,spin:i?-.9:.7,dir:i?-1:1,width:i?14:18};});
+function ribbonPoint(rb,X,t){const th=X*rb.k+rb.ph+t*rb.spin,ly=rb.R*Math.sin(th),z=rb.R*Math.cos(th),ca=Math.cos(rb.tilt),sa=Math.sin(rb.tilt),xx=X*rb.dir;return{x:CX+xx*ca-ly*sa,y:CY+xx*sa+ly*ca,z};}
+function ribbonHead(rb,head,t){const hx=lerp(-600,600,head);return ribbonPoint(rb,Math.min(hx,560),t);}
+function drawRibbons(t,head,front){
+  const groups=Array.from({length:BANDS},()=>[]);
+  for(const rb of RIB){const hx=lerp(-600,600,head);
+    for(const bl of rb.b){if(bl.X>hx)continue;const p=ribbonPoint(rb,bl.X,t);if((p.z>0)!==front)continue;
+      const taper=Math.min(1,(hx-bl.X)/90,(bl.X+560)/90);if(taper<=0)continue;
+      const q=ribbonPoint(rb,bl.X+3,t),tan=Math.atan2(q.y-p.y,q.x-p.x),nx=-Math.sin(tan),ny=Math.cos(tan);
+      const mx=p.x+nx*bl.off*rb.width*taper,my=p.y+ny*bl.off*rb.width*taper;
+      const band=Math.min(BANDS-1,Math.floor((p.z/rb.R+1)/2*BANDS));
+      groups[band].push([mx,my,tan+bl.ang+Math.sin(t*3+bl.ph)*.25,bl.len*taper*(1+p.z/700),bl.bend]);}
+  }
+  c.lineCap='round';
+  groups.forEach((g,band)=>{if(!g.length)return;const k=band/(BANDS-1);c.strokeStyle=`rgba(${INK},${.25+k*.7})`;c.lineWidth=(.5+k*.9)/U;c.beginPath();
+    for(const [x,y,a,len,bend] of g){const L=42*len,ca=Math.cos(a),sa=Math.sin(a),tx=x+ca*L,ty=y+sa*L;c.moveTo(x,y);c.quadraticCurveTo(x+ca*L*.55-sa*bend*L*.4,y+sa*L*.55+ca*bend*L*.4,tx,ty);}
+    c.stroke();});
+}
+const SPR=(()=>{const r=rng(5),a=[];for(let i=0;i<300;i++){const ci=i%3,x0=40+r()*360;a.push({x:x0,y:cutY(CUTS[ci],x0),dir:i*GA,sp:110+r()*330,len:10+r()*20,rot:r()*TAU,wr:(r()-.5)*7,bend:(r()-.5)*.5,front:r()<.5,band:Math.floor(r()*BANDS)});}return a;})();
+function drawSpray(sep,front){
+  if(sep<=0)return;const e=oq(sep);c.lineCap='round';
+  for(let band=0;band<BANDS;band++){const k=band/(BANDS-1);c.strokeStyle=`rgba(${INK},${(.25+k*.7)*cl(sep*6)})`;c.lineWidth=(.5+k*.9)/U;c.beginPath();
+    for(const p of SPR){if(p.front!==front||p.band!==band)continue;
+      const x=p.x+Math.cos(p.dir)*p.sp*e,y=p.y+Math.sin(p.dir)*p.sp*e*.8+40*sep*sep,a=p.rot+p.wr*sep,ca=Math.cos(a),sa=Math.sin(a),L=p.len;
+      c.moveTo(x,y);c.quadraticCurveTo(x+ca*L*.55-sa*p.bend*L*.4,y+sa*L*.55+ca*p.bend*L*.4,x+ca*L,y+sa*L);}
+    c.stroke();}
+}
+
+
+// ---- scroll -> film time ----
+// The page is the timeline: 0 → 5.0 s cuts it apart in slow motion, 5.0 → 7.9 s closes it.
+function S(t){if(t<.4)return 0;if(t<4.6)return slow(seg(t,.4,4.6));if(t<5.2)return 1;return 1-io(seg(t,5.2,7.9));}
+const TMAX=7.9;
+function scrollT(){const max=Math.max(1,document.documentElement.scrollHeight-innerHeight);return cl(scrollY/max)*TMAX;}
+let tShow=scrollT(), tPrev=tShow;
+
+// ---- the viewer's hand: pointer or touch, like Windrow's mouse mode ----
+let ptr=null; const pprev={x:0,y:0,has:false};
+function setPtr(x,y){const vx=pprev.has?x-pprev.x:0,vy=pprev.has?y-pprev.y:0;ptr={x,y,vx,vy,k:1};pprev.x=x;pprev.y=y;pprev.has=true;}
+addEventListener('pointermove',e=>setPtr(e.clientX,e.clientY),{passive:true});
+addEventListener('touchmove',e=>{const t=e.touches[0];if(t)setPtr(t.clientX,t.clientY);},{passive:true});
+addEventListener('touchstart',e=>{const t=e.touches[0];if(t){pprev.has=false;setPtr(t.clientX,t.clientY);}},{passive:true});
+addEventListener('pointerleave',()=>{ptr=null;pprev.has=false;});
+addEventListener('touchend',()=>{pprev.has=false;});
+
+// the gusts are the two ribbon heads, moving only as fast as you scroll
+function gusts(t0,t1){
+  const out=[];const h0=cl(S(t0)/.42),h1=cl(S(t1)/.42);
+  if(h1>0&&h1<1&&Math.abs(t1-t0)>1e-4){
+    for(const rb of RIB){const a0=ribbonHead(rb,h0,t0),a1=ribbonHead(rb,h1,t1);const A=markToScreen(a0.x,a0.y),B=markToScreen(a1.x,a1.y);
+      const vx=cl(B.x-A.x,-60,60),vy=cl(B.y-A.y,-60,60);
+      out.push({x:B.x,y:B.y,vx,vy,k:1.4});out.push({x:B.x,y:Math.max(B.y,H*.72),vx,vy,k:.9});}
+  }
+  return out;
+}
+
+
+// ---- hands, as in Windrow: the camera opens only on the button ----
+const MP="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14";
+const MODEL="https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task";
+const TIPS=[4,8,12,16,20];let landmarker=null,lastVT=-1;const video=document.getElementById('cam'),hprev=new Map();let handTips=[];
+function readHands(now){
+  if(!landmarker||video.readyState<2||video.currentTime===lastVT)return;lastVT=video.currentTime;
+  const res=landmarker.detectForVideo(video,now),pts=[];
+  (res.landmarks||[]).forEach((hand,h)=>{for(const i of TIPS){const lm=hand[i],x=(1-lm.x)*W,y=lm.y*H,key=h+':'+i,o=hprev.get(key);pts.push({key,x,y,vx:o?x-o.x:0,vy:o?y-o.y:0,k:1});}});
+  hprev.clear();for(const p of pts)hprev.set(p.key,{x:p.x,y:p.y});handTips=pts;
+}
+const help=document.getElementById('help'),status=document.getElementById('status');
+const closeHelp=()=>{help.hidden=true;};
+document.getElementById('begin').onclick=closeHelp;
+document.getElementById('ask').onclick=()=>{help.hidden=!help.hidden;};
+const x=document.createElement('button');x.className='x';x.type='button';x.textContent='×';x.setAttribute('aria-label','Close');x.onclick=closeHelp;help.prepend(x);
+addEventListener('pointerdown',e=>{if(help.hidden||help.contains(e.target)||e.target.closest('#ask'))return;closeHelp();});
+addEventListener('keydown',e=>{if(e.key==='Escape')closeHelp();});
+document.getElementById('go').onclick=async()=>{
+  const go=document.getElementById('go');go.disabled=true;status.textContent='Asking for the camera…';let stream;
+  try{stream=await navigator.mediaDevices.getUserMedia({video:{width:{ideal:640},height:{ideal:480},facingMode:'user'},audio:false});}
+  catch(e){status.textContent="The camera wasn't allowed. Your pointer or finger still works.";go.disabled=false;return;}
+  video.srcObject=stream;await video.play();status.textContent='Loading the hand tracker…';
+  try{const {HandLandmarker,FilesetResolver}=await import(MP+'/vision_bundle.mjs');const files=await FilesetResolver.forVisionTasks(MP+'/wasm');
+    landmarker=await HandLandmarker.createFromOptions(files,{baseOptions:{modelAssetPath:MODEL,delegate:'GPU'},runningMode:'VIDEO',numHands:2});}
+  catch(e){status.textContent="The hand tracker didn't load. Your pointer or finger still works.";stream.getTracks().forEach(t=>t.stop());go.disabled=false;return;}
+  video.hidden=false;status.textContent='';closeHelp();
+};
+function frame(now){
+  const target=scrollT();tPrev=tShow;tShow+= (target-tShow)*.14; if(Math.abs(target-tShow)<1e-4)tShow=target;
+  const t=tShow, s=S(t), head=cl(s/.42), sep=cl((s-.3)/.7);
+  const portrait=H>W; U=portrait?Math.min(W/500,H/520):Math.min(W/900,H/540); MY=portrait?.5:.42;
+  view.r=.02*Math.sin(t/TMAX*TAU); U*=1+.06*Math.sin(Math.PI*cl(t/TMAX));
+  readHands(now);const tips=gusts(tPrev,t).concat(handTips); if(ptr){tips.push(ptr);ptr={...ptr,vx:ptr.vx*.6,vy:ptr.vy*.6};}
+  stepField(now,tips);
+  c.setTransform(DPR,0,0,DPR,0,0);c.fillStyle='#faf9f6';c.fillRect(0,0,W,H);
+  drawField(0,3);
+  const enter=()=>{c.save();c.translate(W/2,H*MY);c.rotate(view.r);c.scale(U,U);c.translate(-CX,-CY);};
+  enter();drawRibbons(t,head,false);drawSpray(sep,false);
+  if(sep<=0)drawWhole();else{const order=PIECES.map((p,i)=>i).sort((a,b)=>PIECES[a].flip-PIECES[b].flip);for(const i of order)drawPiece(PIECES[i],sep);}
+  c.restore();
+  drawField(4,6);
+  enter();drawRibbons(t,head,true);drawSpray(sep,true);c.restore();
+  if(ptr){c.fillStyle='rgba(20,19,17,.35)';c.beginPath();c.arc(ptr.x,ptr.y,3.5,0,TAU);c.fill();}
+  document.getElementById('railfill').style.height=(t/TMAX*100)+'%';
+  document.getElementById('hud').textContent=t<.05?'scroll':(t.toFixed(2)+' s');
+  requestAnimationFrame(frame);
+}
+function size(){DPR=Math.min(2,devicePixelRatio||1);W=innerWidth;H=cv.clientHeight||innerHeight;cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);plant();}
+let lastW=0;addEventListener('resize',()=>{if(innerWidth!==lastW||Math.abs((cv.clientHeight||0)-H)>120){lastW=innerWidth;size();}});
+lastW=innerWidth;size();
+requestAnimationFrame(frame);
+})();
+</script>

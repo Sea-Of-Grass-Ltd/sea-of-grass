@@ -1,0 +1,2071 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex,nofollow">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-61Q2DRMD3H"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-61Q2DRMD3H');
+</script>
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Grasset — Sea of Grass</title>
+<meta name="description" content="A study after Eugène Grasset: a calendar frame of live panels, seasons and plants." />
+<meta name="theme-color" content="#F2E4C8" /><link rel="icon" href="/preview/assets/favicon.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --paper:#F2E4C8; --cream:#F6EAD0; --window:#F4E7CC; --yellow:#ECD9A0; --cap:#E9D38A;
+  --ink:#2A231E; --black:#171411; --orange:#D08F69; --rust:#BF5B2C; --red:#A63E22;
+  --sq:#A9BCC0; --sage:#B4B472; --salmon:#E88B8B;
+  --vase:#F0DFAD; --clay:#D8B092;
+  --ink-soft:color-mix(in srgb, var(--ink) 58%, transparent); --line:color-mix(in srgb, var(--ink) 22%, transparent);
+  --u:calc(100cqw / 800);            /* one artboard unit, inside the stage */
+}
+*{box-sizing:border-box;}
+html,body{margin:0;background:var(--paper);color:var(--ink);overflow-x:clip;}
+body{min-height:100vh;min-height:100dvh;font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+     -webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;}
+button{font:inherit;color:inherit;}
+
+/* ---- the lockup: one 800x1440 artboard, scaled to fit the screen whole */
+.wrap{display:grid;place-items:center;min-height:100vh;min-height:100dvh;padding:0;}
+.stage{position:relative;container-type:inline-size;aspect-ratio:var(--vbw)/var(--vbh);
+       width:min(100vw, calc(100dvh * var(--vbw) / var(--vbh)));}
+.layer{position:absolute;inset:0;width:100%;height:100%;}
+svg.layer{display:block;overflow:visible;}
+.over{pointer-events:none;}
+.plants3d{pointer-events:none;display:block;opacity:0;transition:opacity .8s ease;}
+/* the painted PNGs are the fallback: they fade out as the 3D plants fade in */
+.png-art{transition:opacity .8s ease;}
+.three-ready .plants3d{opacity:1;}
+.three-ready .png-art{opacity:0;}
+.live > *{position:absolute;display:block;}
+.live canvas{image-rendering:auto;}
+.live svg{overflow:visible;}
+.ui{pointer-events:none;}
+.ui > *{pointer-events:auto;}
+
+/* ---- the frame's colours follow the season: its SVG fills are mapped onto
+   the palette variables, which live.js turns with the season slider */
+.layer.base [fill="#F6EAD0" i],.layer.over [fill="#F6EAD0" i]{fill:var(--cream);}
+/* the pediment and cap band: one flat colour with the column for now, no outlines */
+.layer.base [fill="#E9D38A" i]:not(line),.layer.over [fill="#E9D38A" i]:not(line){fill:var(--yellow);stroke:var(--yellow);}
+.layer.base [fill="#ECD9A0" i],.layer.over [fill="#ECD9A0" i]{fill:var(--yellow);}
+.layer.base [fill="#F4E7CC" i],.layer.over [fill="#F4E7CC" i]{fill:var(--window);}
+.layer.base [fill="#F0DFAD" i],.layer.over [fill="#F0DFAD" i]{fill:var(--vase);}
+.layer.base [fill="#D8B092" i],.layer.over [fill="#D8B092" i]{fill:var(--clay);}
+.layer.base [fill="#171411" i],.layer.over [fill="#171411" i]{fill:var(--black);}
+.layer.base [stroke="#2A231E" i],.layer.over [stroke="#2A231E" i]{stroke:var(--ink);}
+.layer.base [stroke="#000000" i]{stroke:var(--ink);}
+
+/* ---- studies, in the window */
+.window{position:absolute;left:calc(var(--u)*370);top:calc(var(--u)*(322 + var(--oy)));width:calc(var(--u)*222);}
+.window .head{display:flex;justify-content:space-between;margin:0;padding-bottom:calc(var(--u)*9);
+  border-bottom:calc(var(--u)*1.6) solid var(--ink);font-size:calc(var(--u)*11);font-weight:500;
+  text-transform:uppercase;letter-spacing:.14em;}
+.window .count{font-weight:400;color:var(--ink-soft);letter-spacing:0;font-variant-numeric:tabular-nums;}
+.window ol{list-style:none;margin:0;padding:0;}
+.window li{border-bottom:calc(var(--u)*1) solid var(--line);}
+.window a{display:flex;align-items:baseline;color:inherit;text-decoration:none;text-transform:uppercase;
+  font-weight:500;font-size:calc(var(--u)*11.5);letter-spacing:.05em;padding:calc(var(--u)*11) 0;}
+.window .n{width:calc(var(--u)*30);flex:none;color:var(--ink-soft);font-weight:400;font-size:.8em;font-variant-numeric:tabular-nums;}
+.window a:hover .t,.window a:focus-visible .t,.window a[aria-current] .t{text-decoration:underline;text-underline-offset:.22em;text-decoration-thickness:1px;}
+.window a:focus-visible{outline:1px solid var(--ink);outline-offset:3px;}
+/* the blurb sits on the patterned panel: full ink, with a cream halo to read over it */
+.window .blurb{margin:calc(var(--u)*22) 0 0;font-size:calc(var(--u)*10.5);font-weight:500;line-height:1.55;color:var(--ink);min-height:3.2em;
+  text-shadow:0 0 3px var(--window),0 0 6px var(--window),0 0 10px var(--window);}
+
+/* ---- sliders on the frame: ink line, salmon knob (the sheet's slider mark) */
+.slider{position:absolute;touch-action:none;cursor:pointer;outline:none;}
+.slider .knob{position:absolute;width:calc(var(--u)*14);height:calc(var(--u)*14);margin:calc(var(--u)*-7) 0 0 calc(var(--u)*-7);
+  border-radius:50%;background:var(--salmon);border:calc(var(--u)*2.2) solid var(--ink);
+  box-shadow:0 calc(var(--u)*1.5) 0 rgba(42,35,30,.35);transition:transform .12s;}
+.slider:hover .knob,.slider.drag .knob{transform:scale(1.25);}
+.slider:focus-visible .knob{outline:1.5px solid var(--ink);outline-offset:2px;}
+.slider .read{position:absolute;white-space:nowrap;transform:translate(-50%,-100%);margin-top:calc(var(--u)*-12);
+  padding:calc(var(--u)*3) calc(var(--u)*6);background:var(--ink);color:var(--cream);font-size:calc(var(--u)*9);
+  letter-spacing:.08em;text-transform:uppercase;opacity:0;pointer-events:none;transition:opacity .15s;}
+.slider.drag .read,.slider:focus-visible .read{opacity:1;}
+.slider.v .read{transform:translate(-100%,-50%);margin:0 0 0 calc(var(--u)*-14);}
+.slider.v{border:calc(var(--u)*1) solid var(--ink);
+  background:
+    radial-gradient(circle at 22% 12%, color-mix(in srgb, #fff calc(var(--stars,0)*100%), transparent) 0 calc(var(--u)*.7), transparent calc(var(--u)*1)),
+    radial-gradient(circle at 78% 30%, color-mix(in srgb, #fff calc(var(--stars,0)*80%), transparent) 0 calc(var(--u)*.6), transparent calc(var(--u)*.9)),
+    radial-gradient(circle at 40% 55%, color-mix(in srgb, #fff calc(var(--stars,0)*70%), transparent) 0 calc(var(--u)*.5), transparent calc(var(--u)*.8)),
+    radial-gradient(circle at 85% 72%, color-mix(in srgb, #fff calc(var(--stars,0)*90%), transparent) 0 calc(var(--u)*.6), transparent calc(var(--u)*.9)),
+    linear-gradient(var(--sky-top,#2A231E), var(--sky-bot,#2A231E));}
+/* the season knob is the sun, and by winter the moon, with a little glow */
+.slider.v .knob{background:var(--sun,var(--salmon));box-shadow:0 0 calc(var(--u)*6) color-mix(in srgb, var(--sun,var(--salmon)) 70%, transparent);}
+.slider.v .track{position:absolute;left:var(--tx,50%);top:calc(var(--u)*10);bottom:calc(var(--u)*21);width:calc(var(--u)*1.4);margin-left:calc(var(--u)*-.7);background:var(--cream);}
+.slider .ticks{position:absolute;inset:0;pointer-events:none;}
+.slider.v .tick{left:var(--tx,50%) !important;width:calc(var(--u)*9);height:calc(var(--u)*1.2);margin:calc(var(--u)*-.6) 0 0 calc(var(--u)*-4.5);background:var(--cream);top:auto;}
+.slider.v .lbl{position:absolute;left:0;right:0;bottom:calc(var(--u)*5);text-align:center;color:var(--cream);font-size:calc(var(--u)*6.4);letter-spacing:.1em;text-transform:uppercase;pointer-events:none;}
+.slider .tick{position:absolute;top:50%;width:calc(var(--u)*1.4);height:calc(var(--u)*7);margin:calc(var(--u)*-3.5) 0 0 calc(var(--u)*-.7);background:var(--ink);}
+
+/* the season icons sit to the left of the track, one per stop */
+.slider.v .ico{position:absolute;left:30%;width:calc(var(--u)*16);height:calc(var(--u)*16);margin:calc(var(--u)*-8) 0 0 calc(var(--u)*-8);
+  color:color-mix(in srgb, var(--cream) 42%, transparent);transition:color .35s ease, transform .35s ease;pointer-events:none;}
+.slider.v .ico svg{display:block;width:100%;height:100%;}
+.slider.v .ico.on{color:var(--salmon);transform:scale(1.18);}
+
+/* ---- the controller box in the frame */
+.cbox{position:absolute;display:flex;flex-direction:column;justify-content:center;gap:calc(var(--u)*5);
+  padding:0 calc(var(--u)*14);background:var(--ink);color:var(--cream);border:calc(var(--u)*2.2) solid var(--yellow);
+  cursor:pointer;text-align:left;text-transform:uppercase;}
+.cbox .ct{display:flex;justify-content:space-between;align-items:center;font-size:calc(var(--u)*13);font-weight:600;letter-spacing:.16em;}
+.cbox .ct i{font-style:normal;font-weight:400;font-size:calc(var(--u)*9);letter-spacing:.1em;color:var(--salmon);}
+.cbox .cl{display:flex;gap:calc(var(--u)*7);font-size:calc(var(--u)*8.5);letter-spacing:.08em;color:rgba(246,234,208,.72);}
+.cbox .cl b{font-weight:500;color:var(--cream);width:calc(var(--u)*16);}
+.cbox .bars{display:flex;gap:calc(var(--u)*4);height:calc(var(--u)*9);align-items:flex-end;}
+.cbox .bars span{flex:1;background:rgba(246,234,208,.18);position:relative;height:100%;}
+.cbox .bars span::after{content:"";position:absolute;left:0;right:0;bottom:0;height:var(--v,50%);background:var(--orange);}
+.cbox:hover{border-color:var(--salmon);}
+.cbox:focus-visible{outline:1.5px solid var(--ink);outline-offset:3px;}
+
+/* ---- the controller: in the window under the studies, laid out like
+   tristan.design's: four tabs (Mode, Shape, Color, Effect), one pane at a time,
+   rounded pills on a soft offset shadow; sized in artboard units */
+.ctl{position:absolute;color:var(--ink);font-size:calc(var(--u)*8.5);display:flex;flex-direction:column;gap:calc(var(--u)*10);
+  padding-top:calc(var(--u)*9);border-top:calc(var(--u)*1.6) solid var(--ink);}
+.ctl.ping{animation:ping .9s ease;}
+@keyframes ping{0%{box-shadow:0 0 0 calc(var(--u)*4) var(--salmon);}100%{box-shadow:0 0 0 calc(var(--u)*14) transparent;}}
+.ctl header{display:flex;align-items:baseline;justify-content:space-between;gap:calc(var(--u)*6);}
+.ctl header b{font-size:calc(var(--u)*10);font-weight:600;letter-spacing:.16em;text-transform:uppercase;}
+/* what's playing: plain words, the one in play underlined in the accent */
+.ctl .targets{display:flex;gap:calc(var(--u)*9);}
+.ctl .targets button{all:unset;cursor:pointer;font-size:calc(var(--u)*7.6);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);
+  padding-bottom:calc(var(--u)*2);border-bottom:calc(var(--u)*1.6) solid transparent;}
+.ctl .targets button[aria-selected="true"]{color:var(--ink);font-weight:600;border-bottom-color:var(--salmon);}
+.ctl .targets button:focus-visible{outline:calc(var(--u)*1.4) solid var(--ink);outline-offset:calc(var(--u)*2);}
+.ctl .row{display:grid;grid-template-columns:repeat(4,1fr);gap:calc(var(--u)*6);}
+.ctl .chip,.ctl .cbtn,.ctl .mname{border:calc(var(--u)*1.3) solid var(--ink);border-radius:calc(var(--u)*999);background:var(--window);color:var(--ink);
+  box-shadow:0 calc(var(--u)*2.2) 0 var(--ink);}
+.ctl .chip{padding:calc(var(--u)*6) calc(var(--u)*2);font-size:calc(var(--u)*7.8);font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:transform .08s, box-shadow .08s, background .2s;}
+.ctl .chip[aria-selected="true"],.ctl .chip[aria-pressed="true"]{background:var(--salmon);color:var(--on-accent, var(--ink));}
+.ctl .chip:active,.ctl .cbtn:active{transform:translateY(calc(var(--u)*1.8));box-shadow:0 calc(var(--u)*.4) 0 var(--ink);}
+.ctl .chip:focus-visible,.ctl .cbtn:focus-visible,.ctl .band:focus-visible{outline:calc(var(--u)*1.6) solid var(--ink);outline-offset:calc(var(--u)*2);}
+.ctl .pane{min-height:calc(var(--u)*118);}
+.ctl .pane[hidden]{display:none;}
+.ctl .moderow{display:grid;grid-template-columns:calc(var(--u)*32) 1fr calc(var(--u)*32);gap:calc(var(--u)*6);align-items:center;margin-top:calc(var(--u)*14);}
+.ctl .cbtn{min-height:calc(var(--u)*32);cursor:pointer;display:grid;place-items:center;font-size:calc(var(--u)*13);padding:0;}
+.ctl .moderow .cbtn{width:calc(var(--u)*32);height:calc(var(--u)*32);}
+.ctl .mname{display:grid;place-items:center;min-height:calc(var(--u)*36);font-size:calc(var(--u)*11);font-weight:600;
+  letter-spacing:.04em;text-align:center;padding:calc(var(--u)*3) calc(var(--u)*8);line-height:1.2;}
+.ctl .mline{display:flex;justify-content:center;gap:calc(var(--u)*8);margin-top:calc(var(--u)*9);font-size:calc(var(--u)*7.6);color:var(--ink-soft);letter-spacing:.02em;}
+.ctl .mline b{font-weight:600;}
+.ctl .keys{margin:0;font-size:calc(var(--u)*6.8);color:var(--ink-soft);letter-spacing:.03em;opacity:.8;}
+.ctl .knobs{display:grid;grid-template-columns:repeat(5,1fr);gap:calc(var(--u)*8);margin-top:calc(var(--u)*2);}
+.ctl .kw{display:flex;flex-direction:column;align-items:center;gap:calc(var(--u)*3);}
+.ctl .kw .kl{font-size:calc(var(--u)*10);line-height:1;}
+.ctl .kw .kn{font-size:calc(var(--u)*6);letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft);min-height:1.2em;}
+.ctl .kw .kv{font-size:calc(var(--u)*7.4);font-variant-numeric:tabular-nums;font-weight:500;}
+.ctl .band{position:relative;width:100%;height:calc(var(--u)*68);background:var(--window);border:calc(var(--u)*1.2) solid var(--ink);border-radius:calc(var(--u)*999);
+  overflow:hidden;touch-action:none;cursor:ns-resize;}
+.ctl .band .fill{position:absolute;left:0;right:0;bottom:0;background:color-mix(in srgb, var(--salmon) 62%, var(--window));}
+.ctl .band .cap{position:absolute;left:50%;width:calc(var(--u)*11);height:calc(var(--u)*11);margin:calc(var(--u)*-5.5) 0 0 calc(var(--u)*-5.5);border-radius:50%;background:var(--salmon);border:calc(var(--u)*1.6) solid var(--ink);}
+.ctl .cols{display:grid;gap:calc(var(--u)*8);margin-top:calc(var(--u)*6);}
+.ctl .colrow{display:grid;grid-template-columns:calc(var(--u)*26) 1fr calc(var(--u)*30) calc(var(--u)*30);gap:calc(var(--u)*6);align-items:center;}
+.ctl .colrow .cbtn{min-height:calc(var(--u)*26);font-size:calc(var(--u)*10);}
+.ctl .sw{width:calc(var(--u)*26);height:calc(var(--u)*26);border:calc(var(--u)*1.3) solid var(--ink);border-radius:50%;}
+.ctl .colrow small{font-size:calc(var(--u)*8);letter-spacing:.1em;text-transform:uppercase;}
+.ctl .pal{margin-top:calc(var(--u)*10);display:flex;flex-wrap:wrap;gap:calc(var(--u)*6);align-items:center;font-size:calc(var(--u)*7.4);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);}
+.ctl .pal .cbtn{font-size:calc(var(--u)*7.4);font-weight:600;letter-spacing:.1em;padding:0 calc(var(--u)*10);min-height:calc(var(--u)*24);text-transform:uppercase;}
+.ctl .pcols{display:flex;gap:calc(var(--u)*3);}
+.ctl .pal span.c{width:calc(var(--u)*10);height:calc(var(--u)*10);border:calc(var(--u)*1) solid var(--ink);border-radius:50%;}
+.ctl .fx{display:grid;grid-template-columns:repeat(3,1fr);gap:calc(var(--u)*7);margin-top:calc(var(--u)*6);}
+.ctl .fx .chip{display:flex;flex-direction:column;align-items:center;gap:calc(var(--u)*3);padding:calc(var(--u)*7) calc(var(--u)*2);border-radius:calc(var(--u)*14);}
+.ctl .fx .chip i{font-style:normal;font-size:calc(var(--u)*11);line-height:1;}
+.ctl .hint{margin:calc(var(--u)*8) 0 0;font-size:calc(var(--u)*7);color:var(--ink-soft);letter-spacing:.02em;line-height:1.4;}
+/* the parts a target plays, outlined for a moment when you pick it */
+.hl{position:absolute;pointer-events:none;border:calc(var(--u)*2.4) solid var(--orange);box-shadow:0 0 0 calc(var(--u)*1.2) var(--ink);animation:hl 1.5s ease forwards;}
+.hl.round{border-radius:50%;}
+@keyframes hl{0%{opacity:0;}15%{opacity:1;}70%{opacity:1;}100%{opacity:0;}}
+@media (prefers-reduced-motion:reduce){.hl,.ctl.ping{animation:none;}}
+
+.credit{position:fixed;left:16px;bottom:12px;margin:0;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:color-mix(in srgb, var(--cream) 60%, transparent);max-width:min(30vw,300px);line-height:1.6;}
+@media (max-width:979px){.credit{display:none;}}
+
+/* ---- the Mirror from Through The Looking Glass, in the arched window: the
+   study's own colours, its lines a little heavier as it's drawn at a third the size */
+#mirror .mstroke{fill:none;stroke-linejoin:round;stroke-linecap:round;}
+#mirror .halo{stroke:#eb3420;stroke-width:8;opacity:.85;filter:url(#mirror-bloom);}
+#mirror .mid{stroke:#eb3420;stroke-width:3.6;}
+#mirror .core{stroke:#ffe6b0;stroke-width:1.8;}
+#mirror .unlit{stroke:#5c2216;stroke-width:2.4;}
+#mirror .pupil{fill:#ffe6b0;}
+#mirror .ray-on{opacity:0;transition:opacity .5s ease;}
+#mirror .ray-on.on{opacity:1;}
+
+/* ---- the study's season buttons: neo-brutalist, to sit with the frame's heavy line */
+.seasons{position:absolute;display:flex;flex-direction:column;justify-content:space-between;padding:calc(var(--u)*2) calc(var(--u)*5) calc(var(--u)*5) calc(var(--u)*2);}
+.seasons button{flex:none;height:calc(var(--u)*31);display:grid;place-items:center;padding:0;cursor:pointer;
+  background:var(--window);color:var(--ink);border:calc(var(--u)*2.2) solid var(--ink);border-radius:calc(var(--u)*3);
+  box-shadow:calc(var(--u)*3) calc(var(--u)*3) 0 var(--ink);transition:transform .08s ease, box-shadow .08s ease, background .25s ease;}
+.seasons button svg{width:calc(var(--u)*18);height:calc(var(--u)*18);}
+.seasons button:hover{transform:translate(calc(var(--u)*-1),calc(var(--u)*-1));box-shadow:calc(var(--u)*4) calc(var(--u)*4) 0 var(--ink);}
+.seasons button[aria-checked="true"]{background:var(--salmon);color:var(--on-accent, var(--ink));
+  transform:translate(calc(var(--u)*3),calc(var(--u)*3));box-shadow:none;}
+.seasons button:focus-visible{outline:calc(var(--u)*1.6) solid var(--ink);outline-offset:calc(var(--u)*2);}
+@media (prefers-reduced-motion:reduce){.seasons button{transition:none;}}
+
+:root{--vbw:800;--vbh:1382;--oy:67;}
+.home{position:fixed;left:24px;top:20px;z-index:6;display:block;width:34px;color:var(--ink-soft);transition:color .18s ease;}
+.home:hover,.home:focus-visible{color:var(--ink);}
+.home svg{display:block;width:100%;height:auto;}
+@media (max-width:640px){.home{left:16px;top:14px;width:26px;}}
+@media (prefers-reduced-motion:reduce){.home{transition-duration:.01ms;}}
+/* the write-up, below the plate: a reading column in the site's conventions */
+.note{max-width:66ch;margin:0 auto;padding:72px 24px 120px;font-size:13px;line-height:1.85;color:var(--ink-soft);}
+.note .kicker{margin:0 0 6px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;}
+.note h1{margin:0 0 18px;font-size:13px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);}
+.note .lead{color:var(--ink);font-size:14px;}
+.note h2{margin:44px 0 14px;padding-top:14px;border-top:1px solid var(--line);font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);}
+.note p{margin:0 0 16px;}
+.note em{font-style:normal;color:var(--ink);}
+.note ul.does{list-style:none;margin:0 0 16px;padding:0;}
+.note ul.does li{padding:9px 0 9px 16px;margin-bottom:2px;border-left:1px solid var(--line);}
+.note ul.does li span{color:var(--ink);font-weight:500;}
+.note .tablewrap{overflow-x:auto;margin:0 0 16px;}
+.note table{width:100%;min-width:520px;border-collapse:collapse;font-size:12px;line-height:1.6;}
+.note th{padding:6px 12px 6px 0;border-bottom:1px solid var(--ink);text-align:left;font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);}
+.note td{padding:8px 12px 8px 0;border-bottom:1px solid var(--line);vertical-align:top;}
+.note td:first-child{width:9em;color:var(--ink);font-weight:500;}
+.note td small{display:block;font-size:11px;font-weight:400;color:var(--ink-soft);}
+@media (max-width:600px){          /* phones: each row stacks as a card, its columns labelled */
+  .note table{min-width:0;} .note thead{display:none;}
+  .note tr,.note td{display:block;width:auto;} .note tr{padding:10px 0;border-bottom:1px solid var(--line);}
+  .note td{padding:2px 0;border:0;} .note td:first-child{width:auto;margin-bottom:4px;}
+  .note td[data-label]::before{content:attr(data-label);display:block;margin-top:6px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);}
+}
+.home{position:absolute;}           /* the mark stays at the top of the page, so it never sits over the write-up */
+/* on a screen where the plate fits whole, a quiet pointer to the write-up below it */
+.about{position:fixed;left:16px;bottom:12px;z-index:6;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);text-decoration:none;transition:opacity .3s ease;}
+.about:hover,.about:focus-visible{color:var(--ink);}
+.about.away{opacity:0;pointer-events:none;}
+@media (max-width:979px){.about{display:none;}}
+
+</style>
+</head>
+<body>
+<a class="home" href="/preview/lab/" aria-label="Sea of Grass — all studies">
+  <svg viewBox="43.63 44.56 350.94 258.56" fill="currentColor" aria-hidden="true">
+      <path d="M 60.1360,299.5890 C 40.8560,283.5000 37.9720,248.8600 54.1230,229.1250 C 61.9590,219.4780 73.2066,213.0913 85.9080,212.4050 L 279.9170,212.3880 C 292.7328,211.6894 302.2259,200.5242 302.6140,188.1740 C 303.0171,175.3461 294.1087,163.3937 280.9850,162.4350 L 160.3860,162.3770 C 155.6830,162.3750 152.4580,158.1300 152.2660,154.1930 C 152.0640,150.0420 155.5000,145.5160 160.3230,145.5160 L 323.2740,145.5180 C 363.5090,146.7569 394.2264,180.5210 394.5670,220.2810 C 394.9023,259.4236 360.4620,297.7100 320.2520,299.1580 C 320.2520,299.1580 69.9310,307.7640 60.1360,299.5890 Z"/>
+      <path d="M 365.1390,47.9780 C 360.1170,47.5130 354.1470,47.1080 347.4230,46.7550 C 274.7440,42.9430 114.0820,45.2510 114.0820,45.2510 C 73.9994,46.9759 43.7290,80.8860 43.6260,120.3040 C 43.5230,159.4680 73.5199,193.9418 113.3820,195.4730 L 277.3270,195.8440 C 282.2870,195.8440 285.7460,192.0070 285.9600,187.6500 C 286.1670,183.4310 282.8680,178.9500 277.9760,178.9480 L 158.2750,178.9140 C 145.3037,178.2644 135.8119,166.8014 135.6040,154.2420 C 135.3960,141.6768 144.3477,129.9059 157.2620,128.9900 L 350.1640,128.8050 C 352.3160,128.8030 354.4280,128.6110 356.4990,128.2740 C 366.7370,126.6070 375.8830,121.0490 382.8160,113.4590 C 390.0330,105.5580 394.4238,95.7293 394.5320,85.6870 C 394.7250,67.7708 381.6430,52.8390 365.1390,47.9780 Z"/>
+      <circle cx="357.983" cy="86.686" r="36.548"/>
+  </svg>
+</a>
+<main class="wrap">
+  <div class="stage" id="stage">
+    <svg class="layer base" viewBox="0 -67 800 1382" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g id="Mobile"><g id="paper_00000101809383427403065890000017923430655464616373_"></g><g id="ground_00000140732527780188311670000008718177563201426360_"><g id="ground_00000168116965887289969410000012082863388304259732_"><rect x="84.61" y="90.9" fill="#ECD9A0" stroke="#2A231E" stroke-width="2.2" stroke-linejoin="round" width="260" height="861.10" /><rect x="613.61" y="99.36" fill="#ECD9A0" stroke="#2A231E" stroke-width="2.2" stroke-linejoin="round" width="86" height="844.64" /><rect x="346.61" y="224" fill="#F4E7CC" width="267" height="876.00" /></g></g><g id="top-band_00000159457770514261412500000001362477186130432402_"><g id="top-band_00000163041225973521221880000014178009153423695251_"><g><defs><rect id="SVGID_1_" x="347" y="139" width="267" height="85" /></defs><clipPath id="SVGID_00000047756937124774675700000018245746061214806172_"><use xlink:href="#SVGID_1_" overflow="visible" /></clipPath><g clip-path="url(#SVGID_00000047756937124774675700000018245746061214806172_)"></g></g><path fill="none" stroke="#2A231E" stroke-width="1.6" stroke-linecap="round" d="M347,301h267" /></g></g><g id="cap_00000032612915322004813960000015471435380706927004_"><g id="cap_00000072968492271729794540000013888930439253242039_"><path fill="none" stroke="#2A231E" stroke-width="6.6" stroke-linecap="round" stroke-linejoin="round" d="M87,95     c20-8,31-30,53-30c20,0,26,16,28,26h17v4H87z M242,95v-4h17c2-10,8-26,28-26c22,0,33,22,53,30H242z" /><rect x="58" y="90.9" fill="none" stroke="#2A231E" stroke-width="6.6" stroke-linejoin="round" width="314" height="18.1" /><path fill="#E9D38A" stroke="#2A231E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M87,95     c20-8,31-30,53-30c20,0,26,16,28,26h17v4H87z M242,95v-4h17c2-10,8-26,28-26c22,0,33,22,53,30H242z" /><rect x="58" y="90.9" fill="#E9D38A" stroke="#2A231E" stroke-width="2.2" stroke-linejoin="round" width="314" height="18.1" /></g><g></g></g><g id="bison_00000182497952730940103440000012436913375414842770_"><image id="arch-art" x="99" y="118" width="225" height="273" preserveAspectRatio="xMidYMid slice" clip-path="url(#preview-clip)" href="assets/bison.png" /><g><defs><path id="SVGID_00000080894353687155758040000009241453762363026826_" d="M99,391V159c75.33-37.67,150.33-38.67,225-3v235H99z" /></defs><defs><path id="SVGID_00000078757755530284433950000010695330730961305999_" d="M99,391V159c75.33-37.67,150.33-38.67,225-3v235H99z" /></defs><clipPath id="SVGID_00000121963913527189538370000015933751314535465918_"><use xlink:href="#SVGID_00000080894353687155758040000009241453762363026826_" overflow="visible" /></clipPath><clipPath id="SVGID_00000049222442797422062240000005197394643288854161_" clip-path="url(#SVGID_00000121963913527189538370000015933751314535465918_)"><use xlink:href="#SVGID_00000078757755530284433950000010695330730961305999_" overflow="visible" /></clipPath></g><path fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="10" d="M99,391V159c75.33-37.67,150.33-38.67,225-3v235    H99z" /><clipPath id="preview-clip"><path d="M99,391V159c75.33-37.67,150.33-38.67,225-3v235H99z" /></clipPath></g><g id="left-bands_00000169530660139397148830000000379986585829851824_"><polyline fill="#F6EAD0" stroke="#2A231E" stroke-width="1.6" stroke-linejoin="round" points="207.0,964.00 207.0,1232.26 615.7,1232.26 615.7,964.00" /><g id="left-bands_00000042007907086704909690000016832519136600259745_"><g><defs><rect id="SVGID_00000174571235174653629690000010392163764813621669_" x="85" y="421" width="260" height="93" /></defs><clipPath id="SVGID_00000059311604417250230710000017251474704148294299_"><use xlink:href="#SVGID_00000174571235174653629690000010392163764813621669_" overflow="visible" /></clipPath></g><rect x="85" y="521" fill="#171411" width="259.61" height="9" /><g><defs><rect id="SVGID_00000081625029898674212430000000404863103731043260_" x="85" y="535" width="260" height="226" /></defs><clipPath id="SVGID_00000000918981811090867050000014529322874715271044_"><use xlink:href="#SVGID_00000081625029898674212430000000404863103731043260_" overflow="visible" /></clipPath><g clip-path="url(#SVGID_00000000918981811090867050000014529322874715271044_)"></g></g></g><g id="right-bands_00000106828081946806588190000015142641450388465289_"><g><defs><rect id="SVGID_00000110447160692479848650000001884230006660997004_" x="654" y="281" width="44" height="143" /></defs><clipPath id="SVGID_00000150800038907924490360000016238207237377948556_"><use xlink:href="#SVGID_00000110447160692479848650000001884230006660997004_" overflow="visible" /></clipPath></g><g><defs><rect id="SVGID_00000000905119390011835810000013146081420577224596_" x="614" y="424" width="86" height="15" /></defs><clipPath id="SVGID_00000116194798431409920500000010044030354215224747_"><use xlink:href="#SVGID_00000000905119390011835810000013146081420577224596_" overflow="visible" /></clipPath></g><polyline fill="none" stroke="#2A231E" stroke-width="1.6" stroke-linejoin="round" points="700.0,451.00 700.0,439.00 614.0,439.00 614.0,451.00" /><g><defs><rect id="SVGID_00000174598421020645990740000012296474246349554356_" x="614" y="439" width="86" height="11" /></defs><clipPath id="SVGID_00000060709683883132558870000006698464550430452624_"><use xlink:href="#SVGID_00000174598421020645990740000012296474246349554356_" overflow="visible" /></clipPath><g clip-path="url(#SVGID_00000060709683883132558870000006698464550430452624_)"></g></g><g><defs><rect id="SVGID_00000076604531487350458100000017562405023678210695_" x="614" y="451" width="86" height="51" /></defs><clipPath id="SVGID_00000122703551576957295640000006378697331642967426_"><use xlink:href="#SVGID_00000076604531487350458100000017562405023678210695_" overflow="visible" /></clipPath><g clip-path="url(#SVGID_00000122703551576957295640000006378697331642967426_)"></g></g><g><defs><rect id="SVGID_00000022520856850062361990000016923048236207497629_" x="614" y="531" width="86" height="226" /></defs><clipPath id="SVGID_00000115502800749580264350000011465041126097262515_"><use xlink:href="#SVGID_00000022520856850062361990000016923048236207497629_" overflow="visible" /></clipPath><g clip-path="url(#SVGID_00000115502800749580264350000011465041126097262515_)"></g></g></g><g id="lower_00000029736802971772540910000000419960222726046638_"><rect x="55" y="964.00" fill="#D8B092" stroke="#2A231E" stroke-width="1.6" stroke-linejoin="round" width="292.94" height="10" /><g><defs><rect id="SVGID_00000173144241438088734850000015704473792538751155_" x="92" y="976.00" width="115" height="265" /></defs><clipPath id="SVGID_00000045596014681326035330000009314653892682519228_"><use xlink:href="#SVGID_00000173144241438088734850000015704473792538751155_" overflow="visible" /></clipPath><g clip-path="url(#SVGID_00000045596014681326035330000009314653892682519228_)"></g></g><path fill="#E9D38A" stroke="#2A231E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M78,1366h140v15h-15     c-4,12-16,12-22,2c-8,10-24,10-33,0c-9,10-25,10-33,0c-6,10-18,10-22-2H78V1366z" transform="translate(0,-125)" /><g><defs><rect id="SVGID_00000178202400466067909410000017126714755758257036_" x="217" y="974.00" width="128.73" height="135" /></defs><clipPath id="SVGID_00000051349509081931882330000017866190569336101037_"><use xlink:href="#SVGID_00000178202400466067909410000017126714755758257036_" overflow="visible" /></clipPath><g clip-path="url(#SVGID_00000051349509081931882330000017866190569336101037_)"></g></g><path fill="none" stroke="#2A231E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M216,1099h129.73v137     H216V1099z" transform="translate(0,-125)" /></g><g id="grass_00000148637264710605043480000002469753438470967737_"><image overflow="visible" width="622" height="193" id="grass_00000029731252207608463350000010319365443812446600_" href="assets/grass.png" transform="matrix(0.7203 0.0 0.0 0.7374 215.0 1089.941)" class="png-art"></image></g><g id="vase_00000110448433765930292610000010953257117492961925_"><path fill="#F0DFAD" stroke="#2A231E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M614,1081h120 c2,14-20,22-26,44c-6,24-4,64,4,94c10,30,34,60,28,100c-4,28-24,42-26,64.2H614V1081z" transform="translate(0,-125)" /><path fill="none" stroke="#2A231E" stroke-width="1.4" stroke-linecap="round" d="M628,1097h86" transform="translate(0,-125)" /><path fill="none" stroke="#2A231E" stroke-width="1.2" stroke-linecap="round" d="M626,1197h80" transform="translate(0,-125)" /></g><g id="rules_00000028318423035294569480000018024078383444124844_"><path fill="none" stroke="#2A231E" stroke-width="2.2" stroke-linecap="round" d="M614.0,139.0v960.0" /></g><g></g><g></g></g><g id="artwork_00000070115471991009543540000008788507392344692882_"><g id="artwork_00000049187573181364548210000009383529332557211780_"></g></g><g></g><g></g></g></svg>
+    <div class="layer live" id="live" aria-hidden="true"></div>
+    <svg class="layer over" viewBox="0 -67 800 1382" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><path d="M346.6,535H85V952H346.6Z" fill="none" stroke="#2A231E" stroke-width="2"/><path d="M614,549H700V944H614Z" fill="none" stroke="#2A231E" stroke-width="1.6"/><path d="M346.6,976V1090" stroke="#2A231E" stroke-width="2"/><rect x="344.61" y="139" fill="none" stroke="#2A231E" stroke-width="2" stroke-linejoin="round" width="269.39" height="85" />
+			<rect x="614" y="944.00" fill="none" stroke="#2A231E" stroke-width="2" stroke-miterlimit="10" width="120.62" height="12" />
+		<rect x="55" y="952.00" fill="none" stroke="#2A231E" stroke-width="2" stroke-miterlimit="10" width="292.94" height="12" />
+			<rect x="92" y="976.00" fill="none" stroke="#2A231E" stroke-width="2.2" stroke-linejoin="round" width="115" height="265" />
+			<rect x="92" y="1205.26" fill="#F6EAD0" stroke="#2A231E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="115" height="35.74" />
+		<line fill="#E9D38A" stroke="#2A231E" stroke-width="2.2" stroke-linejoin="round" x1="99.01" y1="1223.92" x2="199.46" y2="1223.92" />
+		<image overflow="visible" width="495" height="758" id="branch-left_00000037684999195650408700000001736716942835731883_" href="assets/branch-left.png" transform="matrix(0.7 0.0 0.0 0.7 3.9 543.000)" class="png-art"></image>
+			
+				<image overflow="visible" width="119" height="758" id="branch-right_00000072973715993302731270000010312839017577157769_" href="assets/branch-right.png" transform="matrix(0.7227 0.0 0.0 0.7 614.0 543.000)" class="png-art"></image>
+			
+				<image overflow="visible" width="322" height="409" id="aspen_00000042702871876487903790000011903941417757018038_" href="assets/aspen.png" transform="matrix(1.3554 0 0 1.3694 397.497 -116.840)" class="png-art"></image>
+		</svg>
+    <canvas class="layer plants3d" id="plants3d" aria-hidden="true"></canvas>
+    <svg class="layer over crown" viewBox="0 -67 800 1382" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><path fill="none" stroke="#2A231E" stroke-width="6.6" stroke-linecap="round" stroke-linejoin="round" d="M78,1366h140v15h-15     c-4,12-16,12-22,2c-8,10-24,10-33,0c-9,10-25,10-33,0c-6,10-18,10-22-2H78V1366z" transform="translate(0,-125)" />
+			<path d="M614,1241H207V1256H614" fill="none" stroke="#2A231E" stroke-width="6.6" stroke-linejoin="round"/><path fill="#E9D38A" stroke="#2A231E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M78,1366h140v15h-15     c-4,12-16,12-22,2c-8,10-24,10-33,0c-9,10-25,10-33,0c-6,10-18,10-22-2H78V1366z" transform="translate(0,-125)" />
+			<path d="M207,1241H611.80V1256H207Z" fill="#E9D38A" stroke-width="2.2" stroke-linejoin="miter"/><path d="M207,1090H614" stroke="#2A231E" stroke-width="2.2" stroke-linecap="square"/><g id="plaque_00000088107679110912424570000010240394579854400931_"><g id="plaque_00000003784812685055562220000013944943302396721552_"><rect x="345.56" y="221.51" fill="#F4E7CC" stroke="#2A231E" stroke-width="2" stroke-linejoin="round" width="268.44" height="79.49" /></g></g>
+	</svg>
+    <div class="layer ui" id="ui"></div>
+  </div>
+</main>
+<article class="note" aria-labelledby="note-title">
+  <p class="kicker">Study 06</p>
+  <h1 id="note-title">Grasset</h1>
+  <p class="lead">Grasset puts live, generative content where web pages have used pre-made motion graphics, and uses it to bring back the ornate, panelled forms that modern web design left behind. It rebuilds one of Eugène Grasset’s calendar plates as an instrument: every panel plays, and three 3D plants turn through the four seasons.</p>
+
+  <h2>The idea</h2>
+  <p>The study’s claim is that the web no longer has to choose between motion and ornament. Where a page would once have carried a pre-made motion graphic, Grasset carries generative content instead.</p>
+  <p><em>Generative content in place of motion graphics.</em> Web motion has mostly been made in advance: a loop, a video, a scripted transition that plays the same way every time. Here every moving surface is computed live in the browser. It answers to touch, to the season, to sound if you allow it, and it never plays the same way twice.</p>
+  <p><em>Older forms, made live.</em> There is a running debate about where web design goes next, and most answers rehash the same modern style: flat colour, a strict grid, white space, a clean sans serif. That style won partly because it was what early browsers could carry. Ordinary laptops and phones can now draw live graphics and 3D in the page. So the denser, more decorative forms the modern style replaced are practical again: the ornamented frame, the illustrated border, the panelled page. They can also be alive rather than static.</p>
+  <p><em>Grasset as the test case.</em> His calendar plates are the opposite of modern web taste. Every surface is decorated, the content sits inside an ornamental frame, and the frame matters as much as what it holds. This study rebuilds that frame as the interface itself.</p>
+  <p>The aim is to break the hold the modern sensibility has had on the web, rather than refine it once more: to show that ornament and generative motion can make a page people want to play with.</p>
+
+  <h2>What sets it apart</h2>
+  <p>What makes the piece unusual is that the ornament does the work: it is the content, the motion and the controls at once.</p>
+  <ul class="does">
+    <li><span>The ornament is the interface.</span> You play the piece by tapping its decoration: a border, a tile, a rosette, the capital. The controls sit inside the frame too, the controller in the centre panel and the season buttons in a column.</li>
+    <li><span>Generated, not pre-made.</span> There are no video files or canned animations. The synths, borders, tiles and rosettes are drawn live, and the leaves that fall in autumn are the tree’s own leaves letting go.</li>
+    <li><span>Time as content.</span> The seasons change the state of the whole page: what grows, what falls, the light, the colour. They aren’t a scripted sequence that plays and ends.</li>
+    <li><span>Print and 3D in one picture.</span> The plants are real 3D models painted and inked to sit in the plate like lithograph illustrations, beside a printed illustration and vector ornament, so you can’t see where one medium stops.</li>
+    <li><span>Restraint inside density.</span> A frame this ornate could easily be loud. Its colour is held to three harmonised inks, laid as tints on a white page and turning with the season, so it stays calm and readable.</li>
+    <li><span>Alive when left alone.</span> Untouched, the synths drift on their own, so the page keeps changing without you, as a living picture rather than a page waiting for input.</li>
+    <li><span>Open and ordinary.</span> It runs in any modern browser, on a laptop or a phone, as one page with no app or plugin.</li>
+  </ul>
+
+  <h2>What plays</h2>
+  <p>Every part of the frame is live, and every part changes when you tap it. The four the controller drives are marked as its targets.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Part</th><th>What it does</th><th>How you play it</th></tr></thead>
+    <tbody>
+      <tr><td>Synth I <small>top band, left column</small></td><td data-label="What it does">A square synth after cross-stitch, lattice and quilt blocks, three blocks across the top and three stacked down the column, with diamonds laid over the column. 9 modes: Stitch, Fret, Compartiment, Lattice, Nested, Arc &amp; Check, Star Block, Circles, Chaos Engine.</td><td data-label="How you play it">Tap it; controller target I</td></tr>
+      <tr><td>Synth II <small>side panels</small></td><td data-label="What it does">A visual synth after the EYESY video synthesiser, running behind the branch as one panel seen either side of the window. 12 modes, from Bubble Wrap to Chaos Engine.</td><td data-label="How you play it">Tap it; controller target II</td></tr>
+      <tr><td>Borders <small>the bands between panels</small></td><td data-label="What it does">Animated band patterns: Comb, Stripes, Sawtooth, Drops, Checker, Crown, Pickets, Flames. Rave gives each band a different pattern and swaps them on every beat.</td><td data-label="How you play it">Tap a band; controller target Borders</td></tr>
+      <tr><td>Tiles <small>2×2 block, single tile, diamonds</small></td><td data-label="What it does">Square tiles after Garneri’s <i>L’Ornato</i>. The block and the single tile always show different variants of the same family.</td><td data-label="How you play it">Tap a tile; the slider at the foot of the left column morphs the square</td></tr>
+      <tr><td>Rosettes <small>on the vase</small></td><td data-label="What it does">Four flower plates after Cusack’s <i>Freehand Ornament</i>: Hearts, Ribbons, Quatrefoil, Lily cross. They open and close with the season.</td><td data-label="How you play it">Tap a rosette; controller target Flowers</td></tr>
+      <tr><td>Beads <small>on the vase</small></td><td data-label="What it does">A row of beads that steps along with the beat.</td><td data-label="How you play it">Tap them to send a beat</td></tr>
+      <tr><td>Capital <small>top of the left column</small></td><td data-label="What it does">An Ionic capital whose volutes are logarithmic spirals.</td><td data-label="How you play it">Tap it to step the spiral’s ratio</td></tr>
+      <tr><td>Plants <small>aspen, branch, grass</small></td><td data-label="What it does">Three 3D models that turn through the seasons.</td><td data-label="How you play it">The season buttons</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>The seasons</h2>
+  <p>Four buttons in the right column (blossom, sun, leaf, snowflake) turn the whole frame through the year. The study opens in summer, and each change goes the short way round, about a season every 1.4 seconds.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th></th><th>Plants</th><th>The frame</th></tr></thead>
+    <tbody>
+      <tr><td>Spring</td><td data-label="Plants">The aspen hangs catkins and comes into young leaf; the branch puts out fresh leaves and pink plumes; the grass is short and new.</td><td data-label="The frame">Sage, with violet and plum; highlight is rose</td></tr>
+      <tr><td>Summer</td><td data-label="Plants">Full leaf on the aspen and branch; the grass at full height.</td><td data-label="The frame">Ochre, with teal and lavender; highlight is lime</td></tr>
+      <tr><td>Autumn</td><td data-label="Plants">The aspen goes gold and drops its own leaves, which fall fast and are gone in about a second, then regrow so the tree never goes bare too early; the branch turns vermilion and rust; the wind picks up.</td><td data-label="The frame">Rust, with teal-green and blue; highlight is rust</td></tr>
+      <tr><td>Winter</td><td data-label="Plants">The aspen is bare, with snow settling only on surfaces that face up; the branch keeps its dead leaves, as oak and beech do, and its plumes dry where they stand.</td><td data-label="The frame">Slate, with brick red and olive; highlight is cobalt</td></tr>
+    </tbody>
+  </table></div>
+  <p>The rosettes on the vase open and close with the season too, and every change crossfades rather than cuts.</p>
+
+  <h2>Colour</h2>
+  <p>The frame is printed in three inks on a white page, as a split-complementary harmony: the season’s own colour and the two hues either side of its opposite. The season’s colour takes the frame and its line, the second hue the synths’ main figures and the vase’s flowers, and the third the tiles, borders and lighter figures.</p>
+  <p>Stronger colour comes in three places:</p>
+  <ul class="does">
+    <li><span>The plants,</span> in deep painted ramps for each season.</li>
+    <li><span>The bison</span> in the arched window, a full-colour illustration in the place where Grasset puts his panel picture.</li>
+    <li><span>One highlight colour</span> for whatever you can touch: the chosen tab and pressed effects, slider knobs and fills, the chosen season button. It changes with the season, from rose to lime to rust to cobalt, and text on it switches dark or light to stay readable.</li>
+  </ul>
+  <p>The frame is outlined in one ink: the pediment and the ledge at the foot each carry a single unbroken contour, and the capital is drawn in the same line. The Tone button in the controller offers other palettes: one-colour seasons, analogous and triad harmonies, grey, sepia, indigo, verdigris, and a full folk palette of vermilion, gold, ivory and cobalt.</p>
+
+  <h2>Playing it</h2>
+  <p>There are two ways in: tap the frame itself, or use the controller at the foot of the blank centre panel.</p>
+  <ul class="does">
+    <li><span>Tap the frame.</span> Every part changes when tapped; the synths step to their next mode.</li>
+    <li><span>The controller.</span> Pick what you’re playing (I, II, Flowers, Borders), then one of four tabs. <em>Mode</em> steps through the modes. <em>Shape</em> has five sliders: for Synth I these are Grid, Motif, Rings, Colour and Speed; for Flowers, Petals, Width, Heart, Spin and Centre; for Borders, Speed, Height, Spacing, Colour and Wobble. <em>Colour</em> steps the foreground and background colours, or switches the palette or the Tone. <em>Effect</em> has Flash, Shuffle, Trails, Pulse, Still and Listen.</li>
+    <li><span>Now Playing.</span> The dark box under the bison shows the season and both synths’ modes. Pressing it outlines the parts the controller is playing.</li>
+    <li><span>Left alone.</span> After 15 seconds untouched, the synths start to drift on their own: their sliders sway and their mode changes every 14 seconds or so. Their names are marked with a ~ while they drift.</li>
+    <li><span>Keys.</span> ← → change mode, Space flashes, R shuffles.</li>
+    <li><span>Listen.</span> Lets the beat follow sound from your microphone. It only starts when you press it, and nothing is recorded or sent.</li>
+  </ul>
+  <p>Settings are remembered in your browser. With reduced motion turned on, changes apply instantly instead of animating.</p>
+
+  <h2>How it is made</h2>
+  <p>The study is one page plus three models, 2.9 MB in all. It is built from an SVG export of the Illustrator artwork, so every live part sits on the drawing’s own 800-unit grid and the frame scales as one piece on any screen.</p>
+  <ul class="does">
+    <li><span>The frame and its live parts:</span> SVG and canvas, drawn in the page’s own JavaScript. No framework.</li>
+    <li><span>The plants:</span> three Blender models (aspen, branch, grass), exported as compressed glTF and drawn with three.js. A painted shader reproduces the Blender material’s colour ramp, the ink outlines are drawn as inverted shells, and each camera matches its Blender camera, so every plant sits exactly where its painting sat.</li>
+    <li><span>Fallbacks:</span> the original paintings of the three plants show while the models load, and stay if the browser can’t draw 3D. A model that fails to load is retried, and the paintings return if the graphics card drops out.</li>
+    <li><span>Outside the page:</span> three.js and its Draco decoder come from jsDelivr, pinned at version 0.169.0, and the type is IBM Plex Mono from Google Fonts.</li>
+  </ul>
+
+  <h2>Credits</h2>
+  <ul class="does">
+    <li><span>Frame:</span> after Eugène Grasset’s calendar plates.</li>
+    <li><span>Tiles:</span> after Garneri, <i>L’Ornato</i>.</li>
+    <li><span>Rosettes:</span> after Cusack’s <i>Freehand Ornament</i>.</li>
+    <li><span>Synth II:</span> after the EYESY video synthesiser by Critter &amp; Guitari.</li>
+    <li><span>Capital’s spiral:</span> after Paynter (1921), Fig. 152.</li>
+    <li><span>Controller:</span> after the one on tristan.design.</li>
+  </ul>
+</article>
+<a class="about" href="#note-title">About this study &darr;</a><script>(()=>{const a=document.querySelector(".about"),n=document.querySelector(".note");if(a&&n&&"IntersectionObserver" in window)new IntersectionObserver(e=>a.classList.toggle("away",e[0].isIntersecting),{rootMargin:"0px 0px -15% 0px"}).observe(n);})();</script>
+<script>window.__GEO = {"vb": [800, 1382, -67], "synth1": [[344.6, 139, 269.4, 85], [92, 976, 115, 265]], "synth2": [[85, 535, 615, 417]], "windowFill": [347.6, 530, 266.4, 560], "tileSmall": [614, 451, 86, 86], "borders": [[614, 439, 86, 12], [614, 537, 86, 12], [614, 944, 120.62, 12], [55, 952, 292.94, 12]], "diamonds": [[149.5, 1052.3333333333333, 30], [149.5, 1128.6666666666667, 30]], "tileSquare": [207, 976, 139.60000000000002, 114], "capital": [175, 28, 76, 63], "shell": [350.4, 915.42, 263.6, 174.53], "rosettes": [[663, 1010.74, 26.5], [655.02, 1118.2, 22.77], [693.1, 1182.52, 38.75]], "beads": [[632.0, 1064, 3.6], [643.5, 1064, 3.6], [655.0, 1064, 3.6], [666.5, 1064, 3.6], [678.0, 1064, 3.6], [689.5, 1064, 3.6], [701.0, 1064, 3.6]], "controller": [99, 407.43, 225, 97.54], "controlPanel": [362, 612, 236, 330], "capSlider": [84.61, 344.61, 100.74], "morphSlider": [99.01, 199.46, 1223.92], "plants": [654, 281, 46, 157.27, 291.64, 416.92], "window": [346.6, 301, 267, 739], "knobR": 5.92, "plants3d": {"aspen": {"frame": [383.46, -116.52, 459.93, 574.91]}, "branch": {"frame": [-38.07, 534.14, 759.03, 566.9], "holes": [[347.6, 529.14, 266.4, 576.9], [700, 529.14, 80, 576.9]]}, "grass": {"frame": [202.44, 1085.64, 465.15, 159.67], "holes": [[614, 1080.64, 80, 169.67]], "clip": [207, 1090, 407, 150.5]}}, "study": true};</script>
+<script>
+// The live parts of the Grasset lockup. Everything is drawn in artboard units
+// (the 800x1440 grid of the Illustrator file) so it looks the same at any size.
+(() => {
+'use strict';
+const G = window.__GEO, VW = G.vb[0], VH = G.vb[1], VY = G.vb[2] || 0;   // artboard width, height, top
+const CUTJS = 1440 - (VH + VY);                                               // the strip cut from the middle
+const live = document.getElementById('live'), ui = document.getElementById('ui');
+const NS = 'http://www.w3.org/2000/svg';
+const C = {paper:'#F2E4C8', cream:'#F6EAD0', window:'#F4E7CC', yellow:'#ECD9A0', cap:'#E9D38A', vase:'#F0DFAD',
+           ink:'#2A231E', black:'#171411', orange:'#D08F69', rust:'#BF5B2C', red:'#A63E22', sq:'#A9BCC0',
+           grassbg:'#C9CEC5', sage:'#B4B472', olive:'#8C8456', salmon:'#E88B8B'};
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v)), lerp = (a, b, t) => a + (b - a) * t;
+const wrap01 = v => ((v % 1) + 1) % 1;
+const hash = (a, b) => { const n = Math.sin(a * 127.1 + b * 311.7) * 43758.5453; return n - Math.floor(n); };
+const f2 = v => +v.toFixed(2);
+
+function box(el, x, y, w, h) {
+  el.style.left = (100 * x / VW) + '%'; el.style.top = (100 * (y - VY) / VH) + '%';
+  el.style.width = (100 * w / VW) + '%'; el.style.height = (100 * h / VH) + '%';
+  return el;
+}
+function svg(w, h, vb) {
+  const s = document.createElementNS(NS, 'svg');
+  s.setAttribute('viewBox', vb || `0 0 ${w} ${h}`);
+  return s;
+}
+
+// ---------------------------------------------------------------- palettes
+// Only the plate's own colours, so the synths read as printed panels.
+// The live parts share one quiet palette: a few close, low-contrast tones on
+// the cream, with a soft brown in place of black, so the frame stays calm.
+const Q = {cream: '#F4E8CC', paper: '#EADBB8', sand: '#E6AE38', clay: '#DE4E1C', blush: '#F0843A',
+           sage: '#2A55B0', mist: '#8FB0E6', navy: '#17295E', line: '#141210'};
+// palettes name colours rather than hold them, so the season can repaint them
+// Folk: the full set. Warm and Night narrow it, for a calmer panel.
+// Order matters: a synth's colour knob spreads from its colour to the next ones.
+const PALS = [
+  {n: 'Folk',  fg: ['clay', 'blush', 'sand', 'sage', 'mist', 'line'], bg: ['cream', 'navy', 'paper', 'sage']},
+  {n: 'Warm',  fg: ['clay', 'blush', 'sand', 'line'], bg: ['cream', 'paper']},
+  {n: 'Night', fg: ['sage', 'mist', 'cream', 'line'], bg: ['navy', 'sage']},
+];
+// ---------------------------------------------------------------- the season's palette, for the whole page
+// Summer is the plate as it stands. The frame's own colours are CSS variables
+// (live.css maps the SVG's fills onto them); the live parts read Q and C.
+// Defined colour, after the folk poster: a night-blue ground, vermilion, gold,
+// ivory and cobalt, all inked in black. Each season keeps that strength and
+// shifts the cast: rose and green in spring, rust and teal in autumn,
+// cobalt and silver in winter.
+const SEASON_PAL = [
+  {paper: '#152E3A', cream: '#F5EBD2', window: '#F3E8CE', yellow: '#D8BE3E', cap: '#E2566B', vase: '#2B7A5C', ink: '#141210', black: '#0E0D0C',
+   q: {cream: '#F5EBD2', paper: '#EADFC0', sand: '#D8BE3E', clay: '#E2566B', blush: '#F29AA4', sage: '#2B7A5C', mist: '#8CCFAE', navy: '#173A33', line: '#141210'}},
+  {paper: '#16224A', cream: '#F4E8CC', window: '#F2E4C4', yellow: '#E6AE38', cap: '#DE4E1C', vase: '#2A55B0', ink: '#141210', black: '#0E0D0C',
+   q: {cream: '#F4E8CC', paper: '#EADBB8', sand: '#E6AE38', clay: '#DE4E1C', blush: '#F0843A', sage: '#2A55B0', mist: '#8FB0E6', navy: '#17295E', line: '#141210'}},
+  {paper: '#25140F', cream: '#F3E4C6', window: '#F1E0BE', yellow: '#D98C28', cap: '#B5381A', vase: '#1E5A66', ink: '#141210', black: '#0E0D0C',
+   q: {cream: '#F3E4C6', paper: '#E8D3AE', sand: '#D98C28', clay: '#B5381A', blush: '#E0702A', sage: '#1E5A66', mist: '#7FB4B4', navy: '#15333A', line: '#141210'}},
+  {paper: '#0D1328', cream: '#EEF0F2', window: '#ECEEF0', yellow: '#B9C3D8', cap: '#3556BE', vase: '#23305E', ink: '#121418', black: '#0B0C10',
+   q: {cream: '#EEF0F2', paper: '#DDE2EA', sand: '#B9C3D8', clay: '#3556BE', blush: '#8EA6E6', sage: '#23305E', mist: '#6F86C8', navy: '#121A38', line: '#121418'}},
+];
+// Grey: the frame, the synths and the controller all in warm greys on a light
+// ground; the plants are the only colour on the page.
+const CAST = ['#7FA07A', '#C8A878', '#B88660', '#7C90B0'];       // the greys lean a touch green, warm, russet, cool
+// one highlight colour at a time, for what you can touch: the chosen tab, the
+// knobs, the season's icon and sun. It turns with the season: rose, lime, rust, cobalt
+const SEASON_ACCENT = ['#C4506E', '#8DC63F', '#BF4F2A', '#3D6CB0'];
+function greyTone(i) {
+  const g = h => mixHex(h, CAST[i], 0.07), a = SEASON_ACCENT[i];
+  return {paper: '#FFFFFF', cream: g('#F1EFEA'), window: g('#F4F2EE'), yellow: g('#C9C5BD'), cap: g('#B4AFA7'), vase: g('#A29D95'), ink: '#3A3733', black: '#2F2D2A',
+    accent: a,
+    q: {cream: g('#F1EFEA'), paper: g('#E1DED8'), sand: g('#C9C5BD'), clay: g('#67635C'), blush: g('#A9A49C'), sage: g('#7E7A73'), mist: g('#BCB8B1'), navy: g('#5A5650'), line: '#3A3733'}};
+}
+let SKY_GREY = null;
+const skyGrey = () => SKY_GREY = SKY_GREY || [0, 1, 2, 3].map(i => [mixHex('#6E6A64', CAST[i], 0.1), mixHex('#ACA8A1', CAST[i], 0.1), SEASON_ACCENT[i], [0.1, 0, 0.15, 0.9][i]]);
+const hexRGB = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+const mixHex = (a, b, f) => '#' + hexRGB(a).map((v, i) => Math.round(v + (hexRGB(b)[i] - v) * f).toString(16).padStart(2, '0')).join('');
+// the season bar's sky, top and bottom, its sun (a moon by winter) and how many stars show
+const SKY = [['#46545a', '#7d8c80', '#F2C9B8', 0.1], ['#33485c', '#8aa0ad', '#F3C567', 0], ['#3c2d2a', '#93603f', '#E39A5E', 0.15], ['#1d222b', '#4a5462', '#EEEBE0', 0.9]];
+// (In the light tones the page around the frame is plain white.)
+// Print tones: a paper and one ink, the frame mixed between them as in a
+// two-colour print. Each is [paper, ink] per season; Seasons changes its ink
+// through the year (sage, ochre, rust, slate), the others keep one.
+const PRINT_TONES = {
+  Sepia:     [0, 1, 2, 3].map(() => ['#F2E8D5', '#6B4A2B']),
+  Indigo:    [0, 1, 2, 3].map(() => ['#F0EADB', '#2E3F73']),
+  Verdigris: [0, 1, 2, 3].map(() => ['#F0EADB', '#2F6B62']),
+  Seasons:   [['#F1EBDB', '#55704A'], ['#F3EBD8', '#A0742A'], ['#F2E7D9', '#8C4428'], ['#ECEBE6', '#3F5A7E']],
+};
+// A print tone can carry two more inks in harmony with the first: the first
+// keeps the frame and its line, the second takes the vase and the synths' main
+// figures, the third the tiles, borders and lighter figures. One ink alone is
+// the plain two-colour print.
+function printTone(i, paper, ink, ink2 = ink, ink3 = ink) {
+  const t = f => mixHex(paper, ink, f), t2 = f => mixHex(paper, ink2, f), t3 = f => mixHex(paper, ink3, f), deep = mixHex(ink, '#000000', 0.45);
+  // with harmony inks the vase is the frame's own tint (like the panel round the
+  // bison) and its flowers carry the other two hues; alone, the vase sits a step darker
+  const harmony = ink2 !== ink;
+  return {paper: '#FFFFFF', cream: paper, window: mixHex(paper, '#FFFFFF', 0.35), yellow: t(0.24), cap: t(0.34), vase: harmony ? t(0.24) : t(0.46), harmony,
+    ink: deep, black: mixHex(ink, '#000000', 0.6), accent: SEASON_ACCENT[i],
+    q: {cream: paper, paper: t(0.12), sand: t3(0.24), clay: t2(0.66), blush: t3(0.40), sage: t(0.52), mist: t2(0.30), navy: t(0.78), line: deep}};
+}
+// hue turns on the colour wheel, keeping the ink's own saturation and lightness
+function hexHSL(h) {
+  const [r, g, b] = hexRGB(h).map(v => v / 255), mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2, d = mx - mn;
+  if (!d) return [0, 0, l];
+  const s = d / (1 - Math.abs(2 * l - 1)), hh = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
+  return [(hh * 60 + 360) % 360, s, l];
+}
+function hslHex(hh, s, l) {
+  const c = (1 - Math.abs(2 * l - 1)) * s, x = c * (1 - Math.abs((hh / 60) % 2 - 1)), m = l - c / 2;
+  const [r, g, b] = hh < 60 ? [c, x, 0] : hh < 120 ? [x, c, 0] : hh < 180 ? [0, c, x] : hh < 240 ? [0, x, c] : hh < 300 ? [x, 0, c] : [c, 0, x];
+  return '#' + [r, g, b].map(v => Math.round((v + m) * 255).toString(16).padStart(2, '0')).join('');
+}
+const turn = (h, deg) => { const [hh, s, l] = hexHSL(h); return hslHex((hh + deg + 360) % 360, s, l); };
+// the season tones with two harmony inks: analogous (neighbours, calm), split
+// complementary (either side of the opposite) and triad (evenly spaced, liveliest)
+const HARMONY = {Analogous: [-35, 35], 'Split comp.': [150, 210], Triad: [120, 240]};
+for (const [name, [a, b]] of Object.entries(HARMONY))
+  PRINT_TONES[name] = PRINT_TONES.Seasons.map(([paper, ink]) => [paper, ink, turn(ink, a), turn(ink, b)]);
+const TONES = ['Grey', 'Sepia', 'Indigo', 'Verdigris', 'Seasons', 'Analogous', 'Split comp.', 'Triad', 'Folk'];
+const TONE_CACHE = {};
+const tonePal = () => STATE.tone === 'Folk' ? SEASON_PAL : (TONE_CACHE[STATE.tone] = TONE_CACHE[STATE.tone] ||
+  [0, 1, 2, 3].map(i => PRINT_TONES[STATE.tone] ? printTone(i, ...PRINT_TONES[STATE.tone][i]) : greyTone(i)));
+// the season bar's sky in a print tone: the ink deepening overhead, the accent for its sun
+const toneSky = () => STATE.tone === 'Folk' ? SKY : !PRINT_TONES[STATE.tone] ? skyGrey() :
+  tonePal().map((P, i) => [mixHex(P.ink, P.vase, 0.25), P.vase, SEASON_ACCENT[i], [0.1, 0, 0.15, 0.9][i]]);
+// and what sits behind and under the 3D plants (the grass's backdrop and ground,
+// the branch's twig), mixed from the same tone, so they belong to the frame
+let rampsFor = null;
+function toneRamps() {
+  if (STATE.tone === 'Folk') return null;
+  if (rampsFor && rampsFor.tone === STATE.tone) return rampsFor.R;
+  const SN = ['spring', 'summer', 'autumn', 'winter'], R = {MAT_panel: {}, MAT_base: {}, MAT_branch: {}};
+  tonePal().forEach((P, j) => {
+    const y = P.yellow, k = P.ink, c = P.cream;
+    R.MAT_panel[SN[j]] = [mixHex(y, k, 0.28), mixHex(y, k, 0.18), mixHex(y, k, 0.08), y, mixHex(y, c, 0.35)];
+    R.MAT_base[SN[j]] = R.MAT_branch[SN[j]] = [k, mixHex(k, y, 0.35), mixHex(k, y, 0.6), mixHex(k, y, 0.85), mixHex(y, c, 0.4)];
+  });
+  rampsFor = {tone: STATE.tone, R};
+  return R;
+}
+const FRAME_KEYS = ['paper', 'cream', 'window', 'yellow', 'cap', 'vase', 'ink', 'black'];
+const at = (arr, v) => arr[Math.min(arr.length - 1, Math.floor(wrap01(v) * arr.length))];
+const stepIn = (cur, arr, d) => { const n = arr.length, i = Math.min(n - 1, Math.floor(wrap01(cur) * n)); return ((i + d + n) % n + 0.5) / n; };
+
+// ---------------------------------------------------------------- state
+const DEF = {
+  syn: [
+    {mode: 0, k: [0.45, 0.5, 0.4, 0.4, 0.25], fg: 0.5 / 6, bg: 0.5 / 4},  // I: the square synth: warm figures on ivory
+    {mode: 8, k: [0.3, 0.55, 0.45, 0.12, 0.3], fg: 3.5 / 6, bg: 2.5 / 4}, // II: the side panels, tonal: grey on pale grey
+  ],
+  flowers: {mode: 0, k: [0.222, 0.5, 0.45, 0.35, 0.5], fg: 0.5 / 3, bg: 0.5 / 2},
+  borders: {mode: 8, k: [0.18, 0.7, 0.45, 0.5, 0.15], fg: 3.5 / 6, bg: 0.5 / 4, v: 2},
+  pal: 0, palv: 3, tone: 'Grey', trails: false, pulse: true, still: reduce,
+  spiral: 0.75, morph: 0.25, season: [3, 3, 0, 0, 0, 1, 1, 1, 2, 2, 2, 3][new Date().getMonth()],   // the season it is
+};
+// the study keeps its own settings, apart from the landing page's
+const KEY = G.study ? 'sog-grasset-study-v2' : 'sog-grasset-live-v2';
+if (G.study) {   // the study opens on Chaos Engine and Hypno Waffle, in the colours chosen for them
+  DEF.syn[0] = {mode: 8, k: [0.2017, 0.6147, 0.6466, 0.8210, 0.1522], fg: 7 / 12, bg: 0.375};
+  DEF.syn[1] = {mode: 5, k: [0.8477, 0.7197, 0.2047, 0.1607, 0.1829], fg: 11 / 12, bg: 0.125};
+}
+const SEASONS = ['Spring', 'Summer', 'Autumn', 'Winter'];
+let STATE = JSON.parse(JSON.stringify(DEF));
+let LOADED = null;
+try { const s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && s.syn && s.syn.length === 2) { LOADED = s; STATE = Object.assign(STATE, s); } } catch (e) {}
+let saveT = 0;
+const save = () => { clearTimeout(saveT); saveT = setTimeout(() => { try { localStorage.setItem(KEY, JSON.stringify(STATE)); } catch (e) {} }, 250); };
+const PAL = () => PALS[STATE.pal % PALS.length];
+if (!TONES.includes(STATE.tone)) STATE.tone = 'Grey';
+if (G.study) STATE.season = 1;                     // the study always opens in summer
+if (G.study && !STATE.toneChosen) STATE.tone = 'Split comp.';   // and its frame takes the season's colour with its split-complementary pair, until you pick a tone
+if (LOADED && LOADED.palv !== 3) {                                   // the folk palette: start the synths on their new colours
+  STATE.syn.forEach((S0, i) => { S0.fg = DEF.syn[i].fg; S0.bg = DEF.syn[i].bg; S0.k[3] = DEF.syn[i].k[3]; });
+  STATE.borders.fg = DEF.borders.fg; STATE.borders.bg = DEF.borders.bg; STATE.flowers.fg = DEF.flowers.fg; STATE.flowers.bg = DEF.flowers.bg; STATE.pal = 0; STATE.palv = 3; STATE.tone = 'Grey';
+}
+if (STATE.borders.v !== 2) STATE.borders = JSON.parse(JSON.stringify(DEF.borders));   // the borders are band patterns now
+if (STATE.syn[0].mode > 8) STATE.syn[0].mode = 0;   // Synth I is the square synth now: nine modes
+
+// ---------------------------------------------------------------- audio + beat
+let t = 0, trig = 0, prevTrig = 0, beat = false;
+let an = null, abuf = null, alevel = 0, aenv = 0, aavg = 0.02, stream = null;
+function readAudio() {
+  if (!an) return;
+  an.getByteTimeDomainData(abuf); let sum = 0;
+  for (let i = 0; i < abuf.length; i++) { const d = (abuf[i] - 128) / 128; sum += d * d; }
+  const rms = Math.sqrt(sum / abuf.length);
+  aavg = aavg * 0.96 + rms * 0.04;
+  if (rms > Math.max(0.035, aavg * 1.45) && trig < 0.45) trig = 1;
+  aenv = Math.max(rms * 3.4, aenv * 0.86); alevel = Math.min(1, aenv);
+}
+function wave(p) {
+  if (an) { const i = Math.min(abuf.length - 1, Math.floor(wrap01(p) * abuf.length)); return (abuf[i] - 128) / 128 * 2.2; }
+  return Math.sin(p * Math.PI * 6 + t * 1.7) * 0.55 + Math.sin(p * Math.PI * 17 - t * 2.3) * 0.28 + Math.sin(p * Math.PI * 31 + t * 0.9) * 0.17;
+}
+const peak = () => an ? Math.min(1, alevel * 1.15 + trig * 0.4) : Math.min(1, (0.5 + 0.5 * Math.sin(t * 0.8)) * 0.8 + trig);
+const amp = () => an ? 0.22 + peak() * 1.5 : 0.6 + peak() * 0.7;
+
+// ---------------------------------------------------------------- the synth engine
+// A port of the EYESY modes on tristan.design. Mode functions draw into
+// (ctx, w, h) for the current panel, reading S (the synth) and st (panel state).
+let ctx, w, h, S, st;
+const K = i => S.k[i - 1];
+const pick = v => Q[at(PAL().fg, v)];
+const bgcol = () => Q[at(PAL().bg, S.bg)];
+const sc = () => clamp(Math.min(w, h) / 120, 0.35, 1.6);
+const CELL_CAP = 1400;
+function capCols(cols) { let c = Math.max(3, Math.round(cols)); while (c > 3 && c * Math.max(2, Math.round(c * h / w)) > CELL_CAP) c--; return c; }
+function gridDims() { const cols = capCols(3 + K(1) * 16), rows = Math.max(2, Math.round(cols * h / w)); return [cols, rows, w / cols, h / rows]; }
+function cells(fn) { const [cols, rows, cw, ch] = gridDims(); for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) fn(c, r, c * cw + cw / 2, r * ch + ch / 2, cw, ch, cols, rows); }
+function poly(x, y, s, n, rot) { ctx.beginPath(); for (let i = 0; i < n; i++) { const a = rot + i / n * TAU, px = x + Math.cos(a) * s, py = y + Math.sin(a) * s; i ? ctx.lineTo(px, py) : ctx.moveTo(px, py); } ctx.closePath(); }
+
+function bubbleWrap() { ctx.lineWidth = (1 + K(5) * 5) * sc(); cells((c, r, x, y, cw, ch) => { const s = (0.15 + K(2) * 0.45) * Math.min(cw, ch) * amp(); ctx.strokeStyle = pick(S.fg + hash(c, r) * K(4)); ctx.beginPath(); ctx.arc(x, y, Math.max(0.5, s), 0, TAU); ctx.stroke(); }); }
+function gridPolygons(mode) { const n = 3 + Math.round(K(3) * 5); cells((c, r, x, y, cw, ch, cols) => { const s = (0.2 + K(2) * 0.55) * Math.min(cw, ch) * amp(); const rot = t * (0.2 + K(5) * 1.6) + hash(c, r) * 6.28; let v; if (mode === 'column') v = S.fg + c / cols * K(4) * 2; else if (mode === 'patchwork') v = S.fg + hash(Math.floor(c / 1.5), Math.floor(r / 1.5)) * K(4) * 2; else v = S.fg + K(4) * 0.1; ctx.fillStyle = pick(v); poly(x, y, Math.max(0.5, s), n, rot); ctx.fill(); }); }
+function hertsi() { const n = Math.max(4, Math.round(6 + K(1) * 40)), bh = h / n; for (let i = 0; i < n; i++) { const p = i / n, a2 = 0.2 + K(2) * 0.8, th = bh * (0.1 + Math.abs(wave(p + t * 0.05 * K(3))) * a2 * (an ? 1.5 : 0.9)); ctx.fillStyle = pick(S.fg + p * K(4) * 0.6); ctx.fillRect(0, i * bh + (bh - th) / 2, w, Math.max(0.5, th)); } }
+function mirrorGrid(inverse) { const n = Math.max(4, Math.round(6 + K(1) * 40)), bh = h / 2 / n; for (let i = 0; i < n; i++) { const p = i / n, ph = t * (0.3 + K(3) * 3) + p * (4 + K(5) * 20), th = bh * (0.15 + Math.abs(Math.sin(ph)) * (0.3 + K(2) * 0.9) * (an ? 0.6 + peak() * 1.2 : 1)); ctx.fillStyle = pick(S.fg + p * K(4) * (inverse ? 1.6 : 0.5)); ctx.fillRect(0, h / 2 - i * bh - th / 2, w, Math.max(0.5, th)); ctx.fillRect(0, h / 2 + i * bh - th / 2, w, Math.max(0.5, th)); if (inverse) { const cw = w / 2 / n, tw = cw * (0.2 + Math.abs(Math.cos(ph)) * (0.3 + K(2) * 0.9)); ctx.globalAlpha = 0.55; ctx.fillRect(w / 2 - i * cw - tw / 2, 0, Math.max(0.5, tw), h); ctx.fillRect(w / 2 + i * cw - tw / 2, 0, Math.max(0.5, tw), h); ctx.globalAlpha = 1; } } }
+function portalPunch() { const steps = Math.max(3, Math.round(4 + K(1) * 22)), max = Math.hypot(w, h) * 0.5 * (0.35 + K(2) * 0.8); for (let i = steps; i > 0; i--) { const p = i / steps, r = max * p * (0.55 + amp() * 0.5), q = 2 + K(5) * 10, step = Math.floor(p * q) / q; ctx.fillStyle = pick(S.fg + step * K(4) * 2); ctx.save(); ctx.translate(w / 2, h / 2); ctx.rotate(Math.sin(t * (0.2 + K(3) * 1.2) + p * 3) * 0.35); ctx.fillRect(-r, -r, r * 2, r * 2); ctx.restore(); } }
+function glitterBomb() { const cols = Math.max(6, capCols(10 + K(1) * 50)), cw = w / cols, rows = Math.max(3, Math.round(h / cw)), ch = h / rows; const f1 = 2 + K(2) * 18, f2_ = 2 + K(3) * 18; for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) { const u = c / cols, v = r / rows; const m = Math.sin(u * f1 * 3.1 + t * 0.8) * Math.sin(v * f2_ * 3.1 - t * 0.6) + Math.sin((u + v) * f1 * 1.7 + t * 0.4); const s = Math.max(0, (m + 1.6) / 3) * Math.min(cw, ch) * 0.5 * amp(); if (s < 0.3) continue; ctx.fillStyle = pick(S.fg + m * 0.08 * K(4)); ctx.beginPath(); ctx.arc(c * cw + cw / 2, r * ch + ch / 2, s, 0, TAU); ctx.fill(); } }
+const rgbCache = new Map(); let probe = null;
+function rgb(css) { let c = rgbCache.get(css); if (c) return c; if (!probe) { const el = document.createElement('canvas'); el.width = el.height = 1; probe = el.getContext('2d', {willReadFrequently: true}); } probe.clearRect(0, 0, 1, 1); probe.fillStyle = css; probe.fillRect(0, 0, 1, 1); const d = probe.getImageData(0, 0, 1, 1).data; c = [d[0], d[1], d[2]]; rgbCache.set(css, c); return c; }
+let hgC = null, hgX = null;
+function hypnoWaffle() {
+  const al = an ? alevel : 0.25 + 0.2 * Math.sin(t * 0.7), bl = K(5) * 0.6;
+  const k1 = K(1) * (1 - bl) + al * bl, k2 = K(2) * (1 - bl) + al * bl, k3 = K(3);
+  const sqrtx = Math.sqrt(1 + k1 * 9), modval = Math.max(2, Math.floor(2 + Math.pow(k2, 0.7) * 10));
+  const n = Math.max(16, Math.min(120, Math.round(18 + k3 * 100)));
+  if (!hgC) { hgC = document.createElement('canvas'); hgX = hgC.getContext('2d'); }
+  const nx = n, ny = Math.max(4, Math.round(n * h / w));
+  if (hgC.width !== nx || hgC.height !== ny) { hgC.width = nx; hgC.height = ny; }
+  const m = Math.max(nx, ny), a = new Int32Array(m + 1);
+  for (let i = 1; i <= m; i++) a[i] = a[i - 1] + ((Math.floor(i * sqrtx) % modval) === 1 ? 1 : -1);
+  const pal = []; for (let i = 0; i < 4; i++) pal.push(rgb(pick(S.fg + i * 0.25 * (0.15 + K(4) * 1.85))));
+  const img = hgX.createImageData(nx, ny), d = img.data, sh = Math.floor(t * 2);
+  for (let y = 0; y < ny; y++) { const ay = a[(y + sh) % m]; for (let x = 0; x < nx; x++) { const c = pal[((a[x] + ay) % 4 + 4) % 4], o = (y * nx + x) * 4; d[o] = c[0]; d[o + 1] = c[1]; d[o + 2] = c[2]; d[o + 3] = 255; } }
+  hgX.putImageData(img, 0, 0); ctx.imageSmoothingEnabled = false; ctx.drawImage(hgC, 0, 0, w, h);
+}
+const AI = i => wave((((i % 100) + 100) % 100) / 100) * 15000 * (an ? 0.35 + peak() * 1.5 : 1);
+function spirograph() {
+  const xr = w, yr = h, m = Math.min(xr, yr), crad = m * 0.025;
+  st.rot = st.rot || 0; st.j = st.j || 0;
+  if (K(3) < 0.48) st.rot -= (0.48 - K(3)) * 30; else if (K(3) > 0.52) st.rot += (K(3) - 0.52) * 30;
+  const sizer = K(1) * 3; let lw, cr;
+  if (sizer < 1) { lw = 0.8; cr = sizer * 2 * crad; } else if (sizer <= 2) { lw = (sizer - 1) * 6 + 0.8; cr = 0; } else { lw = (sizer - 2) * 6 + 0.8; cr = (sizer - 2) * 2 * crad + 1; }
+  const R0 = (K(2) * 2 * (m * 0.4)) - (m * 0.1); let lx = null, ly = null;
+  for (let i = 0; i < 50; i++) {
+    st.j += i <= 24 ? 1 : -1;
+    const R = R0 + AI(st.j) / 100 * m / 600;
+    const a = (i / 50) * 6.28, ra = st.rot * Math.PI / 180;
+    const x = R * Math.cos(a), y = R * Math.sin(a);
+    const rx = x * Math.cos(ra) - y * Math.sin(ra) + xr / 2, ry = x * Math.sin(ra) + y * Math.cos(ra) + yr / 2;
+    const col = pick(S.fg + wrap01(i * K(4) * 0.2));
+    if (lx != null) { ctx.strokeStyle = col; ctx.lineWidth = Math.max(0.6, lw); ctx.beginPath(); ctx.moveTo(lx, ly); ctx.lineTo(rx, ry); ctx.stroke(); }
+    lx = rx; ly = ry;
+    if (cr >= 0.6) { ctx.fillStyle = col; ctx.beginPath(); ctx.arc(rx, ry, cr, 0, TAU); ctx.fill(); }
+  }
+}
+function gooTube() {
+  const xr = w, yr = h, x12 = Math.min(xr, yr) * 0.03;
+  const cool = Math.min(260, Math.round(K(1) * (yr - 4)) + 6), yoff = (yr / 2) - K(1) * (yr / 2);
+  const xtra = K(2) * (xr - 2) + 2, swell = K(3) * 0.999 + 0.001, sy = (yr / 2) / cool;
+  st.rate = st.rate || 0;
+  for (let i = 0; i < cool; i++) {
+    const puff = (AI(i % 99) * 0.00003058) * (yr / 4);
+    st.rate = (st.rate + K(4) * 0.0005) % 1;
+    const rad = Math.abs(x12 + x12 * Math.sin(i * 0.1 * swell + t));
+    const xp = (xr / 2) + (xtra / 2) * Math.sin(i * 2.5 + t) * 0.5;
+    if (rad < 0.4) continue;
+    ctx.fillStyle = pick(S.fg + wrap01(i * 0.02 * K(4) + st.rate)); ctx.beginPath(); ctx.arc(xp + puff, i * sy * 2 + yoff, rad, 0, TAU); ctx.fill();
+  }
+}
+function bouncyCastle() {
+  const xr = w, yr = h, s = sc();
+  if (!st.bb) st.bb = {h: new Float32Array(32), c: [], last: 0};
+  const B = st.bb, bars = Math.max(1, Math.round(1 + K(1) * 23)), cn = Math.floor(K(2) * 8 + 0.001), mix = K(4);
+  const now = performance.now(); let dt = (now - (B.last || now)) / 1000; B.last = now; dt = clamp(dt, 1 / 120, 1 / 15);
+  for (let i = 0; i < bars; i++) { const v = Math.min(1, Math.abs(AI(Math.floor(i * (100 / bars)))) / 32767 * 4); B.h[i] = B.h[i] * 0.85 + v * 0.15; }
+  const bw = xr / bars, maxH = yr * 0.9, rects = [];
+  for (let i = 0; i < bars; i++) { const bh = B.h[i] * maxH * (0.6 + 0.8 * mix), x = i * bw, y = yr - bh; ctx.fillStyle = pick(S.fg + wrap01(i * 0.11 * K(3))); ctx.fillRect(x, y, Math.ceil(bw), bh); rects.push({l: x, r: x + bw, t: y, cx: x + bw / 2, cy: y + bh / 2, wd: bw, i}); }
+  while (B.c.length < cn) { const r = (3 + Math.random() * 7) * s; B.c.push({x: r + Math.random() * (xr - 2 * r), y: Math.random() * yr / 2, r, vx: (-60 + Math.random() * 120) * s, vy: (-40 + Math.random() * 80) * s, hh: Math.random()}); }
+  while (B.c.length > cn) B.c.pop();
+  for (const c of B.c) { c.vy += 50 * s * dt; c.x += c.vx * dt; c.y += c.vy * dt; if (c.x - c.r < 0) { c.x = c.r; c.vx *= -0.8; } if (c.x + c.r > xr) { c.x = xr - c.r; c.vx *= -0.8; } if (c.y - c.r < 0) { c.y = c.r; c.vy *= -0.8; } if (c.y + c.r > yr) { c.y = yr - c.r; c.vy *= -0.85; } }
+  for (const c of B.c) for (const rc of rects) { const nx = clamp(c.x, rc.l, rc.r), ny = clamp(c.y, rc.t, yr), dx = c.x - nx, dy = c.y - ny; if (dx * dx + dy * dy <= c.r * c.r && c.y < rc.cy) { c.y = rc.t - c.r - 0.5; c.vy = -Math.abs(c.vy) * 0.85 - B.h[rc.i] * 100 * s; c.vx += (c.x - rc.cx) / (rc.wd / 2) * 30 * s; } }
+  for (const c of B.c) { ctx.fillStyle = Q.line; ctx.globalAlpha = 0.18; ctx.beginPath(); ctx.arc(c.x + 1.2, c.y + 1.2, c.r, 0, TAU); ctx.fill(); ctx.globalAlpha = 1; ctx.fillStyle = pick(S.fg + 0.3 + c.hh * K(4) * 2); ctx.beginPath(); ctx.arc(c.x, c.y, c.r, 0, TAU); ctx.fill(); }
+}
+// Chaos Engine: runs another mode on slow polyrhythmic knob LFOs, switching every few bars.
+const RZ_RATES = [16, 24, 10, 32, 48], RZ_OFF = [0, 1.05, 2.09, 3.14, 4.19], RZ_IVL = [8, 16, 32, 64];
+function chaosEngine() {
+  const ivl = RZ_IVL[Math.min(3, Math.floor(K(3) * 4))], slot = Math.floor(t / ivl), pool = MODES.length - 1;
+  const idx = Math.floor(hash(slot, S === STATE.syn[0] ? 1 : 2) * pool), sp = 0.1 + K(1) * 1.9, kb = S.k;
+  S.k = RZ_OFF.map((o, i) => 0.5 + 0.5 * Math.sin(t * TAU * sp / RZ_RATES[i] + o));
+  try { ctx.save(); MODES[idx].f(); } finally { ctx.restore(); S.k = kb; }
+}
+const MODES = [
+  {n: 'Bubble Wrap', f: bubbleWrap},
+  {n: 'Neon Nostalgia', f: () => gridPolygons('column')},
+  {n: 'Prism Panic', f: () => gridPolygons('patchwork')},
+  {n: 'Groove Juice', f: () => gridPolygons('uniform')},
+  {n: 'Slime Funk Meltdown', f: hertsi},
+  {n: 'Hypno Waffle', f: hypnoWaffle},
+  {n: 'Disco Maze', f: () => mirrorGrid(true)},
+  {n: 'Portal Punch', f: portalPunch},
+  {n: 'Glitter Bomb', f: glitterBomb},
+  {n: 'Spirograph Sludge', f: spirograph},
+  {n: 'Goo Tube', f: gooTube},
+  {n: 'Bouncy Castle', f: bouncyCastle},
+  {n: 'Chaos Engine', f: chaosEngine},
+];
+if (G.study) MODES.splice(MODES.findIndex(m => m.n === 'Spirograph Sludge'), 1);   // the study leaves this one out
+
+// ---------------------------------------------------------------- Synth I: the square synth
+// The top band and the bottom-left column hold the same three squares: across
+// at the top, turned upright at the bottom. Each square is a D4 motif built the
+// way the references are: cross-stitch on a grid, a fret of nested squares,
+// compartiment strapwork, an octagon-and-square lattice. Squares sit side by
+// side, so their edges meet as tiles do. Knobs: grid, motif, rings, colour, speed.
+const sqCol = i => Q[at(PAL().fg, S.fg + i * 0.34 * (0.3 + K(4) * 1.4))];
+const sqPhase = idx => t * (0.25 + K(5) * 1.6) + idx * 0.9;
+// Every block is drawn at its true size, centred, W wide and H tall, so circles
+// stay round: sizes come from the short side (m), and the long side just runs on.
+const corners = (hw, hh) => [[-hw, -hh], [hw, -hh], [hw, hh], [-hw, hh]];
+const disc = (x, y, r) => { ctx.beginPath(); ctx.arc(x, y, Math.max(0.1, r), 0, TAU); };
+function sqCells(W, H, cellFn) {                    // square cells across the whole block; (a, b) measured from the centre
+  const m = Math.min(W, H), N = 11 + 2 * Math.round(K(1) * 6), c = m / N, gap = c * 0.14;
+  const hx = Math.ceil(W / c / 2), hy = Math.ceil(H / c / 2), h = (N - 1) / 2;
+  for (let u = -hx; u <= hx; u++) for (let v = -hy; v <= hy; v++) {
+    const col = cellFn(u, v, h, Math.floor(W / c / 2), Math.floor(H / c / 2)); if (!col) continue;
+    ctx.fillStyle = col; ctx.fillRect(u * c - c / 2 + gap / 2, v * c - c / 2 + gap / 2, c - gap, c - gap);
+  }
+}
+function sqStitch(W, H, idx) {                     // a cross-stitch rosette, rings rippling out to the hem
+  const ph = sqPhase(idx), pw = 1 + Math.round(K(2) * 2), fr = 0.45 + K(3) * 1.2;
+  sqCells(W, H, (u, v, h, ex, ey) => {
+    let a = Math.abs(u), b = Math.abs(v); if (b > a) [a, b] = [b, a];
+    if (Math.abs(u) >= ex || Math.abs(v) >= ey) return (u + v) & 1 ? Q.line : null;      // the hem
+    if (a + b === 0) return sqCol(1);
+    if (b < pw && a > h * 0.22 && a < h * (0.55 + K(2) * 0.3)) return sqCol(0);
+    if (a - b < pw && a > h * 0.18 && a < h * 0.5) return sqCol(2);
+    const ring = Math.floor((a + b) * fr - ph * 2);
+    return ((ring % 3) + 3) % 3 === 0 ? sqCol(ring & 1 ? 1 : 2) : null;
+  });
+}
+function sqFret(W, H, idx) {                       // nested rectangles following the block, each broken by a key that walks round
+  const ph = sqPhase(idx);
+  sqCells(W, H, (u, v, h, ex, ey) => {
+    const depth = Math.min(ex - Math.abs(u), ey - Math.abs(v));
+    if (depth < 0) return null;
+    const maxd = Math.min(ex, ey); if (depth === maxd) return sqCol(1);
+    if ((depth + Math.floor(K(3) * 3)) % 2) return null;
+    const ang = (Math.atan2(v, u) / TAU + 1) % 1, gate = (ph * 0.08 * (depth % 4 < 2 ? 1 : -1) + depth * 0.13) % 1;
+    if (Math.abs(((ang - gate + 1.5) % 1) - 0.5) < 0.04 + K(2) * 0.05) return null;
+    return depth === 0 ? Q.line : sqCol(Math.floor(depth / 2));
+  });
+}
+function strap(drawPath, wid, fill) {
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.strokeStyle = Q.line; ctx.lineWidth = wid; drawPath(); ctx.stroke();
+  ctx.strokeStyle = fill; ctx.lineWidth = wid * 0.5; drawPath(); ctx.stroke();
+}
+function sqCompartiment(W, H, idx) {              // corner quarters at the block's corners, a quatrefoil in the middle, scrolls on each side
+  const ph = sqPhase(idx), hw = W / 2, hh = H / 2, m = Math.min(hw, hh), wid = m * 2 * (0.05 + K(1) * 0.04), br = 0.5 + 0.5 * Math.sin(ph);
+  const rq = m * 0.42, rc = m * (0.16 + K(2) * 0.1 + br * 0.05), d = m * (0.22 + K(3) * 0.12);
+  ctx.fillStyle = sqCol(2); ctx.globalAlpha = 0.55;
+  for (const [x, y] of corners(hw, hh)) { disc(x, y, rq); ctx.fill(); }
+  ctx.globalAlpha = 1;
+  strap(() => { ctx.beginPath(); for (const [x, y] of corners(hw, hh)) { ctx.moveTo(x + Math.sign(-x) * rq, y); ctx.arc(x, y, rq, Math.atan2(0, -x), Math.atan2(-y, 0), (x > 0) === (y > 0)); } }, wid, Q.cream);
+  ctx.save(); ctx.rotate((idx % 2 ? 1 : -1) * Math.sin(ph * 0.5) * 0.4);
+  strap(() => { ctx.beginPath(); for (let k = 0; k < 4; k++) { const a = k * TAU / 4; ctx.moveTo(Math.cos(a) * d + rc, Math.sin(a) * d); ctx.arc(Math.cos(a) * d, Math.sin(a) * d, rc, 0, TAU); } }, wid, sqCol(0));
+  ctx.restore();
+  const sr = m * 0.09, ex = hw - m * 0.28, ey = hh - m * 0.28;                    // scrolls sit inside each side's midpoint
+  strap(() => { ctx.beginPath(); for (const [x, y] of [[0, -ey], [ex, 0], [0, ey], [-ex, 0]]) { ctx.moveTo(x + sr, y); ctx.arc(x, y, sr, 0, TAU * (0.6 + br * 0.3)); } }, wid * 0.8, sqCol(1));
+  ctx.fillStyle = Q.line; ctx.fillRect(-m * 0.07, -m * 0.07, m * 0.14, m * 0.14);
+}
+function octPath(hw, hh, cut, rot) {               // an octagon fitted to a rectangle: its corners cut square, so its sides stay straight
+  ctx.save(); ctx.rotate(rot || 0); ctx.beginPath();
+  const p = [[-hw + cut, -hh], [hw - cut, -hh], [hw, -hh + cut], [hw, hh - cut], [hw - cut, hh], [-hw + cut, hh], [-hw, hh - cut], [-hw, -hh + cut]];
+  p.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.closePath(); ctx.restore();
+  return p;
+}
+function sqLattice(W, H, idx) {                    // octagon-and-square openwork, the octagon stretched along the block, the ring kept round
+  const ph = sqPhase(idx), hw = W / 2, hh = H / 2, m = Math.min(hw, hh), cut = m * 2 / (2 + Math.SQRT2), lw = m * 2 * (0.025 + K(1) * 0.03);
+  ctx.fillStyle = sqCol(2);
+  for (const [x, y] of corners(hw, hh)) { ctx.beginPath(); ctx.moveTo(x, y + Math.sign(-y) * cut); ctx.lineTo(x + Math.sign(-x) * cut, y); ctx.lineTo(x, y); ctx.closePath(); ctx.fill(); }
+  const inset = m * (0.18 + K(2) * 0.14 + 0.06 * Math.sin(ph)), rr = m * (0.2 + K(3) * 0.15) * (0.85 + 0.09 * amp());
+  const outer = octPath(hw, hh, cut); ctx.fillStyle = sqCol(0); ctx.fill();
+  const inner = octPath(hw - inset, hh - inset, cut * (1 - inset / m * 0.6)); ctx.fillStyle = Q.cream; ctx.fill();
+  disc(0, 0, rr); ctx.fillStyle = sqCol(1); ctx.fill();
+  ctx.strokeStyle = Q.line; ctx.lineWidth = lw;
+  octPath(hw, hh, cut); ctx.stroke(); octPath(hw - inset, hh - inset, cut * (1 - inset / m * 0.6)); ctx.stroke(); disc(0, 0, rr); ctx.stroke();
+  outer.forEach(([x, y], i) => { ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(inner[i][0], inner[i][1]); ctx.stroke(); });   // the bars joining them
+}
+function sqNested(W, H, idx) {                     // nested rounded rectangles, colours stepping inward
+  const ph = sqPhase(idx), hw = W / 2, hh = H / 2, m = Math.min(hw, hh), n = 5 + Math.round(K(1) * 9), step = m / n, rad = K(2) * 0.5;
+  for (let k = 0; k < n; k++) {
+    const rx = hw - k * step, ry = hh - k * step, ci = Math.floor(k - ph * 2);
+    ctx.fillStyle = ((ci % 4) + 4) % 4 === 3 ? Q.cream : sqCol(((ci % 3) + 3) % 3);
+    ctx.beginPath(); ctx.roundRect(-rx, -ry, 2 * rx, 2 * ry, Math.min(rx, ry) * rad); ctx.fill();
+    if (K(3) > 0.4) { ctx.strokeStyle = Q.line; ctx.lineWidth = 0.4; ctx.stroke(); }
+  }
+  disc(0, 0, step * 0.45); ctx.fillStyle = Q.line; ctx.fill();
+}
+function sqArcCheck(W, H, idx) {                   // a checkerboard of true squares under round bands that meet in four-point stars
+  const ph = sqPhase(idx), hw = W / 2, hh = H / 2, m = Math.min(hw, hh), N = 4 + 2 * Math.round(K(1) * 2), c = m * 2 / N, flip = Math.floor(ph) & 1;
+  for (let i = Math.floor(-hw / c) - 1; i * c < hw; i++) for (let j = Math.floor(-hh / c) - 1; j * c < hh; j++) {
+    ctx.fillStyle = ((i + j + flip) & 1) ? sqCol(2) : Q.cream; ctx.fillRect(i * c, j * c, c, c);
+  }
+  const band = c * (0.5 + K(2) * 0.4), R = m * (0.5 + 0.08 * Math.sin(ph * 1.3));
+  const centres = [...corners(hw, hh), [0, 0]]; if (hw > hh * 1.25) centres.push([-hw, 0], [hw, 0]); if (hh > hw * 1.25) centres.push([0, -hh], [0, hh]);
+  for (const [x, y] of centres) {
+    ctx.strokeStyle = Q.line; ctx.lineWidth = band; disc(x, y, R); ctx.stroke();
+    ctx.strokeStyle = sqCol(0); ctx.lineWidth = band * 0.55; disc(x, y, R); ctx.stroke();
+  }
+  ctx.fillStyle = sqCol(1); ctx.beginPath();
+  for (let k = 0; k < 8; k++) { const a = k * TAU / 8, r = k % 2 ? m * 0.12 : m * (0.3 + K(3) * 0.15); ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r); }
+  ctx.closePath(); ctx.fill();
+}
+function sqStar(W, H, idx) {                       // a quilt block: an eight-point star, nine-patch corners, diamonds on each side
+  const ph = sqPhase(idx), hw = W / 2, hh = H / 2, m = Math.min(hw, hh), u = m / 2;
+  ctx.fillStyle = sqCol(2); ctx.fillRect(-hw, -hh, W, H);
+  for (const [x, y] of corners(hw, hh)) {
+    const x0 = x < 0 ? x : x - u, y0 = y < 0 ? y : y - u, c = u / 3;
+    for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) if ((i + j) % 2 === 0) { ctx.fillStyle = (i === 1 && j === 1) ? Q.line : sqCol(1); ctx.fillRect(x0 + i * c, y0 + j * c, c, c); }
+  }
+  ctx.save(); ctx.rotate(Math.sin(ph * 0.5) * 0.25 * K(3));
+  const R = m * (0.62 + K(2) * 0.25) * (1 + amp() * 0.04), r = R * 0.42;
+  ctx.fillStyle = sqCol(0); ctx.beginPath();
+  for (let k = 0; k < 16; k++) { const a = k * TAU / 16 - TAU / 4, q = k % 2 ? r : R; ctx.lineTo(Math.cos(a) * q, Math.sin(a) * q); }
+  ctx.closePath(); ctx.fill(); ctx.strokeStyle = Q.line; ctx.lineWidth = 0.6; ctx.stroke();
+  ctx.restore();
+  ctx.fillStyle = Q.cream; ctx.fillRect(-u * 0.55, -u * 0.55, u * 1.1, u * 1.1);
+  ctx.fillStyle = Q.line;
+  for (const [x, y] of [[0, -hh], [hw, 0], [0, hh], [-hw, 0]]) { const q = u * 0.3; ctx.beginPath(); ctx.moveTo(x, y - q); ctx.lineTo(x + q, y); ctx.lineTo(x, y + q); ctx.lineTo(x - q, y); ctx.closePath(); ctx.fill(); }
+}
+function sqCircles(W, H, idx) {                    // round circles on the corners, the centre and the long sides' midpoints, overlapping into lenses
+  const ph = sqPhase(idx), hw = W / 2, hh = H / 2, m = Math.min(hw, hh), br = Math.sin(ph) * 0.06;
+  // sized from how far apart the circles sit, so centre and corners always overlap into lenses
+  const dist = Math.hypot(hw, hh), R1 = dist * (0.5 + K(2) * 0.12 + br), R2 = dist * (0.56 + K(3) * 0.12 - br);
+  const ring = [...corners(hw, hh)]; if (hw > hh * 1.25) ring.push([-hw, 0], [hw, 0]); if (hh > hw * 1.25) ring.push([0, -hh], [0, hh]);
+  ctx.fillStyle = sqCol(2); ctx.fillRect(-hw, -hh, W, H);
+  for (const [x, y] of ring) { disc(x, y, R1); ctx.fillStyle = sqCol(0); ctx.fill(); }
+  disc(0, 0, R2); ctx.fillStyle = sqCol(1); ctx.fill();
+  for (const [x, y] of ring) { ctx.save(); disc(x, y, R1); ctx.clip(); disc(0, 0, R2); ctx.fillStyle = Q.cream; ctx.fill(); ctx.restore(); }
+  disc(0, 0, R2 * (0.35 + 0.1 * amp())); ctx.fillStyle = Q.line; ctx.globalAlpha = 0.5; ctx.fill(); ctx.globalAlpha = 1;
+  ctx.strokeStyle = Q.line; ctx.lineWidth = 0.7;
+  for (const [x, y] of ring) { disc(x, y, R1); ctx.stroke(); }
+  disc(0, 0, R2); ctx.stroke();
+}
+function sqChaos(W, H, idx) {
+  const ivl = RZ_IVL[Math.min(3, Math.floor(K(3) * 4))], slot = Math.floor(t / ivl), kb = S.k;
+  const m = G.study && slot === 0 ? 0 : Math.floor(hash(slot, 5) * (SQ_MODES.length - 1));   // the study's run opens on Stitch
+  S.k = RZ_OFF.map((o, i) => 0.5 + 0.5 * Math.sin(t * TAU * (0.1 + K(1) * 1.9) / RZ_RATES[i] + o));
+  try { SQ_MODES[m].f(W, H, idx); } finally { S.k = kb; }
+}
+const SQ_MODES = [
+  {n: 'Stitch', f: sqStitch},
+  {n: 'Fret', f: sqFret},
+  {n: 'Compartiment', f: sqCompartiment},
+  {n: 'Lattice', f: sqLattice},
+  {n: 'Nested', f: sqNested},
+  {n: 'Arc & Check', f: sqArcCheck},
+  {n: 'Star Block', f: sqStar},
+  {n: 'Circles', f: sqCircles},
+  {n: 'Chaos Engine', f: sqChaos},
+];
+function squareSynth(modeFn) {                     // three blocks filling the strip: across in the band, stacked in the column
+  const across = w > h, n = 3;
+  const bw = across ? w / n : w, bh = across ? h : COL_BLOCKS / n;               // the column's blocks stop at its slider box
+  ctx.fillStyle = Q.line; ctx.fillRect(0, 0, w, h);
+  for (let k = 0; k < n; k++) {
+    const x = across ? k * bw : 0, y = across ? 0 : k * bh;
+    ctx.save(); ctx.beginPath(); ctx.rect(x, y, bw, bh); ctx.clip();
+    ctx.translate(x + bw / 2, y + bh / 2);
+    ctx.fillStyle = Q.cream; ctx.fillRect(-bw / 2, -bh / 2, bw, bh);
+    modeFn(bw, bh, k);                                                            // drawn at true size: no squashing
+    ctx.restore();
+    ctx.strokeStyle = Q.line; ctx.lineWidth = 0.9; ctx.strokeRect(x + 0.45, y + 0.45, bw - 0.9, bh - 0.9);
+  }
+}
+const COL_BLOCKS = 229;                            // the column, top to slider box
+const modesOf = i => i === 0 ? SQ_MODES : MODES;
+
+// ---------------------------------------------------------------- canvases
+const canvases = [];
+function makeCanvas(b, kind, extra) {
+  const c = document.createElement('canvas');
+  box(c, b[0], b[1], b[2], b[3]); live.appendChild(c);
+  const P = Object.assign({c, ctx: c.getContext('2d'), b, w: b[2], h: b[3], st: {}, kind}, extra);
+  canvases.push(P); return P;
+}
+function sizeCanvas(P) {
+  const r = P.c.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
+  P.c.width = Math.max(1, Math.round(r.width * dpr)); P.c.height = Math.max(1, Math.round(r.height * dpr));
+  P.sx = P.c.width / P.w; P.sy = P.c.height / P.h; P.fresh = true;
+}
+// ---------------------------------------------------------------- idle drift
+// Left alone for 15 seconds, the synths wander the way Chaos Engine does: the
+// knobs ease onto slow polyrhythmic LFOs and the mode changes every few bars.
+// Any touch, click, key or scroll hands them straight back as you left them.
+const IDLE_MS = 15000, IDLE_RAMP = 4, IDLE_SEG = 14;
+let lastInput = performance.now();
+const idleSecs = () => (performance.now() - lastInput - IDLE_MS) / 1000;
+function drift(i, S0) {
+  const CHAOS = modesOf(i).length - 1, s = idleSecs(); if (s <= 0 || S0.mode === CHAOS) return null;
+  const amt = Math.min(1, s / IDLE_RAMP), seg = Math.floor(s / IDLE_SEG);
+  let mode = S0.mode;
+  if (seg > 0) { mode = Math.floor(hash(seg, 7 + i * 13) * CHAOS); if (mode === S0.mode) mode = (mode + 1) % CHAOS; }
+  const k = S0.k.map((v, j) => lerp(v, 0.5 + 0.5 * Math.sin(t * TAU * 0.6 / RZ_RATES[j] + RZ_OFF[j] + i * 2.1), amt));
+  return {mode, k};
+}
+const drifting = ['', ''];
+function drawSynth(P) {
+  ctx = P.ctx; w = P.w; h = P.h; S = STATE.syn[P.syn]; st = P.st;
+  ctx.setTransform(P.sx, 0, 0, P.sy, 0, 0);
+  if (!STATE.trails || P.fresh) { ctx.fillStyle = bgcol(); ctx.fillRect(0, 0, w, h); P.fresh = false; }
+  const D = drift(P.syn, S), kb = S.k, mode = D ? D.mode : S.mode;
+  if (D) S.k = D.k;
+  if (P.lastMode !== mode) { P.st = st = {}; P.lastMode = mode; }
+  const L = modesOf(P.syn);
+  ctx.save(); try { if (P.syn === 0) squareSynth(L[mode].f); else L[mode].f(); } catch (e) { console.warn(e); } finally { ctx.restore(); S.k = kb; }
+  const label = D && mode !== S.mode ? '~ ' + L[mode].n : L[S.mode].n;
+  if (drifting[P.syn] !== label) { drifting[P.syn] = label; const el = document.querySelector('.cbox .m' + P.syn); if (el) el.textContent = label; }
+}
+
+// ---------------------------------------------------------------- borders: bold band patterns
+// Each strip is a solid base band with a repeat standing on it, after the
+// folk-poster bands: comb, stripes, sawtooth, drops, checker, crown, pickets,
+// flames. They march along (alternate strips the other way); Rave swaps the
+// pattern on every hit. Knobs: speed, height, spacing, colour, wobble.
+const PATTERNS = {
+  comb(x, p, th, base) { const tw = p * 0.52, r = tw / 2; ctx.beginPath(); ctx.moveTo(x - r, base); ctx.lineTo(x - r, base - th + r); ctx.arc(x, base - th + r, r, Math.PI, 0); ctx.lineTo(x + r, base); ctx.fill(); },
+  stripes(x, p, th, base) { const sk = th * 0.9, bw = p * 0.42; ctx.beginPath(); ctx.moveTo(x - bw / 2, base); ctx.lineTo(x - bw / 2 + sk, base - th); ctx.lineTo(x + bw / 2 + sk, base - th); ctx.lineTo(x + bw / 2, base); ctx.fill(); },
+  sawtooth(x, p, th, base) { ctx.beginPath(); ctx.moveTo(x - p / 2, base); ctx.lineTo(x, base - th); ctx.lineTo(x + p / 2, base); ctx.fill(); },
+  drops(x, p, th, base) { const sw = p * 0.2, hr = p * 0.27; ctx.beginPath(); ctx.moveTo(x - sw / 2, base); ctx.lineTo(x - sw / 2, base - th + hr * 1.6); ctx.arc(x, base - th + hr, hr, Math.PI * 0.62, Math.PI * 2.38); ctx.lineTo(x + sw / 2, base); ctx.fill(); },
+  checker(x, p, th, base, j) { const c = th / 2; for (let r = 0; r < 2; r++) if ((j + r) & 1) ctx.fillRect(x - p / 2, base - (r + 1) * c, p, c); },
+  crown(x, p, th, base, j, bg, fg) { ctx.beginPath(); ctx.moveTo(x - p / 2, base); ctx.lineTo(x, base - th * 0.72); ctx.lineTo(x + p / 2, base); ctx.fill();
+    ctx.beginPath(); ctx.arc(x, base - th * 0.9, p * 0.13, 0, TAU); ctx.fill();
+    ctx.fillStyle = bg; ctx.beginPath(); ctx.arc(x + p / 2, base - th * 0.08, p * 0.12, 0, TAU); ctx.fill(); ctx.fillStyle = fg; },
+  pickets(x, p, th, base) { ctx.fillRect(x - p * 0.24, base - th, p * 0.48, th); },
+  flames(x, p, th, base) { const hw = p * 0.32; ctx.beginPath(); ctx.moveTo(x - hw, base);
+    ctx.bezierCurveTo(x - hw * 1.2, base - th * 0.45, x + hw * 0.9, base - th * 0.5, x + hw * 0.1, base - th);
+    ctx.bezierCurveTo(x + hw * 1.5, base - th * 0.55, x + hw * 0.2, base - th * 0.25, x + hw, base); ctx.fill(); },
+};
+const PATTERN_ORDER = ['comb', 'stripes', 'sawtooth', 'drops', 'checker', 'crown', 'pickets', 'flames'];
+const BORDER_MODES = ['Comb', 'Stripes', 'Sawtooth', 'Drops', 'Checker', 'Crown', 'Pickets', 'Flames', 'Rave'];
+const RAVE = BORDER_MODES.length - 1;
+let raveSet = 0;
+function drawBorder(P, idx) {
+  const B = STATE.borders, k = B.k, pal = PAL();
+  ctx = P.ctx; w = P.w; h = P.h;
+  ctx.setTransform(P.sx, 0, 0, P.sy, 0, 0);
+  const bg = Q.cream, fg = Q[at(pal.fg, B.fg + idx * 0.34 * (0.3 + k[3] * 1.4))];   // each strip its own colour, as in the bands
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, w, h);
+  const name = B.mode === RAVE ? PATTERN_ORDER[(raveSet + idx * 3) % PATTERN_ORDER.length] : PATTERN_ORDER[B.mode];
+  const hb = h * 0.26, base = h - hb, step = h * (0.6 + k[2] * 0.9) * (name === 'checker' ? 0.62 : 1);
+  const dir = idx % 2 ? -1 : 1, off = t * (2 + k[0] * 30) * dir;
+  ctx.fillStyle = fg; ctx.fillRect(0, base, w, hb);                                  // the base band
+  const j0 = Math.floor(off / step) - 2, jn = j0 + Math.ceil(w / step) + 4;
+  for (let j = j0; j < jn; j++) {
+    const wob = 1 - k[4] * 0.45 * (0.5 + 0.5 * Math.sin(j * 0.9 + t * 3));
+    const th = (base - h * 0.06) * (0.62 + k[1] * 0.38) * wob * (1 + trig * 0.18);
+    ctx.fillStyle = fg; PATTERNS[name](j * step - off, step, name === 'checker' ? base - h * 0.06 : th, base, j, bg, fg);
+  }
+  ctx.fillStyle = Q.line; ctx.fillRect(0, 0, w, 0.6); ctx.fillRect(0, h - 0.6, w, 0.6);
+}
+
+// ---------------------------------------------------------------- petals (tiles and rosettes)
+// A petal is a polar curve struck from its base: rounded or pointed, with an
+// optional notch at the tip that splits it into a heart.
+function petal(a, r0, L, phi, notch, point, p, n) {
+  n = n || 28; const bx = Math.cos(a) * r0, by = Math.sin(a) * r0, pts = [];
+  for (let i = 0; i <= n; i++) {
+    const u = -1 + 2 * i / n, ph = u * phi;
+    const round = Math.pow(Math.max(0, Math.cos(u * Math.PI / 2)), p), pointy = Math.pow(1 - Math.abs(u), p);
+    const r = L * ((1 - point) * round + point * pointy) * (1 - notch * Math.exp(-Math.pow(u / 0.3, 2)));
+    pts.push(f2(bx + Math.cos(a + ph) * r) + ',' + f2(by + Math.sin(a + ph) * r));
+  }
+  return 'M' + pts.join('L') + 'Z';
+}
+const circ = (x, y, r) => `M${f2(x - r)},${f2(y)}a${f2(r)},${f2(r)} 0 1,0 ${f2(2 * r)},0a${f2(r)},${f2(r)} 0 1,0 ${f2(-2 * r)},0Z`;
+function logSpiral(cx, cy, r0, k, dir, a0, rEnd) {
+  // r = r0 * k^(theta / quarter-turn): Paynter Fig. 152
+  const pts = []; const q = Math.PI / 2;
+  for (let th = 0; th < 40 * q; th += 0.08) {
+    const r = r0 * Math.pow(k, th / q); if (r < rEnd) break;
+    const a = a0 + dir * th; pts.push(f2(cx + Math.cos(a) * r) + ',' + f2(cy + Math.sin(a) * r));
+  }
+  return 'M' + pts.join('L');
+}
+
+// ---------------------------------------------------------------- L'Ornato tiles (p.107)
+// Five tiles from the plate, rebuilt on one D4 construction and morphed in turn.
+const TILE_KEYS = [
+  {n: 6,  cd: .17, cr: 0,   ax: [0, .1, .4, 0, 0],      dg: [1.2, .1, .55, .08, .85], ring: [0, 0],    sm: [0, .2],   cor: 0},
+  {n: 8,  cd: .1,  cr: .17, ax: [.9, .06, .8, .32, 0],   dg: [.62, .3, .2, 0, 1],      ring: [0, 0],    sm: [0, .2],   cor: .26},
+  {n: 27, cd: .12, cr: .22, ax: [.92, .12, .6, .18, .25],dg: [.48, .52, .22, 0, 1],    ring: [.52, .07],sm: [0, .2],   cor: 0},
+  {n: 16, cd: .12, cr: .24, ax: [0, .2, .3, 0, 0],       dg: [0, .3, .2, 0, 1],        ring: [.84, .09],sm: [.5, .3],  cor: .34},
+  {n: 22, cd: .14, cr: 0,   ax: [.62, .14, .5, .45, .2], dg: [1.25, .16, .16, 0, 1],   ring: [0, 0],    sm: [0, .2],   cor: 0},
+];
+// The square panel runs SQUARE_SHIFT tiles ahead of the diamonds, round the
+// plate in a loop, so the two always show different tiles but move together.
+const SQUARE_SHIFT = 2;
+function tileParams(m, shift) {
+  const N = TILE_KEYS.length; let s = clamp(m, 0, 1) * (N - 1), i, f;
+  if (shift) { s = (s + shift) % N; i = Math.floor(s); f = s - i; }
+  else { i = Math.min(N - 2, Math.floor(s)); f = s - i; }
+  const A = TILE_KEYS[i], B = TILE_KEYS[(i + 1) % N], e = f * f * (3 - 2 * f), L = (a, b) => lerp(a, b, e);
+  const arr = (a, b) => a.map((v, j) => L(v, b[j]));
+  return {cd: L(A.cd, B.cd), cr: L(A.cr, B.cr), ax: arr(A.ax, B.ax), dg: arr(A.dg, B.dg), ring: arr(A.ring, B.ring), sm: arr(A.sm, B.sm), cor: L(A.cor, B.cor), from: A.n, to: B.n, f};
+}
+function tileMarkup(m, id, shift) {
+  const P = tileParams(m, shift), ink = Q.clay, cream = Q.cream; let s = '';
+  s += `<clipPath id="${id}"><rect x="-.9" y="-.9" width="1.8" height="1.8"/></clipPath>`;
+  s += `<rect x="-1" y="-1" width="2" height="2" fill="${cream}" stroke="${Q.line}" stroke-width=".05"/>`;
+  s += `<g clip-path="url(#${id})">`;
+  if (P.cor > .02) for (const [x, y] of [[-.9, -.9], [.9, -.9], [.9, .9], [-.9, .9]])
+    s += `<path d="${circ(x, y, P.cor)}" fill="${ink}"/><path d="${circ(x, y, P.cor * .62)}" fill="none" stroke="${cream}" stroke-width=".035"/>`;
+  if (P.ring[0] > .05 && P.ring[1] > .01)
+    s += `<path d="${circ(0, 0, P.ring[0] + P.ring[1] / 2)}${circ(0, 0, P.ring[0] - P.ring[1] / 2)}" fill="${ink}" fill-rule="evenodd"/>`;
+  const petals = (list, a0, n) => { if (list[0] < .03) return; for (let i = 0; i < n; i++) {
+    const a = a0 + i * TAU / n, [L, r0, phi, notch, point] = list;
+    s += `<path d="${petal(a, r0, L, phi, notch, point, .8)}" fill="${ink}" stroke="${cream}" stroke-width=".035" stroke-linejoin="round"/>`;
+    const x1 = Math.cos(a) * (r0 + L * .12), y1 = Math.sin(a) * (r0 + L * .12), x2 = Math.cos(a) * (r0 + L * (.62 - notch * .5)), y2 = Math.sin(a) * (r0 + L * (.62 - notch * .5));
+    s += `<path d="M${f2(x1)},${f2(y1)}L${f2(x2)},${f2(y2)}" stroke="${cream}" stroke-width=".03" stroke-linecap="round"/>`; } };
+  petals(P.dg, Math.PI / 4, 4);
+  petals(P.ax, 0, 4);
+  if (P.sm[0] > .03) for (let i = 0; i < 8; i++) s += `<path d="${petal(Math.PI / 8 + i * TAU / 8, P.cr + .04, P.sm[0], P.sm[1], .1, .5, .8)}" fill="${ink}" stroke="${cream}" stroke-width=".03"/>`;
+  if (P.cr > .03) s += `<path d="${circ(0, 0, P.cr)}" fill="${cream}" stroke="${ink}" stroke-width=".05"/>`;
+  s += `<path d="${circ(0, 0, P.cd)}" fill="${ink}"/><path d="${circ(0, 0, P.cd * .38)}" fill="${cream}"/>`;
+  s += `</g><rect x="-.9" y="-.9" width="1.8" height="1.8" fill="none" stroke="${Q.line}" stroke-width=".018" opacity=".6"/>`;
+  return s;
+}
+function tileLabel(m) {
+  const one = P => P.f < .1 ? `${P.from}` : P.f > .9 ? `${P.to}` : `${P.from}→${P.to}`;
+  return `No. ${one(tileParams(m))} · ${one(tileParams(m, SQUARE_SHIFT))} · ${one(tileParams(m, SMALL_SHIFT))}`;   // diamonds · square · single
+}
+const tiles = [];
+G.diamonds.forEach(([cx, cy, hd], i) => {
+  const s = hd * Math.SQRT2, fr = 1.18;                       // cream frame round the tile, as on the plate
+  const el = svg(0, 0, `${-fr} ${-fr} ${2 * fr} ${2 * fr}`);
+  box(el, cx - s / 2, cy - s / 2, s, s); el.style.transform = 'rotate(45deg)';
+  live.appendChild(el); tiles.push({el, id: 'tile-d' + i, frame: fr});
+});
+{
+  const [x, y, tw, th] = G.tileSquare, el = svg(tw, th, `0 0 ${tw} ${th}`);
+  box(el, x, y, tw, th); el.style.overflow = 'hidden'; live.appendChild(el); tiles.push({el, id: 'tile-sq', grid: [tw, th]});
+}
+// a single tile in the right column, a third version: SMALL_SHIFT round the plate again
+const SMALL_SHIFT = 4;
+{
+  const [x, y, tw] = G.tileSmall, el = svg(0, 0, '-1 -1 2 2');
+  box(el, x, y, tw, tw); live.appendChild(el); tiles.push({el, id: 'tile-sm', single: true});
+}
+function drawTiles() {
+  const m = STATE.morph;
+  for (const T of tiles) {
+    if (T.single) { T.el.innerHTML = tileMarkup(m, T.id + '-c', SMALL_SHIFT); continue; }
+    if (T.grid) {
+      // exactly two by two: square tiles as tall as the panel, centred, with ink either side
+      // two rows of square tiles, laid from the column's edge and running on under the window's edge
+      const [tw, th] = T.grid, s = th / 2, x0 = 0; let inner = `<defs><g id="${T.id}-u">${tileMarkup(m, T.id + '-c', SQUARE_SHIFT)}</g></defs><rect width="${tw}" height="${th}" fill="${Q.sand}"/>`;
+      for (let r = 0; r < 2; r++) for (let c = 0; c * s < tw; c++) inner += `<use href="#${T.id}-u" transform="translate(${f2(x0 + c * s + s / 2)},${f2(r * s + s / 2)}) scale(${f2(s / 2)})"/>`;
+      T.el.innerHTML = inner;
+    } else {
+      const fr = T.frame;
+      T.el.innerHTML = `<rect x="${-fr + .04}" y="${-fr + .04}" width="${2 * fr - .08}" height="${2 * fr - .08}" fill="${Q.cream}" stroke="${Q.line}" stroke-width=".05"/>` + tileMarkup(m, T.id + '-c');
+    }
+  }
+}
+
+// ---------------------------------------------------------------- borders, now that tiles sit under them
+const borderCanvases = G.borders.map((b, i) => makeCanvas(b, 'border', {idx: i}));
+
+// ---------------------------------------------------------------- capital + shell: the spiral finding
+// Paynter (1921), Fig. 152: the logarithmic spiral, worked at a ratio of 3/4
+// per quarter turn -- not phi. The slider sets that ratio for both drawings.
+const capEl = svg(G.capital[2], G.capital[3]); box(capEl, ...G.capital); live.appendChild(capEl);
+const shellEl = svg(G.shell[2], G.shell[3]); box(shellEl, ...G.shell); live.appendChild(shellEl);
+// For now the capital and the shell are quiet silhouettes, one flat colour
+// each with no linework: the capital matches the column it stands on, the
+// shell sits a step darker than the window. The spiral slider still sets k;
+// it'll show again when these get their detail back.
+function drawCapital(k) {
+  if (G.study) return drawGrassetCapital(k);
+  const col = C.yellow; let s = '';
+  s += `<path d="M28,63V37H48V63Z" fill="${col}"/><rect x="25.5" y="34" width="25" height="4.4" rx="2.2" fill="${col}"/>`;
+  s += `<path d="M22,15.5Q38,40 54,15.5Z" fill="${col}"/><rect x="3" y="8" width="70" height="7.5" fill="${col}"/>`;
+  s += `<circle cx="15" cy="28" r="13.5" fill="${col}"/><circle cx="61" cy="28" r="13.5" fill="${col}"/><rect x="15" y="13" width="46" height="5" fill="${col}"/>`;
+  capEl.innerHTML = s;
+}
+// The study's capital, after Grasset's: one connected piece in the frame's colour
+// and ink. A flat abacus; two volutes tucked under it, joined by the channel,
+// each coiled with a logarithmic spiral at the slider's ratio k per quarter turn
+// down to its eye; a waisted neck from the channel into a square block that
+// stands on the cornice (no line where it meets it, so the two read as one).
+function drawGrassetCapital(k) {
+  // drawn in the frame's own ink and line weight, like the pediment and column it stands on
+  const fill = C.yellow, ink = C.ink, sw = 2.2, st = `fill="${fill}" stroke="${ink}" stroke-width="${sw}" stroke-linejoin="round"`;
+  const R = 10.6, cyV = 21.6, cxL = 17, cxR = 59;
+  const coil = (cx, dir) => {                 // the spiral line inside a volute, from the rim in to the eye
+    const pts = []; const turns = 2.6, steps = 90, a0 = -Math.PI / 2;
+    for (let i = 0; i <= steps; i++) {
+      const t = i / steps * turns * 2 * Math.PI, r = (R - 1.4) * Math.pow(k, t / (Math.PI / 2));
+      if (r < 1.9) break;
+      pts.push([cx + dir * r * Math.cos(a0 + t), cyV + r * Math.sin(a0 + t)]);
+    }
+    return pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(2) + ',' + p[1].toFixed(2)).join('');
+  };
+  let s = '';
+  s += `<path d="M22,62.9V36.5H54V62.9" ${st}/>`;                                          // the block, open at the foot
+  s += `<path d="M28,17 Q33.5,27 30.5,36.5 H45.5 Q42.5,27 48,17 Z" ${st}/>`;                // the waisted neck
+  s += `<rect x="${cxL}" y="10.5" width="${cxR - cxL}" height="7" ${st}/>`;                   // the channel between the volutes
+  s += `<rect x="5" y="4" width="66" height="6.8" ${st}/>`;                                     // the abacus
+  for (const [cx, dir] of [[cxL, -1], [cxR, 1]]) {
+    s += `<circle cx="${cx}" cy="${cyV}" r="${R}" ${st}/>`;
+    s += `<path d="${coil(cx, dir)}" fill="none" stroke="${ink}" stroke-width="1.6" stroke-linecap="round"/>`;
+    s += `<circle cx="${cx}" cy="${cyV}" r="1.9" fill="${ink}"/>`;
+  }
+  capEl.innerHTML = s;
+}
+function drawShell(k) {
+  if (G.study) { shellEl.innerHTML = ''; return; }   // the study gives the shell's place to the controller
+  const [, , W, H] = G.shell, cx = W / 2, by = H - 9, R = 104, n = 7, col = mixHex(C.window, C.ink, 0.1);
+  let d = '';
+  for (let i = 0; i < n; i++) {
+    const a0 = Math.PI + i * Math.PI / n, a1 = a0 + Math.PI / n, am = (a0 + a1) / 2;
+    const p0 = [cx + Math.cos(a0) * R * .9, by + Math.sin(a0) * R * .9], p1 = [cx + Math.cos(a1) * R * .9, by + Math.sin(a1) * R * .9];
+    const c = [cx + Math.cos(am) * R * 1.1, by + Math.sin(am) * R * 1.1];
+    d += (i ? 'L' : 'M') + f2(p0[0]) + ',' + f2(p0[1]) + 'Q' + f2(c[0]) + ',' + f2(c[1]) + ' ' + f2(p1[0]) + ',' + f2(p1[1]);
+  }
+  const wl = 347.6 - G.shell[0], wr = 614 - G.shell[0];
+  shellEl.innerHTML = `<path d="${d}L${cx},${by}Z" fill="${col}"/><rect x="${f2(wl)}" y="${by}" width="${f2(wr - wl)}" height="9" fill="${col}"/>`
+    + `<circle cx="${f2(cx - R * 1.06)}" cy="${by - 13}" r="13" fill="${col}"/><circle cx="${f2(cx + R * 1.06)}" cy="${by - 13}" r="13" fill="${col}"/>`;
+}
+function spiralLabel(k) {
+  if (Math.abs(k - 0.75) < 0.0045) return 'k ¾ · Paynter, Fig. 152';
+  if (Math.abs(k - 0.618) < 0.0045) return 'k 0.618 · φ (not in Paynter)';
+  return 'k ' + k.toFixed(3) + ' per quarter turn';
+}
+
+// ---------------------------------------------------------------- rosettes from the Flowers plates
+const FLOWER_MODES = [
+  {n: 'Plate 21 · Hearts', petals: 5},
+  {n: 'Plate 83 · Ribbons', petals: 8},
+  {n: 'Plate 11 · Quatrefoil', petals: 4},
+  {n: 'Plate 10 · Lily cross', petals: 4},
+];
+const rosettes = G.rosettes.map(([cx, cy, r], i) => {
+  const pad = 1.12, el = svg(0, 0, `${-pad} ${-pad} ${2 * pad} ${2 * pad}`);
+  box(el, cx - r * pad, cy - r * pad, r * 2 * pad, r * 2 * pad); live.appendChild(el);
+  const g = document.createElementNS(NS, 'g'); 
+  el.appendChild(g); return {el, g, r, i, spin: i % 2 ? -1 : 1, key: ''};
+});
+const beads = (() => {
+  const [x0, y, r] = G.beads[0], x1 = G.beads[G.beads.length - 1][0], el = svg(0, 0, `${x0 - r - 1} ${y - r - 1} ${x1 - x0 + 2 * r + 2} ${2 * r + 2}`);
+  box(el, x0 - r - 1, y - r - 1, x1 - x0 + 2 * r + 2, 2 * r + 2); live.appendChild(el);
+  el.innerHTML = G.beads.map(([x, yy, rr]) => `<circle cx="${x}" cy="${yy}" r="${rr}" fill="${Q.cream}" stroke="${Q.line}" stroke-width="1.4"/>`).join('');
+  return {el, dots: [...el.querySelectorAll('circle')], step: 0};
+})();
+// the flowers keep the season: closed buds in spring, full bloom in summer,
+// seed heads in autumn (small petals, a big dotted centre), dry heads in winter
+const BLOOM = {len: [0.62, 1, 0.72, 0.5], wide: [0.62, 1, 0.78, 0.5], cen: [0.85, 1, 1.75, 1.3], seed: [0, 0, 1, 0.7]};
+const seasonVal = (keys, s) => { const i = Math.floor(s) % 4, f = s - Math.floor(s), e = f * f * (3 - 2 * f); return lerp(keys[i], keys[(i + 1) % 4], e); };
+function rosetteMarkup(fam, n, k, breathe, r, sea) {
+  // on a harmony tone's pale vase the flowers take the other two hues: main petals
+  // in the second (the centres keep its deep shade), the petals between in the third
+  const harm = tonePal()[Math.round(sea) % 4].harmony;
+  const ink = Q.line, sw = f2(1.1 / r), fill = harm ? Q.mist : sea < 0.5 || sea > 3.5 ? Q.blush : Q.cream, between = harm ? Q.blush : Q.sand;
+  const wsc = (0.55 + k[1] * 0.8) * seasonVal(BLOOM.wide, sea), notch = k[2] * 0.5, cen = (0.7 + k[4] * 0.8) * seasonVal(BLOOM.cen, sea), b = breathe * seasonVal(BLOOM.len, sea);
+  let s = `<g stroke="${ink}" stroke-width="${f2(.5 / r)}" opacity=".3" fill="none"><circle r=".5"/>`;
+  for (let i = 0; i < n * 2; i++) { const a = i * Math.PI / n; s += `<path d="M0,0L${f2(Math.cos(a) * .5)},${f2(Math.sin(a) * .5)}"/>`; }
+  s += `</g>`;
+  const P = (d, f) => `<path d="${d}" fill="${f || fill}" stroke="${ink}" stroke-width="${sw}" stroke-linejoin="round"/>`;
+  const step = TAU / n;
+  if (fam === 0) {                                        // Plate 21: heart petals, pointed sepals between
+    for (let i = 0; i < n; i++) s += P(petal(i * step + step / 2, .2 * cen, .64 * b, step * .32 * wsc, .25, 1, 1.3, 20), between);
+    for (let i = 0; i < n; i++) s += P(petal(i * step, .26 * cen, .72 * b, step * .62 * wsc, .12 + notch, 0, .65));
+    s += P(circ(0, 0, .3 * cen)) + P(circ(0, 0, .12 * cen), Q.clay);
+  } else if (fam === 1) {                                 // Plate 83: long petals ending in scrolls, a ring of beads
+    for (let i = 0; i < n; i++) { const a = i * step; s += P(petal(a, .3 * cen, .6 * b, step * .5 * wsc, notch * .5, .2, .9));
+      const tx = Math.cos(a) * .86 * b, ty = Math.sin(a) * .86 * b;
+      s += `<path d="${logSpiral(tx, ty, .11, .72, 1, a + Math.PI / 2, .02)}" fill="none" stroke="${ink}" stroke-width="${sw}"/>`;
+      s += `<path d="M${f2(Math.cos(a + step / 2) * .3 * cen)},${f2(Math.sin(a + step / 2) * .3 * cen)}L${f2(Math.cos(a + step / 2) * .92)},${f2(Math.sin(a + step / 2) * .92)}" stroke="${ink}" stroke-width="${sw}"/>`; }
+    s += P(circ(0, 0, .3 * cen));
+    for (let i = 0; i < n * 2; i++) { const a = i * step / 2; s += P(circ(Math.cos(a) * .24 * cen, Math.sin(a) * .24 * cen, .035 * cen), between); }
+    s += P(circ(0, 0, .14 * cen), Q.clay);
+  } else if (fam === 2) {                                 // Plate 11: heart lobes on the axes, pointed leaves between, C-scrolls
+    for (let i = 0; i < n; i++) s += P(petal(i * step + step / 2, .1 * cen, .9 * b, step * .2 * wsc, 0, 1, .8), between);
+    for (let i = 0; i < n; i++) s += P(petal(i * step, .08 * cen, .86 * b, step * .42 * wsc, .25 + notch * .6, 0, .55));
+    for (let i = 0; i < n; i++) { const a = i * step + step / 2, x = Math.cos(a) * .2 * cen, y = Math.sin(a) * .2 * cen;
+      s += `<path d="${logSpiral(x, y, .09 * cen, .7, 1, a + Math.PI, .015)}" fill="none" stroke="${ink}" stroke-width="${sw}"/>`; }
+    s += P(circ(0, 0, .08 * cen), Q.clay);
+  } else {                                                // Plate 10: lily arms with side lobes, broad leaves between
+    for (let i = 0; i < n; i++) s += P(petal(i * step + step / 2, .1 * cen, .88 * b, step * .38 * wsc, notch * .4, .7, .8), between);
+    for (let i = 0; i < n; i++) { const a = i * step, bx = Math.cos(a) * .5, by = Math.sin(a) * .5;
+      for (const sd of [-1, 1]) s += P(petal(0, 0, .3 * b, .32, 0, .8, .9).replace(/^M/, 'M').replace(/(-?[\d.]+),(-?[\d.]+)/g, (m0, px, py) => {
+        const aa = a + sd * .95, X = +px, Y = +py; return f2(bx + X * Math.cos(aa) - Y * Math.sin(aa)) + ',' + f2(by + X * Math.sin(aa) + Y * Math.cos(aa)); }));
+      s += P(petal(a, .1 * cen, .95 * b, step * .1 * wsc + .04, 0, 1, .6)); }
+    s += P(circ(0, 0, .15 * cen)) + P(circ(0, 0, .06 * cen), Q.clay);
+  }
+  return s;
+}
+function drawRosettes() {
+  const F = STATE.flowers, k = F.k, n0 = 3 + Math.round(k[0] * 9), b = 0.94 + 0.06 * peak();
+  for (const R of rosettes) {
+    const n = Math.max(3, n0 + (R.i === 0 ? -1 : R.i === 1 ? 1 : 0));
+    const sea = palS, key = [F.mode, n, k[1], k[2], k[4], f2(b), f2(sea)].join('|');
+    if (key !== R.key) {
+      let m = rosetteMarkup(F.mode, n, k, b, R.r, sea);
+      const seed = seasonVal(BLOOM.seed, sea);
+      if (seed > 0.05) {                                                    // seeds set in the centre
+        const cr = 0.26 * (0.7 + k[4] * 0.8) * seasonVal(BLOOM.cen, sea), dots = [];
+        for (let ring = 1; ring <= 2; ring++) for (let j = 0; j < 6 * ring; j++) { const a = j / (6 * ring) * TAU + ring, rr = cr * ring / 2.6;
+          dots.push(`<circle cx="${f2(Math.cos(a) * rr)}" cy="${f2(Math.sin(a) * rr)}" r="${f2(0.035 * seed)}" fill="${Q.line}"/>`); }
+        m += `<g opacity="${f2(seed)}">${dots.join('')}</g>`;
+      }
+      R.g.innerHTML = m; R.key = key;
+    }
+    R.g.setAttribute('transform', `rotate(${f2(R.spin * t * (k[3] - 0.5) * 40 + R.i * 17)})`);
+  }
+}
+function stepBeads(adv = 1) {
+  beads.step = (beads.step + adv) % beads.dots.length;
+  beads.dots.forEach((d, i) => d.setAttribute('fill', i === beads.step ? Q.clay : i === (beads.step + 6) % 7 ? Q.blush : Q.cream));
+}
+
+// ---------------------------------------------------------------- synth canvases (under the tiles and borders)
+// created first so they sit lowest in the live layer
+const synthCanvases = [];
+G.synth1.forEach(b => synthCanvases.push(makeCanvas(b, 'synth', {syn: 0})));
+G.synth2.forEach(b => synthCanvases.push(makeCanvas(b, 'synth', {syn: 1})));
+synthCanvases.forEach(P => live.insertBefore(P.c, live.firstChild));
+// the window's cream, laid over the synth so the study text sits on paper
+if (G.windowFill) {
+  const fill = document.createElement('div'); box(fill, ...G.windowFill); fill.style.background = 'var(--window)';
+  live.insertBefore(fill, live.children[synthCanvases.length]);
+}
+
+// ---------------------------------------------------------------- sliders on the frame
+function Slider(o) {
+  const el = document.createElement('div'); el.className = 'slider' + (o.vertical ? ' v' : '');
+  el.tabIndex = 0; el.setAttribute('role', 'slider'); el.setAttribute('aria-label', o.label);
+  el.setAttribute('aria-valuemin', '0'); el.setAttribute('aria-valuemax', '1');
+  if (o.vertical) el.setAttribute('aria-orientation', 'vertical');
+  el.innerHTML = (o.vertical ? '<span class="track"></span>' : '') + '<span class="ticks"></span><span class="knob"></span><span class="read"></span>';
+  box(el, ...o.box); ui.appendChild(el);
+  const knob = el.querySelector('.knob'), read = el.querySelector('.read');
+  // where the knob runs, as fractions of the slider box
+  const [a, b] = o.run;
+  (o.ticks || []).forEach(v => { const tk = document.createElement('span'); tk.className = 'tick'; tk.style[o.vertical ? 'top' : 'left'] = (100 * lerp(a, b, o.vertical ? 1 - v : v)) + '%'; el.querySelector('.ticks').appendChild(tk); });
+  const lbl = o.badge ? el.appendChild(Object.assign(document.createElement('span'), {className: 'lbl'})) : null;
+  const N = o.steps ? o.steps - 1 : 0, stepped = x => N ? Math.round(x * N) / N : x;
+  // icons beside each stop, top to bottom; the one you're on lights up
+  const icos = (o.icons || []).map((svgText, i) => { const ic = document.createElement('span'); ic.className = 'ico'; ic.innerHTML = svgText;
+    ic.style.top = (100 * lerp(a, b, i / N)) + '%'; el.appendChild(ic); return ic; });
+  if (o.trackX != null) el.style.setProperty('--tx', o.trackX + '%');
+  let v = o.value;
+  const show = () => {
+    const p = lerp(a, b, o.vertical ? 1 - v : v) * 100;
+    if (o.vertical) { knob.style.top = p + '%'; knob.style.left = (o.trackX ?? 50) + '%'; read.style.top = p + '%'; read.style.left = '0'; }
+    else { knob.style.left = p + '%'; knob.style.top = '50%'; read.style.left = p + '%'; read.style.top = '50%'; }
+    const txt = o.format ? o.format(o.map ? o.map(v) : v) : Math.round(v * 100);
+    read.textContent = txt; el.setAttribute('aria-valuenow', v.toFixed(3)); el.setAttribute('aria-valuetext', txt);
+    if (lbl) lbl.textContent = o.badge(stepped(v));
+    icos.forEach((ic, i) => ic.classList.toggle('on', i === Math.round((1 - v) * N)));
+  };
+  const set = (nv, fromUser, drag) => { v = clamp(nv, 0, 1); if (o.snap && drag) v = o.snap(v); show(); if (fromUser) o.onInput(v); };   // detents catch a drag, not the arrow keys
+  const fromEvent = e => { const r = el.getBoundingClientRect();
+    const f = o.vertical ? (e.clientY - r.top) / r.height : (e.clientX - r.left) / r.width;
+    const u = (f - a) / (b - a); return o.vertical ? 1 - u : u; };
+  el.addEventListener('pointerdown', e => { el.setPointerCapture(e.pointerId); el.classList.add('drag'); set(fromEvent(e), true, true); e.preventDefault(); });
+  el.addEventListener('pointermove', e => { if (el.hasPointerCapture(e.pointerId)) set(fromEvent(e), true, true); });
+  const end = e => { el.classList.remove('drag'); if (N) set(stepped(v), true); };   // stepped sliders settle on a step
+  el.addEventListener('pointerup', end); el.addEventListener('pointercancel', end);
+  el.addEventListener('keydown', e => { const d = N ? 1 / N : e.shiftKey ? 0.1 : 0.01;
+    if (['ArrowRight', 'ArrowUp'].includes(e.key)) set(v + d, true); else if (['ArrowLeft', 'ArrowDown'].includes(e.key)) set(v - d, true);
+    else if (e.key === 'Home') set(0, true); else if (e.key === 'End') set(1, true); else return; e.preventDefault(); });
+  set(v, false);
+  return {el, set: nv => set(nv, false)};
+}
+const knobR = G.knobR;
+// sacred-geometry slider on the cap band: k from 0.5 to 0.92, detents at phi and 3/4
+let capSlider, morphSlider;
+const KMIN = 0.5, KMAX = 0.92, kToV = k => (k - KMIN) / (KMAX - KMIN), vToK = v => KMIN + v * (KMAX - KMIN);
+if (!G.study) {
+  const [x0, x1, y] = G.capSlider, pad = 10;
+  capSlider = Slider({label: 'Spiral ratio for the capital and shell', box: [x0, y - 12, x1 - x0, 24], run: [pad / (x1 - x0), 1 - pad / (x1 - x0)],
+    value: kToV(STATE.spiral), ticks: [kToV(0.618), kToV(0.75)],
+    snap: v => { const k = vToK(v); for (const d of [0.618, 0.75]) if (Math.abs(k - d) < 0.006) return kToV(d); return v; },
+    map: vToK, format: spiralLabel,
+    onInput: v => { STATE.spiral = vToK(v); drawCapital(STATE.spiral); drawShell(STATE.spiral); save(); }});
+}
+{
+  const [x0, x1, y] = G.morphSlider, pad = 7;
+  morphSlider = Slider({label: 'Morph the square tile', box: [x0, y - 12, x1 - x0, 24], run: [pad / (x1 - x0), 1 - pad / (x1 - x0)],
+    value: STATE.morph, ticks: [0, .25, .5, .75, 1], format: tileLabel,
+    onInput: v => { STATE.morph = v; drawTiles(); save(); }});
+}
+{
+  const [x, y, bw, bh, y0, y1] = G.plants;
+  // the seasons: spring at the top, winter at the bottom; the plants follow (plants3d.js)
+  const toSeason = v => clamp(Math.round((1 - v) * 3), 0, 3), fromSeason = i => 1 - i / 3;
+  window.__season = STATE.season;
+  // drawn in the frame's line: a blossom, the sun, a falling leaf, a snowflake
+  const I = d => `<svg viewBox="-12 -12 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+  const ICONS = [
+    I([0, 1, 2, 3, 4].map(k => { const a = k / 5 * 6.283 - 1.571; return `<circle cx="${(Math.cos(a) * 5.4).toFixed(2)}" cy="${(Math.sin(a) * 5.4).toFixed(2)}" r="3.3"/>`; }).join('') + '<circle r="1.6" fill="currentColor" stroke="none"/>'),
+    I('<circle r="4.4"/>' + [0, 1, 2, 3, 4, 5, 6, 7].map(k => { const a = k / 8 * 6.283, c = Math.cos(a), s = Math.sin(a); return `<path d="M${(c * 7).toFixed(2)},${(s * 7).toFixed(2)}L${(c * 10.2).toFixed(2)},${(s * 10.2).toFixed(2)}"/>`; }).join('')),
+    I('<g transform="rotate(-28)"><path d="M0,7.5C-7.5,3.5-6.8,-6.5,0,-9C6.8,-6.5,7.5,3.5,0,7.5Z"/><path d="M0,7.5V11.5M0,6V-6.5M0,1.5L-3.6,-1.8M0,-2L3.4,-4.8"/></g>'),
+    I([0, 1, 2].map(k => `<g transform="rotate(${k * 60})"><path d="M0,-10V10M-2.6,-7.4L0,-5L2.6,-7.4M-2.6,7.4L0,5L2.6,7.4"/></g>`).join('')),
+  ];
+  const setSeason = i => { if (i === STATE.season) return; STATE.season = window.__season = i;
+    window.dispatchEvent(new CustomEvent('season', {detail: i})); save(); };
+  if (G.study) {
+    // The study: four buttons stacked in the column, one pressed in, each with its
+    // season's icon. Neo-brutalist (ink borders, hard shadows, flat fills) to sit
+    // with the frame's own heavy line. A radio group: arrows move between them.
+    const group = document.createElement('div');
+    group.className = 'seasons'; group.setAttribute('role', 'radiogroup'); group.setAttribute('aria-label', 'Season');
+    box(group, x, y, bw, bh); ui.appendChild(group);
+    const btns = SEASONS.map((name, i) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.setAttribute('role', 'radio'); b.setAttribute('aria-label', name); b.title = name; b.innerHTML = ICONS[i];
+      b.addEventListener('click', () => { setSeason(i); show(); });
+      group.appendChild(b); return b;
+    });
+    const show = () => btns.forEach((b, i) => { const on = i === STATE.season; b.setAttribute('aria-checked', on); b.tabIndex = on ? 0 : -1; });
+    group.addEventListener('keydown', e => {
+      const d = {ArrowUp: -1, ArrowLeft: -1, ArrowDown: 1, ArrowRight: 1}[e.key]; if (!d) return;
+      e.preventDefault(); const i = (STATE.season + d + 4) % 4; setSeason(i); show(); btns[i].focus();
+    });
+    show();
+  } else {
+    Slider({label: 'Season', vertical: true, box: [x, y, bw, bh], run: [(y0 - y) / bh, (y1 - y) / bh],
+      value: fromSeason(STATE.season), steps: 4, ticks: [0, 1 / 3, 2 / 3, 1], icons: ICONS, trackX: 70,
+      format: v => SEASONS[toSeason(v)],
+      onInput: v => { const i = toSeason(v); if (i !== STATE.season) setSeason(i); }});
+  }
+}
+
+// ---------------------------------------------------------------- studies + preview
+const prevImg = document.getElementById('preview-img'), blurb = document.getElementById('blurb');
+const links = [...document.querySelectorAll('.window a')];
+// at rest the window shows the Mirror from Through The Looking Glass
+const DEFAULT = links.find(a => a.dataset.slug === 'looking-glass') || links[links.length - 1];
+let shown = links.indexOf(DEFAULT);
+
+// The Mirror: the study's glass, drawn from its own geometry (looking-glass/app.js):
+// the arched double frame, the studded columns, the aperture, the five rays fanned
+// from the spring and the eye with its tear, each line lit as halo, mid and core.
+const mirror = document.getElementById('mirror');
+const mirrorRays = [];
+(function buildMirror() {
+  const art = document.getElementById('mirror-art'); if (!art) return;
+  const W = 600, H = 900, FRAME = {x0: 44, y0: 28, x1: W - 44, y1: H - 28};
+  const SPRING = 268, COL = 46, CORNER = 34, AP = {x0: 112, y0: 292, x1: W - 112, y1: 612}, BAND = 636;
+  const el = (n, a) => { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); return e; };
+  const P = a => a.map(p => p.map(v => (+v).toFixed(2)).join(',')).join(' ');
+  const defs = el('defs', {}), f = el('filter', {id: 'mirror-bloom', x: '-60%', y: '-60%', width: '220%', height: '220%'});
+  f.appendChild(el('feGaussianBlur', {stdDeviation: 7, result: 'b'}));
+  const mg = el('feMerge', {}); mg.appendChild(el('feMergeNode', {in: 'b'})); mg.appendChild(el('feMergeNode', {in: 'b'})); f.appendChild(mg);
+  defs.appendChild(f); art.insertBefore(defs, art.firstChild);
+  function outline(f, spring, corner) {
+    const {x0, y0, x1, y1} = f, cx = (x0 + x1) / 2, r = (x1 - x0) / 2, p = [[x0, y1 - corner]];
+    for (let i = 0; i <= 12; i++) { const t = Math.PI - i / 12 * Math.PI / 2; p.push([x0 + corner + corner * Math.cos(t), y1 - corner + corner * Math.sin(t)]); }
+    for (let i = 0; i <= 12; i++) { const t = Math.PI / 2 - i / 12 * Math.PI / 2; p.push([x1 - corner + corner * Math.cos(t), y1 - corner + corner * Math.sin(t)]); }
+    p.push([x1, spring]);
+    for (let i = 0; i <= 64; i++) { const t = i / 64 * Math.PI; p.push([cx + r * Math.cos(t), spring - (spring - y0) * Math.sin(t)]); }
+    p.push([x0, spring]);
+    return p;
+  }
+  const stud = (cx, cy, r) => { const p = []; for (let k = 0; k < 8; k++) { const th = Math.PI / 4 * k, rr = k % 2 ? r * 0.3 : r; p.push([cx + rr * Math.cos(th), cy + rr * Math.sin(th)]); } return p; };
+  const eyeShape = (cx, cy, w, h) => { const p = [];
+    for (let i = 0; i <= 22; i++) { const t = -1 + i / 11; p.push([cx + t * w, cy - h * Math.pow(Math.cos(t * Math.PI / 2), .8)]); }
+    for (let i = 0; i <= 22; i++) { const t = 1 - i / 11; p.push([cx + t * w, cy + h * Math.pow(Math.cos(t * Math.PI / 2), .8)]); }
+    return p; };
+  const tear = (cx, cy, w, h) => { const p = [[cx, cy - h]];
+    for (let i = 0; i <= 30; i++) { const t = -Math.PI / 2 + i / 30 * Math.PI * 2; p.push([cx + w * Math.cos(t) * .92, cy + h * .42 + w * Math.sin(t) * .92]); }
+    return p; };
+  const lit = (parent, pts, closed) => { for (const c of ['halo', 'mid', 'core']) parent.appendChild(el(closed ? 'polygon' : 'polyline', {points: P(pts), class: 'mstroke ' + c})); };
+
+  const frame = document.getElementById('mirror-frame');
+  lit(frame, outline(FRAME, SPRING, CORNER), true);
+  lit(frame, outline({x0: FRAME.x0 + 10, y0: FRAME.y0 + 10, x1: FRAME.x1 - 10, y1: FRAME.y1 - 10}, SPRING + 6, CORNER - 4), true);
+  for (const sx of [FRAME.x0 + COL, FRAME.x1 - COL]) lit(frame, [[sx, SPRING + 4], [sx, FRAME.y1 - 52]], false);
+  for (let i = 0; i < 6; i++) {
+    const sy = SPRING + 46 + i * ((FRAME.y1 - 96) - (SPRING + 46)) / 5;
+    for (const sx of [FRAME.x0 + COL / 2 + 4, FRAME.x1 - COL / 2 - 4]) lit(frame, stud(sx, sy, 11), true);
+  }
+  lit(frame, [[AP.x0, AP.y0], [AP.x1, AP.y0], [AP.x1, AP.y1], [AP.x0, AP.y1]], true);
+  lit(frame, [[AP.x0, BAND], [AP.x1, BAND]], false);
+  const apex = [(FRAME.x0 + FRAME.x1) / 2, SPRING - 6], N = 5, raysEl = document.getElementById('mirror-rays');
+  for (let i = 0; i < N; i++) {
+    const t = i / (N - 1), ang = (-160 + 140 * t) * Math.PI / 180, len = 132 + 56 * Math.sin(Math.PI * t), sp = 5.5 * Math.PI / 180;
+    const tri = [apex, [apex[0] + Math.cos(ang - sp) * len, apex[1] + Math.sin(ang - sp) * len], [apex[0] + Math.cos(ang + sp) * len, apex[1] + Math.sin(ang + sp) * len]];
+    const g = el('g', {});
+    g.appendChild(el('polygon', {points: P(tri), class: 'mstroke unlit'}));
+    const on = el('g', {class: 'ray-on'}); lit(on, tri, true); g.appendChild(on);
+    raysEl.appendChild(g); mirrorRays.push(on);
+  }
+  const eyeG = document.getElementById('mirror-eye'), cx = (FRAME.x0 + FRAME.x1) / 2;
+  lit(eyeG, eyeShape(cx, FRAME.y0 + 74, 30, 17), true);
+  lit(eyeG, [[cx - 9, FRAME.y0 + 74], [cx, FRAME.y0 + 66], [cx + 9, FRAME.y0 + 74]], false);
+  lit(eyeG, tear(cx, FRAME.y0 + 118, 11, 17), true);
+  eyeG.appendChild(el('circle', {cx, cy: FRAME.y0 + 74, r: 5, class: 'pupil', filter: 'url(#mirror-bloom)'}));
+})();
+// the rays light one by one, as the study lights them for each angle it takes, then go out together
+let rayStep = 0;
+function stepRays() {
+  if (!mirrorRays.length) return;
+  if (reduce) { mirrorRays.forEach(r => r.classList.add('on')); return; }
+  if (!document.hidden && mirror && mirror.style.display !== 'none') {
+    rayStep = (rayStep + 1) % (mirrorRays.length + 2);
+    mirrorRays.forEach((r, i) => r.classList.toggle('on', i < rayStep && rayStep <= mirrorRays.length));
+  }
+  setTimeout(stepRays, rayStep === mirrorRays.length ? 2200 : 900);
+}
+stepRays();
+
+function preview(a) {
+  shown = links.indexOf(a);
+  const isMirror = a.dataset.slug === 'looking-glass' && mirror;
+  if (mirror) mirror.style.display = isMirror ? '' : 'none';
+  if (prevImg) {
+    prevImg.style.display = isMirror ? 'none' : '';
+    if (!isMirror) { const src = `assets/previews/${a.dataset.slug}.jpg`; prevImg.setAttribute('href', src); prevImg.setAttributeNS('http://www.w3.org/1999/xlink', 'href', src); }
+  }
+  blurb.textContent = a.querySelector('.t').textContent + ' — ' + a.dataset.blurb;
+}
+if (links.length) {   // the landing page; the study has no list, just its picture
+  links.forEach(a => { a.addEventListener('pointerenter', () => preview(a)); a.addEventListener('focus', () => preview(a)); });
+  document.querySelector('.window').addEventListener('pointerleave', () => preview(DEFAULT));
+  links.forEach(a => new Image().src = `assets/previews/${a.dataset.slug}.jpg`);
+  preview(DEFAULT);
+}
+
+// ---------------------------------------------------------------- the controller
+const TARGETS = [
+  {id: 's0', n: 'I', long: 'Synth I · squares, top + base', get: () => STATE.syn[0], modes: () => SQ_MODES.map(m => m.n),
+   knobs: ['Grid', 'Motif', 'Rings', 'Colour', 'Speed'], regions: () => G.synth1},
+  {id: 's1', n: 'II', long: 'Synth II · side panels', get: () => STATE.syn[1], modes: () => MODES.map(m => m.n),
+   knobs: ['', '', '', '', ''], regions: () => G.synth2},
+  {id: 'fl', n: 'Flowers', long: 'Flowers · the vase', get: () => STATE.flowers, modes: () => FLOWER_MODES.map(m => m.n),
+   knobs: ['Petals', 'Width', 'Heart', 'Spin', 'Centre'], circles: () => G.rosettes,
+   onMode: S0 => { S0.k[0] = (FLOWER_MODES[S0.mode].petals - 3) / 9; }},
+  {id: 'bd', n: 'Borders', long: 'Borders · band patterns', get: () => STATE.borders, modes: () => BORDER_MODES,
+   knobs: ['Speed', 'Height', 'Spacing', 'Colour', 'Wobble'], regions: () => G.borders},
+];
+const GL = ['♥', '✿', '★', '☯', '☻'];
+let tgt = 0, tab = 0;   // like tristan.design's: Mode, Shape, Color, Effect, one at a time
+
+const sheet = document.createElement('section');
+// The controller lives in the window, in the space under the studies: always
+// open, part of the lockup, sized in artboard units like everything else.
+sheet.className = 'ctl'; sheet.setAttribute('role', 'region'); sheet.setAttribute('aria-label', 'Controller');
+sheet.innerHTML = `
+  <header><b>Controller</b><span class="targets" role="tablist" aria-label="What to play">${TARGETS.map((T, i) => `<button type="button" role="tab" data-t="${i}">${T.n}</button>`).join('')}</span></header>
+  <div class="row tabs" role="tablist" aria-label="Controls">${['Mode', 'Shape', 'Color', 'Effect'].map((n, i) => `<button class="chip" type="button" role="tab" data-tab="${i}">${n}</button>`).join('')}</div>
+  <div class="pane" data-pane="0" hidden>
+    <div class="moderow"><button class="cbtn" type="button" data-a="prev" aria-label="Previous mode">‹</button><div class="mname" aria-live="polite"></div><button class="cbtn" type="button" data-a="next" aria-label="Next mode">›</button></div>
+    <div class="mline"><b class="midx"></b><span class="mhint"></span></div>
+  </div>
+  <div class="pane" data-pane="1" hidden><div class="knobs"></div><p class="hint">Drag a band up or down to feel it out.</p></div>
+  <div class="pane" data-pane="2" hidden>
+    <div class="cols">
+      <div class="colrow"><span class="sw" data-sw="fg"></span><small>FG</small><button class="cbtn" type="button" data-a="fg-" aria-label="Foreground back">▾</button><button class="cbtn" type="button" data-a="fg+" aria-label="Foreground forward">▴</button></div>
+      <div class="colrow"><span class="sw" data-sw="bg"></span><small>BG</small><button class="cbtn" type="button" data-a="bg-" aria-label="Background back">▾</button><button class="cbtn" type="button" data-a="bg+" aria-label="Background forward">▴</button></div>
+    </div>
+    <div class="pal"><button class="cbtn" type="button" data-a="tone" aria-label="Grey or folk colour">Tone</button><button class="cbtn" type="button" data-a="pal">Palette</button><span class="pname"></span><span class="pcols"></span></div>
+  </div>
+  <div class="pane" data-pane="3" hidden>
+    <div class="fx">
+      <button class="chip" type="button" data-fx="flash"><i>✦</i>Flash</button>
+      <button class="chip" type="button" data-fx="shuffle"><i>⚄</i>Shuffle</button>
+      <button class="chip" type="button" data-fx="trails" aria-pressed="false"><i>∞</i>Trails</button>
+      <button class="chip" type="button" data-fx="pulse" aria-pressed="false"><i>♩</i>Pulse</button>
+      <button class="chip" type="button" data-fx="still" aria-pressed="false"><i>❙❙</i>Still</button>
+      <button class="chip" type="button" data-fx="listen" aria-pressed="false"><i>◉</i>Listen</button>
+    </div>
+    <p class="hint">Listen uses your microphone. Nothing is recorded or sent.</p>
+  </div>
+  <p class="keys">← → mode · space flash · R shuffle</p>`;
+box(sheet, ...G.controlPanel); sheet.style.height = 'auto'; ui.appendChild(sheet);
+if (G.study) {   // in the study it sits where the shell was: on the foot of the window, just above the grass, growing upward
+  sheet.style.top = 'auto';
+  sheet.style.bottom = ((VY + VH - (G.shell[1] + G.shell[3]) + 14) / VH * 100) + '%';
+}
+const $ = s => sheet.querySelector(s), $$ = s => [...sheet.querySelectorAll(s)];
+
+// the dark box in the left column: what's playing now; it points you to the controller
+const cbox = document.createElement('button');
+cbox.type = 'button'; cbox.className = 'cbox'; cbox.setAttribute('aria-label', 'Now playing: go to the controller');
+box(cbox, ...G.controller); ui.appendChild(cbox);
+cbox.innerHTML = `<span class="ct">Now playing<i class="sea"></i></span><span class="cl"><b>I</b><span class="m0"></span></span><span class="cl"><b>II</b><span class="m1"></span></span><span class="bars">${'<span></span>'.repeat(5)}</span>`;
+
+// choosing what to play outlines those parts of the lockup for a moment
+function flashTargets() {
+  const T = TARGETS[tgt], boxes = T.regions ? T.regions() : T.circles().map(([x, y, r]) => [x - r, y - r, 2 * r, 2 * r]);
+  for (const b of boxes) {
+    const d = document.createElement('div'); d.className = 'hl' + (T.circles ? ' round' : ''); box(d, ...b); ui.appendChild(d);
+    setTimeout(() => d.remove(), 1500);
+  }
+}
+function knobUI() {
+  const T = TARGETS[tgt], S0 = T.get(), wrap = $('.knobs'); wrap.innerHTML = '';
+  S0.k.forEach((v, i) => {
+    const kw = document.createElement('div'); kw.className = 'kw';
+    kw.innerHTML = `<span class="kl">${GL[i]}</span><span class="kn">${T.knobs[i] || '&nbsp;'}</span><div class="band" tabindex="0" role="slider" aria-label="${T.knobs[i] || 'Shape ' + (i + 1)}" aria-orientation="vertical" aria-valuemin="0" aria-valuemax="99"><div class="fill"></div><div class="cap"></div></div><span class="kv"></span>`;
+    wrap.appendChild(kw);
+    const band = kw.querySelector('.band'), fill = kw.querySelector('.fill'), cap = kw.querySelector('.cap'), kv = kw.querySelector('.kv');
+    const show = () => { const p = S0.k[i]; fill.style.height = (p * 100) + '%'; cap.style.top = (100 - p * 100) + '%'; kv.textContent = Math.round(p * 99); band.setAttribute('aria-valuenow', Math.round(p * 99)); };
+    const set = p => { S0.k[i] = clamp(p, 0, 1); show(); changed(); };
+    const ev = e => { const r = band.getBoundingClientRect(); return 1 - (e.clientY - r.top) / r.height; };
+    band.addEventListener('pointerdown', e => { band.setPointerCapture(e.pointerId); set(ev(e)); e.preventDefault(); });
+    band.addEventListener('pointermove', e => { if (band.hasPointerCapture(e.pointerId)) set(ev(e)); });
+    band.addEventListener('keydown', e => { const d = e.shiftKey ? .1 : .02; if (['ArrowUp', 'ArrowRight'].includes(e.key)) set(S0.k[i] + d); else if (['ArrowDown', 'ArrowLeft'].includes(e.key)) set(S0.k[i] - d); else return; e.preventDefault(); });
+    show();
+  });
+}
+function refresh() {
+  const T = TARGETS[tgt], S0 = T.get(), modes = T.modes(), pal = PAL();
+  $$('.targets button').forEach((b, i) => b.setAttribute('aria-selected', i === tgt));
+  $$('.tabs .chip').forEach(b => b.setAttribute('aria-selected', +b.dataset.tab === tab));
+  $$('.pane').forEach((p, i) => p.hidden = i !== tab);
+  $('.targets').title = T.long;
+  $('.mname').textContent = modes[S0.mode];
+  $('.midx').textContent = `${S0.mode + 1} of ${modes.length}`;
+  $('.mhint').textContent = 'tap the artwork to play another part';
+  $('[data-sw="fg"]').style.background = Q[at(pal.fg, S0.fg)];
+  $('[data-sw="bg"]').style.background = Q[at(pal.bg, S0.bg)];
+  $('.pname').textContent = (STATE.tone || 'Grey') + ' · ' + pal.n;
+  $('.pcols').innerHTML = pal.fg.slice(0, 6).map(c => `<span class="c" style="background:${Q[c]}"></span>`).join('');
+  $('[data-fx="trails"]').setAttribute('aria-pressed', STATE.trails);
+  $('[data-fx="pulse"]').setAttribute('aria-pressed', STATE.pulse);
+  $('[data-fx="still"]').setAttribute('aria-pressed', STATE.still);
+  $('[data-fx="listen"]').setAttribute('aria-pressed', !!an);
+  drifting[0] = drifting[1] = '';                   // drawSynth relabels, drifting or not
+  [...cbox.querySelectorAll('.bars span')].forEach((b, i) => b.style.setProperty('--v', (T.get().k[i] * 100) + '%'));
+  const sea = cbox.querySelector('.sea'); if (sea) sea.textContent = SEASONS[STATE.season];
+}
+function changed() { refresh(); save(); synthCanvases.forEach(P => P.fresh = true); if (STATE.still) drawAll(); }
+function setTarget(i, show) { tgt = i; knobUI(); refresh(); if (show) flashTargets(); }
+function stepMode(d) { const T = TARGETS[tgt], S0 = T.get(), n = T.modes().length; S0.mode = (S0.mode + d + n) % n; if (T.onMode) { T.onMode(S0); knobUI(); } synthCanvases.forEach(P => { P.st = {}; }); changed(); }
+function shuffle() { const S0 = TARGETS[tgt].get(); S0.k = S0.k.map(() => Math.random()); knobUI(); changed(); }
+
+cbox.addEventListener('click', () => {
+  const c = $('.targets button[aria-selected="true"]'); c && c.focus({preventScroll: true}); sheet.classList.remove('ping'); void sheet.offsetWidth; sheet.classList.add('ping'); flashTargets(); });
+$$('.targets button').forEach(b => b.addEventListener('click', () => setTarget(+b.dataset.t, true)));
+$$('.tabs .chip').forEach(b => b.addEventListener('click', () => { tab = +b.dataset.tab; refresh(); }));
+sheet.addEventListener('click', e => {
+  const a = e.target.closest('[data-a]'); if (!a) return;
+  const S0 = TARGETS[tgt].get(), pal = PAL();
+  switch (a.dataset.a) {
+    case 'prev': stepMode(-1); break; case 'next': stepMode(1); break;
+    case 'fg-': S0.fg = stepIn(S0.fg, pal.fg, -1); changed(); break; case 'fg+': S0.fg = stepIn(S0.fg, pal.fg, 1); changed(); break;
+    case 'bg-': S0.bg = stepIn(S0.bg, pal.bg, -1); changed(); break; case 'bg+': S0.bg = stepIn(S0.bg, pal.bg, 1); changed(); break;
+    case 'pal': STATE.pal = (STATE.pal + 1) % PALS.length; changed(); break;
+    case 'tone': STATE.tone = TONES[(TONES.indexOf(STATE.tone) + 1) % TONES.length]; STATE.toneChosen = true; save(); applyPalette(palS); dispatchEvent(new CustomEvent('tone', {detail: STATE.tone})); changed(); break;
+  }
+});
+sheet.addEventListener('click', async e => {
+  const b = e.target.closest('[data-fx]'); if (!b) return;
+  switch (b.dataset.fx) {
+    case 'flash': trig = 1; if (STATE.still) { onBeat(); drawAll(); } break;
+    case 'shuffle': shuffle(); break;
+    case 'trails': STATE.trails = !STATE.trails; changed(); break;
+    case 'pulse': STATE.pulse = !STATE.pulse; changed(); break;
+    case 'still': STATE.still = !STATE.still; changed(); if (!STATE.still) start(); break;
+    case 'listen': await toggleMic(); refresh(); break;
+  }
+});
+document.addEventListener('keydown', e => {
+  if (!sheet.contains(e.target) || e.target.closest('.band,[role=slider]')) return;
+  if (e.key === 'ArrowLeft') stepMode(-1); else if (e.key === 'ArrowRight') stepMode(1);
+  else if (e.key === ' ' && !e.target.closest('button')) { trig = 1; e.preventDefault(); }
+  else if (e.key === 'r' || e.key === 'R') shuffle();
+});
+// ---------------------------------------------------------------- click anything live and it changes
+// The live layer doesn't take pointer events (the artwork sits over it), so
+// clicks on the stage are hit-tested against each part in artboard units.
+live.style.pointerEvents = 'none';
+const stageEl = document.getElementById('stage');
+function tween(from, to, ms, fn) {
+  if (document.hidden || reduce) { fn(to); return; }
+  const t0 = performance.now();
+  const step = now => { const f = Math.min(1, (now - t0) / ms), e = f < .5 ? 2 * f * f : 1 - Math.pow(-2 * f + 2, 2) / 2;
+    fn(lerp(from, to, e)); if (f < 1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+}
+function bump(el) {
+  el.animate && el.animate([{filter: 'brightness(1.18) saturate(1.25)'}, {filter: 'none'}], {duration: 420, easing: 'ease-out'});
+}
+const inBox = (x, y, b) => x >= b[0] && x <= b[0] + b[2] && y >= b[1] && y <= b[1] + b[3];
+const K_STOPS = [0.55, 0.618, 0.75, 0.86];
+const HITS = [
+  // borders: the next glyph set
+  ...borderCanvases.map(P => ({hit: (x, y) => inBox(x, y, [P.b[0], P.b[1] - 3, P.b[2], P.b[3] + 6]), el: () => P.c, go() {
+    const B = STATE.borders; B.mode = (B.mode + 1) % BORDER_MODES.length; raveSet = (raveSet + 1) % PATTERN_ORDER.length; }})),
+  // tiles: on to the next tile from the plate
+  ...G.diamonds.map(([cx, cy, hd], i) => ({hit: (x, y) => Math.abs(x - cx) + Math.abs(y - cy) <= hd, el: () => tiles[i].el, go: nextTile})),
+  {hit: (x, y) => inBox(x, y, G.tileSquare), el: () => tiles.find(T => T.grid).el, go: nextTile},
+  {hit: (x, y) => inBox(x, y, [G.tileSmall[0], G.tileSmall[1], G.tileSmall[2], G.tileSmall[2]]), el: () => tiles.find(T => T.single).el, go: nextTile},
+  // capital and shell: step the spiral ratio to the next stop
+  {hit: (x, y) => inBox(x, y, G.capital), el: () => capEl, go: nextSpiral},
+  {hit: (x, y) => !G.study && inBox(x, y, G.shell), el: () => shellEl, go: nextSpiral},
+  // rosettes: the next plate from the Flowers folder
+  ...rosettes.map(R => ({hit: (x, y) => Math.hypot(x - G.rosettes[R.i][0], y - G.rosettes[R.i][1]) <= G.rosettes[R.i][2], el: () => R.el, go() {
+    const F = STATE.flowers; F.mode = (F.mode + 1) % FLOWER_MODES.length; TARGETS[2].onMode(F); if (tgt === 2) knobUI(); }})),
+  // beads: a hit, by hand
+  {hit: (x, y) => inBox(x, y, [G.beads[0][0] - 5, G.beads[0][1] - 7, G.beads[6][0] - G.beads[0][0] + 10, 14]), el: () => beads.el, go() { onBeat(); }},
+  // the arched preview: the next study
+  {hit: (x, y) => inBox(x, y, [99, 125, 225, 266]), el: () => null, go() { if (links.length) preview(links[(shown + 1) % links.length]); }},
+  // synth panels last, since the tiles sit on one: a different mode, freshly shuffled
+  ...synthCanvases.map(P => ({hit: (x, y) => inBox(x, y, P.b) && !(G.windowFill && inBox(x, y, G.windowFill)), el: () => P.c, go() {
+    const S0 = STATE.syn[P.syn], pool = modesOf(P.syn).length - 1; let m = S0.mode;
+    while (m === S0.mode) m = Math.floor(Math.random() * pool);
+    S0.mode = m; S0.k = S0.k.map(() => 0.15 + Math.random() * 0.7);
+    synthCanvases.forEach(Q => { if (Q.syn === P.syn) Q.st = {}; });
+    if (tgt === P.syn) knobUI(); }})),
+];
+function nextTile() {
+  const from = STATE.morph, seg = Math.floor(from * 4 + 0.001), to = seg >= 4 ? 0 : (seg + 1) / 4;
+  tween(from, to, 650, v => { STATE.morph = v; morphSlider.set(v); drawTiles(); });
+}
+function nextSpiral() {
+  const from = STATE.spiral, to = K_STOPS.find(k => k > from + 0.01) || K_STOPS[0];
+  tween(from, to, 700, k => { STATE.spiral = k; if (capSlider) capSlider.set(kToV(k)); drawCapital(k); drawShell(k); });
+}
+const toArt = e => { const r = stageEl.getBoundingClientRect(); return [(e.clientX - r.left) / r.width * VW, (e.clientY - r.top) / r.height * VH + VY]; };
+const hitAt = e => e.target.closest('.ui > *') ? null : HITS.find(H => H.hit(...toArt(e)));
+stageEl.addEventListener('click', e => {
+  const H = hitAt(e); if (!H) return;
+  H.go(); trig = 1; const el = H.el(); if (el) bump(el);
+  changed(); if (STATE.still) drawAll();
+});
+stageEl.addEventListener('pointermove', e => { if (e.pointerType === 'mouse') stageEl.style.cursor = hitAt(e) ? 'pointer' : ''; });
+
+async function toggleMic() {
+  if (an) { stream && stream.getTracks().forEach(tr => tr.stop()); an = null; stream = null; return; }
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({audio: true});
+    const ac = new (window.AudioContext || window.webkitAudioContext)(), src = ac.createMediaStreamSource(stream);
+    an = ac.createAnalyser(); an.fftSize = 1024; abuf = new Uint8Array(an.fftSize); src.connect(an); alevel = 0;
+  } catch (err) { an = null; }
+}
+
+// ---------------------------------------------------------------- loop
+['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(ev =>
+  addEventListener(ev, () => { lastInput = performance.now(); }, {passive: true, capture: true}));
+function onBeat() { stepBeads(); raveSet = (raveSet + 1) % PATTERN_ORDER.length; }
+function drawAll() {
+  for (const P of synthCanvases) drawSynth(P);
+  borderCanvases.forEach((P, i) => drawBorder(P, i));
+  drawRosettes();
+}
+let raf = 0, last = 0, beatAt = 0;
+function frame(now) {
+  raf = 0; if (STATE.still) return;
+  raf = requestAnimationFrame(frame);
+  if (now - last < 32) return; last = now;
+  t += 0.033; trig *= 0.85; readAudio();
+  if (STATE.pulse && !an && now - beatAt > 625) { beatAt = now; trig = 1; }
+  beat = trig > 0.85 && prevTrig <= 0.85; prevTrig = trig;
+  if (beat) onBeat();
+  drawAll();
+}
+function start() { if (!raf && !STATE.still) raf = requestAnimationFrame(frame); }
+function resizeAll() { canvases.forEach(sizeCanvas); drawAll(); }
+new ResizeObserver(resizeAll).observe(document.getElementById('stage'));
+
+// ---------------------------------------------------------------- repaint for the season
+// It turns the same way and at the same pace as the plants: the short way
+// round the year, about a season every 1.4 seconds.
+let palS = STATE.season, palT = STATE.season, palRaf = 0;
+const metaTheme = document.querySelector('meta[name="theme-color"]');
+function applyPalette(s) {
+  const i = Math.floor(s) % 4, f = (x => x * x * (3 - 2 * x))(s - Math.floor(s)), TP = tonePal(), A = TP[i], B = TP[(i + 1) % 4], root = document.documentElement.style;
+  for (const k of FRAME_KEYS) { const v = mixHex(A[k], B[k], f); root.setProperty('--' + k, v); if (k in C) C[k] = v; }
+  for (const k in A.q) { Q[k] = mixHex(A.q[k], B.q[k], f); root.setProperty('--q-' + k, Q[k]); }
+  root.setProperty('--clay', Q.clay); root.setProperty('--orange', A.accent ? mixHex(A.accent, B.accent, f) : Q.clay);   // the controller's accent follows too
+  if (A.accent) {                                    // knobs take the season's accent, and text on it goes dark or light to suit
+    const acc = mixHex(A.accent, B.accent, f), [r_, g_, b_] = hexRGB(acc);
+    root.setProperty('--salmon', acc);
+    root.setProperty('--on-accent', (0.299 * r_ + 0.587 * g_ + 0.114 * b_) / 255 > 0.6 ? C.ink : '#FFFFFF');
+  } else { root.removeProperty('--salmon'); root.removeProperty('--on-accent'); }
+  document.documentElement.dataset.tone = STATE.tone;
+  window.__tone = STATE.tone; window.__toneRamps = toneRamps();
+  const SKs = toneSky(), SK = SKs[i], SK2 = SKs[(i + 1) % 4];
+  root.setProperty('--sky-top', mixHex(SK[0], SK2[0], f)); root.setProperty('--sky-bot', mixHex(SK[1], SK2[1], f));
+  root.setProperty('--sun', mixHex(SK[2], SK2[2], f)); root.setProperty('--stars', (lerp(SK[3], SK2[3], f)).toFixed(2));
+  if (metaTheme) metaTheme.content = C.paper;
+  drawCapital(STATE.spiral); drawShell(STATE.spiral); drawTiles();
+  beads.dots.forEach((d, j) => d.setAttribute('stroke', Q.line));
+  stepBeads(0); rosettes.forEach(R => R.key = '');
+  if (typeof refresh === 'function' && sheet) refresh();
+  synthCanvases.forEach(P => P.fresh = true);
+  if (STATE.still || reduce) drawAll();
+}
+function turnPalette(now) {
+  palRaf = 0; let d = palT - palS; d = ((d % 4) + 6) % 4 - 2;
+  const step = Math.min(Math.abs(d), (now - (turnPalette.last || now)) / 1000 * 0.7); turnPalette.last = now;
+  palS = ((palS + Math.sign(d) * step) % 4 + 4) % 4;
+  if (Math.abs(d) - step < 0.002) palS = palT;
+  applyPalette(palS);
+  if (palS !== palT) palRaf = requestAnimationFrame(turnPalette); else turnPalette.last = 0;
+}
+addEventListener('season', e => { palT = e.detail; if (reduce) { palS = palT; applyPalette(palS); return; } if (!palRaf) palRaf = requestAnimationFrame(turnPalette); });
+
+drawCapital(STATE.spiral); drawShell(STATE.spiral); drawTiles(); stepBeads();
+setTarget(0); applyPalette(palS); resizeAll(); start();
+})();
+
+</script>
+<script type="importmap">{"imports": {"three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>
+<script type="module">
+// The 3D plants: aspen, branch and grass from the Blender scenes, drawn live
+// over the frame with the same painted shading, and taken through the seasons
+// by the slider in the right column (spring, summer, autumn, winter).
+import * as THREE from 'three';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {DRACOLoader} from 'three/addons/loaders/DRACOLoader.js';
+
+THREE.ColorManagement.enabled = false;                            // every colour here is sRGB, written as-is
+const G = window.__GEO, VW = G.vb[0], VH = G.vb[1], VY = G.vb[2] || 0;
+const stage = document.getElementById('stage'), canvas = document.getElementById('plants3d');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const lerp = (a, b, t) => a + (b - a) * t, clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ease = t => t * t * (3 - 2 * t);
+const hash = n => { const x = Math.sin(n * 127.1) * 43758.5453; return x - Math.floor(x); };
+
+// ---------------------------------------------------------------- seasons
+// 0 spring, 1 summer, 2 autumn, 3 winter; the season value runs round a loop.
+// Ramps are five stops at fixed places; summer is the Blender ramp as built.
+const POS = [0, 0.42, 0.66, 0.84, 1];
+// Deep, defined colour to match the folk palette: dark shadow ends, saturated
+// middles, and lights that stop short of white. Each ramp runs shadow to light.
+const WITHERED = ['#2a1c12', '#4e3624', '#76563a', '#9c7c58', '#c4aa84'];
+const DRY_STALK = ['#2a1e10', '#4e3a1e', '#765a32', '#9c7e50', '#c6ac7e'];
+const same = r => ({spring: r, summer: r, autumn: r, winter: r});
+const RAMPS = {
+  MAT_leaf: {spring: ['#2c4a16', '#5a8a22', '#86b530', '#b3d652', '#e2f09a'], summer: ['#1f3a14', '#3f6a1e', '#5f8f2a', '#8db33c', '#c8dc7a'],
+             autumn: ['#5a2e08', '#a35a0e', '#d8901a', '#f0b630', '#f8dc7a'], winter: WITHERED},
+  MAT_scroll: {spring: ['#284816', '#52801f', '#7cad2c', '#a8cf4c', '#dcec94'], summer: ['#22401a', '#456e22', '#6c9a2e', '#9cbd48', '#d2e08a'],
+               autumn: ['#3e1a0c', '#7a3412', '#b35a1e', '#d9853a', '#efc07a'], winter: WITHERED},
+  MAT_plume: {spring: ['#5a1a2a', '#a83a52', '#d9687e', '#f09aa8', '#fbd2d8'], summer: ['#2e3a10', '#5a6a18', '#8a9420', '#bcbc3a', '#e6e08a'],
+              autumn: ['#4a2a0c', '#87561a', '#b9852c', '#dcb050', '#f2dc98'], winter: WITHERED},
+  MAT_blade: {spring: ['#1e4a14', '#3f7a1e', '#68a42a', '#9ccc44', '#d6ee8e'], summer: ['#2e3a0c', '#5e7016', '#92a020', '#c8c43a', '#efe88a'],
+              autumn: ['#4a2808', '#8a4e10', '#c47e1a', '#e8a830', '#f6d478'], winter: ['#2a2a2e', '#4c4c54', '#7a7a84', '#a6a8b2', '#d6d8de']},
+  MAT_stalk: {spring: ['#28420f', '#4c7018', '#74982a', '#a0bc48', '#d0e08a'], summer: ['#2a3410', '#4e5e18', '#76862a', '#a2b048', '#d0d88a'],
+              autumn: ['#3e2a10', '#6e4c1e', '#9a7234', '#c09a56', '#e2cc94'], winter: DRY_STALK},
+  MAT_catkin: {spring: ['#3a1a10', '#7a3a1e', '#b4602e', '#d89050', '#f0c890'], summer: ['#2e3a10', '#5a6a18', '#8a9420', '#bcbc3a', '#e6e08a'],
+               autumn: ['#3e2a10', '#6e4c1e', '#9a7234', '#c09a56', '#e2cc94'], winter: DRY_STALK},
+  MAT_bark: same(['#2e2a20', '#6a6450', '#a8a084', '#d6cfb4', '#f2ecda']),       // aspen bark stays pale, but crisper
+  MAT_branch: same(['#1a2a4a', '#2e4a7a', '#4f72a8', '#86a2cc', '#c4d4ea']),     // the branch's cobalt-grey twig
+  MAT_base: same(['#2a2010', '#4e3e1e', '#76603a', '#a08a5e', '#cbb88e']),
+  // the grass panel's backdrop: a deep night tone each season, so the blades stand out
+  MAT_panel: {spring: ['#10302a', '#173d35', '#1d4a40', '#22564a', '#2a6254'], summer: ['#121f45', '#18295a', '#1e336c', '#243d7c', '#2c4a8e'],
+              autumn: ['#10292e', '#16363c', '#1c444b', '#22515a', '#2b5f68'], winter: ['#0c1226', '#111933', '#162040', '#1b284d', '#22325c']},
+};
+// In the grey tone the plants keep their colour, but what sits behind and under
+// them goes grey with the frame: the grass's backdrop, its base and the branch's twig.
+const GREY_RAMPS = {
+  MAT_panel: same(['#a8a49d', '#b4b0a9', '#c0bcb5', '#cac6bf', '#d4d0c9']),
+  MAT_base: same(['#3a3733', '#5e5a54', '#86817a', '#aaa59e', '#cdc9c2']),
+  MAT_branch: same(['#2e2c29', '#55524d', '#807c76', '#aaa69f', '#d6d2cb']),
+};
+const rampFor = mname => (window.__tone !== 'Folk' && ((window.__toneRamps && window.__toneRamps[mname]) || GREY_RAMPS[mname])) || RAMPS[mname];   // the tone's own, when it has them
+// the branch's leaves go vermilion-rust where the aspen goes gold
+const BRANCH_AUTUMN_LEAF = ['#4a1408', '#8e2a10', '#c4471a', '#e5702a', '#f6a85a'];
+const KEYS = {                     // spring, summer, autumn, winter
+  leaf:   [0.72, 1, 1, 0],
+  catkin: [1, 0, 0, 0],
+  scroll: [0.96, 1, 1, 0.88],         // the fronds curl back a little as they dry
+  heldLeaf: [0.72, 1, 1, 0.84],       // the branch keeps its dead leaves through winter, as oak and beech do
+  heldPlume: [1, 1, 0.9, 0.62],       // and its plumes dry where they stand
+  plume:  [1, 1, 0.9, 0],
+  blade:  [0.82, 1, 0.94, 0.72],
+  wind:   [0.6, 0.4, 1, 0.25],
+  snow:   [0, 0, 0, 1],
+};
+const NAMES = ['Spring', 'Summer', 'Autumn', 'Winter'];
+function cyc(keys, s) { const i = Math.floor(((s % 4) + 4) % 4), f = ((s % 4) + 4) % 4 - i; return lerp(keys[i], keys[(i + 1) % 4], ease(f)); }
+
+const hex = h => new THREE.Color(h);                       // kept in sRGB: the canvas writes colours untouched
+function lut(stops, pos, interp) {                           // a ramp sampled to 16 steps
+  const out = [];
+  for (let k = 0; k < 16; k++) {
+    const f = k / 15; let i = 0;
+    while (i < pos.length - 2 && f > pos[i + 1]) i++;
+    const t = clamp((f - pos[i]) / ((pos[i + 1] - pos[i]) || 1), 0, 1);
+    out.push(hex(stops[i]).lerp(hex(stops[i + 1]), interp === 'EASE' ? ease(t) : t));
+  }
+  return out;
+}
+
+// ---------------------------------------------------------------- painted shading (after the Blender node tree)
+const LIGHT = new THREE.Vector3(-0.45, 0.55, 0.75).normalize();       // upper left, in front: camera space
+const VERT = `
+uniform float uTime, uWind, uSway, uSwayH, uOutline;
+uniform vec2 uRes;
+varying vec3 vN;
+varying vec3 vTint;
+void main() {
+  vec3 p = position;
+  if (uSway > 0.5) {                                   // grass bends from its foot
+    float h = clamp(p.y / uSwayH, 0.0, 1.0);
+    float ph = modelMatrix[3].x * 3.1 + modelMatrix[3].z * 1.3;
+    p.x += (sin(uTime * 1.6 + ph) * 0.65 + sin(uTime * 2.9 + ph * 1.7) * 0.25) * uWind * 0.11 * h * h;
+  }
+  vN = normalize(normalMatrix * normal);
+  #if defined(USE_COLOR_ALPHA)
+    vTint = color.rgb;
+  #elif defined(USE_COLOR)
+    vTint = color;
+  #else
+    vTint = vec3(1.0);
+  #endif
+  vec4 clip = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
+  if (uOutline > 0.0) {                                // ink hull: pushed out along the screen-space normal
+    vec2 n2 = normalize(vN.xy + 1e-5);
+    clip.xy += n2 * uOutline * 2.0 / uRes * clip.w;
+  }
+  gl_Position = clip;
+}`;
+const FRAG = `
+uniform vec3 uLut[16];
+uniform float uLift, uEdge, uBlend, uSnow, uFlat;
+uniform vec3 uInk, uLight;
+varying vec3 vN;
+varying vec3 vTint;
+void main() {
+  if (uFlat > 0.5) { gl_FragColor = vec4(uInk, 1.0); return; }
+  vec3 n = normalize(vN); if (!gl_FrontFacing) n = -n;
+  float r = clamp((dot(n, uLight) - uLift) / (1.0 - uLift), 0.0, 1.0);
+  float b = uBlend < 0.5 ? 2.0 * uBlend : 0.5 / (1.0 - uBlend);
+  float facing = 1.0 - pow(abs(n.z), b);
+  float m = clamp(r * (1.0 - uEdge * facing), 0.0, 1.0);
+  float x = m * 15.0; int i = int(floor(x)); int j = min(i + 1, 15);
+  vec3 c = mix(uLut[i], uLut[j], fract(x));
+  c *= pow(vTint, vec3(1.0 / 2.2));
+  float snow = uSnow * smoothstep(0.42, 0.8, n.y);                     // a cap on what faces up, nothing more
+  c = mix(c, mix(vec3(0.83, 0.86, 0.88), vec3(0.97, 0.96, 0.93), m), snow);
+  gl_FragColor = vec4(c, 1.0);
+}`;
+
+const shared = {uTime: {value: 0}, uRes: {value: new THREE.Vector2(1, 1)}, uLight: {value: LIGHT}};
+function painted(spec, opts) {
+  const u = {
+    ...shared,
+    uLut: {value: lut(spec.stops || [spec.base, spec.base], (spec.stops || [[0], [1]]).map(s => s[0] ?? s), spec.interp)},
+    uLift: {value: spec.lift ?? -1}, uEdge: {value: spec.edge ?? 0.3}, uBlend: {value: spec.blend ?? 0.45},
+    uSnow: {value: 0}, uFlat: {value: opts.flat ? 1 : 0}, uInk: {value: hex(opts.ink || spec.base || '#2a2618')},
+    uWind: {value: 0}, uSway: {value: opts.sway ? 1 : 0}, uSwayH: {value: 1.3}, uOutline: {value: 0},
+  };
+  if (spec.stops) u.uLut.value = lut(spec.stops.map(s => s[1]), spec.stops.map(s => s[0]), spec.interp);
+  return new THREE.ShaderMaterial({uniforms: u, vertexShader: VERT, fragmentShader: FRAG, side: THREE.DoubleSide, vertexColors: !!opts.tint});
+}
+function hullOf(mat, ink) {
+  const m = mat.clone(); m.uniforms = {...mat.uniforms, uFlat: {value: 1}, uOutline: {value: 1.4}, uInk: {value: hex(ink)}};
+  m.side = THREE.BackSide; return m;
+}
+
+// ---------------------------------------------------------------- renderer
+const renderer = new THREE.WebGLRenderer({canvas, antialias: true, alpha: true, powerPreference: 'default'});
+renderer.outputColorSpace = THREE.LinearSRGBColorSpace;           // our colours are already sRGB
+renderer.setClearColor(0x000000, 0);
+renderer.autoClear = false;
+const draco = new DRACOLoader().setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/libs/draco/gltf/');
+const loader = new GLTFLoader().setDRACOLoader(draco);
+
+const plants = [];
+// a dropped request is tried again, a little later each time
+const retry = (fn, n = 4, wait = 500) => fn().catch(e => n > 0 ? new Promise(r => setTimeout(r, wait)).then(() => retry(fn, n - 1, wait * 2)) : Promise.reject(e));
+async function loadPlant(name) {
+  const [gltf, info] = await Promise.all([
+    retry(() => loader.loadAsync(`assets/3d/${name}.glb`)),
+    retry(() => fetch(`assets/3d/${name}.json`).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })),
+  ]);
+  const P = {name, info, place: G.plants3d[name], scene: new THREE.Scene(), mats: {}, parts: [], seasonRamps: {}};
+  const [W, H] = info.res, u = info.camera.ortho / Math.max(W, H), fw = W * u, fh = H * u;
+  P.camera = new THREE.OrthographicCamera(-fw / 2, fw / 2, fh / 2, -fh / 2, 0.1, 200);
+  P.camera.position.set(info.camera.x, info.camera.z, 60);           // Blender's x, z; looking along -Z
+  // the plant's world laid onto the artboard (y up), so a leaf can fall out of its frame
+  const [fx, fy, fW, fH] = P.place.frame, sx = fW / fw, sy = fH / fh;
+  P.map = {sx, sy, ox: fx - (info.camera.x - fw / 2) * sx, oy: -fy - (info.camera.z + fh / 2) * sy};
+  P.toFall = new THREE.Group(); P.toFall.scale.set(sx, sy, sx); P.toFall.position.set(P.map.ox, P.map.oy, 0);
+  fallScene.add(P.toFall);
+  const [bx0, bz0, bx1, bz1] = info.bbox;
+  P.pivot = new THREE.Group(); P.pivot.position.set((bx0 + bx1) / 2, (bz0 + bz1) / 2, 0);
+  const root = gltf.scene; root.position.set(-(bx0 + bx1) / 2, -(bz0 + bz1) / 2, 0);
+  P.pivot.add(root); P.scene.add(P.pivot);
+  const inkHex = (info.materials.MAT_ink || {}).base || '#2a2618';
+  const hulls = [];
+  root.traverse(o => { if (/^BR_stub/.test(o.name)) o.visible = false; });   // the cut stubs read as pipes in 3D
+  root.traverse(o => {
+    if (!o.isMesh) return;
+    const mname = (o.material && o.material.name) || o.userData.mat || 'MAT_ink';
+    const spec = info.materials[mname] || {base: inkHex};
+    const flat = /ink/.test(mname);
+    const tint = !!(spec.tint && o.geometry.attributes.color);
+    const key = mname + (tint ? ':t' : '');
+    if (!P.mats[key]) {
+      P.mats[key] = painted(spec, {flat, ink: inkHex, tint, sway: mname === 'MAT_blade' || (name === 'grass' && flat)});
+      P.mats[key].userData = {mname};
+    }
+    o.material = P.mats[key];
+    o.frustumCulled = false;
+    if (!flat && mname !== 'MAT_panel') hulls.push(o);
+  });
+  for (const o of hulls) {                                // ink outline: the same mesh, inflated, back faces in ink
+    const key = 'hull:' + o.material.userData.mname + (o.material.vertexColors ? ':t' : '');
+    if (!P.mats[key]) P.mats[key] = hullOf(o.material, inkHex);
+    const h = new THREE.Mesh(o.geometry, P.mats[key]); h.frustumCulled = false; h.renderOrder = -1; o.add(h);
+  }
+  // the parts the seasons move: the top-level objects by role
+  root.traverse(o => {
+    const role = o.userData && o.userData.role;
+    if (!role || (o.parent && o.parent.userData && o.parent.userData.role)) return;
+    const k = {LEAVES: 'leaf', PLUMES: 'plume', CATKINS: 'catkin', BLADES: 'blade', SCROLLS: 'scroll'}[role];
+    if (!k || /_(ink|veins|marks)$/.test(o.name)) return;
+    P.parts.push({o, kind: k, phase: hash(P.parts.length + name.length * 31), base: o.scale.clone(), rot: o.rotation.clone(), was: 1, gone: false, grow: 1, back: 0});
+  });
+  // per-season ramps for the materials that turn
+  for (const [key, M] of Object.entries(P.mats)) if (!key.startsWith('hull')) M.userData.summer = M.uniforms.uLut.value.map(c => c.clone());
+  buildRamps(P);
+  plants.push(P);
+}
+function buildRamps(P) {
+  for (const [key, M] of Object.entries(P.mats)) {
+    const mname = M.userData.mname, R = rampFor(mname); if (!R || key.startsWith('hull')) continue;
+    const summer = M.userData.summer, name = P.name;
+    let autumn = R.autumn; if (name === 'branch' && mname === 'MAT_leaf') autumn = BRANCH_AUTUMN_LEAF;
+    P.seasonRamps[key] = [R.spring ? lut(R.spring, POS, 'EASE') : summer, R.summer ? lut(R.summer, POS, 'EASE') : summer, lut(autumn, POS, 'EASE'), lut(R.winter, POS, 'EASE')];
+    M.uniforms.uLut.value.forEach((c, i) => c.copy(P.seasonRamps[key][Math.round(season) % 4][i]));   // start in the right colours
+  }
+}
+addEventListener('tone', () => plants.forEach(buildRamps));
+
+// ---------------------------------------------------------------- falling leaves: the tree's own, let go
+// A leaf that falls is the real leaf: it's lifted off its twig (the twig's copy is
+// hidden) and drops away fast, turning over, shrinking to nothing within a second
+// or so, so a few at a time never clutter the panels below. In autumn they grow back a while
+// later so the tree doesn't go bare before winter; in winter they stay gone.
+const fallScene = new THREE.Scene(), fallCam = new THREE.OrthographicCamera(0, VW, -VY, -(VY + VH), -800, 800);
+const falling = [];
+function detach(P, q, now, regrow) {
+  if (falling.length > 10) return;
+  q.o.updateWorldMatrix(true, true);
+  const c = q.o.clone(true);
+  q.o.matrixWorld.decompose(c.position, c.quaternion, c.scale);
+  P.toFall.add(c);
+  falling.push({c, P, v: 60 + Math.random() * 40, drift: (Math.random() - 0.5) * 50, age: 0, life: 0.8 + Math.random() * 0.5,
+    rx: (Math.random() - 0.5) * 9, ry: (Math.random() - 0.5) * 11, rz: (Math.random() - 0.5) * 5, s0: c.scale.clone()});
+  q.gone = true; q.back = now + (regrow ? 9000 + Math.random() * 7000 : 4000);
+}
+
+// where a part of a plant sits on the artboard (for leaves that let go)
+const tmpV = new THREE.Vector3();
+function toArtboard(P, obj) {
+  obj.getWorldPosition(tmpV); tmpV.project(P.camera);
+  const [fx, fy, fw, fh] = P.place.frame;
+  return [fx + (tmpV.x + 1) / 2 * fw, fy + (1 - tmpV.y) / 2 * fh];
+}
+
+// ---------------------------------------------------------------- season state
+let season = typeof window.__season === 'number' ? window.__season : 1, target = season;
+addEventListener('season', e => { target = e.detail; if (reduce) season = target; });
+function stepSeason(dt) {
+  let d = target - season; d = ((d % 4) + 6) % 4 - 2;                 // the short way round the year
+  if (Math.abs(d) < 0.002) { season = target; return; }
+  season += Math.sign(d) * Math.min(Math.abs(d), dt * 0.7);
+  season = ((season % 4) + 4) % 4;
+}
+
+// ---------------------------------------------------------------- frame
+// three takes viewports in CSS pixels; outlines and points are sized in device pixels
+let cw = 1, ch = 1, dpr = 1, unit = 1;
+function resize() {
+  const r = stage.getBoundingClientRect(); dpr = Math.min(window.devicePixelRatio || 1, 2);
+  renderer.setPixelRatio(dpr); renderer.setSize(r.width, r.height, false);
+  cw = r.width; ch = r.height; unit = cw / VW * dpr;
+}
+const rectPx = ([x, y, w, h]) => [x / VW * cw, ch - ((y - VY) / VH * ch) - h / VH * ch, w / VW * cw, h / VH * ch];
+
+let t = 0, last = performance.now(), raf = 0, emitAcc = 0, shown = false;
+function frame(now) {
+  raf = requestAnimationFrame(frame);
+  if (document.hidden || now - last < 32) return;                  // about 30 frames a second is plenty
+  const dt = Math.min(0.05, (now - last) / 1000); last = now;
+  t += reduce ? 0 : dt;
+  stepSeason(dt);
+  const wind = cyc(KEYS.wind, season), snow = cyc(KEYS.snow, season);
+  shared.uTime.value = t;
+
+  renderer.setScissorTest(false); renderer.setViewport(0, 0, cw, ch); renderer.clear();
+  for (const P of plants) {
+    // colours and snow
+    for (const [key, M] of Object.entries(P.mats)) {
+      M.uniforms.uWind.value = wind;
+      if (!key.startsWith('hull')) M.uniforms.uSnow.value = snow * (M.userData.mname === 'MAT_leaf' ? 0 : 1);
+      M.uniforms.uOutline.value = key.startsWith('hull') ? clamp(1.05 * unit, 0.9, 2.6) : 0;
+      const R = P.seasonRamps[key];
+      if (R) { const i = Math.floor(season) % 4, f = ease(season - Math.floor(season)), A = R[i], B = R[(i + 1) % 4];
+        M.uniforms.uLut.value.forEach((c, k) => c.copy(A[k]).lerp(B[k], f)); }
+    }
+    // growth, fall and flutter, staggered leaf by leaf
+    for (const q of P.parts) {
+      const keys = P.name === 'branch' && q.kind === 'leaf' ? KEYS.heldLeaf : P.name === 'branch' && q.kind === 'plume' ? KEYS.heldPlume : KEYS[q.kind];
+      const k = cyc(keys, season - (q.phase - 0.5) * 0.35);
+      if (q.kind === 'leaf' && !q.gone && !reduce && q.was > 0.5 && k <= 0.5) detach(P, q, now, false);   // winter takes it, at full size
+      if (q.gone && now > q.back) { q.gone = false; q.grow = 0; }      // a new leaf comes in from the twig
+      if (!q.gone && q.grow < 1) q.grow = Math.min(1, q.grow + dt / 2.5);
+      const kk = k * (q.gone ? 0 : ease(q.grow));
+      const sc = q.kind === 'blade' ? [1, kk, 1] : [kk, kk, kk];
+      q.o.scale.set(q.base.x * sc[0], q.base.y * sc[1], q.base.z * sc[2]);
+      q.o.visible = kk > 0.01;
+      if (q.kind === 'leaf' || q.kind === 'plume') {
+        q.o.rotation.z = q.rot.z + Math.sin(t * (1.7 + q.phase) + q.phase * 9) * 0.035 * wind;
+        q.was = k;
+      }
+    }
+    // draw into its frame, clipped to where it shows
+    const [vx, vy, vw, vh] = rectPx(P.place.frame);
+    shared.uRes.value.set(vw * dpr, vh * dpr);
+    renderer.setViewport(vx, vy, vw, vh);
+    const [cx_, cy_, cw_, ch_] = P.place.clip ? rectPx(P.place.clip) : [vx, vy, vw, vh];
+    renderer.setScissor(cx_, cy_, cw_, ch_); renderer.setScissorTest(true);
+    renderer.render(P.scene, P.camera);
+    for (const hole of P.place.holes || []) {             // where it would show through the window or past the frame
+      const [hx, hy, hw, hh] = rectPx(hole); renderer.setScissor(hx, hy, hw, hh); renderer.clear(true, true, false);
+    }
+  }
+
+  // weather
+  if (!reduce) {
+    emitAcc += dt;
+    const sIdx = Math.round(season) % 4;
+    const rate = 0.45;
+    while (emitAcc > 1 / rate) {
+      emitAcc -= 1 / rate;
+      if (sIdx === 2 && Math.abs(season - target) < 0.01) {
+        const trees = plants.filter(P => P.parts.some(q => q.kind === 'leaf'));
+        const P = trees[Math.floor(Math.random() * trees.length)];
+        if (P) { const leaves = P.parts.filter(q => q.kind === 'leaf'), on = leaves.filter(q => !q.gone && q.o.visible);
+          if (on.length && on.length > leaves.length * 0.7) detach(P, on[Math.floor(Math.random() * on.length)], now, true); }
+      }
+    }
+  }
+  for (let i = falling.length - 1; i >= 0; i--) {
+    const f = falling[i], m = f.P.map, c = f.c;
+    f.age += dt; f.v += 520 * dt;                                       // artboard units a second, under gravity
+    c.position.y -= f.v / m.sy * dt; c.position.x += f.drift * (0.6 + wind) / m.sx * dt;
+    c.rotateX(f.rx * dt); c.rotateY(f.ry * dt); c.rotateZ(f.rz * dt);
+    const g = 1 - Math.pow(Math.min(1, f.age / f.life), 2); c.scale.copy(f.s0).multiplyScalar(g);
+    if (g <= 0) { c.removeFromParent(); falling.splice(i, 1); }
+  }
+  renderer.setScissorTest(false); renderer.setViewport(0, 0, cw, ch);
+  shared.uRes.value.set(cw * dpr, ch * dpr);
+  renderer.clearDepth(); renderer.render(fallScene, fallCam);
+
+  if (!shown && plants.length === ORDER.length) { shown = true; stage.classList.add('three-ready'); }  // fade over from the paintings once drawn
+}
+
+new ResizeObserver(resize).observe(stage);
+resize();
+const ORDER = ['branch', 'grass', 'aspen'];                       // the branch first, so its window hole can't cut the others
+// each plant comes in on its own; one that won't load is tried again a while later,
+// and the paintings stay up until all three are in
+const loading = new Set();
+function load(name) {
+  if (loading.has(name) || plants.some(P => P.name === name)) return;
+  loading.add(name);
+  loadPlant(name).then(() => {
+    plants.sort((a, b) => ORDER.indexOf(a.name) - ORDER.indexOf(b.name));
+    if (!raf) raf = requestAnimationFrame(frame);
+  }).catch(err => { console.warn(`3D ${name} unavailable for now, trying again shortly`, err); setTimeout(() => load(name), 8000); })
+    .finally(() => loading.delete(name));
+}
+ORDER.forEach(load);
+// if the GPU drops the context, show the paintings until it comes back
+canvas.addEventListener('webglcontextlost', e => { e.preventDefault(); stage.classList.remove('three-ready'); shown = false; });
+canvas.addEventListener('webglcontextrestored', () => { resize(); });
+window.SEASON_NAMES = NAMES;
+window.__plants3d = {jump(i) { season = target = i; }};             // for checking a season without waiting on the turn
+
+</script>
+</body>
+</html>

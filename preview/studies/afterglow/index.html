@@ -1,0 +1,668 @@
+<!doctype html>
+<meta charset="utf-8" />
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-61Q2DRMD3H"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-61Q2DRMD3H');
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Afterglow</title>
+<meta name="description" content="Two balls on a white page, one for each hand. Your webcam follows your hands in the browser and each ball leaks a trail of colour (smear, smoke, drip or ripple) that blends with the other where they meet." />
+<link rel="icon" href="/preview/assets/favicon.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* Touch Grass's paper, ink and hairline, on a plain white page. */
+  :root{
+    --paper:#ffffff;
+    --ink:#141311;
+    --line:#d9d6cf;
+    --ink-soft:rgba(20,19,17,.5);
+    --glass:rgba(255,255,255,.86);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100%;background:var(--paper);}
+  body{
+    color:var(--ink);
+    font-family:"IBM Plex Mono","SFMono-Regular",Menlo,Consolas,monospace;
+    overflow:hidden;
+  }
+  canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;}
+  .home{position:fixed;top:22px;left:24px;z-index:5;color:var(--ink);}
+  .home svg{width:34px;height:auto;display:block;}
+  .intro{position:fixed;top:28px;left:0;right:0;padding:0 72px;text-align:center;pointer-events:none;z-index:4;}
+  .intro .hint{line-height:1.5;}
+  .intro .name{font-size:13px;letter-spacing:.14em;text-transform:uppercase;margin:0 0 6px;}
+  .intro .hint{font-size:12px;color:var(--ink-soft);margin:0;}
+  .panel{
+    position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:min(400px,calc(100vw - 32px));
+    background:var(--paper);border:1px solid var(--line);
+    padding:22px 22px 18px;z-index:8;
+  }
+  .panel[hidden]{display:none;}
+  .panel p{font-size:12px;line-height:1.6;margin:0 0 12px;color:var(--ink-soft);}
+  .panel p strong{color:var(--ink);font-weight:500;}
+  .panel button{
+    font:inherit;font-size:13px;letter-spacing:.14em;text-transform:uppercase;
+    background:var(--ink);color:var(--paper);border:0;padding:11px 16px;cursor:pointer;
+    width:100%;margin-top:4px;
+  }
+  .panel button.quiet{background:none;color:var(--ink);border:1px solid var(--line);}
+  .panel .status{margin-top:12px;min-height:1.6em;color:var(--ink);}
+  video#cam{
+    position:fixed;right:24px;top:22px;z-index:4;
+    width:136px;height:102px;object-fit:cover;transform:scaleX(-1);
+    border:1px solid var(--line);background:var(--paper);opacity:.85;
+  }
+  video#cam[hidden]{display:none;}
+
+  /* ---------- the controller: one row at the bottom ---------- */
+  .bar{
+    position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:6;
+    display:flex;align-items:center;gap:10px;
+    max-width:calc(100vw - 24px);
+    padding:8px 10px;
+    background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    border:1px solid var(--line);
+    font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  }
+  .bar[hidden]{display:none;}
+  .grp{display:flex;align-items:center;gap:8px;flex-wrap:nowrap;}
+  .sep{width:1px;height:22px;background:var(--line);}
+  .lab{display:flex;align-items:center;gap:6px;color:var(--ink);font-weight:500;}
+  .lab i{width:12px;height:12px;border-radius:50%;display:block;border:1px solid rgba(0,0,0,.15);}
+  .chips{display:flex;gap:3px;}
+  .chips button{
+    font:inherit;font-size:10px;letter-spacing:.05em;text-transform:uppercase;
+    background:none;color:var(--ink-soft);border:1px solid transparent;padding:3px 4px;cursor:pointer;
+  }
+  .chips button:hover{color:var(--ink);}
+  .chips button[aria-pressed="true"]{color:var(--ink);border-color:var(--ink);}
+  .sw{display:flex;gap:4px;}
+  .sw button{
+    width:17px;height:17px;border-radius:50%;padding:0;cursor:pointer;
+    border:1px solid rgba(0,0,0,.12);outline-offset:2px;
+  }
+  .sw button[aria-pressed="true"]{outline:1.5px solid var(--ink);}
+  .bar input[type=range]{width:52px;accent-color:var(--ink);}
+  @media (min-width:941px) and (max-width:1180px){ .bar .word{display:none;} }
+  .bar .hide{font:inherit;font-size:14px;line-height:1;background:none;border:0;color:var(--ink-soft);cursor:pointer;padding:2px 4px;}
+  .bar .hide:hover{color:var(--ink);}
+  .bar .small{color:var(--ink-soft);}
+  .toggle{
+    position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:7;
+    font:inherit;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    background:none;border:1px solid var(--line);color:var(--ink);padding:6px 9px;cursor:pointer;background:var(--glass);
+  }
+  .readout{
+    position:fixed;left:24px;bottom:24px;z-index:4;
+    font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    font-variant-numeric:tabular-nums;color:var(--ink-soft);pointer-events:none;
+  }
+  .toggle[hidden]{display:none;}
+  @media (max-width:940px){
+    .bar{flex-direction:column;align-items:stretch;gap:8px;bottom:58px;width:min(460px,calc(100vw - 24px));}
+    .bar .hide{position:absolute;top:-30px;right:-1px;background:var(--glass);border:1px solid var(--line);padding:5px 9px;}
+    .grp{flex-wrap:wrap;row-gap:6px;}
+    .grp.hand .lab{min-width:64px;}
+    .sep{width:auto;height:1px;}
+    .grp{justify-content:space-between;}
+    .bar input[type=range]{width:64px;}
+    .bar{bottom:12px;}
+    .readout{top:auto;bottom:22px;left:24px;}
+    video#cam{width:84px;height:63px;}
+  }
+  @media (max-width:940px) and (pointer:coarse){
+    .bar input[type=range]{font-size:16px;}
+  }
+</style>
+
+<canvas id="gl" aria-label="Two balls, one for each hand, leaking trails of colour"></canvas>
+
+<a class="home" href="/preview/lab/" aria-label="Sea of Grass — all studies">
+  <svg viewBox="43.63 44.56 350.94 258.56" fill="currentColor" aria-hidden="true">
+    <path d="M 60.1360,299.5890 C 40.8560,283.5000 37.9720,248.8600 54.1230,229.1250 C 61.9590,219.4780 73.2066,213.0913 85.9080,212.4050 L 279.9170,212.3880 C 292.7328,211.6894 302.2259,200.5242 302.6140,188.1740 C 303.0171,175.3461 294.1087,163.3937 280.9850,162.4350 L 160.3860,162.3770 C 155.6830,162.3750 152.4580,158.1300 152.2660,154.1930 C 152.0640,150.0420 155.5000,145.5160 160.3230,145.5160 L 323.2740,145.5180 C 363.5090,146.7569 394.2264,180.5210 394.5670,220.2810 C 394.9023,259.4236 360.4620,297.7100 320.2520,299.1580 C 320.2520,299.1580 69.9310,307.7640 60.1360,299.5890 Z"/>
+    <path d="M 365.1390,47.9780 C 360.1170,47.5130 354.1470,47.1080 347.4230,46.7550 C 274.7440,42.9430 114.0820,45.2510 114.0820,45.2510 C 73.9994,46.9759 43.7290,80.8860 43.6260,120.3040 C 43.5230,159.4680 73.5199,193.9418 113.3820,195.4730 L 277.3270,195.8440 C 282.2870,195.8440 285.7460,192.0070 285.9600,187.6500 C 286.1670,183.4310 282.8680,178.9500 277.9760,178.9480 L 158.2750,178.9140 C 145.3037,178.2644 135.8119,166.8014 135.6040,154.2420 C 135.3960,141.6768 144.3477,129.9059 157.2620,128.9900 L 350.1640,128.8050 C 352.3160,128.8030 354.4280,128.6110 356.4990,128.2740 C 366.7370,126.6070 375.8830,121.0490 382.8160,113.4590 C 390.0330,105.5580 394.4238,95.7293 394.5320,85.6870 C 394.7250,67.7708 381.6430,52.8390 365.1390,47.9780 Z"/>
+    <circle cx="357.983" cy="86.686" r="36.548"/>
+  </svg>
+</a>
+
+<div class="intro">
+  <p class="name">Afterglow</p>
+  <p class="hint" id="hint">a ball for each hand</p>
+</div>
+
+<div class="panel" id="panel" role="dialog" aria-label="About Afterglow">
+  <p><strong>Two balls, one for each hand.</strong> Move your hands at the webcam and each
+    ball follows one, leaking a trail of colour. Close your fingers for one big ball; open or
+    wiggle them and it splits into thin lines from your fingertips. Pick what leaks from each below;
+    where the trails meet, their colours blend.</p>
+  <p><strong>Nothing leaves this tab.</strong> The camera opens only when you press the
+    button. Hand tracking (<a href="https://ai.google.dev/edge/mediapipe/solutions/vision/hand_landmarker">MediaPipe</a>)
+    runs in your browser; no frame or position is sent or saved.</p>
+  <button id="go">Open the camera</button>
+  <button id="mouse" class="quiet">Use the mouse or touch</button>
+  <p class="status" id="status"></p>
+</div>
+
+<video id="cam" playsinline muted hidden></video>
+
+<div class="bar" id="bar" hidden>
+  <div class="grp hand" data-h="0">
+    <span class="lab" title="left hand"><i></i><span class="word">left</span></span>
+    <div class="chips fx" role="group" aria-label="What leaks from the left hand"></div>
+    <div class="sw pal" role="group" aria-label="Left hand's colours"></div>
+    <input type="range" class="len" min="0" max="1" step="0.01" aria-label="Left trail length" title="trail length">
+  </div>
+  <div class="sep"></div>
+  <div class="grp">
+    <span class="lab">blend</span>
+    <div class="chips mode" id="mode" role="group" aria-label="How the colours blend"></div>
+    <input type="range" id="amt" min="0" max="1" step="0.01" aria-label="How much they blend" title="how much they blend">
+  </div>
+  <div class="sep"></div>
+  <div class="grp hand" data-h="1">
+    <span class="lab" title="right hand"><i></i><span class="word">right</span></span>
+    <div class="chips fx" role="group" aria-label="What leaks from the right hand"></div>
+    <div class="sw pal" role="group" aria-label="Right hand's colours"></div>
+    <input type="range" class="len" min="0" max="1" step="0.01" aria-label="Right trail length" title="trail length">
+  </div>
+  <button class="hide" id="hide" aria-label="Hide the controls" title="Hide the controls (C)">×</button>
+</div>
+<button class="toggle" id="toggle" hidden title="Show the controls (C)">controls</button>
+<p class="readout" id="readout"></p>
+
+<script type="module">
+const MP = "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14";
+const MODEL = "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task";
+const $ = id => document.getElementById(id);
+const store = {
+  get(k){ try { return localStorage.getItem("afterglow:" + k); } catch (e) { return null; } },
+  set(k, v){ try { localStorage.setItem("afterglow:" + k, v); } catch (e) {} },
+};
+
+// ------------------------------------------------------------------ the choices
+// What leaks from a hand, and its colours, newest first: the colour right
+// behind the ball, then each band the trail passes through as it fades.
+const EFFECTS = [
+  {id: "smear",  name: "smear"},    // stays where it was left, softening
+  {id: "smoke",  name: "smoke"},    // rises and curls
+  {id: "drip",   name: "drip"},     // runs down in streaks
+  {id: "ripple", name: "ripple"},   // spreads out in rings
+];
+const PALETTES = {
+  heat:   ["#1b2272", "#14523c", "#e0782c", "#e2558f", "#cf4fe6", "#d9c23a"],
+  candy:  ["#d0287a", "#ff7ab8", "#b58cff", "#7fd6ff", "#c7f5c4", "#fff1a8"],
+  lagoon: ["#073b63", "#0b7f96", "#10b98a", "#a3e635", "#fde047", "#b9f0ff"],
+  ink:    ["#0d0d12", "#2b2b34", "#575762", "#8c8c96", "#bdbdc5", "#e3e3e8"],
+};
+const MODES = [
+  {id: "mix",   name: "mix"},     // the colours average where they meet
+  {id: "paint", name: "paint"},   // as paint: one through the other, darker
+  {id: "glow",  name: "glow"},    // as light: brighter where they meet
+];
+const DEFAULT = {hands: [{fx: "smear", pal: "heat", len: 0.7}, {fx: "smoke", pal: "candy", len: 0.7}], mode: "mix", amt: 0.75};
+let S;
+try { S = JSON.parse(store.get("state")); } catch (e) {}
+if (!S || !S.hands || S.hands.length !== 2) S = structuredClone(DEFAULT);
+const save = () => store.set("state", JSON.stringify(S));
+
+// ------------------------------------------------------------------ WebGL
+const canvas = $("gl");
+const gl = canvas.getContext("webgl2", {antialias: false, alpha: false, premultipliedAlpha: false});
+const floatOK = !!(gl && gl.getExtension("EXT_color_buffer_float"));
+const VS = `#version 300 es
+in vec2 p; out vec2 uv;
+void main(){ uv = p * 0.5 + 0.5; gl_Position = vec4(p, 0.0, 1.0); }`;
+const COMMON = `#version 300 es
+precision highp float;
+in vec2 uv; out vec4 o;
+float h1(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+float n1(vec2 p){
+  vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
+  return mix(mix(h1(i), h1(i + vec2(1, 0)), f.x), mix(h1(i + vec2(0, 1)), h1(i + vec2(1, 1)), f.x), f.y);
+}
+`;
+// The trails: a sheet at half size holding, for each hand, how fresh the
+// trail is here (1 just left, fading to 0). Each frame the sheet is moved
+// by that hand's effect, softened, faded, and the ball stamped on again
+// along the path it took since the last frame, so a fast hand leaves no gaps.
+const SIM = COMMON + `
+uniform sampler2D uPrev;
+uniform vec2 uRes;              // the sheet, in pixels
+uniform float uAsp, uTime;      // aspect, seconds
+uniform vec2 uOn, uLen, uFx;
+// Each hand is six parts: the palm and five fingertips. Held still they sit
+// together as one ball; as the fingers wiggle they pull apart, running
+// together like liquid on the way (a smooth union), into six small drops.
+uniform vec4 uBlob[12];         // hand i, part j at i * 6 + j: now x, y, then x, y (0..1)
+uniform float uBR[12];          // each part's radius (in screen heights)
+uniform vec2 uK;                // how much each hand's parts run together
+float smin(float a, float b, float k){
+  if (k <= 1e-5) return min(a, b);
+  float h = max(k - abs(a - b), 0.0) / k;
+  return min(a, b) - h * h * k * 0.25;
+}
+// how far from hand i's parts (negative inside), now, or swept along the
+// path each took since the last frame
+float handD(int i, vec2 P, bool sweep){
+  float D = 1e3;
+  for (int j = 0; j < 6; j++){
+    vec4 b = uBlob[i * 6 + j];
+    vec2 B = vec2(b.x * uAsp, b.y), A = sweep ? vec2(b.z * uAsp, b.w) : B, ab = B - A;
+    float t = clamp(dot(P - A, ab) / max(dot(ab, ab), 1e-8), 0.0, 1.0);
+    D = smin(D, length(P - A - ab * t) - uBR[i * 6 + j], uK[i]);
+  }
+  return D;
+}
+
+vec2 flow(float fx, vec2 q, float ch){
+  if (fx < 0.5) return vec2(0.0);
+  if (fx < 1.5){                                     // smoke: rises, curling
+    float a = n1(q * vec2(5.0, 4.0) + vec2(ch * 7.0, -uTime * 0.25)) * 12.566;
+    return vec2(cos(a) * 0.9, 1.6 + sin(a) * 0.7) / uRes.y;
+  }
+  if (fx < 2.5){                                     // drip: down in streaks, each its own speed
+    float sp = pow(h1(vec2(floor(q.x * uRes.x / 2.5), ch + 3.0)), 2.5);
+    return vec2(0.0, -(0.4 + 3.2 * sp)) / uRes.y;
+  }
+  return vec2(0.0);                                  // ripple spreads by softening
+}
+float trail(int i, float fx, float len){
+  float ch = float(i);
+  vec2 q = uv - flow(fx, uv, ch);
+  vec2 px = 1.0 / uRes;
+  float c = texture(uPrev, q)[i];
+  float rr = fx > 2.5 ? 1.6 : fx > 0.5 ? 1.0 : 0.7;
+  float nb = (texture(uPrev, q + vec2(px.x, 0.0) * rr)[i] + texture(uPrev, q - vec2(px.x, 0.0) * rr)[i]
+            + texture(uPrev, q + vec2(0.0, px.y) * rr)[i] + texture(uPrev, q - vec2(0.0, px.y) * rr)[i]) * 0.25;
+  float v = mix(c, fx > 2.5 ? max(c, nb) : nb, fx > 2.5 ? 0.97 : 0.55);   // ripple: the edge creeps outward
+  v = v * mix(0.95, 0.996, len) - 0.0012;
+  // the hand's parts, along the paths they took since last frame
+  float D = handD(i, vec2(uv.x * uAsp, uv.y), true);
+  v = max(v, (1.0 - smoothstep(-1.2 / uRes.y, 0.6 / uRes.y, D)) * uOn[i]);   // crisp, so thin parts draw full lines
+  return clamp(v, 0.0, 1.0);
+}
+void main(){ o = vec4(trail(0, uFx.x, uLen.x), trail(1, uFx.y, uLen.y), 0.0, 1.0); }`;
+// The picture: each trail coloured by how fresh it is, through its
+// palette's bands; the two blended where they meet; the balls on top.
+const SHOW = COMMON + `
+uniform sampler2D uSim;
+uniform vec2 uRes;
+uniform float uAsp, uMode, uAmt;
+uniform vec2 uRH;               // each hand's ball radius (in screen heights)
+uniform vec2 uOn, uFx;
+// Each hand is six parts: the palm and five fingertips. Held still they sit
+// together as one ball; as the fingers wiggle they pull apart, running
+// together like liquid on the way (a smooth union), into six small drops.
+uniform vec4 uBlob[12];         // hand i, part j at i * 6 + j: now x, y, then x, y (0..1)
+uniform float uBR[12];          // each part's radius (in screen heights)
+uniform vec2 uK;                // how much each hand's parts run together
+float smin(float a, float b, float k){
+  if (k <= 1e-5) return min(a, b);
+  float h = max(k - abs(a - b), 0.0) / k;
+  return min(a, b) - h * h * k * 0.25;
+}
+// how far from hand i's parts (negative inside), now, or swept along the
+// path each took since the last frame
+float handD(int i, vec2 P, bool sweep){
+  float D = 1e3;
+  for (int j = 0; j < 6; j++){
+    vec4 b = uBlob[i * 6 + j];
+    vec2 B = vec2(b.x * uAsp, b.y), A = sweep ? vec2(b.z * uAsp, b.w) : B, ab = B - A;
+    float t = clamp(dot(P - A, ab) / max(dot(ab, ab), 1e-8), 0.0, 1.0);
+    D = smin(D, length(P - A - ab * t) - uBR[i * 6 + j], uK[i]);
+  }
+  return D;
+}
+
+uniform vec3 uPalA[6], uPalB[6];
+vec3 ramp(vec3 P[6], float v){
+  // newest (1) is the first colour; the bands follow, evenly, to the edge
+  float x = pow(clamp((1.0 - v) / 0.84, 0.0, 1.0), 2.2) * 5.0;   // the first bands last longest
+  int k = int(min(floor(x), 4.0));
+  float f = smoothstep(0.0, 1.0, x - float(k));
+  return mix(P[k], P[k + 1], f);
+}
+vec3 colour(vec3 P[6], float v, float fx, out float a){
+  float w = v;
+  if (fx > 2.5) w = 0.16 + 0.84 * fract(v * 3.0);    // ripple: the bands come round again, in rings
+  a = smoothstep(0.015, 0.16, v);
+  return ramp(P, w);
+}
+vec3 ball(vec3 P[6], int i, vec3 under){
+  float D = handD(i, vec2(uv.x * uAsp, uv.y), false), aa = 1.5 / uRes.y;
+  float inside = (1.0 - smoothstep(-aa, aa, D)) * uOn[i];
+  float R = uRH[i];
+  float rim = exp(-pow(D / (R * 0.08), 2.0)) * uOn[i];
+  vec3 core = mix(P[0] * 1.25, P[0], smoothstep(-R, 0.0, D));  // a little lighter in the middle
+  under = mix(under, P[4], rim * 0.55);
+  return mix(under, core, inside);
+}
+void main(){
+  vec4 s = texture(uSim, uv);
+  float aA, aB;
+  vec3 cA = colour(uPalA, s.r, uFx.x, aA), cB = colour(uPalB, s.g, uFx.y, aB);
+  vec3 bg = vec3(1.0);
+  vec3 layered = mix(mix(bg, cA, aA), cB, aB);
+  float u = 1.0 - (1.0 - aA) * (1.0 - aB);
+  vec3 avg = (cA * aA + cB * aB) / max(aA + aB, 1e-4);
+  vec3 mixed = mix(bg, avg, u);
+  vec3 m = uMode < 0.5 ? mixed
+         : uMode < 1.5 ? mix(bg, cA, aA) * mix(vec3(1.0), cB, aB)
+         : mix(mixed, 1.0 - (1.0 - cA) * (1.0 - cB), aA * aB);
+  vec3 col = mix(layered, m, uAmt);
+  col = ball(uPalA, 0, col);
+  col = ball(uPalB, 1, col);
+  col += (h1(gl_FragCoord.xy) - 0.5) / 255.0;   // no banding
+  o = vec4(col, 1.0);
+}`;
+function program(fs){
+  const sh = (t, s) => { const x = gl.createShader(t); gl.shaderSource(x, s); gl.compileShader(x);
+    if (!gl.getShaderParameter(x, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(x)); return x; };
+  const p = gl.createProgram();
+  gl.attachShader(p, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(p, sh(gl.FRAGMENT_SHADER, fs));
+  gl.bindAttribLocation(p, 0, "p"); gl.linkProgram(p);
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+  const u = {};
+  for (let i = 0, n = gl.getProgramParameter(p, gl.ACTIVE_UNIFORMS); i < n; i++){
+    const name = gl.getActiveUniform(p, i).name; u[name] = gl.getUniformLocation(p, name);
+  }
+  return {p, u};
+}
+let SIMP, SHOWP;
+if (gl){
+  SIMP = program(SIM); SHOWP = program(SHOW);
+  const vao = gl.createVertexArray(); gl.bindVertexArray(vao);
+  const b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+}
+let W = 0, H = 0, SW = 0, SH = 0, sheets = [], cur = 0;
+function sheet(w, h){
+  const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t);
+  if (floatOK) gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA16F, w, h, 0, gl.RGBA, gl.HALF_FLOAT, null);
+  else gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  const f = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, f);
+  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t, 0);
+  gl.clearColor(0, 0, 0, 1); gl.clear(gl.COLOR_BUFFER_BIT);
+  return {t, f};
+}
+function resize(){
+  const dpr = Math.min(devicePixelRatio || 1, 2);
+  W = innerWidth; H = innerHeight;
+  canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+  if (!gl) return;
+  const k = Math.min(1, 900 / Math.max(W, H));       // the sheet: about half size, at most 900 across
+  SW = Math.max(2, Math.round(W * k)); SH = Math.max(2, Math.round(H * k));
+  for (const s of sheets){ gl.deleteTexture(s.t); gl.deleteFramebuffer(s.f); }
+  sheets = [sheet(SW, SH), sheet(SW, SH)];
+}
+const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) / 255);
+const flatPal = name => new Float32Array(PALETTES[name].flatMap(hex));
+
+// ------------------------------------------------------------------ the balls
+// Each ball eases toward its hand (or pointer), and fades in or out as the
+// hand comes and goes. It knows where the hand's fingertips are (relative
+// to the palm) and how much they're wiggling: wiggle and the ball splits
+// into the palm and five fingertips; hold still and they run back together.
+// how far the fingertip lines sit from the middle of the palm, against where
+// your fingertips really are: under 1, tighter than your hand
+const SPREAD = 0.6;
+const FAN = [[20, 0.11], [62, 0.15], [86, 0.16], [108, 0.15], [132, 0.12]];   // a resting hand, for the mouse
+const balls = [0, 1].map(i => ({x: i ? 0.65 : 0.35, y: 0.5, px: i ? 0.65 : 0.35, py: 0.5, tx: i ? 0.65 : 0.35, ty: 0.5,
+  on: 0, seen: false, split: 0, open: 0, openS: 0, near: 1, scale: 1, wig: 0, wigRaw: 0, held: -1e9, force: false,
+  rel: Array.from({length: 5}, () => [0, 0]), relT: Array.from({length: 5}, () => [0, 0]), lastRel: null, lastT: 0,
+  parts: Array.from({length: 6}, () => ({x: i ? 0.65 : 0.35, y: 0.5, px: i ? 0.65 : 0.35, py: 0.5, r: 0}))}));
+function aim(i, x, y, rel, now){
+  const b = balls[i]; b.tx = x; b.ty = y; b.seen = true;
+  if (!rel) return;
+  b.relT = rel;
+  if (b.lastRel && now > b.lastT){                    // the fingertips' own motion, the palm's taken out
+    let m = 0;
+    for (let j = 0; j < 5; j++) m += Math.hypot(rel[j][0] - b.lastRel[j][0], rel[j][1] - b.lastRel[j][1]);
+    b.wigRaw = m / ((now - b.lastT) / 1000);
+  }
+  b.lastRel = rel; b.lastT = now;
+}
+
+// hands: each ball follows the middle of one palm
+let landmarker = null, video = $("cam"), lastVideoTime = -1, handCount = 0;
+const PALM = [0, 5, 9, 13, 17], TIPS = [4, 8, 12, 16, 20];
+function readHands(now){
+  if (!landmarker || video.readyState < 2 || video.currentTime === lastVideoTime) return;
+  lastVideoTime = video.currentTime;
+  const res = landmarker.detectForVideo(video, now);
+  // The camera's picture fills the screen as a cover would, cropped to the
+  // screen's shape (an upright phone sees the middle of a landscape picture),
+  // so a point in the picture maps to where it would show on screen.
+  const vw = video.videoWidth || 640, vh = video.videoHeight || 480, cs = Math.max(W / vw, H / vh);
+  const mx = u => ((1 - u) * vw * cs - (vw * cs - W) / 2) / W;   // mirrored, like a mirror
+  const my = v => 1 - (v * vh * cs - (vh * cs - H) / 2) / H;     // GL's y is up
+  const found = (res.landmarks || []).map((hand, h) => {
+    let x = 0, y = 0;
+    for (const i of PALM){ x += hand[i].x; y += hand[i].y; }
+    x /= PALM.length; y /= PALM.length;
+    const rel = TIPS.map(k => [mx(hand[k].x) - mx(x), my(hand[k].y) - my(y)]);
+    // how near: the hand's size in the picture (wrist to middle knuckle), against
+    // its size at about arm's length
+    const hs = Math.hypot((hand[0].x - hand[9].x) * vw, (hand[0].y - hand[9].y) * vh) / Math.min(vw, vh);
+    const near = Math.min(2.4, Math.max(0.45, hs / 0.2));
+    x = mx(x); y = my(y);
+    // how open the hand is: the gaps between neighbouring fingertips (not the
+    // thumb, which sits apart even in a closed hand), against the hand's size,
+    // wrist to middle knuckle. Measured on the tracker's 3D hand, in metres,
+    // so moving or turning the hand doesn't change it. Together or a fist:
+    // ~0.2; spread wide: ~0.45 and up
+    const w3 = res.worldLandmarks && res.worldLandmarks[h];
+    const A = w3 || hand, vz = w3 ? 1 : 0, va = w3 ? 1 : (video.videoWidth / video.videoHeight || 4 / 3);
+    const d = (a, b) => Math.hypot((A[a].x - A[b].x) * va, A[a].y - A[b].y, (A[a].z - A[b].z) * vz);
+    const open = (d(8, 12) + d(12, 16) + d(16, 20)) / 3 / Math.max(d(0, 9), 1e-4);
+    // the tracker names hands as if the picture were mirrored; ours isn't,
+    // so its "Right" is your left hand, which shows on the left
+    const label = res.handedness && res.handedness[h] && res.handedness[h][0] ? res.handedness[h][0].categoryName : "";
+    return {x, y, rel, open, near, side: label === "Right" ? 0 : label === "Left" ? 1 : -1};
+  });
+  handCount = found.length;
+  if (found.length === 2 && (found[0].side === found[1].side || found[0].side < 0))
+    found.sort((a, b) => a.x - b.x).forEach((f, i) => f.side = i);
+  if (found.length === 1 && found[0].side < 0) found[0].side = found[0].x < 0.5 ? 0 : 1;
+  for (const b of balls) b.seen = false;
+  for (const f of found){ aim(f.side, f.x, f.y, f.rel, now); balls[f.side].open = f.open; balls[f.side].near = f.near; }
+}
+async function openCamera(){
+  const status = $("status"), go = $("go");
+  go.disabled = true;
+  status.textContent = "Asking for the camera…";
+  let stream;
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({video: {width: {ideal: 640}, height: {ideal: 480}, facingMode: "user"}, audio: false});
+  } catch (e){
+    status.textContent = "The camera wasn't allowed. You can use the mouse or touch instead.";
+    go.disabled = false; return;
+  }
+  video.srcObject = stream;
+  await video.play();
+  status.textContent = "Loading the hand tracker…";
+  try {
+    const {HandLandmarker, FilesetResolver} = await import(`${MP}/vision_bundle.mjs`);
+    const files = await FilesetResolver.forVisionTasks(`${MP}/wasm`);
+    landmarker = await HandLandmarker.createFromOptions(files, {
+      baseOptions: {modelAssetPath: MODEL, delegate: "GPU"}, runningMode: "VIDEO", numHands: 2});
+  } catch (e){
+    status.textContent = "The hand tracker didn't load. Check your connection, or use the mouse.";
+    stream.getTracks().forEach(t => t.stop());
+    go.disabled = false; return;
+  }
+  video.hidden = false;
+  start("move both hands · open your fingers to split");
+}
+
+// pointer: a mouse leads the left ball and the right one mirrors it; on a
+// touch screen, the first finger is the left ball and the second the right
+let pointerOn = false;
+const touches = new Map();
+let started = false;
+function start(hint){
+  $("panel").hidden = true; started = true;
+  // on a phone the controls start folded away, so the page is all yours
+  const phone = matchMedia("(max-width:700px)").matches;
+  $("bar").hidden = phone; $("toggle").hidden = !phone;
+  $("hint").textContent = hint;
+}
+function useMouse(){ pointerOn = true; start(matchMedia("(pointer:coarse)").matches ? "one finger, or two" : "move the pointer · hold the button to split"); }
+const toUV = e => [e.clientX / W, 1 - e.clientY / H];
+canvas.addEventListener("pointerdown", e => {
+  if (!pointerOn || landmarker) return;
+  if (e.pointerType === "mouse"){ for (const b of balls) b.force = true; return; }
+  const used = new Set(touches.values());
+  touches.set(e.pointerId, used.has(0) ? 1 : 0);
+});
+addEventListener("pointermove", e => {
+  if (!pointerOn || landmarker) return;
+  const [x, y] = toUV(e);
+  if (e.pointerType === "mouse"){ aim(0, x, y); aim(1, 1 - x, y); return; }
+  if (touches.has(e.pointerId)) aim(touches.get(e.pointerId), x, y);
+});
+addEventListener("pointerup", e => { if (e.pointerType === "mouse") for (const b of balls) b.force = false; });
+const lift = e => { if (touches.has(e.pointerId)){ balls[touches.get(e.pointerId)].seen = false; touches.delete(e.pointerId); } };
+addEventListener("pointerup", lift); addEventListener("pointercancel", lift);
+document.addEventListener("mouseleave", () => { if (pointerOn && !landmarker) for (const b of balls) b.seen = false; });
+
+// ------------------------------------------------------------------ the controller
+function buildHand(el){
+  const h = +el.dataset.h, H2 = S.hands[h];
+  const fx = el.querySelector(".fx"), sw = el.querySelector(".pal"), len = el.querySelector(".len"), dot = el.querySelector(".lab i");
+  fx.innerHTML = EFFECTS.map(e => `<button data-v="${e.id}" aria-pressed="${H2.fx === e.id}">${e.name}</button>`).join("");
+  sw.innerHTML = Object.keys(PALETTES).map(k => {
+    const p = PALETTES[k];
+    return `<button data-v="${k}" aria-pressed="${H2.pal === k}" title="${k}" aria-label="${k}"
+      style="background:conic-gradient(${p[0]} 0 25%, ${p[2]} 0 50%, ${p[3]} 0 75%, ${p[5]} 0)"></button>`;
+  }).join("");
+  dot.style.background = PALETTES[H2.pal][0];
+  len.value = H2.len;
+  fx.onclick = e => { const b = e.target.closest("button"); if (!b) return; H2.fx = b.dataset.v; save(); buildHand(el); };
+  sw.onclick = e => { const b = e.target.closest("button"); if (!b) return; H2.pal = b.dataset.v; save(); buildHand(el); };
+  len.oninput = () => { H2.len = +len.value; save(); };
+}
+function buildMode(){
+  $("mode").innerHTML = MODES.map(m => `<button data-v="${m.id}" aria-pressed="${S.mode === m.id}">${m.name}</button>`).join("");
+  $("mode").onclick = e => { const b = e.target.closest("button"); if (!b) return; S.mode = b.dataset.v; save(); buildMode(); };
+  $("amt").value = S.amt;
+}
+$("amt").oninput = () => { S.amt = +$("amt").value; save(); };
+document.querySelectorAll(".hand").forEach(buildHand);
+buildMode();
+function toggleBar(){
+  const show = $("bar").hidden;
+  $("bar").hidden = !show; $("toggle").hidden = show;
+}
+$("toggle").onclick = toggleBar; $("hide").onclick = toggleBar;
+addEventListener("keydown", e => {
+  if (e.target.closest("input")) return;
+  if ((e.key === "c" || e.key === "C") && started) toggleBar();
+});
+$("go").addEventListener("click", openCamera);
+$("mouse").addEventListener("click", useMouse);
+addEventListener("resize", resize);
+
+// ------------------------------------------------------------------ the loop
+let last = performance.now(), frames = 0, fpsT = last, fps = 0;
+function loop(now){
+  const dt = Math.min(0.05, (now - last) / 1000); last = now;
+  readHands(now);
+  // the ball's size: from the screen's short side (so a phone held upright
+  // gets a ball that fits it), in screen heights, times how near the hand is
+  const asp = W / H, r0 = Math.min(64, Math.max(22, Math.min(W, H) * 0.085)) / H;
+  const rOf = b => r0 * b.scale;
+  balls.forEach((b, i) => {
+    b.px = b.x; b.py = b.y;
+    const k = 1 - Math.pow(0.0005, dt);               // eases most of the way in a few frames
+    b.x += (b.tx - b.x) * k; b.y += (b.ty - b.y) * k;
+    b.on += ((b.seen ? 1 : 0) - b.on) * Math.min(1, dt * 6);
+    b.scale += (b.near - b.scale) * Math.min(1, dt * 6);
+    const r = rOf(b);
+    // how much it's split: wiggling opens it quickly; it closes slowly, a
+    // moment after the fingers stop
+    if (b.force){                                       // the mouse: a hand, its fingers wriggling
+      const t = now / 1000;
+      b.relT = FAN.map(([a, l], j) => { const L = l * (1 + 0.18 * Math.sin(t * 9 + j * 1.9)), A = (a + 8 * Math.sin(t * 6 + j)) * Math.PI / 180;
+        return [(i ? -1 : 1) * Math.cos(A) * L / asp, Math.sin(A) * L]; });
+    }
+    if (!landmarker || now - b.lastT > 250) b.wigRaw *= Math.pow(0.05, dt);
+    b.wig += (b.wigRaw - b.wig) * Math.min(1, dt * 8);
+    // the hand's openness, steadied so one blurred frame can't flick it open
+    b.openS += (b.open - b.openS) * Math.min(1, dt * 5);
+    const opened = Math.min(1, Math.max(0, (b.openS - 0.27) / 0.16));   // fingers apart
+    // wiggling only counts once the fingers are apart: a closed hand stays a
+    // ball however it moves
+    const wg = Math.min(1, Math.max(0, (b.wig - 0.5) / 0.6)) * Math.min(1, opened * 2.5);
+    if (wg > 0.3) b.held = now;
+    const w = b.force ? 1 : Math.max(opened, now - b.held < 500 ? Math.max(wg, 0.3 + 0.7 * wg) : wg);
+    const target = w;
+    b.split += (target - b.split) * Math.min(1, dt * (target > b.split ? 5 : 1.4));
+    for (let j = 0; j < 5; j++){ b.rel[j][0] += (b.relT[j][0] - b.rel[j][0]) * k; b.rel[j][1] += (b.relT[j][1] - b.rel[j][1]) * k; }
+    const s = b.split * b.split * (3 - 2 * b.split);
+    b.parts.forEach((p, j) => {
+      p.px = p.x; p.py = p.y;
+      // together: one bigger ball; apart: the palm goes, and each fingertip
+      // is a thin point that draws a line
+      const big = r * 1.3;
+      if (j === 0){ p.x = b.x; p.y = b.y; p.r = big * Math.pow(1 - s, 1.5); return; }
+      const [dx, dy] = b.rel[j - 1];
+      p.x = b.x + dx * SPREAD * s; p.y = b.y + dy * SPREAD * s; p.r = big * (1 - s) + r * 0.11 * s;
+    });
+    b.goo = r * 1.8 * s * (1 - s) * 4;                 // most liquid halfway
+  });
+  if (gl){
+    const fxi = h => EFFECTS.findIndex(e => e.id === S.hands[h].fx);
+    const blobU = new Float32Array(balls.flatMap(b => b.parts.flatMap(p => [p.x, p.y, p.px, p.py])));
+    const radU = new Float32Array(balls.flatMap(b => b.parts.map(p => p.r)));
+    // the trails
+    gl.useProgram(SIMP.p);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, sheets[1 - cur].f); gl.viewport(0, 0, SW, SH);
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, sheets[cur].t);
+    gl.uniform1i(SIMP.u.uPrev, 0);
+    gl.uniform2f(SIMP.u.uRes, SW, SH);
+    gl.uniform1f(SIMP.u.uAsp, asp); gl.uniform1f(SIMP.u.uTime, now / 1000);
+    gl.uniform4fv(SIMP.u["uBlob[0]"], blobU); gl.uniform1fv(SIMP.u["uBR[0]"], radU); gl.uniform2f(SIMP.u.uK, balls[0].goo, balls[1].goo);
+    gl.uniform2f(SIMP.u.uOn, balls[0].on > 0.5 ? 1 : 0, balls[1].on > 0.5 ? 1 : 0);
+    gl.uniform2f(SIMP.u.uLen, S.hands[0].len, S.hands[1].len);
+    gl.uniform2f(SIMP.u.uFx, fxi(0), fxi(1));
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    cur = 1 - cur;
+    // the picture
+    gl.useProgram(SHOWP.p);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0, 0, canvas.width, canvas.height);
+    gl.bindTexture(gl.TEXTURE_2D, sheets[cur].t);
+    gl.uniform1i(SHOWP.u.uSim, 0);
+    gl.uniform2f(SHOWP.u.uRes, canvas.width, canvas.height);
+    gl.uniform1f(SHOWP.u.uAsp, asp); gl.uniform2f(SHOWP.u.uRH, rOf(balls[0]), rOf(balls[1]));
+    gl.uniform1f(SHOWP.u.uMode, MODES.findIndex(m => m.id === S.mode));
+    gl.uniform1f(SHOWP.u.uAmt, S.amt);
+    gl.uniform4fv(SHOWP.u["uBlob[0]"], blobU); gl.uniform1fv(SHOWP.u["uBR[0]"], radU); gl.uniform2f(SHOWP.u.uK, balls[0].goo, balls[1].goo);
+    gl.uniform2f(SHOWP.u.uOn, balls[0].on, balls[1].on);
+    gl.uniform2f(SHOWP.u.uFx, fxi(0), fxi(1));
+    gl.uniform3fv(SHOWP.u["uPalA[0]"], flatPal(S.hands[0].pal));
+    gl.uniform3fv(SHOWP.u["uPalB[0]"], flatPal(S.hands[1].pal));
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  }
+  frames++;
+  if (now - fpsT > 500){ fps = Math.round(frames * 1000 / (now - fpsT)); frames = 0; fpsT = now; }
+  $("readout").textContent = landmarker ? `${handCount} hand${handCount === 1 ? "" : "s"} · ${fps} fps`
+                           : pointerOn ? `${fps} fps` : "";
+  requestAnimationFrame(loop);
+}
+if (!gl){ $("status").textContent = "This page needs WebGL2, which this browser doesn't have."; $("go").disabled = $("mouse").disabled = true; }
+resize();
+requestAnimationFrame(loop);
+</script>

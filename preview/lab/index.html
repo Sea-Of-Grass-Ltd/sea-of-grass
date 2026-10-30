@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex,nofollow">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-61Q2DRMD3H"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-61Q2DRMD3H');
+</script>
+
+<meta charset="utf-8" />
+<meta name="theme-color" content="#090909" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The Lab · Sea of Grass</title>
+<meta name="description" content="Sea of Grass is a studio exploring new technology in relation to art and design. Studies, in the open." />
+<link rel="canonical" href="https://seaofgrass.studio/lab/" />
+<link rel="icon" href="/preview/assets/favicon.svg" type="image/svg+xml" />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Sea of Grass" />
+<meta property="og:url" content="https://seaofgrass.studio/lab/" />
+<meta property="og:title" content="The Lab · Sea of Grass" />
+<meta property="og:description" content="A studio exploring new technology in relation to art and design. Studies, in the open." />
+<meta name="twitter:card" content="summary" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@700;800&family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+  /* Same paper, ink and hairline as the studies themselves.
+     One typeface across the whole site. */
+  :root{
+    --paper:#faf9f6;
+    --ink:#141311;
+    --line:#d9d6cf;
+    --ink-soft:rgba(20,19,17,.5);
+  }
+
+  *{box-sizing:border-box;}
+  html{background:var(--paper);}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"IBM Plex Mono","SFMono-Regular",Menlo,Consolas,monospace;
+    font-size:14px;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .page{
+    max-width:44rem;
+    margin:0 auto;
+    padding:clamp(3rem,10vh,7rem) clamp(1.25rem,5vw,2rem) 4rem;
+  }
+
+  /* ---------- masthead ---------- */
+
+  .mark{
+    display:block;
+    width:clamp(72px,13vw,104px);
+    height:auto;
+    color:var(--ink);
+  }
+
+  .wordmark{
+    margin:1.5rem 0 0;
+    font-size:13px;
+    font-weight:500;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+  }
+
+  .premise{
+    margin:.4rem 0 0;
+    max-width:30rem;
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+
+  /* ---------- studies ---------- */
+
+  .studies-head{
+    display:flex;
+    align-items:baseline;
+    gap:1rem;
+    margin:clamp(3.5rem,9vh,6rem) 0 0;
+    padding:0 0 .9rem;
+    border-bottom:1px solid var(--line);
+  }
+
+  h1{
+    margin:0;
+    font-size:13px;
+    font-weight:500;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+  }
+
+  .count{
+    margin:0;
+    font-size:12px;
+    color:var(--ink-soft);
+    font-variant-numeric:tabular-nums;
+  }
+
+  ol{
+    list-style:none;
+    margin:0;
+    padding:0;
+  }
+
+  li + li{border-top:1px solid var(--line);}
+
+  .study{
+    display:grid;
+    grid-template-columns:2.75rem minmax(0,1fr);
+    gap:0 1rem;
+    padding:1.35rem 0;
+    text-decoration:none;
+    color:inherit;
+    transition:color .18s ease;
+  }
+
+  .study .n{
+    font-size:12px;
+    color:var(--ink-soft);
+    font-variant-numeric:tabular-nums;
+    padding-top:.15rem;
+    transition:color .18s ease;
+  }
+
+  .study .title{
+    display:block;
+    font-size:15px;
+    font-weight:500;
+    letter-spacing:.01em;
+  }
+
+  .study .desc{
+    display:block;
+    margin-top:.3rem;
+    font-size:13px;
+    color:var(--ink-soft);
+    max-width:34rem;
+  }
+
+  .study .needs{
+    display:block;
+    margin-top:.5rem;
+    font-size:11px;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+  }
+
+  .study:hover .n,
+  .study:focus-visible .n{color:var(--ink);}
+
+  .study:focus-visible{
+    outline:1px solid var(--ink);
+    outline-offset:6px;
+  }
+
+  /* ---------- groups ---------- */
+  .group{margin-top:2.6rem;}
+  .group-head{
+    display:flex;
+    align-items:baseline;
+    gap:1rem;
+    padding:0 0 .55rem;
+    border-bottom:1px solid var(--line);
+  }
+  h2{
+    margin:0;
+    font-size:12px;
+    font-weight:500;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+  }
+  .group-note{
+    margin:.7rem 0 0;
+    max-width:30rem;
+    font-size:12px;
+    color:var(--ink-soft);
+  }
+  footer{
+    margin-top:clamp(3.5rem,9vh,6rem);
+    padding-top:1.1rem;
+    border-top:1px solid var(--line);
+    font-size:12px;
+    color:var(--ink-soft);
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{transition-duration:.01ms !important;}
+  }
+
+  /* The Lab follows the dial on the front page: each style maps onto these four tokens. */
+  html[data-theme="dusk"]{--paper:#090909;--ink:#f7f9fa;--line:rgba(247,249,250,.16);--ink-soft:rgba(247,249,250,.55)}
+  html[data-theme="glass"]{--paper:#0b1a24;--ink:#eef6f8;--line:rgba(255,255,255,.16);--ink-soft:#a9c3c9}
+  html[data-theme="neu"]{--paper:#ece7e1;--ink:#3a332c;--line:rgba(58,51,44,.14);--ink-soft:#6f655b}
+  html[data-theme="brutal"]{--paper:#FFFDF5;--ink:#000;--line:#000;--ink-soft:#1f1f1f}
+  html[data-theme="brutal"] h1,html[data-theme="brutal"] h2{font-family:Syne,"Space Grotesk",sans-serif;font-weight:800;letter-spacing:-.03em}
+  html[data-theme="brutal"] *,html[data-theme="brutal"] *::before,html[data-theme="brutal"] *::after{border-radius:0!important} /* square corners, as neubrutalism.com */
+  html[data-theme="brutal"] header{margin-top:12px;padding:12px 18px;background:#fff;border:3px solid #000;border-radius:0;box-shadow:5px 5px 0 #000}
+  html[data-theme="brutal"] header,html[data-theme="brutal"] header *{color:#111!important}
+  html[data-scheme="dusk"]{--paper:#0e0b16;--ink:#f3eefa;--line:rgba(243,238,250,.16);--ink-soft:#bcb2cf}
+  html[data-scheme="prairie"]{--paper:#f3ead2;--ink:#1f2a1a;--line:rgba(31,42,26,.16);--ink-soft:#4a543d}
+  html[data-scheme="ink"]{--paper:#f6f4ee;--ink:#121212;--line:rgba(18,18,18,.16);--ink-soft:#454545}
+  html[data-scheme="terra"]{--paper:#f2e3d5;--ink:#2b1a12;--line:rgba(43,26,18,.16);--ink-soft:#5a4337}
+  html[data-scheme="teal"]{--paper:#071b1e;--ink:#e4f5f2;--line:rgba(228,245,242,.16);--ink-soft:#a1cdc6}
+  html[data-scheme="riso"]{--paper:#fffbef;--ink:#151515;--line:rgba(21,21,21,.16);--ink-soft:#474747}
+  html[data-scheme="pastel"]{--paper:#f6f3f8;--ink:#272238;--line:rgba(39,34,56,.16);--ink-soft:#4d4664}
+  html[data-theme="simple"]{--paper:#fff;--ink:#111;--line:#111;--ink-soft:#666}
+  html[data-theme="editorial"]{--paper:#f3f1ea;--ink:#1f2a24;--line:rgba(31,42,36,.18);--ink-soft:#53605a}
+  .premise a{color:inherit}
+/* "Your colour": the chip that follows the visitor, and the hue ring it opens */
+.yours{position:fixed;z-index:30;right:max(18px,env(safe-area-inset-right,0px));bottom:max(18px,env(safe-area-inset-bottom,0px))}
+.yours[hidden]{display:none}
+.yours .yb{display:flex;align-items:center;gap:10px;padding:6px 14px 6px 6px;border-radius:999px;background:rgba(9,9,9,.82);border:1px solid rgba(255,255,255,.2);color:#f2f2f2;font:400 11px/1 "IBM Plex Mono",Menlo,monospace;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
+.yours .yb i{width:26px;height:26px;border-radius:50%;background:var(--yc,#c47aff);box-shadow:inset 0 0 0 2px rgba(255,255,255,.6)}
+.yours .pop{position:absolute;right:0;bottom:calc(100% + 10px);padding:14px;border-radius:16px;background:rgba(9,9,9,.9);border:1px solid rgba(255,255,255,.2)}
+.yours.dot{position:relative;right:auto;bottom:auto}.yours.dot .yb{padding:0;background:none;border:0}.yours.dot .yb span{display:none}
+.yours.dot .pop{bottom:auto;top:calc(100% + 10px)}
+.huering{display:grid;justify-items:center;gap:10px}
+.huering .wheel{width:132px;height:132px;border-radius:50%;position:relative;cursor:crosshair;touch-action:none;background:conic-gradient(hsl(0 80% 55%),hsl(60 80% 55%),hsl(120 80% 55%),hsl(180 80% 55%),hsl(240 80% 55%),hsl(300 80% 55%),hsl(360 80% 55%));
+  -webkit-mask:radial-gradient(circle,transparent 0 44px,#000 45px);mask:radial-gradient(circle,transparent 0 44px,#000 45px)}
+.huering .wheel i{position:absolute;left:50%;top:0;width:4px;height:22px;margin-left:-2px;background:#fff;box-shadow:0 0 0 1px #000;transform-origin:2px 66px}
+.huering .clear{font:400 11px/1 "IBM Plex Mono",Menlo,monospace;letter-spacing:.14em;text-transform:uppercase;color:#f2f2f2;background:none;border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:7px 12px;cursor:pointer}
+</style>
+<script>
+(function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#090909',glass:'#0b1a24',neu:'#ece7e1',brutal:'#FFFDF5',simple:'#ffffff',editorial:'#f3f1ea'};
+function get(){try{var v=localStorage.getItem(K);return OK[v]?v:'dusk';}catch(e){return 'dusk';}}
+function apply(t){if(!OK[t])t='dusk';var r=document.documentElement;if(r.getAttribute('data-theme')===t)return;r.setAttribute('data-theme',t);
+  var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',BG[t]);
+  document.dispatchEvent(new CustomEvent('sog-theme',{detail:t}));}
+window.sogTheme={get:get,apply:apply,set:function(t){try{localStorage.setItem(K,t);}catch(e){}apply(t);}};
+apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValue);});})();
+(function(){var K='sog-scheme',OK={"dusk": 1, "prairie": 1, "ink": 1, "terra": 1, "pastel": 1, "teal": 1, "riso": 1};function get(){try{var v=localStorage.getItem(K);return OK[v]?v:'own';}catch(e){return 'own';}}
+function apply(s){if(!OK[s])s='own';var r=document.documentElement;if((r.getAttribute('data-scheme')||'own')===s)return;
+  if(s==='own')r.removeAttribute('data-scheme');else r.setAttribute('data-scheme',s);document.dispatchEvent(new CustomEvent('sog-scheme',{detail:s}));}
+window.sogScheme={get:get,apply:apply,set:function(s){try{localStorage.setItem(K,s);}catch(e){}apply(s);}};
+apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValue);});})();
+</script>
+</head>
+<body>
+
+<div class="page">
+
+  <header>
+    <a href="/preview/" aria-label="Sea of Grass, home" style="color:inherit"><svg class="mark" viewBox="43.63 44.56 350.94 258.56" fill="currentColor" role="img" aria-label="Sea of Grass">
+      <path d="M 60.1360,299.5890 C 40.8560,283.5000 37.9720,248.8600 54.1230,229.1250 C 61.9590,219.4780 73.2066,213.0913 85.9080,212.4050 L 279.9170,212.3880 C 292.7328,211.6894 302.2259,200.5242 302.6140,188.1740 C 303.0171,175.3461 294.1087,163.3937 280.9850,162.4350 L 160.3860,162.3770 C 155.6830,162.3750 152.4580,158.1300 152.2660,154.1930 C 152.0640,150.0420 155.5000,145.5160 160.3230,145.5160 L 323.2740,145.5180 C 363.5090,146.7569 394.2264,180.5210 394.5670,220.2810 C 394.9023,259.4236 360.4620,297.7100 320.2520,299.1580 C 320.2520,299.1580 69.9310,307.7640 60.1360,299.5890 Z"/>
+      <path d="M 365.1390,47.9780 C 360.1170,47.5130 354.1470,47.1080 347.4230,46.7550 C 274.7440,42.9430 114.0820,45.2510 114.0820,45.2510 C 73.9994,46.9759 43.7290,80.8860 43.6260,120.3040 C 43.5230,159.4680 73.5199,193.9418 113.3820,195.4730 L 277.3270,195.8440 C 282.2870,195.8440 285.7460,192.0070 285.9600,187.6500 C 286.1670,183.4310 282.8680,178.9500 277.9760,178.9480 L 158.2750,178.9140 C 145.3037,178.2644 135.8119,166.8014 135.6040,154.2420 C 135.3960,141.6768 144.3477,129.9059 157.2620,128.9900 L 350.1640,128.8050 C 352.3160,128.8030 354.4280,128.6110 356.4990,128.2740 C 366.7370,126.6070 375.8830,121.0490 382.8160,113.4590 C 390.0330,105.5580 394.4238,95.7293 394.5320,85.6870 C 394.7250,67.7708 381.6430,52.8390 365.1390,47.9780 Z"/>
+      <circle cx="357.983" cy="86.686" r="36.548"/>
+    </svg></a>
+    <p class="wordmark">Sea of Grass</p>
+    <p class="premise">The Lab: studies in new technology, art and design, made in the open. <a href="/preview/reel/">The reel</a> &middot; <a href="/preview/">&larr; Sea of Grass</a> &middot; <a href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a meeting</a></p>
+  </header>
+
+  <main>
+    <div class="studies-head">
+      <h1>Studies</h1>
+      <p class="count">16</p>
+    </div>
+    <section class="group" aria-labelledby="g-fantasmagoria">
+      <div class="group-head">
+        <h2 id="g-fantasmagoria">For Fantasmagoria</h2>
+        <p class="count">09</p>
+      </div>
+      <p class="group-note">Tools for a live-theatre animation piece in progress: shape, colour and time on one street, worked by hand.</p>
+      <ol>
+        <li>
+          <a class="study" href="/preview/studies/looking-glass/">
+            <span class="n">03</span>
+            <span>
+              <span class="title">Through The Looking Glass</span>
+              <span class="desc">A capture station for a live performance. The glass takes a face from five angles and wraps them onto one shared head — the same geometry for everybody, made particular by skin alone. Nothing leaves the tab.</span>
+              <span class="needs">camera &middot; nothing leaves your browser</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a class="study" href="/preview/studies/touch-grass/">
+            <span class="n">07</span>
+            <span>
+              <span class="title">Touch Grass</span>
+              <span class="desc">A field of grass you move with your hands. The webcam follows your fingertips and they sweep through the blades like wind: a quick pass makes a gust, a still hand parts the grass around it. Nothing leaves the tab.</span>
+              <span class="needs">camera or mouse &middot; nothing leaves your browser</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a class="study" href="/preview/studies/murmuration/">
+            <span class="n">08</span>
+            <span>
+              <span class="title">Murmuration</span>
+              <span class="desc">An attempt at a quick AI effect driven by hand motion: trails from your fingertips, redrawn as birds by an image model. On a 2020 M1 laptop it manages one image a second and looks bad. Notes on why.</span>
+              <span class="needs">case study &middot; a documented failure</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a class="study" href="/preview/studies/dark-puddle/">
+            <span class="n">09</span>
+            <span>
+              <span class="title">Dark Puddle</span>
+              <span class="desc">Your recently viewed websites, laid out as a map and fed into a portal that eats them: newest sites crisp at the top, older ones dripping, tearing and spiralling into a black eye you can steer. Your history stays in the tab.</span>
+              <span class="needs">your history file or a sample &middot; move to steer</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a class="study" href="/preview/studies/fever/">
+            <span class="n">10</span>
+            <span>
+              <span class="title">Fever</span>
+              <span class="desc">The picture-treating tool from Fantasmagoria, on its own. It opens on an endless pastel suburb: press Fever and cast a spell on it, on all of it or only the things you pick &mdash; the pink houses, the lamps, the lawn. Cyclone wrings what it passes into a black eye, Shatter breaks it into bricks, boards and turf, Liquify ripples it, melts it and sets it crawling.</span>
+              <span class="needs">pointer to steer &middot; click to pick</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a class="study" href="/preview/studies/make-up/">
+            <span class="n">11</span>
+            <span>
+              <span class="title">Make-Up</span>
+              <span class="desc">Fever's sister, for how things look. The same endless suburb under a layers panel, as in an image editor: stack hand-made looks &mdash; pencil, scribble, chalk, watercolour, spray, ink, neon, riso print and more, each made of thousands of marks laid along the street's shapes &mdash; and a LUT colour grade, each with a blend mode, a mask and its own motion.</span>
+              <span class="needs">click things to mask a layer</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a class="study" href="/preview/studies/stutter/">
+            <span class="n">12</span>
+            <span>
+              <span class="title">Stutter</span>
+              <span class="desc">The third of Fantasmagoria's tools, after Fever (shape) and Make-Up (colour): time. Two houses on the same street, one either side; give each its own motion, stutter, echoes and reverb, in time with a tempo, and drag a curve to fade the echoes.</span>
+              <span class="needs">pick the left or right house</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a class="study" href="/preview/studies/afterglow/">
+            <span class="n">13</span>
+            <span>
+              <span class="title">Afterglow</span>
+              <span class="desc">Two balls on a white page, one for each hand. The webcam follows your palms and each ball leaks a trail of colour &mdash; a smear, smoke, drips or ripples, in a palette of its own &mdash; and where the two trails meet, their colours blend. Nothing leaves the tab.</span>
+              <span class="needs">camera, mouse or touch &middot; nothing leaves your browser</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a class="study" href="/preview/studies/cat-head/">
+            <span class="n">14</span>
+            <span>
+              <span class="title">Cat Head, Part One: Modelling</span>
+              <span class="desc">A cat head for Alexithymia, modelled by thirty-two small AI sessions instead of one long one. Each works from a single card, the folder is the only memory, and a person decides at every stop.</span>
+              <span class="needs">process notes &middot; Blender &middot; AI agents</span>
+            </span>
+          </a>
+        </li>
+      </ol>
+    </section>
+    <section class="group" aria-labelledby="g-theories">
+      <div class="group-head">
+        <h2 id="g-theories">Design Theories</h2>
+        <p class="count">06</p>
+      </div>
+      <p class="group-note">Websites that behave like instruments instead of pages: you play them.</p>
+      <ol>
+        <li>
+          <a class="study" href="/preview/studies/scrollwork/">
+            <span class="n">01</span>
+            <span>
+              <span class="title">Scrollwork</span>
+              <span class="desc">A generative radial pattern, built from nested SVG primitives, that reshapes continuously as you scroll.</span>
+              <span class="needs">scroll</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a class="study" href="/preview/studies/front-door/">
+            <span class="n">02</span>
+            <span>
+              <span class="title">Front Door</span>
+              <span class="desc">tristan.design opens on a sixteen-mode visual synthesizer instead of a portfolio grid. A wordmark with two million states, and a choice that follows you across the site.</span>
+              <span class="needs">case study &middot; embeds the live site</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a class="study" href="/preview/studies/beacon/">
+            <span class="n">05</span>
+            <span>
+              <span class="title">Beacon</span>
+              <span class="desc">A street on a very small planet. Scroll to travel down it as the sun sets and a beacon rises to light the town; move across the frame and the camera rolls.</span>
+              <span class="needs">scroll &middot; move the cursor</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a class="study" href="/preview/studies/grasset/">
+            <span class="n">06</span>
+            <span>
+              <span class="title">Grasset</span>
+              <span class="desc">A calendar plate after Eugène Grasset, rebuilt as an instrument. Every panel plays: two visual synths, borders, tiles and rosettes, around 3D plants that turn through the four seasons.</span>
+              <span class="needs">click anything &middot; season slider &middot; microphone optional</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a class="study" href="/preview/studies/prelude-packing/">
+            <span class="n">15</span>
+            <span>
+              <span class="title">Prelude Packing</span>
+              <span class="desc">Bach&rsquo;s C major Prelude cuts the page into rectangles. The music decides every split, how deep it goes and what fills it, and every cut is a rung of the &radic;3 ladder; small shapes move in time with the bars and the bar now playing is outlined. A bigger window divides deeper.</span>
+              <span class="needs">resize the window &middot; space to pause</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a class="study" href="/preview/studies/sog-redesign/">
+            <span class="n">16</span>
+            <span>
+              <span class="title">Beacon Home</span>
+              <span class="desc">An earlier front page for the studio: Beacon&rsquo;s tiny planet without its buildings, opened by the Grass Cut, with the studio&rsquo;s places as stops along the road. Kept as a study after the site moved on.</span>
+              <span class="needs">scroll &middot; move the cursor</span>
+            </span>
+          </a>
+        </li>
+      </ol>
+    </section>
+    <section class="group" aria-labelledby="g-other">
+      <div class="group-head">
+        <h2 id="g-other">Other</h2>
+        <p class="count">01</p>
+      </div>
+      <p class="group-note">Everything else.</p>
+      <ol>
+        <li>
+          <a class="study" href="/preview/studies/packfold/">
+            <span class="n">04</span>
+            <span>
+              <span class="title">Packfold</span>
+              <span class="desc">A folding carton built out of ordinary page elements, with no 3D library. The same numbers that fold it on screen write out a two-layer CAD dieline a flatbed cutter will accept.</span>
+              <span class="needs">fold it &middot; exports a real .dxf</span>
+            </span>
+          </a>
+        </li>
+      </ol>
+    </section>
+  </main>
+
+  <footer>
+    Tristan Brewer &amp; Bryce Nielsen
+  </footer>
+
+</div>
+
+<script>
+(function(){ // "Your colour": the visitor's hue retints each style's accents on every page, remembered like the dials.
+// Each accent keeps the lightness nearest its own that still reads against what it sits on (4.5:1), so nothing loses contrast.
+var K='sog-colour',ACC={dusk:[['--violet','--on-accent'],['--accent2','--on-accent'],['--lav','--bg']],glass:[['--violet','--on-accent'],['--accent2','--on-accent'],['--lav','--bg']],
+  neu:[['--on-accent','--bg',5.4],['--lav','--bg']],brutal:[['--nb-y','#000'],['--lav','--bg']],simple:[['--violet','--on-accent'],['--accent2','--on-accent'],['--lav','--bg']],editorial:[['--lav','--bg']]},
+  ALL=['--violet','--accent2','--lav','--on-accent','--nb-y'],R=document.documentElement,base=0;
+function rgb(t){t=(t||'').trim();var m=t.match(/^#([0-9a-f]{3,8})$/i);if(m){var h=m[1];if(h.length<6)h=h.replace(/./g,'$&$&');return [0,2,4].map(function(i){return parseInt(h.substr(i,2),16);});}
+  m=t.match(/^rgba?\(([^)]+)\)/);return m?m[1].split(',').slice(0,3).map(parseFloat):null;}
+function lum(c){return c.reduce(function(s,v,i){v/=255;v=v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4);return s+v*[.2126,.7152,.0722][i];},0);}
+function ratio(a,b){var x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05);}
+function hsl(h,s,l){var f=function(n){var k=(n+h/30)%12,a=s*Math.min(l,1-l);return Math.round(255*(l-a*Math.max(-1,Math.min(k-3,9-k,1))));};return [f(0),f(8),f(4)];}
+function light(c){var mx=Math.max.apply(0,c)/255,mn=Math.min.apply(0,c)/255;return (mx+mn)/2;}
+function hueOf(c){var r=c[0]/255,g=c[1]/255,b=c[2]/255,mx=Math.max(r,g,b),mn=Math.min(r,g,b),d=mx-mn;if(!d)return 0;var h=mx===r?((g-b)/d)%6:mx===g?(b-r)/d+2:(r-g)/d+4;return (h*60+360)%360;}
+function get(){try{var v=JSON.parse(localStorage.getItem(K)||'null');return v&&v.h>=0&&v.h<360?v:null;}catch(e){return null;}}
+function apply(v){ALL.forEach(function(p){R.style.removeProperty(p);});var t=R.getAttribute('data-theme')||'dusk',cs=getComputedStyle(R),own=rgb(cs.getPropertyValue('--violet'));base=own?hueOf(own):0;
+  if(v)(ACC[t]||[]).forEach(function(pr){var o=rgb(cs.getPropertyValue(pr[0])),bg=rgb(pr[1].charAt(0)==='#'?pr[1]:cs.getPropertyValue(pr[1]));if(!o||!bg)return;
+    var l0=light(o),s=v.s||.7,best=null;for(var d=0;d<=1&&!best;d+=.01)[l0-d,l0+d].forEach(function(l){if(best||l<0||l>1)return;var c=hsl(v.h,s,l);if(ratio(c,bg)>=(pr[2]||4.5))best=c;});
+    if(best)R.style.setProperty(pr[0],'rgb('+best.join(',')+')');});
+  document.dispatchEvent(new CustomEvent('sog-colour',{detail:v}));}
+window.sogColour={get:get,set:function(h,s){var v={h:Math.round((h%360+360)%360),s:s==null?(get()||{}).s||.7:s};try{localStorage.setItem(K,JSON.stringify(v));}catch(e){}apply(v);},
+  clear:function(){try{localStorage.removeItem(K);}catch(e){}apply(null);},skyShift:function(){var v=get();return v?v.h-base:0;}};
+document.addEventListener('sog-theme',function(){apply(get());});document.addEventListener('sog-scheme',function(){apply(get());});
+addEventListener('storage',function(e){if(e.key===K)apply(get());});apply(get());})();
+</script>
+<script>
+(()=>{ // the hue ring (shared with Find Your Style) and the "Your colour" chip that follows the visitor from page to page
+function ring(onPick){const el=document.createElement('div');el.className='huering';el.innerHTML='<div class="wheel" role="slider" tabindex="0" aria-label="Your colour, hue" aria-valuemin="0" aria-valuemax="359"><i></i></div><button type="button" class="clear">Clear</button>';
+  const wh=el.querySelector('.wheel'),th=wh.querySelector('i');
+  const show=()=>{const v=window.sogColour.get(),h=v?v.h:0;th.style.transform=`rotate(${h}deg)`;wh.setAttribute('aria-valuenow',h);wh.setAttribute('aria-valuetext',v?`hue ${h}`:'none');th.hidden=!v;};
+  const at=e=>{const r=wh.getBoundingClientRect();return Math.atan2(e.clientX-(r.left+r.width/2),-(e.clientY-(r.top+r.height/2)))*180/Math.PI;};
+  let drag=false;wh.addEventListener('pointerdown',e=>{drag=true;wh.setPointerCapture(e.pointerId);window.sogColour.set(at(e));onPick&&onPick();});
+  wh.addEventListener('pointermove',e=>{if(drag)window.sogColour.set(at(e));});wh.addEventListener('pointerup',()=>{drag=false;});
+  wh.addEventListener('keydown',e=>{const m={ArrowRight:5,ArrowUp:5,ArrowLeft:-5,ArrowDown:-5}[e.key];if(m){e.preventDefault();const v=window.sogColour.get();window.sogColour.set((v?v.h:0)+m);onPick&&onPick();}});
+  el.querySelector('.clear').addEventListener('click',()=>window.sogColour.clear());
+  document.addEventListener('sog-colour',show);show();return el;}
+window.sogColourRing=ring;
+const chip=document.createElement('div');chip.className='yours';
+chip.innerHTML='<button type="button" class="yb" aria-expanded="false" aria-label="Your colour"><i aria-hidden="true"></i><span aria-hidden="true">Your colour</span></button><div class="pop" hidden></div>';
+const btn=chip.querySelector('.yb'),pop=chip.querySelector('.pop');pop.appendChild(ring());
+btn.addEventListener('click',()=>{const o=pop.hidden;pop.hidden=!o;btn.setAttribute('aria-expanded',String(o));});
+document.addEventListener('click',e=>{if(!chip.contains(e.target)&&!pop.hidden){pop.hidden=true;btn.setAttribute('aria-expanded','false');}});
+const phone=matchMedia('(max-width:560px)');
+function place(){const nav=document.querySelector('header nav');if(phone.matches&&nav){chip.classList.add('dot');nav.insertBefore(chip,nav.querySelector('.book'));}else{chip.classList.remove('dot');document.body.appendChild(chip);}}
+function show(){const v=window.sogColour.get();chip.hidden=!v;if(v)chip.style.setProperty('--yc',`hsl(${v.h} ${Math.round((v.s||.7)*100)}% 55%)`);else{pop.hidden=true;}}
+phone.addEventListener('change',place);document.addEventListener('sog-colour',show);place();show();
+})();
+</script>
+</body>
+</html>
