@@ -3,7 +3,7 @@
 <head>
 <meta name="robots" content="noindex,nofollow">
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-61Q2DRMD3H"></script>
+<script>/* analytics waits until the page has loaded and gone idle, so it never competes with the first view */addEventListener('load',function(){var go=function(){var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-61Q2DRMD3H';document.head.appendChild(s);};'requestIdleCallback' in window?requestIdleCallback(go,{timeout:4000}):setTimeout(go,2000);});</script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -19,7 +19,6 @@
 <link rel="icon" href="/preview/assets/favicon.svg" type="image/svg+xml" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400&family=Archivo+Black&family=Courier+Prime:ital,wght@0,400;0,700;1,700&family=Syne:wght@700;800&family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
 /* the front page's dusk style: near-black, one violet signal, bold sans headings with one serif-italic word, mono labels */
 :root{--bg:#090909;--fg:#f7f9fa;--soft:#b4b4b8;--steel:#828384;--rule:rgba(247,249,250,.14);--violet:#9440ea;--lav:#e1bdff;
@@ -279,6 +278,7 @@ html[data-theme="glass"] .steps2{gap:14px}html[data-theme="glass"] .steps2::befo
 .slot path{fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .slot .sid{position:absolute;left:12px;top:10px;right:12px;font:400 10px/1.3 var(--mono,monospace);letter-spacing:.16em;text-transform:uppercase;color:#686e74}
 .slotcap{font:400 12.5px/1.45 var(--mono,monospace);color:var(--soft);max-width:60ch}
+html:not(.draft) .slotcap{display:none} /* what goes in each picture: shown with ?draft, and in the slot list */
 html[data-theme="brutal"] .slot{border:3px solid #000;box-shadow:none;border-radius:0;background:#fff}
 html[data-theme="glass"] .slot{border:1px solid rgba(255,255,255,.25)}
 
@@ -287,7 +287,9 @@ html[data-theme="glass"] .slot{border:1px solid rgba(255,255,255,.25)}
 <script>
 (function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#090909',glass:'#0b1a24',neu:'#ece7e1',brutal:'#FFFDF5',simple:'#ffffff',editorial:'#f3f1ea'};
 function get(){try{var v=localStorage.getItem(K);return OK[v]?v:'dusk';}catch(e){return 'dusk';}}
-function apply(t){if(!OK[t])t='dusk';var r=document.documentElement;if(r.getAttribute('data-theme')===t)return;r.setAttribute('data-theme',t);
+var FONT={"dusk": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "glass": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Inter+Tight:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "neu": "https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "brutal": "https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap", "simple": "https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Inter+Tight:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap", "editorial": "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter+Tight:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap", "letters": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Cormorant+Garamond:wght@300&family=Anybody:wdth,wght@125,800&family=Syne:wght@800&family=Inter+Tight:wght@300;700&family=IBM+Plex+Mono:wght@400;500&display=swap"};function font(k){if(!FONT[k]||document.getElementById('sog-f-'+k))return;var l=document.createElement('link');l.rel='stylesheet';l.id='sog-f-'+k;l.href=FONT[k];document.head.appendChild(l);}
+window.sogFonts={letters:function(){font('letters');}};
+function apply(t){if(!OK[t])t='dusk';font(t);var r=document.documentElement;if(r.getAttribute('data-theme')===t)return;r.setAttribute('data-theme',t);
   var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',BG[t]);
   document.dispatchEvent(new CustomEvent('sog-theme',{detail:t}));}
 window.sogTheme={get:get,apply:apply,set:function(t){try{localStorage.setItem(K,t);}catch(e){}apply(t);}};
@@ -341,6 +343,7 @@ window.sogColour={get:get,set:function(h,s){var v={h:Math.round((h%360+360)%360)
 document.addEventListener('sog-theme',apply);document.addEventListener('sog-scheme',apply);
 addEventListener('storage',function(e){if(e.key===K)apply();});apply();if(D.on||D.hue)run();})();
 </script>
+<script>if(/[?&]draft\b/.test(location.search))document.documentElement.classList.add('draft');</script>
 </head>
 <body>
 <div class="wrap">

@@ -3,7 +3,7 @@
 <head>
 <meta name="robots" content="noindex,nofollow">
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-61Q2DRMD3H"></script>
+<script>/* analytics waits until the page has loaded and gone idle, so it never competes with the first view */addEventListener('load',function(){var go=function(){var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-61Q2DRMD3H';document.head.appendChild(s);};'requestIdleCallback' in window?requestIdleCallback(go,{timeout:4000}):setTimeout(go,2000);});</script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -24,7 +24,7 @@
 <link rel="icon" href="/preview/assets/favicon.svg" type="image/svg+xml" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,400&family=Anybody:wdth,wght@125,800&family=Inter:wght@200;300;400;500;600;700&family=Space+Grotesk:wght@500;700&family=Archivo+Black&family=Courier+Prime:ital,wght@0,400;0,700;1,700&family=Syne:wght@700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
 <style>
 /* Dusk (after dope.security) is the default: near-black, one violet signal, painterly dusk sky.
    Paper and Prairie swap the same tokens. Type has three voices in one line: a thin sans for quiet words,
@@ -189,6 +189,7 @@ header.bar.wrap{max-width:none;padding-left:max(var(--edge),env(safe-area-inset-
 .hero::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,color-mix(in srgb,var(--scrim,var(--bg)) 55%,transparent) 0,transparent 62%)}
 html[data-theme="brutal"] .hero::before{display:none}
 html:not([data-theme="brutal"]) .hero h1 em{color:color-mix(in srgb,var(--lav) 60%,var(--fg))}
+html[data-theme="glass"] .hero h1 em{color:color-mix(in srgb,var(--lav) 15%,var(--fg))} /* glass sits on a bright photographic sky: the accent word leans to white */
 html:not([data-theme="brutal"]) .hero .label{color:var(--fg2)}
 html[data-theme="glass"]:not([data-scheme]) .hero .label{display:inline-block;background:rgba(6,18,26,.58);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:4px;padding:5px 8px}
 html[data-theme="glass"]:not([data-scheme]) .hero p.lede{background:rgba(6,18,26,.58);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:12px 16px}
@@ -246,6 +247,7 @@ html:not([data-theme="brutal"]) .hero[data-sky="night"]{--fg:#f6f2ea;--fg2:#e6e1
 .slot path{fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .slot .sid{position:absolute;left:12px;top:10px;right:12px;font:400 10px/1.3 var(--mono,monospace);letter-spacing:.16em;text-transform:uppercase;color:#686e74}
 .slotcap{font:400 12.5px/1.45 var(--mono,monospace);color:var(--soft);max-width:60ch}
+html:not(.draft) .slotcap{display:none} /* what goes in each picture: shown with ?draft, and in the slot list */
 html[data-theme="brutal"] .slot{border:3px solid #000;border-radius:0;box-shadow:none;background:#fff}
 html[data-theme="glass"] .slot{border:1px solid rgba(255,255,255,.25)}
 
@@ -317,6 +319,7 @@ section.s{padding-block:var(--gap) 0}
 .case dl{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:4px 0 0;font-size:15.5px}
 .case dt{font:400 11px/1.9 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--steel)}
 .case dd{margin:0;color:var(--soft)}
+.case .one{margin:0;color:var(--soft);font-size:16px}
 
 .steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));list-style:none;margin:0;padding:0;position:relative;counter-reset:none}
 .steps::before{content:"";position:absolute;left:0;right:0;top:6px;height:1px;background:var(--rule)} /* the line joining the steps */
@@ -393,7 +396,9 @@ footer.cols a{border:0;color:var(--soft)}footer.cols a:hover{color:var(--fg)}foo
   .hero .copy{top:auto;bottom:max(24px,env(safe-area-inset-bottom,0px))}
   .hero .copy .in{max-width:none}
   .hero .copy .in{background:var(--panel);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--rule);border-radius:19px;padding:18px 16px 20px;margin-left:-6px;margin-right:-6px}
-  .hero p.lede{font-size:16px}
+  .hero p.lede{font-size:16px;margin-bottom:18px}
+  html:not([data-theme="brutal"]) .hero .beat1 h1{font-size:clamp(30px,8.4vw,36px);margin:10px 0 12px}
+  .hero .beat1 .label{letter-spacing:.12em;white-space:nowrap}
   .wx{top:max(76px,env(safe-area-inset-top,0px));bottom:auto;font-size:10px}
   .scrollcue{display:none}
   .dials{grid-template-columns:1fr}.dial{width:min(260px,70vw)}
@@ -533,29 +538,12 @@ html[data-theme="brutal"] .dial .lbl{fill:#333}html[data-theme="brutal"] .dial .
   html[data-theme="brutal"] .hero{--wh:24svh}
   html[data-theme="brutal"] .hero .beat2 .dialbox{padding:12px;row-gap:4px}html[data-theme="brutal"] .hero .beat2 .dials>.dialbox{padding:6px 12px 6px;gap:6px}
   html[data-theme="brutal"] .hero .beat2 .dial{width:min(80px,22vw)}html[data-theme="brutal"] .hero .beat2 .dial-both{font-size:16px;margin-top:4px}
-  html[data-theme="brutal"] .hero .fx,html[data-theme="brutal"] .hero .swell{padding-top:8px;gap:6px 10px}html[data-theme="brutal"] .hero .fx .chip i{width:32px;height:32px}
+  html[data-theme="brutal"] .hero .fxhtml[data-theme="brutal"] .hero .fx .chip i{width:32px;height:32px}
   .hero .beat2 .dial-credit{font-size:13.5px}
   html[data-theme="brutal"] .hero .beat2 .dialbox{padding:var(--s1)}
   html[data-theme="brutal"] .hero .beat2 .dials{padding-inline:0;gap:12px}
   html[data-theme="brutal"] .hero .beat2 .dials>.dialbox{padding:10px 18px 8px}
 }
-/* the Swell: the waves in the grass, the site's name made literal; a slider under the dials, ahead of the effects */
-.hero .swell{grid-column:1/-1;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--s1);width:100%;border-top:1px solid var(--rule);padding-top:var(--s1)}
-.hero .swell .cap{margin:0;font:400 11px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--fg2)}
-.hero .swell output{font:400 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--fg);white-space:nowrap}
-.hero .swell input{--p:.35;-webkit-appearance:none;appearance:none;width:100%;height:28px;background:none;margin:0;cursor:pointer;touch-action:pan-y}
-.hero .swell input::-webkit-slider-runnable-track{height:12px;border-radius:6px;background:linear-gradient(90deg,var(--lav) calc(var(--p) * 100%),transparent 0),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='12'%3E%3Cpath d='M0 6q6-6 12 0t12 0' fill='none' stroke='%23888' stroke-width='1.6'/%3E%3C/svg%3E") repeat-x center/24px 12px}
-.hero .swell input::-moz-range-track{height:12px;border-radius:6px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='12'%3E%3Cpath d='M0 6q6-6 12 0t12 0' fill='none' stroke='%23888' stroke-width='1.6'/%3E%3C/svg%3E") repeat-x center/24px 12px}
-.hero .swell input::-moz-range-progress{height:12px;border-radius:6px;background:var(--lav)}
-.hero .swell input::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;margin-top:-5px;border-radius:50%;background:var(--fg);border:3px solid var(--panel-ground,#111)}
-.hero .swell input::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--fg);border:3px solid var(--panel-ground,#111)}
-html[data-theme="brutal"] .hero .swell{border-top:3px solid #000}html[data-theme="brutal"] .hero .swell :is(.cap,output){color:#000}
-html[data-theme="brutal"] .hero .swell input::-webkit-slider-runnable-track{border-radius:0;border:2px solid #000;background-color:#fff}
-html[data-theme="brutal"] .hero .swell input::-webkit-slider-thumb{border-radius:0;background:var(--nb-y);border:3px solid #000;box-shadow:3px 3px 0 #000;margin-top:-7px}
-html[data-theme="neu"] .hero .swell input::-webkit-slider-runnable-track{box-shadow:inset 2px 2px 4px var(--neu-dark,#c3c8d1),inset -2px -2px 4px var(--neu-light,#fff)}
-html[data-theme="neu"] .hero .swell input::-webkit-slider-thumb{border:0;background:var(--bg);box-shadow:3px 3px 6px var(--neu-dark,#c3c8d1),-3px -3px 6px var(--neu-light,#fff)}
-html[data-theme="simple"] .hero .swell input::-webkit-slider-thumb,html[data-theme="editorial"] .hero .swell input::-webkit-slider-thumb{border-radius:0}
-@media (max-width:560px){.hero .swell{gap:10px}.hero .swell output{font-size:10px}.hero .swell .lw{display:none}}
 /* the Effects row under the dials: five swatches that show what they do, one Amount knob, Reset; Color's ring opens over the dials */
 .hero .fx{grid-column:1/-1;position:relative;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:var(--s1) var(--s2);border-top:1px solid var(--rule);padding-top:var(--s1);margin-top:var(--s0);width:100%}
 .hero .fx .cap{margin:0;font:400 11px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--fg2)}
@@ -615,7 +603,9 @@ html[data-theme="glass"] .hero .fx .chip i{box-shadow:inset 0 0 0 1px rgba(255,2
 <script>
 (function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#090909',glass:'#0b1a24',neu:'#ece7e1',brutal:'#FFFDF5',simple:'#ffffff',editorial:'#f3f1ea'};
 function get(){try{var v=localStorage.getItem(K);return OK[v]?v:'dusk';}catch(e){return 'dusk';}}
-function apply(t){if(!OK[t])t='dusk';var r=document.documentElement;if(r.getAttribute('data-theme')===t)return;r.setAttribute('data-theme',t);
+var FONT={"dusk": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "glass": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Inter+Tight:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "neu": "https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "brutal": "https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap", "simple": "https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Inter+Tight:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap", "editorial": "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter+Tight:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap", "letters": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Cormorant+Garamond:wght@300&family=Anybody:wdth,wght@125,800&family=Syne:wght@800&family=Inter+Tight:wght@300;700&family=IBM+Plex+Mono:wght@400;500&display=swap"};function font(k){if(!FONT[k]||document.getElementById('sog-f-'+k))return;var l=document.createElement('link');l.rel='stylesheet';l.id='sog-f-'+k;l.href=FONT[k];document.head.appendChild(l);}
+window.sogFonts={letters:function(){font('letters');}};
+function apply(t){if(!OK[t])t='dusk';font(t);var r=document.documentElement;if(r.getAttribute('data-theme')===t)return;r.setAttribute('data-theme',t);
   var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',BG[t]);
   document.dispatchEvent(new CustomEvent('sog-theme',{detail:t}));}
 window.sogTheme={get:get,apply:apply,set:function(t){try{localStorage.setItem(K,t);}catch(e){}apply(t);}};
@@ -683,19 +673,19 @@ addEventListener('storage',function(e){if(e.key===K)apply();});apply();if(D.on||
 <main id="top">
   <div class="pin" id="pin">
   <section class="hero" id="hero" aria-label="Introduction">
-    <div class="winbox" aria-hidden="true"><div class="tb"><span>Berthoud, CO · live</span></div></div>
+    <div class="winbox" aria-hidden="true"><div class="tb"><span>Live sky</span></div></div>
     <canvas id="cv" aria-label="The Sea of Grass mark over a field of grass; a gust of grass cuts it apart. The grass bends under your pointer or finger."></canvas>
     <div class="copy wrap beat beat1"><div class="in">
-      <p class="label">Creative studio &middot; Berthoud, Colorado</p>
+      <p class="label">Creative studio &middot; Front Range</p>
       <h1><span class="t">A</span> <b>design</b> <em>and</em> <b>technology</b> <span class="t">studio</span> <em>for the</em> <b>Front Range.</b></h1>
-      <p class="lede">Websites and hosting, branding, and creative technology for the businesses around us, made by two people in Berthoud, Colorado.</p>
+      <p class="lede">Websites, brands and creative technology for local businesses.</p>
       <div class="acts"><a class="ghost" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a meeting &rarr;</a><a class="ghost q" href="#work">See the work</a></div>
-      <nav class="tiles" aria-label="Shortcuts"><button class="tile t-tog" type="button" aria-pressed="false" aria-label="Show tonight’s sky over Berthoud"><i></i><i class="on"></i><span class="tl">Tonight</span></button><a class="tile t-love" href="#work" aria-label="See the work"><svg aria-hidden="true" width="48" height="44" viewBox="0 0 24 22"><path d="M12 20.5S2.5 14.6 2.5 7.9A4.9 4.9 0 0 1 12 5.6a4.9 4.9 0 0 1 9.5 2.3c0 6.7-9.5 12.6-9.5 12.6z" fill="#FFD23F" stroke="#000" stroke-width="2" stroke-linejoin="round"/></svg><span class="tl">Work</span></a><a class="tile t-burst" href="#style" aria-label="Find your style"><svg aria-hidden="true" width="62" height="62" viewBox="0 0 80 80"><polygon points="40.0,6.0 45.7,18.7 57.0,10.6 55.6,24.4 69.4,23.0 61.3,34.3 74.0,40.0 61.3,45.7 69.4,57.0 55.6,55.6 57.0,69.4 45.7,61.3 40.0,74.0 34.3,61.3 23.0,69.4 24.4,55.6 10.6,57.0 18.7,45.7 6.0,40.0 18.7,34.3 10.6,23.0 24.4,24.4 23.0,10.6 34.3,18.7" fill="#88D498" stroke="#000" stroke-width="3.5" stroke-linejoin="round"/></svg><span class="tl">Style</span></a></nav>
+      <nav class="tiles" aria-label="Shortcuts"><button class="tile t-tog" type="button" aria-pressed="false" aria-label="Show tonight’s sky"><i></i><i class="on"></i><span class="tl">Tonight</span></button><a class="tile t-love" href="#work" aria-label="See the work"><svg aria-hidden="true" width="48" height="44" viewBox="0 0 24 22"><path d="M12 20.5S2.5 14.6 2.5 7.9A4.9 4.9 0 0 1 12 5.6a4.9 4.9 0 0 1 9.5 2.3c0 6.7-9.5 12.6-9.5 12.6z" fill="#FFD23F" stroke="#000" stroke-width="2" stroke-linejoin="round"/></svg><span class="tl">Work</span></a><a class="tile t-burst" href="#style" aria-label="Find your style"><svg aria-hidden="true" width="62" height="62" viewBox="0 0 80 80"><polygon points="40.0,6.0 45.7,18.7 57.0,10.6 55.6,24.4 69.4,23.0 61.3,34.3 74.0,40.0 61.3,45.7 69.4,57.0 55.6,55.6 57.0,69.4 45.7,61.3 40.0,74.0 34.3,61.3 23.0,69.4 24.4,55.6 10.6,57.0 18.7,45.7 6.0,40.0 18.7,34.3 10.6,23.0 24.4,24.4 23.0,10.6 34.3,18.7" fill="#88D498" stroke="#000" stroke-width="3.5" stroke-linejoin="round"/></svg><span class="tl">Style</span></a></nav>
     </div></div>
     <div class="copy wrap beat beat2" id="style" aria-labelledby="h-fys"><div class="in fys">
       <p class="label">Try it: made to fit</p>
       <h2 class="letters" id="h-fys" aria-label="Find Your Style"><span class="word" data-w="0">Find</span> <span class="word" data-w="1">Your</span> <span class="word" data-w="2">Style</span></h2>
-      <p class="hint">Turn the dials: Style changes the whole site&rsquo;s family, from dark glass to editorial; Color lays a palette over any of them. Tap a letter to change its typeface.</p>
+      <p class="hint">Turn the dials to restyle the whole site. Tap a letter to change its typeface.</p>
       <div class="dialbox">
         <div class="dials">
           <div class="dialbox"><div class="dial" id="dial" role="slider" tabindex="0" aria-label="Style" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0"><svg viewBox="-120 -120 240 240" aria-hidden="true"></svg></div><p class="dialcap">Style</p></div>
@@ -703,7 +693,6 @@ addEventListener('storage',function(e){if(e.key===K)apply();});apply();if(D.on||
         </div>
         <p class="dial-both" id="dial-both" aria-live="polite">Dusk &middot; own colors</p>
         <p class="dial-credit" id="dial-credit">Dusk, our own: a painted sky at nightfall.</p>
-        <div class="swell"><p class="cap" id="swell-cap">Swell</p><input type="range" id="swell" min="0" max="100" value="35" aria-labelledby="swell-cap"><output id="swell-out" for="swell">Breeze</output></div>
         <div class="fx" role="group" aria-label="Effects">
           <p class="cap" id="fx-cap">Effects</p>
           <div class="chips" aria-labelledby="fx-cap"><button type="button" class="chip c-drift" data-fx="drift" aria-pressed="false"><i aria-hidden="true"></i>Drift</button><button type="button" class="chip c-melt" data-fx="melt" aria-pressed="false"><i aria-hidden="true"></i>Melt</button><button type="button" class="chip c-eye" data-fx="eye" aria-pressed="false"><i aria-hidden="true"></i>Eye</button><button type="button" class="chip c-sky" data-fx="sky" aria-pressed="false"><i aria-hidden="true"></i><span class="nm">Sky</span></button><button type="button" class="chip c-colour" data-fx="color" aria-pressed="false" aria-expanded="false"><i aria-hidden="true"></i>Color</button></div>
@@ -721,31 +710,31 @@ addEventListener('storage',function(e){if(e.key===K)apply();});apply();if(D.on||
   <!-- Trust strip: after the Washington Post stat strip -->
   <section class="s trust" aria-label="The studio in short">
     <div class="facts">
-      <div><b>Berthoud, CO</b>Local, and glad to meet at your place.</div>
-      <div><b>Two people</b>The ones you meet are the ones who make it.</div>
-      <div><b>From $250</b>Fixed prices, written down before we start.</div>
-      <div><b>Our own tools</b>Talaria, Packfold and Fantasmagoria, built here.</div>
+      <div><b>Front Range</b>We come to you.</div>
+      <div><b>From $250</b>Fixed prices, in writing.</div>
+      <div><b>On your phone</b>Every draft, before it goes live.</div>
+      <div><b>Our own tools</b>Built here, used daily.</div>
     </div>
   </section>
 
   <!-- What we make: after Acne Studios client services (alternating text and image) -->
   <section class="s" id="services" aria-labelledby="h-svc">
     <div class="head"><div><p class="label">What we make</p><h2 id="h-svc"><span class="t">Three things,</span> <em>done</em> <b>properly.</b></h2></div>
-      <p>Most local businesses need one of these at a time. Each is priced up front and made by the same two people.</p></div>
+      <p>Each one priced up front.</p></div>
     <div class="svc">
-      <div class="lead"><span class="no">01</span><h3><b>Websites</b> <em>and</em> <span class="t">hosting</span></h3><p class="one">From fixing the one broken thing to a whole new site, and we keep it running.</p><ul><li>Website fix, from $250</li><li>Small business site, from $2,000</li><li>Care plan with hosting, from $50 a month</li></ul>
+      <div class="lead"><span class="no">01</span><h3><b>Websites</b> <em>and</em> <span class="t">hosting</span></h3><p class="one">Fixes, new sites and hosting.</p><ul><li>Fixes from $250</li><li>New sites from $2,000</li></ul>
         <a class="ghost" href="/preview/services/websites/">Websites and hosting &rarr;</a></div>
       <figure class="slotf " data-slot="home-svc-websites"><div class="slot" style="aspect-ratio:1.732/1" role="img" aria-label="Image to come: A local shop’s new site open on a laptop and a phone, side by side on a wooden counter; daylight, three-quarter view."><span class="sid">Image · home-svc-websites · 1732 x 1000</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M70 40h120v74H70z M58 114h144l-10 12H68z M214 58h34v66h-34z M226 118h10"/></svg></div><figcaption class="slotcap">A local shop’s new site open on a laptop and a phone, side by side on a wooden counter; daylight, three-quarter view.</figcaption></figure>
     </div>
 
     <div class="svc alt">
-      <div class="lead"><span class="no">02</span><h3><span class="t">Your</span> <b>brand</b></h3><p class="one">A mark, lettering and ornament on one rule, so the sign, menu, site and cards look like one business.</p><ul><li>Mark and wordmark, as clean vector files</li><li>Colors and type, written down</li><li>Files for print, screen and the sign shop</li></ul>
+      <div class="lead"><span class="no">02</span><h3><span class="t">Your</span> <b>brand</b></h3><p class="one">One look for your sign, menu, site and cards.</p><ul><li>Mark and wordmark</li><li>Colors and type</li></ul>
         <a class="ghost" href="/preview/services/brand/">Brand and identity &rarr;</a></div>
       <figure class="slotf " data-slot="home-svc-brand"><div class="slot" style="aspect-ratio:1.732/1" role="img" aria-label="Image to come: A brand sheet laid flat: the mark, the wordmark, color chips and a small shop-sign mock-up; overhead, soft even light."><span class="sid">Image · home-svc-brand · 1732 x 1000</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M60 30h120v110H60z M84 62c26-14 50 2 28 16s4 30 30 16 M78 112h80 M196 34h44v26h-44z M196 70h44v26h-44z M196 106h44v26h-44z"/></svg></div><figcaption class="slotcap">A brand sheet laid flat: the mark, the wordmark, color chips and a small shop-sign mock-up; overhead, soft even light.</figcaption></figure>
     </div>
 
     <div class="svc">
-      <div class="lead"><span class="no">03</span><h3><span class="t">Creative</span> <b>technology</b></h3><p class="one">What a template can’t do: live visuals, 3D characters, apps and illustration.</p><ul><li><a href="/preview/services/live-visuals/">Live visuals</a>, played on Fantasmagoria</li><li><a href="/preview/services/characters/">3D characters</a>, rigged and animated</li><li><a href="/preview/services/apps/">Apps</a> and <a href="/preview/services/illustration/">illustration</a> for a real job</li></ul>
+      <div class="lead"><span class="no">03</span><h3><span class="t">Creative</span> <b>technology</b></h3><p class="one">What a template can’t do.</p><ul><li><a href="/preview/services/live-visuals/">Live visuals</a> and <a href="/preview/services/characters/">3D characters</a></li><li><a href="/preview/services/apps/">Apps</a> and <a href="/preview/services/illustration/">illustration</a></li></ul>
         <a class="ghost" href="/preview/services/live-visuals/">Live visuals &rarr;</a></div>
       <figure class="slotf " data-slot="home-svc-creative"><div class="slot" style="aspect-ratio:1.732/1" role="img" aria-label="Image to come: A live visual projected on a venue wall, a few people silhouetted in front of it; night, cool colored light."><span class="sid">Image · home-svc-creative · 1732 x 1000</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M40 24h220v96H40z M70 90c30-50 60 20 90-30s50 20 70-10 M80 160v-22a12 12 0 0 1 24 0v22 M92 120a9 9 0 1 0 0.1 0 M150 160v-24a13 13 0 0 1 26 0v24 M163 118a10 10 0 1 0 0.1 0 M210 160v-20a11 11 0 0 1 22 0v20 M221 122a8 8 0 1 0 0.1 0"/></svg></div><figcaption class="slotcap">A live visual projected on a venue wall, a few people silhouetted in front of it; night, cool colored light.</figcaption></figure>
     </div>
@@ -755,23 +744,23 @@ addEventListener('storage',function(e){if(e.key===K)apply();});apply();if(D.on||
   <!-- Proof: after Anthropic's customer stories grid -->
   <section class="s" id="work" aria-labelledby="h-work">
     <div class="head"><div><p class="label">Proof it&rsquo;s real</p><h2 id="h-work"><span class="t">Made</span> <em>right</em> <b>here.</b></h2></div>
-      <p>Until client stories are ready to share, these are our own products and studies, labeled as such. Each one runs today.</p></div>
+      <p>Our own products and studies, running today.</p></div>
     <div class="cases">
       <article class="case"><a href="/preview/talaria/"><figure class="slotf " data-slot="home-case-talaria"><div class="slot" style="aspect-ratio:1.732/1" role="img" aria-label="Image to come: Talaria open on a laptop showing a project board, a coffee beside it; top-down desk shot, morning light."><span class="sid">Image · home-case-talaria · 1732 x 1000</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M60 30h180v104H60z M60 46h180 M72 58h44v64H72z M128 58h44v40h-44z M184 58h44v52h-44z M80 70h28 M80 82h20 M136 70h28 M192 70h28 M192 82h20"/></svg></div><figcaption class="slotcap">Talaria open on a laptop showing a project board, a coffee beside it; top-down desk shot, morning light.</figcaption></figure></a>
         <span class="chip">Our product</span><h3><a href="/preview/talaria/">Talaria</a></h3>
-        <dl><dt>For</dt><dd>Our studio and a study group</dd><dt>Made</dt><dd>A task app for Mac, Windows and the web</dd><dt>Result</dt><dd>Every project in one shared board</dd></dl></article>
+        <p class="one">A task app for Mac, Windows and the web</p></article>
 
       <article class="case"><a href="/preview/studies/packfold/"><figure class="slotf " data-slot="home-case-packfold"><div class="slot" style="aspect-ratio:1.732/1" role="img" aria-label="Image to come: A folded cardboard box next to a laptop showing its flat cutting pattern; clean table, soft side light."><span class="sid">Image · home-case-packfold · 1732 x 1000</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M40 70l50-24 50 24-50 24z M40 70v50l50 24v-50 M140 70v50l-50 24 M176 40h96v96h-96z M200 40v96 M248 40v96 M176 64h96 M176 112h96"/></svg></div><figcaption class="slotcap">A folded cardboard box next to a laptop showing its flat cutting pattern; clean table, soft side light.</figcaption></figure></a>
         <span class="chip">Our product</span><h3><a href="/preview/studies/packfold/">Packfold</a></h3>
-        <dl><dt>For</dt><dd>Anyone making a box</dd><dt>Made</dt><dd>A tool that folds a carton on screen</dd><dt>Result</dt><dd>The real cutting file, exported in one click</dd></dl></article>
+        <p class="one">A tool that folds a carton on screen</p></article>
 
       <article class="case"><a href="/preview/services/live-visuals/"><figure class="slotf " data-slot="home-case-fantasm"><div class="slot" style="aspect-ratio:1.732/1" role="img" aria-label="Image to come: Fantasmagoria running a show on a big screen, a performer’s hands on a controller in the foreground; dim stage light."><span class="sid">Image · home-case-fantasm · 1732 x 1000</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M50 20h200v100H50z M118 92l14-40 18 22 18-22 14 40z M134 70h4 M162 70h4 M110 160c6-20 20-28 40-28s34 8 40 28 M128 150h44"/></svg></div><figcaption class="slotcap">Fantasmagoria running a show on a big screen, a performer’s hands on a controller in the foreground; dim stage light.</figcaption></figure></a>
         <span class="chip">Our product</span><h3><a href="/preview/services/live-visuals/">Fantasmagoria</a></h3>
-        <dl><dt>For</dt><dd>Live shows and venues</dd><dt>Made</dt><dd>The tool we play live visuals on</dd><dt>Result</dt><dd>Shows that answer the room, not a looped file</dd></dl></article>
+        <p class="one">The tool we play live visuals on</p></article>
 
-      <article class="case study"><a href="/preview/studies/grass-cut/"><figure class="slotf " data-slot="home-case-grasscut"><div class="slot" style="aspect-ratio:1.732/1" role="img" aria-label="Image to come: The Grass Cut hero on a phone held in one hand, out in prairie grass near Berthoud; golden hour."><span class="sid">Image · home-case-grasscut · 1732 x 1000</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M124 18h52v104h-52z M144 28h12 M30 172c4-24 8-40 10-60 M50 172c2-20 6-36 12-52 M250 172c-2-22-6-38-12-54 M270 172c-4-20-6-34-4-50 M150 60c-12 4-12 18 0 18s12 14 0 18"/></svg></div><figcaption class="slotcap">The Grass Cut hero on a phone held in one hand, out in prairie grass near Berthoud; golden hour.</figcaption></figure></a>
+      <article class="case study"><a href="/preview/studies/grass-cut/"><figure class="slotf " data-slot="home-case-grasscut"><div class="slot" style="aspect-ratio:1.732/1" role="img" aria-label="Image to come: The Grass Cut hero on a phone held in one hand, out in prairie grass; golden hour."><span class="sid">Image · home-case-grasscut · 1732 x 1000</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M124 18h52v104h-52z M144 28h12 M30 172c4-24 8-40 10-60 M50 172c2-20 6-36 12-52 M250 172c-2-22-6-38-12-54 M270 172c-4-20-6-34-4-50 M150 60c-12 4-12 18 0 18s12 14 0 18"/></svg></div><figcaption class="slotcap">The Grass Cut hero on a phone held in one hand, out in prairie grass; golden hour.</figcaption></figure></a>
         <span class="chip">Study</span><h3><a href="/preview/studies/grass-cut/">Grass Cut</a></h3>
-        <dl><dt>For</dt><dd>This site</dd><dt>Made</dt><dd>Our mark, cut apart by prairie grass</dd><dt>Result</dt><dd>The scroll you just saw at the top</dd></dl></article>
+        <p class="one">Our mark, cut apart by prairie grass</p></article>
 
     </div>
   </section>
@@ -780,12 +769,12 @@ addEventListener('storage',function(e){if(e.key===K)apply();});apply();if(D.on||
   <!-- How it goes: after Hers' connected step cards -->
   <section class="s" id="process" aria-labelledby="h-proc">
     <div class="head"><div><p class="label">How it goes</p><h2 id="h-proc"><span class="t">How a</span> <b>project</b> <em>goes.</em></h2></div>
-      <p>Short, in writing, and nothing goes live until you&rsquo;ve said yes on your phone.</p></div>
+      <p>In writing, and approved on your phone.</p></div>
     <ol class="steps">
-      <li><span class="no">01</span><b>Look</b><p>A look at what you have: twenty minutes at your place or on a call.</p><span class="cue">Free</span></li>
-      <li><span class="no">02</span><b>Plan</b><p>A fixed price and a date, written down before any work starts.</p><span class="cue">Fixed price</span></li>
-      <li><span class="no">03</span><b>Make</b><p>Drafts you can open on your phone, changed until they&rsquo;re right.</p><span class="cue">On your phone</span></li>
-      <li><span class="no">04</span><b>Care</b><p>Hosting, updates and the small changes after launch.</p><span class="cue">From $50 a month</span></li>
+      <li><span class="no">01</span><b>Look</b><span class="cue">Free, 20 minutes</span></li>
+      <li><span class="no">02</span><b>Plan</b><span class="cue">Fixed price and date</span></li>
+      <li><span class="no">03</span><b>Make</b><span class="cue">Drafts on your phone</span></li>
+      <li><span class="no">04</span><b>Care</b><span class="cue">From $50 a month</span></li>
     </ol>
   </section>
 
@@ -793,19 +782,16 @@ addEventListener('storage',function(e){if(e.key===K)apply();});apply();if(D.on||
   <section class="s thesis" aria-label="Why it looks like this">
     <p class="orn" aria-hidden="true"><i></i></p>
     <blockquote><span class="t">Plain used to be</span> <em>the cheap option.</em> <b>It isn&rsquo;t anymore.</b></blockquote>
-    <p>The hours that once made rich work expensive are cheaper now. So we spend them on detail: ornament with a rule behind it, motion that answers the room, a town that looks like itself.</p>
+    <p>So we spend the time on detail.</p>
     <p class="orn" aria-hidden="true" style="margin-top:28px"><i></i></p>
   </section>
 
   <!-- Who's behind it: after Asana's leadership rows -->
   <section class="s" id="about" aria-labelledby="h-about">
-    <div class="head"><div><p class="label">Who&rsquo;s behind it</p><h2 id="h-about"><b>Two people,</b> <em>one</em> <span class="t">studio.</span></h2></div>
-      <p>The people you meet are the people who make it, and the ones who look after it afterwards.</p></div>
+    <div class="head"><div><p class="label">Who&rsquo;s behind it</p><h2 id="h-about"><span class="t">Who you&rsquo;ll</span> <em>work</em> <b>with.</b></h2></div></div>
     <div class="people">
-      <div class="person"><figure class="slotf portrait" data-slot="home-team-tristan"><div class="slot" style="aspect-ratio:1/1.155" role="img" aria-label="Image to come: Tristan at his drawing desk with sketches and a tablet; warm window light, shoulder-up, looking at the camera."><span class="sid">Image · home-team-tristan · 1000 x 1155</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M150 58a26 30 0 1 0 0.1 0 M96 160c6-36 30-48 54-48s48 12 54 48 M214 30h50v60h-50z M239 30v60 M214 60h50"/></svg></div><figcaption class="slotcap">Tristan at his drawing desk with sketches and a tablet; warm window light, shoulder-up, looking at the camera.</figcaption></figure><h3><span class="t">Tristan</span> <b>Brewer</b></h3><p class="role">Design, animation and the tools behind them</p>
-        <p>Brand marks and ornament, 3D characters, live visuals played on Fantasmagoria, and the websites themselves.</p></div>
-      <div class="person"><figure class="slotf portrait" data-slot="home-team-bryce"><div class="slot" style="aspect-ratio:1/1.155" role="img" aria-label="Image to come: Bryce at a laptop in a Berthoud café; warm afternoon light, shoulder-up, looking at the camera."><span class="sid">Image · home-team-bryce · 1000 x 1155</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M150 58a26 30 0 1 0 0.1 0 M96 160c6-36 30-48 54-48s48 12 54 48 M214 30h50v60h-50z M239 30v60 M214 60h50"/></svg></div><figcaption class="slotcap">Bryce at a laptop in a Berthoud café; warm afternoon light, shoulder-up, looking at the camera.</figcaption></figure><h3><span class="t">Bryce</span> <b>Nielsen</b></h3><p class="role">Websites, hosting and security</p>
-        <p>Bryce&rsquo;s background is in cyber security, so the sites we host, and your clients&rsquo; accounts on them, are set up and looked after properly.</p></div>
+      <div class="person"><figure class="slotf portrait" data-slot="home-team-tristan"><div class="slot" style="aspect-ratio:1/1.155" role="img" aria-label="Image to come: Tristan at his drawing desk with sketches and a tablet; warm window light, shoulder-up, looking at the camera."><span class="sid">Image · home-team-tristan · 1000 x 1155</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M150 58a26 30 0 1 0 0.1 0 M96 160c6-36 30-48 54-48s48 12 54 48 M214 30h50v60h-50z M239 30v60 M214 60h50"/></svg></div><figcaption class="slotcap">Tristan at his drawing desk with sketches and a tablet; warm window light, shoulder-up, looking at the camera.</figcaption></figure><h3><span class="t">Tristan</span> <b>Brewer</b></h3><p class="role">Design, 3D and live visuals</p></div>
+      <div class="person"><figure class="slotf portrait" data-slot="home-team-bryce"><div class="slot" style="aspect-ratio:1/1.155" role="img" aria-label="Image to come: Bryce at a laptop in a café; warm afternoon light, shoulder-up, looking at the camera."><span class="sid">Image · home-team-bryce · 1000 x 1155</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M150 58a26 30 0 1 0 0.1 0 M96 160c6-36 30-48 54-48s48 12 54 48 M214 30h50v60h-50z M239 30v60 M214 60h50"/></svg></div><figcaption class="slotcap">Bryce at a laptop in a café; warm afternoon light, shoulder-up, looking at the camera.</figcaption></figure><h3><span class="t">Bryce</span> <b>Nielsen</b></h3><p class="role">Websites, hosting and security</p></div>
     </div>
   </section>
 
@@ -815,7 +801,7 @@ addEventListener('storage',function(e){if(e.key===K)apply();});apply();if(D.on||
       <div class="bookblock">
         <p class="label">Start</p>
         <h2 id="h-contact"><span class="t">Start with</span> <em>a</em> <b>short call.</b></h2>
-        <p>Fifteen or thirty minutes, at a time that suits you. Tell us what you have and what you need; you leave with a next step and a price range.</p>
+        <p>Fifteen or thirty minutes. You leave with a next step and a price range.</p>
         <a class="ghost" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a 15 or 30 minute call &rarr;</a>
         <div class="reach"><a href="mailto:hello@seaofgrass.studio">hello@seaofgrass.studio</a><a href="tel:+13037751333">303.775.1333</a></div>
       </div>
@@ -875,7 +861,7 @@ function markToScreen(x,y){const dx=x-CX,dy=y-CY,cr=Math.cos(view.r),sr=Math.sin
 // ---- Windrow's field (css px) ----
 const BANDS=7; let blades=[];
 function plant(){
-  const r=rng(42), horizon=H*(H>W?.6:((typeof P!=='undefined'&&P.hz)||.64)), count=Math.round(Math.min(6500,(W*(H-horizon))/80));
+  const r=rng(42), horizon=H*(H>W?.6:((typeof P!=='undefined'&&P.hz)||.64)), count=Math.round(Math.min(6500,(W*(H-horizon))/(W<600?115:80)));
   blades=[];
   for(let i=0;i<count;i++){const depth=Math.pow(r(),.8),y=horizon+depth*(H-horizon)+6,x=r()*(W+40)-20,h=(10+depth*42)*(.7+r()*.6)*Math.max(.8,H/620),rest=(r()-.5)*.25;
     blades.push({x,y,h,rest,a:rest,w:0,band:Math.min(BANDS-1,Math.floor(depth*BANDS)),phase:r()*TAU});}
@@ -1396,19 +1382,19 @@ async function audit(only={}){const styles=only.styles||['dusk','glass','neu','b
 
 // ---- Find Your Style effects: one at a time, each with one Amount (0..1). Drift starts on every visit when beat 2 first
 // shows (never under reduced motion) and then follows the visitor down the page and from page to page (window.sogDrift, in the
-// head script); the first touch on a control takes over. Under them all, the grass rolls in waves: the Swell, set by the live wind.
+// head script); the first touch on a control takes over.
 const TINT_SKY=false; // the one-line switch: true lets "Your color" turn the whole scene to the visitor's color, not only the accents
 var B2V=0; // how far beat 2 is in (0..1), set by beats()
-function roomForBeat2(){ // portrait screens: as beat 2 comes in, the S rises and shrinks until its lowest point clears the panel
-  if(!B2V)return;const el=document.querySelector('.hero .beat2 .in');if(!el)return;const top=el.getBoundingClientRect().top-cv.getBoundingClientRect().top-14;
-  const my=MY+(.2-MY)*B2V,fit=(top-H*my)/(345-CY);MY=my;if(fit>0&&fit<U)U+=(fit-U)*B2V;}
+function roomForCopy(){ // portrait screens: the S sits fully above whichever copy panel is showing (beat 1, then Find Your Style), never behind it
+  const q=cv.getBoundingClientRect().top,topOf=sel=>{const el=document.querySelector(sel);return el?el.getBoundingClientRect().top-q-14:H;};
+  const fitAt=(top,my)=>Math.min((top-H*my)/(345-CY),(H*my-72)/(CY-20)); // clear of the panel below and the bar above
+  const room=top=>{let my=MY,f=fitAt(top,my);if(f<U){my=.21;f=fitAt(top,my);}return [my,Math.min(U,Math.max(.2,f))];};
+  const [m1,u1]=room(topOf('.hero .beat1 .in')),[m2,u2]=room(topOf('.hero .beat2 .in'));MY=m1+(m2-m1)*B2V;U=u1+(u2-u1)*B2V;}
 const FX_AMT={drift:.35,melt:.5,eye:.5,sky:.6,color:.7};
 const FX_STILL=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const SKIES=['Aurora','Painterly','Stars','Sunset','Riso','Mist'];
 const DRIFT=()=>window.sogDrift||{get:()=>({on:false}),hue:()=>0,start(){},stop(){},amount(){},fresh:()=>false};
 var FX={kind:DRIFT().get().on?'drift':'none',auto:false,live:false,amt:Object.assign({},FX_AMT),shown:0,last:0,mode:0};
-var SWELL={v:0,user:false}; // 0..1: how high and fast the waves run through the grass; follows the live wind until the visitor sets it
-function swellNow(){if(SWELL.user)return SWELL.v;if(FX_STILL)return 0;const w=WX?WX.wind:6;return Math.max(.15,Math.min(.85,.12+w/40));}
 let ACC=null; // the style's accent, for the sky's lines
 const accent=()=>ACC||(ACC=getComputedStyle(document.documentElement).getPropertyValue('--lav').trim()||'#e1bdff');
 ['sog-theme','sog-scheme','sog-colour'].forEach(e=>document.addEventListener(e,()=>{ACC=null;}));
@@ -1420,24 +1406,10 @@ function fxSky(now){const dt=FX.last?Math.min(.05,(now-FX.last)/1000):0;FX.last=
   if(Math.abs(deg-FX.shown)>.05){cv.style.filter=deg?`hue-rotate(${deg.toFixed(1)}deg)`:'';FX.shown=deg;}
   if(k==='sky')skyStyle(T,a);
   if(k==='eye')eye(dt,a);}
-let WK=.006; // one swell about every 85% of the scene's width, its crests running diagonally across the field
-function waves(T,sw){WK=2*Math.PI/Math.max(360,W*.85); // the Sea of Grass, literally: long crests roll across the field, bending the blades as they pass
-  const sp=.5+1.3*sw,dir=WX&&WX.dir<0?-1:1;
-  for(const b of blades){const depth=.3+.7*Math.max(0,(b.y-HZ)/(H-HZ)),ph=(b.x+(b.y-HZ)*1.4)*WK-T*sp*dir,crest=Math.pow(Math.max(0,Math.sin(ph)),2);
-    b.a+=dir*sw*1.05*crest*depth;b.h*=1-sw*.18*crest;}}
-function crestLight(T,sw){ // light catching each crest, drawn along the same lines the blades bend on
-  const sp=.5+1.3*sw,dir=WX&&WX.dir<0?-1:1;c.save();c.globalCompositeOperation='soft-light';c.strokeStyle=`rgba(255,250,230,${(.34*sw).toFixed(3)})`;c.lineCap='round';
-  const span=W+(H-HZ)*1.4,ta=-T*sp*dir/(2*Math.PI),tb=(span*WK-T*sp*dir)/(2*Math.PI); // the crests that cross the field right now
-  for(let n=Math.floor(Math.min(ta,tb))-1;n<=Math.ceil(Math.max(ta,tb))+1;n++){let px=null,py=null; // each crest is a straight diagonal line
-    for(let y=HZ+6;y<=H;y+=16){const depth=.3+.7*(y-HZ)/(H-HZ),x=(Math.PI/2+2*Math.PI*n+T*sp*dir)/WK-(y-HZ)*1.4;
-      if(px!==null&&(x>-80&&x<W+80||px>-80&&px<W+80)){c.lineWidth=10+50*depth;c.beginPath();c.moveTo(px,py);c.lineTo(x,y);c.stroke();}px=x;py=y;}}
-  c.restore();}
-function fxField(a0,a1,T){ // Melt and the waves bend the blades for this frame only; the field's own physics stays untouched
-  const sw=swellNow(),melt=FX.kind==='melt';if(!sw&&!melt){drawField(a0,a1);return;}const keep=blades.map(b=>[b.a,b.h]);
-  if(sw)waves(T,sw);
-  if(melt){const a=FX.amt.melt;for(const b of blades){b.a+=a*.45*Math.sin(T*2.4+b.x*.02+b.band*.7);b.h*=1-a*.22*(.5+.5*Math.sin(T*1.7+b.x*.011));}}
-  drawField(a0,a1);blades.forEach((b,i)=>{b.a=keep[i][0];b.h=keep[i][1];});
-  if(sw&&a1===BANDS-1)crestLight(T,sw);}
+function fxField(a0,a1,T){ // Melt: the blades ripple and droop like heat shimmer, for this frame only; the field's own physics stays untouched
+  if(FX.kind!=='melt'){drawField(a0,a1);return;}const a=FX.amt.melt,keep=blades.map(b=>[b.a,b.h]);
+  for(const b of blades){b.a+=a*.45*Math.sin(T*2.4+b.x*.02+b.band*.7);b.h*=1-a*.22*(.5+.5*Math.sin(T*1.7+b.x*.011));}
+  drawField(a0,a1);blades.forEach((b,i)=>{b.a=keep[i][0];b.h=keep[i][1];});}
 function fxPiece(i,T){const k=FX.kind,a=FX.amt[k]||0; // the S's pieces: Melt ripples and leans them, Eye draws them round towards the eye
   if(k==='melt'){c.translate(0,a*16*Math.sin(T*2.1+i*1.3));c.transform(1,0,a*.18*Math.sin(T*1.4+i),1,0,0);}
   else if(k==='eye'){const [ex,ey]=EYE.at||eyeHome(),mx=(ex-W*MX)/U+CX,my=(ey-H*MY)/U+CY,f=a*.3*(.6+.4*Math.sin(T*.7+i));
@@ -1483,15 +1455,14 @@ function skyStyle(T,a){ // Sky: each tap paints the sky another way; the words a
   c.restore();}
 const fxNote=()=>document.dispatchEvent(new CustomEvent('sog-fx'));
 window.sogFX={ // the panel's controls talk to the scene through this
-  get:()=>({kind:FX.kind,amt:FX.kind==='drift'?DRIFT().get().amt:FX.amt[FX.kind]??0,mode:FX.mode,sky:FX.kind==='sky'?SKIES[FX.mode]:null,auto:FX.auto,swell:swellNow(),swellUser:SWELL.user}),
+  get:()=>({kind:FX.kind,amt:FX.kind==='drift'?DRIFT().get().amt:FX.amt[FX.kind]??0,mode:FX.mode,sky:FX.kind==='sky'?SKIES[FX.mode]:null,auto:FX.auto}),
   set(k){FX.auto=false;if(FX.kind==='eye'&&k!=='eye')makeClouds();
     if(k==='sky'&&FX.kind==='sky'){FX.mode++;if(FX.mode>=SKIES.length){FX.mode=0;k='none';}}else if(k===FX.kind)k='none';else FX.mode=0;
     if(k==='drift')DRIFT().start();else DRIFT().stop();FX.kind=k;fxNote();},
   off(){FX.auto=false;if(FX.kind==='eye')makeClouds();DRIFT().stop();FX.kind='none';FX.mode=0;fxNote();},
   amount(v){v=Math.max(0,Math.min(1,v));if(FX.kind==='drift')DRIFT().amount(v);else if(FX.kind in FX.amt)FX.amt[FX.kind]=v;fxNote();},
-  swell(v){SWELL.user=true;SWELL.v=Math.max(0,Math.min(1,v));fxNote();},
   touch(){if(FX.auto&&FX.kind==='drift'){FX.auto=false;DRIFT().stop();FX.kind='none';fxNote();}}, // any touch takes over
-  reset(){if(FX.kind==='eye')makeClouds();FX.amt=Object.assign({},FX_AMT);FX.mode=0;SWELL.user=false;EYE.to=null;DRIFT().amount(FX_AMT.drift);
+  reset(){if(FX.kind==='eye')makeClouds();FX.amt=Object.assign({},FX_AMT);FX.mode=0;EYE.to=null;DRIFT().amount(FX_AMT.drift);
     FX.kind=FX_STILL?'none':'drift';FX.auto=!FX_STILL;if(!FX_STILL)DRIFT().start(true);else DRIFT().stop();
     window.sogScheme&&sogScheme.set('own');window.sogColour&&sogColour.clear();fxNote();}};
 
@@ -1499,7 +1470,7 @@ window.sogFX={ // the panel's controls talk to the scene through this
 function S(t){if(t<.4)return 0;return slow(seg(t,.4,4.6));}
 const TEND=4.8, reduce=matchMedia('(prefers-reduced-motion: reduce)').matches, hero=document.getElementById('hero');
 let t0=performance.now()+500, tShow=reduce?TEND:0, tPrev=tShow, visible=true, raf=0;
-const pinEl=document.getElementById('pin');let scrollP=0,tCur=.4;const B1=document.querySelector('.hero .beat1'),B2=document.querySelector('.hero .beat2');function beat(el,v,dy){el.style.opacity=v.toFixed(3);el.style.transform=v<1?`translateY(${((1-v)*dy).toFixed(1)}px)`:'';el.classList.toggle('off',v<.01);el.classList.toggle('dim',v<.5);}function beats(p){if(reduce||!B1||!B2)return;const a=cl((p-.22)/.2,0,1),b=cl((p-.4)/.15,0,1);beat(B1,1-a,-48);beat(B2,b,48);B2V=b;if(b>.3&&FX)fxLive();}const breakAt=p=>.4+cl(p/.45,0,1)*(TEND-.6);function readScroll(){const r=pinEl.getBoundingClientRect(),run=Math.max(1,r.height-innerHeight);scrollP=cl(-r.top/run,0,1);hero.classList.toggle('scrolled',scrollP>.02);beats(scrollP);}addEventListener('scroll',readScroll,{passive:true});addEventListener('resize',readScroll);readScroll();document.addEventListener('click',e=>{const a=e.target.closest('a[href="#style"]');if(!a||reduce)return;e.preventDefault();const run=pinEl.offsetHeight-innerHeight;scrollTo({top:pinEl.offsetTop+run*.62,behavior:'smooth'});});function clock(now){const tg=reduce?0:breakAt(scrollP);tCur+=(tg-tCur)*.2;return tCur;}
+const pinEl=document.getElementById('pin');let scrollP=0,tCur=.4;const B1=document.querySelector('.hero .beat1'),B2=document.querySelector('.hero .beat2');function beat(el,v,dy){el.style.opacity=v.toFixed(3);el.style.transform=v<1?`translateY(${((1-v)*dy).toFixed(1)}px)`:'';el.classList.toggle('off',v<.01);el.classList.toggle('dim',v<.5);}function beats(p){if(reduce||!B1||!B2)return;const a=cl((p-.22)/.2,0,1),b=cl((p-.4)/.15,0,1);beat(B1,1-a,-48);beat(B2,b,48);B2V=b;if(b>0&&window.sogFonts)sogFonts.letters();if(b>.3&&FX)fxLive();}const breakAt=p=>.4+cl(p/.45,0,1)*(TEND-.6);function readScroll(){const r=pinEl.getBoundingClientRect(),run=Math.max(1,r.height-innerHeight);scrollP=cl(-r.top/run,0,1);hero.classList.toggle('scrolled',scrollP>.02);beats(scrollP);}addEventListener('scroll',readScroll,{passive:true});addEventListener('resize',readScroll);readScroll();document.addEventListener('click',e=>{const a=e.target.closest('a[href="#style"]');if(!a||reduce)return;e.preventDefault();const run=pinEl.offsetHeight-innerHeight;scrollTo({top:pinEl.offsetTop+run*.62,behavior:'smooth'});});function clock(now){const tg=reduce?0:breakAt(scrollP);tCur+=(tg-tCur)*.2;return tCur;}
 let ptr=null; const pprev={x:0,y:0,has:false};
 function local(x,y){const r=cv.getBoundingClientRect();return[x-r.left,y-r.top];}
 function setPtr(x,y){[x,y]=local(x,y);const vx=pprev.has?x-pprev.x:0,vy=pprev.has?y-pprev.y:0;ptr={x,y,vx,vy,k:1};pprev.x=x;pprev.y=y;pprev.has=true;}
@@ -1517,7 +1488,7 @@ function frame(now){
   const t=tShow, s=S(t), head=cl(s/.42), sep=cl((s-.3)/.7);
   if(!hero.classList.contains('ready'))hero.classList.add('ready');
   const portrait=H>W*1.05;
-  if(portrait||windowed()){U=Math.min(W/560,H/700)*(windowed()?.92:1);MX=.5;MY=windowed()?.36:.3;if(!windowed())roomForBeat2();}else{U=Math.min(W/1500,H/820);MX=.75;MY=.37;}
+  if(portrait||windowed()){U=Math.min(W/560,H/700)*(windowed()?.92:1);MX=.5;MY=windowed()?.36:.3;if(!windowed())roomForCopy();}else{U=Math.min(W/1500,H/820);MX=.75;MY=.37;}
   view.r=.02*Math.sin(t/TEND*Math.PI);
   const tips=gusts(tPrev,t); if(ptr){tips.push(ptr);ptr={...ptr,vx:ptr.vx*.6,vy:ptr.vy*.6};}
   stepField(now,tips);
@@ -1531,7 +1502,7 @@ function frame(now){
   
   raf=requestAnimationFrame(frame);
 }
-function size(){DPR=Math.min(2,devicePixelRatio||1);W=cv.clientWidth;H=cv.clientHeight;cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);plant();}
+function size(){DPR=Math.min(innerWidth<600?1.5:2,devicePixelRatio||1);W=cv.clientWidth;H=cv.clientHeight;cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);plant();}
 let lastW=0;addEventListener('resize',()=>{if(cv.clientWidth!==lastW||Math.abs(cv.clientHeight-H)>120){lastW=cv.clientWidth;size();}});
 new IntersectionObserver(es=>{visible=es[0].isIntersecting;if(visible&&!raf)raf=requestAnimationFrame(frame);}).observe(hero);
 if(reduce)hero.classList.add('ready');
@@ -1640,11 +1611,7 @@ if(fx&&window.sogFX){const chips=[...fx.querySelectorAll('.chip')],knob=fx.query
   fx.querySelector('.reset').addEventListener('click',()=>{colourOn=false;window.sogFX.reset();});
   // any touch on the dials, the letters or the scene takes over from the opening drift
   document.querySelectorAll('#dial,#dial2,#h-fys,#cv').forEach(el=>['pointerdown','keydown'].forEach(ev=>el.addEventListener(ev,()=>window.sogFX.touch(),{passive:true})));
-  const sw=document.getElementById('swell'),swo=document.getElementById('swell-out'),WORDS=['Still','Breeze','Swell','Rollers','Storm'];
-  function swShow(){const f=window.sogFX.get(),v=f.swell,w=v<.04?0:Math.min(4,1+Math.floor(v*4));if(document.activeElement!==sw)sw.value=Math.round(v*100);
-    sw.style.setProperty('--p',v);swo.innerHTML=WORDS[w]+(f.swellUser?'':'<span class="lw"> · live wind</span>');sw.setAttribute('aria-valuetext',WORDS[w]);}
-  sw.addEventListener('input',()=>{window.sogFX.swell(sw.value/100);});setInterval(swShow,2000);
-  ['sog-fx','sog-colour','sog-drift'].forEach(ev=>document.addEventListener(ev,()=>{show();swShow();}));show();swShow();}
+  ['sog-fx','sog-colour','sog-drift'].forEach(ev=>document.addEventListener(ev,show));show();}
 // the Neubrutalism shortcut tile: show tonight's real sky (the weather readout stays live)
 const tog=document.querySelector('.t-tog');if(tog)tog.addEventListener('click',()=>{const on=tog.getAttribute('aria-pressed')!=='true';tog.setAttribute('aria-pressed',String(on));if(window.sogWeather)window.sogWeather.tonight(on);});
 })();
