@@ -103,7 +103,7 @@ html[data-theme="brutal"] header.bar .brand{color:#000;font-family:"Space Grotes
 html[data-theme="simple"] :is(.work .fr,.fr){border:0}
 html[data-theme="editorial"] :is(.work .fr,.fr){border:0}
 html[data-theme="editorial"] .work .wt{font-size:32px}
-/* colour schemes (second dial): tokens on top of any style */
+/* color schemes (second dial): tokens on top of any style */
 html[data-scheme="dusk"]{--bg:#0e0b16;--fg:#f3eefa;--fg2:#ddd5ea;--soft:#bcb2cf;--steel:#a196b5;--rule:rgba(243,238,250,.16);--violet:#a46bff;--accent2:#b283fe;--on-accent:#0e0b16;--lav:#c9a2ff;--bar:rgba(14,11,22,.88);--card:#19141f;--field:#09070e;--panel:rgba(14,11,22,.92);--neu-dark:#07060b;--neu-light:#211f29;color-scheme:dark}
 html[data-scheme="prairie"]{--bg:#f3ead2;--fg:#1f2a1a;--fg2:#2c3826;--soft:#4a543d;--steel:#5f6447;--rule:rgba(31,42,26,.16);--violet:#2f5b2a;--accent2:#2c5227;--on-accent:#f8f1dc;--lav:#7d5300;--bar:rgba(243,234,210,.88);--card:#ebe0c3;--field:#f7f1e2;--panel:rgba(243,234,210,.92);--neu-dark:#ccc5b0;--neu-light:#fbf9f2;color-scheme:light}
 html[data-scheme="ink"]{--bg:#f6f4ee;--fg:#121212;--fg2:#1e1e1e;--soft:#454545;--steel:#5c5c5c;--rule:rgba(18,18,18,.16);--violet:#121212;--accent2:#121212;--on-accent:#f6f4ee;--lav:#1f3fbf;--bar:rgba(246,244,238,.88);--card:#ece9e0;--field:#f9f8f4;--panel:rgba(246,244,238,.92);--neu-dark:#cfcdc8;--neu-light:#fcfcfa;color-scheme:light}
@@ -112,7 +112,7 @@ html[data-scheme="pastel"]{--bg:#f6f3f8;--fg:#272238;--fg2:#332d47;--soft:#4d466
 html[data-scheme="teal"]{--bg:#071b1e;--fg:#e4f5f2;--fg2:#c9e6e1;--soft:#a1cdc6;--steel:#86b6af;--rule:rgba(228,245,242,.16);--violet:#2db3a5;--accent2:#4ebfb3;--on-accent:#04191b;--lav:#4fd6c8;--bar:rgba(7,27,30,.88);--card:#0d262a;--field:#051214;--panel:rgba(7,27,30,.92);--neu-dark:#040e0f;--neu-light:#1b2d30;color-scheme:dark}
 html[data-scheme="riso"]{--bg:#fffbef;--fg:#151515;--fg2:#222222;--soft:#474747;--steel:#5e5e5e;--rule:rgba(21,21,21,.16);--violet:#2350e6;--accent2:#2045c0;--on-accent:#ffffff;--lav:#c92a1a;--bar:rgba(255,251,239,.88);--card:#fff1d6;--field:#fffcf5;--panel:rgba(255,251,239,.92);--neu-dark:#d6d3c9;--neu-light:#fffefa;color-scheme:light}
 html[data-theme="neu"][data-scheme]{--violet:var(--bg);--accent2:var(--bg);--on-accent:var(--lav);--card:var(--bg);--field:var(--bg)}
-/* "Your colour": the chip that follows the visitor, and the hue ring it opens */
+/* "Your color": the chip that follows the visitor, and the hue ring it opens */
 .yours{position:fixed;z-index:30;right:max(18px,env(safe-area-inset-right,0px));bottom:max(18px,env(safe-area-inset-bottom,0px))}
 .yours[hidden]{display:none}
 .yours .yb{display:flex;align-items:center;gap:10px;padding:6px 14px 6px 6px;border-radius:999px;background:rgba(9,9,9,.82);border:1px solid rgba(255,255,255,.2);color:#f2f2f2;font:400 11px/1 "IBM Plex Mono",Menlo,monospace;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
@@ -186,28 +186,49 @@ function apply(s){if(!OK[s])s='own';var r=document.documentElement;if((r.getAttr
   if(s==='own')r.removeAttribute('data-scheme');else r.setAttribute('data-scheme',s);document.dispatchEvent(new CustomEvent('sog-scheme',{detail:s}));}
 window.sogScheme={get:get,apply:apply,set:function(s){try{localStorage.setItem(K,s);}catch(e){}apply(s);}};
 apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValue);});})();
-(function(){ // "Your colour": the visitor's hue retints each style's accents on every page, remembered like the dials.
-// Each accent keeps the lightness nearest its own that still reads against what it sits on (4.5:1), so nothing loses contrast.
-var K='sog-colour',ACC={dusk:[['--violet','--on-accent'],['--accent2','--on-accent'],['--lav','--bg']],glass:[['--violet','--on-accent'],['--accent2','--on-accent'],['--lav','--bg']],
-  neu:[['--on-accent','--bg',5.4],['--lav','--bg']],brutal:[['--nb-y','#000'],['--lav','--bg']],simple:[['--violet','--on-accent'],['--accent2','--on-accent'],['--lav','--bg']],editorial:[['--lav','--bg']]},
-  ALL=['--violet','--accent2','--lav','--on-accent','--nb-y'],R=document.documentElement,base=0;
+(function(){ // "Your color" and Drift: the visitor's hue retints each style's accents on every page, and Drift keeps every hue turning.
+// Each accent keeps the lightness nearest its own that still reads against what it sits on (4.5:1, or more where noted), so nothing loses contrast.
+var K='sog-colour',DK='sog-drift',R=document.documentElement,
+  ACC={dusk:[['--violet','--on-accent'],['--accent2','--on-accent'],['--lav','--bg']],glass:[['--violet','--on-accent'],['--accent2','--on-accent'],['--lav','--bg']],
+  neu:[['--on-accent','--bg',5.4],['--lav','--bg']],brutal:[['--nb-y','#000',5.8],['--lav','--bg']],simple:[['--violet','--on-accent'],['--accent2','--on-accent'],['--lav','--bg']],editorial:[['--lav','--bg']]},
+  DRIFT_ONLY={brutal:[['--nb-c','#000',5.8],['--nb-s','#000',5.8],['--nb-g','#000',5.8],['--nb-o','#000',5.8],['--nb-l','#000',5.8]]}, // Neubrutalism's other inks turn with Drift, never with a picked color
+  // (5.8:1 against black, so the dark-gray body copy that also sits on them still reads at 4.5:1)
+  ALL=['--violet','--accent2','--lav','--on-accent','--nb-y','--nb-c','--nb-s','--nb-g','--nb-o','--nb-l'],orig={},base=0;
 function rgb(t){t=(t||'').trim();var m=t.match(/^#([0-9a-f]{3,8})$/i);if(m){var h=m[1];if(h.length<6)h=h.replace(/./g,'$&$&');return [0,2,4].map(function(i){return parseInt(h.substr(i,2),16);});}
   m=t.match(/^rgba?\(([^)]+)\)/);return m?m[1].split(',').slice(0,3).map(parseFloat):null;}
 function lum(c){return c.reduce(function(s,v,i){v/=255;v=v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4);return s+v*[.2126,.7152,.0722][i];},0);}
 function ratio(a,b){var x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05);}
 function hsl(h,s,l){var f=function(n){var k=(n+h/30)%12,a=s*Math.min(l,1-l);return Math.round(255*(l-a*Math.max(-1,Math.min(k-3,9-k,1))));};return [f(0),f(8),f(4)];}
-function light(c){var mx=Math.max.apply(0,c)/255,mn=Math.min.apply(0,c)/255;return (mx+mn)/2;}
-function hueOf(c){var r=c[0]/255,g=c[1]/255,b=c[2]/255,mx=Math.max(r,g,b),mn=Math.min(r,g,b),d=mx-mn;if(!d)return 0;var h=mx===r?((g-b)/d)%6:mx===g?(b-r)/d+2:(r-g)/d+4;return (h*60+360)%360;}
+function hsOf(c){var r=c[0]/255,g=c[1]/255,b=c[2]/255,mx=Math.max(r,g,b),mn=Math.min(r,g,b),d=mx-mn,l=(mx+mn)/2;if(!d)return [0,0,l];
+  var h=mx===r?((g-b)/d)%6:mx===g?(b-r)/d+2:(r-g)/d+4;return [(h*60+360)%360,d/(1-Math.abs(2*l-1)),l];}
 function get(){try{var v=JSON.parse(localStorage.getItem(K)||'null');return v&&v.h>=0&&v.h<360?v:null;}catch(e){return null;}}
-function apply(v){ALL.forEach(function(p){R.style.removeProperty(p);});var t=R.getAttribute('data-theme')||'dusk',cs=getComputedStyle(R),own=rgb(cs.getPropertyValue('--violet'));base=own?hueOf(own):0;
-  if(v)(ACC[t]||[]).forEach(function(pr){var o=rgb(cs.getPropertyValue(pr[0])),bg=rgb(pr[1].charAt(0)==='#'?pr[1]:cs.getPropertyValue(pr[1]));if(!o||!bg)return;
-    var l0=light(o),s=v.s||.7,best=null;for(var d=0;d<=1&&!best;d+=.01)[l0-d,l0+d].forEach(function(l){if(best||l<0||l>1)return;var c=hsl(v.h,s,l);if(ratio(c,bg)>=(pr[2]||4.5))best=c;});
+var D={on:false,hue:0,amt:.35,auto:false};try{var dv=JSON.parse(sessionStorage.getItem(DK)||'null');if(dv)D=Object.assign(D,dv,{auto:false});}catch(e){}
+function read(){ALL.forEach(function(p){R.style.removeProperty(p);});var cs=getComputedStyle(R);orig={};ALL.concat(['--bg','--on-accent']).forEach(function(p){orig[p]=rgb(cs.getPropertyValue(p));});
+  base=orig['--violet']?hsOf(orig['--violet'])[0]:0;}
+function paint(){var t=R.getAttribute('data-theme')||'dusk',v=get(),off=D.hue||0,pairs=(ACC[t]||[]).concat(off?DRIFT_ONLY[t]||[]:[]);
+  pairs.forEach(function(pr){var o=orig[pr[0]],bg=pr[1].charAt(0)==='#'?rgb(pr[1]):orig[pr[1]];if(!o||!bg)return;var hs=hsOf(o);
+    if(!v&&!off){R.style.removeProperty(pr[0]);return;}
+    var h=((v?v.h:hs[0])+off)%360,s=v?(v.s||.7):Math.max(.35,hs[1]),l0=hs[2],best=null;
+    for(var d=0;d<=1&&!best;d+=.01)[l0-d,l0+d].forEach(function(l){if(best||l<0||l>1)return;var c=hsl(h,s,l);if(ratio(c,bg)>=(pr[2]||4.5))best=c;});
     if(best)R.style.setProperty(pr[0],'rgb('+best.join(',')+')');});
-  document.dispatchEvent(new CustomEvent('sog-colour',{detail:v}));}
-window.sogColour={get:get,set:function(h,s){var v={h:Math.round((h%360+360)%360),s:s==null?(get()||{}).s||.7:s};try{localStorage.setItem(K,JSON.stringify(v));}catch(e){}apply(v);},
-  clear:function(){try{localStorage.removeItem(K);}catch(e){}apply(null);},skyShift:function(){var v=get();return v?v.h-base:0;}};
-document.addEventListener('sog-theme',function(){apply(get());});document.addEventListener('sog-scheme',function(){apply(get());});
-addEventListener('storage',function(e){if(e.key===K)apply(get());});apply(get());})();
+  R.style.setProperty('--drift',(off||0).toFixed(1));}
+function apply(){read();paint();document.dispatchEvent(new CustomEvent('sog-colour',{detail:get()}));}
+// Drift: about one turn a minute at the start; when switched off it eases home. Remembered for the visit, from page to page.
+var last=0,saved=0;function save(){try{sessionStorage.setItem(DK,JSON.stringify({on:D.on,hue:D.hue,amt:D.amt}));}catch(e){}}
+function tick(now){var dt=last?Math.min(.1,(now-last)/1000):0;
+  if(D.on)D.hue=(D.hue+dt*6*(D.amt/.35))%360;else{var back=((D.hue+540)%360)-180,nb=back*(1-Math.min(1,dt*3));D.hue=Math.abs(nb)<.3?0:(nb+360)%360;}
+  if(now-last>90||!D.hue){last=now;paint();}if(now-saved>1000){saved=now;save();}
+  if(D.on||D.hue)requestAnimationFrame(tick);else{last=0;paint();save();}}
+function run(){last=0;requestAnimationFrame(tick);}
+window.sogDrift={get:function(){return {on:D.on,hue:D.hue,amt:D.amt,auto:D.auto};},hue:function(){return D.hue||0;},
+  start:function(auto){if(D.on)return;D.on=true;D.auto=!!auto;run();document.dispatchEvent(new CustomEvent('sog-drift'));},
+  stop:function(){if(!D.on)return;D.on=false;D.auto=false;save();run();document.dispatchEvent(new CustomEvent('sog-drift'));},
+  amount:function(a){D.amt=Math.max(0,Math.min(1,a));save();document.dispatchEvent(new CustomEvent('sog-drift'));},
+  fresh:function(){var s=null;try{s=sessionStorage.getItem(DK);}catch(e){}return s===null;}}; // a new visit: nothing carried over yet
+window.sogColour={get:get,set:function(h,s){var v={h:Math.round((h%360+360)%360),s:s==null?(get()||{}).s||.7:s};try{localStorage.setItem(K,JSON.stringify(v));}catch(e){}apply();},
+  clear:function(){try{localStorage.removeItem(K);}catch(e){}apply();},skyShift:function(){var v=get();return v?v.h-base:0;}};
+document.addEventListener('sog-theme',apply);document.addEventListener('sog-scheme',apply);
+addEventListener('storage',function(e){if(e.key===K)apply();});apply();if(D.on||D.hue)run();})();
 </script>
 </head>
 <body>
@@ -288,7 +309,7 @@ function render(who, data, example) {
   }).join("") : `<p class="note">No files yet.</p>`;
 }
 
-// ---- example account (?demo): clearly labelled, nothing real ----
+// ---- example account (?demo): clearly labeled, nothing real ----
 if (/[?&]demo\b/.test(location.search)) {
   render("example@yourbusiness.com", {
     projects: [
@@ -340,8 +361,8 @@ sb.auth.onAuthStateChange((_e, session) => load(session));
 })();
 </script>
 <script>
-(()=>{ // the hue ring (shared with Find Your Style) and the "Your colour" chip that follows the visitor from page to page
-function ring(onPick){const el=document.createElement('div');el.className='huering';el.innerHTML='<div class="wheel" role="slider" tabindex="0" aria-label="Your colour, hue" aria-valuemin="0" aria-valuemax="359"><i></i></div><button type="button" class="clear">Clear</button>';
+(()=>{ // the hue ring (shared with Find Your Style) and the "Your color" chip that follows the visitor from page to page
+function ring(onPick){const el=document.createElement('div');el.className='huering';el.innerHTML='<div class="wheel" role="slider" tabindex="0" aria-label="Your color, hue" aria-valuemin="0" aria-valuemax="359"><i></i></div><button type="button" class="clear">Clear</button>';
   const wh=el.querySelector('.wheel'),th=wh.querySelector('i');
   const show=()=>{const v=window.sogColour.get(),h=v?v.h:0;th.style.transform=`rotate(${h}deg)`;wh.setAttribute('aria-valuenow',h);wh.setAttribute('aria-valuetext',v?`hue ${h}`:'none');th.hidden=!v;};
   const at=e=>{const r=wh.getBoundingClientRect();return Math.atan2(e.clientX-(r.left+r.width/2),-(e.clientY-(r.top+r.height/2)))*180/Math.PI;};
@@ -352,7 +373,7 @@ function ring(onPick){const el=document.createElement('div');el.className='hueri
   document.addEventListener('sog-colour',show);show();return el;}
 window.sogColourRing=ring;
 const chip=document.createElement('div');chip.className='yours';
-chip.innerHTML='<button type="button" class="yb" aria-expanded="false" aria-label="Your colour"><i aria-hidden="true"></i><span aria-hidden="true">Your colour</span></button><div class="pop" hidden></div>';
+chip.innerHTML='<button type="button" class="yb" aria-expanded="false" aria-label="Your color"><i aria-hidden="true"></i><span aria-hidden="true">Your color</span></button><div class="pop" hidden></div>';
 const btn=chip.querySelector('.yb'),pop=chip.querySelector('.pop');pop.appendChild(ring());
 btn.addEventListener('click',()=>{const o=pop.hidden;pop.hidden=!o;btn.setAttribute('aria-expanded',String(o));});
 document.addEventListener('click',e=>{if(!chip.contains(e.target)&&!pop.hidden){pop.hidden=true;btn.setAttribute('aria-expanded','false');}});

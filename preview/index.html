@@ -117,7 +117,7 @@ html[data-theme="brutal"] header.bar .brand{color:#000;font-family:"Space Grotes
 html[data-theme="simple"] :is(.work .fr,.fr){border:0}
 html[data-theme="editorial"] :is(.work .fr,.fr){border:0}
 html[data-theme="editorial"] .work .wt{font-size:32px}
-/* colour schemes (second dial): tokens on top of any style */
+/* color schemes (second dial): tokens on top of any style */
 html[data-scheme="dusk"]{--bg:#0e0b16;--fg:#f3eefa;--fg2:#ddd5ea;--soft:#bcb2cf;--steel:#a196b5;--rule:rgba(243,238,250,.16);--violet:#a46bff;--accent2:#b283fe;--on-accent:#0e0b16;--lav:#c9a2ff;--bar:rgba(14,11,22,.88);--card:#19141f;--field:#09070e;--panel:rgba(14,11,22,.92);--neu-dark:#07060b;--neu-light:#211f29;color-scheme:dark}
 html[data-scheme="prairie"]{--bg:#f3ead2;--fg:#1f2a1a;--fg2:#2c3826;--soft:#4a543d;--steel:#5f6447;--rule:rgba(31,42,26,.16);--violet:#2f5b2a;--accent2:#2c5227;--on-accent:#f8f1dc;--lav:#7d5300;--bar:rgba(243,234,210,.88);--card:#ebe0c3;--field:#f7f1e2;--panel:rgba(243,234,210,.92);--neu-dark:#ccc5b0;--neu-light:#fbf9f2;color-scheme:light}
 html[data-scheme="ink"]{--bg:#f6f4ee;--fg:#121212;--fg2:#1e1e1e;--soft:#454545;--steel:#5c5c5c;--rule:rgba(18,18,18,.16);--violet:#121212;--accent2:#121212;--on-accent:#f6f4ee;--lav:#1f3fbf;--bar:rgba(246,244,238,.88);--card:#ece9e0;--field:#f9f8f4;--panel:rgba(246,244,238,.92);--neu-dark:#cfcdc8;--neu-light:#fcfcfa;color-scheme:light}
@@ -126,7 +126,7 @@ html[data-scheme="pastel"]{--bg:#f6f3f8;--fg:#272238;--fg2:#332d47;--soft:#4d466
 html[data-scheme="teal"]{--bg:#071b1e;--fg:#e4f5f2;--fg2:#c9e6e1;--soft:#a1cdc6;--steel:#86b6af;--rule:rgba(228,245,242,.16);--violet:#2db3a5;--accent2:#4ebfb3;--on-accent:#04191b;--lav:#4fd6c8;--bar:rgba(7,27,30,.88);--card:#0d262a;--field:#051214;--panel:rgba(7,27,30,.92);--neu-dark:#040e0f;--neu-light:#1b2d30;color-scheme:dark}
 html[data-scheme="riso"]{--bg:#fffbef;--fg:#151515;--fg2:#222222;--soft:#474747;--steel:#5e5e5e;--rule:rgba(21,21,21,.16);--violet:#2350e6;--accent2:#2045c0;--on-accent:#ffffff;--lav:#c92a1a;--bar:rgba(255,251,239,.88);--card:#fff1d6;--field:#fffcf5;--panel:rgba(255,251,239,.92);--neu-dark:#d6d3c9;--neu-light:#fffefa;color-scheme:light}
 html[data-theme="neu"][data-scheme]{--violet:var(--bg);--accent2:var(--bg);--on-accent:var(--lav);--card:var(--bg);--field:var(--bg)}
-/* "Your colour": the chip that follows the visitor, and the hue ring it opens */
+/* "Your color": the chip that follows the visitor, and the hue ring it opens */
 .yours{position:fixed;z-index:30;right:max(18px,env(safe-area-inset-right,0px));bottom:max(18px,env(safe-area-inset-bottom,0px))}
 .yours[hidden]{display:none}
 .yours .yb{display:flex;align-items:center;gap:10px;padding:6px 14px 6px 6px;border-radius:999px;background:rgba(9,9,9,.82);border:1px solid rgba(255,255,255,.2);color:#f2f2f2;font:400 11px/1 "IBM Plex Mono",Menlo,monospace;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
@@ -184,8 +184,8 @@ header.bar.wrap{max-width:none;padding-left:max(var(--edge),env(safe-area-inset-
 #cv{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y}
 .hero .copy{position:absolute;z-index:3;left:0;right:0;top:clamp(110px,17vh,170px);pointer-events:none}
 .hero .copy .in{max-width:min(720px,52vw);pointer-events:auto} /* the copy always ends before the S, at any width */
-/* the words always hold against the scene: a soft scrim of the ground colour behind the copy (dark at night),
-   the accent words pulled toward the text colour, the small label in the stronger secondary ink */
+/* the words always hold against the scene: a soft scrim of the ground color behind the copy (dark at night),
+   the accent words pulled toward the text color, the small label in the stronger secondary ink */
 .hero::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,color-mix(in srgb,var(--scrim,var(--bg)) 55%,transparent) 0,transparent 62%)}
 html[data-theme="brutal"] .hero::before{display:none}
 html:not([data-theme="brutal"]) .hero h1 em{color:color-mix(in srgb,var(--lav) 60%,var(--fg))}
@@ -408,9 +408,9 @@ footer.cols a{border:0;color:var(--soft)}footer.cols a:hover{color:var(--fg)}foo
   .bar nav a.client{display:none}.brand{white-space:nowrap}
   .fys-grid{grid-template-columns:1fr}
 }
-/* Neubrutalism, front page: every section is a full-width band of its own colour (the pale tints neubrutalism.com uses),
+/* Neubrutalism, front page: every section is a full-width band of its own color (the pale tints neubrutalism.com uses),
    opened by a 16px stripe of its bold accent between 4px black rules. The band is painted with border-image outset,
-   so it reaches both screen edges without widening the page. With a colour scheme on, the bands take the scheme's ground. */
+   so it reaches both screen edges without widening the page. With a color scheme on, the bands take the scheme's ground. */
 html[data-theme="brutal"] main#top{--band:var(--bg);--stripe:var(--lav)}
 html[data-theme="brutal"] main#top :is(section.s,section.fys,footer){position:relative;background:var(--band);margin-top:0;padding-block:calc(var(--gap) * .8 + 24px) calc(var(--gap) * .8);
   border:0;border-image:linear-gradient(#000 0 4px,var(--stripe) 4px 20px,#000 20px 24px,var(--band) 24px) fill 0/0/0 100vmax}
@@ -422,6 +422,14 @@ html[data-theme="brutal"]:not([data-scheme]) main#top .thesis{--band:var(--nb-y)
 html[data-theme="brutal"]:not([data-scheme]) main#top #about{--band:#FFE0E0;--stripe:var(--nb-c)}
 html[data-theme="brutal"]:not([data-scheme]) main#top #contact{--band:#F5F0E8;--stripe:var(--nb-s)}
 html[data-theme="brutal"] main#top footer{--band:#000;--stripe:var(--nb-y);color:#fff;padding-block:calc(var(--gap) * .6 + 24px) max(40px,env(safe-area-inset-bottom,0px))}
+/* Drift turns the pale bands too: same lightness, so the ink on them still reads */
+@supports (color:hsl(from red h s l)){
+  html[data-theme="brutal"]:not([data-scheme]) main#top #services{--band:hsl(from #F0ECFF calc(h + var(--drift,0)) s l)}
+  html[data-theme="brutal"]:not([data-scheme]) main#top #work{--band:hsl(from #E3F2FD calc(h + var(--drift,0)) s l)}
+  html[data-theme="brutal"]:not([data-scheme]) main#top #process{--band:hsl(from #FFF0E0 calc(h + var(--drift,0)) s l)}
+  html[data-theme="brutal"]:not([data-scheme]) main#top #about{--band:hsl(from #FFE0E0 calc(h + var(--drift,0)) s l)}
+  html[data-theme="brutal"]:not([data-scheme]) main#top #contact{--band:hsl(from #F5F0E8 calc(h + var(--drift,0)) s l)}
+}
 html[data-theme="brutal"] main#top footer.cols b{color:var(--nb-y)}
 html[data-theme="brutal"] main#top footer.cols :is(a,span){color:#fff}
 html[data-theme="brutal"] main#top footer.cols a:hover{color:var(--nb-y)}
@@ -449,7 +457,7 @@ html[data-theme="brutal"] main#top .case.study{--acc:var(--nb-c);border-color:va
 html[data-theme="brutal"] main#top .case.study:hover{box-shadow:7px 7px 0 var(--nb-c)}
 html[data-theme="brutal"] main#top .case h3{font:700 clamp(26px,2.4vw,34px)/1.05 "Space Grotesk",sans-serif;letter-spacing:-.02em}
 html[data-theme="brutal"] main#top .case dt{font-family:"Space Mono",monospace;color:#333}
-/* how it goes: Standard cards with an accent strip along the top and the step's tag in the same colour */
+/* how it goes: Standard cards with an accent strip along the top and the step's tag in the same color */
 html[data-theme="brutal"] main#top .steps{gap:24px}html[data-theme="brutal"] main#top .steps::before{display:none}
 html[data-theme="brutal"] main#top .steps>li{padding:22px;border-top:10px solid var(--acc)}
 html[data-theme="brutal"] main#top .steps>li::before{display:none}
@@ -523,12 +531,32 @@ html[data-theme="brutal"] .dial .lbl{fill:#333}html[data-theme="brutal"] .dial .
 }
 @media (max-width:560px) and (max-height:760px){
   html[data-theme="brutal"] .hero{--wh:24svh}
+  html[data-theme="brutal"] .hero .beat2 .dialbox{padding:12px;row-gap:4px}html[data-theme="brutal"] .hero .beat2 .dials>.dialbox{padding:6px 12px 6px;gap:6px}
+  html[data-theme="brutal"] .hero .beat2 .dial{width:min(80px,22vw)}html[data-theme="brutal"] .hero .beat2 .dial-both{font-size:16px;margin-top:4px}
+  html[data-theme="brutal"] .hero .fx,html[data-theme="brutal"] .hero .swell{padding-top:8px;gap:6px 10px}html[data-theme="brutal"] .hero .fx .chip i{width:32px;height:32px}
   .hero .beat2 .dial-credit{font-size:13.5px}
   html[data-theme="brutal"] .hero .beat2 .dialbox{padding:var(--s1)}
   html[data-theme="brutal"] .hero .beat2 .dials{padding-inline:0;gap:12px}
   html[data-theme="brutal"] .hero .beat2 .dials>.dialbox{padding:10px 18px 8px}
 }
-/* the Effects row under the dials: five swatches that show what they do, one Amount knob, Reset; Colour's ring opens over the dials */
+/* the Swell: the waves in the grass, the site's name made literal; a slider under the dials, ahead of the effects */
+.hero .swell{grid-column:1/-1;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--s1);width:100%;border-top:1px solid var(--rule);padding-top:var(--s1)}
+.hero .swell .cap{margin:0;font:400 11px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--fg2)}
+.hero .swell output{font:400 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--fg);white-space:nowrap}
+.hero .swell input{--p:.35;-webkit-appearance:none;appearance:none;width:100%;height:28px;background:none;margin:0;cursor:pointer;touch-action:pan-y}
+.hero .swell input::-webkit-slider-runnable-track{height:12px;border-radius:6px;background:linear-gradient(90deg,var(--lav) calc(var(--p) * 100%),transparent 0),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='12'%3E%3Cpath d='M0 6q6-6 12 0t12 0' fill='none' stroke='%23888' stroke-width='1.6'/%3E%3C/svg%3E") repeat-x center/24px 12px}
+.hero .swell input::-moz-range-track{height:12px;border-radius:6px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='12'%3E%3Cpath d='M0 6q6-6 12 0t12 0' fill='none' stroke='%23888' stroke-width='1.6'/%3E%3C/svg%3E") repeat-x center/24px 12px}
+.hero .swell input::-moz-range-progress{height:12px;border-radius:6px;background:var(--lav)}
+.hero .swell input::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;margin-top:-5px;border-radius:50%;background:var(--fg);border:3px solid var(--panel-ground,#111)}
+.hero .swell input::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--fg);border:3px solid var(--panel-ground,#111)}
+html[data-theme="brutal"] .hero .swell{border-top:3px solid #000}html[data-theme="brutal"] .hero .swell :is(.cap,output){color:#000}
+html[data-theme="brutal"] .hero .swell input::-webkit-slider-runnable-track{border-radius:0;border:2px solid #000;background-color:#fff}
+html[data-theme="brutal"] .hero .swell input::-webkit-slider-thumb{border-radius:0;background:var(--nb-y);border:3px solid #000;box-shadow:3px 3px 0 #000;margin-top:-7px}
+html[data-theme="neu"] .hero .swell input::-webkit-slider-runnable-track{box-shadow:inset 2px 2px 4px var(--neu-dark,#c3c8d1),inset -2px -2px 4px var(--neu-light,#fff)}
+html[data-theme="neu"] .hero .swell input::-webkit-slider-thumb{border:0;background:var(--bg);box-shadow:3px 3px 6px var(--neu-dark,#c3c8d1),-3px -3px 6px var(--neu-light,#fff)}
+html[data-theme="simple"] .hero .swell input::-webkit-slider-thumb,html[data-theme="editorial"] .hero .swell input::-webkit-slider-thumb{border-radius:0}
+@media (max-width:560px){.hero .swell{gap:10px}.hero .swell output{font-size:10px}.hero .swell .lw{display:none}}
+/* the Effects row under the dials: five swatches that show what they do, one Amount knob, Reset; Color's ring opens over the dials */
 .hero .fx{grid-column:1/-1;position:relative;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:var(--s1) var(--s2);border-top:1px solid var(--rule);padding-top:var(--s1);margin-top:var(--s0);width:100%}
 .hero .fx .cap{margin:0;font:400 11px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--fg2)}
 .hero .fx .chips{display:flex;gap:14px}
@@ -536,11 +564,10 @@ html[data-theme="brutal"] .dial .lbl{fill:#333}html[data-theme="brutal"] .dial .
 .hero .fx .chip i{width:42px;height:42px;border-radius:50%;display:block;box-shadow:inset 0 0 0 1px rgba(255,255,255,.22);transition:transform .15s}
 .hero .fx .chip:hover i{transform:scale(1.06)}
 .hero .fx .chip.on{color:var(--fg)}.hero .fx .chip.on i{box-shadow:0 0 0 2px var(--panel-ground,#111),0 0 0 4px var(--lav)}
-.hero .fx .c-synth[data-mode]:not([data-mode=""])::after{content:attr(data-mode);position:absolute;right:-2px;top:-2px;min-width:16px;height:16px;border-radius:8px;background:var(--lav);color:#000;font:700 10px/16px var(--mono);letter-spacing:0}
 .hero .fx .c-drift i{background:conic-gradient(from 40deg,#ff7ab6,#ffd36e,#7af0c8,#7aa8ff,#c47aff,#ff7ab6)}
 .hero .fx .c-melt i{background:radial-gradient(circle at 50% 72%,#fff3b0 0 12%,#ff9a3c 30%,#d6283f 62%,#3a0b2a)}
 .hero .fx .c-eye i{background:radial-gradient(circle,#000 0 24%,transparent 25%),conic-gradient(#7d8bb5,#1a2135,#7d8bb5,#1a2135,#7d8bb5)}
-.hero .fx .c-synth i{background:repeating-linear-gradient(90deg,#0f1a2b 0 5px,#3cf0ff 5px 7px,#ff3cbc 7px 9px)}
+.hero .fx .c-sky i{background:linear-gradient(180deg,#14203f 0 30%,#3cf0a8 45%,#a46bff 62%,#ff9a6b 85%,#ffd27a)}
 .hero .fx .c-colour i{background:radial-gradient(circle,#fff 0 18%,transparent 19%),conic-gradient(red,yellow,lime,cyan,blue,magenta,red)}
 .hero .fx .amt{display:flex;align-items:center;gap:12px}
 .hero .fx .amt p{margin:0;display:grid;gap:6px;font:400 10px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--fg2)}.hero .fx .amt b{font-weight:400;color:var(--fg)}
@@ -559,7 +586,6 @@ html[data-theme="brutal"] .hero .fx .knob{border:3px solid #000;background:#fff}
 html[data-theme="brutal"] .hero .fx :is(.cap,.amt p,.amt b){color:#000}
 html[data-theme="brutal"] .hero .fx .reset{border:3px solid #000;border-radius:0;background:#fff;color:#000;box-shadow:3px 3px 0 #000;font-weight:700}
 html[data-theme="brutal"] .hero .fx .fxpop{background:#fff;border:3px solid #000;box-shadow:5px 5px 0 #000}html[data-theme="brutal"] .hero .fxpop .huering .clear{color:#000;border:2px solid #000;border-radius:0}
-html[data-theme="brutal"] .hero .fx .c-synth[data-mode]:not([data-mode=""])::after{border-radius:0;background:#000;color:#fff}
 html[data-theme="neu"] .hero .fx .chip i{box-shadow:4px 4px 8px var(--neu-dark,#c3c8d1),-4px -4px 8px var(--neu-light,#fff)}
 html[data-theme="neu"] .hero .fx .chip.on i{box-shadow:inset 3px 3px 6px rgba(0,0,0,.35),inset -3px -3px 6px rgba(255,255,255,.35)}
 html[data-theme="neu"] .hero .fx .knob{border:0;box-shadow:4px 4px 8px var(--neu-dark,#c3c8d1),-4px -4px 8px var(--neu-light,#fff)}
@@ -599,28 +625,49 @@ function apply(s){if(!OK[s])s='own';var r=document.documentElement;if((r.getAttr
   if(s==='own')r.removeAttribute('data-scheme');else r.setAttribute('data-scheme',s);document.dispatchEvent(new CustomEvent('sog-scheme',{detail:s}));}
 window.sogScheme={get:get,apply:apply,set:function(s){try{localStorage.setItem(K,s);}catch(e){}apply(s);}};
 apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValue);});})();
-(function(){ // "Your colour": the visitor's hue retints each style's accents on every page, remembered like the dials.
-// Each accent keeps the lightness nearest its own that still reads against what it sits on (4.5:1), so nothing loses contrast.
-var K='sog-colour',ACC={dusk:[['--violet','--on-accent'],['--accent2','--on-accent'],['--lav','--bg']],glass:[['--violet','--on-accent'],['--accent2','--on-accent'],['--lav','--bg']],
-  neu:[['--on-accent','--bg',5.4],['--lav','--bg']],brutal:[['--nb-y','#000'],['--lav','--bg']],simple:[['--violet','--on-accent'],['--accent2','--on-accent'],['--lav','--bg']],editorial:[['--lav','--bg']]},
-  ALL=['--violet','--accent2','--lav','--on-accent','--nb-y'],R=document.documentElement,base=0;
+(function(){ // "Your color" and Drift: the visitor's hue retints each style's accents on every page, and Drift keeps every hue turning.
+// Each accent keeps the lightness nearest its own that still reads against what it sits on (4.5:1, or more where noted), so nothing loses contrast.
+var K='sog-colour',DK='sog-drift',R=document.documentElement,
+  ACC={dusk:[['--violet','--on-accent'],['--accent2','--on-accent'],['--lav','--bg']],glass:[['--violet','--on-accent'],['--accent2','--on-accent'],['--lav','--bg']],
+  neu:[['--on-accent','--bg',5.4],['--lav','--bg']],brutal:[['--nb-y','#000',5.8],['--lav','--bg']],simple:[['--violet','--on-accent'],['--accent2','--on-accent'],['--lav','--bg']],editorial:[['--lav','--bg']]},
+  DRIFT_ONLY={brutal:[['--nb-c','#000',5.8],['--nb-s','#000',5.8],['--nb-g','#000',5.8],['--nb-o','#000',5.8],['--nb-l','#000',5.8]]}, // Neubrutalism's other inks turn with Drift, never with a picked color
+  // (5.8:1 against black, so the dark-gray body copy that also sits on them still reads at 4.5:1)
+  ALL=['--violet','--accent2','--lav','--on-accent','--nb-y','--nb-c','--nb-s','--nb-g','--nb-o','--nb-l'],orig={},base=0;
 function rgb(t){t=(t||'').trim();var m=t.match(/^#([0-9a-f]{3,8})$/i);if(m){var h=m[1];if(h.length<6)h=h.replace(/./g,'$&$&');return [0,2,4].map(function(i){return parseInt(h.substr(i,2),16);});}
   m=t.match(/^rgba?\(([^)]+)\)/);return m?m[1].split(',').slice(0,3).map(parseFloat):null;}
 function lum(c){return c.reduce(function(s,v,i){v/=255;v=v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4);return s+v*[.2126,.7152,.0722][i];},0);}
 function ratio(a,b){var x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05);}
 function hsl(h,s,l){var f=function(n){var k=(n+h/30)%12,a=s*Math.min(l,1-l);return Math.round(255*(l-a*Math.max(-1,Math.min(k-3,9-k,1))));};return [f(0),f(8),f(4)];}
-function light(c){var mx=Math.max.apply(0,c)/255,mn=Math.min.apply(0,c)/255;return (mx+mn)/2;}
-function hueOf(c){var r=c[0]/255,g=c[1]/255,b=c[2]/255,mx=Math.max(r,g,b),mn=Math.min(r,g,b),d=mx-mn;if(!d)return 0;var h=mx===r?((g-b)/d)%6:mx===g?(b-r)/d+2:(r-g)/d+4;return (h*60+360)%360;}
+function hsOf(c){var r=c[0]/255,g=c[1]/255,b=c[2]/255,mx=Math.max(r,g,b),mn=Math.min(r,g,b),d=mx-mn,l=(mx+mn)/2;if(!d)return [0,0,l];
+  var h=mx===r?((g-b)/d)%6:mx===g?(b-r)/d+2:(r-g)/d+4;return [(h*60+360)%360,d/(1-Math.abs(2*l-1)),l];}
 function get(){try{var v=JSON.parse(localStorage.getItem(K)||'null');return v&&v.h>=0&&v.h<360?v:null;}catch(e){return null;}}
-function apply(v){ALL.forEach(function(p){R.style.removeProperty(p);});var t=R.getAttribute('data-theme')||'dusk',cs=getComputedStyle(R),own=rgb(cs.getPropertyValue('--violet'));base=own?hueOf(own):0;
-  if(v)(ACC[t]||[]).forEach(function(pr){var o=rgb(cs.getPropertyValue(pr[0])),bg=rgb(pr[1].charAt(0)==='#'?pr[1]:cs.getPropertyValue(pr[1]));if(!o||!bg)return;
-    var l0=light(o),s=v.s||.7,best=null;for(var d=0;d<=1&&!best;d+=.01)[l0-d,l0+d].forEach(function(l){if(best||l<0||l>1)return;var c=hsl(v.h,s,l);if(ratio(c,bg)>=(pr[2]||4.5))best=c;});
+var D={on:false,hue:0,amt:.35,auto:false};try{var dv=JSON.parse(sessionStorage.getItem(DK)||'null');if(dv)D=Object.assign(D,dv,{auto:false});}catch(e){}
+function read(){ALL.forEach(function(p){R.style.removeProperty(p);});var cs=getComputedStyle(R);orig={};ALL.concat(['--bg','--on-accent']).forEach(function(p){orig[p]=rgb(cs.getPropertyValue(p));});
+  base=orig['--violet']?hsOf(orig['--violet'])[0]:0;}
+function paint(){var t=R.getAttribute('data-theme')||'dusk',v=get(),off=D.hue||0,pairs=(ACC[t]||[]).concat(off?DRIFT_ONLY[t]||[]:[]);
+  pairs.forEach(function(pr){var o=orig[pr[0]],bg=pr[1].charAt(0)==='#'?rgb(pr[1]):orig[pr[1]];if(!o||!bg)return;var hs=hsOf(o);
+    if(!v&&!off){R.style.removeProperty(pr[0]);return;}
+    var h=((v?v.h:hs[0])+off)%360,s=v?(v.s||.7):Math.max(.35,hs[1]),l0=hs[2],best=null;
+    for(var d=0;d<=1&&!best;d+=.01)[l0-d,l0+d].forEach(function(l){if(best||l<0||l>1)return;var c=hsl(h,s,l);if(ratio(c,bg)>=(pr[2]||4.5))best=c;});
     if(best)R.style.setProperty(pr[0],'rgb('+best.join(',')+')');});
-  document.dispatchEvent(new CustomEvent('sog-colour',{detail:v}));}
-window.sogColour={get:get,set:function(h,s){var v={h:Math.round((h%360+360)%360),s:s==null?(get()||{}).s||.7:s};try{localStorage.setItem(K,JSON.stringify(v));}catch(e){}apply(v);},
-  clear:function(){try{localStorage.removeItem(K);}catch(e){}apply(null);},skyShift:function(){var v=get();return v?v.h-base:0;}};
-document.addEventListener('sog-theme',function(){apply(get());});document.addEventListener('sog-scheme',function(){apply(get());});
-addEventListener('storage',function(e){if(e.key===K)apply(get());});apply(get());})();
+  R.style.setProperty('--drift',(off||0).toFixed(1));}
+function apply(){read();paint();document.dispatchEvent(new CustomEvent('sog-colour',{detail:get()}));}
+// Drift: about one turn a minute at the start; when switched off it eases home. Remembered for the visit, from page to page.
+var last=0,saved=0;function save(){try{sessionStorage.setItem(DK,JSON.stringify({on:D.on,hue:D.hue,amt:D.amt}));}catch(e){}}
+function tick(now){var dt=last?Math.min(.1,(now-last)/1000):0;
+  if(D.on)D.hue=(D.hue+dt*6*(D.amt/.35))%360;else{var back=((D.hue+540)%360)-180,nb=back*(1-Math.min(1,dt*3));D.hue=Math.abs(nb)<.3?0:(nb+360)%360;}
+  if(now-last>90||!D.hue){last=now;paint();}if(now-saved>1000){saved=now;save();}
+  if(D.on||D.hue)requestAnimationFrame(tick);else{last=0;paint();save();}}
+function run(){last=0;requestAnimationFrame(tick);}
+window.sogDrift={get:function(){return {on:D.on,hue:D.hue,amt:D.amt,auto:D.auto};},hue:function(){return D.hue||0;},
+  start:function(auto){if(D.on)return;D.on=true;D.auto=!!auto;run();document.dispatchEvent(new CustomEvent('sog-drift'));},
+  stop:function(){if(!D.on)return;D.on=false;D.auto=false;save();run();document.dispatchEvent(new CustomEvent('sog-drift'));},
+  amount:function(a){D.amt=Math.max(0,Math.min(1,a));save();document.dispatchEvent(new CustomEvent('sog-drift'));},
+  fresh:function(){var s=null;try{s=sessionStorage.getItem(DK);}catch(e){}return s===null;}}; // a new visit: nothing carried over yet
+window.sogColour={get:get,set:function(h,s){var v={h:Math.round((h%360+360)%360),s:s==null?(get()||{}).s||.7:s};try{localStorage.setItem(K,JSON.stringify(v));}catch(e){}apply();},
+  clear:function(){try{localStorage.removeItem(K);}catch(e){}apply();},skyShift:function(){var v=get();return v?v.h-base:0;}};
+document.addEventListener('sog-theme',apply);document.addEventListener('sog-scheme',apply);
+addEventListener('storage',function(e){if(e.key===K)apply();});apply();if(D.on||D.hue)run();})();
 </script>
 </head>
 <body>
@@ -648,17 +695,18 @@ addEventListener('storage',function(e){if(e.key===K)apply(get());});apply(get())
     <div class="copy wrap beat beat2" id="style" aria-labelledby="h-fys"><div class="in fys">
       <p class="label">Try it: made to fit</p>
       <h2 class="letters" id="h-fys" aria-label="Find Your Style"><span class="word" data-w="0">Find</span> <span class="word" data-w="1">Your</span> <span class="word" data-w="2">Style</span></h2>
-      <p class="hint">Turn the dials: Style changes the whole site&rsquo;s family, from dark glass to editorial; Colour lays a palette over any of them. Tap a letter to change its typeface.</p>
+      <p class="hint">Turn the dials: Style changes the whole site&rsquo;s family, from dark glass to editorial; Color lays a palette over any of them. Tap a letter to change its typeface.</p>
       <div class="dialbox">
         <div class="dials">
           <div class="dialbox"><div class="dial" id="dial" role="slider" tabindex="0" aria-label="Style" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0"><svg viewBox="-120 -120 240 240" aria-hidden="true"></svg></div><p class="dialcap">Style</p></div>
-          <div class="dialbox"><div class="dial" id="dial2" role="slider" tabindex="0" aria-label="Colour scheme" aria-valuemin="0" aria-valuemax="6" aria-valuenow="0"><svg viewBox="-120 -120 240 240" aria-hidden="true"></svg></div><p class="dialcap">Colour</p></div>
+          <div class="dialbox"><div class="dial" id="dial2" role="slider" tabindex="0" aria-label="Color scheme" aria-valuemin="0" aria-valuemax="6" aria-valuenow="0"><svg viewBox="-120 -120 240 240" aria-hidden="true"></svg></div><p class="dialcap">Color</p></div>
         </div>
-        <p class="dial-both" id="dial-both" aria-live="polite">Dusk &middot; own colours</p>
+        <p class="dial-both" id="dial-both" aria-live="polite">Dusk &middot; own colors</p>
         <p class="dial-credit" id="dial-credit">Dusk, our own: a painted sky at nightfall.</p>
+        <div class="swell"><p class="cap" id="swell-cap">Swell</p><input type="range" id="swell" min="0" max="100" value="35" aria-labelledby="swell-cap"><output id="swell-out" for="swell">Breeze</output></div>
         <div class="fx" role="group" aria-label="Effects">
           <p class="cap" id="fx-cap">Effects</p>
-          <div class="chips" aria-labelledby="fx-cap"><button type="button" class="chip c-drift" data-fx="drift" aria-pressed="false"><i aria-hidden="true"></i>Drift</button><button type="button" class="chip c-melt" data-fx="melt" aria-pressed="false"><i aria-hidden="true"></i>Melt</button><button type="button" class="chip c-eye" data-fx="eye" aria-pressed="false"><i aria-hidden="true"></i>Eye</button><button type="button" class="chip c-synth" data-fx="synth" aria-pressed="false"><i aria-hidden="true"></i>Synth</button><button type="button" class="chip c-colour" data-fx="colour" aria-pressed="false" aria-expanded="false"><i aria-hidden="true"></i>Colour</button></div>
+          <div class="chips" aria-labelledby="fx-cap"><button type="button" class="chip c-drift" data-fx="drift" aria-pressed="false"><i aria-hidden="true"></i>Drift</button><button type="button" class="chip c-melt" data-fx="melt" aria-pressed="false"><i aria-hidden="true"></i>Melt</button><button type="button" class="chip c-eye" data-fx="eye" aria-pressed="false"><i aria-hidden="true"></i>Eye</button><button type="button" class="chip c-sky" data-fx="sky" aria-pressed="false"><i aria-hidden="true"></i><span class="nm">Sky</span></button><button type="button" class="chip c-colour" data-fx="color" aria-pressed="false" aria-expanded="false"><i aria-hidden="true"></i>Color</button></div>
           <div class="amt"><div class="knob" role="slider" tabindex="0" aria-label="Amount" aria-valuemin="0" aria-valuemax="100" aria-valuenow="35"><i></i></div><p>Amount <b id="fx-amt">35%</b></p><button type="button" class="reset">Reset</button></div>
           <div class="fxpop" hidden></div>
         </div>
@@ -691,15 +739,15 @@ addEventListener('storage',function(e){if(e.key===K)apply(get());});apply(get())
     </div>
 
     <div class="svc alt">
-      <div class="lead"><span class="no">02</span><h3><span class="t">Your</span> <b>brand</b></h3><p class="one">A mark, lettering and ornament on one rule, so the sign, menu, site and cards look like one business.</p><ul><li>Mark and wordmark, as clean vector files</li><li>Colours and type, written down</li><li>Files for print, screen and the sign shop</li></ul>
+      <div class="lead"><span class="no">02</span><h3><span class="t">Your</span> <b>brand</b></h3><p class="one">A mark, lettering and ornament on one rule, so the sign, menu, site and cards look like one business.</p><ul><li>Mark and wordmark, as clean vector files</li><li>Colors and type, written down</li><li>Files for print, screen and the sign shop</li></ul>
         <a class="ghost" href="/preview/services/brand/">Brand and identity &rarr;</a></div>
-      <figure class="slotf " data-slot="home-svc-brand"><div class="slot" style="aspect-ratio:1.732/1" role="img" aria-label="Image to come: A brand sheet laid flat: the mark, the wordmark, colour chips and a small shop-sign mock-up; overhead, soft even light."><span class="sid">Image · home-svc-brand · 1732 x 1000</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M60 30h120v110H60z M84 62c26-14 50 2 28 16s4 30 30 16 M78 112h80 M196 34h44v26h-44z M196 70h44v26h-44z M196 106h44v26h-44z"/></svg></div><figcaption class="slotcap">A brand sheet laid flat: the mark, the wordmark, colour chips and a small shop-sign mock-up; overhead, soft even light.</figcaption></figure>
+      <figure class="slotf " data-slot="home-svc-brand"><div class="slot" style="aspect-ratio:1.732/1" role="img" aria-label="Image to come: A brand sheet laid flat: the mark, the wordmark, color chips and a small shop-sign mock-up; overhead, soft even light."><span class="sid">Image · home-svc-brand · 1732 x 1000</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M60 30h120v110H60z M84 62c26-14 50 2 28 16s4 30 30 16 M78 112h80 M196 34h44v26h-44z M196 70h44v26h-44z M196 106h44v26h-44z"/></svg></div><figcaption class="slotcap">A brand sheet laid flat: the mark, the wordmark, color chips and a small shop-sign mock-up; overhead, soft even light.</figcaption></figure>
     </div>
 
     <div class="svc">
       <div class="lead"><span class="no">03</span><h3><span class="t">Creative</span> <b>technology</b></h3><p class="one">What a template can’t do: live visuals, 3D characters, apps and illustration.</p><ul><li><a href="/preview/services/live-visuals/">Live visuals</a>, played on Fantasmagoria</li><li><a href="/preview/services/characters/">3D characters</a>, rigged and animated</li><li><a href="/preview/services/apps/">Apps</a> and <a href="/preview/services/illustration/">illustration</a> for a real job</li></ul>
         <a class="ghost" href="/preview/services/live-visuals/">Live visuals &rarr;</a></div>
-      <figure class="slotf " data-slot="home-svc-creative"><div class="slot" style="aspect-ratio:1.732/1" role="img" aria-label="Image to come: A live visual projected on a venue wall, a few people silhouetted in front of it; night, cool coloured light."><span class="sid">Image · home-svc-creative · 1732 x 1000</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M40 24h220v96H40z M70 90c30-50 60 20 90-30s50 20 70-10 M80 160v-22a12 12 0 0 1 24 0v22 M92 120a9 9 0 1 0 0.1 0 M150 160v-24a13 13 0 0 1 26 0v24 M163 118a10 10 0 1 0 0.1 0 M210 160v-20a11 11 0 0 1 22 0v20 M221 122a8 8 0 1 0 0.1 0"/></svg></div><figcaption class="slotcap">A live visual projected on a venue wall, a few people silhouetted in front of it; night, cool coloured light.</figcaption></figure>
+      <figure class="slotf " data-slot="home-svc-creative"><div class="slot" style="aspect-ratio:1.732/1" role="img" aria-label="Image to come: A live visual projected on a venue wall, a few people silhouetted in front of it; night, cool colored light."><span class="sid">Image · home-svc-creative · 1732 x 1000</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M40 24h220v96H40z M70 90c30-50 60 20 90-30s50 20 70-10 M80 160v-22a12 12 0 0 1 24 0v22 M92 120a9 9 0 1 0 0.1 0 M150 160v-24a13 13 0 0 1 26 0v24 M163 118a10 10 0 1 0 0.1 0 M210 160v-20a11 11 0 0 1 22 0v20 M221 122a8 8 0 1 0 0.1 0"/></svg></div><figcaption class="slotcap">A live visual projected on a venue wall, a few people silhouetted in front of it; night, cool colored light.</figcaption></figure>
     </div>
 
   </section>
@@ -707,7 +755,7 @@ addEventListener('storage',function(e){if(e.key===K)apply(get());});apply(get())
   <!-- Proof: after Anthropic's customer stories grid -->
   <section class="s" id="work" aria-labelledby="h-work">
     <div class="head"><div><p class="label">Proof it&rsquo;s real</p><h2 id="h-work"><span class="t">Made</span> <em>right</em> <b>here.</b></h2></div>
-      <p>Until client stories are ready to share, these are our own products and studies, labelled as such. Each one runs today.</p></div>
+      <p>Until client stories are ready to share, these are our own products and studies, labeled as such. Each one runs today.</p></div>
     <div class="cases">
       <article class="case"><a href="/preview/talaria/"><figure class="slotf " data-slot="home-case-talaria"><div class="slot" style="aspect-ratio:1.732/1" role="img" aria-label="Image to come: Talaria open on a laptop showing a project board, a coffee beside it; top-down desk shot, morning light."><span class="sid">Image · home-case-talaria · 1732 x 1000</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M60 30h180v104H60z M60 46h180 M72 58h44v64H72z M128 58h44v40h-44z M184 58h44v52h-44z M80 70h28 M80 82h20 M136 70h28 M192 70h28 M192 82h20"/></svg></div><figcaption class="slotcap">Talaria open on a laptop showing a project board, a coffee beside it; top-down desk shot, morning light.</figcaption></figure></a>
         <span class="chip">Our product</span><h3><a href="/preview/talaria/">Talaria</a></h3>
@@ -943,7 +991,7 @@ const PAL={
 let P=PAL.dusk, sky=null, HZ=0, grain=null;
 // ---- looks: each style = one base rendering + a few calm layers on top. Edit a style by editing its list. ----
 //   base:   paint | photo | clay | ink | riso | stage    (how the shared sky, clouds, grass and S are drawn)
-//   layers: glow a | grain a | grade colour mode a | wash a | outline px | offset px
+//   layers: glow a | grain a | grade color mode a | wash a | outline px | offset px
 const LOOKS={
   dusk:     [['paint'],['glow',1],['grain',.03]],
   glass:    [['photo'],['grade','#0b3a44','soft-light',.22],['grain',.04]],
@@ -958,7 +1006,7 @@ function look(base,layers){const p=Object.assign({},base,{glow:null,grain:0,outl
     else if(k==='glow')p.glow=base.glow||null;else if(k==='grain')p.grain=a;else if(k==='wash')p.wash=a;
     else if(k==='grade')p.grades.push([a,b,c2]);else if(k==='outline')p.outline=a;else if(k==='offset'){p.hard=base.line||'#000';p.hardD=a;}}
   return p;}
-// ---- colour schemes (the second dial): a scheme recolours the scene in whatever style draws it ----
+// ---- color schemes (the second dial): a scheme recolours the scene in whatever style draws it ----
 const SCH={"dusk":{"dark":1,"bg":"#0e0b16","fg":"#f3eefa","fg2":"#ddd5ea","soft":"#bcb2cf","steel":"#a196b5","accent":"#c9a2ff","btn":"#a46bff","onbtn":"#0e0b16","card":"#19141f","ground":"#120e1b","sky":["#07060c","#3a2560","#a46fc8"],"far":[58,40,86],"near":[8,6,12],"mark":"#f7f2ff","cloud":[240,170,230],"name":"Dusk violet","label":"Dusk"},"prairie":{"dark":0,"bg":"#f3ead2","fg":"#1f2a1a","fg2":"#2c3826","soft":"#4a543d","steel":"#5f6447","accent":"#7d5300","btn":"#2f5b2a","onbtn":"#f8f1dc","card":"#ebe0c3","ground":"#c9b26a","sky":["#f8ecc4","#ecc970","#f3ead2"],"far":[170,156,92],"near":[47,74,38],"mark":"#2f5b2a","cloud":[255,250,235],"name":"Prairie gold","label":"Prairie"},"ink":{"dark":0,"bg":"#f6f4ee","fg":"#121212","fg2":"#1e1e1e","soft":"#454545","steel":"#5c5c5c","accent":"#1f3fbf","btn":"#121212","onbtn":"#f6f4ee","card":"#ece9e0","ground":"#e3dfd4","sky":["#f6f4ee","#e6e2d8","#f6f4ee"],"far":[170,168,160],"near":[18,18,18],"mark":"#121212","cloud":[255,255,255],"name":"Ink and paper","label":"Ink"},"terra":{"dark":0,"bg":"#f2e3d5","fg":"#2b1a12","fg2":"#3a251b","soft":"#5a4337","steel":"#735749","accent":"#9c3a1b","btn":"#9c3a1b","onbtn":"#fff7f0","card":"#ead6c4","ground":"#d9a98a","sky":["#f7dcc3","#e8a27c","#f2e3d5"],"far":[196,140,108],"near":[92,46,28],"mark":"#9c3a1b","cloud":[255,240,228],"name":"Terracotta","label":"Terra"},"pastel":{"dark":0,"bg":"#f6f3f8","fg":"#272238","fg2":"#332d47","soft":"#4d4664","steel":"#5c5575","accent":"#a8285f","btn":"#4f55c4","onbtn":"#ffffff","card":"#ede7f2","ground":"#f3f0f5","sky":["#aab5de","#c9bfe4","#f6c3d6"],"far":[222,214,230],"near":[112,104,140],"mark":"#4f55c4","cloud":[255,246,250],"glow":"rgba(255,168,200,.6)","name":"Pastel glow","label":"Pastel"},"teal":{"dark":1,"bg":"#071b1e","fg":"#e4f5f2","fg2":"#c9e6e1","soft":"#a1cdc6","steel":"#86b6af","accent":"#4fd6c8","btn":"#2db3a5","onbtn":"#04191b","card":"#0d262a","ground":"#06181a","sky":["#041215","#0e3c42","#3fb7aa"],"far":[30,80,84],"near":[3,14,16],"mark":"#e9fbf8","cloud":[170,240,230],"name":"Teal night","label":"Teal"},"riso":{"dark":0,"bg":"#fffbef","fg":"#151515","fg2":"#222222","soft":"#474747","steel":"#5e5e5e","accent":"#c92a1a","btn":"#2350e6","onbtn":"#ffffff","card":"#fff1d6","ground":"#ffd3dc","sky":["#ffe9a8","#ffc2d1","#fffbef"],"far":[255,140,170],"near":[35,80,230],"mark":"#151515","cloud":[255,255,255],"name":"Bright riso","label":"Riso"}};
 const hexA=(h,a)=>{const v=[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));return `rgba(${v},${a})`;};
 const rgbS=v=>`rgb(${v})`;
@@ -967,7 +1015,7 @@ function recolor(b,s){const o=Object.assign({},b),[s0,s1,s2]=s.sky;
   Object.assign(o,{bg:s.bg,sky:[[0,s0],[.8,s1],[1,s2],[1.05,s.ground],[9,s.bg]],far:s.far,near:s.near,mark:s.mark,cut:s.accent,dot:s.accent,ink:s.near.join(','),
     cloudLit:s.cloud,cloudTop:null,glow:s.dark?hexA(s.accent,.4):null,cutGlow:s.dark?s.accent:null,rim:s.dark?s.cloud:null,
     bloom:s.dark?[hexA(s2,.45),hexA(s.accent,.18)]:null,hglow:s.glow||hexA(s2,s.dark?.35:.5),markGrad:null,cloudTints:null,haze:hexA(s2,.18),split:hexA(s2,.6),stars:false});
-  if(b.mode==='photo')o.plate=null; // a drawn sky in the scheme's colours instead of the photograph
+  if(b.mode==='photo')o.plate=null; // a drawn sky in the scheme's colors instead of the photograph
   if(b.mode==='clay')Object.assign(o,{ground:s.ground,mark:s.card,light:s.dark?'#ffffff22':'#ffffff',dark:s.dark?'#000000':hexA(s.fg,.28),cut:s.accent});
   if(b.mode==='ink')Object.assign(o,{skyFill:s1,ground:s.ground,bg:s.ground,cloudFill:rgbS(s.cloud),bush:s.accent,mark:s.btn,line:'#111'});
   if(b.mode==='riso')Object.assign(o,{sky:[[0,s.bg],[9,s.bg]],ground:s.ground,far2:rgbS(s.far),near2:rgbS(s.near),inkB:rgbS(s.near),arch:hexA(s.fg,.14),cut:s.bg});
@@ -1023,12 +1071,12 @@ const SKY={
     const hl=g.createLinearGradient(0,HZ-6,0,HZ+10);hl.addColorStop(0,'rgba(0,0,0,0)');hl.addColorStop(.45,P.split);hl.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=hl;g.fillRect(0,HZ-6,W,16);
     if(P.stars)stars(g);},
   surreal(g){base(g);hglow(g);
-    // a stage, not a sky: painted stripes like a theatre flat, two coloured spotlights, airbrushed haze
+    // a stage, not a sky: painted stripes like a theater flat, two colored spotlights, airbrushed haze
     g.fillStyle=P.stripe;for(let x=0;x<W;x+=56)g.fillRect(x,0,28,HZ);
     for(const [fx,fy,col,rad] of P.spots){const rg=g.createRadialGradient(W*fx,HZ*fy,0,W*fx,HZ*fy,Math.max(W,H)*rad);rg.addColorStop(0,col);rg.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=rg;g.fillRect(0,0,W,H);}
     g.fillStyle=P.floor;g.fillRect(0,HZ,W,H-HZ);},
   riso(g){g.fillStyle=P.bg;g.fillRect(0,0,W,H);const m=Math.min(W,H);
-    // calm and minimal: white sky, a quiet grey ground, nothing else
+    // calm and minimal: white sky, a quiet gray ground, nothing else
     g.fillStyle=P.ground;g.fillRect(0,HZ,W,H-HZ);},
   clay(g){base(g);hglow(g);const m=Math.min(W,H);
     // soft clay: the sun and the hills are pressed out of the same tone, lit from the top left
@@ -1059,7 +1107,7 @@ function cloudSprite(cd){
     const fill=()=>{g.beginPath();for(const [x,y,r] of puffs){g.moveTo(x+r,y);g.arc(x,y,r,0,TAU);}g.fill();};
     g.fillStyle=P.cloudTints?P.cloudTints[cd.i%P.cloudTints.length]:P.bg;g.save();g.shadowColor=P.dark;g.shadowBlur=s*.25;g.shadowOffsetX=g.shadowOffsetY=s*.08;fill();g.restore();
     g.save();g.shadowColor=P.light;g.shadowBlur=s*.25;g.shadowOffsetX=g.shadowOffsetY=-s*.08;fill();g.restore();fill();}
-  else if(m==='riso'){ // a quiet flat silhouette in one pale grey: no outline, no texture
+  else if(m==='riso'){ // a quiet flat silhouette in one pale gray: no outline, no texture
     g.fillStyle=P.arch;g.beginPath();for(const [x,y,r] of puffs){g.moveTo(x+r*1.15,y);g.ellipse(x,y,r*1.15,r*.78,0,0,TAU);}g.fill();
     g.fillRect(-s*1.5,s*.05,s*3,s*.42);}
   else { // soft clouds: painted (dusk wisps), volumetric (glass), stage-lit (editorial)
@@ -1121,7 +1169,7 @@ function drawField(bandFrom,bandTo){
       c.strokeStyle=P.line;c.lineWidth=1.4+k*2.2;c.lineCap='round';c.beginPath();
       blades.forEach((b,i)=>{if(b.band!==band||i%7)return;const sx=Math.sin(b.a),cy=Math.cos(b.a);c.moveTo(b.x,b.y);c.quadraticCurveTo(b.x+Math.sin(b.a*.45)*b.h*.55,b.y-b.h*.6,b.x+sx*b.h,b.y-cy*b.h);});
       c.stroke();continue;}
-    if(mode==='riso'){ // one calm ink, soft: pale grey in the distance to ink up close, every other blade and finer
+    if(mode==='riso'){ // one calm ink, soft: pale gray in the distance to ink up close, every other blade and finer
       c.fillStyle=`rgb(${P.far.map((v,i)=>Math.round(lerp(v,P.near[i],e)))})`;c.beginPath();blades.forEach((b,i)=>{if(b.band===band&&!(i%2))bladePath(b,w0*.55);});c.fill();continue;}
     if(mode==='clay'){ // soft blades in the page's own tone; the near ones cast a soft shadow
       c.fillStyle=`rgb(${P.far.map((v,i)=>Math.round(lerp(v,P.near[i],e)))})`;if(band>=4){c.save();c.shadowColor=P.dark;c.shadowBlur=4;c.shadowOffsetX=2;c.shadowOffsetY=2;}
@@ -1147,7 +1195,7 @@ function drawField(bandFrom,bandTo){
 }
 function markInk(){ // a pastel blend across the S where the look asks for one (each split piece shows its own part of it)
   if(P.markGrad){const g=c.createLinearGradient(40,40,395,310);P.markGrad.forEach((col,i)=>g.addColorStop(i/(P.markGrad.length-1),col));return g;}
-  // a dark S turns to the page's paper colour under a dark night sky, so it never disappears
+  // a dark S turns to the page's paper color under a dark night sky, so it never disappears
   if(DARK<=.5)return P.mark;const h=P.mark.replace('#',''),v=[0,2,4].map(i=>parseInt(h.slice(i,i+2),16));
   return (.3*v[0]+.59*v[1]+.11*v[2])<90?P.bg:P.mark;}
 function markFace(){ // the mark's face in this rendering: a misregistered second ink (riso), a cartoon outline (ink)
@@ -1201,7 +1249,7 @@ function readout(){const el=document.getElementById('wx');if(!el)return;if(!WX){
   el.textContent='Berthoud, CO · '+WX.temp+'°F · '+words.filter(Boolean).join(' · ');el.hidden=false;}
 function setWX(x){WX=x;FALL=[];sky=null;SKYT=x&&x.at?skyFind(x.at):null;skyNow();}
 function wxGrades(){const dark=bgDark(),out=[];
-  if(WX&&WX.cloud>.75)out.push(['#8a8f96','saturation',(WX.cloud-.75)*1.2]);           // overcast: the colour drains a little
+  if(WX&&WX.cloud>.75)out.push(['#8a8f96','saturation',(WX.cloud-.75)*1.2]);           // overcast: the color drains a little
   if(LIGHT==='dusk')out.push(['#ff8a4c','soft-light',.2]);
   return out;}
 function fogLayer(){const [r,g,b]=bgDark()?(P.cloudLit||[200,200,210]):[parseInt(P.bg.slice(1,3),16),parseInt(P.bg.slice(3,5),16),parseInt(P.bg.slice(5,7),16)];
@@ -1265,7 +1313,7 @@ function heroSky(){const h=document.getElementById('hero');if(h&&P)h.dataset.sky
 function skyFind(test){for(let t=Date.now(),i=0;i<3000;i++,t+=9e5){const k=skyAt(t);if(test(k))return t;}return Date.now();} // first time (15 min steps) that passes
 
 // night and overcast are drawn as real skies, so the weather reads at a glance: a dark sky with the real moon and stars,
-// a heavy grey deck when it's overcast. Each look keeps its own hand (flat in ink and riso, soft in the others).
+// a heavy gray deck when it's overcast. Each look keeps its own hand (flat in ink and riso, soft in the others).
 const NIGHT={paint:['#05040c','#1d1336'],photo:['#02070b','#0c222b'],clay:['#2b2622','#4a4038'],ink:['#1b2440','#2e3d66'],riso:['#121318','#262833'],surreal:['#121a16','#2a3832']};
 let DARK=0;
 const skyIsDark=()=>bgDark()||DARK>.5;
@@ -1328,11 +1376,12 @@ function heroContrast(){const out=[],q=cv.getBoundingClientRect(),root=getComput
   return out;}
 function drawNow(){const keep=raf;frame(performance.now());if(raf&&raf!==keep)cancelAnimationFrame(raf);raf=keep;} // one synchronous frame, so the audit never reads a stale picture
 async function audit(only={}){const styles=only.styles||['dusk','glass','neu','brutal','simple','editorial'],sch=only.schemes||['own',...Object.keys(SCH)],fails=[];let n=0;
-  const still=document.createElement('style');still.textContent='*,*::before,*::after{transition:none!important}';document.head.appendChild(still); // measure settled colours, never a fade
+  const still=document.createElement('style');still.textContent='*,*::before,*::after{transition:none!important}';document.head.appendChild(still); // measure settled colors, never a fade
   const pin=document.getElementById('pin'),run=pin.offsetHeight-innerHeight,y0=scrollY;
   for(const t of styles)for(const k of sch)for(const [w,f] of [['cloudy',0],['cloudy',.2],['night',0],['cloudy',.75],['night',.75]]){window.sogTheme.set(t);window.sogScheme.set(k);window.sogWeather.preview(w);
     scrollTo({top:pin.offsetTop+run*f,behavior:'instant'});readScroll();tCur=breakAt(scrollP); // on load, mid-break, and with Find Your Style in
-    await new Promise(r=>setTimeout(r,120));drawNow();for(const [what,v,need] of heroContrast()){n++;if(v<need)fails.push(`${t} · ${k} · ${w}${f>.5?' · find your style':f?' · mid-scroll':''} · ${what}: ${v}`);}}
+    await new Promise(r=>setTimeout(r,120));TB=textBox();for(const cd of CLOUDS)cd.fa=undefined; // clouds settle behind or away from the words, as they do after their fade
+    drawNow();for(const [what,v,need] of heroContrast()){n++;if(v<need)fails.push(`${t} · ${k} · ${w}${f>.5?' · find your style':f?' · mid-scroll':''} · ${what}: ${v}`);}}
   still.remove();scrollTo({top:y0,behavior:'instant'});return {checked:n,fails};}
 (function(){ // live weather, cached for 15 minutes; any failure leaves the default scene and hides the readout
   const K='sog-wx', fresh=()=>{try{const o=JSON.parse(localStorage.getItem(K)||'null');return o&&Date.now()-o.t<9e5?o.d:null;}catch(e){return null;}};
@@ -1346,68 +1395,111 @@ async function audit(only={}){const styles=only.styles||['dusk','glass','neu','b
 })();
 
 // ---- Find Your Style effects: one at a time, each with one Amount (0..1). Drift starts on every visit when beat 2 first
-// shows (never under reduced motion); the first touch on a control takes over. All of it draws into the same 2D scene.
-const TINT_SKY=false;
+// shows (never under reduced motion) and then follows the visitor down the page and from page to page (window.sogDrift, in the
+// head script); the first touch on a control takes over. Under them all, the grass rolls in waves: the Swell, set by the live wind.
+const TINT_SKY=false; // the one-line switch: true lets "Your color" turn the whole scene to the visitor's color, not only the accents
 var B2V=0; // how far beat 2 is in (0..1), set by beats()
 function roomForBeat2(){ // portrait screens: as beat 2 comes in, the S rises and shrinks until its lowest point clears the panel
   if(!B2V)return;const el=document.querySelector('.hero .beat2 .in');if(!el)return;const top=el.getBoundingClientRect().top-cv.getBoundingClientRect().top-14;
-  const my=MY+(.2-MY)*B2V,fit=(top-H*my)/(345-CY);MY=my;if(fit>0&&fit<U)U+=(fit-U)*B2V;} // the one-line switch: true lets "Your colour" turn the whole scene to the visitor's colour, not only the accents
-const FX_AMT={drift:.35,melt:.5,eye:.5,synth:.5,colour:.7};
+  const my=MY+(.2-MY)*B2V,fit=(top-H*my)/(345-CY);MY=my;if(fit>0&&fit<U)U+=(fit-U)*B2V;}
+const FX_AMT={drift:.35,melt:.5,eye:.5,sky:.6,color:.7};
 const FX_STILL=matchMedia('(prefers-reduced-motion: reduce)').matches;
-var FX={kind:FX_STILL?'none':'drift',auto:!FX_STILL,live:false,amt:Object.assign({},FX_AMT),hue:0,shown:0,last:0,mode:0};
-let ACC=null; // the style's accent, for the synth's lines
+const SKIES=['Aurora','Painterly','Stars','Sunset','Riso','Mist'];
+const DRIFT=()=>window.sogDrift||{get:()=>({on:false}),hue:()=>0,start(){},stop(){},amount(){},fresh:()=>false};
+var FX={kind:DRIFT().get().on?'drift':'none',auto:false,live:false,amt:Object.assign({},FX_AMT),shown:0,last:0,mode:0};
+var SWELL={v:0,user:false}; // 0..1: how high and fast the waves run through the grass; follows the live wind until the visitor sets it
+function swellNow(){if(SWELL.user)return SWELL.v;if(FX_STILL)return 0;const w=WX?WX.wind:6;return Math.max(.15,Math.min(.85,.12+w/40));}
+let ACC=null; // the style's accent, for the sky's lines
 const accent=()=>ACC||(ACC=getComputedStyle(document.documentElement).getPropertyValue('--lav').trim()||'#e1bdff');
 ['sog-theme','sog-scheme','sog-colour'].forEach(e=>document.addEventListener(e,()=>{ACC=null;}));
+document.addEventListener('sog-drift',()=>{const on=DRIFT().get().on;if(on&&FX.kind!=='drift')FX.kind='drift';else if(!on&&FX.kind==='drift')FX.kind='none';document.dispatchEvent(new CustomEvent('sog-fx'));});
+function fxLive(){if(FX.live)return;FX.live=true; // beat 2 has appeared: on a fresh visit, Drift begins on its own
+  if(!FX_STILL&&DRIFT().fresh()){FX.auto=true;FX.kind='drift';DRIFT().start(true);}}
 function fxSky(now){const dt=FX.last?Math.min(.05,(now-FX.last)/1000):0;FX.last=now;const T=now/1000,k=FX.kind,a=FX.amt[k]||0;
-  // Drift: every hue in the scene turns together (brightness kept, so the words still read); about one turn a minute at the start
-  if(k==='drift'&&FX.live)FX.hue=(FX.hue+dt*6*(a/.35))%360;
-  else if(FX.hue){const back=((FX.hue+540)%360)-180,nb=back*(1-Math.min(1,dt*3));FX.hue=Math.abs(nb)<.3?0:(nb+360)%360;} // eases home
-  const deg=(FX.hue+((TINT_SKY&&window.sogColour&&sogColour.skyShift())||0)+360)%360;
+  const deg=(DRIFT().hue()+((TINT_SKY&&window.sogColour&&sogColour.skyShift())||0)+360)%360; // Drift turns the scene with the page
   if(Math.abs(deg-FX.shown)>.05){cv.style.filter=deg?`hue-rotate(${deg.toFixed(1)}deg)`:'';FX.shown=deg;}
-  if(k==='synth')synth(T,a);
+  if(k==='sky')skyStyle(T,a);
   if(k==='eye')eye(dt,a);}
-function fxField(a0,a1,T){ // Melt: the blades ripple and droop like heat shimmer
-  if(FX.kind!=='melt'){drawField(a0,a1);return;}const a=FX.amt.melt,keep=blades.map(b=>[b.a,b.h]);
-  for(const b of blades){b.a+=a*.45*Math.sin(T*2.4+b.x*.02+b.band*.7);b.h*=1-a*.22*(.5+.5*Math.sin(T*1.7+b.x*.011));}
-  drawField(a0,a1);blades.forEach((b,i)=>{b.a=keep[i][0];b.h=keep[i][1];});}
+let WK=.006; // one swell about every 85% of the scene's width, its crests running diagonally across the field
+function waves(T,sw){WK=2*Math.PI/Math.max(360,W*.85); // the Sea of Grass, literally: long crests roll across the field, bending the blades as they pass
+  const sp=.5+1.3*sw,dir=WX&&WX.dir<0?-1:1;
+  for(const b of blades){const depth=.3+.7*Math.max(0,(b.y-HZ)/(H-HZ)),ph=(b.x+(b.y-HZ)*1.4)*WK-T*sp*dir,crest=Math.pow(Math.max(0,Math.sin(ph)),2);
+    b.a+=dir*sw*1.05*crest*depth;b.h*=1-sw*.18*crest;}}
+function crestLight(T,sw){ // light catching each crest, drawn along the same lines the blades bend on
+  const sp=.5+1.3*sw,dir=WX&&WX.dir<0?-1:1;c.save();c.globalCompositeOperation='soft-light';c.strokeStyle=`rgba(255,250,230,${(.34*sw).toFixed(3)})`;c.lineCap='round';
+  const span=W+(H-HZ)*1.4,ta=-T*sp*dir/(2*Math.PI),tb=(span*WK-T*sp*dir)/(2*Math.PI); // the crests that cross the field right now
+  for(let n=Math.floor(Math.min(ta,tb))-1;n<=Math.ceil(Math.max(ta,tb))+1;n++){let px=null,py=null; // each crest is a straight diagonal line
+    for(let y=HZ+6;y<=H;y+=16){const depth=.3+.7*(y-HZ)/(H-HZ),x=(Math.PI/2+2*Math.PI*n+T*sp*dir)/WK-(y-HZ)*1.4;
+      if(px!==null&&(x>-80&&x<W+80||px>-80&&px<W+80)){c.lineWidth=10+50*depth;c.beginPath();c.moveTo(px,py);c.lineTo(x,y);c.stroke();}px=x;py=y;}}
+  c.restore();}
+function fxField(a0,a1,T){ // Melt and the waves bend the blades for this frame only; the field's own physics stays untouched
+  const sw=swellNow(),melt=FX.kind==='melt';if(!sw&&!melt){drawField(a0,a1);return;}const keep=blades.map(b=>[b.a,b.h]);
+  if(sw)waves(T,sw);
+  if(melt){const a=FX.amt.melt;for(const b of blades){b.a+=a*.45*Math.sin(T*2.4+b.x*.02+b.band*.7);b.h*=1-a*.22*(.5+.5*Math.sin(T*1.7+b.x*.011));}}
+  drawField(a0,a1);blades.forEach((b,i)=>{b.a=keep[i][0];b.h=keep[i][1];});
+  if(sw&&a1===BANDS-1)crestLight(T,sw);}
 function fxPiece(i,T){const k=FX.kind,a=FX.amt[k]||0; // the S's pieces: Melt ripples and leans them, Eye draws them round towards the eye
   if(k==='melt'){c.translate(0,a*16*Math.sin(T*2.1+i*1.3));c.transform(1,0,a*.18*Math.sin(T*1.4+i),1,0,0);}
-  else if(k==='eye'){const [ex,ey]=eyeAt(),mx=(ex-W*MX)/U+CX,my=(ey-H*MY)/U+CY,f=a*.22*(.6+.4*Math.sin(T*.7+i));
-    c.translate((mx-CX)*f,(my-CY)*f);c.translate(mx,my);c.rotate(a*.35*Math.sin(T*.45+i*.9));c.translate(-mx,-my);}}
-function eyeAt(){ // open sky above and beside the S, clear of the words; on portrait screens, the open band between the S and the panel
-  const port=H>W*1.05&&!windowed();if(port&&TB){const sb=markBox()[3],y=(sb+TB[1])/2;if(TB[1]-sb>40)return [W*.8,y,(TB[1]-sb)*.28];}
-  let x=W*(windowed()?.78:.9);const y=HZ*.2;if(TB&&x<TB[2]+60)x=Math.min(W*.92,TB[2]+60);return [x,y];}
-function eye(dt,a){ // Eye: a dark eye opens in the sky and the clouds spiral into it
-  const [ex,ey,cap]=eyeAt(),R=Math.min(Math.min(W,HZ)*(.05+.09*a),cap||1e9);
-  for(const cd of CLOUDS){const dx=cd.x-ex,dy=cd.y-ey,d=Math.hypot(dx,dy)||1,v=(30+110*a)*dt;cd.x+=-dy/d*v*.9-dx/d*v*.5;cd.y+=dx/d*v*.9-dy/d*v*.5;
+  else if(k==='eye'){const [ex,ey]=EYE.at||eyeHome(),mx=(ex-W*MX)/U+CX,my=(ey-H*MY)/U+CY,f=a*.3*(.6+.4*Math.sin(T*.7+i));
+    c.translate((mx-CX)*f,(my-CY)*f);c.translate(mx,my);c.rotate(a*.4*Math.sin(T*.45+i*.9));c.translate(-mx,-my);}}
+// Eye: a dark eye in the sky that follows your pointer (or a finger: tap or drag on the scene); the clouds and the S spiral towards it
+const EYE={at:null,to:null};
+function eyeHome(){ // where it rests before you point: open sky beside the S, or the band between the S and the panel on portrait screens
+  const port=H>W*1.05&&!windowed();if(port&&TB){const sb=markBox()[3];if(TB[1]-sb>40)return [W*.8,(sb+TB[1])/2];}
+  let x=W*(windowed()?.78:.9);if(TB&&x<TB[2]+60)x=Math.min(W*.92,TB[2]+60);return [x,HZ*.2];}
+function eyeTarget(e){const q=cv.getBoundingClientRect();let x=e.clientX-q.left,y=e.clientY-q.top;
+  if(TB&&x>TB[0]&&x<TB[2]&&y>TB[1]&&y<TB[3])x=TB[2]+40; // never under the words
+  EYE.to=[Math.max(0,Math.min(W,x)),Math.max(0,Math.min(H,y))];}
+['pointermove','pointerdown'].forEach(t=>cv.addEventListener(t,e=>{if(FX.kind==='eye')eyeTarget(e);},{passive:true}));
+function eye(dt,a){const home=eyeHome(),to=EYE.to||home;if(!EYE.at)EYE.at=home.slice(0,2);
+  const k=1-Math.exp(-dt*5);EYE.at[0]+=(to[0]-EYE.at[0])*k;EYE.at[1]+=(to[1]-EYE.at[1])*k; // a smooth, unhurried follow, never a jitter
+  const [ex,ey]=EYE.at,cap=H>W*1.05&&TB?Math.max(18,(TB[1]-markBox()[3])*.3):1e9,R=Math.min(Math.min(W,HZ)*(.05+.09*a),cap);
+  for(const cd of CLOUDS){const dx=cd.x-ex,dy=cd.y-ey,d=Math.hypot(dx,dy)||1,v=(30+130*a)*dt;cd.x+=-dy/d*v*.9-dx/d*v*.5;cd.y+=dx/d*v*.9-dy/d*v*.5;
     if(d<R*.9){cd.x=Math.random()<.5?-cd.sp.w/2:W+cd.sp.w/2;cd.y=HZ*(.08+Math.random()*.45);cd.fa=0;}}
   const g=c.createRadialGradient(ex,ey,R*.2,ex,ey,R*1.6);g.addColorStop(0,'rgba(0,0,0,.96)');g.addColorStop(.55,'rgba(0,0,0,.82)');g.addColorStop(1,'rgba(0,0,0,0)');
   c.fillStyle=g;c.beginPath();c.arc(ex,ey,R*1.6,0,7);c.fill();if(P.mode==='ink'){c.fillStyle='#000';c.beginPath();c.arc(ex,ey,R,0,7);c.fill();}
   // a lit rim in the style's accent, and a slow dashed ring turning round it, so the eye reads on a dark sky too
   const T=performance.now()/1000;c.save();c.strokeStyle=accent();c.lineWidth=2.5;c.globalAlpha=.85;c.beginPath();c.arc(ex,ey,R*1.02,0,7);c.stroke();
   c.globalAlpha=.45;c.lineWidth=1.5;c.setLineDash([6,10]);c.lineDashOffset=-T*30;c.beginPath();c.arc(ex,ey,R*1.45,0,7);c.stroke();c.restore();}
-function synth(T,a){ // Synth: one of the visual synth's patterns in the sky behind the S (circle grid, mirror bars, radiating squares)
-  c.save();c.beginPath();c.rect(0,0,W,HZ);if(TB)c.rect(TB[2],TB[1],TB[0]-TB[2],TB[3]-TB[1]);c.clip('evenodd'); // the words stay clear
-  c.globalAlpha=.5;c.strokeStyle=c.fillStyle=accent();c.lineWidth=2;const n=Math.round(5+a*14);
-  if(FX.mode===0){const s=W/n;for(let x=s/2;x<W;x+=s)for(let y=s/2;y<HZ;y+=s){const r=s*.42*(.35+.65*Math.abs(Math.sin(T*1.6+x*.013+y*.021)));c.beginPath();c.arc(x,y,r,0,7);c.stroke();}}
-  else if(FX.mode===1){const bw=W/(n*2);for(let i=0;i<n;i++){const h=HZ*(.15+.75*Math.abs(Math.sin(T*1.3+i*.6)));c.fillRect(W/2+i*bw,HZ-h,bw*.6,h);c.fillRect(W/2-(i+1)*bw+bw*.4,HZ-h,bw*.6,h);}}
-  else{const cx=W*MX,cy=H*MY,m=Math.max(W,H);for(let i=0;i<n;i++){const s=(i+(T*.4)%1)*m/n;c.save();c.translate(cx,cy);c.rotate(T*.2+i*.08);c.strokeRect(-s/2,-s/2,s,s);c.restore();}}
+function skyStyle(T,a){ // Sky: each tap paints the sky another way; the words always stay clear
+  c.save();c.beginPath();c.rect(0,0,W,HZ+2);if(TB)c.rect(TB[2],TB[1],TB[0]-TB[2],TB[3]-TB[1]);c.clip('evenodd');const m=FX.mode;
+  if(m===0){c.globalCompositeOperation='screen'; // aurora: curtains of green and violet light, swaying
+    for(let i=0;i<3;i++){const col=i===1?'170,90,255':'60,255,170',g=c.createLinearGradient(0,0,0,HZ*.8);g.addColorStop(0,`rgba(${col},0)`);g.addColorStop(.45,`rgba(${col},${.6*a})`);g.addColorStop(1,`rgba(${col},0)`);c.fillStyle=g;
+      for(let x=0;x<W;x+=6){const y=HZ*(.06+.1*Math.sin(x*.003+T*.25+i*2)+.04*Math.sin(x*.011-T*.6+i)),h=HZ*(.35+.15*Math.sin(x*.007+T*.4+i));c.globalAlpha=.55+.45*Math.sin(x*.02+T*1.3+i);c.fillRect(x,y,6.5,h);}}}
+  else if(m===1){c.globalCompositeOperation='soft-light';const r=rng(7); // painterly: broad soft strokes of warm and cool paint
+    for(let i=0;i<14;i++){const R=120+r()*220,x=(r()*W+T*12*(1+i%3))%(W+400)-200,y=r()*HZ*.85,tone=r()<.5?'255,190,140':'140,170,255',g=c.createRadialGradient(x,y,0,x,y,R*1.6);
+      g.addColorStop(0,`rgba(${tone},${.85*a})`);g.addColorStop(1,`rgba(${tone},0)`);c.fillStyle=g;c.beginPath();c.ellipse(x,y,R*1.6,R*.6,r()*.6-.3,0,7);c.fill();}}
+  else if(m===2){c.fillStyle=`rgba(4,6,20,${.75*a})`;c.fillRect(0,0,W,HZ+2);const r=rng(11); // stars: the sky dims and fills with twinkling stars
+    for(let i=0;i<260;i++){const x=r()*W,y=r()*HZ*.95,s=r()*1.6+.4,tw=.5+.5*Math.sin(T*2+i);c.fillStyle=`rgba(255,255,255,${((.3+.7*tw)*a).toFixed(2)})`;c.fillRect(x,y,s,s);}}
+  else if(m===3){c.globalCompositeOperation='soft-light';const g=c.createLinearGradient(0,0,0,HZ); // sunset: a warm wash down to the horizon and a low sun
+    g.addColorStop(0,`rgba(90,40,140,${.9*a})`);g.addColorStop(.6,`rgba(255,90,90,${.9*a})`);g.addColorStop(1,`rgba(255,200,90,${a})`);c.fillStyle=g;c.fillRect(0,0,W,HZ+2);
+    c.globalCompositeOperation='screen';const sx=W*.3,sy=HZ*.92,sr=Math.min(W,H)*.09,s=c.createRadialGradient(sx,sy,0,sx,sy,sr*3);
+    s.addColorStop(0,`rgba(255,220,150,${a})`);s.addColorStop(.3,`rgba(255,150,90,${.6*a})`);s.addColorStop(1,'rgba(255,120,80,0)');c.fillStyle=s;c.fillRect(sx-sr*3,sy-sr*3,sr*6,sr*6);}
+  else if(m===4){c.globalCompositeOperation='multiply';const st=14-a*6; // riso: two inks, a halftone of pink dots and blue stripes
+    c.fillStyle=`rgba(255,72,176,${.55*a})`;for(let y=st/2;y<HZ;y+=st)for(let x=(Math.round(y/st)%2)*st/2;x<W;x+=st){const r=st*.42*(.4+.6*Math.abs(Math.sin(x*.004+y*.006+T*.4)));c.beginPath();c.arc(x,y,r,0,7);c.fill();}
+    c.fillStyle=`rgba(0,120,191,${.35*a})`;for(let y=-HZ;y<HZ;y+=28){c.save();c.translate(0,y+(T*8)%28);c.transform(1,-.25,0,1,0,0);c.fillRect(0,0,W,9);c.restore();}}
+  else{for(let i=0;i<6;i++){const y=HZ*(.2+i*.14),h=HZ*.16,x=(T*(8+i*3))%(W*1.5)-W*.25,g=c.createLinearGradient(0,y-h,0,y+h); // mist: slow banks of fog drifting across
+    g.addColorStop(0,'rgba(255,255,255,0)');g.addColorStop(.5,`rgba(235,240,245,${.45*a})`);g.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=g;c.fillRect(x-W*.25,y-h,W*1.5,h*2);}}
   c.restore();}
+const fxNote=()=>document.dispatchEvent(new CustomEvent('sog-fx'));
 window.sogFX={ // the panel's controls talk to the scene through this
-  get:()=>({kind:FX.kind,amt:FX.amt[FX.kind]??0,mode:FX.mode,auto:FX.auto}),
-  set(k){FX.auto=false;if(k==='synth'&&FX.kind==='synth'){FX.mode++;if(FX.mode>2){FX.mode=0;k='none';}}else if(k===FX.kind)k='none';else FX.mode=0;
-    if(FX.kind==='eye'&&k!=='eye')makeClouds();FX.kind=k;document.dispatchEvent(new CustomEvent('sog-fx'));},
-  amount(v){if(FX.kind in FX.amt){FX.amt[FX.kind]=Math.max(0,Math.min(1,v));document.dispatchEvent(new CustomEvent('sog-fx'));}},
-  off(){FX.auto=false;if(FX.kind==='eye')makeClouds();FX.kind='none';FX.mode=0;document.dispatchEvent(new CustomEvent('sog-fx'));},
-  touch(){if(FX.auto&&FX.kind==='drift'){FX.auto=false;FX.kind='none';document.dispatchEvent(new CustomEvent('sog-fx'));}}, // any touch takes over
-  reset(){if(FX.kind==='eye')makeClouds();FX.amt=Object.assign({},FX_AMT);FX.kind=FX_STILL?'none':'drift';FX.auto=!FX_STILL;FX.mode=0;
-    window.sogScheme&&sogScheme.set('own');window.sogColour&&sogColour.clear();document.dispatchEvent(new CustomEvent('sog-fx'));}};
+  get:()=>({kind:FX.kind,amt:FX.kind==='drift'?DRIFT().get().amt:FX.amt[FX.kind]??0,mode:FX.mode,sky:FX.kind==='sky'?SKIES[FX.mode]:null,auto:FX.auto,swell:swellNow(),swellUser:SWELL.user}),
+  set(k){FX.auto=false;if(FX.kind==='eye'&&k!=='eye')makeClouds();
+    if(k==='sky'&&FX.kind==='sky'){FX.mode++;if(FX.mode>=SKIES.length){FX.mode=0;k='none';}}else if(k===FX.kind)k='none';else FX.mode=0;
+    if(k==='drift')DRIFT().start();else DRIFT().stop();FX.kind=k;fxNote();},
+  off(){FX.auto=false;if(FX.kind==='eye')makeClouds();DRIFT().stop();FX.kind='none';FX.mode=0;fxNote();},
+  amount(v){v=Math.max(0,Math.min(1,v));if(FX.kind==='drift')DRIFT().amount(v);else if(FX.kind in FX.amt)FX.amt[FX.kind]=v;fxNote();},
+  swell(v){SWELL.user=true;SWELL.v=Math.max(0,Math.min(1,v));fxNote();},
+  touch(){if(FX.auto&&FX.kind==='drift'){FX.auto=false;DRIFT().stop();FX.kind='none';fxNote();}}, // any touch takes over
+  reset(){if(FX.kind==='eye')makeClouds();FX.amt=Object.assign({},FX_AMT);FX.mode=0;SWELL.user=false;EYE.to=null;DRIFT().amount(FX_AMT.drift);
+    FX.kind=FX_STILL?'none':'drift';FX.auto=!FX_STILL;if(!FX_STILL)DRIFT().start(true);else DRIFT().stop();
+    window.sogScheme&&sogScheme.set('own');window.sogColour&&sogColour.clear();fxNote();}};
 
 // ---- the opening: the gust plays out as you scroll down, and runs back as you scroll up ----
 function S(t){if(t<.4)return 0;return slow(seg(t,.4,4.6));}
 const TEND=4.8, reduce=matchMedia('(prefers-reduced-motion: reduce)').matches, hero=document.getElementById('hero');
 let t0=performance.now()+500, tShow=reduce?TEND:0, tPrev=tShow, visible=true, raf=0;
-const pinEl=document.getElementById('pin');let scrollP=0,tCur=.4;const B1=document.querySelector('.hero .beat1'),B2=document.querySelector('.hero .beat2');function beat(el,v,dy){el.style.opacity=v.toFixed(3);el.style.transform=v<1?`translateY(${((1-v)*dy).toFixed(1)}px)`:'';el.classList.toggle('off',v<.01);el.classList.toggle('dim',v<.5);}function beats(p){if(reduce||!B1||!B2)return;const a=cl((p-.22)/.2,0,1),b=cl((p-.4)/.15,0,1);beat(B1,1-a,-48);beat(B2,b,48);B2V=b;if(b>.3&&FX)FX.live=true;}const breakAt=p=>.4+cl(p/.45,0,1)*(TEND-.6);function readScroll(){const r=pinEl.getBoundingClientRect(),run=Math.max(1,r.height-innerHeight);scrollP=cl(-r.top/run,0,1);hero.classList.toggle('scrolled',scrollP>.02);beats(scrollP);}addEventListener('scroll',readScroll,{passive:true});addEventListener('resize',readScroll);readScroll();document.addEventListener('click',e=>{const a=e.target.closest('a[href="#style"]');if(!a||reduce)return;e.preventDefault();const run=pinEl.offsetHeight-innerHeight;scrollTo({top:pinEl.offsetTop+run*.62,behavior:'smooth'});});function clock(now){const tg=reduce?0:breakAt(scrollP);tCur+=(tg-tCur)*.2;return tCur;}
+const pinEl=document.getElementById('pin');let scrollP=0,tCur=.4;const B1=document.querySelector('.hero .beat1'),B2=document.querySelector('.hero .beat2');function beat(el,v,dy){el.style.opacity=v.toFixed(3);el.style.transform=v<1?`translateY(${((1-v)*dy).toFixed(1)}px)`:'';el.classList.toggle('off',v<.01);el.classList.toggle('dim',v<.5);}function beats(p){if(reduce||!B1||!B2)return;const a=cl((p-.22)/.2,0,1),b=cl((p-.4)/.15,0,1);beat(B1,1-a,-48);beat(B2,b,48);B2V=b;if(b>.3&&FX)fxLive();}const breakAt=p=>.4+cl(p/.45,0,1)*(TEND-.6);function readScroll(){const r=pinEl.getBoundingClientRect(),run=Math.max(1,r.height-innerHeight);scrollP=cl(-r.top/run,0,1);hero.classList.toggle('scrolled',scrollP>.02);beats(scrollP);}addEventListener('scroll',readScroll,{passive:true});addEventListener('resize',readScroll);readScroll();document.addEventListener('click',e=>{const a=e.target.closest('a[href="#style"]');if(!a||reduce)return;e.preventDefault();const run=pinEl.offsetHeight-innerHeight;scrollTo({top:pinEl.offsetTop+run*.62,behavior:'smooth'});});function clock(now){const tg=reduce?0:breakAt(scrollP);tCur+=(tg-tCur)*.2;return tCur;}
 let ptr=null; const pprev={x:0,y:0,has:false};
 function local(x,y){const r=cv.getBoundingClientRect();return[x-r.left,y-r.top];}
 function setPtr(x,y){[x,y]=local(x,y);const vx=pprev.has?x-pprev.x:0,vy=pprev.has?y-pprev.y:0;ptr={x,y,vx,vy,k:1};pprev.x=x;pprev.y=y;pprev.has=true;}
@@ -1447,8 +1539,8 @@ lastW=cv.clientWidth;size();raf=requestAnimationFrame(frame);
 })();
 </script>
 <script>
-(()=>{ // the hue ring (shared with Find Your Style) and the "Your colour" chip that follows the visitor from page to page
-function ring(onPick){const el=document.createElement('div');el.className='huering';el.innerHTML='<div class="wheel" role="slider" tabindex="0" aria-label="Your colour, hue" aria-valuemin="0" aria-valuemax="359"><i></i></div><button type="button" class="clear">Clear</button>';
+(()=>{ // the hue ring (shared with Find Your Style) and the "Your color" chip that follows the visitor from page to page
+function ring(onPick){const el=document.createElement('div');el.className='huering';el.innerHTML='<div class="wheel" role="slider" tabindex="0" aria-label="Your color, hue" aria-valuemin="0" aria-valuemax="359"><i></i></div><button type="button" class="clear">Clear</button>';
   const wh=el.querySelector('.wheel'),th=wh.querySelector('i');
   const show=()=>{const v=window.sogColour.get(),h=v?v.h:0;th.style.transform=`rotate(${h}deg)`;wh.setAttribute('aria-valuenow',h);wh.setAttribute('aria-valuetext',v?`hue ${h}`:'none');th.hidden=!v;};
   const at=e=>{const r=wh.getBoundingClientRect();return Math.atan2(e.clientX-(r.left+r.width/2),-(e.clientY-(r.top+r.height/2)))*180/Math.PI;};
@@ -1459,7 +1551,7 @@ function ring(onPick){const el=document.createElement('div');el.className='hueri
   document.addEventListener('sog-colour',show);show();return el;}
 window.sogColourRing=ring;
 const chip=document.createElement('div');chip.className='yours';
-chip.innerHTML='<button type="button" class="yb" aria-expanded="false" aria-label="Your colour"><i aria-hidden="true"></i><span aria-hidden="true">Your colour</span></button><div class="pop" hidden></div>';
+chip.innerHTML='<button type="button" class="yb" aria-expanded="false" aria-label="Your color"><i aria-hidden="true"></i><span aria-hidden="true">Your color</span></button><div class="pop" hidden></div>';
 const btn=chip.querySelector('.yb'),pop=chip.querySelector('.pop');pop.appendChild(ring());
 btn.addEventListener('click',()=>{const o=pop.hidden;pop.hidden=!o;btn.setAttribute('aria-expanded',String(o));});
 document.addEventListener('click',e=>{if(!chip.contains(e.target)&&!pop.hidden){pop.hidden=true;btn.setAttribute('aria-expanded','false');}});
@@ -1489,8 +1581,8 @@ const STY=[['dusk','Dusk','Dusk, our own: a painted sky at nightfall.'],
   ['brutal','Brutal','Neubrutalism: a plain ground, thick black outlines, hard shadows and a few loud accents; the field is a cartoon.'],
   ['simple','Simple','Simple: white, one red, a strict grid; the field is a clean print.'],
   ['editorial','Editorial','Editorial: a luxe serif on warm paper; the field is lit like a stage.']];
-// two dials of the same make: Style (six families, 60 degrees apart) and Colour (the style's own palette plus six schemes)
-const SCHEMES=[['own','Own','its own colours'],["dusk", "Dusk", "Dusk violet"],["prairie", "Prairie", "Prairie gold"],["ink", "Ink", "Ink and paper"],["terra", "Terra", "Terracotta"],["pastel", "Pastel", "Pastel glow"],["teal", "Teal", "Teal night"],["riso", "Riso", "Bright riso"]];
+// two dials of the same make: Style (six families, 60 degrees apart) and Color (the style's own palette plus six schemes)
+const SCHEMES=[['own','Own','its own colors'],["dusk", "Dusk", "Dusk violet"],["prairie", "Prairie", "Prairie gold"],["ink", "Ink", "Ink and paper"],["terra", "Terra", "Terracotta"],["pastel", "Pastel", "Pastel glow"],["teal", "Teal", "Teal night"],["riso", "Riso", "Bright riso"]];
 const NS='http://www.w3.org/2000/svg', both=document.getElementById('dial-both');
 function makeDial(dial,stops,span,current,onPick){
   const svg=dial.querySelector('svg'),step=stops.length>1?2*span/(stops.length-1):0,ANG=k=>-span+step*k;
@@ -1522,24 +1614,24 @@ function makeDial(dial,stops,span,current,onPick){
   return sync;}
 const theme=()=>document.documentElement.getAttribute('data-theme'),scheme=()=>document.documentElement.getAttribute('data-scheme')||'own';
 function label(){const st=STY.find(s=>s[0]===theme())||STY[0],sc=SCHEMES.find(s=>s[0]===scheme())||SCHEMES[0];
-  both.textContent=`${st[1]} · ${sc[0]==='own'?'own colours':sc[2]}`;
+  both.textContent=`${st[1]} · ${sc[0]==='own'?'own colors':sc[2]}`;
   document.getElementById('dial-credit').textContent=st[2];}
 const syncS=makeDial(document.getElementById('dial'),STY,150,theme,v=>window.sogTheme.set(v));
 const syncC=makeDial(document.getElementById('dial2'),SCHEMES,150,scheme,v=>window.sogScheme.set(v));
 document.addEventListener('sog-theme',()=>{syncS();label();});document.addEventListener('sog-scheme',()=>{syncC();label();});
 syncS();syncC();label();
 // the Effects row: one effect at a time (tap the lit one again to turn it off; Synth steps through its three patterns first),
-// one Amount knob for whichever is lit, Reset; Colour opens the hue ring inside the panel
+// one Amount knob for whichever is lit, Reset; Color opens the hue ring inside the panel
 const fx=document.querySelector('.beat2 .fx');
 if(fx&&window.sogFX){const chips=[...fx.querySelectorAll('.chip')],knob=fx.querySelector('.knob'),pct=document.getElementById('fx-amt'),pop=fx.querySelector('.fxpop');
   pop.appendChild(window.sogColourRing(()=>{}));
   let colourOn=false;
   const amtNow=()=>colourOn?((window.sogColour.get()||{}).s??.7):window.sogFX.get().amt;
-  function show(){const f=window.sogFX.get();chips.forEach(b=>{const on=colourOn?b.dataset.fx==='colour':b.dataset.fx===f.kind;b.setAttribute('aria-pressed',String(on));b.classList.toggle('on',on);});
-    const k=fx.querySelector('.c-synth');k.dataset.mode=f.kind==='synth'?f.mode+1:'';
+  function show(){const f=window.sogFX.get();chips.forEach(b=>{const on=colourOn?b.dataset.fx==='color':b.dataset.fx===f.kind;b.setAttribute('aria-pressed',String(on));b.classList.toggle('on',on);});
+    fx.querySelector('.c-sky .nm').textContent=f.sky||'Sky'; // the lit Sky chip names the sky it is painting
     const live=colourOn||f.kind!=='none',a=amtNow();knob.setAttribute('aria-disabled',String(!live));knob.setAttribute('aria-valuenow',Math.round(a*100));
     knob.style.setProperty('--a',a);pct.textContent=live?Math.round(a*100)+'%':'off';pop.hidden=!colourOn;fx.querySelector('.c-colour').setAttribute('aria-expanded',String(colourOn));}
-  chips.forEach(b=>b.addEventListener('click',()=>{if(b.dataset.fx==='colour'){colourOn=!colourOn;if(colourOn){window.sogFX.off();if(!window.sogColour.get())window.sogColour.set(285,.7);}show();return;}
+  chips.forEach(b=>b.addEventListener('click',()=>{if(b.dataset.fx==='color'){colourOn=!colourOn;if(colourOn){window.sogFX.off();if(!window.sogColour.get())window.sogColour.set(285,.7);}show();return;}
     colourOn=false;window.sogFX.set(b.dataset.fx);}));
   function setAmt(v){v=Math.max(0,Math.min(1,v));if(colourOn){const c=window.sogColour.get();if(c)window.sogColour.set(c.h,.25+.7*v);knob.style.setProperty('--a',v);}else window.sogFX.amount(v);show();}
   let drag=null;knob.addEventListener('pointerdown',e=>{if(knob.getAttribute('aria-disabled')==='true')return;drag={y:e.clientY,a:colourOn?((window.sogColour.get()||{s:.7}).s-.25)/.7:amtNow()};knob.setPointerCapture(e.pointerId);});
@@ -1548,7 +1640,11 @@ if(fx&&window.sogFX){const chips=[...fx.querySelectorAll('.chip')],knob=fx.query
   fx.querySelector('.reset').addEventListener('click',()=>{colourOn=false;window.sogFX.reset();});
   // any touch on the dials, the letters or the scene takes over from the opening drift
   document.querySelectorAll('#dial,#dial2,#h-fys,#cv').forEach(el=>['pointerdown','keydown'].forEach(ev=>el.addEventListener(ev,()=>window.sogFX.touch(),{passive:true})));
-  ['sog-fx','sog-colour'].forEach(ev=>document.addEventListener(ev,show));show();}
+  const sw=document.getElementById('swell'),swo=document.getElementById('swell-out'),WORDS=['Still','Breeze','Swell','Rollers','Storm'];
+  function swShow(){const f=window.sogFX.get(),v=f.swell,w=v<.04?0:Math.min(4,1+Math.floor(v*4));if(document.activeElement!==sw)sw.value=Math.round(v*100);
+    sw.style.setProperty('--p',v);swo.innerHTML=WORDS[w]+(f.swellUser?'':'<span class="lw"> · live wind</span>');sw.setAttribute('aria-valuetext',WORDS[w]);}
+  sw.addEventListener('input',()=>{window.sogFX.swell(sw.value/100);});setInterval(swShow,2000);
+  ['sog-fx','sog-colour','sog-drift'].forEach(ev=>document.addEventListener(ev,()=>{show();swShow();}));show();swShow();}
 // the Neubrutalism shortcut tile: show tonight's real sky (the weather readout stays live)
 const tog=document.querySelector('.t-tog');if(tog)tog.addEventListener('click',()=>{const on=tog.getAttribute('aria-pressed')!=='true';tog.setAttribute('aria-pressed',String(on));if(window.sogWeather)window.sogWeather.tonight(on);});
 })();
