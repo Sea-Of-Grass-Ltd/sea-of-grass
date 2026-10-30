@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex,nofollow">
+<meta charset="utf-8" />
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-61Q2DRMD3H"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-61Q2DRMD3H');
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cat Head: Modelling — Sea of Grass</title>
+<meta name="description" content="Study 14, part one. Modelling a cat head for Alexithymia with thirty-two small AI sessions working from cards, with files as their only memory and a person's OK at every stop." />
+<link rel="canonical" href="https://seaofgrass.studio/studies/cat-head/" />
+<link rel="icon" href="/preview/assets/favicon.svg" type="image/svg+xml" />
+
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="Sea of Grass" />
+<meta property="og:url" content="https://seaofgrass.studio/studies/cat-head/" />
+<meta property="og:title" content="Cat Head: Modelling — Sea of Grass" />
+<meta property="og:description" content="Twenty-eight tries in one long AI session failed. Thirty-two short ones, each with one card, are getting there. Notes on the process." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+/* ============================================================
+   Study 14 — Cat Head.
+   Site tokens; prose in Plex Sans, craft in Plex Mono.
+   The pictures are the project's own sheets and check images.
+   ============================================================ */
+
+:root{
+  --paper:#faf9f6;
+  --ink:#141311;
+  --line:#d9d6cf;
+  --ink-soft:rgba(20,19,17,.5);
+  --cell:#ffffff;
+  --sans:"IBM Plex Sans",ui-sans-serif,system-ui,-apple-system,sans-serif;
+  --mono:"IBM Plex Mono","SFMono-Regular",Menlo,Consolas,monospace;
+}
+
+*{box-sizing:border-box;}
+html{background:var(--paper);-webkit-text-size-adjust:100%;}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--sans);font-size:15px;line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+}
+
+.wrap{max-width:52rem;margin:0 auto;padding:0 clamp(1.25rem,5vw,2rem);}
+a{color:inherit;text-underline-offset:3px;text-decoration-thickness:1px;}
+a:focus-visible{outline:1px solid var(--ink);outline-offset:4px;}
+
+.home{
+  display:inline-block;width:30px;color:var(--ink-soft);
+  transition:color .18s ease;padding-top:clamp(2rem,6vh,3.25rem);
+}
+.home:hover,.home:focus-visible{color:var(--ink);}
+.home svg{display:block;width:100%;height:auto;}
+
+/* ---------- masthead ---------- */
+
+.top{padding:2.25rem 0 2.5rem;border-bottom:1px solid var(--line);}
+.kicker{
+  font-family:var(--mono);font-size:11.5px;font-weight:500;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-soft);margin:0 0 1.25rem;
+}
+h1{
+  font-size:clamp(28px,5.2vw,42px);line-height:1.1;letter-spacing:-.022em;
+  font-weight:600;margin:0 0 1.1rem;text-wrap:balance;
+}
+.standfirst{
+  font-size:17px;line-height:1.6;color:var(--ink-soft);
+  max-width:58ch;margin:0;text-wrap:pretty;
+}
+.meta{
+  display:flex;flex-wrap:wrap;gap:.5rem 1.75rem;margin-top:1.9rem;
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--ink-soft);
+}
+.meta b{font-weight:500;color:var(--ink);}
+
+/* ---------- sections ---------- */
+
+section{padding:3.25rem 0;border-bottom:1px solid var(--line);}
+section:last-of-type{border-bottom:0;}
+.num{
+  display:block;font-family:var(--mono);font-size:11.5px;font-weight:500;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:.75rem;
+}
+h2{
+  font-size:clamp(20px,3.3vw,26px);line-height:1.22;letter-spacing:-.018em;
+  font-weight:600;margin:0 0 1rem;text-wrap:balance;
+}
+h3{font-size:15.5px;line-height:1.4;font-weight:600;margin:2.1rem 0 .6rem;}
+p{margin:0 0 1rem;max-width:64ch;text-wrap:pretty;}
+p.lead{font-size:16.5px;color:var(--ink-soft);}
+ul{margin:0 0 1rem;padding-left:1.15rem;max-width:64ch;}
+li{margin:0 0 .45rem;}
+li b{font-weight:600;}
+
+/* ---------- figures ---------- */
+
+figure{margin:1.75rem 0 1.5rem;border:1px solid var(--line);background:var(--cell);padding:.75rem;}
+figure img{display:block;width:100%;height:auto;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+@media (max-width:560px){ .grid2{grid-template-columns:1fr;} }
+figcaption{
+  font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--ink-soft);
+  margin-top:.75rem;line-height:1.55;
+}
+figcaption b{font-weight:500;color:var(--ink);}
+
+/* ---------- tables ---------- */
+
+.table{overflow-x:auto;margin:1.5rem 0 1.25rem;border:1px solid var(--line);background:var(--cell);}
+table{border-collapse:collapse;width:100%;font-size:13.5px;line-height:1.5;}
+th,td{text-align:left;vertical-align:top;padding:.6rem .8rem;border-bottom:1px solid var(--line);}
+tr:last-child td{border-bottom:0;}
+th{
+  font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-soft);
+}
+td.n{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap;}
+td b{font-weight:600;}
+
+/* ---------- the chain of command ---------- */
+
+.chain{
+  margin:1.75rem 0 1.25rem;border:1px solid var(--line);background:var(--cell);
+  padding:1.25rem;font-family:var(--mono);font-size:12px;letter-spacing:.02em;
+  display:grid;gap:.5rem;
+}
+.tier{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;}
+.tier .who{
+  border:1px solid var(--ink);padding:.35rem .6rem;background:var(--paper);
+}
+.tier .who.soft{border-color:var(--line);color:var(--ink-soft);}
+.tier .aside{color:var(--ink-soft);font-size:11px;}
+.down{color:var(--ink-soft);padding-left:.9rem;line-height:1;}
+
+.stat{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(9.5rem,1fr));
+  border:1px solid var(--line);background:var(--cell);margin:1.75rem 0 1.25rem;
+}
+.stat div{padding:1rem 1rem .9rem;border-right:1px solid var(--line);}
+.stat div:last-child{border-right:0;}
+.stat b{
+  display:block;font-family:var(--mono);font-weight:500;font-size:26px;
+  font-variant-numeric:tabular-nums;line-height:1.1;
+}
+.stat span{
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-soft);
+}
+@media (max-width:560px){ .stat div{border-right:0;border-bottom:1px solid var(--line);} .stat div:last-child{border-bottom:0;} }
+
+.note{
+  border-left:2px solid var(--ink);padding:.2rem 0 .2rem 1rem;margin:1.5rem 0;
+}
+.note p:last-child{margin-bottom:0;}
+
+footer{padding:2.5rem 0 4rem;border-top:1px solid var(--line);font-size:13.5px;color:var(--ink-soft);}
+footer p{max-width:64ch;}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<a class="home" href="/preview/lab/" aria-label="Sea of Grass — all studies">
+  <svg viewBox="43.63 44.56 350.94 258.56" fill="currentColor" aria-hidden="true">
+    <path d="M 60.1360,299.5890 C 40.8560,283.5000 37.9720,248.8600 54.1230,229.1250 C 61.9590,219.4780 73.2066,213.0913 85.9080,212.4050 L 279.9170,212.3880 C 292.7328,211.6894 302.2259,200.5242 302.6140,188.1740 C 303.0171,175.3461 294.1087,163.3937 280.9850,162.4350 L 160.3860,162.3770 C 155.6830,162.3750 152.4580,158.1300 152.2660,154.1930 C 152.0640,150.0420 155.5000,145.5160 160.3230,145.5160 L 323.2740,145.5180 C 363.5090,146.7569 394.2264,180.5210 394.5670,220.2810 C 394.9023,259.4236 360.4620,297.7100 320.2520,299.1580 C 320.2520,299.1580 69.9310,307.7640 60.1360,299.5890 Z"/>
+    <path d="M 365.1390,47.9780 C 360.1170,47.5130 354.1470,47.1080 347.4230,46.7550 C 274.7440,42.9430 114.0820,45.2510 114.0820,45.2510 C 73.9994,46.9759 43.7290,80.8860 43.6260,120.3040 C 43.5230,159.4680 73.5199,193.9418 113.3820,195.4730 L 277.3270,195.8440 C 282.2870,195.8440 285.7460,192.0070 285.9600,187.6500 C 286.1670,183.4310 282.8680,178.9500 277.9760,178.9480 L 158.2750,178.9140 C 145.3037,178.2644 135.8119,166.8014 135.6040,154.2420 C 135.3960,141.6768 144.3477,129.9059 157.2620,128.9900 L 350.1640,128.8050 C 352.3160,128.8030 354.4280,128.6110 356.4990,128.2740 C 366.7370,126.6070 375.8830,121.0490 382.8160,113.4590 C 390.0330,105.5580 394.4238,95.7293 394.5320,85.6870 C 394.7250,67.7708 381.6430,52.8390 365.1390,47.9780 Z"/>
+    <circle cx="357.983" cy="86.686" r="36.548"/>
+  </svg>
+</a>
+
+<header class="top">
+  <p class="kicker">Study 14 · Cat Head · Part one: Modelling</p>
+  <h1>Modelling a cat with thirty-two small agents</h1>
+  <p class="standfirst">A cat head for <i>Alexithymia</i> that can make five faces: calm, Cheshire, angry, happy and hiss. Twenty-eight tries in one long AI session failed. This try splits the job into cards, gives each card to a fresh session, and keeps the plan in files instead of in anyone's memory. Part one covers modelling: from the sheets to a clean skin ready to rig. Rigging and animation get their own study.</p>
+  <div class="meta">
+    <span><b>Built in</b> Blender</span>
+    <span><b>Agents</b> Claude Code sessions</span>
+    <span><b>Sculpt</b> Meshy</span>
+    <span><b>Sheets</b> Nano Banana Pro</span>
+    <span><b>Started</b> 23 Oct 2026</span>
+    <span><b>Phase</b> modelling, step 7 of 9</span>
+  </div>
+</header>
+
+<main>
+
+<section>
+  <span class="num">01 — The problem</span>
+  <h2>Long sessions forget the plan</h2>
+  <p class="lead">A rigged face is a long chain of small decisions, and each one depends on the ones before it. An AI agent is good at any single link. It is bad at holding the whole chain.</p>
+  <p>The first twenty-eight tries ran as one long conversation. Somewhere in the middle, the session would lose track of what had been decided, start improvising, and quietly undo earlier work. The head came out lumpy, the eyes in the wrong sockets, the mouth unable to open.</p>
+  <p>A friend's advice changed the approach: many small agents, a slim folder, and a loop. Each agent does one job, reads only what that job needs, saves one file and stops. The folder is the only memory. Nothing has to be remembered, because everything is written down.</p>
+  <figure>
+    <img src="img/look.jpg" alt="The cat's look sheet: a tabby kitten head in front, side, back and three-quarter views." width="1600" height="893" loading="lazy" />
+    <figcaption><b>The look sheet.</b> The design everything else is built to, in four views.</figcaption>
+  </figure>
+  <h3>From a drawing to triangle soup</h3>
+  <p>The cat started as a character sheet: a drawing in four views. Meshy turned that drawing into a 3D sculpt, fully automatically. Nobody sculpted, traced or modelled anything by hand: a picture went in and a head came out, with the right shape. But under the surface it's triangle soup: tens of thousands of triangles, scattered with no order, no rings round the eyes or mouth, and seams where the file was split.</p>
+  <p>That's fine for a statue and useless for a face. A face bends along its rings: lids close round the eye, lips part along the mouth line, the cheek folds when the cat grins. Triangle soup has nothing to bend along, so it tears and creases in the wrong places. An automatic quad remesher was tried too. It left holes at the nose and mouth, the two places that move most.</p>
+  <p>So the sculpt is kept only as the truth for <i>shape</i>. Everything else about the head, from the skull inside to the clean skin on top, is rebuilt over it. Most of this project is turning that soup back into a face, and keeping that automatic too: the goal is one picture in, a rigged character out, with a person deciding at the stops rather than doing the work.</p>
+</section>
+
+<section>
+  <span class="num">02 — The agents</span>
+  <h2>A hub, bosses, builders and a checker</h2>
+  <p class="lead">Every agent here is a separate Claude Code session, started fresh with a short brief. None of them runs long enough to drift.</p>
+
+  <div class="stat">
+    <div><b>32</b><span>sessions so far</span></div>
+    <div><b>2</b><span>hubs</span></div>
+    <div><b>1 + 1</b><span>modelling bosses, running + next</span></div>
+    <div><b>27</b><span>builders</span></div>
+    <div><b>1</b><span>checker, after every job</span></div>
+  </div>
+
+  <div class="chain" aria-label="Chain of command">
+    <div class="tier"><span class="who">Tristan</span><span class="aside">makes every call at a ✋ stop</span></div>
+    <div class="down">↓</div>
+    <div class="tier"><span class="who">Hub</span><span class="aside">starts each phase boss, keeps the progress table, starts no experiments</span></div>
+    <div class="down">↓</div>
+    <div class="tier"><span class="who">Step 7 boss</span><span class="who soft">Surface boss</span><span class="aside">rig and animation bosses: part two</span></div>
+    <div class="down">↓</div>
+    <div class="tier"><span class="who">Builders</span><span class="aside">one card each, one file each, then stop</span></div>
+    <div class="down">↓</div>
+    <div class="tier"><span class="who">Checker</span><span class="aside">measures, never changes anything, reports pass or fail</span></div>
+  </div>
+
+  <div class="table">
+  <table>
+    <thead><tr><th>Role</th><th>How many</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td><b>Hub</b></td><td class="n">2</td><td>Starts each phase boss with a hand-over note, keeps the progress table in <code>STATUS.md</code>, and takes the boss's "phase done" report. The first hub drifted into side experiments, so it wrote a hand-over and a fresh hub took over. That's the system working: the cure for a long session is a new one.</td></tr>
+      <tr><td><b>Phase boss</b></td><td class="n">1 running, 1 next</td><td>One per phase. Modelling has two: step 7 (the skin) and surface (detail and UVs). Rig and animation get theirs in part two. A boss runs its steps in order, rules on small calls, brings the big ones to Tristan, and builds nothing itself. Steps 0 to 7f ran under the first hub before bosses existed.</td></tr>
+      <tr><td><b>Builder</b></td><td class="n">27</td><td>One card, one fresh session. Setup, rig plan, skull, jaw hinge, teeth (twice: the first set was reset), tongue, landmark block-in, eyes, the one-eye test, the contours, four runs at the shared borders, and six area builders working side by side (the cheek has had two). A fresh ear run is waiting to start.</td></tr>
+      <tr><td><b>Experiment</b></td><td class="n">2</td><td>Side questions kept out of the build: wrapping a ready-made mesh onto the sculpt, and finding a better way to get area maps out of the image model.</td></tr>
+      <tr><td><b>Checker</b></td><td class="n">1 subagent</td><td>A cheaper model each builder calls with its own card before asking Tristan anything. It measures in code, looks at the overlays, and reports pass or fail line by line. It never fixes.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>Step 7 alone uses twelve builders, because it's where the skin gets built.</p>
+</section>
+
+<section>
+  <span class="num">03 — The loop</span>
+  <h2>Cards, files and stops</h2>
+  <p>The project lives in one folder with a handful of parts, and agents see nothing outside it:</p>
+  <ul>
+    <li><b>README:</b> the flow, the rules and the recipe for the sheets.</li>
+    <li><b>STATUS:</b> what's done, what's next, and a "Current numbers" table: the one home for every pivot, angle and limit. Cards point to it instead of copying values, so a number can't go stale in one card while it changes in another.</li>
+    <li><b>cards/:</b> one card per job. In, out, steps, checks, and when to stop.</li>
+    <li><b>input/:</b> the locked reference sheets, read-only.</li>
+    <li><b>out/ and checks/:</b> each step's file, script and proof pictures, named by step.</li>
+  </ul>
+  <p>At every ✋ the work stops and Tristan looks. Nothing moves on without his OK. A card that doesn't say how to do something means stop and ask. No improvising.</p>
+
+  <h3>Who checks what</h3>
+  <p>AI is good at some checks and bad at others, so every check line on a card is tagged. <b>(code)</b> lines are things a script can measure: gaps, distances, point counts, open edges, mirror error, whether two files agree. The checker passes or fails those. <b>(eye)</b> lines are judgement: does it look like the sculpt, is it appealing, does it read as a cat. Only Tristan passes those, from side-by-side pictures with one question each. Wherever an eye check can become a measurement, it does.</p>
+
+  <h3>Overlay first</h3>
+  <p>Every modelling step starts by rendering its part from the sheet's own camera and drawing the outline in red over the sheet. Differences show at a glance, so nobody has to describe them by hand.</p>
+</section>
+
+<section>
+  <span class="num">04 — The sheets</span>
+  <h2>Every guide is made from the sculpt</h2>
+  <p class="lead">Drawn reference drifts: a side view slightly turned, an eye slightly high. So every guide sheet is generated from a render of the sculpt itself, and checked by laying it back over that render.</p>
+  <figure>
+    <img src="img/mesh.jpg" alt="The calm mesh sheet: the grey cat head drawn as a clean wireframe, in four views." width="1600" height="893" loading="lazy" />
+    <figcaption><b>The calm mesh sheet.</b> Not a real mesh: Nano Banana's picture of one, painted over a render of Meshy's triangle soup. Every later sheet is made from it.</figcaption>
+  </figure>
+  <p>The first sheet is the trick the rest depend on. Nano Banana was given a render of Meshy's triangle-soup head and asked to make it look like a clean mesh. It drew one: even rings round the eyes and mouth, tidy loops over the skull and neck, all sitting on the sculpt's exact outline. No mesh like that exists yet. But the picture shows what one would look like, in the sculpt's own framing, so everything drawn on top of it lines up with the real model.</p>
+  <p>It also made the face readable. Triangle soup shows nothing about how a face is laid out, but on the mesh picture the rings show where the eye, the muzzle, the cheek and the brow each begin and end. That let Tristan infer where the regions were and mark them by hand, on the sheet, long before any agent could have found them.</p>
+  <p>From that sheet, Nano Banana Pro made a stack of anatomy sheets, each built on the one before: the face muscles, then those muscles as clean outlines, then the skin's own lines (lid rims, lips, creases) added in colour, then the soft masses as glowing patches, like a weight map.</p>
+  <figure>
+    <div class="grid2">
+      <img src="img/muscles.jpg" alt="Face muscles painted over the calm head." width="1200" height="670" loading="lazy" />
+      <img src="img/contours.jpg" alt="The muscle sheet redrawn as black outlines." width="1200" height="670" loading="lazy" />
+      <img src="img/skin-lines.jpg" alt="The outlines with skin edges in red and creases in blue." width="1200" height="670" loading="lazy" />
+      <img src="img/masses.jpg" alt="Soft masses of the face as coloured glows." width="1200" height="670" loading="lazy" />
+    </div>
+    <figcaption><b>Muscles → contours → skin lines → masses.</b> Meaning only: they say which way the skin pulls and where areas meet, never exact positions. One blue line on the side view turned out to be the exact path for the Cheshire grin.</figcaption>
+  </figure>
+  <p>The image model makes things up, so these sheets are <i>meaning only</i>. They say what goes where and which way it moves. Positions always come from the sculpt. Two habits keep them honest: ask for one change per edit (several at once tends to shift the views), and lock a sheet only if it still lines up when laid over the render it came from.</p>
+  <figure>
+    <img src="img/topology.jpg" alt="Target topology as a colour line drawing: rings round the eyes and mouth, sparse loops over the head and neck." width="1600" height="893" loading="lazy" />
+    <figcaption><b>The topology sheet.</b> The target mesh as a line drawing, one colour per ring set. Builders read its ring counts and layout. They never trace it wire for wire, because an image model can't keep every face a real four-sided face.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <span class="num">05 — The build</span>
+  <h2>From the inside out</h2>
+  <p>The head is built the way a studio builds a hero face: bones first, skin last. The rig is planned before anything is modelled, so the skin's rings can follow how the face will move.</p>
+  <div class="table">
+  <table>
+    <thead><tr><th>Step</th><th>What</th><th>State</th></tr></thead>
+    <tbody>
+      <tr><td class="n">0–1</td><td>Lock the reference sheets; set up a real-size head with front, side, back and ¾ cameras</td><td>done</td></tr>
+      <tr><td class="n">2</td><td><b>Rig plan:</b> every bone, pivot and control, and which areas each expression moves</td><td>done</td></tr>
+      <tr><td class="n">3–4</td><td>Skull and jaw as separate bones; the jaw's hinge, with a bite and full-gape test</td><td>done</td></tr>
+      <tr><td class="n">5–6</td><td>Teeth, gums, tongue, the inside of the mouth; eyeballs on their pivots</td><td>done</td></tr>
+      <tr><td class="n">5c</td><td><b>Block-in:</b> stand-ins for eyes, nose, lids, lips and ears stuck to a proxy rig and posed through all five faces over the sheets</td><td>done</td></tr>
+      <tr><td class="n">7</td><td><b>The skin:</b> a clean mesh laid over the sculpt, built to bend</td><td>in progress</td></tr>
+      <tr><td class="n">8–9</td><td>Fur and creases carried onto the clean mesh; UVs</td><td>planned</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>After step 9 the skin goes to rigging: part two.</p>
+  <p>The block-in was added late on this cat and paid for itself at once: it caught the eye size, four lip moves, and ears that bones alone couldn't flatten for the hiss. For the next character it moves up to right after setup.</p>
+</section>
+
+<section>
+  <span class="num">06 — The skin</span>
+  <h2>Six agents, one shared border</h2>
+  <p class="lead">Step 7 is the biggest step: replacing Meshy's triangle soup with a clean mesh of four-sided faces, laid in rings that follow how the face moves. It's split so several agents can build at once without stepping on each other.</p>
+  <h3>One eye first</h3>
+  <p>Before the whole face, the full method ran on one eye: landmarks, lines from the sheets, curves on the sculpt, then rings. It proved the approach on a small patch before betting the head on it.</p>
+  <figure>
+    <img src="img/eye.jpg" alt="Red rings of quads around the left eye, laid on the grey sculpt in three views." width="1600" height="528" loading="lazy" />
+    <figcaption><b>The one-eye test.</b> Rings round the eye, laid on the sculpt.</figcaption>
+  </figure>
+  <h3>The contract</h3>
+  <p>Next, one agent drew every border between areas and placed every point on them: 299 points, each with a fixed position. That file is the contract. The six area agents must use those points exactly, never adding, dropping or moving one. That's what lets six meshes built separately join up later with nothing to patch.</p>
+  <h3>Four tries, one vote</h3>
+  <p>Where do the borders go? The first attempts asked Nano Banana to place dots on a plain clay render, and it guessed: a render shows no borders, so the dots landed wherever the model felt like. What it does well is paint. So the ask changed: paint the head as flat colour areas, one colour per ring set, no lines, using the topology sheet to see where each set sits. Then code finds the colour edges and puts the dots on them exactly.</p>
+  <p>One painting can't be trusted on its own, so Nano Banana made four at once from the same render and the same prompt. Code laid them over each other and measured how much they agreed, pixel by pixel. Three matched each other on at least 88% of the head. One didn't: it painted the whole back of the skull brown. That one was dropped, and the other three voted. Each pixel took the colour most of them gave it. Where three separate tries land on the same border, it's probably a real border.</p>
+  <figure>
+    <img src="img/nb-tries.jpg" alt="Four Nano Banana paintings of the cat head as flat colour areas. Three look alike; the bottom-left one has a large brown patch over the back of the head." width="1612" height="1188" loading="lazy" />
+    <figcaption><b>Four tries, same prompt.</b> Three agree. The odd one out (bottom left, the brown back of the head) was dropped.</figcaption>
+  </figure>
+  <figure>
+    <img src="img/nb-vote.jpg" alt="The voted area map: the head in flat colours, front, side and back, combined from the three agreeing tries." width="1600" height="1175" loading="lazy" />
+    <figcaption><b>The vote.</b> Each pixel takes the colour most of the three agreeing tries gave it. Six images made, about 18 credits, and the first method that held up.</figcaption>
+  </figure>
+  <p>Code then merged any strip too thin to hold a row of faces, and the map went onto the sculpt itself.</p>
+  <figure>
+    <img src="img/areas.jpg" alt="The head painted in flat colours, one per area: crown, temple, nose, muzzle, lips, chin, cheek, ear, neck." width="1600" height="640" loading="lazy" />
+    <figcaption><b>The area map,</b> painted onto the sculpt. Each colour is one agent's patch.</figcaption>
+  </figure>
+  <h3>Side by side</h3>
+  <p>Then six agents each build one area in their own background copy of Blender: crown and temple, nose, muzzle and mouth, cheek and jaw, ear, back and neck. Only one session ever touches the live Blender, and STATUS says who has it. After all six pass, a stitch joins them, mirrors the half to a whole head, and poses it to look for tearing.</p>
+  <figure>
+    <img src="img/mouth.jpg" alt="The muzzle area's quads in red over the sculpt, with the topology sheet's mouth rings below for comparison." width="1600" height="1274" loading="lazy" />
+    <figcaption><b>The muzzle area's check.</b> Its mesh over the sculpt, and against the topology sheet below.</figcaption>
+  </figure>
+  <p>As of 25 October: the nose, the muzzle and the neck are done. The crown passed its checks but is the roughest so far, and may get one more round. The cheek is on its second round. The ear used up its three fix rounds and is being rebuilt fresh with a different layout. The stitch agent already caught one trap: the upper and lower lips have rows of points sitting exactly on top of each other, so a normal weld would glue the mouth shut. The lip seam now stays open on purpose. Sticky lips and the Cheshire zipper will need it later.</p>
+</section>
+
+<section>
+  <span class="num">07 — The rules</span>
+  <h2>Learned the hard way</h2>
+  <p>Each rule below came from something going wrong. It went into the README the same day, so no later agent has to learn it again.</p>
+  <ul>
+    <li><b>No sheet, no judgement.</b> If a step has to decide what something is or where it ends, it needs a locked sheet. Regions, eye sockets, the nose and the skull all went wrong when agents guessed.</li>
+    <li><b>Anchors are the only points.</b> A curve keeps only its few anchors and is never turned into a mesh. Blender hides 24 steps in every curve segment, and those become hundreds of useless points.</li>
+    <li><b>Lines no finer than the mesh.</b> A border only counts if a row of faces fits between it and the next one. The image model draws finer detail than that, so it gets merged or dropped, not traced.</li>
+    <li><b>No zigzags.</b> A line that turns sharper than 30° anywhere but a junction always fails.</li>
+    <li><b>Three fix rounds, then reset.</b> If a step needs a fourth round, it writes down what it learned and a fresh session starts over. The teeth were reset this way, and now the ear.</li>
+    <li><b>A change upstream reruns everything after it.</b> When the jaw hinge moved, two cards kept the old one. Now every later step reruns on the new file.</li>
+    <li><b>Checks look one step ahead.</b> A step passes only if it already works for what the next step needs from it.</li>
+    <li><b>Split big steps.</b> The shared borders grew into four jobs in one card and kept going back and forth. Next time that's four cards, each with its own stop.</li>
+    <li><b>Questions come in plain words.</b> Each one with a picture, a recommendation, and what yes and no each do. Agreeing to jargon you don't understand isn't a decision.</li>
+  </ul>
+</section>
+
+<section>
+  <span class="num">08 — The trick</span>
+  <h2>Good structure from garbage, by averaging</h2>
+  <p class="lead">The whole method rests on one move Tristan found: you can get trustworthy structure out of a model that only makes things up, as long as you never trust one answer.</p>
+  <p>Look at what goes in. Meshy's sculpt is triangle soup: the right shape, but no structure at all. Nano Banana is an image model: it invents freely, and any single picture it makes might be wrong in ways that are hard to spot. Neither one, alone, can tell you where a cat's cheek ends.</p>
+  <p>Put them together and the problem changes. Render the soup, so the shape is fixed and true. Ask Nano Banana to read structure into that render, as a clean mesh, as muscles, as flat colour areas, so every answer is drawn in the sculpt's exact framing. Then ask several times and keep only what the answers agree on. One painting is a guess. Three paintings that put a border in the same place are evidence. The mistakes are random and the real features aren't, so averaging cancels the mistakes and leaves the features.</p>
+  <p>Code does the averaging, measures the agreement, and drops the odd one out. Nobody draws, traces or models anything. A garbage mesh and an unreliable image model, used together, produced the area map that six agents are now building the skin from.</p>
+</section>
+
+<section>
+  <span class="num">09 — What it argues</span>
+  <h2>The memory goes in the folder, not the agent</h2>
+  <p>None of the agents here is smarter than the one that failed twenty-eight times. What changed is that none of them has to remember anything. The plan, the numbers and every decision live in a few plain files, and any session can be thrown away and replaced by a fresh one that reads them.</p>
+  <p>That makes the person's job different too. Tristan doesn't build. He decides: at each stop, one picture, one question. The agents do the bookkeeping, and the checker does the measuring.</p>
+  <p>And it compounds. Once this head's skin is finished it becomes the template for the next character: sculpt a new head, wrap this mesh onto it by its landmarks (a test fit took seconds), and step 7 shrinks from building to checking. The second cat should take a fraction of the first.</p>
+</section>
+
+</main>
+
+<footer>
+  <p>Study 14, part one of two. The cat is a character in <i>Alexithymia</i>, a piece for Fantasmagoria. Agents are Claude Code sessions; guide sheets were made with Nano Banana Pro via Higgsfield; modelling in Blender. Notes current as of 25 October 2026, mid-way through step 7.</p>
+  <p><a href="/preview/lab/">← All studies</a></p>
+</footer>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex,nofollow">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Talaria privacy — Sea of Grass</title>
+<meta name="description" content="What Talaria, the Sea of Grass task manager, stores and why." />
+<link rel="canonical" href="https://seaofgrass.studio/talaria/privacy/" />
+<link rel="icon" href="/preview/assets/favicon.svg" type="image/svg+xml" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+  :root{
+    --paper:#faf9f6;
+    --ink:#141311;
+    --line:#d9d6cf;
+    --ink-soft:rgba(20,19,17,.5);
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--paper);}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"IBM Plex Mono","SFMono-Regular",Menlo,Consolas,monospace;
+    font-size:14px;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  .page{
+    max-width:44rem;
+    margin:0 auto;
+    padding:clamp(3rem,10vh,7rem) clamp(1.25rem,5vw,2rem) 4rem;
+  }
+  .back{font-size:12px; color:var(--ink-soft); text-decoration:none;}
+  .back:hover{color:var(--ink);}
+  h1{
+    margin:clamp(2rem,6vh,3.5rem) 0 0;
+    font-size:13px;
+    font-weight:500;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+  }
+  .premise{margin:.4rem 0 0; font-size:13px; color:var(--ink-soft);}
+  h2{
+    margin:2.5rem 0 0;
+    padding:0 0 .6rem;
+    border-bottom:1px solid var(--line);
+    font-size:12px;
+    font-weight:500;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+  }
+  p, li{font-size:13px; max-width:36rem;}
+  p{margin:.9rem 0 0;}
+  ul{margin:.9rem 0 0; padding-left:1.2rem;}
+  li + li{margin-top:.4rem;}
+  a{color:inherit;}
+  footer{
+    margin-top:clamp(3.5rem,9vh,6rem);
+    padding-top:1.1rem;
+    border-top:1px solid var(--line);
+    font-size:12px;
+    color:var(--ink-soft);
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <a class="back" href="/preview/talaria/">&larr; Talaria</a>
+
+  <h1>Talaria privacy</h1>
+  <p class="premise">Talaria is a private task manager used by the people at Sea of Grass and the Caduceus study group. It isn’t a public service, and nothing in it is sold, shared or used for advertising.</p>
+
+  <h2>What it stores</h2>
+  <ul>
+    <li><strong>Your account:</strong> your name, email address and profile photo. When you sign in with Google, Talaria receives only these, never your password or anything else in your Google account.</li>
+    <li><strong>Your work:</strong> the projects, tasks, comments and photos you and your teammates add.</li>
+    <li><strong>On your computer:</strong> a sign-in session, so you stay signed in. The Claude extension keeps its own session in a file only your user account can read.</li>
+  </ul>
+
+  <h2>Who can see it</h2>
+  <p>Work is divided into spaces. Only people whose email has been added to a space can see anything in it. Profile photos are stored at public, unguessable addresses so they can be shown in the app.</p>
+
+  <h2>Where it lives</h2>
+  <p>Everything is stored with <a href="https://supabase.com/privacy">Supabase</a>, which hosts Talaria’s database. Sign-in with Google is handled by Google under <a href="https://policies.google.com/privacy">its own privacy policy</a>. If you connect Talaria to Claude, Claude reads and changes your tasks only when you ask it to, under <a href="https://www.anthropic.com/legal/privacy">Anthropic’s privacy policy</a>.</p>
+
+  <h2>Removing your data</h2>
+  <p>Ask Tristan at Sea of Grass and your account and everything only you created will be deleted.</p>
+
+  <footer>Sea of Grass &middot; last updated 13 October 2026</footer>
+
+</div>
+</body>
+</html>

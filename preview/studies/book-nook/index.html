@@ -1,0 +1,305 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Book Nook</title><meta name="robots" content="noindex,nofollow,noarchive"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<style>
+/* The Grasset panel as the front of a book nook. The field is the opening; behind it a
+   shortgrass prairie is built in flats that recede, lit from a slot in the top. */
+:root{--ground:#f3e7cd;--ink:#2b2620;color-scheme:light}
+html,body{margin:0;background:var(--ground)}
+.track{height:170vh;height:170lvh}
+.stage{position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden}
+.stage>*{position:absolute;inset:0;width:100%;height:100%;display:block}
+#inside{z-index:1}
+#thick{z-index:2;filter:brightness(.62) saturate(.8)}
+#front{z-index:3}
+#menu{z-index:4}
+#menu a{cursor:pointer;outline:none}
+#menu .hit{fill:transparent}
+#menu a:hover .word,#menu a:focus-visible .word{fill:#5d6e57}
+#menu a:focus-visible .hit{fill:rgba(250,240,210,.45)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+</style>
+<h1 class="sr">Sea of Grass</h1>
+<div class="track"><div class="stage">
+  <canvas id="inside" aria-hidden="true"></canvas>
+  <svg id="thick" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
+  <svg id="front" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
+  <svg id="menu" xmlns="http://www.w3.org/2000/svg" role="navigation" aria-label="Main menu"></svg>
+</div></div>
+<script>
+(()=>{
+const S3=Math.sqrt(3), g=3*S3, rung=n=>S3**n, TAU=Math.PI*2;
+const C={ground:"#f3e7cd",cream:"#f7efd9",pale:"#eadba0",yellow:"#e6d17f",grey:"#d6d2bd",blue:"#a3ad9c",pink:"#e9bf9b",salmon:"#e2a37e",orange:"#e3b06b",ink:"#2b2620"};
+const MENU=`<g id="projects" fill="#2b2620"><path id="projects-P" d="M387.91 758.82 L387.91 758.82 L370.54 758.82 L370.54 809.9 L381.78 809.9 L381.78 787.42 A34.08,34.08 0 0 0 391.47 787 A15.02,15.02 0 0 0 403.22 773.5 A11.75,11.75 0 0 0 401.7 767.36 A15.42,15.42 0 0 0 387.91 758.82 Z M381.78 786.18 L381.78 760.07 A14.08,14.08 0 0 1 388.83 760.24 A2.95,2.95 0 0 1 390.59 762.78 A38.24,38.24 0 0 1 390.12 784.87 A2.54,2.54 0 0 1 387.91 786.18 L381.78 786.18 Z"/><path id="projects-R" d="M439.6 786.4 L437.83 782.22 A13.99,13.99 0 0 0 442.51 773.52 A10.39,10.39 0 0 0 441.07 767.28 A15.54,15.54 0 0 0 427.23 758.82 L409.87 758.82 L409.87 809.9 L421.11 809.9 L421.11 786.4 L427.39 786.4 L437.46 809.9 L449.69 809.9 L439.6 786.4 Z M421.11 785.15 L421.11 760.07 A13.93,13.93 0 0 1 428.15 760.24 A2.93,2.93 0 0 1 429.92 762.71 A34.61,34.61 0 0 1 429.36 783.99 A2.62,2.62 0 0 1 426.86 785.15 L421.11 785.15 Z"/><path id="projects-O" d="M485.84 806.01 A26.24,26.24 0 0 0 478 759.1 A14.41,14.41 0 0 0 468.12 760.69 A26.24,26.24 0 0 0 472.49 809.61 A14.41,14.41 0 0 0 482.37 808.03 L485.84 806.01 Z M481 804.23 A30.65,30.65 0 0 1 473.1 798.69 A38.16,38.16 0 0 1 460.86 769.73 A6.7,6.7 0 0 1 471.53 765.53 A38.5,38.5 0 0 1 489.67 798.69 A6.65,6.65 0 0 1 481 804.23 Z"/><path id="projects-J" d="M503.76 795.59 A20.07,20.07 0 0 0 520.97 809.87 A14.64,14.64 0 0 0 528.46 808.25 A20.58,20.58 0 0 0 540.62 789.47 L540.62 758.82 L529.38 758.82 L529.32 791 A18.94,18.94 0 0 1 519.92 806.09 A8.07,8.07 0 0 1 510.9 804.31 A19.61,19.61 0 0 1 505.06 795.59 L503.76 795.59 Z"/><path id="projects-E" d="M576.88 801.21 L573.67 808.65 L557.47 808.65 L557.47 784.98 L571.77 784.98 L571.77 783.74 L557.47 783.74 L557.47 760.07 L573.67 760.07 L576.88 767.5 L576.88 758.82 L546.24 758.82 L546.24 809.9 L576.88 809.9 L576.88 801.21 Z"/><path id="projects-C" d="M613.14 777.98 L613.14 774.14 L624.36 774.14 A25.2,25.2 0 0 0 606.83 759.03 A14.46,14.46 0 0 0 597.34 760.69 A26.24,26.24 0 0 0 601.71 809.61 A14.41,14.41 0 0 0 611.59 808.03 A26.27,26.27 0 0 0 624.36 794.57 L618.75 794.57 A13.67,13.67 0 0 1 618.79 799.27 A6.69,6.69 0 0 1 608.17 803.19 A38.5,38.5 0 0 1 590.04 770.02 A6.69,6.69 0 0 1 600.75 765.53 A38.78,38.78 0 0 1 613.14 777.98 Z"/><path id="projects-T" d="M628.98 767.5 L632.18 760.07 L640.21 760.07 L640.21 809.9 L651.45 809.9 L651.45 760.07 L659.48 760.07 L662.69 767.5 L662.69 758.82 L628.98 758.82 L628.98 767.5 Z"/><path id="projects-S" d="M668.96 799.17 A17.53,17.53 0 0 0 701.8 797.77 A9.14,9.14 0 0 0 700.54 790.85 A17.59,17.59 0 0 0 682.96 781.95 A16.61,16.61 0 0 1 676.73 764.06 A4.99,4.99 0 0 1 683.71 761.74 A16.87,16.87 0 0 1 692.3 769.55 L701.35 769.53 A17.53,17.53 0 0 0 668.52 770.95 A9.14,9.14 0 0 0 669.78 777.87 A17.59,17.59 0 0 0 687.36 786.77 A16.61,16.61 0 0 1 693.59 804.65 A4.99,4.99 0 0 1 686.61 806.98 A16.87,16.87 0 0 1 678.01 799.17 L668.96 799.17 Z"/></g>
+<g id="about" fill="#2b2620"><path id="about-A" d="M475.5 963.12 L470.59 960.83 L453.03 912.04 L447.92 912.04 L430.9 959.32 L425.45 963.12 L435.35 963.12 L432.62 959.32 L437.06 947 L453.67 947 L458.65 960.83 L455.39 963.12 L475.5 963.12 Z M445.37 923.93 L453.22 945.75 L437.51 945.75 L445.37 923.93 Z"/><path id="about-B" d="M498.7 935.75 A14.05,14.05 0 0 0 508.11 925.42 A8.46,8.46 0 0 0 506.77 919.62 A14.74,14.74 0 0 0 493.89 912.04 L477.54 912.04 L477.54 963.12 L495.75 963.1 A16.4,16.4 0 0 0 511.17 950.41 A9.59,9.59 0 0 0 509.57 943.8 A16.88,16.88 0 0 0 498.7 935.75 Z M488.78 961.87 L488.78 936.56 L495.52 936.62 A3.46,3.46 0 0 1 498.17 939.33 A26.77,26.77 0 0 1 497.44 960.61 A3.18,3.18 0 0 1 494.91 961.87 L488.78 961.87 Z M488.78 935.31 L488.78 913.29 A9.16,9.16 0 0 1 494.69 913.47 A2.27,2.27 0 0 1 495.92 915.5 A36.96,36.96 0 0 1 495.53 934.37 A1.91,1.91 0 0 1 493.89 935.31 L488.78 935.31 Z"/><path id="about-O" d="M549.42 959.24 A26.24,26.24 0 0 0 541.58 912.32 A14.41,14.41 0 0 0 531.71 913.91 A26.24,26.24 0 0 0 536.08 962.84 A14.41,14.41 0 0 0 545.96 961.25 L549.42 959.24 Z M544.58 957.45 A30.65,30.65 0 0 1 536.69 951.92 A38.16,38.16 0 0 1 524.45 922.95 A6.7,6.7 0 0 1 535.12 918.75 A38.5,38.5 0 0 1 553.25 951.92 A6.65,6.65 0 0 1 544.58 957.45 Z"/><path id="about-U" d="M566.41 912.04 A193.83,193.83 0 0 0 566.55 945.05 A20.24,20.24 0 0 0 584.75 963.1 A14.88,14.88 0 0 0 592.05 961.47 A20.58,20.58 0 0 0 604.21 942.69 L604.21 912.04 L602.96 912.04 L602.9 944.22 A18.97,18.97 0 0 1 593.5 959.31 A8.07,8.07 0 0 1 584.48 957.53 A19.52,19.52 0 0 1 577.65 942.69 L577.65 912.04 L566.41 912.04 Z"/><path id="about-T" d="M609.82 920.73 L613.03 913.29 L621.06 913.29 L621.06 963.12 L632.3 963.12 L632.3 913.29 L640.33 913.29 L643.53 920.73 L643.53 912.04 L609.82 912.04 L609.82 920.73 Z"/></g>
+<g id="theory" fill="#2b2620"><path id="theory-T" d="M408.85 1073.95 L412.06 1066.51 L420.08 1066.51 L420.08 1116.34 L431.32 1116.34 L431.32 1066.51 L439.35 1066.51 L442.56 1073.95 L442.56 1065.27 L408.85 1065.27 L408.85 1073.95 Z"/><path id="theory-H" d="M459.41 1065.27 L448.17 1065.27 L448.17 1116.34 L459.41 1116.34 L459.41 1091.43 L475.75 1091.43 L475.75 1116.34 L486.99 1116.34 L486.99 1065.27 L475.75 1065.27 L475.75 1090.18 L459.41 1090.18 L459.41 1065.27 Z"/><path id="theory-E" d="M523.25 1107.66 L520.05 1115.09 L503.85 1115.09 L503.85 1091.43 L518.15 1091.43 L518.15 1090.18 L503.85 1090.18 L503.85 1066.51 L520.05 1066.51 L523.25 1073.95 L523.25 1065.27 L492.61 1065.27 L492.61 1116.34 L523.25 1116.34 L523.25 1107.66 Z"/><path id="theory-O" d="M561.43 1112.46 A26.24,26.24 0 0 0 553.59 1065.55 A14.41,14.41 0 0 0 543.71 1067.13 A26.24,26.24 0 0 0 548.08 1116.06 A14.41,14.41 0 0 0 557.96 1114.48 L561.43 1112.46 Z M556.58 1110.67 A30.65,30.65 0 0 1 548.69 1105.14 A38.16,38.16 0 0 1 536.45 1076.17 A6.7,6.7 0 0 1 547.12 1071.97 A38.5,38.5 0 0 1 565.26 1105.14 A6.65,6.65 0 0 1 556.58 1110.67 Z"/><path id="theory-R" d="M608.14 1092.85 L606.38 1088.67 A13.99,13.99 0 0 0 611.06 1079.96 A10.39,10.39 0 0 0 609.62 1073.73 A15.54,15.54 0 0 0 595.78 1065.27 L578.41 1065.27 L578.41 1116.34 L589.65 1116.34 L589.65 1092.85 L595.94 1092.84 L606.01 1116.34 L618.24 1116.34 L608.14 1092.85 Z M589.65 1091.6 L589.65 1066.51 A13.93,13.93 0 0 1 596.69 1066.69 A2.93,2.93 0 0 1 598.46 1069.15 A34.61,34.61 0 0 1 597.91 1090.43 A2.62,2.62 0 0 1 595.41 1091.6 L589.65 1091.6 Z"/><path id="theory-Y" d="M663.69 1065.27 L661.69 1065.27 L646.06 1086.9 L635.17 1065.27 L622.59 1065.27 L633.91 1087.74 L637.15 1101.02 L637.15 1116.34 L648.39 1116.34 L648.39 1101.02 L649.06 1092.85 L647.46 1087.74 L663.69 1065.27 Z"/></g>
+<g id="contact" fill="#2b2620"><path id="contact-C" d="M412.17 1237.65 L412.17 1233.81 L423.38 1233.81 A25.2,25.2 0 0 0 405.85 1218.7 A14.46,14.46 0 0 0 396.36 1220.35 A26.24,26.24 0 0 0 400.73 1269.28 A14.41,14.41 0 0 0 410.61 1267.7 A26.27,26.27 0 0 0 423.38 1254.24 L417.78 1254.24 A13.67,13.67 0 0 1 417.81 1258.94 A6.69,6.69 0 0 1 407.2 1262.86 A38.5,38.5 0 0 1 389.06 1229.69 A6.69,6.69 0 0 1 399.77 1225.19 A38.78,38.78 0 0 1 412.17 1237.65 Z"/><path id="contact-O" d="M460.56 1265.68 A26.24,26.24 0 0 0 452.72 1218.77 A14.41,14.41 0 0 0 442.84 1220.35 A26.24,26.24 0 0 0 447.21 1269.28 A14.41,14.41 0 0 0 457.09 1267.7 L460.56 1265.68 Z M455.71 1263.89 A30.65,30.65 0 0 1 447.82 1258.36 A38.16,38.16 0 0 1 435.58 1229.4 A6.7,6.7 0 0 1 446.25 1225.19 A38.5,38.5 0 0 1 464.39 1258.36 A6.65,6.65 0 0 1 455.71 1263.89 Z"/><path id="contact-N" d="M478.79 1219.63 L504.12 1269.56 L517.38 1269.56 L517.38 1218.49 L516.13 1218.49 L516.13 1268.42 L490.81 1218.49 L477.54 1218.49 L477.54 1269.56 L478.79 1269.56 L478.79 1219.63 Z"/><path id="contact-T" d="M523 1227.17 L526.21 1219.73 L534.23 1219.73 L534.23 1269.56 L545.47 1269.56 L545.47 1219.73 L553.5 1219.73 L556.71 1227.17 L556.71 1218.49 L523 1218.49 L523 1227.17 Z"/><path id="contact-A" d="M608.8 1269.56 L603.89 1267.28 L586.33 1218.49 L581.22 1218.49 L564.21 1265.77 L558.75 1269.56 L568.65 1269.56 L565.93 1265.77 L570.36 1253.44 L586.97 1253.44 L591.95 1267.28 L588.69 1269.56 L608.8 1269.56 Z M578.67 1230.38 L586.52 1252.2 L570.81 1252.2 L578.67 1230.38 Z"/><path id="contact-C" d="M641.49 1237.65 L641.49 1233.81 L652.7 1233.81 A25.2,25.2 0 0 0 635.17 1218.7 A14.46,14.46 0 0 0 625.68 1220.35 A26.24,26.24 0 0 0 630.05 1269.28 A14.41,14.41 0 0 0 639.93 1267.7 A26.27,26.27 0 0 0 652.7 1254.24 L647.1 1254.24 A13.67,13.67 0 0 1 647.13 1258.94 A6.69,6.69 0 0 1 636.52 1262.86 A38.5,38.5 0 0 1 618.38 1229.69 A6.69,6.69 0 0 1 629.09 1225.19 A38.78,38.78 0 0 1 641.49 1237.65 Z"/><path id="contact-T" d="M657.32 1227.17 L660.53 1219.73 L668.56 1219.73 L668.56 1269.56 L679.8 1269.56 L679.8 1219.73 L687.82 1219.73 L691.03 1227.17 L691.03 1218.49 L657.32 1218.49 L657.32 1227.17 Z"/></g>
+<g id="ornament-1" fill="none" stroke="#2b2620" stroke-width="1.89"><path d="M527.77,868.34 L544.79,868.34 L536.28,853.6 Z"/><path d="M511.38,860.97 A3.28,3.28 0 1 1 517.94,860.97 A3.28,3.28 0 1 1 511.38,860.97 Z"/><path d="M554.62,860.97 A3.28,3.28 0 1 1 561.17,860.97 A3.28,3.28 0 1 1 554.62,860.97 Z"/></g>
+<g id="ornament-2" fill="none" stroke="#2b2620" stroke-width="1.89"><path d="M527.77,1021.56 L544.79,1021.56 L536.28,1006.82 Z"/><path d="M511.38,1014.19 A3.28,3.28 0 1 1 517.94,1014.19 A3.28,3.28 0 1 1 511.38,1014.19 Z"/><path d="M554.62,1014.19 A3.28,3.28 0 1 1 561.17,1014.19 A3.28,3.28 0 1 1 554.62,1014.19 Z"/></g>
+<g id="ornament-3" fill="none" stroke="#2b2620" stroke-width="1.89"><path d="M527.77,1174.79 L544.79,1174.79 L536.28,1160.04 Z"/><path d="M511.38,1167.41 A3.28,3.28 0 1 1 517.94,1167.41 A3.28,3.28 0 1 1 511.38,1167.41 Z"/><path d="M554.62,1167.41 A3.28,3.28 0 1 1 561.17,1167.41 A3.28,3.28 0 1 1 554.62,1167.41 Z"/></g>`;
+const H0=1379/729;
+const LINKS=[["projects","Projects","#projects"],["about","About","#about"],["theory","Theory","#theory"],["contact","Contact","#contact"]];
+function build(Ex,Ey){
+  const out=[]; let menuAt=null;
+  const P=(x,y)=>`${x.toFixed(3)},${y.toFixed(3)}`;
+  const add=(layer,fill,d)=>out.push({layer,fill,d});
+  const rect=(layer,fill,x0,y0,x1,y1)=>add(layer,fill,`M${P(x0,y0)} H${x1.toFixed(3)} V${y1.toFixed(3)} H${x0.toFixed(3)} Z`);
+  const circle=(layer,fill,cx,cy,r)=>add(layer,fill,`M${P(cx-r,cy)} A${r},${r} 0 1 1 ${P(cx+r,cy)} A${r},${r} 0 1 1 ${P(cx-r,cy)} Z`);
+  const M=81, xL0=M, xL1=xL0+rung(8), xF1=xL1+rung(10)+Ex, xR1=xF1+rung(10);
+  // bull box
+  const Y0=rung(6), r_fin=rung(5), S=xR1-xF1, rise=S*(1-S3/2), apex=Y0+r_fin, S0=apex+rise, B1=S0+S;
+  const cxa=(xF1+xR1)/2;
+  add("bull","pale",`M${P(xF1,S0)} A${S},${S} 0 0 1 ${P(xR1,S0)} V${B1} H${xF1} Z`);
+  circle("bull","yellow",xF1,apex,r_fin); circle("bull","yellow",xR1,apex,r_fin);
+  const ins=3*g, xi0=xF1+ins, xi1=xR1-ins, s2=xi1-xi0, sp=B1-9, rise2=s2*(1-S3/2);
+  add("bull","pink",`M${P(xi0,B1)} V${sp} A${s2},${s2} 0 0 1 ${P(xi1,sp)} V${B1} Z`);
+  const pic_top=S0+ins, pic_bot=sp-rise2-ins;
+  rect("bull","blue",xi0,pic_top,xi1,pic_bot);
+  const lw=rung(7); rect("bull","cream",cxa-lw/2,S0-ins,cxa+lw/2,pic_top);
+  // head bars
+  let y=S0+9;
+  for(const [col,t] of [["pink",9],["yellow",27],["grey",27]]){rect("frame",col,xL0,y,xF1,y+t);y+=t;}
+  rect("frame","cream",xL0-27,y,xF1,y+81); y+=81; const head_bot=y;
+  rect("frame","grey",xL1,y,xF1,y+3*g); const field_top=y+3*g;
+  // right column
+  y=B1;
+  for(const [col,t] of [["blue",243+Ey],["salmon",9],["yellow",rung(7)],["pink",9],["blue",rung(7)]]){rect("right","" +col,xF1,y,xR1,y+t);y+=t;}
+  const scroll_top=y-rung(7), block_top=y;
+  // corner block
+  const R1=rung(9), Cb=block_top+R1, cx=xR1, cy=Cb, R_tan=R1+rung(7);
+  const diag=x=>cy+(-R_tan-.5*(x-cx))/(S3/2), yL=diag(xF1), yR=diag(xR1);
+  rect("corner","yellow",xF1,block_top,xR1,Cb);
+  add("corner","orange",`M${P(xF1,yL)} L${P(xR1,yR)} V${cy-R1} A${R1},${R1} 0 0 0 ${P(cx-R1,cy)} H${xF1} Z`);
+  for(const [col,r] of [["pale",R1],["blue",R1-9],["yellow",rung(8)],["cream",rung(7)]])
+    add("corner",col,`M${P(cx-r,cy)} A${r},${r} 0 0 1 ${P(cx,cy-r)} V${cy} Z`);
+  // left column and the half vesica
+  y=head_bot; const cap_bot=B1-2*3*g;
+  rect("left","cream",xL0,y,xL1,cap_bot); rect("left","salmon",xL0,cap_bot,xL1,cap_bot+3*g); rect("left","pink",xL0,cap_bot+3*g,xL1,B1);
+  const colw=xL1-xL0, r_v=2*colw, chord=r_v*S3, fld_bot=B1+chord;
+  rect("left","blue",xL0,B1,xL1,fld_bot);
+  rect("left","pink",xL0,fld_bot,xL1,scroll_top);           // the dots band: the remainder
+  rect("left","blue",xL0,scroll_top,xL1,block_top);
+  const thin_bot=block_top+9; rect("left","pale",xL0,block_top,xL1,thin_bot);
+  const vx=xL1+colw, vy=(B1+fld_bot)/2;
+  for(const [col,r] of [["pink",r_v],["yellow",r_v-3*g]]){const hc=Math.sqrt(r*r-(xL1-vx)**2);add("left",col,`M${P(xL1,vy-hc)} A${r},${r} 0 0 0 ${P(xL1,vy+hc)} Z`);}
+  // frieze
+  const Ft=Cb+3*g; y=Ft; const ys={};
+  const fr=[["top-bar","grey",3*g],["flower-row","cream",27],["salmon-band","salmon",rung(7)],["wave-band","blue",27],["base","cream",3*g]];
+  for(const [n,col,t] of fr){ys[n]=[y,y+t];y+=t;}
+  const Fb=y;
+  rect("frieze","cream",xF1,Cb,xR1+27,ys["wave-band"][1]);
+  for(const [n,col] of fr) rect("frieze",col,xL1,ys[n][0],n==="base"?xF1:xR1,ys[n][1]);
+  const eb=rung(7); rect("frieze","pale",xR1-eb,ys["salmon-band"][0],xR1,ys["salmon-band"][1]);
+  rect("left","blue",xL0,thin_bot,xL0+27,Fb); rect("left","pale",xL0+27,thin_bot,xL1,Fb);
+  // the foot: a Meyer volute shrinking 1/sqrt3 per full turn
+  const r0=27,k=3**(-1/8),N=6,dq=q=>{const a=Math.PI/2*q;return[Math.cos(a),Math.sin(a)];};
+  const r=[...Array(N+6)].map((_,i)=>r0*k**i), c=[[xL0+r[1]-r[2]-r[3],Fb]];
+  for(let i=0;i<N+5;i++){const u=dq(i+1);c.push([c[i][0]+(r[i]-r[i+1])*u[0],c[i][1]+(r[i]-r[i+1])*u[1]]);}
+  const Pj=[[c[0][0]+r[0],c[0][1]]];for(let j=1;j<N+6;j++){const u=dq(j);Pj.push([c[j-1][0]+r[j-1]*u[0],c[j-1][1]+r[j-1]*u[1]]);}
+  let dv=`M${P(...Pj[0])}`;for(let i=0;i<N;i++)dv+=` A${r[i]},${r[i]} 0 0 1 ${P(...Pj[i+1])}`;
+  dv+=` L${P(...Pj[N+4])}`;for(let i=N+3;i>3;i--)dv+=` A${r[i]},${r[i]} 0 0 0 ${P(...Pj[i])}`;dv+=" Z";
+  add("left","pale",dv);
+  const ex=(Pj[N][0]+Pj[N+4][0])/2, ey=(Pj[N][1]+Pj[N+4][1])/2, wend=Math.hypot(Pj[N][0]-Pj[N+4][0],Pj[N][1]-Pj[N+4][1]);
+  circle("left","yellow",ex,ey,wend/S3);
+  const lo=Math.max(...c.slice(0,N).map((cc,i)=>cc[1]+r[i]));
+  // the menu: cap 27h, pitch 81h, centred in the field
+  const cap=27,pitch=81,block=cap+3*pitch;
+  menuAt={axis:(xL1+xF1)/2, top:(field_top+Ft)/2-block/2, x0:xL1, x1:xF1, pitch, cap};
+  return {shapes:out, Wh:xR1+M+Ex*0, Hh:lo+Y0, menuAt, field:{x0:xL1,y0:field_top,x1:xF1,y1:Ft}, order:["frame","left","bull","right","corner","frieze"]};
+}
+
+const BASE=build(0,0), BASE_W=BASE.Wh, BASE_H=BASE.Hh, L0=81-45, CW=BASE_W-2*81+90;
+const cv=document.getElementById('inside'), c=cv.getContext('2d');
+const thick=document.getElementById('thick'), front=document.getElementById('front'), menuSvg=document.getElementById('menu');
+let vw=0,vh=0,DPR=1,h=1,P=null,vbx=0,vby=0,F=null,frontSVG='',menuG='';
+
+function sp(x,y){return[(x-vbx)*h,(y-vby)*h];}
+function layout(){
+  DPR=REC?1:Math.min(2,devicePixelRatio||1);
+  vw=REC?REC.w:innerWidth; vh=REC?REC.h:(innerHeight);
+  cv.width=Math.round(vw*DPR);cv.height=Math.round(vh*DPR);
+  h=Math.min(vw/CW, vh/BASE_H);
+  const Ex=Math.min(486,Math.max(0,vw/h-CW)), Ey=Math.min(360,Math.max(0,vh/h-BASE_H));
+  P=build(Ex,Ey);
+  vbx=L0-(vw/h-(CW+Ex))/2; vby=(P.Hh-vh/h)/2;
+  const vb=`${vbx} ${vby} ${vw/h} ${vh/h}`;
+  const fd=P.field;
+  // the front: the panel, with the field cut out as the nook's opening
+  let s=`<path fill="${C.ground}" fill-rule="evenodd" d="M${vbx-50},${vby-50} h${vw/h+100} v${vh/h+100} h${-(vw/h+100)} Z M${fd.x0},${fd.y0} V${fd.y1} H${fd.x1} V${fd.y0} Z"/>`;
+  for(const L of P.order){s+=`<g>`;for(const q of P.shapes.filter(q=>q.layer===L))s+=`<path fill="${C[q.fill]}" stroke="${C.ink}" stroke-width="1" d="${q.d}"/>`;s+='</g>';}
+  s+=`<path fill="none" stroke="${C.ink}" stroke-width="1" d="M${fd.x0},${fd.y0} H${fd.x1} V${fd.y1} H${fd.x0} Z"/>`;
+  frontSVG=s;
+  for(const el of [front,thick]){el.setAttribute('viewBox',vb);el.setAttribute('preserveAspectRatio','xMidYMid meet');}
+  front.innerHTML=s;
+  // the thickness: the same frame, solid and shaded, stepped back (offset each frame)
+  thick.innerHTML=`<g id="tk">${P.shapes.map(q=>`<path fill="${C[q.fill]}" d="${q.d}"/>`).join('')}</g>`;
+  const [fx0,fy0]=sp(fd.x0,fd.y0),[fx1,fy1]=sp(fd.x1,fd.y1); F={x:fx0,y:fy0,w:fx1-fx0,h:fy1-fy0};
+  // the menu, as links, on its own layer
+  const m=P.menuAt,b=BASE.menuAt,dx=m.axis-b.axis,dy=m.top-b.top;
+  let mg='';let wi=0;
+  for(const grp of MENU.split(/(?=<g id=")/).filter(x=>x.trim())){
+    const id=(grp.match(/<g id="([^"]+)"/preview/)||[])[1]||'',L=LINKS.find(l=>l[0]===id);
+    if(L){const y0=(b.top+wi*b.pitch-20)*H0,x0=(b.x0+9)*H0,w=(b.x1-b.x0-18)*H0;
+      mg+=`<a href="${L[2]}" aria-label="${L[1]}"><rect class="hit" fill="transparent" x="${x0}" y="${y0}" width="${w}" height="${67*H0}"/>${grp.replace('<g id="'+id+'"','<g class="word" id="'+id+'"')}</a>`;wi++;}
+    else mg+=grp;
+  }
+  menuG={html:mg,dx,dy};
+  menuSvg.setAttribute('viewBox',`0 0 ${vw} ${vh}`);
+  menuSvg.innerHTML=`<defs><clipPath id="win"><rect x="${F.x}" y="${F.y}" width="${F.w}" height="${F.h}"/></clipPath></defs><g clip-path="url(#win)"><g id="mg">${mg}</g></g>`;
+  plant();
+}
+
+// ---- inside the box -------------------------------------------------------------------------
+// Each flat is drawn in the opening's own pixels, then placed at its depth z (0 = the front,
+// 1 = the back wall) by one uniform scale about a vanishing point: circles stay circles.
+const DEPTH=.74;                                      // the back wall is 74% of the opening
+let px=0,py=0,tx=0,ty=0,scrollQ=0;
+function layerRect(z){
+  const cx=F.x+F.w/2, cy=F.y+F.h/2;
+  const bx=cx-px*F.w*.09, by=cy-py*F.h*.07-scrollQ*F.h*.12;   // the back wall slides opposite the eye
+  const s=1-(1-DEPTH)*z, x=lerp(cx,bx,z), y=lerp(cy,by,z);
+  return{s,x,y,cx,cy};
+}
+const lerp=(a,b,t)=>a+(b-a)*t, cl=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
+function into(z){const L=layerRect(z);c.setTransform(DPR*L.s,0,0,DPR*L.s,DPR*(L.x-L.cx*L.s),DPR*(L.y-L.cy*L.s));return L;}
+function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+
+// the grass flat: Windrow's blades, on springs, swept by the pointer
+let blades=[];
+function plant(){const r=rng(7);blades=[];const n=Math.round(Math.min(2400,F.w*F.h/180));
+  for(let i=0;i<n;i++){const d=Math.pow(r(),.7);blades.push({x:F.x-F.w*.05+r()*F.w*1.1,y:F.y+F.h*(.7+d*.32),h:F.h*(.025+d*.06)*(.7+r()*.6),rest:(r()-.5)*.25,a:0,w:0,band:Math.min(4,Math.floor(d*5)),ph:r()*TAU});}
+  blades.sort((a,b)=>a.y-b.y);}
+let ptr=null,pprev=null;
+function stepGrass(now){
+  // the pointer, brought into the grass flat's own coordinates
+  const L=layerRect(.32);let tip=null;
+  if(ptr){const x=(ptr.x-L.x)/L.s+L.cx,y=(ptr.y-L.y)/L.s+L.cy;tip={x,y,vx:ptr.vx/L.s,vy:ptr.vy/L.s};}
+  const rr=F.w*.16,r2=rr*rr;
+  for(const b of blades){
+    const breeze=Math.sin(now*.0009+b.x*.01+b.ph*.3)*.08+Math.sin(now*.0023+b.y*.02)*.03+.05;
+    let f=(b.rest+breeze-b.a)*.045;
+    if(tip){const mx=b.x+Math.sin(b.a)*b.h*.5,my=b.y-Math.cos(b.a)*b.h*.5,dx=mx-tip.x,dy=my-tip.y,d2=dx*dx+dy*dy;
+      if(d2<r2){const q=1-Math.sqrt(d2)/rr,q2=q*q;f+=tip.vx*.0045*q2+Math.sign(dx||1)*.02*q2;}}
+    b.w=(b.w+f)*.86;b.a=Math.max(-1.3,Math.min(1.3,b.a+b.w));
+  }
+}
+function drawBlades(from,to,ink){
+  c.lineCap='round';
+  for(let band=from;band<=to;band++){const k=band/4;c.strokeStyle=ink(k);c.lineWidth=(.6+k*1.1)*h*.9;c.beginPath();
+    for(const b of blades){if(b.band!==band)continue;const tx=b.x+Math.sin(b.a)*b.h,ty=b.y-Math.cos(b.a)*b.h;c.moveTo(b.x,b.y);c.quadraticCurveTo(b.x+Math.sin(b.a*.45)*b.h*.55,b.y-b.h*.6,tx,ty);}
+    c.stroke();}
+}
+function capsule(x0,x1,y,r){c.beginPath();c.moveTo(x0,y-r);c.lineTo(x1,y-r);c.arc(x1,y,r,-Math.PI/2,Math.PI/2);c.lineTo(x0,y+r);c.arc(x0,y,r,Math.PI/2,Math.PI*1.5);c.closePath();}
+
+function drawInside(now){
+  const {x:X,y:Y,w:Wd,h:Hd}=F, hz=Y+Hd*.58, t=now/1000;
+  c.setTransform(DPR,0,0,DPR,0,0);c.clearRect(0,0,vw,vh);
+  c.save();c.beginPath();c.rect(X,Y,Wd,Hd);c.clip();
+  // the box: back wall then walls, as a frustum from the opening to the back
+  const B=layerRect(1),bw=Wd*B.s,bh=Hd*B.s,bx=B.x-bw/2,by=B.y-bh/2;
+  const quad=(pts,fill)=>{c.fillStyle=fill;c.beginPath();pts.forEach(([a,b],i)=>i?c.lineTo(a,b):c.moveTo(a,b));c.closePath();c.fill();};
+  quad([[X,Y],[X+Wd,Y],[bx+bw,by],[bx,by]],'#fbf5e6');                    // the ceiling: the lit slot
+  quad([[X,Y],[bx,by],[bx,by+bh],[X,Y+Hd]],'#e8dcc0');                    // left wall
+  quad([[X+Wd,Y],[bx+bw,by],[bx+bw,by+bh],[X+Wd,Y+Hd]],'#e2d4b5');        // right wall
+  quad([[X,Y+Hd],[bx,by+bh],[bx+bw,by+bh],[X+Wd,Y+Hd]],'#cfc29e');        // floor
+  // 1 · the back wall: a big sky, low sun, flat cloud, the prairie running to the horizon
+  into(1);
+  let gr=c.createLinearGradient(0,Y,0,hz);gr.addColorStop(0,'#c9d3cf');gr.addColorStop(.55,'#efe3c8');gr.addColorStop(1,'#f0c9a2');
+  c.fillStyle=gr;c.fillRect(X,Y,Wd,hz-Y);
+  const sx=X+Wd*.3,sy=hz-Wd*.02;                                         // the sun, struck, with rings
+  for(const [r,col] of [[Wd*.2,'rgba(233,191,155,.35)'],[Wd*.15,'rgba(233,191,155,.55)'],[Wd*.1,'#e6d17f']]){c.fillStyle=col;c.beginPath();c.arc(sx,sy,r,0,TAU);c.fill();}
+  c.fillStyle='#eadba0';c.fillRect(X,hz,Wd,Y+Hd-hz);
+  // 2 · clouds: long flat bands, drifting with the wind
+  into(.88);
+  c.fillStyle='rgba(247,239,217,.92)';c.strokeStyle=C.ink;c.lineWidth=h*.7;
+  [[.12,.18,.5,.012],[.45,.27,.42,.009],[-.1,.36,.36,.007]].forEach(([x0,y0,len,th],i)=>{
+    const dx=((t*(.012+i*.004)+x0+1)%1.6-.3)*Wd;capsule(X+dx,X+dx+len*Wd,Y+Hd*y0,Hd*th);c.fill();c.stroke();});
+  // 3 · the horizon: a fence line running away, poles on a strict interval
+  into(.74);
+  c.fillStyle='#a3ad9c';c.fillRect(X-Wd*.2,hz-Hd*.004,Wd*1.4,Hd*.016);
+  c.strokeStyle=C.ink;c.lineWidth=h*.8;c.beginPath();
+  for(let i=0;i<14;i++){const px2=X-Wd*.1+i*Wd*.095,ph=Hd*.03;c.moveTo(px2,hz);c.lineTo(px2,hz-ph);}
+  c.moveTo(X-Wd*.1,hz-Hd*.022);c.lineTo(X+Wd*1.2,hz-Hd*.022);c.stroke();
+  // 4 · the mid flat: shortgrass ground and a ranch windmill, its wheel turning in the wind
+  into(.55);
+  c.fillStyle='#e6d17f';c.beginPath();c.moveTo(X-Wd*.2,Y+Hd*.64);c.lineTo(X+Wd*1.2,Y+Hd*.62);c.lineTo(X+Wd*1.2,Y+Hd*1.2);c.lineTo(X-Wd*.2,Y+Hd*1.2);c.closePath();c.fill();
+  c.strokeStyle=C.ink;c.lineWidth=h*.8;c.stroke();
+  const wx=X+Wd*.74,wb=Y+Hd*.63,wt=Y+Hd*.36,wr=Wd*.085;
+  c.beginPath();c.moveTo(wx-Wd*.05,wb);c.lineTo(wx-Wd*.008,wt);c.moveTo(wx+Wd*.05,wb);c.lineTo(wx+Wd*.008,wt);
+  for(let k=1;k<6;k++){const yy=lerp(wb,wt,k/6),hw=lerp(Wd*.05,Wd*.008,k/6);c.moveTo(wx-hw,yy);c.lineTo(wx+hw,yy);}
+  c.stroke();
+  const rot=t*1.6;c.save();c.translate(wx,wt);c.fillStyle='rgba(247,239,217,.95)';c.beginPath();c.arc(0,0,wr,0,TAU);c.fill();c.stroke();
+  c.beginPath();c.arc(0,0,wr*.3,0,TAU);c.stroke();
+  for(let k=0;k<18;k++){const a=rot+k*TAU/18;c.beginPath();c.moveTo(Math.cos(a)*wr*.3,Math.sin(a)*wr*.3);c.lineTo(Math.cos(a)*wr,Math.sin(a)*wr);c.stroke();}
+  c.fillStyle=C.ink;c.beginPath();c.moveTo(0,0);c.lineTo(Wd*.13,-Hd*.008);c.lineTo(Wd*.13,Hd*.012);c.closePath();c.fill();
+  c.restore();
+  // 5 · the grass flat
+  into(.32);
+  c.fillStyle='#d9c27a';c.fillRect(X-Wd*.2,Y+Hd*.72,Wd*1.4,Hd*.5);
+  drawBlades(0,4,k=>`rgba(43,38,32,${.25+k*.55})`);
+  // light from the top opening: a soft fall of warm light, and shadow at the lip
+  c.setTransform(DPR,0,0,DPR,0,0);
+  gr=c.createLinearGradient(0,Y,0,Y+Hd*.6);gr.addColorStop(0,'rgba(255,248,226,.55)');gr.addColorStop(1,'rgba(255,248,226,0)');c.fillStyle=gr;c.fillRect(X,Y,Wd,Hd*.6);
+  c.save();c.globalAlpha=.16;c.fillStyle='#fffaf0';
+  for(let i=0;i<3;i++){const x0=X+Wd*(.15+i*.28)+px*Wd*.05;c.beginPath();c.moveTo(x0,Y);c.lineTo(x0+Wd*.1,Y);c.lineTo(x0+Wd*.22,Y+Hd*.7);c.lineTo(x0+Wd*.12,Y+Hd*.7);c.closePath();c.fill();}
+  c.restore();
+  const edge=(x0,y0,x1,y1,w)=>{const gg=c.createLinearGradient(x0,y0,x1,y1);gg.addColorStop(0,'rgba(43,38,32,.38)');gg.addColorStop(1,'rgba(43,38,32,0)');c.fillStyle=gg;return gg;};
+  const sw=Math.max(8,F.w*.06);
+  edge(X,0,X+sw,0);c.fillRect(X,Y,sw,Hd);edge(X+Wd,0,X+Wd-sw,0);c.fillRect(X+Wd-sw,Y,sw,Hd);
+  edge(0,Y+Hd,0,Y+Hd-sw);c.fillRect(X,Y+Hd-sw,Wd,sw);edge(0,Y,0,Y+sw*.5);c.fillRect(X,Y,Wd,sw*.5);
+  c.restore();
+}
+function placeMenu(){
+  const L=layerRect(.16), s=L.s, b=BASE.menuAt;
+  // master menu px -> h -> this page's field -> screen -> the menu flat's depth
+  const a=h/H0, ox=(menuG.dx-vbx)*h, oy=(menuG.dy-vby)*h;
+  const m=`translate(${L.x-L.cx*s} ${L.y-L.cy*s}) scale(${s}) translate(${ox} ${oy}) scale(${a})`;
+  const g=menuSvg.querySelector('#mg');if(g)g.setAttribute('transform',m);
+  return m;
+}
+function placeThick(){const t=thick.querySelector('#tk');if(t)t.setAttribute('transform',`translate(${px*-6+0} ${py*-6+4})`);}
+
+// ---- input: pointer, tilt, scroll -----------------------------------------------------------
+addEventListener('pointermove',e=>{const x=e.clientX,y=e.clientY;ptr={x,y,vx:pprev?x-pprev.x:0,vy:pprev?y-pprev.y:0};pprev={x,y};tx=cl((x/vw)*2-1,-1,1);ty=cl((y/vh)*2-1,-1,1);},{passive:true});
+addEventListener('pointerleave',()=>{ptr=null;pprev=null;tx=0;ty=0;});
+addEventListener('touchmove',e=>{const q=e.touches[0];if(!q)return;const x=q.clientX,y=q.clientY;ptr={x,y,vx:pprev?x-pprev.x:0,vy:pprev?y-pprev.y:0};pprev={x,y};},{passive:true});
+addEventListener('touchend',()=>{pprev=null;});
+try{addEventListener('deviceorientation',e=>{if(e.gamma==null)return;tx=cl(e.gamma/25,-1,1);ty=cl((e.beta-45)/25,-1,1);});}catch(e){}
+function scrollP(){const max=Math.max(1,document.documentElement.scrollHeight-innerHeight);return cl(scrollY/max);}
+
+function frame(now){
+  px+=(tx-px)*.08;py+=(ty-py)*.08;scrollQ+=(scrollP()-scrollQ)*.12;
+  stepGrass(now);if(ptr)ptr={...ptr,vx:ptr.vx*.6,vy:ptr.vy*.6};
+  drawInside(now);placeMenu();placeThick();
+  if(!REC)requestAnimationFrame(frame);
+}
+// ---- record mode: #rec<start>-<count>-<w>x<h> draws a 240-frame (8 s) orbit into images ----
+const RM=/^#rec(\d+)-(\d+)-(\d+)x(\d+)$/.exec(location.hash);
+const REC=RM?{s:+RM[1],n:+RM[2],w:+RM[3],h:+RM[4]}:null;
+let raf=0;addEventListener('resize',()=>{if(REC)return;cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>layout());});
+layout();
+if(!REC)requestAnimationFrame(frame);
+else{
+  const toImg=(svgText,vb)=>new Promise(res=>{const im=new Image();im.onload=()=>res(im);im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}" width="${vw}" height="${vh}">${svgText}</svg>`);});
+  (async()=>{
+    const vb=front.getAttribute('viewBox');
+    const fImg=await toImg(frontSVG,vb), tImg=await toImg(`<g style="filter:brightness(.62)">${thick.innerHTML}</g>`,vb);
+    const out=[];
+    for(let f=0;f<REC.s+REC.n;f++){
+      const T=f/240, now=f*1000/30;
+      tx=Math.sin(T*TAU)*.9;ty=Math.sin(T*TAU*2)*.45;          // an orbit of the eye
+      const ang=T*TAU*3, R=F.w*.25;ptr={x:F.x+F.w/2+Math.cos(ang)*R,y:F.y+F.h*.82+Math.sin(ang*2)*F.h*.04,vx:-Math.sin(ang)*R*TAU*3/240,vy:0};
+      scrollQ=.5-.5*Math.cos(T*TAU);
+      px+=(tx-px)*.25;py+=(ty-py)*.25;stepGrass(now);drawInside(now);const m=placeMenu();
+      if(f<REC.s)continue;
+      c.setTransform(1,0,0,1,0,0);
+      c.drawImage(tImg,-px*6*h,(-py*6+4)*h);c.drawImage(fImg,0,0);
+      const mi=await toImg(`<g transform="${m}">${menuG.html}</g>`,`0 0 ${vw} ${vh}`);
+      c.save();c.beginPath();c.rect(F.x,F.y,F.w,F.h);c.clip();c.drawImage(mi,0,0);c.restore();
+      out.push(cv.toDataURL('image/jpeg',.85));
+    }
+    const pre=document.createElement('pre');pre.id='out';pre.textContent=out.join('\n');document.body.appendChild(pre);
+  })();
+}
+})();
+</script>
+
+</body></html>
