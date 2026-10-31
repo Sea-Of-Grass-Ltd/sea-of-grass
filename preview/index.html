@@ -1533,6 +1533,39 @@ async function audit(only={}){const styles=only.styles||['dusk','glass','neu','b
   addEventListener('scroll',()=>close(false),{passive:true});addEventListener('resize',()=>close(false));})();
 })();
 
+// ---- the opening: the wind writes the S. One scroll-scrubbed motion over the pinned scene, reversible:
+// a calm field; a gust leans the grass and lifts a ribbon of blades; the blades gather along the S's line and settle into the mark;
+// then, as Find Your Style rises, the S parts along its middle like grass. No fragments: every moving stroke is a blade with one path.
+var OPEN={q:0,d:0}; // q: the writing (0 calm .. 1 written); d: the parting (0 whole .. 1 parted)
+const SPINE=[[380,95],[350,75],[300,60],[200,58],[110,62],[70,95],[75,140],[120,170],[220,178],[300,182],[355,205],[365,245],[330,280],[250,290],[150,290],[70,282]]; // the S's centre line, in the mark's own units
+const spinePt=t=>{const n=SPINE.length-1,f=Math.min(n-1e-6,Math.max(0,t)*n),i=Math.floor(f),u=f-i,a=SPINE[i],b=SPINE[i+1];return[a[0]+(b[0]-a[0])*u,a[1]+(b[1]-a[1])*u];};
+const spineAng=t=>{const a=spinePt(t-.01),b=spinePt(t+.01);return Math.atan2(b[1]-a[1],b[0]-a[0]);};
+let STR=null,STRW=0;
+function strands(){if(STR&&STRW===W)return STR;STRW=W;const n=W<600?70:130,r=rng(77);STR=[];
+  for(let i=0;i<n;i++){const t=i/(n-1),[sx,sy]=spinePt(t),a=spineAng(t),off=(r()-.5)*26; // each blade's home in the field, and its place across the S's stroke
+    STR.push({u:Math.min(1,Math.max(0,t*.85+r()*.15)),o:t,v:.45+r()*.5,tx:sx-Math.sin(a)*off,ty:sy+Math.cos(a)*off,ta:a});} // launched in the order they sit along the S, so the wind writes it start to end
+  return STR;}
+const ease=k=>k*k*(3-2*k);
+function bez(p0,p1,p2,p3,t){const m=1-t;return[m*m*m*p0[0]+3*m*m*t*p1[0]+3*m*t*t*p2[0]+t*t*t*p3[0],m*m*m*p0[1]+3*m*m*t*p1[1]+3*m*t*t*p2[1]+t*t*t*p3[1]];}
+function drawStrands(q,alpha){ // inside the mark's transform
+  const col=P.mode==='ink'?(P.line||'#111'):P.mode==='swiss'?P.pen:(P.mode==='paint'||P.mode==='photo')?(P.cut||P.mark):P.mark,lw=P.mode==='ink'?5:P.mode==='swiss'?2.2:3.6;
+  c.save();c.strokeStyle=col;c.lineCap='round';c.lineWidth=lw;
+  for(const s of strands()){const k=Math.max(0,Math.min(1,(q-.08-s.o*.42)/.4));if(k<=0)continue;const e=ease(k);
+    const x0=W*(windowed()||H>W?.1+.8*s.u:.42+.56*s.u),y0=HZ+s.v*(H-HZ),p0=[(x0-W*MX)/U+CX,(y0-H*MY)/U+CY],p3=[s.tx,s.ty],p1=[p0[0]+170,p0[1]-280],p2=[p3[0]-Math.cos(s.ta)*120,p3[1]-Math.sin(s.ta)*120-60];
+    const h=bez(p0,p1,p2,p3,e),tl=bez(p0,p1,p2,p3,Math.max(0,e-.05)),len=Math.hypot(h[0]-tl[0],h[1]-tl[1])||1,need=18*(1-e)+14; // a blade: about its own length, laid along its path
+    const tx=e>=1?Math.cos(s.ta):(h[0]-tl[0])/len,ty=e>=1?Math.sin(s.ta):(h[1]-tl[1])/len;
+    c.globalAlpha=alpha*Math.min(1,k*5);c.beginPath();c.moveTo(h[0]-tx*need,h[1]-ty*need);c.lineTo(h[0],h[1]);c.stroke();}
+  c.restore();}
+function drawOpening(T){ // replaces the shatter
+  const p=FX_STILL?1:scrollP;OPEN.q=FX_STILL?1:Math.min(1,p/.22);OPEN.d=FX_STILL?0:Math.max(0,Math.min(1,(p-.38)/.24));
+  const solid=ease(Math.max(0,Math.min(1,(OPEN.q-.7)/.3)));
+  if(solid<1)drawStrands(OPEN.q,1-solid*.9);
+  if(solid<=0)return;const d=ease(OPEN.d);
+  if(d<=0){c.save();c.globalAlpha=solid;fxPiece(0,T);drawWhole();c.restore();return;}
+  // the S parts along its middle bar: the top half lifts and leans left, the bottom half sinks and leans right, both fading as Find Your Style arrives
+  const SPLIT=172,gap=d*90,slide=d*46;
+  for(const [k,clipTop] of [[0,true],[1,false]]){c.save();c.globalAlpha=solid*(1-d*.9);c.beginPath();clipTop?c.rect(-2000,-2000,5000,2000+SPLIT):c.rect(-2000,SPLIT,5000,4000);c.clip();
+    c.translate(clipTop?-slide:slide,clipTop?-gap:gap);fxPiece(k,T);drawWhole();c.restore();}}
 // ---- Find Your Style effects: one at a time, each with one Amount (0..1). Drift starts on every visit when beat 2 first
 // shows (never under reduced motion) and then follows the visitor down the page and from page to page (window.sogDrift, in the
 // head script); the first touch on a control takes over.
@@ -1559,9 +1592,13 @@ function fxSky(now){const dt=FX.last?Math.min(.05,(now-FX.last)/1000):0;FX.last=
   if(Math.abs(deg-FX.shown)>.05){cv.style.filter=deg?`hue-rotate(${deg.toFixed(1)}deg)`:'';FX.shown=deg;}
   if(k==='sky')skyStyle(T,a);
   if(k==='eye')eye(dt,a);}
-function fxField(a0,a1,T){ // Melt: the blades ripple and droop like heat shimmer, for this frame only; the field's own physics stays untouched
-  if(FX.kind!=='melt'){drawField(a0,a1);if(a1===3)haze();return;}const a=FX.amt.melt,keep=blades.map(b=>[b.a,b.h]);
-  for(const b of blades){b.a+=a*.45*Math.sin(T*2.4+b.x*.02+b.band*.7);b.h*=1-a*.22*(.5+.5*Math.sin(T*1.7+b.x*.011));}
+function fxField(a0,a1,T){ // the opening's gust and parting, and Melt, bend the blades for this frame only; the field's own physics stays untouched
+  const melt=FX.kind==='melt',gust=OPEN.q>0&&OPEN.q<1,part=OPEN.d>0&&OPEN.d<1;
+  if(!melt&&!gust&&!part){drawField(a0,a1);if(a1===3)haze();return;}const keep=blades.map(b=>[b.a,b.h]);
+  if(gust){const env=Math.sin(Math.PI*Math.min(1,OPEN.q/.8)),front=(OPEN.q/.6)*W*1.4-W*.2,wd=W*.35; // the gust's front travels left to right
+    for(const b of blades)b.a+=.8*env*Math.exp(-(((b.x-front)/wd)**2));}
+  if(part){const cx=W*MX,k=Math.sin(Math.PI*OPEN.d);for(const b of blades){const dx=b.x-cx;b.a+=Math.sign(dx)*.7*k*Math.exp(-((dx/(W*.2))**2));}} // the grass parts under the S
+  if(melt){const a=FX.amt.melt;for(const b of blades){b.a+=a*.45*Math.sin(T*2.4+b.x*.02+b.band*.7);b.h*=1-a*.22*(.5+.5*Math.sin(T*1.7+b.x*.011));}}
   drawField(a0,a1);blades.forEach((b,i)=>{b.a=keep[i][0];b.h=keep[i][1];});if(a1===3)haze();}
 function fxPiece(i,T){const k=FX.kind,a=FX.amt[k]||0; // the S's pieces: Melt ripples and leans them, Eye draws them round towards the eye
   if(k==='melt'){c.translate(0,a*16*Math.sin(T*2.1+i*1.3));c.transform(1,0,a*.18*Math.sin(T*1.4+i),1,0,0);}
@@ -1643,13 +1680,12 @@ function frame(now){
   const portrait=H>W*1.05;
   if(portrait||windowed()){U=Math.min(W/560,H/700)*(windowed()?.92:1);MX=.5;MY=windowed()?.36:.3;if(!windowed())roomForCopy();}else{U=Math.min(W/1500,H/820);MX=.75;MY=.37;}
   view.r=.02*Math.sin(t/TEND*Math.PI);
-  const tips=gusts(tPrev,t); if(ptr){tips.push(ptr);ptr={...ptr,vx:ptr.vx*.6,vy:ptr.vy*.6};}
+  const tips=[]; if(ptr){tips.push(ptr);ptr={...ptr,vx:ptr.vx*.6,vy:ptr.vy*.6};}
   stepField(now,tips);
   c.setTransform(DPR,0,0,DPR,0,0);paintSky();fxSky(now);
   fxField(0,3,now/1000);
   const enter=()=>{c.save();c.translate(W*MX,H*MY);c.rotate(view.r);c.scale(U,U);c.translate(-CX,-CY);};
-  enter();drawRibbons(t,head,false);drawSpray(sep,false);
-  if(sep<=0){c.save();fxPiece(0,now/1000);drawWhole();c.restore();}else{const order=PIECES.map((p,i)=>i).sort((a,b)=>PIECES[a].flip-PIECES[b].flip);for(const i of order){c.save();fxPiece(i,now/1000);drawPiece(PIECES[i],sep);c.restore();}}
+  enter();drawOpening(now/1000);
   c.restore();
   fxField(4,6,now/1000);
   
