@@ -3,7 +3,7 @@
 <head>
 <meta name="robots" content="noindex,nofollow">
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-61Q2DRMD3H"></script>
+<script>/* analytics waits until the page has loaded and gone idle, so it never competes with the first view */addEventListener('load',function(){var go=function(){var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-61Q2DRMD3H';document.head.appendChild(s);};'requestIdleCallback' in window?requestIdleCallback(go,{timeout:4000}):setTimeout(go,2000);});</script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -24,7 +24,7 @@
 <link rel="icon" href="/preview/assets/favicon.svg" type="image/svg+xml" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,400&family=Anybody:wdth,wght@125,800&family=Inter:wght@200;300;400;500;600;700&family=Space+Grotesk:wght@500;700&family=Archivo+Black&family=Courier+Prime:ital,wght@0,400;0,700;1,700&family=Syne:wght@700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
 <style>
 /* Dusk (after dope.security) is the default: near-black, one violet signal, painterly dusk sky.
    Paper and Prairie swap the same tokens. Type has three voices in one line: a thin sans for quiet words,
@@ -45,8 +45,8 @@ html[data-theme="neu"]{--bg:#ece7e1;--fg:#3a332c;--fg2:#463e36;--soft:#6f655b;--
   --lav:#9a4529;--bar:rgba(236,231,225,.88);--shadow:none;--card:#ece7e1;--field:#ece7e1;--panel:rgba(236,231,225,.9);--err:#c0392b;--r-btn:18px;--r-ctl:14px;--r-card:24px;color-scheme:light;--neu-dark:#cdc3b8;--neu-light:#fff}
 html[data-theme="brutal"]{--bg:#FFFDF5;--fg:#000;--fg2:#000;--soft:#1f1f1f;--steel:#333;--rule:#000;--violet:#000;--accent2:#000;--on-accent:#fff;
   --lav:#FF6B6B;--bar:#fff;--shadow:none;--card:#fff;--field:#fff;--panel:#fff;--err:#a3001b;--r-btn:0;--r-ctl:0;--r-card:0;--display:Syne,"Space Grotesk",sans-serif;--sans:Inter,"Helvetica Neue",Arial,sans-serif;--mono:"Space Mono",Menlo,monospace;--nb-y:#FFD23F;--nb-c:#FF6B6B;--nb-s:#74B9FF;--nb-g:#88D498;--nb-o:#FFA552;--nb-l:#B8A9FA;--nb-ink:#000;color-scheme:light}
-html[data-theme="simple"]{--bg:#fff;--fg:#111;--fg2:#111;--soft:#555;--steel:#6a6a6a;--rule:#111;--violet:#d02a24;--accent2:#c8241f;--on-accent:#fff;
-  --lav:#d02a24;--bar:rgba(255,255,255,.92);--shadow:none;--card:#f4f4f4;--field:#fff;--panel:rgba(255,255,255,.92);--err:#e5322d;--r-btn:0;--r-ctl:0;--r-card:0;--display:Inter,sans-serif;color-scheme:light}
+html[data-theme="simple"]{--bg:#F1EEE6;--fg:#1A1714;--fg2:#1A1714;--soft:#3F3A35;--steel:#5A544D;--rule:#1A1714;--violet:#1A1714;--accent2:#000;--on-accent:#F1EEE6;
+  --lav:#1A1714;--bar:#F1EEE6;--shadow:none;--card:#E8E4DA;--field:#F7F5EF;--panel:rgba(241,238,230,.94);--err:#A32A0A;--r-btn:0;--r-ctl:0;--r-card:0;--display:Archivo,"Helvetica Neue",sans-serif;--sans:Archivo,"Helvetica Neue",Arial,sans-serif;color-scheme:light}
 html[data-theme="editorial"]{--bg:#f3f1ea;--fg:#1f2a24;--fg2:#28342d;--soft:#53605a;--steel:#5c6560;--rule:rgba(31,42,36,.18);--violet:#1f2a24;--accent2:#000;--on-accent:#f3f1ea;
   --lav:#9a7440;--bar:rgba(243,241,234,.9);--shadow:none;--card:#e8e6dc;--field:#f9f8f3;--panel:rgba(243,241,234,.92);--err:#9b3b2a;--r-btn:0;--r-ctl:0;--r-card:0;--display:"Cormorant Garamond",Georgia,serif;color-scheme:light}
 
@@ -62,14 +62,10 @@ html[data-theme="brutal"] :is(h2,h3,.svc h3,.person h3){font-family:"Space Grote
 html[data-theme="brutal"] :is(h1,h2,h3,blockquote) :is(b,.t){font-weight:inherit;color:inherit}
 /* the highlighter: one box per phrase, the same height on every line (cap height plus descenders), never reaching into the next line */
 html[data-theme="brutal"] :is(h1,h2,h3,blockquote) em{font:inherit;font-style:normal;color:#000;background:var(--hl,var(--nb-y));display:inline-block;line-height:1.06;padding:0 .14em .03em;margin:0 .02em;max-width:100%}
-html[data-theme="simple"] :is(h1,h2,.svc h3,.person h3){font-family:Inter,sans-serif;font-weight:400;letter-spacing:-.025em}
-html[data-theme="simple"] :is(h1,h2,blockquote,.svc h3,.person h3) b{font-weight:700}
-html[data-theme="simple"] :is(h1,h2,blockquote,.svc h3,.person h3) em{font-family:Inter,sans-serif;font-style:normal;font-weight:400;font-size:1em;letter-spacing:-.025em}
 html[data-theme="editorial"] :is(h1,h2,.svc h3,.person h3){font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;letter-spacing:-.015em;line-height:1.08}
 html[data-theme="editorial"] :is(h1,h2,blockquote,.svc h3,.person h3) b{font-weight:600;letter-spacing:-.015em}
 html[data-theme="editorial"] :is(h1,h2,blockquote,.svc h3,.person h3) em{font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;font-weight:400;font-size:1.04em;letter-spacing:-.01em}
 html:not([data-theme="dusk"]) .hero h1 .t{background:none;color:inherit}
-html[data-theme="simple"] .hero h1 .t{color:var(--soft)}
 
 /* the surfaces each family is known for */
 html[data-theme="glass"] body{background:radial-gradient(60vw 50vw at 85% 15%,rgba(60,224,208,.16),transparent 60%),radial-gradient(50vw 40vw at 10% 70%,rgba(120,90,255,.14),transparent 60%),var(--bg);background-attachment:fixed}
@@ -117,6 +113,37 @@ html[data-theme="brutal"] header.bar .brand{color:#000;font-family:"Space Grotes
 html[data-theme="simple"] :is(.work .fr,.fr){border:0}
 html[data-theme="editorial"] :is(.work .fr,.fr){border:0}
 html[data-theme="editorial"] .work .wt{font-size:32px}
+/* Swiss (the "simple" slot): warm paper, cocoa-black ink, a 12-column grid you can see, monumental Archivo, mono labels,
+   hairline rules. One accent, used once: the orange sun in the scene. After Haus Otto, Adcker, 19–86, Studio Emmerer. */
+html[data-theme="simple"] body{font-family:Archivo,"Helvetica Neue",Arial,sans-serif;
+  background-image:linear-gradient(to right,rgba(26,23,20,.075) 1px,transparent 1px);background-size:calc((min(100vw,1280px) - 2 * var(--side)) / 12) 100%;background-position:var(--edge) 0;background-repeat:repeat}
+html[data-theme="simple"] :is(h1,h2,h3,blockquote){font-family:Archivo,"Helvetica Neue",Arial,sans-serif;color:var(--fg)}
+html[data-theme="simple"] h1{font-weight:800;letter-spacing:-.045em;line-height:1.02}
+html[data-theme="simple"] :is(h2,.svc h3,.person h3){font-weight:800;letter-spacing:-.035em;line-height:1.04}
+html[data-theme="simple"] :is(h1,h2,h3,blockquote) .t{font-weight:300;color:var(--fg)}
+html[data-theme="simple"] :is(h1,h2,h3,blockquote) b{font-weight:800}
+html[data-theme="simple"] :is(h1,h2,h3,blockquote) em{font-family:Archivo,sans-serif;font-style:normal;font-weight:300;font-size:1em;letter-spacing:-.04em;color:var(--fg)}
+html[data-theme="simple"] .hero h1{font-size:clamp(46px,6.4vw,104px)}
+html[data-theme="simple"] :is(.label,.kick,.kick2,.case .chip,.steps .cue,.steps .no,.svc .no,.dialcap,.dial-both,.case dt,.role){font-family:"IBM Plex Mono",Menlo,monospace;letter-spacing:.12em;color:var(--fg)}
+/* sections open on a heavy rule; heads are an index line, title left, note right */
+html[data-theme="simple"] main#top :is(section.s){border-top:2px solid var(--fg)}
+html[data-theme="simple"] :is(.svc,.facts,.people,.steps,.cases){border-color:var(--fg)}
+html[data-theme="simple"] .facts>div b{font:800 32px/1.02 Archivo,sans-serif;letter-spacing:-.03em}
+html[data-theme="simple"] .steps b{font:800 clamp(30px,3vw,44px)/1 Archivo,sans-serif;font-style:normal;letter-spacing:-.035em}
+html[data-theme="simple"] .steps li::before{border-radius:0;background:var(--fg);width:10px;height:10px}
+html[data-theme="simple"] .case h3{font:800 clamp(26px,2.4vw,36px)/1.04 Archivo,sans-serif;letter-spacing:-.03em}
+html[data-theme="simple"] .thesis blockquote{font:800 clamp(38px,5vw,76px)/1.04 Archivo,sans-serif;letter-spacing:-.045em}
+html[data-theme="simple"] .reach{font-family:Archivo,sans-serif;font-weight:800;letter-spacing:-.02em}
+/* buttons: ink blocks; the secondary one an ink outline; hover inverts */
+html[data-theme="simple"] :is(.ghost:not(.q),form button,.btn:not(.q),a.book){background:var(--fg);color:var(--bg)!important;border:2px solid var(--fg);border-radius:0;font-family:Archivo,sans-serif;font-weight:700}
+html[data-theme="simple"] :is(.ghost:not(.q),form button,.btn:not(.q),a.book):hover{background:var(--bg);color:var(--fg)!important}
+html[data-theme="simple"] :is(.ghost.q,.btn.q,a.client){background:transparent;color:var(--fg);border:2px solid var(--fg);border-radius:0;font-weight:700}
+html[data-theme="simple"] :is(.ghost.q,.btn.q,a.client):hover{background:var(--fg);color:var(--bg)}
+html[data-theme="simple"] .slot{border:1px solid var(--fg);border-radius:0;background:var(--bg)}
+html[data-theme="simple"] :is(input,select,textarea){border:1px solid var(--fg);border-radius:0;background:transparent}
+html[data-theme="simple"] header.bar.wrap{background:var(--bg);backdrop-filter:none;-webkit-backdrop-filter:none;border-bottom:2px solid var(--fg)}
+html[data-theme="simple"] .hero .beat2 .in{background:color-mix(in srgb,var(--scrim,var(--bg)) 94%,transparent);border:2px solid var(--fg);border-radius:0;backdrop-filter:none;-webkit-backdrop-filter:none}
+@media (max-width:560px){html[data-theme="simple"] .hero .copy .in{background:color-mix(in srgb,var(--scrim,var(--bg)) 94%,transparent);border:2px solid var(--fg);border-radius:0;backdrop-filter:none;-webkit-backdrop-filter:none}}
 /* color schemes (second dial): tokens on top of any style */
 html[data-scheme="dusk"]{--bg:#0e0b16;--fg:#f3eefa;--fg2:#ddd5ea;--soft:#bcb2cf;--steel:#a196b5;--rule:rgba(243,238,250,.16);--violet:#a46bff;--accent2:#b283fe;--on-accent:#0e0b16;--lav:#c9a2ff;--bar:rgba(14,11,22,.88);--card:#19141f;--field:#09070e;--panel:rgba(14,11,22,.92);--neu-dark:#07060b;--neu-light:#211f29;color-scheme:dark}
 html[data-scheme="prairie"]{--bg:#f3ead2;--fg:#1f2a1a;--fg2:#2c3826;--soft:#4a543d;--steel:#5f6447;--rule:rgba(31,42,26,.16);--violet:#2f5b2a;--accent2:#2c5227;--on-accent:#f8f1dc;--lav:#7d5300;--bar:rgba(243,234,210,.88);--card:#ebe0c3;--field:#f7f1e2;--panel:rgba(243,234,210,.92);--neu-dark:#ccc5b0;--neu-light:#fbf9f2;color-scheme:light}
@@ -189,6 +216,8 @@ header.bar.wrap{max-width:none;padding-left:max(var(--edge),env(safe-area-inset-
 .hero::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,color-mix(in srgb,var(--scrim,var(--bg)) 55%,transparent) 0,transparent 62%)}
 html[data-theme="brutal"] .hero::before{display:none}
 html:not([data-theme="brutal"]) .hero h1 em{color:color-mix(in srgb,var(--lav) 60%,var(--fg))}
+html[data-theme="glass"] .hero h1 em{color:color-mix(in srgb,var(--lav) 15%,var(--fg))}
+html[data-theme="editorial"] .hero h1 em{color:color-mix(in srgb,var(--lav) 35%,var(--fg))} /* over a pale cloud the accent word stays near the ink */ /* glass sits on a bright photographic sky: the accent word leans to white */
 html:not([data-theme="brutal"]) .hero .label{color:var(--fg2)}
 html[data-theme="glass"]:not([data-scheme]) .hero .label{display:inline-block;background:rgba(6,18,26,.58);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:4px;padding:5px 8px}
 html[data-theme="glass"]:not([data-scheme]) .hero p.lede{background:rgba(6,18,26,.58);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:12px 16px}
@@ -246,6 +275,7 @@ html:not([data-theme="brutal"]) .hero[data-sky="night"]{--fg:#f6f2ea;--fg2:#e6e1
 .slot path{fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .slot .sid{position:absolute;left:12px;top:10px;right:12px;font:400 10px/1.3 var(--mono,monospace);letter-spacing:.16em;text-transform:uppercase;color:#686e74}
 .slotcap{font:400 12.5px/1.45 var(--mono,monospace);color:var(--soft);max-width:60ch}
+html:not(.draft) .slotcap{display:none} /* what goes in each picture: shown with ?draft, and in the slot list */
 html[data-theme="brutal"] .slot{border:3px solid #000;border-radius:0;box-shadow:none;background:#fff}
 html[data-theme="glass"] .slot{border:1px solid rgba(255,255,255,.25)}
 
@@ -317,6 +347,7 @@ section.s{padding-block:var(--gap) 0}
 .case dl{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:4px 0 0;font-size:15.5px}
 .case dt{font:400 11px/1.9 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--steel)}
 .case dd{margin:0;color:var(--soft)}
+.case .one{margin:0;color:var(--soft);font-size:16px}
 
 .steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));list-style:none;margin:0;padding:0;position:relative;counter-reset:none}
 .steps::before{content:"";position:absolute;left:0;right:0;top:6px;height:1px;background:var(--rule)} /* the line joining the steps */
@@ -392,8 +423,10 @@ footer.cols a{border:0;color:var(--soft)}footer.cols a:hover{color:var(--fg)}foo
   .steps{grid-template-columns:1fr}.steps div+div{padding-left:0;border-left:0;border-top:1px solid var(--rule)}
   .hero .copy{top:auto;bottom:max(24px,env(safe-area-inset-bottom,0px))}
   .hero .copy .in{max-width:none}
-  .hero .copy .in{background:var(--panel);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--rule);border-radius:19px;padding:18px 16px 20px;margin-left:-6px;margin-right:-6px}
-  .hero p.lede{font-size:16px}
+  .hero .copy .in{background:color-mix(in srgb,var(--panel) 90%,var(--scene-glow,transparent));backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--rule);border-radius:19px;padding:18px 16px 20px;margin-left:-6px;margin-right:-6px}
+  .hero p.lede{font-size:16px;margin-bottom:18px}
+  html:not([data-theme="brutal"]) .hero .beat1 h1{font-size:clamp(30px,8.4vw,36px);margin:10px 0 12px}
+  .hero .beat1 .label{letter-spacing:.12em;white-space:nowrap}
   .wx{top:max(76px,env(safe-area-inset-top,0px));bottom:auto;font-size:10px}
   .scrollcue{display:none}
   .dials{grid-template-columns:1fr}.dial{width:min(260px,70vw)}
@@ -488,7 +521,7 @@ html[data-theme="brutal"] main#top .reach a:hover{background:#fff}
 .hero .beat{will-change:opacity,transform}
 .hero .beat.off{visibility:hidden}
 .hero .beat.dim,.hero .beat.dim .in{pointer-events:none}
-.hero .beat2 .in{padding:var(--s2) var(--s3) var(--s3);background:color-mix(in srgb,var(--scrim,var(--bg)) 90%,transparent);border:1px solid var(--rule);border-radius:var(--r-card,19px);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.hero .beat2 .in{padding:var(--s2) var(--s3) var(--s3);background:color-mix(in srgb,color-mix(in srgb,var(--scrim,var(--bg)) 88%,var(--scene-glow,var(--bg))) 90%,transparent);border:1px solid var(--rule);border-radius:var(--r-card,19px);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
 .hero .beat2 .letters{font-size:clamp(42px,5.2vw,84px);margin:12px 0 10px;line-height:1.14;color:var(--fg)}
 .hero .beat2 .hint{margin:0 0 var(--s2);max-width:52ch;color:var(--fg2);font-size:16px}
 .hero .beat2 .dialbox{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--s0) var(--s3);align-items:center;justify-items:start}
@@ -533,29 +566,33 @@ html[data-theme="brutal"] .dial .lbl{fill:#333}html[data-theme="brutal"] .dial .
   html[data-theme="brutal"] .hero{--wh:24svh}
   html[data-theme="brutal"] .hero .beat2 .dialbox{padding:12px;row-gap:4px}html[data-theme="brutal"] .hero .beat2 .dials>.dialbox{padding:6px 12px 6px;gap:6px}
   html[data-theme="brutal"] .hero .beat2 .dial{width:min(80px,22vw)}html[data-theme="brutal"] .hero .beat2 .dial-both{font-size:16px;margin-top:4px}
-  html[data-theme="brutal"] .hero .fx,html[data-theme="brutal"] .hero .swell{padding-top:8px;gap:6px 10px}html[data-theme="brutal"] .hero .fx .chip i{width:32px;height:32px}
+  html[data-theme="brutal"] .hero .fxhtml[data-theme="brutal"] .hero .fx .chip i{width:32px;height:32px}
   .hero .beat2 .dial-credit{font-size:13.5px}
   html[data-theme="brutal"] .hero .beat2 .dialbox{padding:var(--s1)}
   html[data-theme="brutal"] .hero .beat2 .dials{padding-inline:0;gap:12px}
   html[data-theme="brutal"] .hero .beat2 .dials>.dialbox{padding:10px 18px 8px}
 }
-/* the Swell: the waves in the grass, the site's name made literal; a slider under the dials, ahead of the effects */
-.hero .swell{grid-column:1/-1;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--s1);width:100%;border-top:1px solid var(--rule);padding-top:var(--s1)}
-.hero .swell .cap{margin:0;font:400 11px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--fg2)}
-.hero .swell output{font:400 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--fg);white-space:nowrap}
-.hero .swell input{--p:.35;-webkit-appearance:none;appearance:none;width:100%;height:28px;background:none;margin:0;cursor:pointer;touch-action:pan-y}
-.hero .swell input::-webkit-slider-runnable-track{height:12px;border-radius:6px;background:linear-gradient(90deg,var(--lav) calc(var(--p) * 100%),transparent 0),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='12'%3E%3Cpath d='M0 6q6-6 12 0t12 0' fill='none' stroke='%23888' stroke-width='1.6'/%3E%3C/svg%3E") repeat-x center/24px 12px}
-.hero .swell input::-moz-range-track{height:12px;border-radius:6px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='12'%3E%3Cpath d='M0 6q6-6 12 0t12 0' fill='none' stroke='%23888' stroke-width='1.6'/%3E%3C/svg%3E") repeat-x center/24px 12px}
-.hero .swell input::-moz-range-progress{height:12px;border-radius:6px;background:var(--lav)}
-.hero .swell input::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;margin-top:-5px;border-radius:50%;background:var(--fg);border:3px solid var(--panel-ground,#111)}
-.hero .swell input::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--fg);border:3px solid var(--panel-ground,#111)}
-html[data-theme="brutal"] .hero .swell{border-top:3px solid #000}html[data-theme="brutal"] .hero .swell :is(.cap,output){color:#000}
-html[data-theme="brutal"] .hero .swell input::-webkit-slider-runnable-track{border-radius:0;border:2px solid #000;background-color:#fff}
-html[data-theme="brutal"] .hero .swell input::-webkit-slider-thumb{border-radius:0;background:var(--nb-y);border:3px solid #000;box-shadow:3px 3px 0 #000;margin-top:-7px}
-html[data-theme="neu"] .hero .swell input::-webkit-slider-runnable-track{box-shadow:inset 2px 2px 4px var(--neu-dark,#c3c8d1),inset -2px -2px 4px var(--neu-light,#fff)}
-html[data-theme="neu"] .hero .swell input::-webkit-slider-thumb{border:0;background:var(--bg);box-shadow:3px 3px 6px var(--neu-dark,#c3c8d1),-3px -3px 6px var(--neu-light,#fff)}
-html[data-theme="simple"] .hero .swell input::-webkit-slider-thumb,html[data-theme="editorial"] .hero .swell input::-webkit-slider-thumb{border-radius:0}
-@media (max-width:560px){.hero .swell{gap:10px}.hero .swell output{font-size:10px}.hero .swell .lw{display:none}}
+/* the place in the weather pill is a button; its list opens in each style's idiom */
+.wx{pointer-events:auto}
+.wx .wxplace{font:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit;background:none;border:0;padding:0 2px;margin:0 -2px;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+.wx .wxplace b{font-weight:inherit}
+.wx .wxplace span{display:inline-block;font-size:1.1em;line-height:1;transform:translateY(-1px)}
+.wx .wxplace:hover,.wx .wxplace[aria-expanded="true"]{text-decoration:underline;text-underline-offset:3px}
+.wxpick{position:fixed;z-index:60;max-height:min(60vh,420px);overflow:auto;padding:10px;display:grid;gap:8px;background:var(--panel-solid,var(--bg));color:var(--fg);
+  border:1px solid var(--rule);border-radius:min(var(--r-card,14px),14px);box-shadow:0 18px 50px rgba(0,0,0,.35);font:400 14px/1.3 var(--sans)}
+.wxpick .wxq{display:grid;gap:6px;font:400 10px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--fg)}
+.wxpick input{font:400 16px/1.3 var(--sans);color:var(--fg);background:var(--field);border:1px solid var(--rule);border-radius:min(var(--r-ctl,8px),10px);padding:9px 10px;width:100%}
+.wxpick ul{list-style:none;margin:0;padding:0;display:grid}
+.wxpick li button{width:100%;text-align:left;font:400 15px/1.3 var(--sans);color:var(--fg);background:none;border:0;border-radius:6px;padding:9px 8px;cursor:pointer}
+.wxpick li button:hover,.wxpick li button:focus-visible{background:color-mix(in srgb,var(--fg) 10%,transparent)}
+.wxpick li button[aria-current="true"]::after{content:" ✓";color:var(--fg)}
+.wxpick .none{padding:9px 8px;color:var(--fg)}
+html[data-theme="brutal"] .wxpick{background:#fff;color:#000;border:3px solid #000;border-radius:0;box-shadow:5px 5px 0 #000;--fg:#000}
+html[data-theme="brutal"] .wxpick input{border:3px solid #000;border-radius:0}
+html[data-theme="simple"] .wxpick{border:2px solid var(--fg);border-radius:0;box-shadow:none}
+html[data-theme="glass"] .wxpick{background:rgba(11,26,36,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-color:rgba(255,255,255,.18)}
+html[data-theme="neu"] .wxpick{border:0;border-radius:20px;box-shadow:8px 8px 16px var(--neu-dark,#c3c8d1),-8px -8px 16px var(--neu-light,#fff)}
+html:is([data-theme="dusk"],[data-theme="glass"]) .wxpick{--panel-solid:#14111c}
 /* the Effects row under the dials: five swatches that show what they do, one Amount knob, Reset; Color's ring opens over the dials */
 .hero .fx{grid-column:1/-1;position:relative;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:var(--s1) var(--s2);border-top:1px solid var(--rule);padding-top:var(--s1);margin-top:var(--s0);width:100%}
 .hero .fx .cap{margin:0;font:400 11px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--fg2)}
@@ -613,9 +650,11 @@ html[data-theme="glass"] .hero .fx .chip i{box-shadow:inset 0 0 0 1px rgba(255,2
 }
 </style>
 <script>
-(function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#090909',glass:'#0b1a24',neu:'#ece7e1',brutal:'#FFFDF5',simple:'#ffffff',editorial:'#f3f1ea'};
+(function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#090909',glass:'#0b1a24',neu:'#ece7e1',brutal:'#FFFDF5',simple:'#F1EEE6',editorial:'#f3f1ea'};
 function get(){try{var v=localStorage.getItem(K);return OK[v]?v:'dusk';}catch(e){return 'dusk';}}
-function apply(t){if(!OK[t])t='dusk';var r=document.documentElement;if(r.getAttribute('data-theme')===t)return;r.setAttribute('data-theme',t);
+var FONT={"dusk": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "glass": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Inter+Tight:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "neu": "https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "brutal": "https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap", "simple": "https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap", "editorial": "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter+Tight:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap", "letters": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Cormorant+Garamond:wght@300&family=Anybody:wdth,wght@125,800&family=Syne:wght@800&family=Inter+Tight:wght@300;700&family=IBM+Plex+Mono:wght@400;500&display=swap"};function font(k){if(!FONT[k]||document.getElementById('sog-f-'+k))return;var l=document.createElement('link');l.rel='stylesheet';l.id='sog-f-'+k;l.href=FONT[k];document.head.appendChild(l);}
+window.sogFonts={letters:function(){font('letters');}};
+function apply(t){if(!OK[t])t='dusk';font(t);var r=document.documentElement;if(r.getAttribute('data-theme')===t)return;r.setAttribute('data-theme',t);
   var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',BG[t]);
   document.dispatchEvent(new CustomEvent('sog-theme',{detail:t}));}
 window.sogTheme={get:get,apply:apply,set:function(t){try{localStorage.setItem(K,t);}catch(e){}apply(t);}};
@@ -629,7 +668,7 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
 // Each accent keeps the lightness nearest its own that still reads against what it sits on (4.5:1, or more where noted), so nothing loses contrast.
 var K='sog-colour',DK='sog-drift',R=document.documentElement,
   ACC={dusk:[['--violet','--on-accent'],['--accent2','--on-accent'],['--lav','--bg']],glass:[['--violet','--on-accent'],['--accent2','--on-accent'],['--lav','--bg']],
-  neu:[['--on-accent','--bg',5.4],['--lav','--bg']],brutal:[['--nb-y','#000',5.8],['--lav','--bg']],simple:[['--violet','--on-accent'],['--accent2','--on-accent'],['--lav','--bg']],editorial:[['--lav','--bg']]},
+  neu:[['--on-accent','--bg',5.4],['--lav','--bg']],brutal:[['--nb-y','#000',5.8],['--lav','--bg']],simple:[['--lav','--bg']],editorial:[['--lav','--bg']]},
   DRIFT_ONLY={brutal:[['--nb-c','#000',5.8],['--nb-s','#000',5.8],['--nb-g','#000',5.8],['--nb-o','#000',5.8],['--nb-l','#000',5.8]]}, // Neubrutalism's other inks turn with Drift, never with a picked color
   // (5.8:1 against black, so the dark-gray body copy that also sits on them still reads at 4.5:1)
   ALL=['--violet','--accent2','--lav','--on-accent','--nb-y','--nb-c','--nb-s','--nb-g','--nb-o','--nb-l'],orig={},base=0;
@@ -683,19 +722,19 @@ addEventListener('storage',function(e){if(e.key===K)apply();});apply();if(D.on||
 <main id="top">
   <div class="pin" id="pin">
   <section class="hero" id="hero" aria-label="Introduction">
-    <div class="winbox" aria-hidden="true"><div class="tb"><span>Berthoud, CO · live</span></div></div>
+    <div class="winbox" aria-hidden="true"><div class="tb"><span>Live sky</span></div></div>
     <canvas id="cv" aria-label="The Sea of Grass mark over a field of grass; a gust of grass cuts it apart. The grass bends under your pointer or finger."></canvas>
     <div class="copy wrap beat beat1"><div class="in">
-      <p class="label">Creative studio &middot; Berthoud, Colorado</p>
+      <p class="label">Creative studio &middot; Front Range</p>
       <h1><span class="t">A</span> <b>design</b> <em>and</em> <b>technology</b> <span class="t">studio</span> <em>for the</em> <b>Front Range.</b></h1>
-      <p class="lede">Websites and hosting, branding, and creative technology for the businesses around us, made by two people in Berthoud, Colorado.</p>
+      <p class="lede">Websites, brands and creative technology for local businesses.</p>
       <div class="acts"><a class="ghost" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a meeting &rarr;</a><a class="ghost q" href="#work">See the work</a></div>
-      <nav class="tiles" aria-label="Shortcuts"><button class="tile t-tog" type="button" aria-pressed="false" aria-label="Show tonight’s sky over Berthoud"><i></i><i class="on"></i><span class="tl">Tonight</span></button><a class="tile t-love" href="#work" aria-label="See the work"><svg aria-hidden="true" width="48" height="44" viewBox="0 0 24 22"><path d="M12 20.5S2.5 14.6 2.5 7.9A4.9 4.9 0 0 1 12 5.6a4.9 4.9 0 0 1 9.5 2.3c0 6.7-9.5 12.6-9.5 12.6z" fill="#FFD23F" stroke="#000" stroke-width="2" stroke-linejoin="round"/></svg><span class="tl">Work</span></a><a class="tile t-burst" href="#style" aria-label="Find your style"><svg aria-hidden="true" width="62" height="62" viewBox="0 0 80 80"><polygon points="40.0,6.0 45.7,18.7 57.0,10.6 55.6,24.4 69.4,23.0 61.3,34.3 74.0,40.0 61.3,45.7 69.4,57.0 55.6,55.6 57.0,69.4 45.7,61.3 40.0,74.0 34.3,61.3 23.0,69.4 24.4,55.6 10.6,57.0 18.7,45.7 6.0,40.0 18.7,34.3 10.6,23.0 24.4,24.4 23.0,10.6 34.3,18.7" fill="#88D498" stroke="#000" stroke-width="3.5" stroke-linejoin="round"/></svg><span class="tl">Style</span></a></nav>
+      <nav class="tiles" aria-label="Shortcuts"><button class="tile t-tog" type="button" aria-pressed="false" aria-label="Show tonight’s sky"><i></i><i class="on"></i><span class="tl">Tonight</span></button><a class="tile t-love" href="#work" aria-label="See the work"><svg aria-hidden="true" width="48" height="44" viewBox="0 0 24 22"><path d="M12 20.5S2.5 14.6 2.5 7.9A4.9 4.9 0 0 1 12 5.6a4.9 4.9 0 0 1 9.5 2.3c0 6.7-9.5 12.6-9.5 12.6z" fill="#FFD23F" stroke="#000" stroke-width="2" stroke-linejoin="round"/></svg><span class="tl">Work</span></a><a class="tile t-burst" href="#style" aria-label="Find your style"><svg aria-hidden="true" width="62" height="62" viewBox="0 0 80 80"><polygon points="40.0,6.0 45.7,18.7 57.0,10.6 55.6,24.4 69.4,23.0 61.3,34.3 74.0,40.0 61.3,45.7 69.4,57.0 55.6,55.6 57.0,69.4 45.7,61.3 40.0,74.0 34.3,61.3 23.0,69.4 24.4,55.6 10.6,57.0 18.7,45.7 6.0,40.0 18.7,34.3 10.6,23.0 24.4,24.4 23.0,10.6 34.3,18.7" fill="#88D498" stroke="#000" stroke-width="3.5" stroke-linejoin="round"/></svg><span class="tl">Style</span></a></nav>
     </div></div>
     <div class="copy wrap beat beat2" id="style" aria-labelledby="h-fys"><div class="in fys">
       <p class="label">Try it: made to fit</p>
       <h2 class="letters" id="h-fys" aria-label="Find Your Style"><span class="word" data-w="0">Find</span> <span class="word" data-w="1">Your</span> <span class="word" data-w="2">Style</span></h2>
-      <p class="hint">Turn the dials: Style changes the whole site&rsquo;s family, from dark glass to editorial; Color lays a palette over any of them. Tap a letter to change its typeface.</p>
+      <p class="hint">Turn the dials to restyle the whole site. Tap a letter to change its typeface.</p>
       <div class="dialbox">
         <div class="dials">
           <div class="dialbox"><div class="dial" id="dial" role="slider" tabindex="0" aria-label="Style" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0"><svg viewBox="-120 -120 240 240" aria-hidden="true"></svg></div><p class="dialcap">Style</p></div>
@@ -703,7 +742,6 @@ addEventListener('storage',function(e){if(e.key===K)apply();});apply();if(D.on||
         </div>
         <p class="dial-both" id="dial-both" aria-live="polite">Dusk &middot; own colors</p>
         <p class="dial-credit" id="dial-credit">Dusk, our own: a painted sky at nightfall.</p>
-        <div class="swell"><p class="cap" id="swell-cap">Swell</p><input type="range" id="swell" min="0" max="100" value="35" aria-labelledby="swell-cap"><output id="swell-out" for="swell">Breeze</output></div>
         <div class="fx" role="group" aria-label="Effects">
           <p class="cap" id="fx-cap">Effects</p>
           <div class="chips" aria-labelledby="fx-cap"><button type="button" class="chip c-drift" data-fx="drift" aria-pressed="false"><i aria-hidden="true"></i>Drift</button><button type="button" class="chip c-melt" data-fx="melt" aria-pressed="false"><i aria-hidden="true"></i>Melt</button><button type="button" class="chip c-eye" data-fx="eye" aria-pressed="false"><i aria-hidden="true"></i>Eye</button><button type="button" class="chip c-sky" data-fx="sky" aria-pressed="false"><i aria-hidden="true"></i><span class="nm">Sky</span></button><button type="button" class="chip c-colour" data-fx="color" aria-pressed="false" aria-expanded="false"><i aria-hidden="true"></i>Color</button></div>
@@ -721,31 +759,31 @@ addEventListener('storage',function(e){if(e.key===K)apply();});apply();if(D.on||
   <!-- Trust strip: after the Washington Post stat strip -->
   <section class="s trust" aria-label="The studio in short">
     <div class="facts">
-      <div><b>Berthoud, CO</b>Local, and glad to meet at your place.</div>
-      <div><b>Two people</b>The ones you meet are the ones who make it.</div>
-      <div><b>From $250</b>Fixed prices, written down before we start.</div>
-      <div><b>Our own tools</b>Talaria, Packfold and Fantasmagoria, built here.</div>
+      <div><b>Front Range</b>We come to you.</div>
+      <div><b>From $250</b>Fixed prices, in writing.</div>
+      <div><b>On your phone</b>Every draft, before it goes live.</div>
+      <div><b>Our own tools</b>Built here, used daily.</div>
     </div>
   </section>
 
   <!-- What we make: after Acne Studios client services (alternating text and image) -->
   <section class="s" id="services" aria-labelledby="h-svc">
     <div class="head"><div><p class="label">What we make</p><h2 id="h-svc"><span class="t">Three things,</span> <em>done</em> <b>properly.</b></h2></div>
-      <p>Most local businesses need one of these at a time. Each is priced up front and made by the same two people.</p></div>
+      <p>Each one priced up front.</p></div>
     <div class="svc">
-      <div class="lead"><span class="no">01</span><h3><b>Websites</b> <em>and</em> <span class="t">hosting</span></h3><p class="one">From fixing the one broken thing to a whole new site, and we keep it running.</p><ul><li>Website fix, from $250</li><li>Small business site, from $2,000</li><li>Care plan with hosting, from $50 a month</li></ul>
+      <div class="lead"><span class="no">01</span><h3><b>Websites</b> <em>and</em> <span class="t">hosting</span></h3><p class="one">Fixes, new sites and hosting.</p><ul><li>Fixes from $250</li><li>New sites from $2,000</li></ul>
         <a class="ghost" href="/preview/services/websites/">Websites and hosting &rarr;</a></div>
       <figure class="slotf " data-slot="home-svc-websites"><div class="slot" style="aspect-ratio:1.732/1" role="img" aria-label="Image to come: A local shop’s new site open on a laptop and a phone, side by side on a wooden counter; daylight, three-quarter view."><span class="sid">Image · home-svc-websites · 1732 x 1000</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M70 40h120v74H70z M58 114h144l-10 12H68z M214 58h34v66h-34z M226 118h10"/></svg></div><figcaption class="slotcap">A local shop’s new site open on a laptop and a phone, side by side on a wooden counter; daylight, three-quarter view.</figcaption></figure>
     </div>
 
     <div class="svc alt">
-      <div class="lead"><span class="no">02</span><h3><span class="t">Your</span> <b>brand</b></h3><p class="one">A mark, lettering and ornament on one rule, so the sign, menu, site and cards look like one business.</p><ul><li>Mark and wordmark, as clean vector files</li><li>Colors and type, written down</li><li>Files for print, screen and the sign shop</li></ul>
+      <div class="lead"><span class="no">02</span><h3><span class="t">Your</span> <b>brand</b></h3><p class="one">One look for your sign, menu, site and cards.</p><ul><li>Mark and wordmark</li><li>Colors and type</li></ul>
         <a class="ghost" href="/preview/services/brand/">Brand and identity &rarr;</a></div>
       <figure class="slotf " data-slot="home-svc-brand"><div class="slot" style="aspect-ratio:1.732/1" role="img" aria-label="Image to come: A brand sheet laid flat: the mark, the wordmark, color chips and a small shop-sign mock-up; overhead, soft even light."><span class="sid">Image · home-svc-brand · 1732 x 1000</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M60 30h120v110H60z M84 62c26-14 50 2 28 16s4 30 30 16 M78 112h80 M196 34h44v26h-44z M196 70h44v26h-44z M196 106h44v26h-44z"/></svg></div><figcaption class="slotcap">A brand sheet laid flat: the mark, the wordmark, color chips and a small shop-sign mock-up; overhead, soft even light.</figcaption></figure>
     </div>
 
     <div class="svc">
-      <div class="lead"><span class="no">03</span><h3><span class="t">Creative</span> <b>technology</b></h3><p class="one">What a template can’t do: live visuals, 3D characters, apps and illustration.</p><ul><li><a href="/preview/services/live-visuals/">Live visuals</a>, played on Fantasmagoria</li><li><a href="/preview/services/characters/">3D characters</a>, rigged and animated</li><li><a href="/preview/services/apps/">Apps</a> and <a href="/preview/services/illustration/">illustration</a> for a real job</li></ul>
+      <div class="lead"><span class="no">03</span><h3><span class="t">Creative</span> <b>technology</b></h3><p class="one">What a template can’t do.</p><ul><li><a href="/preview/services/live-visuals/">Live visuals</a> and <a href="/preview/services/characters/">3D characters</a></li><li><a href="/preview/services/apps/">Apps</a> and <a href="/preview/services/illustration/">illustration</a></li></ul>
         <a class="ghost" href="/preview/services/live-visuals/">Live visuals &rarr;</a></div>
       <figure class="slotf " data-slot="home-svc-creative"><div class="slot" style="aspect-ratio:1.732/1" role="img" aria-label="Image to come: A live visual projected on a venue wall, a few people silhouetted in front of it; night, cool colored light."><span class="sid">Image · home-svc-creative · 1732 x 1000</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M40 24h220v96H40z M70 90c30-50 60 20 90-30s50 20 70-10 M80 160v-22a12 12 0 0 1 24 0v22 M92 120a9 9 0 1 0 0.1 0 M150 160v-24a13 13 0 0 1 26 0v24 M163 118a10 10 0 1 0 0.1 0 M210 160v-20a11 11 0 0 1 22 0v20 M221 122a8 8 0 1 0 0.1 0"/></svg></div><figcaption class="slotcap">A live visual projected on a venue wall, a few people silhouetted in front of it; night, cool colored light.</figcaption></figure>
     </div>
@@ -755,23 +793,23 @@ addEventListener('storage',function(e){if(e.key===K)apply();});apply();if(D.on||
   <!-- Proof: after Anthropic's customer stories grid -->
   <section class="s" id="work" aria-labelledby="h-work">
     <div class="head"><div><p class="label">Proof it&rsquo;s real</p><h2 id="h-work"><span class="t">Made</span> <em>right</em> <b>here.</b></h2></div>
-      <p>Until client stories are ready to share, these are our own products and studies, labeled as such. Each one runs today.</p></div>
+      <p>Our own products and studies, running today.</p></div>
     <div class="cases">
       <article class="case"><a href="/preview/talaria/"><figure class="slotf " data-slot="home-case-talaria"><div class="slot" style="aspect-ratio:1.732/1" role="img" aria-label="Image to come: Talaria open on a laptop showing a project board, a coffee beside it; top-down desk shot, morning light."><span class="sid">Image · home-case-talaria · 1732 x 1000</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M60 30h180v104H60z M60 46h180 M72 58h44v64H72z M128 58h44v40h-44z M184 58h44v52h-44z M80 70h28 M80 82h20 M136 70h28 M192 70h28 M192 82h20"/></svg></div><figcaption class="slotcap">Talaria open on a laptop showing a project board, a coffee beside it; top-down desk shot, morning light.</figcaption></figure></a>
         <span class="chip">Our product</span><h3><a href="/preview/talaria/">Talaria</a></h3>
-        <dl><dt>For</dt><dd>Our studio and a study group</dd><dt>Made</dt><dd>A task app for Mac, Windows and the web</dd><dt>Result</dt><dd>Every project in one shared board</dd></dl></article>
+        <p class="one">A task app for Mac, Windows and the web</p></article>
 
       <article class="case"><a href="/preview/studies/packfold/"><figure class="slotf " data-slot="home-case-packfold"><div class="slot" style="aspect-ratio:1.732/1" role="img" aria-label="Image to come: A folded cardboard box next to a laptop showing its flat cutting pattern; clean table, soft side light."><span class="sid">Image · home-case-packfold · 1732 x 1000</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M40 70l50-24 50 24-50 24z M40 70v50l50 24v-50 M140 70v50l-50 24 M176 40h96v96h-96z M200 40v96 M248 40v96 M176 64h96 M176 112h96"/></svg></div><figcaption class="slotcap">A folded cardboard box next to a laptop showing its flat cutting pattern; clean table, soft side light.</figcaption></figure></a>
         <span class="chip">Our product</span><h3><a href="/preview/studies/packfold/">Packfold</a></h3>
-        <dl><dt>For</dt><dd>Anyone making a box</dd><dt>Made</dt><dd>A tool that folds a carton on screen</dd><dt>Result</dt><dd>The real cutting file, exported in one click</dd></dl></article>
+        <p class="one">A tool that folds a carton on screen</p></article>
 
       <article class="case"><a href="/preview/services/live-visuals/"><figure class="slotf " data-slot="home-case-fantasm"><div class="slot" style="aspect-ratio:1.732/1" role="img" aria-label="Image to come: Fantasmagoria running a show on a big screen, a performer’s hands on a controller in the foreground; dim stage light."><span class="sid">Image · home-case-fantasm · 1732 x 1000</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M50 20h200v100H50z M118 92l14-40 18 22 18-22 14 40z M134 70h4 M162 70h4 M110 160c6-20 20-28 40-28s34 8 40 28 M128 150h44"/></svg></div><figcaption class="slotcap">Fantasmagoria running a show on a big screen, a performer’s hands on a controller in the foreground; dim stage light.</figcaption></figure></a>
         <span class="chip">Our product</span><h3><a href="/preview/services/live-visuals/">Fantasmagoria</a></h3>
-        <dl><dt>For</dt><dd>Live shows and venues</dd><dt>Made</dt><dd>The tool we play live visuals on</dd><dt>Result</dt><dd>Shows that answer the room, not a looped file</dd></dl></article>
+        <p class="one">The tool we play live visuals on</p></article>
 
-      <article class="case study"><a href="/preview/studies/grass-cut/"><figure class="slotf " data-slot="home-case-grasscut"><div class="slot" style="aspect-ratio:1.732/1" role="img" aria-label="Image to come: The Grass Cut hero on a phone held in one hand, out in prairie grass near Berthoud; golden hour."><span class="sid">Image · home-case-grasscut · 1732 x 1000</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M124 18h52v104h-52z M144 28h12 M30 172c4-24 8-40 10-60 M50 172c2-20 6-36 12-52 M250 172c-2-22-6-38-12-54 M270 172c-4-20-6-34-4-50 M150 60c-12 4-12 18 0 18s12 14 0 18"/></svg></div><figcaption class="slotcap">The Grass Cut hero on a phone held in one hand, out in prairie grass near Berthoud; golden hour.</figcaption></figure></a>
+      <article class="case study"><a href="/preview/studies/grass-cut/"><figure class="slotf " data-slot="home-case-grasscut"><div class="slot" style="aspect-ratio:1.732/1" role="img" aria-label="Image to come: The Grass Cut hero on a phone held in one hand, out in prairie grass; golden hour."><span class="sid">Image · home-case-grasscut · 1732 x 1000</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M124 18h52v104h-52z M144 28h12 M30 172c4-24 8-40 10-60 M50 172c2-20 6-36 12-52 M250 172c-2-22-6-38-12-54 M270 172c-4-20-6-34-4-50 M150 60c-12 4-12 18 0 18s12 14 0 18"/></svg></div><figcaption class="slotcap">The Grass Cut hero on a phone held in one hand, out in prairie grass; golden hour.</figcaption></figure></a>
         <span class="chip">Study</span><h3><a href="/preview/studies/grass-cut/">Grass Cut</a></h3>
-        <dl><dt>For</dt><dd>This site</dd><dt>Made</dt><dd>Our mark, cut apart by prairie grass</dd><dt>Result</dt><dd>The scroll you just saw at the top</dd></dl></article>
+        <p class="one">Our mark, cut apart by prairie grass</p></article>
 
     </div>
   </section>
@@ -780,12 +818,12 @@ addEventListener('storage',function(e){if(e.key===K)apply();});apply();if(D.on||
   <!-- How it goes: after Hers' connected step cards -->
   <section class="s" id="process" aria-labelledby="h-proc">
     <div class="head"><div><p class="label">How it goes</p><h2 id="h-proc"><span class="t">How a</span> <b>project</b> <em>goes.</em></h2></div>
-      <p>Short, in writing, and nothing goes live until you&rsquo;ve said yes on your phone.</p></div>
+      <p>In writing, and approved on your phone.</p></div>
     <ol class="steps">
-      <li><span class="no">01</span><b>Look</b><p>A look at what you have: twenty minutes at your place or on a call.</p><span class="cue">Free</span></li>
-      <li><span class="no">02</span><b>Plan</b><p>A fixed price and a date, written down before any work starts.</p><span class="cue">Fixed price</span></li>
-      <li><span class="no">03</span><b>Make</b><p>Drafts you can open on your phone, changed until they&rsquo;re right.</p><span class="cue">On your phone</span></li>
-      <li><span class="no">04</span><b>Care</b><p>Hosting, updates and the small changes after launch.</p><span class="cue">From $50 a month</span></li>
+      <li><span class="no">01</span><b>Look</b><span class="cue">Free, 20 minutes</span></li>
+      <li><span class="no">02</span><b>Plan</b><span class="cue">Fixed price and date</span></li>
+      <li><span class="no">03</span><b>Make</b><span class="cue">Drafts on your phone</span></li>
+      <li><span class="no">04</span><b>Care</b><span class="cue">From $50 a month</span></li>
     </ol>
   </section>
 
@@ -793,19 +831,16 @@ addEventListener('storage',function(e){if(e.key===K)apply();});apply();if(D.on||
   <section class="s thesis" aria-label="Why it looks like this">
     <p class="orn" aria-hidden="true"><i></i></p>
     <blockquote><span class="t">Plain used to be</span> <em>the cheap option.</em> <b>It isn&rsquo;t anymore.</b></blockquote>
-    <p>The hours that once made rich work expensive are cheaper now. So we spend them on detail: ornament with a rule behind it, motion that answers the room, a town that looks like itself.</p>
+    <p>So we spend the time on detail.</p>
     <p class="orn" aria-hidden="true" style="margin-top:28px"><i></i></p>
   </section>
 
   <!-- Who's behind it: after Asana's leadership rows -->
   <section class="s" id="about" aria-labelledby="h-about">
-    <div class="head"><div><p class="label">Who&rsquo;s behind it</p><h2 id="h-about"><b>Two people,</b> <em>one</em> <span class="t">studio.</span></h2></div>
-      <p>The people you meet are the people who make it, and the ones who look after it afterwards.</p></div>
+    <div class="head"><div><p class="label">Who&rsquo;s behind it</p><h2 id="h-about"><span class="t">Who you&rsquo;ll</span> <em>work</em> <b>with.</b></h2></div></div>
     <div class="people">
-      <div class="person"><figure class="slotf portrait" data-slot="home-team-tristan"><div class="slot" style="aspect-ratio:1/1.155" role="img" aria-label="Image to come: Tristan at his drawing desk with sketches and a tablet; warm window light, shoulder-up, looking at the camera."><span class="sid">Image · home-team-tristan · 1000 x 1155</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M150 58a26 30 0 1 0 0.1 0 M96 160c6-36 30-48 54-48s48 12 54 48 M214 30h50v60h-50z M239 30v60 M214 60h50"/></svg></div><figcaption class="slotcap">Tristan at his drawing desk with sketches and a tablet; warm window light, shoulder-up, looking at the camera.</figcaption></figure><h3><span class="t">Tristan</span> <b>Brewer</b></h3><p class="role">Design, animation and the tools behind them</p>
-        <p>Brand marks and ornament, 3D characters, live visuals played on Fantasmagoria, and the websites themselves.</p></div>
-      <div class="person"><figure class="slotf portrait" data-slot="home-team-bryce"><div class="slot" style="aspect-ratio:1/1.155" role="img" aria-label="Image to come: Bryce at a laptop in a Berthoud café; warm afternoon light, shoulder-up, looking at the camera."><span class="sid">Image · home-team-bryce · 1000 x 1155</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M150 58a26 30 0 1 0 0.1 0 M96 160c6-36 30-48 54-48s48 12 54 48 M214 30h50v60h-50z M239 30v60 M214 60h50"/></svg></div><figcaption class="slotcap">Bryce at a laptop in a Berthoud café; warm afternoon light, shoulder-up, looking at the camera.</figcaption></figure><h3><span class="t">Bryce</span> <b>Nielsen</b></h3><p class="role">Websites, hosting and security</p>
-        <p>Bryce&rsquo;s background is in cyber security, so the sites we host, and your clients&rsquo; accounts on them, are set up and looked after properly.</p></div>
+      <div class="person"><figure class="slotf portrait" data-slot="home-team-tristan"><div class="slot" style="aspect-ratio:1/1.155" role="img" aria-label="Image to come: Tristan at his drawing desk with sketches and a tablet; warm window light, shoulder-up, looking at the camera."><span class="sid">Image · home-team-tristan · 1000 x 1155</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M150 58a26 30 0 1 0 0.1 0 M96 160c6-36 30-48 54-48s48 12 54 48 M214 30h50v60h-50z M239 30v60 M214 60h50"/></svg></div><figcaption class="slotcap">Tristan at his drawing desk with sketches and a tablet; warm window light, shoulder-up, looking at the camera.</figcaption></figure><h3><span class="t">Tristan</span> <b>Brewer</b></h3><p class="role">Design, 3D and live visuals</p></div>
+      <div class="person"><figure class="slotf portrait" data-slot="home-team-bryce"><div class="slot" style="aspect-ratio:1/1.155" role="img" aria-label="Image to come: Bryce at a laptop in a café; warm afternoon light, shoulder-up, looking at the camera."><span class="sid">Image · home-team-bryce · 1000 x 1155</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M150 58a26 30 0 1 0 0.1 0 M96 160c6-36 30-48 54-48s48 12 54 48 M214 30h50v60h-50z M239 30v60 M214 60h50"/></svg></div><figcaption class="slotcap">Bryce at a laptop in a café; warm afternoon light, shoulder-up, looking at the camera.</figcaption></figure><h3><span class="t">Bryce</span> <b>Nielsen</b></h3><p class="role">Websites, hosting and security</p></div>
     </div>
   </section>
 
@@ -815,7 +850,7 @@ addEventListener('storage',function(e){if(e.key===K)apply();});apply();if(D.on||
       <div class="bookblock">
         <p class="label">Start</p>
         <h2 id="h-contact"><span class="t">Start with</span> <em>a</em> <b>short call.</b></h2>
-        <p>Fifteen or thirty minutes, at a time that suits you. Tell us what you have and what you need; you leave with a next step and a price range.</p>
+        <p>Fifteen or thirty minutes. You leave with a next step and a price range.</p>
         <a class="ghost" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a 15 or 30 minute call &rarr;</a>
         <div class="reach"><a href="mailto:hello@seaofgrass.studio">hello@seaofgrass.studio</a><a href="tel:+13037751333">303.775.1333</a></div>
       </div>
@@ -875,7 +910,7 @@ function markToScreen(x,y){const dx=x-CX,dy=y-CY,cr=Math.cos(view.r),sr=Math.sin
 // ---- Windrow's field (css px) ----
 const BANDS=7; let blades=[];
 function plant(){
-  const r=rng(42), horizon=H*(H>W?.6:((typeof P!=='undefined'&&P.hz)||.64)), count=Math.round(Math.min(6500,(W*(H-horizon))/80));
+  const r=rng(42), horizon=H*(H>W?.44:((typeof P!=='undefined'&&P.hz)||.64)), count=Math.round(Math.min(6500,(W*(H-horizon))/(W<600?115:80)));
   blades=[];
   for(let i=0;i<count;i++){const depth=Math.pow(r(),.8),y=horizon+depth*(H-horizon)+6,x=r()*(W+40)-20,h=(10+depth*42)*(.7+r()*.6)*Math.max(.8,H/620),rest=(r()-.5)*.25;
     blades.push({x,y,h,rest,a:rest,w:0,band:Math.min(BANDS-1,Math.floor(depth*BANDS)),phase:r()*TAU});}
@@ -982,8 +1017,8 @@ const PAL={
     bloom:null,cloudTop:null,stars:false,far:[222,214,204],near:[178,166,152],rim:null,mark:'#ddd4c9',glow:null,cut:'#b4573a',cutGlow:null,cutW:3,dot:'#b4573a',ink:'150,130,110'},
   brutal:{mode:'ink',hz:.66,clouds:true,cloudSpeed:1.4,cloudScale:.7,cloudCount:4,line:'#111',ground:'#1d8c3a',cloudFill:'#f4efe4',bush:'#f6a6c4',outline:6,hard:'#111',bg:'#1d8c3a',skyFill:'#1f7fc9',sky:[[0,'#1f7fc9'],[9,'#1f7fc9']],
     bloom:null,cloudTop:null,stars:false,far:[0,0,0],near:[0,0,0],rim:null,mark:'#f6dd1a',glow:null,cut:'#111',cutGlow:null,cutW:5,dot:'#f6a6c4',ink:'17,17,17'},
-  simple:{mode:'riso',clouds:true,cloudSpeed:.9,cloudScale:.8,cloudCount:4,hz:.78,grain:.04,inkA:'#8a8a8a',inkB:'#111111',arch:'#dedede',ground:'#f4f4f4',far2:'#c9c9c9',near2:'#111111',bg:'#ffffff',sky:[[0,'#fff'],[9,'#fff']],
-    bloom:null,cloudTop:null,stars:false,far:[214,214,214],near:[74,74,78],rim:null,mark:'#111111',glow:null,cut:'#ffffff',cutGlow:null,cutW:3,dot:'#111111',ink:'17,17,17'},
+  simple:{mode:'swiss',clouds:false,hz:.7,bg:'#F1EEE6',pen:'#1A1714',sun:'#FF4F00',sky:[[0,'#F1EEE6'],[9,'#F1EEE6']], // Swiss: one idea, a pen drawing under one orange sun
+    bloom:null,cloudTop:null,stars:false,far:[222,217,206],near:[176,168,156],rim:null,mark:'#1A1714',glow:null,cut:'#F1EEE6',cutGlow:null,cutW:3,dot:'#1A1714',ink:'26,23,20'},
   editorial:{mode:'surreal',hglow:'rgba(255,214,196,.5)',cloudLit:[255,248,236],hz:.78,grain:.08,clouds:true,cloudSpeed:.5,stripe:'rgba(0,0,0,0)',floor:'#dcddcf',spots:[[.35,.9,'rgba(255,246,220,.65)',.45],[.85,.6,'rgba(154,116,64,.22)',.3]],lit:['#55705f','#26332b'],
     cloudL:'rgba(250,248,240,.78)',cloudR:'rgba(186,192,172,.6)',bg:'#f3f1ea',sky:[[0,'#eceae1'],[1,'#d3d6c5'],[9,'#f3f1ea']],bloom:null,cloudTop:null,stars:false,
     far:[100,120,105],near:[31,42,36],rim:null,mark:'#1f2a24',glow:null,cut:'#9a7440',cutGlow:null,cutW:3,dot:'#9a7440',ink:'60,75,65'},
@@ -997,12 +1032,12 @@ const LOOKS={
   glass:    [['photo'],['grade','#0b3a44','soft-light',.22],['grain',.04]],
   neu:      [['clay'],['grade','#ffffff','soft-light',.12]],
   brutal:   [['ink'],['outline',6],['offset',7]],
-  simple:   [['riso'],['grain',.035]],
+  simple:   [['swiss']],
   editorial:[['paint'],['wash',.4],['grade','#b89466','multiply',.1],['grain',.05]],
 };
 function look(base,layers){const p=Object.assign({},base,{glow:null,grain:0,outline:0,hard:null,wash:0,grades:[]});
   for(const [k,a,b,c2] of layers){
-    if(['paint','photo','clay','ink','riso','stage'].includes(k))p.mode=k;
+    if(['paint','photo','clay','ink','riso','stage','swiss'].includes(k))p.mode=k;
     else if(k==='glow')p.glow=base.glow||null;else if(k==='grain')p.grain=a;else if(k==='wash')p.wash=a;
     else if(k==='grade')p.grades.push([a,b,c2]);else if(k==='outline')p.outline=a;else if(k==='offset'){p.hard=base.line||'#000';p.hardD=a;}}
   return p;}
@@ -1018,12 +1053,71 @@ function recolor(b,s){const o=Object.assign({},b),[s0,s1,s2]=s.sky;
   if(b.mode==='photo')o.plate=null; // a drawn sky in the scheme's colors instead of the photograph
   if(b.mode==='clay')Object.assign(o,{ground:s.ground,mark:s.card,light:s.dark?'#ffffff22':'#ffffff',dark:s.dark?'#000000':hexA(s.fg,.28),cut:s.accent});
   if(b.mode==='ink')Object.assign(o,{skyFill:s1,ground:s.ground,bg:s.ground,cloudFill:rgbS(s.cloud),bush:s.accent,mark:s.btn,line:'#111'});
+  if(b.mode==='swiss')Object.assign(o,{sky:[[0,s.bg],[9,s.bg]],pen:rgbS(s.near),sun:s.accent,mark:rgbS(s.near),dot:rgbS(s.near),cut:s.bg,glow:null,cutGlow:null,rim:null,bloom:null,hglow:null});
   if(b.mode==='riso')Object.assign(o,{sky:[[0,s.bg],[9,s.bg]],ground:s.ground,far2:rgbS(s.far),near2:rgbS(s.near),inkB:rgbS(s.near),arch:hexA(s.fg,.14),cut:s.bg});
   if(b.mode==='surreal')Object.assign(o,{floor:s.ground,lit:[rgbS(s.far),rgbS(s.near)],spots:[[.35,.9,hexA(s2,.55),.45],[.85,.6,hexA(s.accent,.2),.3]],
     cloudL:hexA('#ffffff',.6),cloudR:hexA(s1,.5),stripe:'rgba(0,0,0,0)'});
   return o;}
+// ---- one color story per scene: the sky's horizon glow lights the far grass, the near grass deepens in a related hue, the tips catch
+// the sky's light, a haze softens the join, and the S and the copy panel pick up the same family. Derived for every style and scheme.
+const rgbOf=c=>{if(Array.isArray(c))return c.slice(0,3);c=String(c).trim();let m=c.match(/^#([0-9a-f]{3,8})$/i);if(m){let h=m[1];if(h.length<6)h=h.replace(/./g,'$&$&');return [0,2,4].map(i=>parseInt(h.substr(i,2),16));}
+  m=c.match(/rgba?\(([^)]+)\)/);return m?m[1].split(',').slice(0,3).map(Number):[128,128,128];};
+const mixC=(a,b,t)=>a.map((v,i)=>Math.round(v+(b[i]-v)*t));
+const lumC=c=>(.3*c[0]+.59*c[1]+.11*c[2])/255;
+function glowOf(p){ // the sky's colour where it meets the land
+  if(p.mode==='ink')return rgbOf(p.skyFill||p.bg);if(p.mode==='riso')return rgbOf(p.bg);
+  if(p.mode==='photo'&&p.plate)return [255,190,140]; // the photograph's low sun
+  let best=p.sky[0];for(const s of p.sky)if(s[0]<=1)best=s;const sk=rgbOf(best[1]);
+  return p.hglow?mixC(sk,rgbOf(p.hglow),.5):sk;} // where the sky has a horizon glow, the land meets that light
+function harmonize(p){const G=glowOf(p);p.glowC=G;if(p.mode==='ink')return p; // the cartoon keeps its flat, outlined ground
+  p.far=mixC(rgbOf(p.far),G,.5); // the far field is lit by the horizon
+  p.near=mixC(rgbOf(p.near),mixC(G,[0,0,0],lumC(G)>.5?.72:.66),.42); // the near field: darker, richer, the same family
+  if(lumC(G)>.6&&p.sky&&p.sky.length>1&&p.mode!=='riso'&&!document.documentElement.hasAttribute('data-scheme')){const top=rgbOf(p.sky[0][1]);p.sky=p.sky.map((st,i)=>i===0?[st[0],rgbS(mixC(top,mixC(G,[0,0,0],.25),.14))]:st);} // a pale sky gets a gentle fall toward its glow
+  if(!p.rim&&(p.mode==='paint'||p.mode==='photo'))p.rim=mixC(G,[255,255,255],.3); // tips catch the sky's light
+  if(p.mode==='surreal'&&p.lit)p.lit=[rgbS(mixC(rgbOf(p.lit[0]),G,.5)),rgbS(mixC(rgbOf(p.lit[1]),mixC(G,[0,0,0],.6),.4))];
+  if(p.mode==='clay'&&p.ground)p.ground=rgbS(mixC(rgbOf(p.ground),G,.3));
+  const mk=rgbOf(p.mark);p.mark=rgbS(mixC(mk,G,lumC(mk)>.6?.1:.14)); // the S takes a breath of the same light
+  const h=document.getElementById('hero');if(h)h.style.setProperty('--scene-glow',`rgb(${G})`);
+  return p;}
+function haze(){ // the horizon has no hard edge: a soft band of the glow over the far field, dimmer at night, grayer under cloud
+  if(!P.glowC||P.mode==='ink')return;let G=P.glowC;
+  if(WX&&WX.cloud>.6)G=mixC(G,bgDark()?[58,63,72]:[190,193,196],Math.min(1,(WX.cloud-.6)/.35)*.6);
+  if(DARK>.02)G=mixC(G,rgbOf((NIGHT[P.mode]||NIGHT.paint)[1]),Math.min(1,DARK));
+  const a=(P.mode==='riso'?.22:.42)*(1-DARK*.55),g=c.createLinearGradient(0,HZ-H*.05,0,HZ+H*.13);
+  g.addColorStop(0,`rgba(${G},0)`);g.addColorStop(.3,`rgba(${G},${a.toFixed(3)})`);g.addColorStop(1,`rgba(${G},0)`);c.fillStyle=g;c.fillRect(0,HZ-H*.05,W,H*.18);}
+// ---- the land: rolling Front Range prairie, not a flat floor. Four swells recede from a near rise to a faint low ridge in the haze
+// (no mountains). Grass is planted on each slope, denser and taller on the near crests, finer far off. Each style draws the swells its way.
+const SWISS_SUN=true; // the one-line switch: false draws Swiss without its orange sun (no circle), the pen field alone
+const HILLS=4,HB=[.01,.06,.22,.5],HA=[.035,.065,.085,.13],HF=[.0016,.0021,.0027,.0034],HP=[.3,1.7,3.1,4.6]; // swells rise above the horizon as real silhouettes
+function hillY(j,x){const f=HF[j]*(1200/Math.max(600,W));return HZ+(H-HZ)*HB[j]-HA[j]*H*(.55+.45*Math.sin(x*f+HP[j])+.25*Math.sin(x*f*2.3+HP[j]*1.7));}
+function plant(){ // the engine's field, planted on the swells
+  const r=rng(42);HZ=H*(H>W?.44:((typeof P!=='undefined'&&P.hz)||.64));const count=Math.round(Math.min(6500,(W*(H-HZ))/(W<600?115:80))),wt=[.1,.22,.31,.37];
+  blades=[];
+  for(let i=0;i<count;i++){let q=r(),j=0;while(j<HILLS-1&&q>wt[j]){q-=wt[j];j++;}
+    const x=r()*(W+40)-20,top=hillY(j,x),bot=j<HILLS-1?hillY(j+1,x):H+10,u=Math.pow(r(),1.6),y=top+u*(bot-top)+3,
+      depth=Math.max(0,Math.min(1,(y-HZ)/(H-HZ))),h=(9+depth*44)*(.7+r()*.6)*Math.max(.8,H/620)*(1+.35*(1-u)*(j/(HILLS-1))),rest=(r()-.5)*.25;
+    blades.push({x,y,h,rest,a:rest,w:0,band:Math.min(BANDS-1,Math.floor(depth*BANDS)),phase:r()*TAU,hill:j});}
+  blades.sort((p,q)=>p.y-q.y);}
+function landform(g){const m=P.mode,G=P.glowC||rgbOf(P.far),far=rgbOf(P.far),near=rgbOf(P.near),mm=Math.min(W,H);
+  for(let j=0;j<HILLS;j++){const t=[.06,.3,.56,.84][j];
+    const st=W<600?12:6; // phones: coarser outlines, the same shape
+    const path=()=>{g.beginPath();g.moveTo(-10,H+10);for(let x=-10;x<=W+10;x+=st)g.lineTo(x,hillY(j,x));g.lineTo(W+10,H+10);g.closePath();};
+    const crest=()=>{g.beginPath();for(let x=-10;x<=W+10;x+=st)x<=-10?g.moveTo(x,hillY(j,x)):g.lineTo(x,hillY(j,x));};
+    let top=Infinity;for(let x=0;x<=W;x+=12)top=Math.min(top,hillY(j,x)); // the swell's highest point, where its light starts
+    if(m==='ink'){ // Neubrutalism: flat cartoon ground in steps, each swell outlined in ink
+      const gr=rgbOf(P.ground);path();g.fillStyle=rgbS(mixC(gr,[0,0,0],.05*j));g.fill();crest();g.lineWidth=Math.max(2.2,mm*.004);g.strokeStyle=P.line;g.stroke();continue;}
+    if(m==='swiss'){ // Swiss: flat paper bands, darker as they come near, each crest a hairline of ink
+      path();g.fillStyle=rgbS(mixC(rgbOf(P.bg),rgbOf(P.pen),.03+.05*j));g.fill();crest();g.lineWidth=1;g.strokeStyle=`rgba(${rgbOf(P.pen)},${.35+.12*j})`;g.stroke();continue;}
+    // clear value steps: the far swell pale and hazy with the horizon's light, each nearer one darker, the near rise darkest
+    const haze=mixC(G,far,.35),deep=mixC(near,[0,0,0],.25),col=mixC(haze,deep,[0,.34,.62,.9][j]),lit=mixC(col,G,.5),shade=mixC(col,[0,0,0],.32),gr=g.createLinearGradient(0,top,0,top+(H-HZ)*.45);
+    gr.addColorStop(0,rgbS(lit));gr.addColorStop(.35,rgbS(col));gr.addColorStop(1,rgbS(shade)); // light on the crest, shade in the swale
+    if(m==='clay'){ // Neumorphism: soft stacked planes, each pressed up from the one behind
+      g.save();g.shadowColor=P.dark;g.shadowBlur=Math.min(12,mm*.02);g.shadowOffsetY=-mm*.004;path();g.fillStyle=gr;g.fill();g.restore();continue;}
+    path();g.fillStyle=gr;g.fill(); // painted, photographic and stage styles: lit planes, the glow on each crest fading down the slope
+    crest();g.lineWidth=2+j*1.2;g.strokeStyle=`rgba(${mixC(G,[255,255,255],.3)},${(.45+.1*j).toFixed(2)})`;g.stroke(); // the crest catches the sky
+  }}
 function setPal(){const r=document.documentElement,t=r.getAttribute('data-theme'),sc=SCH[r.getAttribute('data-scheme')];
-  const base=sc?recolor(PAL[t]||PAL.dusk,sc):(PAL[t]||PAL.dusk);P=look(base,LOOKS[t]||LOOKS[base.mode==='paint'?'dusk':t]||[[base.mode]]);INK=P.ink;sky=null;if(W)plant();}
+  const base=sc?recolor(PAL[t]||PAL.dusk,sc):(PAL[t]||PAL.dusk);P=harmonize(look(base,LOOKS[t]||LOOKS[base.mode==='paint'?'dusk':t]||[[base.mode]]));INK=P.ink;sky=null;if(W)plant();}
 function windowed(){return document.documentElement.getAttribute('data-theme')==='brutal';}
 setPal(); document.addEventListener('sog-scheme',()=>{setPal();heroSky();}); document.addEventListener('sog-theme',()=>{setPal();heroSky();requestAnimationFrame(()=>{if(W&&(cv.clientWidth!==W||cv.clientHeight!==H))size();});});
 // ---- one move, six renderings: painterly, surreal, photoreal, riso, ink, darkroom ----
@@ -1074,7 +1168,14 @@ const SKY={
     // a stage, not a sky: painted stripes like a theater flat, two colored spotlights, airbrushed haze
     g.fillStyle=P.stripe;for(let x=0;x<W;x+=56)g.fillRect(x,0,28,HZ);
     for(const [fx,fy,col,rad] of P.spots){const rg=g.createRadialGradient(W*fx,HZ*fy,0,W*fx,HZ*fy,Math.max(W,H)*rad);rg.addColorStop(0,col);rg.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=rg;g.fillRect(0,0,W,H);}
-    g.fillStyle=P.floor;g.fillRect(0,HZ,W,H-HZ);},
+    const fl=g.createLinearGradient(0,HZ,0,H),G=P.glowC||rgbOf(P.floor);fl.addColorStop(0,rgbS(mixC(rgbOf(P.floor),G,.5)));fl.addColorStop(1,rgbS(mixC(rgbOf(P.floor),P.near,.35)));g.fillStyle=fl;g.fillRect(0,HZ,W,H-HZ);},
+  swiss(g){g.fillStyle=P.bg;g.fillRect(0,0,W,H);
+    // the page's 12-column grid, carried into the picture; one flat orange sun behind the S's shoulder; the horizon as a single ruled line
+    const side=Math.max(16,Math.min(72,W*.064)),edge=Math.max(side,(W-1280)/2+side),col=(Math.min(W,1280)-2*side)/12;
+    g.strokeStyle=`rgba(${rgbOf(P.pen)},.075)`;g.lineWidth=1;g.beginPath();for(let x=edge;x<=W;x+=col){g.moveTo(Math.round(x)+.5,0);g.lineTo(Math.round(x)+.5,HZ);}g.stroke();
+    const port=H>W*1.05,sr=Math.min(W,H)*(port?.1:.11),sx=port?W*.88:W*.86,sy=port?H*.34:HZ*.32;
+    if(SWISS_SUN){g.fillStyle=P.sun;g.beginPath();g.arc(sx,sy,sr,0,TAU);g.fill();}
+    g.strokeStyle=P.pen;g.lineWidth=1;g.beginPath();g.moveTo(0,Math.round(HZ)+.5);g.lineTo(W,Math.round(HZ)+.5);g.stroke();},
   riso(g){g.fillStyle=P.bg;g.fillRect(0,0,W,H);const m=Math.min(W,H);
     // calm and minimal: white sky, a quiet gray ground, nothing else
     g.fillStyle=P.ground;g.fillRect(0,HZ,W,H-HZ);},
@@ -1157,7 +1258,7 @@ function plate(){if(!P.plate)return null;const src=P.plate[H>W?1:0];let im=PLATE
 function paintSky(){
   if(!sky||sky.width!==cv.width||sky.height!==cv.height){
     sky=document.createElement('canvas');sky.width=cv.width;sky.height=cv.height;const g=sky.getContext('2d');g.scale(DPR,DPR);
-    HZ=H*(H>W?.6:(P.hz||.64));(SKY[P.mode]||SKY.paint)(g);makeClouds();}
+    HZ=H*(H>W?.44:(P.hz||.64));(SKY[P.mode]||SKY.paint)(g);landform(g);makeClouds();}
   c.drawImage(sky,0,0,W,H);skyVeils();drawHeavens();drawClouds(performance.now());if(WX&&WX.fog)fogLayer();
 }
 function bladePath(b,w0){const sx=Math.sin(b.a),cy=Math.cos(b.a),tx=b.x+sx*b.h,ty=b.y-cy*b.h,mx=b.x+Math.sin(b.a*.45)*b.h*.55,my=b.y-b.h*.6;
@@ -1168,6 +1269,10 @@ function drawField(bandFrom,bandTo){
     if(mode==='ink'){ // inked tufts: sparse single strokes with a cartoon weight
       c.strokeStyle=P.line;c.lineWidth=1.4+k*2.2;c.lineCap='round';c.beginPath();
       blades.forEach((b,i)=>{if(b.band!==band||i%7)return;const sx=Math.sin(b.a),cy=Math.cos(b.a);c.moveTo(b.x,b.y);c.quadraticCurveTo(b.x+Math.sin(b.a*.45)*b.h*.55,b.y-b.h*.6,b.x+sx*b.h,b.y-cy*b.h);});
+      c.stroke();continue;}
+    if(mode==='swiss'){ // a pen drawing: straight ruled strokes, a third of the blades, lighter and finer in the distance
+      c.strokeStyle=`rgba(${rgbOf(P.pen)},${(.22+.6*e).toFixed(2)})`;c.lineWidth=.55+k*1.1;c.lineCap='round';c.beginPath();
+      blades.forEach((b,i)=>{if(b.band!==band||i%3)return;const a=b.a*.6,sx=Math.sin(a),cy=Math.cos(a);c.moveTo(b.x,b.y);c.lineTo(b.x+sx*b.h*.9,b.y-cy*b.h*.9);});
       c.stroke();continue;}
     if(mode==='riso'){ // one calm ink, soft: pale gray in the distance to ink up close, every other blade and finer
       c.fillStyle=`rgb(${P.far.map((v,i)=>Math.round(lerp(v,P.near[i],e)))})`;c.beginPath();blades.forEach((b,i)=>{if(b.band===band&&!(i%2))bladePath(b,w0*.55);});c.fill();continue;}
@@ -1224,6 +1329,12 @@ function drawPiece(pc,s){
 //   cloud cover -> how many clouds; wind -> grass lean and cloud drift; rain/snow -> a light fall drawn in the look's own hand;
 //   fog -> haze at the horizon; sunrise/sunset -> day, dusk or night light. No data: the scene keeps its default.
 let WX=null, FALL=[], fallT=0;
+// ---- the place: Berthoud by default; the visitor can pick another town and the weather, wind, sun, moon and stars follow it.
+// Remembered like the dials. It never asks the browser for the visitor's own location.
+const PLACES=[['Berthoud, CO',40.31,-105.08],['Loveland, CO',40.3978,-105.075],['Longmont, CO',40.1672,-105.1019],['Fort Collins, CO',40.5853,-105.0844],
+  ['Boulder, CO',40.015,-105.2705],['Lyons, CO',40.2247,-105.2714],['Estes Park, CO',40.3772,-105.5217],['Denver, CO',39.7392,-104.9903]];
+let PLACE=(()=>{try{const p=JSON.parse(localStorage.getItem('sog-place')||'null');if(p&&isFinite(p.lat)&&isFinite(p.lon)&&p.name)return p;}catch(e){}return {name:PLACES[0][0],lat:PLACES[0][1],lon:PLACES[0][2]};})();
+const wxURL=p=>`https://api.open-meteo.com/v1/forecast?latitude=${p.lat}&longitude=${p.lon}&current=temperature_2m,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m,precipitation,is_day&daily=sunrise,sunset&timezone=auto&temperature_unit=fahrenheit&wind_speed_unit=mph&forecast_days=1`;
 const WX_URL='https://api.open-meteo.com/v1/forecast?latitude=40.31&longitude=-105.08&current=temperature_2m,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m,precipitation,is_day&daily=sunrise,sunset&timezone=America%2FDenver&temperature_unit=fahrenheit&wind_speed_unit=mph&forecast_days=1';
 const WX_SKY={0:'clear',1:'mostly clear',2:'partly cloudy',3:'overcast',45:'fog',48:'fog',51:'drizzle',53:'drizzle',55:'drizzle',56:'freezing drizzle',57:'freezing drizzle',
   61:'light rain',63:'rain',65:'heavy rain',66:'freezing rain',67:'freezing rain',71:'light snow',73:'snow',75:'heavy snow',77:'snow grains',80:'showers',81:'showers',82:'heavy showers',
@@ -1246,7 +1357,10 @@ const WX_TRY={ // previews: window.sogWeather.preview('rain') etc.; 'at' picks a
 function readout(){const el=document.getElementById('wx');if(!el)return;if(!WX){el.hidden=true;return;}const w=WX.wind;
   const words=[w<4?'still':w<12?'light wind':w<22?'breezy':'windy',LIGHT==='night'&&WX.code<=1?'clear night':WX_SKY[WX.code]||''];
   if(LIGHT!=='day'&&SKYNOW)words.push(SKYNOW.moon.name);
-  el.textContent='Berthoud, CO · '+WX.temp+'°F · '+words.filter(Boolean).join(' · ');el.hidden=false;}
+    let b=el.querySelector('.wxplace'); // the button is made once and kept, so focus stays on it while the weather updates
+  if(!b){el.innerHTML='<button type="button" class="wxplace" aria-haspopup="dialog" aria-expanded="false"><b></b><span aria-hidden="true">▾</span></button><span class="wxrest"></span>';b=el.querySelector('.wxplace');}
+  b.querySelector('b').textContent=PLACE.name;b.setAttribute('aria-label',PLACE.name+': choose another place');
+  el.querySelector('.wxrest').textContent=' · '+WX.temp+'°F · '+words.filter(Boolean).join(' · ');el.hidden=false;}
 function setWX(x){WX=x;FALL=[];sky=null;SKYT=x&&x.at?skyFind(x.at):null;skyNow();}
 function wxGrades(){const dark=bgDark(),out=[];
   if(WX&&WX.cloud>.75)out.push(['#8a8f96','saturation',(WX.cloud-.75)*1.2]);           // overcast: the color drains a little
@@ -1288,7 +1402,7 @@ function stepField(now,tips){ // the engine's field, plus a lean and stronger sw
 }
 // ---- the real sky over Berthoud: sun and moon from the standard low-precision formulas (as in SunCalc),
 //   the brightest stars placed by local sidereal time. The view faces south across the field: east left, west right.
-const RAD=Math.PI/180, LAT=40.31*RAD, LW=105.08*RAD, OBL=23.4397*RAD;
+const RAD=Math.PI/180, OBL=23.4397*RAD;let LAT=PLACE.lat*RAD, LW=-PLACE.lon*RAD; // the sky over the chosen place
 // bright stars, J2000: right ascension (hours), declination (degrees), magnitude
 const STARS='6.752,-16.716,-1.46;14.261,19.182,-.05;18.616,38.784,.03;5.278,45.998,.08;5.242,-8.202,.13;7.655,5.225,.34;5.919,7.407,.5;19.846,8.868,.76;4.599,16.509,.86;16.490,-26.432,.96;13.420,-11.161,.97;7.755,28.026,1.14;22.961,-29.622,1.16;20.690,45.280,1.25;10.139,11.967,1.35;6.977,-28.972,1.5;7.577,31.888,1.58;17.560,-37.104,1.62;5.419,6.350,1.64;5.438,28.608,1.65;5.604,-1.202,1.69;5.679,-1.943,1.77;12.900,55.960,1.77;3.405,49.861,1.79;11.062,61.751,1.79;7.140,-26.393,1.83;18.403,-34.385,1.85;13.792,49.313,1.86;17.622,-42.998,1.87;5.992,44.948,1.9;6.629,16.399,1.92;2.530,89.264,1.98;6.378,-17.956,1.98;9.460,-8.659,1.98;2.120,23.462,2.0;10.333,19.842,2.01;0.727,-17.987,2.02;18.921,-26.297,2.05;14.111,-36.370,2.06;0.140,29.091,2.06;1.163,35.621,2.06;5.796,-9.670,2.07;14.845,74.156,2.08;17.582,12.560,2.08;3.136,40.956,2.1;2.065,42.330,2.1;11.818,14.572,2.13;8.060,-40.003,2.21;9.133,-43.433,2.21;5.533,-.299,2.23;20.370,40.257,2.23;13.399,54.925,2.23;15.578,26.715,2.23;0.675,56.537,2.24;17.943,51.489,2.24;0.153,59.150,2.27;16.006,-22.622,2.29;16.836,-34.293,2.29;14.699,-47.388,2.3;14.592,-42.158,2.31;11.031,56.382,2.37;14.750,27.074,2.37;0.438,-42.306,2.37;21.736,9.875,2.38;23.063,28.083,2.42;17.173,-15.725,2.43;11.897,53.695,2.44;21.310,62.586,2.45;7.402,-29.303,2.45;0.945,60.717,2.47;20.770,33.970,2.48;23.079,15.205,2.48;3.038,4.090,2.53;11.235,20.524,2.56;16.619,-10.567,2.56;5.546,-17.822,2.58;12.263,-17.542,2.59;19.044,-29.880,2.6;15.283,-9.383,2.61;5.995,37.213,2.62;16.091,-19.806,2.62;15.738,6.426,2.63;1.911,20.808,2.64;12.573,-23.397,2.65;5.661,-34.074,2.65;13.911,18.398,2.68;1.430,60.235,2.68;4.950,33.166,2.69;18.350,-29.828,2.7;17.512,-37.296,2.7;12.694,-1.449,2.74;14.848,-16.042,2.75;5.590,-5.910,2.77;17.725,4.567,2.77;16.504,21.490,2.78;17.507,52.301,2.79;16.688,31.603,2.81;18.466,-25.422,2.81;16.598,-28.216,2.82;13.036,10.959,2.83;0.220,15.184,2.83;5.471,-20.759,2.84;21.784,-16.127,2.85;3.902,31.884,2.85;3.791,24.105,2.87;19.750,45.131,2.87;6.383,22.514,2.87;3.964,40.010,2.88;7.453,8.289,2.89;21.526,-5.571,2.9;12.498,-16.516,2.95;22.096,-.320,2.95;9.764,23.774,2.98;6.732,25.131,2.98;15.345,71.834,3.0;16.239,-3.694,3.0;6.338,-30.063,3.02;14.535,38.308,3.03;19.512,27.960,3.08;23.656,77.632,3.21;18.983,32.690,3.25;12.257,57.033,3.31;5.585,9.934,3.33;11.237,15.430,3.33;1.907,63.670,3.37;10.278,23.417,3.44;10.122,16.763,3.48;17.244,14.390,3.48;18.835,33.363,3.52;7.335,21.982,3.53;3.819,24.053,3.62;14.073,64.376,3.65;3.748,24.113,3.7;19.922,6.407,3.71;3.763,24.368,3.87;3.772,23.948,4.18;3.754,24.467,4.3'
   .split(';').map(s=>{const [ra,de,m]=s.split(',').map(Number);return[ra*15*RAD,de*RAD,m];});
@@ -1384,31 +1498,56 @@ async function audit(only={}){const styles=only.styles||['dusk','glass','neu','b
     drawNow();for(const [what,v,need] of heroContrast()){n++;if(v<need)fails.push(`${t} · ${k} · ${w}${f>.5?' · find your style':f?' · mid-scroll':''} · ${what}: ${v}`);}}
   still.remove();scrollTo({top:y0,behavior:'instant'});return {checked:n,fails};}
 (function(){ // live weather, cached for 15 minutes; any failure leaves the default scene and hides the readout
-  const K='sog-wx', fresh=()=>{try{const o=JSON.parse(localStorage.getItem(K)||'null');return o&&Date.now()-o.t<9e5?o.d:null;}catch(e){return null;}};
+  const K='sog-wx', fresh=()=>{try{const o=JSON.parse(localStorage.getItem(K)||'null');return o&&Date.now()-o.t<9e5&&o.place===PLACE.name?o.d:null;}catch(e){return null;}};
   let pinned=false;
   function load(){if(pinned)return;const d=fresh();if(d){try{setWX(wxFrom(d));}catch(e){}return;}
-    fetch(WX_URL).then(r=>r.ok?r.json():Promise.reject()).then(d=>{if(pinned)return;try{localStorage.setItem(K,JSON.stringify({t:Date.now(),d}));}catch(e){}setWX(wxFrom(d));}).catch(()=>setWX(null));}
-  window.sogWeather={preview:k=>{pinned=true;setWX(WX_TRY[k]||null);},sky:()=>({clouds:CLOUDS.map(c=>[Math.round(c.x),Math.round(c.y),Math.round(c.s),+(c.fa??-1).toFixed(2)]),box:markBox().map(Math.round),now:SKYNOW,light:LIGHT,W,H,HZ,pts:SKYNOW&&SKYNOW.stars.map(([a,z])=>skyXY(a,z)).filter(Boolean)}),tonight:on=>{SKYT=on?skyFind(k=>k.sun<-15):null;skyNow();},audit,contrast:heroContrast,live:()=>{pinned=false;try{localStorage.removeItem(K);}catch(e){}load();}};
+    const at=PLACE.name;fetch(wxURL(PLACE)).then(r=>r.ok?r.json():Promise.reject()).then(d=>{if(pinned||at!==PLACE.name)return;try{localStorage.setItem(K,JSON.stringify({t:Date.now(),d,place:at}));}catch(e){}setWX(wxFrom(d));}).catch(()=>setWX(null));}
+  window.sogWeather={preview:k=>{pinned=true;setWX(WX_TRY[k]||null);},sky:()=>({clouds:CLOUDS.map(c=>[Math.round(c.x),Math.round(c.y),Math.round(c.s),+(c.fa??-1).toFixed(2)]),box:markBox().map(Math.round),now:SKYNOW,light:LIGHT,W,H,HZ,pts:SKYNOW&&SKYNOW.stars.map(([a,z])=>skyXY(a,z)).filter(Boolean)}),tonight:on=>{SKYT=on?skyFind(k=>k.sun<-15):null;skyNow();},place:p=>{PLACE={name:String(p.name).slice(0,60),lat:+p.lat,lon:+p.lon};try{localStorage.setItem('sog-place',JSON.stringify(PLACE));}catch(e){}
+    LAT=PLACE.lat*RAD;LW=-PLACE.lon*RAD;SKYT=null;skyNow();sky=null;readout();pinned=false;load();},
+  audit,contrast:heroContrast,live:()=>{pinned=false;try{localStorage.removeItem(K);}catch(e){}load();}};
   if(!/[?&]wx=/.test(location.search))setTimeout(load,600);
   else setTimeout(()=>window.sogWeather.preview(new URLSearchParams(location.search).get('wx')),300);
   setInterval(load,9e5);skyNow();setInterval(skyNow,5e3);
+// the place picker: a ▾ beside the town in the weather pill opens a short list of Front Range towns and a search for anywhere
+(function(){const pill=document.getElementById('wx');if(!pill)return;let pop=null,timer=0,ctl=null;
+  const esc=t=>t.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  function close(back){if(!pop)return;pop.remove();pop=null;const b=pill.querySelector('.wxplace');if(b){b.setAttribute('aria-expanded','false');if(back)b.focus();}}
+  function choose(p){close(true);window.sogWeather.place(p);}
+  function list(items){const ul=pop.querySelector('ul');ul.innerHTML=items.map((p,i)=>`<li><button type="button" data-i="${i}"${p.name===PLACE.name?' aria-current="true"':''}>${esc(p.name)}</button></li>`).join('')||'<li class="none">No places found</li>';
+    ul.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>choose(items[+b.dataset.i])));}
+  function search(q){clearTimeout(timer);if(ctl)ctl.abort();if(q.trim().length<2){list(PLACES.map(([name,lat,lon])=>({name,lat,lon})));return;}
+    timer=setTimeout(()=>{ctl=new AbortController();fetch('https://geocoding-api.open-meteo.com/v1/search?count=6&language=en&format=json&name='+encodeURIComponent(q.trim()),{signal:ctl.signal})
+      .then(r=>r.ok?r.json():Promise.reject()).then(d=>{if(pop)list((d.results||[]).map(r=>({name:[r.name,r.admin1,r.country_code!=='US'?r.country:null].filter(Boolean).join(', '),lat:r.latitude,lon:r.longitude})));}).catch(()=>{});},280);}
+  function open(btn){if(pop){close(true);return;}
+    pop=document.createElement('div');pop.className='wxpick';pop.setAttribute('role','dialog');pop.setAttribute('aria-label','Choose a place for the weather');
+    pop.innerHTML='<label class="wxq">Search a town<input type="search" autocomplete="off" spellcheck="false" placeholder="Search a town"></label><ul role="list"></ul>';
+    document.body.appendChild(pop);const r=btn.getBoundingClientRect(),below=r.top<innerHeight/2,w=Math.min(300,innerWidth-32);
+    pop.style.width=w+'px';pop.style.left=Math.max(16,Math.min(innerWidth-w-16,r.left))+'px';
+    if(below)pop.style.top=(r.bottom+8)+'px';else pop.style.bottom=(innerHeight-r.top+8)+'px';
+    btn.setAttribute('aria-expanded','true');const q=pop.querySelector('input');q.addEventListener('input',()=>search(q.value));search('');q.focus();
+    pop.addEventListener('keydown',e=>{const items=[q,...pop.querySelectorAll('ul button')],i=items.indexOf(document.activeElement);
+      if(e.key==='Escape'){e.preventDefault();close(true);}else if(e.key==='ArrowDown'){e.preventDefault();items[Math.min(items.length-1,i+1)].focus();}
+      else if(e.key==='ArrowUp'){e.preventDefault();items[Math.max(0,i-1)].focus();}});}
+  pill.addEventListener('click',e=>{const b=e.target.closest('.wxplace');if(b)open(b);});
+  document.addEventListener('pointerdown',e=>{if(pop&&!pop.contains(e.target)&&!e.target.closest('.wxplace'))close(false);});
+  addEventListener('scroll',()=>close(false),{passive:true});addEventListener('resize',()=>close(false));})();
 })();
 
 // ---- Find Your Style effects: one at a time, each with one Amount (0..1). Drift starts on every visit when beat 2 first
 // shows (never under reduced motion) and then follows the visitor down the page and from page to page (window.sogDrift, in the
-// head script); the first touch on a control takes over. Under them all, the grass rolls in waves: the Swell, set by the live wind.
+// head script); the first touch on a control takes over.
 const TINT_SKY=false; // the one-line switch: true lets "Your color" turn the whole scene to the visitor's color, not only the accents
 var B2V=0; // how far beat 2 is in (0..1), set by beats()
-function roomForBeat2(){ // portrait screens: as beat 2 comes in, the S rises and shrinks until its lowest point clears the panel
-  if(!B2V)return;const el=document.querySelector('.hero .beat2 .in');if(!el)return;const top=el.getBoundingClientRect().top-cv.getBoundingClientRect().top-14;
-  const my=MY+(.2-MY)*B2V,fit=(top-H*my)/(345-CY);MY=my;if(fit>0&&fit<U)U+=(fit-U)*B2V;}
+function roomForCopy(){ // portrait screens: the S sits fully above whichever copy panel is showing (beat 1, then Find Your Style), never behind it
+  const q=cv.getBoundingClientRect().top,topOf=sel=>{const el=document.querySelector(sel);return el?el.getBoundingClientRect().top-q-14:H;};
+  const fitAt=(top,my)=>Math.min((top-H*my)/(345-CY),(H*my-72)/(CY-20)); // clear of the panel below and the bar above
+  const room=top=>{let my=MY,f=fitAt(top,my);if(f<U){my=.21;f=fitAt(top,my);}return [my,Math.min(U,Math.max(.2,f))];};
+  const [m1,u1]=room(topOf('.hero .beat1 .in')),[m2,u2]=room(topOf('.hero .beat2 .in'));MY=m1+(m2-m1)*B2V;U=u1+(u2-u1)*B2V;}
 const FX_AMT={drift:.35,melt:.5,eye:.5,sky:.6,color:.7};
 const FX_STILL=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const SKIES=['Aurora','Painterly','Stars','Sunset','Riso','Mist'];
 const DRIFT=()=>window.sogDrift||{get:()=>({on:false}),hue:()=>0,start(){},stop(){},amount(){},fresh:()=>false};
 var FX={kind:DRIFT().get().on?'drift':'none',auto:false,live:false,amt:Object.assign({},FX_AMT),shown:0,last:0,mode:0};
-var SWELL={v:0,user:false}; // 0..1: how high and fast the waves run through the grass; follows the live wind until the visitor sets it
-function swellNow(){if(SWELL.user)return SWELL.v;if(FX_STILL)return 0;const w=WX?WX.wind:6;return Math.max(.15,Math.min(.85,.12+w/40));}
 let ACC=null; // the style's accent, for the sky's lines
 const accent=()=>ACC||(ACC=getComputedStyle(document.documentElement).getPropertyValue('--lav').trim()||'#e1bdff');
 ['sog-theme','sog-scheme','sog-colour'].forEach(e=>document.addEventListener(e,()=>{ACC=null;}));
@@ -1420,24 +1559,10 @@ function fxSky(now){const dt=FX.last?Math.min(.05,(now-FX.last)/1000):0;FX.last=
   if(Math.abs(deg-FX.shown)>.05){cv.style.filter=deg?`hue-rotate(${deg.toFixed(1)}deg)`:'';FX.shown=deg;}
   if(k==='sky')skyStyle(T,a);
   if(k==='eye')eye(dt,a);}
-let WK=.006; // one swell about every 85% of the scene's width, its crests running diagonally across the field
-function waves(T,sw){WK=2*Math.PI/Math.max(360,W*.85); // the Sea of Grass, literally: long crests roll across the field, bending the blades as they pass
-  const sp=.5+1.3*sw,dir=WX&&WX.dir<0?-1:1;
-  for(const b of blades){const depth=.3+.7*Math.max(0,(b.y-HZ)/(H-HZ)),ph=(b.x+(b.y-HZ)*1.4)*WK-T*sp*dir,crest=Math.pow(Math.max(0,Math.sin(ph)),2);
-    b.a+=dir*sw*1.05*crest*depth;b.h*=1-sw*.18*crest;}}
-function crestLight(T,sw){ // light catching each crest, drawn along the same lines the blades bend on
-  const sp=.5+1.3*sw,dir=WX&&WX.dir<0?-1:1;c.save();c.globalCompositeOperation='soft-light';c.strokeStyle=`rgba(255,250,230,${(.34*sw).toFixed(3)})`;c.lineCap='round';
-  const span=W+(H-HZ)*1.4,ta=-T*sp*dir/(2*Math.PI),tb=(span*WK-T*sp*dir)/(2*Math.PI); // the crests that cross the field right now
-  for(let n=Math.floor(Math.min(ta,tb))-1;n<=Math.ceil(Math.max(ta,tb))+1;n++){let px=null,py=null; // each crest is a straight diagonal line
-    for(let y=HZ+6;y<=H;y+=16){const depth=.3+.7*(y-HZ)/(H-HZ),x=(Math.PI/2+2*Math.PI*n+T*sp*dir)/WK-(y-HZ)*1.4;
-      if(px!==null&&(x>-80&&x<W+80||px>-80&&px<W+80)){c.lineWidth=10+50*depth;c.beginPath();c.moveTo(px,py);c.lineTo(x,y);c.stroke();}px=x;py=y;}}
-  c.restore();}
-function fxField(a0,a1,T){ // Melt and the waves bend the blades for this frame only; the field's own physics stays untouched
-  const sw=swellNow(),melt=FX.kind==='melt';if(!sw&&!melt){drawField(a0,a1);return;}const keep=blades.map(b=>[b.a,b.h]);
-  if(sw)waves(T,sw);
-  if(melt){const a=FX.amt.melt;for(const b of blades){b.a+=a*.45*Math.sin(T*2.4+b.x*.02+b.band*.7);b.h*=1-a*.22*(.5+.5*Math.sin(T*1.7+b.x*.011));}}
-  drawField(a0,a1);blades.forEach((b,i)=>{b.a=keep[i][0];b.h=keep[i][1];});
-  if(sw&&a1===BANDS-1)crestLight(T,sw);}
+function fxField(a0,a1,T){ // Melt: the blades ripple and droop like heat shimmer, for this frame only; the field's own physics stays untouched
+  if(FX.kind!=='melt'){drawField(a0,a1);if(a1===3)haze();return;}const a=FX.amt.melt,keep=blades.map(b=>[b.a,b.h]);
+  for(const b of blades){b.a+=a*.45*Math.sin(T*2.4+b.x*.02+b.band*.7);b.h*=1-a*.22*(.5+.5*Math.sin(T*1.7+b.x*.011));}
+  drawField(a0,a1);blades.forEach((b,i)=>{b.a=keep[i][0];b.h=keep[i][1];});if(a1===3)haze();}
 function fxPiece(i,T){const k=FX.kind,a=FX.amt[k]||0; // the S's pieces: Melt ripples and leans them, Eye draws them round towards the eye
   if(k==='melt'){c.translate(0,a*16*Math.sin(T*2.1+i*1.3));c.transform(1,0,a*.18*Math.sin(T*1.4+i),1,0,0);}
   else if(k==='eye'){const [ex,ey]=EYE.at||eyeHome(),mx=(ex-W*MX)/U+CX,my=(ey-H*MY)/U+CY,f=a*.3*(.6+.4*Math.sin(T*.7+i));
@@ -1483,15 +1608,14 @@ function skyStyle(T,a){ // Sky: each tap paints the sky another way; the words a
   c.restore();}
 const fxNote=()=>document.dispatchEvent(new CustomEvent('sog-fx'));
 window.sogFX={ // the panel's controls talk to the scene through this
-  get:()=>({kind:FX.kind,amt:FX.kind==='drift'?DRIFT().get().amt:FX.amt[FX.kind]??0,mode:FX.mode,sky:FX.kind==='sky'?SKIES[FX.mode]:null,auto:FX.auto,swell:swellNow(),swellUser:SWELL.user}),
+  get:()=>({kind:FX.kind,amt:FX.kind==='drift'?DRIFT().get().amt:FX.amt[FX.kind]??0,mode:FX.mode,sky:FX.kind==='sky'?SKIES[FX.mode]:null,auto:FX.auto}),
   set(k){FX.auto=false;if(FX.kind==='eye'&&k!=='eye')makeClouds();
     if(k==='sky'&&FX.kind==='sky'){FX.mode++;if(FX.mode>=SKIES.length){FX.mode=0;k='none';}}else if(k===FX.kind)k='none';else FX.mode=0;
     if(k==='drift')DRIFT().start();else DRIFT().stop();FX.kind=k;fxNote();},
   off(){FX.auto=false;if(FX.kind==='eye')makeClouds();DRIFT().stop();FX.kind='none';FX.mode=0;fxNote();},
   amount(v){v=Math.max(0,Math.min(1,v));if(FX.kind==='drift')DRIFT().amount(v);else if(FX.kind in FX.amt)FX.amt[FX.kind]=v;fxNote();},
-  swell(v){SWELL.user=true;SWELL.v=Math.max(0,Math.min(1,v));fxNote();},
   touch(){if(FX.auto&&FX.kind==='drift'){FX.auto=false;DRIFT().stop();FX.kind='none';fxNote();}}, // any touch takes over
-  reset(){if(FX.kind==='eye')makeClouds();FX.amt=Object.assign({},FX_AMT);FX.mode=0;SWELL.user=false;EYE.to=null;DRIFT().amount(FX_AMT.drift);
+  reset(){if(FX.kind==='eye')makeClouds();FX.amt=Object.assign({},FX_AMT);FX.mode=0;EYE.to=null;DRIFT().amount(FX_AMT.drift);
     FX.kind=FX_STILL?'none':'drift';FX.auto=!FX_STILL;if(!FX_STILL)DRIFT().start(true);else DRIFT().stop();
     window.sogScheme&&sogScheme.set('own');window.sogColour&&sogColour.clear();fxNote();}};
 
@@ -1499,7 +1623,7 @@ window.sogFX={ // the panel's controls talk to the scene through this
 function S(t){if(t<.4)return 0;return slow(seg(t,.4,4.6));}
 const TEND=4.8, reduce=matchMedia('(prefers-reduced-motion: reduce)').matches, hero=document.getElementById('hero');
 let t0=performance.now()+500, tShow=reduce?TEND:0, tPrev=tShow, visible=true, raf=0;
-const pinEl=document.getElementById('pin');let scrollP=0,tCur=.4;const B1=document.querySelector('.hero .beat1'),B2=document.querySelector('.hero .beat2');function beat(el,v,dy){el.style.opacity=v.toFixed(3);el.style.transform=v<1?`translateY(${((1-v)*dy).toFixed(1)}px)`:'';el.classList.toggle('off',v<.01);el.classList.toggle('dim',v<.5);}function beats(p){if(reduce||!B1||!B2)return;const a=cl((p-.22)/.2,0,1),b=cl((p-.4)/.15,0,1);beat(B1,1-a,-48);beat(B2,b,48);B2V=b;if(b>.3&&FX)fxLive();}const breakAt=p=>.4+cl(p/.45,0,1)*(TEND-.6);function readScroll(){const r=pinEl.getBoundingClientRect(),run=Math.max(1,r.height-innerHeight);scrollP=cl(-r.top/run,0,1);hero.classList.toggle('scrolled',scrollP>.02);beats(scrollP);}addEventListener('scroll',readScroll,{passive:true});addEventListener('resize',readScroll);readScroll();document.addEventListener('click',e=>{const a=e.target.closest('a[href="#style"]');if(!a||reduce)return;e.preventDefault();const run=pinEl.offsetHeight-innerHeight;scrollTo({top:pinEl.offsetTop+run*.62,behavior:'smooth'});});function clock(now){const tg=reduce?0:breakAt(scrollP);tCur+=(tg-tCur)*.2;return tCur;}
+const pinEl=document.getElementById('pin');let scrollP=0,tCur=.4;const B1=document.querySelector('.hero .beat1'),B2=document.querySelector('.hero .beat2');function beat(el,v,dy){el.style.opacity=v.toFixed(3);el.style.transform=v<1?`translateY(${((1-v)*dy).toFixed(1)}px)`:'';el.classList.toggle('off',v<.01);el.classList.toggle('dim',v<.5);}function beats(p){if(reduce||!B1||!B2)return;const a=cl((p-.22)/.2,0,1),b=cl((p-.4)/.15,0,1);beat(B1,1-a,-48);beat(B2,b,48);B2V=b;if(b>0&&window.sogFonts)sogFonts.letters();if(b>.3&&FX)fxLive();}const breakAt=p=>.4+cl(p/.45,0,1)*(TEND-.6);function readScroll(){const r=pinEl.getBoundingClientRect(),run=Math.max(1,r.height-innerHeight);scrollP=cl(-r.top/run,0,1);hero.classList.toggle('scrolled',scrollP>.02);beats(scrollP);}addEventListener('scroll',readScroll,{passive:true});addEventListener('resize',readScroll);readScroll();document.addEventListener('click',e=>{const a=e.target.closest('a[href="#style"]');if(!a||reduce)return;e.preventDefault();const run=pinEl.offsetHeight-innerHeight;scrollTo({top:pinEl.offsetTop+run*.62,behavior:'smooth'});});function clock(now){const tg=reduce?0:breakAt(scrollP);tCur+=(tg-tCur)*.2;return tCur;}
 let ptr=null; const pprev={x:0,y:0,has:false};
 function local(x,y){const r=cv.getBoundingClientRect();return[x-r.left,y-r.top];}
 function setPtr(x,y){[x,y]=local(x,y);const vx=pprev.has?x-pprev.x:0,vy=pprev.has?y-pprev.y:0;ptr={x,y,vx,vy,k:1};pprev.x=x;pprev.y=y;pprev.has=true;}
@@ -1517,7 +1641,7 @@ function frame(now){
   const t=tShow, s=S(t), head=cl(s/.42), sep=cl((s-.3)/.7);
   if(!hero.classList.contains('ready'))hero.classList.add('ready');
   const portrait=H>W*1.05;
-  if(portrait||windowed()){U=Math.min(W/560,H/700)*(windowed()?.92:1);MX=.5;MY=windowed()?.36:.3;if(!windowed())roomForBeat2();}else{U=Math.min(W/1500,H/820);MX=.75;MY=.37;}
+  if(portrait||windowed()){U=Math.min(W/560,H/700)*(windowed()?.92:1);MX=.5;MY=windowed()?.36:.3;if(!windowed())roomForCopy();}else{U=Math.min(W/1500,H/820);MX=.75;MY=.37;}
   view.r=.02*Math.sin(t/TEND*Math.PI);
   const tips=gusts(tPrev,t); if(ptr){tips.push(ptr);ptr={...ptr,vx:ptr.vx*.6,vy:ptr.vy*.6};}
   stepField(now,tips);
@@ -1531,7 +1655,7 @@ function frame(now){
   
   raf=requestAnimationFrame(frame);
 }
-function size(){DPR=Math.min(2,devicePixelRatio||1);W=cv.clientWidth;H=cv.clientHeight;cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);plant();}
+function size(){DPR=Math.min(innerWidth<600?1.5:2,devicePixelRatio||1);W=cv.clientWidth;H=cv.clientHeight;cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);plant();}
 let lastW=0;addEventListener('resize',()=>{if(cv.clientWidth!==lastW||Math.abs(cv.clientHeight-H)>120){lastW=cv.clientWidth;size();}});
 new IntersectionObserver(es=>{visible=es[0].isIntersecting;if(visible&&!raf)raf=requestAnimationFrame(frame);}).observe(hero);
 if(reduce)hero.classList.add('ready');
@@ -1579,7 +1703,7 @@ const STY=[['dusk','Dusk','Dusk, our own: a painted sky at nightfall.'],
   ['glass','Glass','Dark glass: frosted panels, blur and glow, under a photographic teal sky.'],
   ['neu','Neumorph','Neumorphism: one soft tone, pressed in and out; the field is clay.'],
   ['brutal','Brutal','Neubrutalism: a plain ground, thick black outlines, hard shadows and a few loud accents; the field is a cartoon.'],
-  ['simple','Simple','Simple: white, one red, a strict grid; the field is a clean print.'],
+  ['simple','Swiss','Swiss: warm paper, black ink and a grid you can see; the field is a pen drawing under one orange sun.'],
   ['editorial','Editorial','Editorial: a luxe serif on warm paper; the field is lit like a stage.']];
 // two dials of the same make: Style (six families, 60 degrees apart) and Color (the style's own palette plus six schemes)
 const SCHEMES=[['own','Own','its own colors'],["dusk", "Dusk", "Dusk violet"],["prairie", "Prairie", "Prairie gold"],["ink", "Ink", "Ink and paper"],["terra", "Terra", "Terracotta"],["pastel", "Pastel", "Pastel glow"],["teal", "Teal", "Teal night"],["riso", "Riso", "Bright riso"]];
@@ -1640,11 +1764,7 @@ if(fx&&window.sogFX){const chips=[...fx.querySelectorAll('.chip')],knob=fx.query
   fx.querySelector('.reset').addEventListener('click',()=>{colourOn=false;window.sogFX.reset();});
   // any touch on the dials, the letters or the scene takes over from the opening drift
   document.querySelectorAll('#dial,#dial2,#h-fys,#cv').forEach(el=>['pointerdown','keydown'].forEach(ev=>el.addEventListener(ev,()=>window.sogFX.touch(),{passive:true})));
-  const sw=document.getElementById('swell'),swo=document.getElementById('swell-out'),WORDS=['Still','Breeze','Swell','Rollers','Storm'];
-  function swShow(){const f=window.sogFX.get(),v=f.swell,w=v<.04?0:Math.min(4,1+Math.floor(v*4));if(document.activeElement!==sw)sw.value=Math.round(v*100);
-    sw.style.setProperty('--p',v);swo.innerHTML=WORDS[w]+(f.swellUser?'':'<span class="lw"> · live wind</span>');sw.setAttribute('aria-valuetext',WORDS[w]);}
-  sw.addEventListener('input',()=>{window.sogFX.swell(sw.value/100);});setInterval(swShow,2000);
-  ['sog-fx','sog-colour','sog-drift'].forEach(ev=>document.addEventListener(ev,()=>{show();swShow();}));show();swShow();}
+  ['sog-fx','sog-colour','sog-drift'].forEach(ev=>document.addEventListener(ev,show));show();}
 // the Neubrutalism shortcut tile: show tonight's real sky (the weather readout stays live)
 const tog=document.querySelector('.t-tog');if(tog)tog.addEventListener('click',()=>{const on=tog.getAttribute('aria-pressed')!=='true';tog.setAttribute('aria-pressed',String(on));if(window.sogWeather)window.sogWeather.tonight(on);});
 })();
