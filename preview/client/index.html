@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-61Q2DRMD3H"></script>
+<script>/* analytics waits until the page has loaded and gone idle, so it never competes with the first view */addEventListener('load',function(){var go=function(){var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-61Q2DRMD3H';document.head.appendChild(s);};'requestIdleCallback' in window?requestIdleCallback(go,{timeout:4000}):setTimeout(go,2000);});</script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -17,7 +17,6 @@
 <link rel="icon" href="/preview/assets/favicon.svg" type="image/svg+xml" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600&family=IBM+Plex+Mono:wght@400&family=Archivo+Black&family=Syne:wght@700;800&family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=Courier+Prime:ital,wght@0,400;0,700;1,700&display=swap" rel="stylesheet" />
 <style>
 /* The client area, in the front page's dusk style. Sign-in is Supabase (Google or an emailed link);
    paying opens Stripe's own hosted invoice page, so no card details ever touch this site. */
@@ -31,8 +30,8 @@ html[data-theme="neu"]{--bg:#ece7e1;--fg:#3a332c;--fg2:#463e36;--soft:#6f655b;--
   --lav:#9a4529;--bar:rgba(236,231,225,.88);--shadow:none;--card:#ece7e1;--field:#ece7e1;--panel:rgba(236,231,225,.9);--err:#c0392b;--r-btn:18px;--r-ctl:14px;--r-card:24px;color-scheme:light;--neu-dark:#cdc3b8;--neu-light:#fff}
 html[data-theme="brutal"]{--bg:#FFFDF5;--fg:#000;--fg2:#000;--soft:#1f1f1f;--steel:#333;--rule:#000;--violet:#000;--accent2:#000;--on-accent:#fff;
   --lav:#FF6B6B;--bar:#fff;--shadow:none;--card:#fff;--field:#fff;--panel:#fff;--err:#a3001b;--r-btn:0;--r-ctl:0;--r-card:0;--display:Syne,"Space Grotesk",sans-serif;--sans:Inter,"Helvetica Neue",Arial,sans-serif;--mono:"Space Mono",Menlo,monospace;--nb-y:#FFD23F;--nb-c:#FF6B6B;--nb-s:#74B9FF;--nb-g:#88D498;--nb-o:#FFA552;--nb-l:#B8A9FA;--nb-ink:#000;color-scheme:light}
-html[data-theme="simple"]{--bg:#fff;--fg:#111;--fg2:#111;--soft:#555;--steel:#6a6a6a;--rule:#111;--violet:#d02a24;--accent2:#c8241f;--on-accent:#fff;
-  --lav:#d02a24;--bar:rgba(255,255,255,.92);--shadow:none;--card:#f4f4f4;--field:#fff;--panel:rgba(255,255,255,.92);--err:#e5322d;--r-btn:0;--r-ctl:0;--r-card:0;--display:Inter,sans-serif;color-scheme:light}
+html[data-theme="simple"]{--bg:#F1EEE6;--fg:#1A1714;--fg2:#1A1714;--soft:#3F3A35;--steel:#5A544D;--rule:#1A1714;--violet:#1A1714;--accent2:#000;--on-accent:#F1EEE6;
+  --lav:#1A1714;--bar:#F1EEE6;--shadow:none;--card:#E8E4DA;--field:#F7F5EF;--panel:rgba(241,238,230,.94);--err:#A32A0A;--r-btn:0;--r-ctl:0;--r-card:0;--display:Archivo,"Helvetica Neue",sans-serif;--sans:Archivo,"Helvetica Neue",Arial,sans-serif;color-scheme:light}
 html[data-theme="editorial"]{--bg:#f3f1ea;--fg:#1f2a24;--fg2:#28342d;--soft:#53605a;--steel:#5c6560;--rule:rgba(31,42,36,.18);--violet:#1f2a24;--accent2:#000;--on-accent:#f3f1ea;
   --lav:#9a7440;--bar:rgba(243,241,234,.9);--shadow:none;--card:#e8e6dc;--field:#f9f8f3;--panel:rgba(243,241,234,.92);--err:#9b3b2a;--r-btn:0;--r-ctl:0;--r-card:0;--display:"Cormorant Garamond",Georgia,serif;color-scheme:light}
 
@@ -48,14 +47,10 @@ html[data-theme="brutal"] :is(h2,h3,.svc h3,.person h3){font-family:"Space Grote
 html[data-theme="brutal"] :is(h1,h2,h3,blockquote) :is(b,.t){font-weight:inherit;color:inherit}
 /* the highlighter: one box per phrase, the same height on every line (cap height plus descenders), never reaching into the next line */
 html[data-theme="brutal"] :is(h1,h2,h3,blockquote) em{font:inherit;font-style:normal;color:#000;background:var(--hl,var(--nb-y));display:inline-block;line-height:1.06;padding:0 .14em .03em;margin:0 .02em;max-width:100%}
-html[data-theme="simple"] :is(h1,h2,.svc h3,.person h3){font-family:Inter,sans-serif;font-weight:400;letter-spacing:-.025em}
-html[data-theme="simple"] :is(h1,h2,blockquote,.svc h3,.person h3) b{font-weight:700}
-html[data-theme="simple"] :is(h1,h2,blockquote,.svc h3,.person h3) em{font-family:Inter,sans-serif;font-style:normal;font-weight:400;font-size:1em;letter-spacing:-.025em}
 html[data-theme="editorial"] :is(h1,h2,.svc h3,.person h3){font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;letter-spacing:-.015em;line-height:1.08}
 html[data-theme="editorial"] :is(h1,h2,blockquote,.svc h3,.person h3) b{font-weight:600;letter-spacing:-.015em}
 html[data-theme="editorial"] :is(h1,h2,blockquote,.svc h3,.person h3) em{font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;font-weight:400;font-size:1.04em;letter-spacing:-.01em}
 html:not([data-theme="dusk"]) .hero h1 .t{background:none;color:inherit}
-html[data-theme="simple"] .hero h1 .t{color:var(--soft)}
 
 /* the surfaces each family is known for */
 html[data-theme="glass"] body{background:radial-gradient(60vw 50vw at 85% 15%,rgba(60,224,208,.16),transparent 60%),radial-gradient(50vw 40vw at 10% 70%,rgba(120,90,255,.14),transparent 60%),var(--bg);background-attachment:fixed}
@@ -103,6 +98,37 @@ html[data-theme="brutal"] header.bar .brand{color:#000;font-family:"Space Grotes
 html[data-theme="simple"] :is(.work .fr,.fr){border:0}
 html[data-theme="editorial"] :is(.work .fr,.fr){border:0}
 html[data-theme="editorial"] .work .wt{font-size:32px}
+/* Swiss (the "simple" slot): warm paper, cocoa-black ink, a 12-column grid you can see, monumental Archivo, mono labels,
+   hairline rules. One accent, used once: the orange sun in the scene. After Haus Otto, Adcker, 19–86, Studio Emmerer. */
+html[data-theme="simple"] body{font-family:Archivo,"Helvetica Neue",Arial,sans-serif;
+  background-image:linear-gradient(to right,rgba(26,23,20,.075) 1px,transparent 1px);background-size:calc((min(100vw,1280px) - 2 * var(--side)) / 12) 100%;background-position:var(--edge) 0;background-repeat:repeat}
+html[data-theme="simple"] :is(h1,h2,h3,blockquote){font-family:Archivo,"Helvetica Neue",Arial,sans-serif;color:var(--fg)}
+html[data-theme="simple"] h1{font-weight:800;letter-spacing:-.045em;line-height:1.02}
+html[data-theme="simple"] :is(h2,.svc h3,.person h3){font-weight:800;letter-spacing:-.035em;line-height:1.04}
+html[data-theme="simple"] :is(h1,h2,h3,blockquote) .t{font-weight:300;color:var(--fg)}
+html[data-theme="simple"] :is(h1,h2,h3,blockquote) b{font-weight:800}
+html[data-theme="simple"] :is(h1,h2,h3,blockquote) em{font-family:Archivo,sans-serif;font-style:normal;font-weight:300;font-size:1em;letter-spacing:-.04em;color:var(--fg)}
+html[data-theme="simple"] .hero h1{font-size:clamp(46px,6.4vw,104px)}
+html[data-theme="simple"] :is(.label,.kick,.kick2,.case .chip,.steps .cue,.steps .no,.svc .no,.dialcap,.dial-both,.case dt,.role){font-family:"IBM Plex Mono",Menlo,monospace;letter-spacing:.12em;color:var(--fg)}
+/* sections open on a heavy rule; heads are an index line, title left, note right */
+html[data-theme="simple"] main#top :is(section.s){border-top:2px solid var(--fg)}
+html[data-theme="simple"] :is(.svc,.facts,.people,.steps,.cases){border-color:var(--fg)}
+html[data-theme="simple"] .facts>div b{font:800 32px/1.02 Archivo,sans-serif;letter-spacing:-.03em}
+html[data-theme="simple"] .steps b{font:800 clamp(30px,3vw,44px)/1 Archivo,sans-serif;font-style:normal;letter-spacing:-.035em}
+html[data-theme="simple"] .steps li::before{border-radius:0;background:var(--fg);width:10px;height:10px}
+html[data-theme="simple"] .case h3{font:800 clamp(26px,2.4vw,36px)/1.04 Archivo,sans-serif;letter-spacing:-.03em}
+html[data-theme="simple"] .thesis blockquote{font:800 clamp(38px,5vw,76px)/1.04 Archivo,sans-serif;letter-spacing:-.045em}
+html[data-theme="simple"] .reach{font-family:Archivo,sans-serif;font-weight:800;letter-spacing:-.02em}
+/* buttons: ink blocks; the secondary one an ink outline; hover inverts */
+html[data-theme="simple"] :is(.ghost:not(.q),form button,.btn:not(.q),a.book){background:var(--fg);color:var(--bg)!important;border:2px solid var(--fg);border-radius:0;font-family:Archivo,sans-serif;font-weight:700}
+html[data-theme="simple"] :is(.ghost:not(.q),form button,.btn:not(.q),a.book):hover{background:var(--bg);color:var(--fg)!important}
+html[data-theme="simple"] :is(.ghost.q,.btn.q,a.client){background:transparent;color:var(--fg);border:2px solid var(--fg);border-radius:0;font-weight:700}
+html[data-theme="simple"] :is(.ghost.q,.btn.q,a.client):hover{background:var(--fg);color:var(--bg)}
+html[data-theme="simple"] .slot{border:1px solid var(--fg);border-radius:0;background:var(--bg)}
+html[data-theme="simple"] :is(input,select,textarea){border:1px solid var(--fg);border-radius:0;background:transparent}
+html[data-theme="simple"] header.bar.wrap{background:var(--bg);backdrop-filter:none;-webkit-backdrop-filter:none;border-bottom:2px solid var(--fg)}
+html[data-theme="simple"] .hero .beat2 .in{background:color-mix(in srgb,var(--scrim,var(--bg)) 94%,transparent);border:2px solid var(--fg);border-radius:0;backdrop-filter:none;-webkit-backdrop-filter:none}
+@media (max-width:560px){html[data-theme="simple"] .hero .copy .in{background:color-mix(in srgb,var(--scrim,var(--bg)) 94%,transparent);border:2px solid var(--fg);border-radius:0;backdrop-filter:none;-webkit-backdrop-filter:none}}
 /* color schemes (second dial): tokens on top of any style */
 html[data-scheme="dusk"]{--bg:#0e0b16;--fg:#f3eefa;--fg2:#ddd5ea;--soft:#bcb2cf;--steel:#a196b5;--rule:rgba(243,238,250,.16);--violet:#a46bff;--accent2:#b283fe;--on-accent:#0e0b16;--lav:#c9a2ff;--bar:rgba(14,11,22,.88);--card:#19141f;--field:#09070e;--panel:rgba(14,11,22,.92);--neu-dark:#07060b;--neu-light:#211f29;color-scheme:dark}
 html[data-scheme="prairie"]{--bg:#f3ead2;--fg:#1f2a1a;--fg2:#2c3826;--soft:#4a543d;--steel:#5f6447;--rule:rgba(31,42,26,.16);--violet:#2f5b2a;--accent2:#2c5227;--on-accent:#f8f1dc;--lav:#7d5300;--bar:rgba(243,234,210,.88);--card:#ebe0c3;--field:#f7f1e2;--panel:rgba(243,234,210,.92);--neu-dark:#ccc5b0;--neu-light:#fbf9f2;color-scheme:light}
@@ -174,9 +200,11 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(-
 @media (max-width:860px){.signin{grid-template-columns:1fr}.cols{grid-template-columns:1fr}header nav .hide-s{display:none}}
 </style>
 <script>
-(function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#090909',glass:'#0b1a24',neu:'#ece7e1',brutal:'#FFFDF5',simple:'#ffffff',editorial:'#f3f1ea'};
+(function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#090909',glass:'#0b1a24',neu:'#ece7e1',brutal:'#FFFDF5',simple:'#F1EEE6',editorial:'#f3f1ea'};
 function get(){try{var v=localStorage.getItem(K);return OK[v]?v:'dusk';}catch(e){return 'dusk';}}
-function apply(t){if(!OK[t])t='dusk';var r=document.documentElement;if(r.getAttribute('data-theme')===t)return;r.setAttribute('data-theme',t);
+var FONT={"dusk": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "glass": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Inter+Tight:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "neu": "https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "brutal": "https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap", "simple": "https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap", "editorial": "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter+Tight:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap", "letters": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Cormorant+Garamond:wght@300&family=Anybody:wdth,wght@125,800&family=Syne:wght@800&family=Inter+Tight:wght@300;700&family=IBM+Plex+Mono:wght@400;500&display=swap"};function font(k){if(!FONT[k]||document.getElementById('sog-f-'+k))return;var l=document.createElement('link');l.rel='stylesheet';l.id='sog-f-'+k;l.href=FONT[k];document.head.appendChild(l);}
+window.sogFonts={letters:function(){font('letters');}};
+function apply(t){if(!OK[t])t='dusk';font(t);var r=document.documentElement;if(r.getAttribute('data-theme')===t)return;r.setAttribute('data-theme',t);
   var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',BG[t]);
   document.dispatchEvent(new CustomEvent('sog-theme',{detail:t}));}
 window.sogTheme={get:get,apply:apply,set:function(t){try{localStorage.setItem(K,t);}catch(e){}apply(t);}};
@@ -190,7 +218,7 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
 // Each accent keeps the lightness nearest its own that still reads against what it sits on (4.5:1, or more where noted), so nothing loses contrast.
 var K='sog-colour',DK='sog-drift',R=document.documentElement,
   ACC={dusk:[['--violet','--on-accent'],['--accent2','--on-accent'],['--lav','--bg']],glass:[['--violet','--on-accent'],['--accent2','--on-accent'],['--lav','--bg']],
-  neu:[['--on-accent','--bg',5.4],['--lav','--bg']],brutal:[['--nb-y','#000',5.8],['--lav','--bg']],simple:[['--violet','--on-accent'],['--accent2','--on-accent'],['--lav','--bg']],editorial:[['--lav','--bg']]},
+  neu:[['--on-accent','--bg',5.4],['--lav','--bg']],brutal:[['--nb-y','#000',5.8],['--lav','--bg']],simple:[['--lav','--bg']],editorial:[['--lav','--bg']]},
   DRIFT_ONLY={brutal:[['--nb-c','#000',5.8],['--nb-s','#000',5.8],['--nb-g','#000',5.8],['--nb-o','#000',5.8],['--nb-l','#000',5.8]]}, // Neubrutalism's other inks turn with Drift, never with a picked color
   // (5.8:1 against black, so the dark-gray body copy that also sits on them still reads at 4.5:1)
   ALL=['--violet','--accent2','--lav','--on-accent','--nb-y','--nb-c','--nb-s','--nb-g','--nb-o','--nb-l'],orig={},base=0;

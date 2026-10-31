@@ -3,7 +3,7 @@
 <head>
 <meta name="robots" content="noindex,nofollow">
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-61Q2DRMD3H"></script>
+<script>/* analytics waits until the page has loaded and gone idle, so it never competes with the first view */addEventListener('load',function(){var go=function(){var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-61Q2DRMD3H';document.head.appendChild(s);};'requestIdleCallback' in window?requestIdleCallback(go,{timeout:4000}):setTimeout(go,2000);});</script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -467,7 +467,7 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
 // Each accent keeps the lightness nearest its own that still reads against what it sits on (4.5:1, or more where noted), so nothing loses contrast.
 var K='sog-colour',DK='sog-drift',R=document.documentElement,
   ACC={dusk:[['--violet','--on-accent'],['--accent2','--on-accent'],['--lav','--bg']],glass:[['--violet','--on-accent'],['--accent2','--on-accent'],['--lav','--bg']],
-  neu:[['--on-accent','--bg',5.4],['--lav','--bg']],brutal:[['--nb-y','#000',5.8],['--lav','--bg']],simple:[['--violet','--on-accent'],['--accent2','--on-accent'],['--lav','--bg']],editorial:[['--lav','--bg']]},
+  neu:[['--on-accent','--bg',5.4],['--lav','--bg']],brutal:[['--nb-y','#000',5.8],['--lav','--bg']],simple:[['--lav','--bg']],editorial:[['--lav','--bg']]},
   DRIFT_ONLY={brutal:[['--nb-c','#000',5.8],['--nb-s','#000',5.8],['--nb-g','#000',5.8],['--nb-o','#000',5.8],['--nb-l','#000',5.8]]}, // Neubrutalism's other inks turn with Drift, never with a picked color
   // (5.8:1 against black, so the dark-gray body copy that also sits on them still reads at 4.5:1)
   ALL=['--violet','--accent2','--lav','--on-accent','--nb-y','--nb-c','--nb-s','--nb-g','--nb-o','--nb-l'],orig={},base=0;
