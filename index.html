@@ -1019,7 +1019,7 @@ html[data-theme="glass"]:not([data-scheme]) body{background:#0A0C11!important}
 html[data-theme="glass"]:not([data-scheme]) header.bar{background:#090B0E;border-bottom:1px solid #1D2738}
 html[data-theme="glass"]:not([data-scheme]) body main.cb{--cb-light:#0A0C11;--cb-light2:#0A0C11;--cb-headband:#0A0C11;--cb-ink:#EEF1EA;--cb-dark:#0A0C11;--cb-dark-ink:#C7C7C8;--cb-panel:rgba(255,255,255,.08);--cb-panel-ink:#EEF1EA;--cb-panel-edge:rgba(255,255,255,.11);--cb-panel-r:18px;--cb-panel-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 18px 52px rgba(0,0,0,.3);--cb-blur:blur(14px);
   --cb-work:#0A0C11;--cb-tile:rgba(238,241,234,.05);--cb-steps:transparent;--cb-steps-ink:#EEF1EA;--cb-thesis:transparent;--cb-accent:#509DFC;--cb-close:linear-gradient(180deg,#0A0C11 0%,#030A1C 21%,#00358A 57%,#0068F0 80%,#4CA3FF 100%);--cb-close-ink:#fff;--cb-btn-r:16px;--cb-rule:rgba(238,241,234,.14);--cb-hfont:Manrope,Inter,sans-serif;--cb-hw:600;--cb-body:Inter,system-ui,sans-serif}
-html[data-theme="glass"]:not([data-scheme]) .lf{--lf-ground:#05070D;--lf-ink:#EEF1EA;--lf-mark:#6DA7FF;--lf-grass:#3E7BE0}
+html[data-theme="glass"]:not([data-scheme]) .lf{--lf-ground:#05070D;--lf-ink:#EEF1EA;--lf-mark:#6DA7FF;--lf-grass:#4A7A3C}
 html[data-theme="glass"]:not([data-scheme]) body main.cb .cb-open{background:linear-gradient(180deg,#0A0C11 0%,#030A1C 55%,#00358A 100%)}
 html[data-theme="glass"]:not([data-scheme]) body main.cb :is(.cb-h,.cb-steps li b){font-weight:500;letter-spacing:-.03em}
 html[data-theme="glass"]:not([data-scheme]) body main.cb .cb-h{background:none}
@@ -1084,6 +1084,12 @@ html[data-theme="dusk"]:not([data-scheme]) .lf{--lf-face:"Inter Tight",Inter,san
 html:is([data-theme="glass"],[data-theme="neu"],[data-theme="brutal"]):not([data-scheme]) body main.cb .cb-thesis blockquote{font-family:var(--cb-hfont);font-weight:var(--cb-hw);letter-spacing:-.03em}
 html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-thesis blockquote{letter-spacing:-.02em}
 html:is([data-theme="glass"],[data-theme="neu"],[data-theme="brutal"],[data-theme="simple"],[data-theme="dusk"]):not([data-scheme]) body main.cb .cb-thesis blockquote :is(span,em){white-space:normal;font-size:clamp(30px,5vw,72px);line-height:1.02}
+/* the meadow's flowers, per style (Primavera: greens speckled with small blooms) */
+html[data-theme="glass"]:not([data-scheme]){--lf-flowers:#F3E7B0,#E8C34A,#7FA3D6,#C0603F,#F7F2E4}
+html[data-theme="neu"]:not([data-scheme]){--lf-flowers:#FFF4EC,#F6C9A1,#C8643B,#D9A23A}
+html[data-theme="simple"]:not([data-scheme]){--lf-flowers:#DB3334}
+html[data-theme="brutal"]:not([data-scheme]){--lf-flowers:#FA4D43,#F19EC8,#FFFFFF,#027B49}
+html[data-theme="dusk"]:not([data-scheme]){--lf-flowers:#FF7777,#E8E6E3}
 </style>
 <script>
 (function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#120607',glass:'#EEF1F8',neu:'#EFE6D8',brutal:'#FFFDF5',simple:'#F4F1EA',editorial:'#f3f1ea'};
@@ -1309,6 +1315,30 @@ function fluid(g,dt,R){ // position-based grains: forces move them, then they ar
   for(let i=0;i<n;i++){ // a blade lies along its flight and stands back up once it lands
     const v=Math.hypot(g.vx[i],g.vy[i]),want=v>60?Math.atan2(g.vx[i],-g.vy[i]):Math.sin(g.x[i]*.05)*.18,da=((want-g.a[i]+Math.PI*3)%(Math.PI*2))-Math.PI;g.a[i]+=da*Math.min(1,dt*(v>60?14:5));}}
 // ---- drawing: one flat ground, white everything
+const meadowGreens=(col)=>{col=col.trim();let r,g2,b;const hx=/^#([0-9a-f]{6})$/i.exec(col);if(hx){r=parseInt(col.slice(1,3),16);g2=parseInt(col.slice(3,5),16);b=parseInt(col.slice(5,7),16);}else{const m=col.match(/\d+(\.\d+)?/g)||[90,120,80];r=+m[0];g2=+m[1];b=+m[2];}
+  r/=255;g2/=255;b/=255;const mx=Math.max(r,g2,b),mn=Math.min(r,g2,b),l=(mx+mn)/2,d=mx-mn;let h=0,s=0;if(d){s=d/(1-Math.abs(2*l-1));h=mx===r?((g2-b)/d)%6:mx===g2?(b-r)/d+2:(r-g2)/d+4;h*=60;if(h<0)h+=360;}
+  // like Primavera's meadow: the same grass in several greens, shifted in hue as well as light (olive, sap, deep, cool)
+  return[[0,0,0],[-14,.05,-.12],[16,-.08,.08],[-6,.1,-.2],[28,-.12,.02],[8,0,.14]].map(([dh,ds,dl])=>`hsl(${(h+dh+360)%360} ${Math.max(0,Math.min(100,(s+ds)*100))}% ${Math.max(4,Math.min(92,(l+dl)*100))}%)`);};
+const meadowDraw=(c,g,COL,FL)=>{const SHD=meadowGreens(COL),NQ=SHD.length;c.lineCap="round";
+  for(let q=0;q<NQ;q++){c.fillStyle=SHD[q];c.strokeStyle=SHD[q];c.beginPath();
+    for(let i=0;i<g.n;i++){if(g.seed[i]||(i*31)%NQ!==q)continue;const k=(i*7919)%10,a=g.a[i];
+      if(k<4){const L=g.len[i]*1.25,bend=(i%7-3)*.06+a*.35,s=Math.sin(a),co=Math.cos(a),x=g.x[i]-s*L*.5,y=g.y[i]+co*L*.5,w=L*.07+.5,tx=x+Math.sin(a+bend)*L,ty=y-Math.cos(a+bend)*L,mx=x+s*L*.55,my=y-co*L*.55;
+        c.moveTo(x-co*w,y-s*w);c.quadraticCurveTo(mx-co*w*.6,my-s*w*.6,tx,ty);c.quadraticCurveTo(mx+co*w*.6,my+s*w*.6,x+co*w,y+s*w);}}
+    c.fill();c.lineWidth=1.1;c.beginPath();
+    for(let i=0;i<g.n;i++){if((i*31)%NQ!==q)continue;const k=(i*7919)%10,a=g.a[i];
+      if(g.seed[i]){const L=g.len[i]*1.1,x=g.x[i]-Math.sin(a)*L*.5,y=g.y[i]+Math.cos(a)*L*.5;c.moveTo(x,y);c.lineTo(x+Math.sin(a)*L,y-Math.cos(a)*L);} // the flower's stalk
+      else if(k>=4&&k<8){const L=g.len[i]*1.3,bend=(i%5-2)*.08,x=g.x[i]-Math.sin(a)*L*.5,y=g.y[i]+Math.cos(a)*L*.5;
+        c.moveTo(x,y);c.quadraticCurveTo(x+Math.sin(a)*L*.6,y-Math.cos(a)*L*.6,x+Math.sin(a+bend)*L,y-Math.cos(a+bend)*L);}
+      else if(k>=8){const L=g.len[i]*1.1,x=g.x[i],y=g.y[i]+L*.4;
+        for(const o of[-.32,0,.3]){const b=a+o;c.moveTo(x,y);c.quadraticCurveTo(x+Math.sin(b)*L*.5,y-Math.cos(b)*L*.55,x+Math.sin(b*1.15)*L,y-Math.cos(b*1.15)*L);}}}
+    c.stroke();}
+  // small flowers speckled through it: daisies, cornflowers and little five-petal blooms, in the style's own flower colours
+  const NF=FL.length;for(let f=0;f<NF;f++){c.fillStyle=FL[f];c.beginPath();
+    for(let i=0;i<g.n;i++){if(!g.seed[i]||i%NF!==f)continue;const L=g.len[i]*1.1,a=g.a[i],cx=g.x[i]-Math.sin(a)*L*.5+Math.sin(a)*L,cy=g.y[i]+Math.cos(a)*L*.5-Math.cos(a)*L,
+      P=(i%3===0)?8:5,R=g.d0*(P===8?.36:.3),pr=R*(P===8?.28:.42),rot=i*.7;
+      for(let p=0;p<P;p++){const t=rot+p*Math.PI*2/P,px=cx+Math.cos(t)*R*.55,py=cy+Math.sin(t)*R*.55;c.moveTo(px+R*.55,py);c.ellipse(px,py,R*.55,pr,t,0,Math.PI*2);}}
+    c.fill();}
+  c.fillStyle="rgba(250,236,170,.95)";c.beginPath();for(let i=0;i<g.n;i++){if(!g.seed[i])continue;const L=g.len[i]*1.1,a=g.a[i],cx=g.x[i]+Math.sin(a)*L*.5,cy=g.y[i]-Math.cos(a)*L*.5;c.moveTo(cx+1,cy);c.arc(cx,cy,g.d0*.09,0,Math.PI*2);}c.fill();};
 const shades=(col)=>{col=col.trim();const hx=/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(col)?(col.length===4?col.slice(1).split('').map(h=>parseInt(h+h,16)):[1,3,5].map(j=>parseInt(col.slice(j,j+2),16))):null;const m=hx||col.match(/\d+(\.\d+)?/g)||[0,0,0],r=+m[0],g2=+m[1],b=+m[2],f=(k)=>k>0?`rgb(${r+(255-r)*k|0},${g2+(255-g2)*k|0},${b+(255-b)*k|0})`:`rgb(${r*(1+k)|0},${g2*(1+k)|0},${b*(1+k)|0})`;return[f(-.16),col,f(.2)];};
 function draw(){c.setTransform(DPR,0,0,DPR,0,0);c.clearRect(0,0,W,H);c.fillStyle=INK;c.strokeStyle=INK;
   for(const p of pieces){c.save();c.translate(p.x,p.y);c.rotate(p.a);
@@ -1319,20 +1349,7 @@ function draw(){c.setTransform(DPR,0,0,DPR,0,0);c.clearRect(0,0,W,H);c.fillStyle
     else if(p.kind==='rule'){const v=RULE[p.line];if(v>.02){c.globalAlpha=v;c.fillRect(-p.w/2,-p.h/2,p.w*v,p.h);}}
     c.restore();}
   const g=grass;if(ready<15)return;c.fillStyle=GRASS;c.strokeStyle=GRASS;c.strokeStyle=GRASS;c.beginPath();
-  c.lineCap="round";{const SHD=shades(GRASS);for(let q=0;q<3;q++){c.fillStyle=SHD[q];c.strokeStyle=SHD[q];c.beginPath();
-  for(let i=0;i<g.n;i++){if(g.seed[i]||i%3!==q)continue;const k=(i*7919)%10,a=g.a[i];
-    if(k<4){const L=g.len[i]*1.25,bend=(i%7-3)*.06+a*.35,s=Math.sin(a),co=Math.cos(a),x=g.x[i]-s*L*.5,y=g.y[i]+co*L*.5,w=L*.07+.5,tx=x+Math.sin(a+bend)*L,ty=y-Math.cos(a+bend)*L,mx=x+s*L*.55,my=y-co*L*.55;
-      c.moveTo(x-co*w,y-s*w);c.quadraticCurveTo(mx-co*w*.6,my-s*w*.6,tx,ty);c.quadraticCurveTo(mx+co*w*.6,my+s*w*.6,x+co*w,y+s*w);}}
-  c.fill();c.lineWidth=1.1;c.beginPath();
-  for(let i=0;i<g.n;i++){if(g.seed[i]||i%3!==q)continue;const k=(i*7919)%10,a=g.a[i];
-    if(k>=4&&k<8){const L=g.len[i]*1.3,bend=(i%5-2)*.08,x=g.x[i]-Math.sin(a)*L*.5,y=g.y[i]+Math.cos(a)*L*.5;
-      c.moveTo(x,y);c.quadraticCurveTo(x+Math.sin(a)*L*.6,y-Math.cos(a)*L*.6,x+Math.sin(a+bend)*L,y-Math.cos(a+bend)*L);}
-    else if(k>=8){const L=g.len[i]*1.1,x=g.x[i],y=g.y[i]+L*.4;
-      for(const o of[-.32,0,.3]){const b=a+o;c.moveTo(x,y);c.quadraticCurveTo(x+Math.sin(b)*L*.5,y-Math.cos(b)*L*.55,x+Math.sin(b*1.15)*L,y-Math.cos(b*1.15)*L);}}}
-  c.stroke();}c.fillStyle=GRASS;c.strokeStyle=GRASS;}c.lineWidth=.9;c.beginPath();
-  for(let i=0;i<g.n;i++){if(!g.seed[i])continue;const L=g.len[i]*1.1,a=g.a[i],x=g.x[i]-Math.sin(a)*L*.5,y=g.y[i]+Math.cos(a)*L*.5,tx=x+Math.sin(a)*L,ty=y-Math.cos(a)*L;
-    c.moveTo(x,y);c.lineTo(tx,ty);c.moveTo(tx+2.2,ty);c.ellipse(tx,ty,1.4,2.6,a,0,Math.PI*2);} // a stalk with a seed head
-  c.stroke();c.fill();}
+  c.lineCap="round";meadowDraw(c,g,GRASS,(getComputedStyle(SEC).getPropertyValue('--lf-flowers').trim()||'#F3E7B0,#E8C34A,#6F8FB8,#B8553A').split(',').map(x=>x.trim()));}
 function frame(now){const dt=last?Math.min(.033,(now-last)/1000):.016;last=now;ptr.vx*=.85;ptr.vy*=.85;
   if(ready<15){if(H>=GFULL-2){for(let k=0;k<6;k++)fluid(grass,1/120,0);ready++;if(ready===15)SEC.classList.add('grown');}else step(dt,now/1000);}else step(dt,now/1000); // a meadow grown part-way down waits to settle until the opening is full height // six settling steps a frame, then live
   draw();if(!still&&visible&&!SEC.classList.contains('docked'))requestAnimationFrame(frame);else{last=0;running=false;}}

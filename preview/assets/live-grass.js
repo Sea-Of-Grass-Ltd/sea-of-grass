@@ -35,22 +35,33 @@ function meadow(el){
       const v1=Math.hypot(g.vx[i],g.vy[i]),near=ptr.on&&Math.abs(g.x[i]-ptr.x)<PR*2.5&&Math.abs(g.y[i]-ptr.y)<PR*2.5,cap=near?1e9:v0+120;
       if(v1>cap){g.vx[i]*=cap/v1;g.vy[i]*=cap/v1;}else if(v1<90&&g.y[i]>H-160){const k=v1<30?.7:.92;g.vx[i]*=k;g.vy[i]*=k;}}
     for(let i=0;i<n;i++){const v=Math.hypot(g.vx[i],g.vy[i]),want=v>60?Math.atan2(g.vx[i],-g.vy[i]):Math.sin(g.x[i]*.05)*.18,da=((want-g.a[i]+Math.PI*3)%(Math.PI*2))-Math.PI;g.a[i]+=da*Math.min(1,dt*(v>60?14:5));}}
-  const shades=(col)=>{col=col.trim();const hx=/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(col)?(col.length===4?col.slice(1).split('').map(h=>parseInt(h+h,16)):[1,3,5].map(j=>parseInt(col.slice(j,j+2),16))):null;const m=hx||col.match(/\d+(\.\d+)?/g)||[0,0,0],r=+m[0],g2=+m[1],b=+m[2],f=(k)=>k>0?`rgb(${r+(255-r)*k|0},${g2+(255-g2)*k|0},${b+(255-b)*k|0})`:`rgb(${r*(1+k)|0},${g2*(1+k)|0},${b*(1+k)|0})`;return[f(-.16),col,f(.2)];};
+  const meadowGreens=(col)=>{col=col.trim();let r,g2,b;const hx=/^#([0-9a-f]{6})$/i.exec(col);if(hx){r=parseInt(col.slice(1,3),16);g2=parseInt(col.slice(3,5),16);b=parseInt(col.slice(5,7),16);}else{const m=col.match(/\d+(\.\d+)?/g)||[90,120,80];r=+m[0];g2=+m[1];b=+m[2];}
+  r/=255;g2/=255;b/=255;const mx=Math.max(r,g2,b),mn=Math.min(r,g2,b),l=(mx+mn)/2,d=mx-mn;let h=0,s=0;if(d){s=d/(1-Math.abs(2*l-1));h=mx===r?((g2-b)/d)%6:mx===g2?(b-r)/d+2:(r-g2)/d+4;h*=60;if(h<0)h+=360;}
+  // like Primavera's meadow: the same grass in several greens, shifted in hue as well as light (olive, sap, deep, cool)
+  return[[0,0,0],[-14,.05,-.12],[16,-.08,.08],[-6,.1,-.2],[28,-.12,.02],[8,0,.14]].map(([dh,ds,dl])=>`hsl(${(h+dh+360)%360} ${Math.max(0,Math.min(100,(s+ds)*100))}% ${Math.max(4,Math.min(92,(l+dl)*100))}%)`);};
+const meadowDraw=(c,g,COL,FL)=>{const SHD=meadowGreens(COL),NQ=SHD.length;c.lineCap="round";
+  for(let q=0;q<NQ;q++){c.fillStyle=SHD[q];c.strokeStyle=SHD[q];c.beginPath();
+    for(let i=0;i<g.n;i++){if(g.seed[i]||(i*31)%NQ!==q)continue;const k=(i*7919)%10,a=g.a[i];
+      if(k<4){const L=g.len[i]*1.25,bend=(i%7-3)*.06+a*.35,s=Math.sin(a),co=Math.cos(a),x=g.x[i]-s*L*.5,y=g.y[i]+co*L*.5,w=L*.07+.5,tx=x+Math.sin(a+bend)*L,ty=y-Math.cos(a+bend)*L,mx=x+s*L*.55,my=y-co*L*.55;
+        c.moveTo(x-co*w,y-s*w);c.quadraticCurveTo(mx-co*w*.6,my-s*w*.6,tx,ty);c.quadraticCurveTo(mx+co*w*.6,my+s*w*.6,x+co*w,y+s*w);}}
+    c.fill();c.lineWidth=1.1;c.beginPath();
+    for(let i=0;i<g.n;i++){if((i*31)%NQ!==q)continue;const k=(i*7919)%10,a=g.a[i];
+      if(g.seed[i]){const L=g.len[i]*1.1,x=g.x[i]-Math.sin(a)*L*.5,y=g.y[i]+Math.cos(a)*L*.5;c.moveTo(x,y);c.lineTo(x+Math.sin(a)*L,y-Math.cos(a)*L);} // the flower's stalk
+      else if(k>=4&&k<8){const L=g.len[i]*1.3,bend=(i%5-2)*.08,x=g.x[i]-Math.sin(a)*L*.5,y=g.y[i]+Math.cos(a)*L*.5;
+        c.moveTo(x,y);c.quadraticCurveTo(x+Math.sin(a)*L*.6,y-Math.cos(a)*L*.6,x+Math.sin(a+bend)*L,y-Math.cos(a+bend)*L);}
+      else if(k>=8){const L=g.len[i]*1.1,x=g.x[i],y=g.y[i]+L*.4;
+        for(const o of[-.32,0,.3]){const b=a+o;c.moveTo(x,y);c.quadraticCurveTo(x+Math.sin(b)*L*.5,y-Math.cos(b)*L*.55,x+Math.sin(b*1.15)*L,y-Math.cos(b*1.15)*L);}}}
+    c.stroke();}
+  // small flowers speckled through it: daisies, cornflowers and little five-petal blooms, in the style's own flower colours
+  const NF=FL.length;for(let f=0;f<NF;f++){c.fillStyle=FL[f];c.beginPath();
+    for(let i=0;i<g.n;i++){if(!g.seed[i]||i%NF!==f)continue;const L=g.len[i]*1.1,a=g.a[i],cx=g.x[i]-Math.sin(a)*L*.5+Math.sin(a)*L,cy=g.y[i]+Math.cos(a)*L*.5-Math.cos(a)*L,
+      P=(i%3===0)?8:5,R=g.d0*(P===8?.36:.3),pr=R*(P===8?.28:.42),rot=i*.7;
+      for(let p=0;p<P;p++){const t=rot+p*Math.PI*2/P,px=cx+Math.cos(t)*R*.55,py=cy+Math.sin(t)*R*.55;c.moveTo(px+R*.55,py);c.ellipse(px,py,R*.55,pr,t,0,Math.PI*2);}}
+    c.fill();}
+  c.fillStyle="rgba(250,236,170,.95)";c.beginPath();for(let i=0;i<g.n;i++){if(!g.seed[i])continue;const L=g.len[i]*1.1,a=g.a[i],cx=g.x[i]+Math.sin(a)*L*.5,cy=g.y[i]-Math.cos(a)*L*.5;c.moveTo(cx+1,cy);c.arc(cx,cy,g.d0*.09,0,Math.PI*2);}c.fill();};
+const shades=(col)=>{col=col.trim();const hx=/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(col)?(col.length===4?col.slice(1).split('').map(h=>parseInt(h+h,16)):[1,3,5].map(j=>parseInt(col.slice(j,j+2),16))):null;const m=hx||col.match(/\d+(\.\d+)?/g)||[0,0,0],r=+m[0],g2=+m[1],b=+m[2],f=(k)=>k>0?`rgb(${r+(255-r)*k|0},${g2+(255-g2)*k|0},${b+(255-b)*k|0})`:`rgb(${r*(1+k)|0},${g2*(1+k)|0},${b*(1+k)|0})`;return[f(-.16),col,f(.2)];};
 function draw(){c.setTransform(DPR,0,0,DPR,0,0);c.clearRect(0,0,W,H);if(ready<15)return;c.fillStyle=COL;c.strokeStyle=COL;c.lineCap="round";c.beginPath();
-  {const SHD=shades(COL);for(let q=0;q<3;q++){c.fillStyle=SHD[q];c.strokeStyle=SHD[q];c.beginPath();
-  for(let i=0;i<g.n;i++){if(g.seed[i]||i%3!==q)continue;const k=(i*7919)%10,a=g.a[i];
-    if(k<4){const L=g.len[i]*1.25,bend=(i%7-3)*.06+a*.35,s=Math.sin(a),co=Math.cos(a),x=g.x[i]-s*L*.5,y=g.y[i]+co*L*.5,w=L*.07+.5,tx=x+Math.sin(a+bend)*L,ty=y-Math.cos(a+bend)*L,mx=x+s*L*.55,my=y-co*L*.55;
-      c.moveTo(x-co*w,y-s*w);c.quadraticCurveTo(mx-co*w*.6,my-s*w*.6,tx,ty);c.quadraticCurveTo(mx+co*w*.6,my+s*w*.6,x+co*w,y+s*w);}}
-  c.fill();c.lineWidth=1.1;c.beginPath();
-  for(let i=0;i<g.n;i++){if(g.seed[i]||i%3!==q)continue;const k=(i*7919)%10,a=g.a[i];
-    if(k>=4&&k<8){const L=g.len[i]*1.3,bend=(i%5-2)*.08,x=g.x[i]-Math.sin(a)*L*.5,y=g.y[i]+Math.cos(a)*L*.5;
-      c.moveTo(x,y);c.quadraticCurveTo(x+Math.sin(a)*L*.6,y-Math.cos(a)*L*.6,x+Math.sin(a+bend)*L,y-Math.cos(a+bend)*L);}
-    else if(k>=8){const L=g.len[i]*1.1,x=g.x[i],y=g.y[i]+L*.4;
-      for(const o of[-.32,0,.3]){const b=a+o;c.moveTo(x,y);c.quadraticCurveTo(x+Math.sin(b)*L*.5,y-Math.cos(b)*L*.55,x+Math.sin(b*1.15)*L,y-Math.cos(b*1.15)*L);}}}
-  c.stroke();}c.fillStyle=COL;c.strokeStyle=COL;}c.lineWidth=.9;c.beginPath();
-    for(let i=0;i<g.n;i++){if(!g.seed[i])continue;const L=g.len[i]*1.1,a=g.a[i],x=g.x[i]-Math.sin(a)*L*.5,y=g.y[i]+Math.cos(a)*L*.5,tx=x+Math.sin(a)*L,ty=y-Math.cos(a)*L;
-      c.moveTo(x,y);c.lineTo(tx,ty);c.moveTo(tx+2.2,ty);c.ellipse(tx,ty,1.4,2.6,a,0,Math.PI*2);}
-    c.stroke();c.fill();}
+  meadowDraw(c,g,COL,(getComputedStyle(el).getPropertyValue('--lf-flowers').trim()||'#F3E7B0,#E8C34A,#6F8FB8,#B8553A').split(',').map(x=>x.trim()));}
   function frame(now){const dt=last?Math.min(.033,(now-last)/1000):.016;last=now;ptr.vx*=.85;ptr.vy*=.85;
     if(ready<15){for(let k=0;k<6;k++)fluid(1/120);ready++;}else{const sub=Math.min(4,Math.max(1,Math.round(dt*120)));for(let k=0;k<sub;k++)fluid(1/120);}
     draw();if(vis)requestAnimationFrame(frame);else{running=false;last=0;}}
