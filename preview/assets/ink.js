@@ -4,7 +4,7 @@
    on a slow curling current (smoke), its edge creeps outward (ripple), it fades, and the
    pointer's path since the last frame is stamped on again, so a fast stroke leaves no gaps.
    Shown as: a black core, a chain of beads at its edge, a bright grainy halo past that.
-   Hover leaves a thin wisp; press, drag or hold to pour. Dew only; off under reduced motion. */
+   Nothing on hover: press, drag or hold to pour. Dew only; off under reduced motion. */
 (function(){
 const SEC=document.getElementById('opening'),base=document.getElementById('lf-cv');
 if(!SEC||!base||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
@@ -120,7 +120,7 @@ function push(a,b,rad,str){segs.push([a[0],a[1],b[0],b[1],rad,str]);if(segs.leng
 // over the grass the pointer is busy pushing blades: no ink there
 const inGrass=e=>{const r=SEC.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,f=Math.min(NL-1,Math.max(0,x*(NL-1))),k=Math.floor(f),L=LINE[k]+(LINE[Math.min(NL-1,k+1)]-LINE[k])*(f-k);return L>-1&&(e.clientY-r.top)>(1-L)*H-6;};   // below the resting meadow's top edge
 SEC.addEventListener('pointermove',e=>{if(!active)return;const p=toUV(e);if(inGrass(e)){if(ptr)push(ptr,p,30/H,-1);ptr=p;inG=true;return;}if(inG){inG=false;ptr=p;return;}
-  if(ptr){const big=down;push(ptr,p,big?14/H:3.2/H,big?1:.42);}ptr=p;});
+  if(ptr&&down)push(ptr,p,14/H,1);ptr=p;});
 SEC.addEventListener('pointerdown',e=>{if(!active||ui(e))return;if(inGrass(e)){down=false;return;}const p=toUV(e);ptr=p;down=true;downAt=performance.now();push(p,p,24/H,1);});
 addEventListener('pointerup',()=>{down=false;});addEventListener('pointercancel',()=>{down=false;ptr=null;});
 SEC.addEventListener('pointerleave',()=>{ptr=null;down=false;});
