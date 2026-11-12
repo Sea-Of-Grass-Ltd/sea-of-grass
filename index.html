@@ -1255,7 +1255,11 @@ html[data-theme="neu"]:not([data-scheme]) main.cb .lf-range{transform:translateY
 
 /* Clay's engraving: a Front Range border in the Arts and Crafts manner (aspens, magpie, columbines, pasque flowers, yucca, ponderosa, grama, a meadowlark, Longs Peak in a wreath), one Nano Banana image keyed to cream ink, laid faintly into the printed ground around an open middle. It replaces the range and clouds for now. */
 main.cb .lf-engraving{display:none}
-html[data-theme="neu"]:not([data-scheme]) main.cb .lf-engraving{display:block;position:absolute;inset:0;z-index:0;pointer-events:none;background:url(/preview/assets/grounds/front-range-engraving.webp) center/cover no-repeat;opacity:.3}
+html[data-theme="neu"]:not([data-scheme]) main.cb .lf-engraving{display:block;position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:rgba(8,4,0,.36);mix-blend-mode:multiply;filter:blur(.9px);   /* tone on tone: the engraving darkens the ground like a second print, after Hungry Tiger's */
+  -webkit-mask:url(/preview/assets/grounds/front-range-engraving.webp) center/cover no-repeat,linear-gradient(#000 0 42%,transparent 66%);-webkit-mask-composite:source-in;
+  mask:url(/preview/assets/grounds/front-range-engraving.webp) center/cover no-repeat,linear-gradient(#000 0 42%,transparent 66%);mask-composite:intersect}   /* and it fades out well above the grass, so moving the grass never uncovers it */
+html[data-theme="neu"]:not([data-scheme]) main.cb .lf-engraving::after{content:"";position:fixed;inset:0;background:url(/preview/assets/grounds/grain.png) 0 0/256px repeat;mix-blend-mode:overlay;opacity:.5}
 html[data-theme="neu"]:not([data-scheme]) main.cb :is(.lf-range,.lf-clouds){display:none}
 </style>
 <script>
