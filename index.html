@@ -1073,7 +1073,12 @@ html[data-theme="brutal"]:not([data-scheme]) body main.cb{--cb-light:#D9D9D9;--c
 html[data-theme="brutal"]:not([data-scheme]) .lf{--lf-ground:#FBB833;--lf-ink:#1F1F1F;--lf-mark:#1F1F1F;--lf-grass:#1F1F1F}
 html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-p{border-width:4px}
 html[data-theme="brutal"]:not([data-scheme]) body main.cb :is(.cb-feature .cb-tile,.cb-index a img,.cb-pimg){border:4px solid #1F1F1F;border-radius:0}
-html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-h{letter-spacing:-.03em}
+html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-h{letter-spacing:-.02em;font-size:clamp(34px,5.6vw,92px);line-height:.95}
+/* Ember's Syne grows wider as it gets bolder: at 800 it runs about 1.6x the width of the other styles' faces, so its big type is set smaller to keep the same footprint */
+html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-steps li b{font-size:clamp(26px,3.1vw,50px);letter-spacing:-.02em;line-height:1}
+html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-steps ol{gap:clamp(18px,3vw,44px)}
+html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-close h2{font-size:clamp(28px,3.4vw,54px);letter-spacing:-.02em}
+html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-reach a{font-size:clamp(20px,1.9vw,30px)}
 @media (max-width:760px){html[data-theme="brutal"]:not([data-scheme]) body main.cb :is(.cb-close h2,.cb-reach a){font-size:clamp(24px,7.4vw,34px);overflow-wrap:anywhere}html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-close>div{min-width:0;max-width:100%}html[data-theme="brutal"]:not([data-scheme]) body main.cb :is(.cb-feature b,.cb-index b){font-size:clamp(20px,6vw,26px);overflow-wrap:anywhere}}
 html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-close a.cb-book{background:#1F1F1F;color:#FBB833;border-color:#1F1F1F;box-shadow:6px 6px 0 #fff}
 html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-people i{background:#FBB833;border-width:4px;border-radius:0}
