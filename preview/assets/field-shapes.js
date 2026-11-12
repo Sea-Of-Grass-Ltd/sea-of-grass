@@ -1,7 +1,7 @@
 /* Field shapes: what each style's "grass" is made of. The same grains, the same physics and the same harmonies (meadow,
    grid, S, visualizer, the falling close); only the piece changes. Dew keeps its blades (drawn by the page's own meadowDraw).
-   Ledger: circles, a halftone of dots and rings with the red as its flowers. Ember: Y2K shapes with black outlines
-   (sparkles, stars, daisies, pills, hearts). Clay: houseplant leaves, sprouts and seed pods. Dusk: moons, twinkles and dots.
+   Ledger: circles, a halftone of dots and rings with the red as its flowers. Ember: Colorado wildflowers as flat poster
+   cutouts (columbine, paintbrush, blanket flower, flax). Clay: houseplant leaves, sprouts and seed pods. Dusk: a silver bead field.
    window.sogShapes.kind() names the current style's piece ('grass' means: use the blades). */
 (()=>{
 const KIND={simple:'circles',brutal:'y2k',neu:'pebbles',dusk:'stars'};
@@ -13,20 +13,36 @@ function tone(col,k){const [r,g,b]=rgb(col);return k>0?`rgb(${r+(255-r)*k|0},${g
 function batch(c,g,cols,pick,shape,fill,stroke,lw){const N=cols.length;
   for(let q=0;q<N;q++){c.beginPath();let any=false;for(let i=0;i<g.n;i++){if(pick(i)!==q)continue;shape(c,g,i);any=true;}
     if(!any)continue;if(fill){c.fillStyle=cols[q];c.fill();}if(stroke){c.lineWidth=lw;c.strokeStyle=stroke===true?cols[q]:stroke;c.stroke();}}}
-function circles(c,g,COL,FL){const d=g.d0,red=FL[0]||'#DB3334';
-  // dots of three sizes and open rings in ink; the flowers are red dots
-  batch(c,g,[COL,tone(COL,.35)],i=>g.seed[i]||hsh(i)<.22?-1:(hsh(i+7)<.3?1:0),(c,g,i)=>{const r=d*(.22+.42*hsh(i+3));c.moveTo(g.x[i]+r,g.y[i]);c.arc(g.x[i],g.y[i],r,0,6.2832);},true,false);
-  batch(c,g,[COL],i=>!g.seed[i]&&hsh(i)<.22?0:-1,(c,g,i)=>{const r=d*(.45+.4*hsh(i+5));c.moveTo(g.x[i]+r,g.y[i]);c.arc(g.x[i],g.y[i],r,0,6.2832);},false,true,1.4);
-  batch(c,g,[red],i=>g.seed[i]?0:-1,(c,g,i)=>{const r=d*.55;c.moveTo(g.x[i]+r,g.y[i]);c.arc(g.x[i],g.y[i],r,0,6.2832);},true,false);}
-function y2k(c,g,COL,FL){const d=g.d0*.95,P=[...FL,COL].filter(Boolean);
-  const S=[(c,x,y,a,s)=>{for(let k=0;k<8;k++){const t=a+k*Math.PI/4,r=k%2?s*.28:s;k?c.lineTo(x+Math.cos(t)*r,y+Math.sin(t)*r):c.moveTo(x+Math.cos(t)*r,y+Math.sin(t)*r);}c.closePath();},   // sparkle
-    (c,x,y,a,s)=>{for(let k=0;k<10;k++){const t=a+k*Math.PI/5,r=k%2?s*.45:s;k?c.lineTo(x+Math.cos(t)*r,y+Math.sin(t)*r):c.moveTo(x+Math.cos(t)*r,y+Math.sin(t)*r);}c.closePath();},   // star
-    (c,x,y,a,s)=>{for(let k=0;k<6;k++){const t=a+k*Math.PI/3;c.moveTo(x+Math.cos(t)*s*.55+s*.42,y+Math.sin(t)*s*.55);c.arc(x+Math.cos(t)*s*.55,y+Math.sin(t)*s*.55,s*.42,0,6.2832);}},   // daisy
-    (c,x,y,a,s)=>{const ca=Math.cos(a),sa=Math.sin(a),L=s*.9,R=s*.4;c.moveTo(x+ca*L+(-sa)*R,y+sa*L+ca*R);c.arc(x+ca*L,y+sa*L,R,a+Math.PI/2,a-Math.PI/2,true);c.arc(x-ca*L,y-sa*L,R,a-Math.PI/2,a+Math.PI/2,true);c.closePath();},   // pill
-    (c,x,y,a,s)=>{c.moveTo(x,y+s*.8);c.bezierCurveTo(x-s*1.4,y-s*.1,x-s*.6,y-s*1.1,x,y-s*.35);c.bezierCurveTo(x+s*.6,y-s*1.1,x+s*1.4,y-s*.1,x,y+s*.8);}];   // heart
-  const pick=i=>Math.floor(hsh(i+11)*P.length),shape=(c,g,i)=>S[Math.floor(hsh(i)*S.length)](c,g.x[i],g.y[i],g.a[i]+hsh(i+2)*6.28,d*(.42+.22*hsh(i+9)));
-  batch(c,g,P,pick,shape,true,'#000',1.1);
-  c.fillStyle='#000';c.beginPath();for(let i=0;i<g.n;i++){if(Math.floor(hsh(i)*S.length)!==2)continue;const r=d*.22;c.moveTo(g.x[i]+r,g.y[i]);c.arc(g.x[i],g.y[i],r,0,6.2832);}c.fill();}   // daisy hearts
+function circles(c,g,COL,FL){ // Ledger (Refero: The New Yorker + V–A–C): an annotated index in ink. Open rings, hairline rules and dashes, a few small arrows; red rubric dots as its flowers
+  const d=g.d0,INK=COL,red=FL[0]||'#DB3334',k=i=>g.seed[i]?4:Math.floor(hsh(i+3)*10);   // 0-3 rings, 4 red, 5-6 rules, 7 dashes, 8 arrows, 9 small dots
+  batch(c,g,[INK],i=>k(i)<4?0:-1,(c,g,i)=>{const r=d*(.3+.3*hsh(i+5));c.moveTo(g.x[i]+r,g.y[i]);c.arc(g.x[i],g.y[i],r,0,6.2832);},false,true,1.15);
+  batch(c,g,[INK],i=>k(i)===5||k(i)===6?0:-1,(c,g,i)=>{const L=d*(.5+.5*hsh(i+6)),v=hsh(i+9)<.35;v?(c.moveTo(g.x[i],g.y[i]-L),c.lineTo(g.x[i],g.y[i]+L)):(c.moveTo(g.x[i]-L,g.y[i]),c.lineTo(g.x[i]+L,g.y[i]));},false,true,1.15);
+  batch(c,g,[INK],i=>k(i)===7?0:-1,(c,g,i)=>{const L=d*.32;c.moveTo(g.x[i]-L*2.2,g.y[i]);c.lineTo(g.x[i]-L*.6,g.y[i]);c.moveTo(g.x[i]+L*.6,g.y[i]);c.lineTo(g.x[i]+L*2.2,g.y[i]);},false,true,1.15);
+  batch(c,g,[INK],i=>k(i)===8?0:-1,(c,g,i)=>{const L=d*.7,a=hsh(i+2)<.5?0:-Math.PI/4,ca=Math.cos(a),sa=Math.sin(a),x=g.x[i],y=g.y[i],tx=x+ca*L,ty=y+sa*L;   // → or ↗
+    c.moveTo(x-ca*L,y-sa*L);c.lineTo(tx,ty);c.moveTo(tx-ca*L*.5+sa*L*.4,ty-sa*L*.5-ca*L*.4);c.lineTo(tx,ty);c.lineTo(tx-ca*L*.5-sa*L*.4,ty-sa*L*.5+ca*L*.4);},false,true,1.15);
+  batch(c,g,[INK],i=>k(i)===9?0:-1,(c,g,i)=>{const r=d*.14;c.moveTo(g.x[i]+r,g.y[i]);c.arc(g.x[i],g.y[i],r,0,6.2832);},true,false);
+  batch(c,g,[red],i=>k(i)===4?0:-1,(c,g,i)=>{const r=d*.36;c.moveTo(g.x[i]+r,g.y[i]);c.arc(g.x[i],g.y[i],r,0,6.2832);},true,false);}
+function y2k(c,g,COL,FL){ // Ember: Colorado wildflowers as flat poster cutouts (Refero: THE1's hard-edged flat colour, no outlines or shine). Columbine, Indian paintbrush, blanket flower, flax, among green leaves
+  const d=g.d0,GR=['#027B49','#1E5E3A'],CO='#FA4D43',PK='#F19EC8',WH='#FFFFFF',YE='#FBB833',DK='#1F1F1F',P=Math.PI;
+  const kind=i=>g.seed[i]||hsh(i+31)<.3?1+Math.floor(hsh(i+13)*4):0;   // 0 leaf, 1 columbine, 2 paintbrush, 3 blanket flower, 4 flax
+  const leaf=(c,x,y,a,L,w)=>{const s=Math.sin(a),co=Math.cos(a),tx=x+s*L,ty=y-co*L;c.moveTo(x-co*w,y-s*w);c.lineTo(tx,ty);c.lineTo(x+co*w,y+s*w);c.closePath();};
+  batch(c,g,GR,i=>kind(i)===0?Math.floor(hsh(i+1)*2):-1,(c,g,i)=>{const L=d*(1.3+.6*hsh(i+4)),a=g.a[i];leaf(c,g.x[i]-Math.sin(a)*L*.45,g.y[i]+Math.cos(a)*L*.45,a+(hsh(i+5)-.5)*.4,L,L*.16);},true,false);
+  const R=i=>d*(.55+.25*hsh(i+9));
+  const star=(c,x,y,a,n,r1,r2)=>{for(let k=0;k<n*2;k++){const t=a+k*P/n,r=k%2?r2:r1;k?c.lineTo(x+Math.cos(t)*r,y+Math.sin(t)*r):c.moveTo(x+Math.cos(t)*r,y+Math.sin(t)*r);}c.closePath();};
+  // columbine: five long pointed sepals, five round petals, a gold eye
+  batch(c,g,[PK,CO,WH],i=>kind(i)===1?i%3:-1,(c,g,i)=>star(c,g.x[i],g.y[i],g.a[i]-P/2,5,R(i),R(i)*.28),true,false);
+  batch(c,g,[WH,YE],i=>kind(i)===1?(i%3===2?1:0):-1,(c,g,i)=>{const r=R(i)*.34;for(let k=0;k<5;k++){const t=g.a[i]-P/2+P/5+k*2*P/5,x=g.x[i]+Math.cos(t)*r*.8,y=g.y[i]+Math.sin(t)*r*.8;c.moveTo(x+r*.62,y);c.arc(x,y,r*.62,0,6.2832);}},true,false);
+  batch(c,g,[YE],i=>kind(i)===1?0:-1,(c,g,i)=>{const r=R(i)*.2;c.moveTo(g.x[i]+r,g.y[i]);c.arc(g.x[i],g.y[i],r,0,6.2832);},true,false);
+  // Indian paintbrush: an upright spike of pointed coral bracts
+  batch(c,g,[CO],i=>kind(i)===2?0:-1,(c,g,i)=>{const r=R(i),a=g.a[i],s=Math.sin(a),co=Math.cos(a);for(let k=0;k<3;k++){const bx=g.x[i]+s*r*(k*.55-.4),by=g.y[i]-co*r*(k*.55-.4),w=r*(.55-k*.13);
+    c.moveTo(bx-co*w,by-s*w);c.lineTo(bx+s*r*.7,by-co*r*.7);c.lineTo(bx+co*w,by+s*w);c.lineTo(bx-s*r*.15,by+co*r*.15);c.closePath();}},true,false);
+  // blanket flower: coral rays with gold tips round a dark centre
+  batch(c,g,[YE],i=>kind(i)===3?0:-1,(c,g,i)=>star(c,g.x[i],g.y[i],g.a[i],8,R(i),R(i)*.62),true,false);
+  batch(c,g,[CO],i=>kind(i)===3?0:-1,(c,g,i)=>star(c,g.x[i],g.y[i],g.a[i],8,R(i)*.72,R(i)*.45),true,false);
+  batch(c,g,[DK],i=>kind(i)===3?0:-1,(c,g,i)=>{const r=R(i)*.26;c.moveTo(g.x[i]+r,g.y[i]);c.arc(g.x[i],g.y[i],r,0,6.2832);},true,false);
+  // flax: five round petals
+  batch(c,g,[WH,PK],i=>kind(i)===4?(i%4===0?1:0):-1,(c,g,i)=>{const r=R(i)*.42;for(let k=0;k<5;k++){const t=g.a[i]+k*2*P/5,x=g.x[i]+Math.cos(t)*r,y=g.y[i]+Math.sin(t)*r;c.moveTo(x+r*.75,y);c.arc(x,y,r*.75,0,6.2832);}},true,false);
+  batch(c,g,[YE],i=>kind(i)===4?0:-1,(c,g,i)=>{const r=R(i)*.16;c.moveTo(g.x[i]+r,g.y[i]);c.arc(g.x[i],g.y[i],r,0,6.2832);},true,false);}
 function pebbles(c,g,COL,FL){ // Clay (Refero: Houseplant + Beings): real, tactile, organic. Houseplant leaves with a chocolate midrib, little sprouts, terracotta seed pods and cones; flat fills, no shine
   const d=g.d0,LV=['#A9B89A','#7F8F5C','#5E6E43','#C9C7A0'],INK='#3A2016',POD=['#C8643B','#D9A23A','#E4D6C2'];
   const kindOf=i=>g.seed[i]?2:(hsh(i+21)<.16?1:0);
@@ -40,11 +56,13 @@ function pebbles(c,g,COL,FL){ // Clay (Refero: Houseplant + Beings): real, tacti
   batch(c,g,POD,i=>kindOf(i)===2?i%POD.length:-1,(c,g,i)=>{const x=g.x[i],y=g.y[i],r=d*.42;
     if(i%2){c.moveTo(x-r,y+r*.6);c.quadraticCurveTo(x,y-r*2.2,x+r,y+r*.6);c.quadraticCurveTo(x,y+r*1.1,x-r,y+r*.6);}   // a cone
     else{c.moveTo(x+r,y);c.ellipse(x,y,r,r*.8,g.a[i],0,6.2832);}},true,INK,.8);}   // a seed pod
-function stars(c,g,COL,FL){const d=g.d0,P=[tone(COL,.55),tone(COL,.2),...FL];
-  batch(c,g,P,i=>g.seed[i]?2+(i%Math.max(1,P.length-2)):(hsh(i+8)<.5?0:1),(c,g,i)=>{const x=g.x[i],y=g.y[i],k=hsh(i),s=d*(.3+.35*hsh(i+3));
-    if(k<.3){c.moveTo(x+s,y);c.arc(x,y,s,-.9,3.6);c.arc(x+s*.45,y-s*.2,s*.8,3.3,-.6,true);c.closePath();}   // crescent
-    else if(k<.6){for(let j=0;j<8;j++){const t=g.a[i]+j*Math.PI/4,r=j%2?s*.18:s*1.1;j?c.lineTo(x+Math.cos(t)*r,y+Math.sin(t)*r):c.moveTo(x+Math.cos(t)*r,y+Math.sin(t)*r);}c.closePath();}   // twinkle
-    else{const r=s*.35;c.moveTo(x+r,y);c.arc(x,y,r,0,6.2832);}},true,false);}   // dot
+function stars(c,g,COL,FL){ // Dusk (Refero: Channel Studio + Josephmark): a silver particle sculpture on black. Beads grow and brighten toward the top of the heap and fade into black below; a few coral beads are its flowers, no glows
+  const d=g.d0,coral=FL[0]||'#FF7777';let top=1e9,bot=-1e9;for(let i=0;i<g.n;i++){if(g.y[i]<top)top=g.y[i];if(g.y[i]>bot)bot=g.y[i];}const span=Math.max(1,bot-top);
+  const lvl=i=>{const near=1-(g.y[i]-top)/span,h=hsh(i+3);return Math.min(4,Math.floor((near*.75+h*.35)*5));};   // 0 dim/deep .. 4 bright/near
+  const TONES=['rgba(114,114,114,.25)','rgba(140,140,140,.45)','rgba(170,170,170,.65)','rgba(202,202,202,.85)','rgba(230,230,230,1)'];
+  batch(c,g,TONES,i=>g.seed[i]?-1:lvl(i),(c,g,i)=>{const r=d*(.12+.07*lvl(i)+.05*hsh(i+5));c.moveTo(g.x[i]+r,g.y[i]);c.arc(g.x[i],g.y[i],r,0,6.2832);},true,false);
+  batch(c,g,[coral],i=>g.seed[i]&&hsh(i+8)<.6?0:-1,(c,g,i)=>{const r=d*.3;c.moveTo(g.x[i]+r,g.y[i]);c.arc(g.x[i],g.y[i],r,0,6.2832);},true,false);}
 const D={circles,y2k,pebbles,stars};
-window.sogShapes={kind,draw(c,g,COL,FL,k){k=k||kind();const f=D[k];if(!f)return false;c.save();c.lineJoin='round';f(c,g,COL,FL||[]);c.restore();return true;}};
+const SCALE={grass:1,circles:1.3,y2k:2.1,pebbles:1.5,stars:1};   // how big each style's piece is, against Dew's blades
+window.sogShapes={kind,scale:()=>SCALE[kind()]||1,draw(c,g,COL,FL,k){k=k||kind();const f=D[k];if(!f)return false;c.save();c.lineJoin='round';f(c,g,COL,FL||[]);c.restore();return true;}};
 })();
