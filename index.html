@@ -1235,6 +1235,9 @@ main.cb .cb-close{position:relative;isolation:isolate;padding-bottom:calc(clamp(
 main.cb .cb-close>*:not(.cb-home){position:relative;z-index:1}
 main.cb .cb-close .cb-home{position:absolute;inset:0;z-index:0;pointer-events:none}
 main.cb .cb-close .cb-home canvas{display:block;width:100%;height:100%}
+
+/* Clay's ground is a sunlit fade, not a flat colour (Refero: Readwise's peach light fields, Until Labs and PamPam's hazy sun): warm cream above, a low apricot sun, sage settling toward the leaves */
+html[data-theme="neu"]:not([data-scheme]) main.cb .lf{background:radial-gradient(70% 55% at 72% 62%,rgba(246,201,161,.85),rgba(246,201,161,0) 70%),linear-gradient(180deg,#F7EFE4 0%,#F2E3D0 46%,#E3D9BE 74%,#C9CDA8 100%)}
 </style>
 <script>
 (function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#120607',glass:'#EEF1F8',neu:'#EFE6D8',brutal:'#FFFDF5',simple:'#F4F1EA',editorial:'#f3f1ea'};
