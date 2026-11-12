@@ -1435,7 +1435,8 @@ function build(){pieces=[];const phone=W<600;
   // ---- the meadow: grass blades and seed heads as grains of a soft fluid, heaped along the bottom quarter
   // always grow the full meadow, sized to the opening at full height, even when the page loads or restyles part-way down (the opening is shrunk then)
   const HF=H;GFULL=HF;   // the opening no longer shrinks, so the meadow is grown at its own height
-  const deep=MODE==='lockup',d0=deep?(phone?8:10):(phone?10:12),band=HF*(deep?(phone?.40:.38):(phone?.27:.25)),cols=Math.floor(W/d0),rows=Math.floor(band/d0),n=cols*rows,r=rnd(7);
+  const deep=MODE==='lockup',d0=(deep?(phone?8:10):(phone?10:12))*(window.sogShapes?sogShapes.scale():1),   // each style's piece has its own size: bigger pieces, fewer of them
+    band=HF*(deep?(phone?.40:.38):(phone?.27:.25)),cols=Math.floor(W/d0),rows=Math.floor(band/d0),n=cols*rows,r=rnd(7);
   grass={n,d0,x:new Float32Array(n),y:new Float32Array(n),vx:new Float32Array(n),vy:new Float32Array(n),a:new Float32Array(n),px:new Float32Array(n),py:new Float32Array(n),len:new Float32Array(n),seed:new Uint8Array(n),
     head:new Int32Array(Math.ceil(W/d0+2)*Math.ceil(H/d0+2)),next:new Int32Array(n),gw:Math.ceil(W/d0+2),N:n};
   for(let i=0;i<n;i++){const cx=i%cols,cy=Math.floor(i/cols);grass.x[i]=(cx+r())*d0;grass.y[i]=H-4-(cy+r())*d0*1.05;
