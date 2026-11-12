@@ -96,9 +96,11 @@ const segs=[];let ptr=null,down=false,downAt=0,lastAct=-1e9,running=false,visibl
 const toUV=e=>{const r=SEC.getBoundingClientRect();return[(e.clientX-r.left)/r.width,1-(e.clientY-r.top)/H];};
 const ui=e=>e.target.closest&&e.target.closest('button,a,input,.fys,.fys-tab');
 function push(a,b,rad,str){segs.push([a[0],a[1],b[0],b[1],rad,str]);if(segs.length>N)segs.shift();lastAct=performance.now();wake();}
-SEC.addEventListener('pointermove',e=>{if(!active)return;const p=toUV(e);
+// over the grass the pointer is busy pushing blades: no ink there
+const inGrass=e=>{const o=window.sogOpening;if(!o||!o.grassNear)return false;const r=SEC.getBoundingClientRect();return o.grassNear(e.clientX-r.left,e.clientY-r.top,26)>5;};   // thick with blades, not a few flying ones
+SEC.addEventListener('pointermove',e=>{if(!active)return;const p=toUV(e);if(inGrass(e)){ptr=null;return;}
   if(ptr){const big=down;push(ptr,p,big?14/H:3.2/H,big?1:.42);}ptr=p;});
-SEC.addEventListener('pointerdown',e=>{if(!active||ui(e))return;const p=toUV(e);ptr=p;down=true;downAt=performance.now();push(p,p,24/H,1);});
+SEC.addEventListener('pointerdown',e=>{if(!active||ui(e))return;if(inGrass(e)){down=false;return;}const p=toUV(e);ptr=p;down=true;downAt=performance.now();push(p,p,24/H,1);});
 addEventListener('pointerup',()=>{down=false;});addEventListener('pointercancel',()=>{down=false;ptr=null;});
 SEC.addEventListener('pointerleave',()=>{ptr=null;down=false;});
 // ---- the loop
