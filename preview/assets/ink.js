@@ -118,7 +118,7 @@ const toUV=e=>{const r=SEC.getBoundingClientRect();return[(e.clientX-r.left)/r.w
 const ui=e=>e.target.closest&&e.target.closest('button,a,input,.fys,.fys-tab');
 function push(a,b,rad,str){segs.push([a[0],a[1],b[0],b[1],rad,str]);if(segs.length>N)segs.shift();lastAct=performance.now();wake();}
 // over the grass the pointer is busy pushing blades: no ink there
-const inGrass=e=>{const o=window.sogOpening;if(!o||!o.grassNear)return false;const r=SEC.getBoundingClientRect();return o.grassNear(e.clientX-r.left,e.clientY-r.top,26)>5;};   // thick with blades, not a few flying ones
+const inGrass=e=>{const r=SEC.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,f=Math.min(NL-1,Math.max(0,x*(NL-1))),k=Math.floor(f),L=LINE[k]+(LINE[Math.min(NL-1,k+1)]-LINE[k])*(f-k);return L>-1&&(e.clientY-r.top)>(1-L)*H-6;};   // below the resting meadow's top edge
 SEC.addEventListener('pointermove',e=>{if(!active)return;const p=toUV(e);if(inGrass(e)){if(ptr)push(ptr,p,30/H,-1);ptr=p;inG=true;return;}if(inG){inG=false;ptr=p;return;}
   if(ptr){const big=down;push(ptr,p,big?14/H:3.2/H,big?1:.42);}ptr=p;});
 SEC.addEventListener('pointerdown',e=>{if(!active||ui(e))return;if(inGrass(e)){down=false;return;}const p=toUV(e);ptr=p;down=true;downAt=performance.now();push(p,p,24/H,1);});
