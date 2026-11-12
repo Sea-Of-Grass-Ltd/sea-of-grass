@@ -1596,13 +1596,26 @@ function markFill(path,key){const m=MFILL;
   else{c.fillStyle=MARKC;c.fill(path);}}
 // ---- the field: the same blades, re-set to another harmony. FIELD names it, FM is how far they've gone (0 meadow .. 1 there)
 let GRECT=null,FIELD='grid',FM=0,FTW=0,FTH=0,fox=null,foy=null,fT=null;const FTS={};
-function gridSegs(){ // nested √3 frame: each √3 rectangle splits across its long side into three √3 rectangles; four levels, each a little lighter
-  const segs=[],top=TOP+18,pad=Math.max(16,W*.03),aw=W-pad*2,ah=H-top-18,R3=Math.sqrt(3);
-  let w,h;if(aw/ah>R3){h=ah;w=h*R3;}else if(aw/ah>1/R3&&aw>ah){w=aw;h=w/R3;}else{w=aw;h=Math.min(ah,w*R3);}
-  const x0=(W-w)/2,y0=top+(ah-h)/2,lay=W>=1000&&w>h;GRECT=lay?{x:x0,y:y0,w:w/3,h}:null;   // on a wide screen the left √3 column is kept clear: the card is laid into it
-  segs.push([x0,y0,x0+w,y0,0],[x0+w,y0,x0+w,y0+h,0],[x0+w,y0+h,x0,y0+h,0],[x0,y0+h,x0,y0,0]);
-  (function cut(x,y,w,h,l){if(l>3)return;if(w>=h){for(const k of[1,2]){const xx=x+w*k/3;segs.push([xx,y,xx,y+h,l]);}for(let k=0;k<3;k++){if(lay&&l===1&&k===0)continue;cut(x+w*k/3,y,w/3,h,l+1);}}
-    else{for(const k of[1,2]){const yy=y+h*k/3;segs.push([x,yy,x+w,yy,l]);}for(let k=0;k<3;k++)cut(x,y+h*k/3,w,h/3,l+1);}})(x0,y0,w,h,1);
+function gridSegs(){ // Websites: the blades draw a browser window in grass (tab bar, address pill, headline, text, a button, a speed ring, image blocks), and a frame that hugs the card laid beside it
+  const segs=[],wide=W>=1000,pad=Math.max(24,W*.04),top=TOP+24,bot=H-(wide?96:80),ah=bot-top;
+  const rr=(x,y,w,h,r,l)=>{r=Math.min(r,w/2,h/2);const C=[[x+w-r,y+r,-Math.PI/2],[x+w-r,y+h-r,0],[x+r,y+h-r,Math.PI/2],[x+r,y+r,Math.PI]];let px=null,py=null;
+    for(const[cx,cy,a0]of C)for(let k=0;k<=3;k++){const t=a0+k*Math.PI/6,qx=cx+Math.cos(t)*r,qy=cy+Math.sin(t)*r;if(px!==null)segs.push([px,py,qx,qy,l]);px=qx;py=qy;}
+    segs.push([px,py,x+w-r,y,l]);};                                                 // a rounded rectangle, corners in three steps
+  const ring=(cx,cy,r,l)=>{const N=14;for(let k=0;k<N;k++){const a=k/N*6.2832,b=(k+1)/N*6.2832;segs.push([cx+Math.cos(a)*r,cy+Math.sin(a)*r,cx+Math.cos(b)*r,cy+Math.sin(b)*r,l]);}};
+  const line=(x1,y1,x2,y2,l)=>segs.push([x1,y1,x2,y2,l]);
+  let bx=pad,bw=W-pad*2;
+  if(wide){const cw=Math.min(ah*.62,W*.34),gap=Math.max(36,W*.035);GRECT={x:pad,y:top,w:cw,h:ah};rr(pad-8,top-8,cw+16,ah+16,30,0);bx=pad+cw+gap;bw=W-pad-bx;}   // the card's frame hugs it
+  else GRECT=null;
+  const bh=Math.min(ah,bw*.78),by=top+(ah-bh)/2,bar=Math.max(34,bh*.1);
+  rr(bx,by,bw,bh,22,0);line(bx,by+bar,bx+bw,by+bar,1);                              // the window and its tab bar
+  for(let k=0;k<3;k++)ring(bx+bar*.62+k*bar*.52,by+bar/2,bar*.16,2);                // three dots
+  rr(bx+bar*2.1,by+bar*.29,bw*.45,bar*.42,bar*.21,2);                               // the address pill
+  const cx=bx+bw*.07,iw=bw*.86,c0=by+bar+(bh-bar)*.13,u=bh/17.5;
+  for(const[yy,f]of[[0,.5],[u*1.5,.36]]){line(cx,c0+yy,cx+iw*f,c0+yy,0);line(cx,c0+yy+5,cx+iw*f,c0+yy+5,0);}   // the headline, two heavy lines
+  for(const[yy,f]of[[u*3.1,.46],[u*3.95,.4],[u*4.8,.3]])line(cx,c0+yy,cx+iw*f,c0+yy,3);   // body text
+  rr(cx,c0+u*5.9,iw*.2,u*1.1,u*.55,1);                                              // the button
+  ring(cx+iw*.84,c0+u*1.9,Math.min(u*1.9,bw*.08),1);                                // the speed ring
+  const iy=by+bh*.66,ih=bh*.26,g3=iw*.035,w3=(iw-g3*2)/3;for(let k=0;k<3;k++)rr(cx+k*(w3+g3),iy,w3,ih,12,2);   // image blocks
   return segs;}
 function markTargets(){ // Brand: the field grows the mark. The S is drawn small off-screen; its edge gets a third of the blades, laid along the outline, and the rest fill it, standing up like a clipped hedge
   const g=grass,n=g.n,wide=W>=1000,hS=Math.min((H-TOP)*(wide?.8:.62),(wide?W*.44:W*.88)/1.357),sc=hS/258.56,wS=350.94*sc,ox=wide?Math.max(24,(W*.5-wS)/2+W*.02):(W-wS)/2,oy=TOP+(H-TOP-hS)/2;   // beside the card on a wide screen, behind it on a narrow one
@@ -1641,12 +1654,13 @@ function fieldTargets(){const g=grass;if(!g)return;if(FTW!==W||FTH!==H){for(cons
   if(!fox||fox.length!==g.n){fox=new Float32Array(g.n);foy=new Float32Array(g.n);}
   if(!FTS[FIELD]){if(FIELD==='viz'){const n=g.n,T={x:new Float32Array(n),y:new Float32Array(n),a:new Float32Array(n),dl:new Float32Array(n)};for(let i=0;i<n;i++)T.dl[i]=((i*7919)%1000)/1000;vizTargets(T,0);FTS.viz=T;}
   else FTS[FIELD]=FIELD==='mark'?markTargets():gridTargets();}fT=FTS[FIELD];}
-function gridTargets(){const g=grass;const n=g.n,segs=gridSegs(),WT=[2.4,1.7,1.15,.75,.5];   // bigger levels get more blades: heavier lines
+function gridTargets(){const g=grass;const n=g.n,segs=gridSegs(),WT=[2.2,1.6,1.1,.8,.5];   // bigger levels get more blades: heavier lines
   let tot=0;for(const q of segs){q.push(Math.hypot(q[2]-q[0],q[3]-q[1])*WT[q[4]]);tot+=q[5];}
   const fT={x:new Float32Array(n),y:new Float32Array(n),a:new Float32Array(n),dl:new Float32Array(n)};
   let si=0,acc=0;const order=new Uint32Array(n);for(let i=0;i<n;i++)order[i]=i;for(let i=n-1;i>0;i--){const j=(i*2654435761>>>0)%(i+1);const t=order[i];order[i]=order[j];order[j]=t;}
   for(let k=0;k<n;k++){const u=(k+.5)/n*tot;while(si<segs.length-1&&acc+segs[si][5]<u){acc+=segs[si][5];si++;}const q=segs[si],f=Math.min(1,(u-acc)/q[5]),i=order[k];
-    fT.x[i]=q[0]+(q[2]-q[0])*f;fT.y[i]=q[1]+(q[3]-q[1])*f;fT.a[i]=Math.abs(q[2]-q[0])>Math.abs(q[3]-q[1])?Math.PI/2:0;fT.dl[i]=((i*7919)%1000)/1000;}
+    const dx=q[2]-q[0],dy=q[3]-q[1],L=Math.hypot(dx,dy)||1,an=Math.atan2(dx,-dy),hl=(g.len[i]||g.d0)*.5;   // each blade lies along its stroke, centred on it
+    fT.x[i]=q[0]+dx*f-dx/L*hl;fT.y[i]=q[1]+dy*f-dy/L*hl;fT.a[i]=an;fT.dl[i]=((i*7919)%1000)/1000;}
   return fT;}
 function fieldStep(dt){if(FM<.002||!fT)return;if(FIELD==='viz'){if(ptr.down&&!VZ.held){VZ.trig=1;}VZ.held=ptr.down;vizTargets(fT,dt);}const g=grass,n=g.n,R=Math.max(70,Math.min(W,H)*.14),k=Math.min(1,dt*7);   // the grid bends away from the pointer, and springs back
   for(let i=0;i<n;i++){let tx=0,ty=0;if(ptr.on){const dx=fT.x[i]-ptr.x,dy=fT.y[i]-ptr.y,d2=dx*dx+dy*dy;if(d2<R*R*4){const d=Math.sqrt(d2)||1,f=Math.exp(-d2/(R*R))*R*.45;tx=dx/d*f;ty=dy/d*f;}}
