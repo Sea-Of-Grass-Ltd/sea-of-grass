@@ -1239,6 +1239,9 @@ main.cb .cb-close .cb-home canvas{display:block;width:100%;height:100%}
 
 
 /* Clay's opening: a warm printed brown with cream lettering (Refero: Hungry Tiger's grain stack, Houseplant's cream on chocolate); the live wash and a boiling grain move underneath, the leaves bright on top */
+/* Dusk: a dark stage (Format's burgundy-black) with one warm follow-spot from above; dusk.js moves it with the pointer */
+html[data-theme="dusk"]:not([data-scheme]) main.cb .lf{--lf-ground:#0E0202;--lf-ink:#F4E6D0;--lf-mark:#FF3601;background:radial-gradient(calc(var(--sr,22vw)*1.5) 105% at var(--sx,50%) -6%,rgba(242,190,104,.5),rgba(196,104,40,.2) 46%,rgba(14,2,2,0) 80%),#0E0202}
+html[data-theme="dusk"]:not([data-scheme]) main.cb .lf .lf-title .cb-h{color:#F4E6D0}
 html[data-theme="neu"]:not([data-scheme]) main.cb .lf{--lf-ground:#FFFFFF;--lf-ink:#3D1801;--lf-mark:#3D1801;background:#FFFFFF}
 html[data-theme="neu"]:not([data-scheme]) main.cb .lf .lf-title .cb-h{color:#3D1801}
 
@@ -1422,6 +1425,7 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
 <script src="/preview/assets/field-shapes.js"></script>
 <script src="/preview/assets/ink.js" defer></script>
 <script src="/preview/assets/clay.js" defer></script>
+<script src="/preview/assets/dusk.js" defer></script>
 <script>
 if(/[?&]draft\b/.test(location.search))document.documentElement.classList.add('draft');
 // Book a meeting: goes to the scheduling page once one exists; until then, the contact form set to a meeting

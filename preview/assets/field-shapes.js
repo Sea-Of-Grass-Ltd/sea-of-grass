@@ -1,7 +1,7 @@
 /* Field shapes: what each style's "grass" is made of. The same grains, the same physics and the same harmonies (meadow,
    grid, S, visualizer, the falling close); only the piece changes. Dew keeps its blades (drawn by the page's own meadowDraw).
    Ledger: Swiss rules, black bars on 0/45/90 degrees with red squares and dots and a few grotesk figures. Ember: Colorado wildflowers as flat poster
-   cutouts (columbine, paintbrush, blanket flower, flax). Clay: houseplant leaves, sprouts and seed pods. Dusk: a silver bead field.
+   cutouts (columbine, paintbrush, blanket flower, flax). Clay: houseplant leaves, sprouts and seed pods. Dusk: a wild meadow on a dark stage, lit by one warm spotlight the pointer moves.
    window.sogShapes.kind() names the current style's piece ('grass' means: use the blades). */
 (()=>{
 const KIND={simple:'circles',brutal:'y2k',neu:'pebbles',dusk:'stars'};
@@ -64,13 +64,40 @@ function pebbles(c,g,COL,FL){ // Clay (Refero: Houseplant + Beings): real, tacti
   batch(c,g,POD,i=>kindOf(i)===2?i%POD.length:-1,(c,g,i)=>{const x=g.x[i],y=g.y[i],r=d*.42;
     if(i%2){c.moveTo(x-r,y+r*.6);c.quadraticCurveTo(x,y-r*2.2,x+r,y+r*.6);c.quadraticCurveTo(x,y+r*1.1,x-r,y+r*.6);}   // a cone
     else{c.moveTo(x+r,y);c.ellipse(x,y,r,r*.8,g.a[i],0,6.2832);}},true,INK,.8);}   // a seed pod
-function stars(c,g,COL,FL){ // Dusk (Refero: Channel Studio + Josephmark): a silver particle sculpture on black. Beads grow and brighten toward the top of the heap and fade into black below; a few coral beads are its flowers, no glows
-  const d=g.d0,coral=FL[0]||'#FF7777';let top=1e9,bot=-1e9;for(let i=0;i<g.n;i++){if(g.y[i]<top)top=g.y[i];if(g.y[i]>bot)bot=g.y[i];}const span=Math.max(1,bot-top);
-  const lvl=i=>{const near=1-(g.y[i]-top)/span,h=hsh(i+3);return Math.min(4,Math.floor((near*.75+h*.35)*5));};   // 0 dim/deep .. 4 bright/near
-  const TONES=['rgba(114,114,114,.25)','rgba(140,140,140,.45)','rgba(170,170,170,.65)','rgba(202,202,202,.85)','rgba(230,230,230,1)'];
-  batch(c,g,TONES,i=>g.seed[i]?-1:lvl(i),(c,g,i)=>{const r=d*(.12+.07*lvl(i)+.05*hsh(i+5));c.moveTo(g.x[i]+r,g.y[i]);c.arc(g.x[i],g.y[i],r,0,6.2832);},true,false);
-  batch(c,g,[coral],i=>g.seed[i]&&hsh(i+8)<.6?0:-1,(c,g,i)=>{const r=d*.3;c.moveTo(g.x[i]+r,g.y[i]);c.arc(g.x[i],g.y[i],r,0,6.2832);},true,false);}
+function stars(c,g,COL,FL){ // Dusk (Refero: Format, useformat.ai): a wild meadow on a dark stage under one warm spotlight. Grasses, tall seed stems and umbels,
+  // with a few dark red flowers; whatever stands in the pool of light is lit amber, everything outside it falls to a burgundy-black silhouette. The pointer moves the light (dusk.js)
+  const d=g.d0,S=window.sogSpot||{x:c.canvas.clientWidth*.5,r:c.canvas.clientWidth*.24,k:1},P=Math.PI;
+  const mx=x=>{x=Math.imul(x^x>>>16,0x45d9f3b);x=Math.imul(x^x>>>16,0x45d9f3b);return((x^x>>>16)>>>0)/4294967296;},h=(i,s)=>mx(i*97+s*7919);
+  const lit=i=>{const dx=(g.x[i]-S.x)/S.r;return Math.exp(-dx*dx)*S.k;};
+  const lv=i=>Math.max(0,Math.min(5,Math.floor(lit(i)*5.2+h(i,9)*.8)));          // 0 silhouette .. 5 full light
+  const STEM=['#1C0806','#3A1609','#6A2E10','#A55A1E','#D58E3A','#F2BE68'];
+  const ROSE=['#2A0706','#4E0E0A','#7E1710','#B4251A','#E2402A','#FF6A45'];
+  const k=i=>g.seed[i]&&h(i,1)<.45?9:Math.floor(h(i,2)*9);                                   // 0-5 grass, 6-7 seed stems, 8 umbels, 9 flowers
+  const tip=(i,L,bend)=>{const a=g.a[i]+(h(i,3)-.5)*.5,bx=g.x[i],by=g.y[i]+L*.25,tx=bx+Math.sin(a)*L,ty=by-Math.cos(a)*L,cx=bx+Math.sin(a+bend)*L*.55,cy=by-Math.cos(a+bend)*L*.55;return[bx,by,cx,cy,tx,ty];};
+  c.lineCap='round';
+  for(let q=0;q<6;q++){                                                          // draw dark first, lit last, so the light sits in front
+    c.beginPath();let any=false;
+    for(let i=0;i<g.n;i++){const t=k(i);if(t>5||lv(i)!==q)continue;const L=d*(1.6+1.6*h(i,4)),[bx,by,cx,cy,tx,ty]=tip(i,L,(h(i,5)-.5)*.9),w=d*.12;
+      c.moveTo(bx-w,by);c.quadraticCurveTo(cx-w*.5,cy,tx,ty);c.quadraticCurveTo(cx+w*.5,cy,bx+w,by);any=true;}
+    if(any){c.fillStyle=STEM[q];c.fill();}
+    c.beginPath();any=false;
+    for(let i=0;i<g.n;i++){const t=k(i);if((t!==6&&t!==7&&t!==8)||lv(i)!==q)continue;const L=d*(3+2.2*h(i,6)),[bx,by,cx,cy,tx,ty]=tip(i,L,(h(i,5)-.5)*.5);
+      c.moveTo(bx,by);c.quadraticCurveTo(cx,cy,tx,ty);any=true;}
+    if(any){c.strokeStyle=STEM[q];c.lineWidth=Math.max(1,d*.07);c.stroke();}
+    c.beginPath();any=false;
+    for(let i=0;i<g.n;i++){const t=k(i);if((t!==6&&t!==7&&t!==8)||lv(i)!==q)continue;const L=d*(3+2.2*h(i,6)),[,,,,tx,ty]=tip(i,L,(h(i,5)-.5)*.5),a=g.a[i];
+      if(t===8){for(let m=0;m<6;m++){const u=a-P/2+m*P/5,r=d*.42,x=tx+Math.cos(u)*r,y=ty+Math.sin(u)*r*.6-r*.2,rr=d*.09;c.moveTo(x+rr,y);c.arc(x,y,rr,0,6.2832);}}
+      else{c.moveTo(tx+Math.cos(a)*d*.13,ty+Math.sin(a)*d*.13);c.ellipse(tx,ty,d*.13,d*.42,a,0,6.2832);}any=true;}                 // seed heads and umbels
+    if(any){c.fillStyle=STEM[q];c.fill();}
+    c.beginPath();any=false;
+    for(let i=0;i<g.n;i++){if(k(i)!==9||lv(i)!==q)continue;const L=d*(2.2+1.4*h(i,6)),[bx,by,cx,cy,tx,ty]=tip(i,L,.2);c.moveTo(bx,by);c.quadraticCurveTo(cx,cy,tx,ty);any=true;}
+    if(any){c.strokeStyle=STEM[q];c.lineWidth=Math.max(1,d*.07);c.stroke();}
+    c.beginPath();any=false;
+    for(let i=0;i<g.n;i++){if(k(i)!==9||lv(i)!==q)continue;const L=d*(2.2+1.4*h(i,6)),[,,,,tx,ty]=tip(i,L,.2),r=d*.26;
+      for(let m=0;m<5;m++){const u=g.a[i]+m*2*P/5,x=tx+Math.cos(u)*r,y=ty+Math.sin(u)*r;c.moveTo(x+r*.8,y);c.arc(x,y,r*.8,0,6.2832);}any=true;}
+    if(any){c.fillStyle=ROSE[q];c.fill();}
+  }}
 const D={circles,y2k,pebbles,stars};
-const SCALE={grass:1,circles:1.3,y2k:2.1,pebbles:1.5,stars:1};   // how big each style's piece is, against Dew's blades
+const SCALE={grass:1,circles:1.3,y2k:2.1,pebbles:1.5,stars:1.25};   // how big each style's piece is, against Dew's blades
 window.sogShapes={kind,scale:()=>SCALE[kind()]||1,draw(c,g,COL,FL,k){k=k||kind();const f=D[k];if(!f)return false;c.save();c.lineJoin='round';f(c,g,COL,FL||[]);c.restore();return true;}};
 })();
