@@ -877,18 +877,24 @@ main.cb .cb-ch{position:relative;z-index:3;height:180vh;height:180svh;padding:0 
 main.cb .cb-ch .cb-chp{position:sticky;top:calc(50svh - 260px);width:min(460px,100%);margin-left:max(0px,calc((100vw - 1240px)/2));pointer-events:auto}
 html[data-theme="simple"] main.cb .cb-ch .cb-chp{background:#F4F1EA;border:2px solid #111;padding:clamp(16px,1.6vw,22px)}   /* over the field a card needs a face to read on */
 /* Websites: the card is the plot mown out of the meadow. No mock picture: the meadow round it is the picture; the words are set large across it */
-main.cb .cb-ch .cb-chp.cb-snap{box-sizing:border-box;max-width:none;border-radius:26px;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);grid-template-rows:auto auto auto;align-content:center;column-gap:clamp(28px,5vw,80px);row-gap:10px;padding:clamp(24px,4vw,64px)}
+main.cb .cb-ch .cb-chp.cb-snap{box-sizing:border-box;max-width:none;border-radius:26px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto 1fr auto;column-gap:clamp(24px,3vw,48px);padding:clamp(26px,3.4vw,52px)}
+/* Websites plot card (Refero: Square's and Shuttle's two-plan cards): name and line on top; two equal tiers on one grid, each a small label, a large price with its unit, one plain line; a footer rule with the new-site note and links */
 main.cb .cb-ch .cb-chp.cb-snap .ui{display:none}
-html body main.cb .cb-ch .cb-chp.cb-snap h3{grid-column:1;grid-row:1;font-size:clamp(44px,6.4vw,104px);line-height:.95;margin:0;align-self:end}
-html body main.cb .cb-ch .cb-chp.cb-snap>p:not(.cb-price):not(.cb-more){grid-column:1;grid-row:2;font-size:clamp(18px,1.7vw,26px);margin:0;align-self:start}
-/* the two prices are the offer: set as large as the heading, each with one plain line under it */
-html body main.cb .cb-ch .cb-chp.cb-snap .cb-price{grid-column:2;grid-row:1/3;margin:0;align-self:center;display:grid;gap:clamp(12px,1.6vw,22px)}
-html body main.cb .cb-ch .cb-chp.cb-snap .cb-tier{display:grid;gap:4px;opacity:1}
-html body main.cb .cb-ch .cb-chp.cb-snap .cb-tier b{font-size:clamp(30px,3.7vw,62px);line-height:1;letter-spacing:-.035em;white-space:nowrap}
-html body main.cb .cb-ch .cb-chp.cb-snap .cb-tier>span{font:400 clamp(15px,1.2vw,18px)/1.35 var(--cb-body);opacity:.8}
-html body main.cb .cb-ch .cb-chp.cb-snap .cb-tier-q>span{opacity:.65}
-html body main.cb .cb-ch .cb-chp.cb-snap .cb-more{grid-column:1;grid-row:3;margin:clamp(10px,1.4vw,20px) 0 0;align-self:start}
-@media (max-width:999px){main.cb .cb-ch .cb-chp.cb-snap{display:flex;flex-direction:column;justify-content:center;gap:10px;border-radius:20px;padding:22px}html body main.cb .cb-ch .cb-chp.cb-snap h3{font-size:clamp(34px,10vw,54px)}html body main.cb .cb-ch .cb-chp.cb-snap .cb-tier b{font-size:clamp(30px,9vw,44px)}html body main.cb .cb-ch .cb-chp.cb-snap .cb-price{gap:10px}}
+html body main.cb .cb-ch .cb-chp.cb-snap h3{grid-column:1;grid-row:1;font-size:clamp(34px,3.6vw,58px);line-height:1;margin:0;align-self:start}
+html body main.cb .cb-ch .cb-chp.cb-snap>p:not(.cb-price):not(.cb-more):not(.cb-note){grid-column:1/3;grid-row:2;font-size:clamp(16px,1.3vw,20px);line-height:1.4;margin:6px 0 0;opacity:.8}
+html body main.cb .cb-ch .cb-chp.cb-snap .cb-price{grid-column:1/3;grid-row:3;margin:0;align-self:center;display:grid;grid-template-columns:1fr 1fr;column-gap:clamp(24px,3vw,48px)}
+html body main.cb .cb-ch .cb-chp.cb-snap .cb-tier{display:grid;align-content:start;gap:10px;border-top:1px solid color-mix(in srgb,currentColor 22%,transparent);padding-top:clamp(14px,1.4vw,20px);opacity:1}
+html body main.cb .cb-ch .cb-chp.cb-snap .cb-tier i{font:500 12px/1.2 "IBM Plex Mono",Menlo,monospace;font-style:normal;letter-spacing:.16em;text-transform:uppercase;opacity:.7}
+html body main.cb .cb-ch .cb-chp.cb-snap .cb-amt{display:flex;align-items:baseline;gap:10px;opacity:1}
+html body main.cb .cb-ch .cb-chp.cb-snap .cb-amt b{font-size:clamp(46px,5.2vw,84px);line-height:.9;letter-spacing:-.04em}
+html body main.cb .cb-ch .cb-chp.cb-snap .cb-amt em{font:500 clamp(14px,1.1vw,17px)/1 var(--cb-body);font-style:normal;opacity:.7}
+html body main.cb .cb-ch .cb-chp.cb-snap .cb-tier>span:last-child{font:400 clamp(14px,1.1vw,16px)/1.45 var(--cb-body);opacity:.75;max-width:34ch}
+html body main.cb .cb-ch .cb-chp.cb-snap .cb-note{grid-column:1;grid-row:4;white-space:nowrap;margin:0;align-self:end;font:400 clamp(14px,1.1vw,16px)/1.4 var(--cb-body);opacity:.75}
+html body main.cb .cb-ch .cb-chp.cb-snap .cb-more{grid-column:2;grid-row:4;margin:0;align-self:end;justify-self:end}
+/* Ember: Syne runs about 1.6x wider, so the plot card's big type is set smaller to keep the same footprint */
+html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-ch .cb-chp.cb-snap h3{font-size:clamp(26px,2.6vw,42px);line-height:1.15}
+html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-ch .cb-chp.cb-snap .cb-amt b{font-size:clamp(34px,3.6vw,58px);line-height:1.1;letter-spacing:-.02em}
+@media (max-width:999px){main.cb .cb-ch .cb-chp.cb-snap{display:flex;flex-direction:column;justify-content:center;gap:14px;border-radius:20px;padding:22px}html body main.cb .cb-ch .cb-chp.cb-snap>p:not(.cb-price):not(.cb-more):not(.cb-note){text-align:left;justify-self:start}html body main.cb .cb-ch .cb-chp.cb-snap .cb-price{grid-template-columns:1fr 1fr;column-gap:16px}html body main.cb .cb-ch .cb-chp.cb-snap .cb-amt{flex-direction:column;align-items:flex-start;gap:4px}html body main.cb .cb-ch .cb-chp.cb-snap .cb-amt b{font-size:clamp(36px,11vw,52px)}html body main.cb .cb-ch .cb-chp.cb-snap .cb-tier>span:last-child{display:none}}
 main.cb #brand.cb-ch .cb-chp{margin-left:auto;margin-right:max(0px,calc((100vw - 1240px)/2))}   /* the meadow is the ground: pinned while the titles change over it */
 main.cb .lf-title{position:absolute;inset:0 0 38% 0;display:grid;place-items:center;padding:calc(var(--cb-nav,64px) + 8px) var(--cb-side,24px) 0;pointer-events:none;z-index:2;opacity:0}
 html body main.cb .lf-title .cb-h{text-align:center;color:var(--lf-ink,#fff)}
@@ -1353,7 +1359,7 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
         </a>
         <h3><a href="/preview/services/websites/">Websites</a></h3>
         <p>Fixes, new sites and hosting.</p>
-        <p class="cb-price cb-tiers"><span class="cb-tier"><b>From $250</b><span>Fixes and small jobs</span></span><span class="cb-tier"><b>$50 a month</b><span>Hosting, security and care</span></span><span class="cb-tier cb-tier-q"><span>New sites from $2,000</span></span></p>
+        <p class="cb-price cb-tiers"><span class="cb-tier"><i>Fixes</i><span class="cb-amt"><b>$250</b><em>from, once</em></span><span>Small jobs and repairs on the site you have.</span></span><span class="cb-tier"><i>Care</i><span class="cb-amt"><b>$50</b><em>a month</em></span><span>Hosting, security and small changes, looked after.</span></span></p><p class="cb-note">New sites from $2,000.</p>
         <p class="cb-more"><a href="/preview/services/websites/">Websites and hosting</a><a href="/preview/services/apps/">Apps</a></p>
       </article>
   </div>
@@ -1608,7 +1614,7 @@ function markFill(path,key){const m=MFILL;
 // ---- the field: the same blades, re-set to another harmony. FIELD names it, FM is how far they've gone (0 meadow .. 1 there)
 let GRECT=null,FIELD='grid',FM=0,FTW=0,FTH=0,fox=null,foy=null,fT=null;const FTS={};
 function plotRect(){ // Websites: a site is a plot. The meadow rises to fill the screen and one clean rectangle is mown out of it; the card is set into that plot
-  const wide=W>=1000,bot=H-(wide?92:84),top=TOP+16,pw=wide?Math.min(W*.64,1000):W-36,ph=Math.min(wide?Math.max(300,(bot-top)*.56):360,bot-top-70);
+  const wide=W>=1000,bot=H-(wide?92:84),top=TOP+16,pw=wide?Math.min(W*.64,1000):W-36,ph=Math.min(wide?Math.max(420,(bot-top)*.68):420,bot-top-36);
   GRECT={x:(W-pw)/2,y:top+(bot-top-ph)/2,w:pw,h:ph,r:wide?26:20};return GRECT;}
 function markTargets(){ // Brand: the field grows the mark. The S is drawn small off-screen; its edge gets a third of the blades, laid along the outline, and the rest fill it, standing up like a clipped hedge
   const g=grass,n=g.n,wide=W>=1000,hS=Math.min((H-TOP)*(wide?.8:.62),(wide?W*.44:W*.88)/1.357),sc=hS/258.56,wS=350.94*sc,ox=wide?Math.max(24,(W*.5-wS)/2+W*.02):(W-wS)/2,oy=TOP+(H-TOP-hS)/2;   // beside the card on a wide screen, behind it on a narrow one
