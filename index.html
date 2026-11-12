@@ -1237,7 +1237,7 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
         <p class="cb-more"><a href="/preview/services/brand/">Brand and identity</a><a href="/preview/services/illustration/">Illustration</a></p>
       </article>
   </div>
-  <div class="cb-ch" id="creative-tech" data-field="meadow">
+  <div class="cb-ch" id="creative-tech" data-field="viz">
     <article class="cb-p cb-chp">
         <a class="ui ui-tech" href="/preview/services/live-visuals/" tabindex="-1" aria-hidden="true">
           <span class="pl rack"><span class="kt"><span>Visuals &middot; live</span><span>CH 1</span></span>
@@ -1479,9 +1479,29 @@ function markTargets(){ // Brand: the field grows the mark. The S is drawn small
     else if(fill.length){const f=fill[Math.floor(h*fill.length)];T.x[i]=ox+(f[0]+h2)/k;T.y[i]=oy+(f[1]+((i*13)%7)/7)/k;T.a[i]=(h2-.5)*.5;}
     T.dl[i]=1-(T.y[i]-TOP)/(H-TOP);}   // it grows from the bottom up
   return T;}
+// Creative tech: the blades become a visualizer, after the Live visuals synth's scenes (Spirograph Sludge, Portal Punch,
+// Bouncy Castle). It plays at 120 BPM, its colour cycles, the pointer's height turns the main knob, a press triggers a hit.
+const VZ={t:0,trig:0,k:.5,kT:.5,scene:0};
+function vizTargets(T,dt){const g=grass,n=g.n,wide=W>=1000,cx=wide?W*.72:W*.5,cy=TOP+(H-TOP)*.5,R=Math.min(wide?W*.25:W*.42,(H-TOP)*.42);
+  VZ.t+=dt;VZ.trig*=Math.pow(.02,dt);VZ.k+=(VZ.kT-VZ.k)*Math.min(1,dt*3);
+  const t=VZ.t,beat=Math.exp(-((t*2)%1)*7),hit=VZ.trig,P=Math.PI,SC=3,cyc=t/7,s0=Math.floor(cyc)%SC,s1=(s0+1)%SC,f0=cyc%1,mx=f0<.82?0:(f0-.82)/.18,mm=mx*mx*(3-2*mx);
+  const pet=3+Math.round(VZ.k*6),cols=24,rows=Math.ceil(n/cols);
+  const at=(sc,i,o)=>{const u=i/n;
+    if(sc===0){const th=u*P*2*9,r=R*(.42+.5*Math.abs(Math.cos(pet*.5*th+t*.6)))*(1+beat*.06+hit*.25);o[0]=cx+Math.cos(th+t*.15)*r;o[1]=cy+Math.sin(th+t*.15)*r;o[2]=th+t*.15;}   // a spirograph rose; the knob sets the petals
+    else if(sc===1){const ring=Math.floor(u*7),q=(u*7)%1,gr=((t*.35+ring/7)%1),half=R*(.12+gr*.95)*(1+hit*.3),side=Math.floor(q*4),e=(q*4)%1,ang=t*.2+ring*.08*(VZ.k-.5)*4;   // squares radiating out of the middle
+      const lx=side===0?-half+e*2*half:side===1?half:side===2?half-e*2*half:-half,ly=side===0?-half:side===1?-half+e*2*half:side===2?half:half-e*2*half,ca=Math.cos(ang),sa=Math.sin(ang);
+      o[0]=cx+lx*ca-ly*sa;o[1]=cy+lx*sa+ly*ca;o[2]=(side%2?0:P/2)+ang;}
+    else{const c=i%cols,rw=Math.floor(i/cols),bw=R*2/cols,lv=(.35+.55*Math.abs(Math.sin(c*.55+t*(1.2+VZ.k*2)))*(.6+.4*Math.sin(c*1.7-t*.9)))*(1+beat*.25+hit*.6),hmax=R*1.9*Math.min(1,lv),y=rw/rows*R*1.9;   // bars bouncing to the beat
+      const yy=Math.min(y,hmax);o[0]=cx-R+(c+.5)*bw;o[1]=cy+R*.95-Math.round(yy/(R*.06))*(R*.06);o[2]=P/2;}};   // flat, in steps: a level meter
+  const a=[0,0,0],b=[0,0,0];
+  for(let i=0;i<n;i++){at(s0,i,a);if(mm>0){at(s1,i,b);a[0]+=(b[0]-a[0])*mm;a[1]+=(b[1]-a[1])*mm;let d=b[2]-a[2];d-=Math.round(d/P)*P;a[2]+=d*mm;}T.x[i]=a[0];T.y[i]=a[1];T.a[i]=a[2];}}
+function vizColor(){const h=(VZ.t*24)%360,s=.72,l=.58,k=x=>(x+h/30)%12,f=x=>l-s*Math.min(l,1-l)*Math.max(-1,Math.min(k(x)-3,9-k(x),1));
+  const m=GRASS.match(/^#([0-9a-f]{6})$/i),g0=m?[1,3,5].map(j=>parseInt(GRASS.slice(j,j+2),16)):[90,140,80],mixk=Math.min(1,FM*1.4);
+  return `rgb(${[f(0),f(8),f(4)].map((v,j)=>Math.round(g0[j]+(v*255-g0[j])*mixk)).join(',')})`;}
 function fieldTargets(){const g=grass;if(!g)return;if(FTW!==W||FTH!==H){for(const k in FTS)delete FTS[k];FTW=W;FTH=H;}
   if(!fox||fox.length!==g.n){fox=new Float32Array(g.n);foy=new Float32Array(g.n);}
-  if(!FTS[FIELD])FTS[FIELD]=FIELD==='mark'?markTargets():gridTargets();fT=FTS[FIELD];}
+  if(!FTS[FIELD]){if(FIELD==='viz'){const n=g.n,T={x:new Float32Array(n),y:new Float32Array(n),a:new Float32Array(n),dl:new Float32Array(n)};for(let i=0;i<n;i++)T.dl[i]=((i*7919)%1000)/1000;vizTargets(T,0);FTS.viz=T;}
+  else FTS[FIELD]=FIELD==='mark'?markTargets():gridTargets();}fT=FTS[FIELD];}
 function gridTargets(){const g=grass;const n=g.n,segs=gridSegs(),WT=[2.4,1.7,1.15,.75,.5];   // bigger levels get more blades: heavier lines
   let tot=0;for(const q of segs){q.push(Math.hypot(q[2]-q[0],q[3]-q[1])*WT[q[4]]);tot+=q[5];}
   const fT={x:new Float32Array(n),y:new Float32Array(n),a:new Float32Array(n),dl:new Float32Array(n)};
@@ -1489,7 +1509,7 @@ function gridTargets(){const g=grass;const n=g.n,segs=gridSegs(),WT=[2.4,1.7,1.1
   for(let k=0;k<n;k++){const u=(k+.5)/n*tot;while(si<segs.length-1&&acc+segs[si][5]<u){acc+=segs[si][5];si++;}const q=segs[si],f=Math.min(1,(u-acc)/q[5]),i=order[k];
     fT.x[i]=q[0]+(q[2]-q[0])*f;fT.y[i]=q[1]+(q[3]-q[1])*f;fT.a[i]=Math.abs(q[2]-q[0])>Math.abs(q[3]-q[1])?Math.PI/2:0;fT.dl[i]=((i*7919)%1000)/1000;}
   return fT;}
-function fieldStep(dt){if(FM<.002||!fT)return;const g=grass,n=g.n,R=Math.max(70,Math.min(W,H)*.14),k=Math.min(1,dt*7);   // the grid bends away from the pointer, and springs back
+function fieldStep(dt){if(FM<.002||!fT)return;if(FIELD==='viz'){if(ptr.on)VZ.kT=Math.min(1,Math.max(0,1-(ptr.y-TOP)/(H-TOP)));if(ptr.down&&!VZ.held){VZ.trig=1;}VZ.held=ptr.down;vizTargets(fT,dt);}const g=grass,n=g.n,R=Math.max(70,Math.min(W,H)*.14),k=Math.min(1,dt*7);   // the grid bends away from the pointer, and springs back
   for(let i=0;i<n;i++){let tx=0,ty=0;if(ptr.on){const dx=fT.x[i]-ptr.x,dy=fT.y[i]-ptr.y,d2=dx*dx+dy*dy;if(d2<R*R*4){const d=Math.sqrt(d2)||1,f=Math.exp(-d2/(R*R))*R*.45;tx=dx/d*f;ty=dy/d*f;}}
     fox[i]+=(tx-fox[i])*k;foy[i]+=(ty-foy[i])*k;}}
 function withField(fn){ // draw the blades part-way (or all the way) into the field, each leaving at its own moment
@@ -1508,7 +1528,7 @@ let TITLE=1;function draw(){c.setTransform(DPR,0,0,DPR,0,0);c.clearRect(0,0,W,H)
     else if(p.kind==='rule'){const v=RULE[p.line];if(v>.02){c.globalAlpha=v*TITLE;c.fillRect(-p.w/2,-p.h/2,p.w*v,p.h);}}
     c.restore();}
   const g=grass;if(ready<15)return;c.fillStyle=GRASS;c.strokeStyle=GRASS;c.strokeStyle=GRASS;c.beginPath();
-  c.lineCap="round";withField(()=>meadowDraw(c,g,GRASS,(getComputedStyle(SEC).getPropertyValue('--lf-flowers').trim()||'#F3E7B0,#E8C34A,#6F8FB8,#B8553A').split(',').map(x=>x.trim())));}
+  c.lineCap="round";withField(()=>meadowDraw(c,g,FIELD==='viz'&&FM>.002?vizColor():GRASS,(getComputedStyle(SEC).getPropertyValue('--lf-flowers').trim()||'#F3E7B0,#E8C34A,#6F8FB8,#B8553A').split(',').map(x=>x.trim())));}
 function frame(now){const dt=last?Math.min(.033,(now-last)/1000):.016;last=now;ptr.vx*=.85;ptr.vy*=.85;
   if(ready<15){if(H>=GFULL-2){for(let k=0;k<6;k++)fluid(grass,1/120,0);ready++;if(ready===15)SEC.classList.add('grown');}else step(dt,now/1000);}else step(dt,now/1000); // a meadow grown part-way down waits to settle until the opening is full height // six settling steps a frame, then live
   draw();if(!still&&visible&&!SEC.classList.contains('docked'))requestAnimationFrame(frame);else{last=0;running=false;}}
