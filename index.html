@@ -1390,6 +1390,7 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
   </footer>
 </main>
 
+<script src="/preview/assets/field-shapes.js"></script>
 <script src="/preview/assets/ink.js" defer></script>
 <script>
 if(/[?&]draft\b/.test(location.search))document.documentElement.classList.add('draft');
@@ -1496,6 +1497,7 @@ const meadowGreens=(col)=>{col=col.trim();let r,g2,b;const hx=/^#([0-9a-f]{6})$/
   r/=255;g2/=255;b/=255;const mx=Math.max(r,g2,b),mn=Math.min(r,g2,b),l=(mx+mn)/2,d=mx-mn;let h=0,s=0;if(d){s=d/(1-Math.abs(2*l-1));h=mx===r?((g2-b)/d)%6:mx===g2?(b-r)/d+2:(r-g2)/d+4;h*=60;if(h<0)h+=360;}
   // like Primavera's meadow: the same grass in several greens, shifted in hue as well as light (olive, sap, deep, cool)
   return[[0,0,0],[-14,.05,-.12],[16,-.08,.08],[-6,.1,-.2],[28,-.12,.02],[8,0,.14]].map(([dh,ds,dl])=>`hsl(${(h+dh+360)%360} ${Math.max(0,Math.min(100,(s+ds)*100))}% ${Math.max(4,Math.min(92,(l+dl)*100))}%)`);};
+const pieceDraw=(c,g,COL,FL)=>{if(!(window.sogShapes&&sogShapes.draw(c,g,COL,FL)))meadowDraw(c,g,COL,FL);};   // each style's piece; Dew (and custom schemes) keep the blades
 const meadowDraw=(c,g,COL,FL)=>{const SHD=meadowGreens(COL),NQ=SHD.length;c.lineCap="round";
   for(let q=0;q<NQ;q++){c.fillStyle=SHD[q];c.strokeStyle=SHD[q];c.beginPath();
     for(let i=0;i<g.n;i++){if(g.seed[i]||(i*31)%NQ!==q)continue;const k=(i*7919)%10,a=g.a[i];
@@ -1604,7 +1606,7 @@ let TITLE=1;function draw(){c.setTransform(DPR,0,0,DPR,0,0);if(VZ.trails&&FIELD=
     else if(p.kind==='rule'){const v=RULE[p.line];if(v>.02){c.globalAlpha=v*TITLE;c.fillRect(-p.w/2,-p.h/2,p.w*v,p.h);}}
     c.restore();}
   const g=grass;if(ready<15)return;c.fillStyle=GRASS;c.strokeStyle=GRASS;c.strokeStyle=GRASS;c.beginPath();
-  c.lineCap="round";withField(()=>meadowDraw(c,g,FIELD==='viz'&&FM>.002?vizColor():GRASS,FIELD==='viz'&&FM>.5?[`hsl(${VZ.hue2|0} 80% 66%)`,`hsl(${(VZ.hue2+40)|0} 80% 72%)`]:(getComputedStyle(SEC).getPropertyValue('--lf-flowers').trim()||'#F3E7B0,#E8C34A,#6F8FB8,#B8553A').split(',').map(x=>x.trim())));}
+  c.lineCap="round";withField(()=>pieceDraw(c,g,FIELD==='viz'&&FM>.002?vizColor():GRASS,FIELD==='viz'&&FM>.5?[`hsl(${VZ.hue2|0} 80% 66%)`,`hsl(${(VZ.hue2+40)|0} 80% 72%)`]:(getComputedStyle(SEC).getPropertyValue('--lf-flowers').trim()||'#F3E7B0,#E8C34A,#6F8FB8,#B8553A').split(',').map(x=>x.trim())));}
 function frame(now){const dt=last?Math.min(.033,(now-last)/1000):.016;last=now;ptr.vx*=.85;ptr.vy*=.85;
   if(ready<15){if(H>=GFULL-2){for(let k=0;k<6;k++)fluid(grass,1/120,0);ready++;if(ready===15)SEC.classList.add('grown');}else step(dt,now/1000);}else step(dt,now/1000); // a meadow grown part-way down waits to settle until the opening is full height // six settling steps a frame, then live
   draw();if(!still&&visible&&!SEC.classList.contains('docked'))requestAnimationFrame(frame);else{last=0;running=false;}}
