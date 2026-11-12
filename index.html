@@ -1013,14 +1013,24 @@ html[data-theme="dusk"] main.cb{--cb-thesis:#F1E9DD}
    Ledger← The New Yorker (white paper, black ink, rubric red, literary serif) + V–A–C (hairline rules, an index). No fills, no rounding, red only for marks.
    Ember ← THE1 (concrete grey, poster black, sign yellow, coral, green) + Cards Against Humanity (loud islands, deadpan grotesk). Thick borders, hard shadows.
    Dusk  ← Channel Studio (black stage, silver light grotesk, coral lettering) + Josephmark (light type on black). Dark the whole way down; coral is the only colour. */
-/* --- Dew --- (re-done 11-12: co2.is icy blue and mint with one field blue and deep ink; Deta's open sky. Frosted glass over one continuous sky.) */
-html[data-theme="glass"]:not([data-scheme]){--bg:#E9F6FB;--fg:#0F2A3D;--fg2:#0F2A3D;--soft:#3B5568;--rule:rgba(15,42,61,.16);--violet:#2F7DF6;--accent2:#1F66D8;--on-accent:#fff;--bar:rgba(255,255,255,.5)}
-html[data-theme="glass"]:not([data-scheme]) body{background:radial-gradient(70vw 55vw at 10% 0%,#DFF9FF 0,transparent 70%) fixed,radial-gradient(60vw 50vw at 95% 25%,#CFE4FF 0,transparent 70%) fixed,radial-gradient(80vw 55vw at 35% 100%,#DBFFE7 0,transparent 70%) fixed #E9F6FB!important}
-html[data-theme="glass"]:not([data-scheme]) body main.cb{--cb-light:transparent;--cb-light2:transparent;--cb-headband:transparent;--cb-ink:#0F2A3D;--cb-dark:transparent;--cb-dark-ink:#0F2A3D;--cb-panel:rgba(255,255,255,.45);--cb-panel-ink:#0F2A3D;--cb-panel-edge:rgba(255,255,255,.95);--cb-panel-r:24px;--cb-panel-shadow:0 18px 44px rgba(15,60,90,.12),inset 0 1px 0 #fff;--cb-blur:blur(22px) saturate(1.5);
-  --cb-work:transparent;--cb-tile:rgba(255,255,255,.55);--cb-steps:transparent;--cb-steps-ink:#0F2A3D;--cb-thesis:transparent;--cb-accent:#2F7DF6;--cb-close:#2F7DF6;--cb-close-ink:#fff;--cb-btn-r:999px;--cb-rule:rgba(15,42,61,.22);--cb-hfont:Manrope,Inter,sans-serif;--cb-hw:800;--cb-body:Manrope,Inter,sans-serif}
-html[data-theme="glass"]:not([data-scheme]) .lf{--lf-ground:#E9F6FB;--lf-ink:#0F2A3D;--lf-mark:#0F2A3D;--lf-grass:#5FB3A2}
-html[data-theme="glass"]:not([data-scheme]) body main.cb :is(.cb-steps ol,.cb-who .cb-whogrid,.cb-thesis blockquote){background:rgba(255,255,255,.42);backdrop-filter:blur(22px) saturate(1.5);-webkit-backdrop-filter:blur(22px) saturate(1.5);border:1px solid rgba(255,255,255,.95);border-radius:24px;padding:clamp(22px,3vw,40px);box-shadow:0 18px 44px rgba(15,60,90,.1),inset 0 1px 0 #fff}
-html[data-theme="glass"]:not([data-scheme]) body main.cb .cb-close{border-radius:28px 28px 0 0}
+/* --- Dew --- (third pass, 11-12: led by The Resonance on Refero, "blue-lit instruments". Blue-black canvas, blue light rising at the top and bottom, glass with fine reflective edges, medium headlines, one blue for actions. Keeps the blue Tristan liked; drops the teal and pastels.) */
+html[data-theme="glass"]:not([data-scheme]){--bg:#0A0C11;--fg:#EEF1EA;--fg2:#EEF1EA;--soft:#C7C7C8;--rule:rgba(238,241,234,.1);--violet:#509DFC;--accent2:#6DA7FF;--on-accent:#0A0C11;--bar:#090B0E}
+html[data-theme="glass"]:not([data-scheme]) body{background:#0A0C11!important}
+html[data-theme="glass"]:not([data-scheme]) header.bar{background:#090B0E;border-bottom:1px solid #1D2738}
+html[data-theme="glass"]:not([data-scheme]) body main.cb{--cb-light:#0A0C11;--cb-light2:#0A0C11;--cb-headband:#0A0C11;--cb-ink:#EEF1EA;--cb-dark:#0A0C11;--cb-dark-ink:#C7C7C8;--cb-panel:rgba(255,255,255,.08);--cb-panel-ink:#EEF1EA;--cb-panel-edge:rgba(255,255,255,.11);--cb-panel-r:18px;--cb-panel-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 18px 52px rgba(0,0,0,.3);--cb-blur:blur(14px);
+  --cb-work:#0A0C11;--cb-tile:rgba(238,241,234,.05);--cb-steps:transparent;--cb-steps-ink:#EEF1EA;--cb-thesis:transparent;--cb-accent:#509DFC;--cb-close:linear-gradient(180deg,#0A0C11 0%,#030A1C 21%,#00358A 57%,#0068F0 80%,#4CA3FF 100%);--cb-close-ink:#fff;--cb-btn-r:16px;--cb-rule:rgba(238,241,234,.14);--cb-hfont:Manrope,Inter,sans-serif;--cb-hw:600;--cb-body:Inter,system-ui,sans-serif}
+html[data-theme="glass"]:not([data-scheme]) .lf{--lf-ground:#05070D;--lf-ink:#EEF1EA;--lf-mark:#6DA7FF;--lf-grass:#3E7BE0}
+html[data-theme="glass"]:not([data-scheme]) body main.cb .cb-open{background:linear-gradient(180deg,#0A0C11 0%,#030A1C 55%,#00358A 100%)}
+html[data-theme="glass"]:not([data-scheme]) body main.cb :is(.cb-h,.cb-steps li b){font-weight:500;letter-spacing:-.03em}
+html[data-theme="glass"]:not([data-scheme]) body main.cb .cb-h{background:none}
+html[data-theme="glass"]:not([data-scheme]) body main.cb :is(.cb-p,.cb-steps ol,.cb-who .cb-whogrid,.cb-thesis blockquote){background:linear-gradient(rgba(255,255,255,.13),rgba(255,255,255,.08) 42%,rgba(255,255,255,.035));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.11);border-radius:18px;box-shadow:inset 0 1px 0 rgba(255,255,255,.08),inset 0 -1px 0 rgba(114,132,168,.08),0 18px 52px rgba(0,0,0,.3);padding:clamp(18px,2.6vw,36px)}
+html[data-theme="glass"]:not([data-scheme]) body main.cb .cb-thesis blockquote em{color:#6DA7FF}
+html[data-theme="glass"]:not([data-scheme]) body main.cb .cb-close{border-radius:0}
+html[data-theme="glass"]:not([data-scheme]) body main.cb .cb-close a.cb-book{background:#509DFC;color:#0A0C11;border:0;border-radius:16px;box-shadow:inset 0 0 0 1px #A7CAFF}
+html[data-theme="glass"]:not([data-scheme]) body main.cb .cb-foot{background:#000;border-top:0}
+html[data-theme="glass"]:not([data-scheme]) body main.cb .cb-index li,html[data-theme="glass"]:not([data-scheme]) body main.cb .cb-index{border-color:rgba(238,241,234,.14)}
+html[data-theme="glass"]:not([data-scheme]) body main.cb .cb-people i{border-color:#509DFC;color:#6DA7FF}
+html[data-theme="glass"]:not([data-scheme]) .fys-tab{background:rgba(9,11,14,.85);border:1px solid #1D2738;--fg:#EEF1EA;--bg:#0A0C11}
 /* --- Clay --- */
 html[data-theme="neu"]:not([data-scheme]){--bg:#FFF4EC;--fg:#3D1801;--fg2:#3D1801;--soft:#6B4A36;--rule:rgba(61,24,1,.18);--violet:#3D1801;--accent2:#1B0800;--on-accent:#FFF4EC;--bar:rgba(255,244,236,.92)}
 html[data-theme="neu"]:not([data-scheme]) body main.cb{--cb-light:#FFF4EC;--cb-light2:#FFF4EC;--cb-headband:#FFF4EC;--cb-ink:#3D1801;--cb-dark:#F6C9A1;--cb-dark-ink:#3D1801;--cb-panel:#FFF4EC;--cb-panel-ink:#3D1801;--cb-panel-edge:transparent;--cb-panel-r:44px;--cb-panel-shadow:0 14px 0 rgba(61,24,1,.16),inset 0 2px 0 rgba(255,255,255,.8);--cb-blur:none;
@@ -1065,7 +1075,7 @@ html[data-theme="dusk"]:not([data-scheme]) body main.cb :is(.cb-p h3,.cb-feature
 html[data-theme="dusk"]:not([data-scheme]) body main.cb .cb-band+.cb-band{border-top:1px solid #1E1E21}
 html[data-theme="dusk"]:not([data-scheme]) body main.cb .cb-thesis blockquote{font-family:"Inter Tight",sans-serif;font-weight:200}
 html[data-theme="dusk"]:not([data-scheme]) body main.cb .cb-people i{border-color:#FF7777;color:#FF7777}
-html[data-theme="glass"]:not([data-scheme]) .lf{--lf-face:Manrope,Inter,sans-serif;--lf-t:400;--lf-b:800;--lf-em:500}
+html[data-theme="glass"]:not([data-scheme]) .lf{--lf-face:Manrope,Inter,sans-serif;--lf-t:300;--lf-b:600;--lf-em:400}
 html[data-theme="neu"]:not([data-scheme]) .lf{--lf-face:"Bricolage Grotesque",Inter,sans-serif;--lf-t:500;--lf-b:800;--lf-em:500}
 html[data-theme="simple"]:not([data-scheme]) .lf{--lf-face:"Libre Caslon Display",Georgia,serif;--lf-t:400;--lf-b:400;--lf-em:italic 400}
 html[data-theme="brutal"]:not([data-scheme]) .lf{--lf-face:Syne,"Space Grotesk",sans-serif;--lf-t:700;--lf-b:800;--lf-em:700}
