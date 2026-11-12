@@ -1,0 +1,62 @@
+/* Live grass: the opening's meadow (blades and seed heads that behave like sand) as a running strip at the foot of a section.
+   Any element with data-live-grass gets it. Its colour is the element's CSS color (set it from --grass). The pointer anywhere
+   over the parent section scoops the grass; it pours back and heaps up again. Off screen it sleeps; under reduced motion it
+   settles once and stays still. Replaces the old grass picture (grass-mask.webp): live effects, never screenshots. */
+(()=>{
+const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function rnd(s){return()=>{s=(s*16807)%2147483647;return(s-1)/2147483646;};}
+function meadow(el){
+  const cv=document.createElement('canvas');cv.setAttribute('aria-hidden','true');el.appendChild(cv);
+  const c=cv.getContext('2d'),host=el.parentElement||el;
+  let W=0,H=0,DPR=1,g=null,COL='#888',vis=false,running=false,last=0,ready=0;
+  const ptr={x:-1e4,y:-1e4,vx:0,vy:0,on:false};
+  const colour=()=>{COL=getComputedStyle(el).color||'#888';};
+  function build(){const r=el.getBoundingClientRect();W=Math.max(1,Math.round(r.width));H=Math.max(1,Math.round(r.height));
+    DPR=Math.min(W<600?1.5:2,devicePixelRatio||1);cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);
+    const d0=W<600?9:11,band=H*.55,cols=Math.floor(W/d0),rows=Math.max(1,Math.floor(band/d0)),n=cols*rows,r0=rnd(7);
+    g={n,d0,x:new Float32Array(n),y:new Float32Array(n),vx:new Float32Array(n),vy:new Float32Array(n),a:new Float32Array(n),px:new Float32Array(n),py:new Float32Array(n),
+      len:new Float32Array(n),seed:new Uint8Array(n),gw:Math.ceil(W/d0+2),next:new Int32Array(n)};g.head=new Int32Array(g.gw*Math.ceil(H/d0+2));
+    for(let i=0;i<n;i++){const cx=i%cols,cy=Math.floor(i/cols);g.x[i]=(cx+r0())*d0;g.y[i]=H-4-(cy+r0())*d0*1.05;g.len[i]=d0*(1.1+r0()*.7);g.seed[i]=r0()<.12?1:0;g.a[i]=(r0()-.5)*.3;}
+    ready=0;}
+  function fluid(dt){const n=g.n,d0=g.d0,G=1500,PR=Math.max(70,Math.min(W,H*2.4)*.16),sp=Math.hypot(ptr.vx,ptr.vy);
+    for(let i=0;i<n;i++){g.vy[i]+=G*dt;
+      if(ptr.on){const dx=g.x[i]-ptr.x,dy=g.y[i]-ptr.y,d2=dx*dx+dy*dy;if(d2<PR*PR){const d=Math.sqrt(d2)||1,f=1-d/PR;
+        g.vx[i]+=(ptr.vx-g.vx[i])*f*.35+dx/d*f*90;g.vy[i]+=(ptr.vy-g.vy[i])*f*.35+dy/d*f*90-f*Math.min(sp,2500)*.35;}}
+      g.px[i]=g.x[i];g.py[i]=g.y[i];g.x[i]+=g.vx[i]*dt;g.y[i]+=g.vy[i]*dt;}
+    const gw=g.gw,head=g.head,next=g.next;
+    for(let it=0;it<3;it++){head.fill(-1);
+      for(let i=0;i<n;i++){const cx=Math.max(0,Math.min(gw-1,(g.x[i]/d0|0)+1)),cy=Math.max(0,(g.y[i]/d0|0)+1),h=cy*gw+cx;if(h<head.length){next[i]=head[h];head[h]=i;}else next[i]=-1;}
+      for(let i=0;i<n;i++){const cx=Math.max(0,Math.min(gw-1,(g.x[i]/d0|0)+1)),cy=Math.max(0,(g.y[i]/d0|0)+1);
+        for(let oy=-1;oy<=1;oy++)for(let ox=-1;ox<=1;ox++){const h=(cy+oy)*gw+cx+ox;if(h<0||h>=head.length)continue;
+          for(let j=head[h];j>=0;j=next[j]){if(j<=i)continue;const dx=g.x[j]-g.x[i],dy=g.y[j]-g.y[i],d2=dx*dx+dy*dy;if(d2>=d0*d0)continue;
+            const d=Math.sqrt(d2)||.01,push=(d0-d)*.5/d,ex=d2?dx*push:.3,ey=d2?dy*push:0;g.x[i]-=ex;g.y[i]-=ey;g.x[j]+=ex;g.y[j]+=ey;}}}
+      for(let i=0;i<n;i++){if(g.y[i]>H-3)g.y[i]=H-3;if(g.y[i]<2)g.y[i]=2;if(g.x[i]<2)g.x[i]=2;if(g.x[i]>W-2)g.x[i]=W-2;}}
+    for(let i=0;i<n;i++){const v0=Math.hypot(g.vx[i],g.vy[i]);g.vx[i]=(g.x[i]-g.px[i])/dt*.995;g.vy[i]=(g.y[i]-g.py[i])/dt*.995;if(g.y[i]>=H-3)g.vx[i]*=.85;
+      const v1=Math.hypot(g.vx[i],g.vy[i]),near=ptr.on&&Math.abs(g.x[i]-ptr.x)<PR*2.5&&Math.abs(g.y[i]-ptr.y)<PR*2.5,cap=near?1e9:v0+120;
+      if(v1>cap){g.vx[i]*=cap/v1;g.vy[i]*=cap/v1;}else if(v1<90&&g.y[i]>H*.3){const k=v1<30?.7:.92;g.vx[i]*=k;g.vy[i]*=k;}}
+    for(let i=0;i<n;i++){const v=Math.hypot(g.vx[i],g.vy[i]),want=v>60?Math.atan2(g.vx[i],-g.vy[i]):Math.sin(g.x[i]*.05)*.18,da=((want-g.a[i]+Math.PI*3)%(Math.PI*2))-Math.PI;g.a[i]+=da*Math.min(1,dt*(v>60?14:5));}}
+  function draw(){c.setTransform(DPR,0,0,DPR,0,0);c.clearRect(0,0,W,H);if(ready<15)return;c.fillStyle=COL;c.strokeStyle=COL;c.beginPath();
+    for(let i=0;i<g.n;i++){if(g.seed[i])continue;const L=g.len[i],a=g.a[i],s=Math.sin(a),co=Math.cos(a),x=g.x[i]-s*L*.5,y=g.y[i]+co*L*.5,w=L*.13+.4;
+      c.moveTo(x-co*w,y-s*w);c.lineTo(x+s*L,y-co*L);c.lineTo(x+co*w,y+s*w);}
+    c.fill();c.lineWidth=.9;c.beginPath();
+    for(let i=0;i<g.n;i++){if(!g.seed[i])continue;const L=g.len[i]*1.1,a=g.a[i],x=g.x[i]-Math.sin(a)*L*.5,y=g.y[i]+Math.cos(a)*L*.5,tx=x+Math.sin(a)*L,ty=y-Math.cos(a)*L;
+      c.moveTo(x,y);c.lineTo(tx,ty);c.moveTo(tx+2.2,ty);c.ellipse(tx,ty,1.4,2.6,a,0,Math.PI*2);}
+    c.stroke();c.fill();}
+  function frame(now){const dt=last?Math.min(.033,(now-last)/1000):.016;last=now;ptr.vx*=.85;ptr.vy*=.85;
+    if(ready<15){for(let k=0;k<6;k++)fluid(1/120);ready++;}else{const sub=Math.min(4,Math.max(1,Math.round(dt*120)));for(let k=0;k<sub;k++)fluid(1/120);}
+    draw();if(vis)requestAnimationFrame(frame);else{running=false;last=0;}}
+  function wake(){if(!still&&vis&&!running){running=true;requestAnimationFrame(frame);}}
+  function settle(){for(let k=0;k<90;k++)fluid(1/120);ready=15;draw();}
+  function move(e){const q=el.getBoundingClientRect(),x=e.clientX-q.left,y=e.clientY-q.top;
+    if(ptr.on){ptr.vx=ptr.vx*.5+(x-ptr.x)*.5*60;ptr.vy=ptr.vy*.5+(y-ptr.y)*.5*60;}ptr.x=x;ptr.y=y;ptr.on=true;}
+  if(!still){host.addEventListener('pointermove',move,{passive:true});host.addEventListener('pointerleave',()=>{ptr.on=false;ptr.x=ptr.y=-1e4;});}
+  colour();build();if(still)settle();
+  ['sog-theme','sog-scheme'].forEach(t=>document.addEventListener(t,()=>requestAnimationFrame(()=>{colour();if(still||!running)draw();})));
+  let rw=innerWidth;addEventListener('resize',()=>{const r=el.getBoundingClientRect();if(Math.abs(innerWidth-rw)<2&&Math.abs(r.height-H)<40)return;rw=innerWidth;build();if(still)settle();});
+  new IntersectionObserver(es=>{vis=es[0].isIntersecting;if(vis)wake();},{rootMargin:'120px'}).observe(el);
+  el.liveGrass={ready:()=>ready>=15,running:()=>running,poke:(x,y,vx,vy)=>{ptr.x=x;ptr.y=y;ptr.vx=vx;ptr.vy=vy;ptr.on=true;}};
+}
+const go=()=>document.querySelectorAll('[data-live-grass]').forEach(el=>{if(!el.liveGrass&&getComputedStyle(el).display!=='none')meadow(el);});
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go();
+document.addEventListener('sog-theme',()=>requestAnimationFrame(go)); // a strip hidden in one style starts when a style shows it
+})();

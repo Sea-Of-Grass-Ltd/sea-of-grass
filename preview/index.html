@@ -721,8 +721,9 @@ main#top #process::after{content:"Look Plan Make Care Look Plan Make Care";displ
   color:transparent;-webkit-text-stroke:2px var(--wall,rgba(0,0,0,.12));word-spacing:.15em}
 main#top .thesis::after{background:var(--mark,rgba(0,0,0,.08));-webkit-mask:url(/preview/assets/logo.svg) center/min(92vw,1180px) auto no-repeat;mask:url(/preview/assets/logo.svg) center/min(92vw,1180px) auto no-repeat}
 main#top .thesis{max-width:none}main#top .thesis>*{max-width:1000px;margin-inline:auto}
-main#top #contact::after{top:auto;height:min(34vh,300px);background:var(--grass,currentColor);
-  -webkit-mask:url(/preview/assets/home/grass-mask.webp) center bottom/cover no-repeat;mask:url(/preview/assets/home/grass-mask.webp) center bottom/cover no-repeat}
+main#top #contact::after{content:none} /* the grass is live now: .live-grass below */
+main#top #contact>.live-grass{position:absolute;z-index:-1;left:calc(50% - 50vw);right:calc(50% - 50vw);bottom:0;height:min(34vh,300px);pointer-events:none;color:var(--grass,currentColor)}
+.live-grass canvas{display:block;width:100%;height:100%}
 main#top #contact{padding-bottom:max(160px,min(30vh,260px))}
 @media (max-width:760px){
   main#top #services::after{background-position:right 16px top 84px;background-size:min(52vw,240px)}
@@ -983,6 +984,7 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
 
   <!-- Start: after Whereby's closing CTA; booking first, the form second -->
   <section class="s" id="contact" aria-labelledby="h-contact">
+    <div class="live-grass" data-live-grass aria-hidden="true"></div>
     <div class="start">
       <div class="bookblock">
         <p class="label">Start</p>
@@ -1158,5 +1160,6 @@ const show=()=>{const up=scrollY>24;tab.classList.toggle('up',up);tab.toggleAttr
 addEventListener('scroll',show,{passive:true});show();
 })();
 </script>
+<script src="/preview/assets/live-grass.js" defer></script>
 </body>
 </html>

@@ -317,7 +317,9 @@ html:is([data-theme="glass"],[data-theme="neu"],[data-theme="simple"],[data-them
 html:is([data-theme="glass"],[data-theme="neu"],[data-theme="simple"],[data-theme="dusk"]):not([data-scheme]) main>.hero{padding-bottom:clamp(180px,30vh,270px)}
 html:is([data-theme="glass"],[data-theme="neu"],[data-theme="simple"],[data-theme="dusk"]):not([data-scheme]) main>:is(.hero,section)::before{content:"";position:absolute;z-index:-2;top:0;bottom:0;left:calc(50% - 50vw);right:calc(50% - 50vw);background:var(--sc,var(--bg));pointer-events:none}
 html:is([data-theme="glass"],[data-theme="neu"],[data-theme="simple"],[data-theme="dusk"]):not([data-scheme]) main>.hero::before{top:-200px}
-html:is([data-theme="glass"],[data-theme="neu"],[data-theme="simple"],[data-theme="dusk"]):not([data-scheme]) main>.hero::after{content:"";position:absolute;z-index:-1;left:calc(50% - 50vw);right:calc(50% - 50vw);bottom:0;height:min(26vh,230px);background:var(--grass);-webkit-mask:url(/preview/assets/home/grass-mask.webp) center bottom/cover no-repeat;mask:url(/preview/assets/home/grass-mask.webp) center bottom/cover no-repeat;pointer-events:none}
+main>.hero>.live-grass{display:none}
+html:is([data-theme="glass"],[data-theme="neu"],[data-theme="simple"],[data-theme="dusk"]):not([data-scheme]) main>.hero>.live-grass{display:block;position:absolute;z-index:-1;left:calc(50% - 50vw);right:calc(50% - 50vw);bottom:0;height:min(26vh,230px);color:var(--grass);pointer-events:none} /* live grass, not a picture */
+.live-grass canvas{display:block;width:100%;height:100%}
 html:is([data-theme="glass"],[data-theme="neu"],[data-theme="simple"],[data-theme="dusk"]):not([data-scheme]) main>:is(.hero,section) :is(.box,.ex,.tier,.faq,.steps2 li,.gets>div,.pains li){--card:color-mix(in srgb,var(--fg) 6%,transparent)}
 html[data-theme="glass"]:not([data-scheme]) main>.hero{--sc:#E6EAFB;--grass:#7F89F0;}
 html[data-theme="glass"]:not([data-scheme]) main>section:nth-of-type(1){--sc:#F4D9E6;}
@@ -383,6 +385,7 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
   <main>
   <!-- 1 Hero: the problem in one line (after Mercury's split hero) -->
   <div class="hero">
+    <div class="live-grass" data-live-grass aria-hidden="true"></div>
     <div>
       <p class="kick">Service 01 · Sea of Grass</p>
       <h1><b>Websites</b> <em>and</em> <span class="t">hosting</span></h1>
@@ -428,5 +431,6 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
   </main>
   <footer>Sea of Grass &middot; Berthoud, Colorado &middot; <a href="/preview/client/">Client login</a> &middot; <a href="/preview/lab/">The Lab</a></footer>
 </div>
+<script src="/preview/assets/live-grass.js" defer></script>
 </body>
 </html>
