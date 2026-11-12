@@ -7,7 +7,7 @@ const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
 function rnd(s){return()=>{s=(s*16807)%2147483647;return(s-1)/2147483646;};}
 function meadow(el){
   const cv=document.createElement('canvas');cv.setAttribute('aria-hidden','true');el.appendChild(cv);
-  const c=cv.getContext('2d'),host=el.parentElement||el;
+  const c=cv.getContext('2d'),host=el.parentElement||el,FALL=el.dataset.liveGrass==='fall';   // 'fall': the blades start above and rain down into a meadow each time it comes into view
   let W=0,H=0,DPR=1,g=null,COL='#888',vis=false,running=false,last=0,ready=0;
   const ptr={x:-1e4,y:-1e4,vx:0,vy:0,on:false};
   const colour=()=>{COL=getComputedStyle(el).color||'#888';};
@@ -16,8 +16,8 @@ function meadow(el){
     const d0=W<600?9:11,band=Math.min(H*.55,126),cols=Math.floor(W/d0),rows=Math.max(1,Math.floor(band/d0)),n=cols*rows,r0=rnd(7);
     g={n,d0,x:new Float32Array(n),y:new Float32Array(n),vx:new Float32Array(n),vy:new Float32Array(n),a:new Float32Array(n),px:new Float32Array(n),py:new Float32Array(n),
       len:new Float32Array(n),seed:new Uint8Array(n),gw:Math.ceil(W/d0+2),next:new Int32Array(n)};g.head=new Int32Array(g.gw*Math.ceil(H/d0+2));
-    for(let i=0;i<n;i++){const cx=i%cols,cy=Math.floor(i/cols);g.x[i]=(cx+r0())*d0;g.y[i]=H-4-(cy+r0())*d0*1.05;g.len[i]=d0*(1.1+r0()*.7);g.seed[i]=r0()<.12?1:0;g.a[i]=(r0()-.5)*.3;}
-    ready=0;}
+    for(let i=0;i<n;i++){const cx=i%cols,cy=Math.floor(i/cols);g.x[i]=(cx+r0())*d0;g.y[i]=FALL?-(r0()*H*1.1+cy*d0*.9+10):H-4-(cy+r0())*d0*1.05;g.len[i]=d0*(1.1+r0()*.7);g.seed[i]=r0()<.12?1:0;g.a[i]=(r0()-.5)*.3;}
+    ready=FALL&&!still?15:0;}
   function fluid(dt){const n=g.n,d0=g.d0,G=1500,PR=Math.max(70,Math.min(W,Math.min(H,230)*2.4)*.16),sp=Math.hypot(ptr.vx,ptr.vy);
     for(let i=0;i<n;i++){g.vy[i]+=G*dt;
       if(ptr.on){const dx=g.x[i]-ptr.x,dy=g.y[i]-ptr.y,d2=dx*dx+dy*dy;if(d2<PR*PR){const d=Math.sqrt(d2)||1,f=1-d/PR;
@@ -30,7 +30,7 @@ function meadow(el){
         for(let oy=-1;oy<=1;oy++)for(let ox=-1;ox<=1;ox++){const h=(cy+oy)*gw+cx+ox;if(h<0||h>=head.length)continue;
           for(let j=head[h];j>=0;j=next[j]){if(j<=i)continue;const dx=g.x[j]-g.x[i],dy=g.y[j]-g.y[i],d2=dx*dx+dy*dy;if(d2>=d0*d0)continue;
             const d=Math.sqrt(d2)||.01,push=(d0-d)*.5/d,ex=d2?dx*push:.3,ey=d2?dy*push:0;g.x[i]-=ex;g.y[i]-=ey;g.x[j]+=ex;g.y[j]+=ey;}}}
-      for(let i=0;i<n;i++){if(g.y[i]>H-3)g.y[i]=H-3;if(g.y[i]<2)g.y[i]=2;if(g.x[i]<2)g.x[i]=2;if(g.x[i]>W-2)g.x[i]=W-2;}}
+      for(let i=0;i<n;i++){if(g.y[i]>H-3)g.y[i]=H-3;if(g.y[i]<2&&!FALL)g.y[i]=2;if(g.x[i]<2)g.x[i]=2;if(g.x[i]>W-2)g.x[i]=W-2;}}
     for(let i=0;i<n;i++){const v0=Math.hypot(g.vx[i],g.vy[i]);g.vx[i]=(g.x[i]-g.px[i])/dt*.995;g.vy[i]=(g.y[i]-g.py[i])/dt*.995;if(g.y[i]>=H-3)g.vx[i]*=.85;
       const v1=Math.hypot(g.vx[i],g.vy[i]),near=ptr.on&&Math.abs(g.x[i]-ptr.x)<PR*2.5&&Math.abs(g.y[i]-ptr.y)<PR*2.5,cap=near?1e9:v0+120;
       if(v1>cap){g.vx[i]*=cap/v1;g.vy[i]*=cap/v1;}else if(v1<90&&g.y[i]>H-160){const k=v1<30?.7:.92;g.vx[i]*=k;g.vy[i]*=k;}}
@@ -74,6 +74,7 @@ function draw(){c.setTransform(DPR,0,0,DPR,0,0);c.clearRect(0,0,W,H);if(ready<15
   ['sog-theme','sog-scheme'].forEach(t=>document.addEventListener(t,()=>requestAnimationFrame(()=>{colour();if(still||!running)draw();})));
   let rw=innerWidth;addEventListener('resize',()=>{const r=el.getBoundingClientRect();if(Math.abs(innerWidth-rw)<2&&Math.abs(r.height-H)<40)return;rw=innerWidth;build();if(still)settle();});
   new IntersectionObserver(es=>{vis=es[0].isIntersecting;if(vis)wake();},{rootMargin:'120px'}).observe(el);
+  if(FALL&&!still){let away=0;new IntersectionObserver(es=>{const e=es[0];if(e.isIntersecting&&away&&performance.now()-away>800){build();wake();}if(!e.isIntersecting)away=performance.now();},{threshold:.35}).observe(el);}   // back in view after a while: it falls again
   el.liveGrass={ready:()=>ready>=15,running:()=>running,poke:(x,y,vx,vy)=>{ptr.x=x;ptr.y=y;ptr.vx=vx;ptr.vy=vy;ptr.on=true;}};
 }
 const go=()=>document.querySelectorAll('[data-live-grass]').forEach(el=>{if(!el.liveGrass&&getComputedStyle(el).display!=='none')meadow(el);});
