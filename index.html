@@ -1628,17 +1628,18 @@ let MF=null,GRECT=null,FIELD='grid',FM=0,FTW=0,FTH=0,fox=null,foy=null,fT=null;c
 function plotRect(){ // Websites: the words sit on the dark above the lawn, like the title card before them
   const wide=W>=1000,lawn=H*(wide?.27:.24),top=TOP+20,bot=H-lawn-24,pw=wide?Math.min(W*.72,1040):W-36;
   GRECT={x:(W-pw)/2,y:top,w:pw,h:Math.max(300,bot-top),lawn};return GRECT;}
-function markTargets(){ // Brand: the field grows the mark. The S is drawn small off-screen; its edge gets a third of the blades, laid along the outline, and the rest fill it, standing up like a clipped hedge
+function markTargets(){ // Brand: the mark is mown into the meadow. Blades cover the room beside the words evenly, except inside the S, which is left as cut ground: the shape is held by the mass round it, not by a line of blades
   const g=grass,n=g.n,wide=W>=1000,F=wide&&MF&&MF.w>200?MF:null,room=F?F.w*.9:(wide?W*.44:W*.88),hS=Math.min((H-TOP)*(wide?.8:.62),room/1.357),sc=hS/258.56,wS=350.94*sc,ox=F?F.x+(F.w-wS)/2:wide?Math.max(24,(W*.5-wS)/2+W*.02):(W-wS)/2,oy=TOP+(H-TOP-hS)/2;   // on a wide screen the S grows in the room the Brand words leave, never under them   // beside the card on a wide screen, behind it on a narrow one
   const k=.25,cw=Math.ceil(wS*k),ch=Math.ceil(hS*k),oc=document.createElement('canvas');oc.width=cw;oc.height=ch;const x=oc.getContext('2d');
   x.setTransform(sc*k,0,0,sc*k,-43.63*sc*k,-44.56*sc*k);x.fill(P1);x.fill(P2);const d=x.getImageData(0,0,cw,ch).data,I=(a,b)=>a>=0&&b>=0&&a<cw&&b<ch&&d[(b*cw+a)*4+3]>127;
-  const edge=[],fill=[];for(let b=0;b<ch;b++)for(let a=0;a<cw;a++){if(!I(a,b))continue;const e=!I(a-1,b)||!I(a+1,b)||!I(a,b-1)||!I(a,b+1);
-    if(e){const gx=(I(a+1,b)?1:0)-(I(a-1,b)?1:0),gy=(I(a,b+1)?1:0)-(I(a,b-1)?1:0);edge.push([a,b,Math.atan2(gy,gx)]);}else fill.push([a,b]);}
-  const T={x:new Float32Array(n),y:new Float32Array(n),a:new Float32Array(n),dl:new Float32Array(n)},ne=Math.round(n*.34);
-  for(let i=0;i<n;i++){const h=((i*2654435761)>>>0)/4294967296,h2=((i*40503+17)%997)/997;
-    if(i<ne&&edge.length){const e=edge[Math.floor(h*edge.length)];T.x[i]=ox+(e[0]+h2)/k;T.y[i]=oy+(e[1]+h2)/k;T.a[i]=e[2];}   // along the edge: the blade lies across the normal, i.e. along the outline
-    else if(fill.length){const f=fill[Math.floor(h*fill.length)];T.x[i]=ox+(f[0]+h2)/k;T.y[i]=oy+(f[1]+((i*13)%7)/7)/k;T.a[i]=(h2-.5)*.5;}
-    T.dl[i]=1-(T.y[i]-TOP)/(H-TOP);}   // it grows from the bottom up
+  const T={x:new Float32Array(n),y:new Float32Array(n),a:new Float32Array(n),dl:new Float32Array(n)},hs=i=>((i*2654435761)>>>0)/4294967296;
+  const hal=(i,b)=>{let f=1,r=0;while(i>0){f/=b;r+=f*(i%b);i=Math.floor(i/b);}return r;};
+  const M=(px,py)=>{const a=Math.floor((px-ox)*k),b=Math.floor((py-oy)*k);return I(a,b)||I(a+1,b)||I(a-1,b)||I(a,b+1)||I(a,b-1);};   // inside the S, with a hair of margin
+  const x0=F?0:0,x1=F?F.x+F.w+12:W,y0=TOP,y1=H;let q=1;
+  for(let i=0;i<n;i++){const L=g.len[i]||g.d0*1.4,a=(hs(i+3)-.5)*.34;let px,py,tries=0;
+    do{px=x0+hal(q,2)*(x1-x0);py=y0+hal(q,3)*(y1-y0+L*.6);q++;tries++;}
+    while(tries<400&&(M(px,py)||M(px+Math.sin(a)*L*.5,py-Math.cos(a)*L*.5)||M(px+Math.sin(a)*L,py-Math.cos(a)*L)));   // nothing roots where any part of it would stand in the cut
+    T.x[i]=px;T.y[i]=py;T.a[i]=a;T.dl[i]=Math.min(1,Math.max(0,1-(py-TOP)/(H-TOP))*.85+hs(i+11)*.15);}   // it rises from the ground up
   return T;}
 // Creative tech: the blades become a visualizer, after the Live visuals synth's scenes (Spirograph Sludge, Portal Punch,
 // Bouncy Castle). It plays at 120 BPM, its colour cycles, the pointer's height turns the main knob, a press triggers a hit.
