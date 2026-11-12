@@ -876,8 +876,19 @@ main.cb .cb-gap{height:210vh;height:210svh}
 main.cb .cb-ch{position:relative;z-index:3;height:180vh;height:180svh;padding:0 var(--cb-side,24px);pointer-events:none}   /* a service's chapter: its card rides over the field while the blades change */
 main.cb .cb-ch .cb-chp{position:sticky;top:calc(50svh - 260px);width:min(460px,100%);margin-left:max(0px,calc((100vw - 1240px)/2));pointer-events:auto}
 html[data-theme="simple"] main.cb .cb-ch .cb-chp{background:#F4F1EA;border:2px solid #111;padding:clamp(16px,1.6vw,22px)}   /* over the field a card needs a face to read on */
-main.cb .cb-ch .cb-chp.cb-snap{box-sizing:border-box;max-width:none;border-radius:6px;justify-content:space-between}
-main.cb .cb-ch .cb-chp.cb-snap .ui{aspect-ratio:auto;flex:1 1 auto;min-height:0}
+/* Websites: the card is the plot mown out of the meadow. No mock picture: the meadow round it is the picture; the words are set large across it */
+main.cb .cb-ch .cb-chp.cb-snap{box-sizing:border-box;max-width:none;border-radius:26px;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);grid-template-rows:auto auto auto;align-content:center;column-gap:clamp(28px,5vw,80px);row-gap:10px;padding:clamp(24px,4vw,64px)}
+main.cb .cb-ch .cb-chp.cb-snap .ui{display:none}
+html body main.cb .cb-ch .cb-chp.cb-snap h3{grid-column:1;grid-row:1;font-size:clamp(44px,6.4vw,104px);line-height:.95;margin:0;align-self:end}
+html body main.cb .cb-ch .cb-chp.cb-snap>p:not(.cb-price):not(.cb-more){grid-column:1;grid-row:2;font-size:clamp(18px,1.7vw,26px);margin:0;align-self:start}
+/* the two prices are the offer: set as large as the heading, each with one plain line under it */
+html body main.cb .cb-ch .cb-chp.cb-snap .cb-price{grid-column:2;grid-row:1/3;margin:0;align-self:center;display:grid;gap:clamp(12px,1.6vw,22px)}
+html body main.cb .cb-ch .cb-chp.cb-snap .cb-tier{display:grid;gap:4px;opacity:1}
+html body main.cb .cb-ch .cb-chp.cb-snap .cb-tier b{font-size:clamp(30px,3.7vw,62px);line-height:1;letter-spacing:-.035em;white-space:nowrap}
+html body main.cb .cb-ch .cb-chp.cb-snap .cb-tier>span{font:400 clamp(15px,1.2vw,18px)/1.35 var(--cb-body);opacity:.8}
+html body main.cb .cb-ch .cb-chp.cb-snap .cb-tier-q>span{opacity:.65}
+html body main.cb .cb-ch .cb-chp.cb-snap .cb-more{grid-column:1;grid-row:3;margin:clamp(10px,1.4vw,20px) 0 0;align-self:start}
+@media (max-width:999px){main.cb .cb-ch .cb-chp.cb-snap{display:flex;flex-direction:column;justify-content:center;gap:10px;border-radius:20px;padding:22px}html body main.cb .cb-ch .cb-chp.cb-snap h3{font-size:clamp(34px,10vw,54px)}html body main.cb .cb-ch .cb-chp.cb-snap .cb-tier b{font-size:clamp(30px,9vw,44px)}html body main.cb .cb-ch .cb-chp.cb-snap .cb-price{gap:10px}}
 main.cb #brand.cb-ch .cb-chp{margin-left:auto;margin-right:max(0px,calc((100vw - 1240px)/2))}   /* the meadow is the ground: pinned while the titles change over it */
 main.cb .lf-title{position:absolute;inset:0 0 38% 0;display:grid;place-items:center;padding:calc(var(--cb-nav,64px) + 8px) var(--cb-side,24px) 0;pointer-events:none;z-index:2;opacity:0}
 html body main.cb .lf-title .cb-h{text-align:center;color:var(--lf-ink,#fff)}
@@ -1342,7 +1353,7 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
         </a>
         <h3><a href="/preview/services/websites/">Websites</a></h3>
         <p>Fixes, new sites and hosting.</p>
-        <p class="cb-price"><b>From $250</b><span>Fixes from $250. New sites from $2,000. Care from $50 a month.</span></p>
+        <p class="cb-price cb-tiers"><span class="cb-tier"><b>From $250</b><span>Fixes and small jobs</span></span><span class="cb-tier"><b>$50 a month</b><span>Hosting, security and care</span></span><span class="cb-tier cb-tier-q"><span>New sites from $2,000</span></span></p>
         <p class="cb-more"><a href="/preview/services/websites/">Websites and hosting</a><a href="/preview/services/apps/">Apps</a></p>
       </article>
   </div>
@@ -1596,27 +1607,9 @@ function markFill(path,key){const m=MFILL;
   else{c.fillStyle=MARKC;c.fill(path);}}
 // ---- the field: the same blades, re-set to another harmony. FIELD names it, FM is how far they've gone (0 meadow .. 1 there)
 let GRECT=null,FIELD='grid',FM=0,FTW=0,FTH=0,fox=null,foy=null,fT=null;const FTS={};
-function gridSegs(){ // Websites: the blades draw a browser window in grass (tab bar, address pill, headline, text, a button, a speed ring, image blocks), and a frame that hugs the card laid beside it
-  const segs=[],wide=W>=1000,pad=Math.max(24,W*.04),top=TOP+24,bot=H-(wide?96:80),ah=bot-top;
-  const rr=(x,y,w,h,r,l)=>{r=Math.min(r,w/2,h/2);const C=[[x+w-r,y+r,-Math.PI/2],[x+w-r,y+h-r,0],[x+r,y+h-r,Math.PI/2],[x+r,y+r,Math.PI]];let px=null,py=null;
-    for(const[cx,cy,a0]of C)for(let k=0;k<=3;k++){const t=a0+k*Math.PI/6,qx=cx+Math.cos(t)*r,qy=cy+Math.sin(t)*r;if(px!==null)segs.push([px,py,qx,qy,l]);px=qx;py=qy;}
-    segs.push([px,py,x+w-r,y,l]);};                                                 // a rounded rectangle, corners in three steps
-  const ring=(cx,cy,r,l)=>{const N=14;for(let k=0;k<N;k++){const a=k/N*6.2832,b=(k+1)/N*6.2832;segs.push([cx+Math.cos(a)*r,cy+Math.sin(a)*r,cx+Math.cos(b)*r,cy+Math.sin(b)*r,l]);}};
-  const line=(x1,y1,x2,y2,l)=>segs.push([x1,y1,x2,y2,l]);
-  let bx=pad,bw=W-pad*2;
-  if(wide){const cw=Math.min(ah*.62,W*.34),gap=Math.max(36,W*.035);GRECT={x:pad,y:top,w:cw,h:ah};rr(pad-8,top-8,cw+16,ah+16,30,0);bx=pad+cw+gap;bw=W-pad-bx;}   // the card's frame hugs it
-  else GRECT=null;
-  const bh=Math.min(ah,bw*.78),by=top+(ah-bh)/2,bar=Math.max(34,bh*.1);
-  rr(bx,by,bw,bh,22,0);line(bx,by+bar,bx+bw,by+bar,1);                              // the window and its tab bar
-  for(let k=0;k<3;k++)ring(bx+bar*.62+k*bar*.52,by+bar/2,bar*.16,2);                // three dots
-  rr(bx+bar*2.1,by+bar*.29,bw*.45,bar*.42,bar*.21,2);                               // the address pill
-  const cx=bx+bw*.07,iw=bw*.86,c0=by+bar+(bh-bar)*.13,u=bh/17.5;
-  for(const[yy,f]of[[0,.5],[u*1.5,.36]]){line(cx,c0+yy,cx+iw*f,c0+yy,0);line(cx,c0+yy+5,cx+iw*f,c0+yy+5,0);}   // the headline, two heavy lines
-  for(const[yy,f]of[[u*3.1,.46],[u*3.95,.4],[u*4.8,.3]])line(cx,c0+yy,cx+iw*f,c0+yy,3);   // body text
-  rr(cx,c0+u*5.9,iw*.2,u*1.1,u*.55,1);                                              // the button
-  ring(cx+iw*.84,c0+u*1.9,Math.min(u*1.9,bw*.08),1);                                // the speed ring
-  const iy=by+bh*.66,ih=bh*.26,g3=iw*.035,w3=(iw-g3*2)/3;for(let k=0;k<3;k++)rr(cx+k*(w3+g3),iy,w3,ih,12,2);   // image blocks
-  return segs;}
+function plotRect(){ // Websites: a site is a plot. The meadow rises to fill the screen and one clean rectangle is mown out of it; the card is set into that plot
+  const wide=W>=1000,bot=H-(wide?92:84),top=TOP+16,pw=wide?Math.min(W*.64,1000):W-36,ph=Math.min(wide?Math.max(300,(bot-top)*.56):360,bot-top-70);
+  GRECT={x:(W-pw)/2,y:top+(bot-top-ph)/2,w:pw,h:ph,r:wide?26:20};return GRECT;}
 function markTargets(){ // Brand: the field grows the mark. The S is drawn small off-screen; its edge gets a third of the blades, laid along the outline, and the rest fill it, standing up like a clipped hedge
   const g=grass,n=g.n,wide=W>=1000,hS=Math.min((H-TOP)*(wide?.8:.62),(wide?W*.44:W*.88)/1.357),sc=hS/258.56,wS=350.94*sc,ox=wide?Math.max(24,(W*.5-wS)/2+W*.02):(W-wS)/2,oy=TOP+(H-TOP-hS)/2;   // beside the card on a wide screen, behind it on a narrow one
   const k=.25,cw=Math.ceil(wS*k),ch=Math.ceil(hS*k),oc=document.createElement('canvas');oc.width=cw;oc.height=ch;const x=oc.getContext('2d');
@@ -1654,13 +1647,23 @@ function fieldTargets(){const g=grass;if(!g)return;if(FTW!==W||FTH!==H){for(cons
   if(!fox||fox.length!==g.n){fox=new Float32Array(g.n);foy=new Float32Array(g.n);}
   if(!FTS[FIELD]){if(FIELD==='viz'){const n=g.n,T={x:new Float32Array(n),y:new Float32Array(n),a:new Float32Array(n),dl:new Float32Array(n)};for(let i=0;i<n;i++)T.dl[i]=((i*7919)%1000)/1000;vizTargets(T,0);FTS.viz=T;}
   else FTS[FIELD]=FIELD==='mark'?markTargets():gridTargets();}fT=FTS[FIELD];}
-function gridTargets(){const g=grass;const n=g.n,segs=gridSegs(),WT=[2.2,1.6,1.1,.8,.5];   // bigger levels get more blades: heavier lines
-  let tot=0;for(const q of segs){q.push(Math.hypot(q[2]-q[0],q[3]-q[1])*WT[q[4]]);tot+=q[5];}
+function gridTargets(){const g=grass,n=g.n,R=plotRect(),m=5,LM=g.d0*1.9;
   const fT={x:new Float32Array(n),y:new Float32Array(n),a:new Float32Array(n),dl:new Float32Array(n)};
-  let si=0,acc=0;const order=new Uint32Array(n);for(let i=0;i<n;i++)order[i]=i;for(let i=n-1;i>0;i--){const j=(i*2654435761>>>0)%(i+1);const t=order[i];order[i]=order[j];order[j]=t;}
-  for(let k=0;k<n;k++){const u=(k+.5)/n*tot;while(si<segs.length-1&&acc+segs[si][5]<u){acc+=segs[si][5];si++;}const q=segs[si],f=Math.min(1,(u-acc)/q[5]),i=order[k];
-    const dx=q[2]-q[0],dy=q[3]-q[1],L=Math.hypot(dx,dy)||1,an=Math.atan2(dx,-dy),hl=(g.len[i]||g.d0)*.5;   // each blade lies along its stroke, centred on it
-    fT.x[i]=q[0]+dx*f-dx/L*hl;fT.y[i]=q[1]+dy*f-dy/L*hl;fT.a[i]=an;fT.dl[i]=((i*7919)%1000)/1000;}
+  const hal=(i,b)=>{let f=1,r=0;while(i>0){f/=b;r+=f*(i%b);i=Math.floor(i/b);}return r;},hs=i=>((i*2654435761)>>>0)/4294967296;
+  // a blade grows up from its foot, so nothing may root where its tip would cross the mown edge: the keep-out reaches further below the plot than beside or above it
+  const inside=(x,y,L)=>x>R.x-m&&x<R.x+R.w+m&&y>R.y-m&&y<R.y+R.h+L+m;
+  const ne=Math.round(n*.2),per=2*(R.w+R.h);let q=1;
+  for(let i=0;i<n;i++){const L=g.len[i]||g.d0*1.4;let x,y,a;
+    if(i<ne){ // the mown edge: a close hedge standing just outside the plot, leaning away from it
+      const u=hs(i+7)*per,o=3+hs(i+19)*9;
+      if(u<R.w){x=R.x+u;y=R.y-o;a=(hs(i+3)-.5)*.5;}
+      else if(u<R.w+R.h){x=R.x+R.w+o;y=R.y+(u-R.w)+L*.5;a=.32+hs(i+3)*.3;}
+      else if(u<2*R.w+R.h){x=R.x+(u-R.w-R.h);y=R.y+R.h+L+o;a=(hs(i+3)-.5)*.4;}
+      else{x=R.x-o;y=R.y+(u-2*R.w-R.h)+L*.5;a=-.32-hs(i+3)*.3;}}
+    else{do{x=hal(q,2)*W;y=TOP+hal(q,3)*(H-TOP+L*.6);q++;}while(inside(x,y,L));   // the field: even cover everywhere else
+      const dx=x<R.x?R.x-x:x>R.x+R.w?x-(R.x+R.w):0,near=Math.max(0,1-dx/90)*(y>R.y&&y<R.y+R.h+L?1:0);
+      a=(hs(i+3)-.5)*.34+(x<R.x?-1:1)*near*.3;}
+    fT.x[i]=x;fT.y[i]=y;fT.a[i]=a;fT.dl[i]=Math.min(1,Math.max(0,1-(y-TOP)/(H-TOP))*.85+hs(i+11)*.15);}   // it rises from the ground up
   return fT;}
 function fieldStep(dt){if(FM<.002||!fT)return;if(FIELD==='viz'){if(ptr.down&&!VZ.held){VZ.trig=1;}VZ.held=ptr.down;vizTargets(fT,dt);}const g=grass,n=g.n,R=Math.max(70,Math.min(W,H)*.14),k=Math.min(1,dt*7);   // the grid bends away from the pointer, and springs back
   for(let i=0;i<n;i++){let tx=0,ty=0;if(ptr.on){const dx=fT.x[i]-ptr.x,dy=fT.y[i]-ptr.y,d2=dx*dx+dy*dy;if(d2<R*R*4){const d=Math.sqrt(d2)||1,f=Math.exp(-d2/(R*R))*R*.45;tx=dx/d*f;ty=dy/d*f;}}
@@ -1701,7 +1704,7 @@ mode('lockup',false);
 inks();['sog-theme','sog-scheme','sog-colour'].forEach(e=>document.addEventListener(e,()=>requestAnimationFrame(()=>{inks();const f=getComputedStyle(SEC).getPropertyValue('--lf-face').trim();(document.fonts&&f?document.fonts.load('400 40px '+f):Promise.resolve()).then(()=>{size();if(still){for(let k=0;k<90;k++)fluid(grass,1/120,0);ready=15;}draw();});})));
 size();if(still){for(let k=0;k<90;k++)fluid(grass,1/120,0);ready=15;draw();}else requestAnimationFrame(frame);
 new IntersectionObserver(es=>{const v=es[0].isIntersecting;if(v&&!visible&&!still&&!running){visible=true;running=true;requestAnimationFrame(frame);}visible=v;}).observe(SEC);
-window.sogOpening={viz:VZ,vizFree:(r)=>{VZ.free=r;},gridRect:()=>{if(!GRECT&&W)gridSegs();return GRECT;},field:(name,m)=>{if(name&&name!==FIELD){FIELD=name;fT=null;}m=Math.max(0,Math.min(1,m));if(Math.abs(m-FM)<.002)return;FM=m;if(m>0&&!fT&&grass)fieldTargets();if(still)draw();},title:(a)=>{if(Math.abs(a-TITLE)<.002)return;TITLE=a;if(still)draw();},grassLine:(n)=>{const g=grass,out=new Array(n).fill(1e9);if(!g||ready<15)return out;const cols=Array.from({length:n},()=>[]);for(let i=0;i<g.n;i++){if(Math.abs(g.y[i]-g.py[i])>.6||Math.abs(g.x[i]-g.px[i])>.6)continue;const k=Math.min(n-1,Math.max(0,Math.floor(g.x[i]/W*n)));cols[k].push(g.y[i]-g.len[i]*.6);}return cols.map(a=>{if(a.length<12)return 1e9;a.sort((x,y)=>x-y);return a[Math.min(a.length-1,10)];});},fit:()=>{if(!W)return;KEEPG=H;size();KEEPG=0;if(still)draw();},wake:()=>{if(!still&&!running){running=true;requestAnimationFrame(frame);}},poke:(x,y,vx,vy)=>{ptr.x=x;ptr.y=y;ptr.vx=vx;ptr.vy=vy;ptr.on=true;},
+window.sogOpening={viz:VZ,vizFree:(r)=>{VZ.free=r;},gridRect:()=>{if(W)plotRect();return GRECT;},field:(name,m)=>{if(name&&name!==FIELD){FIELD=name;fT=null;}m=Math.max(0,Math.min(1,m));if(Math.abs(m-FM)<.002)return;FM=m;if(m>0&&!fT&&grass)fieldTargets();if(still)draw();},title:(a)=>{if(Math.abs(a-TITLE)<.002)return;TITLE=a;if(still)draw();},grassLine:(n)=>{const g=grass,out=new Array(n).fill(1e9);if(!g||ready<15)return out;const cols=Array.from({length:n},()=>[]);for(let i=0;i<g.n;i++){if(Math.abs(g.y[i]-g.py[i])>.6||Math.abs(g.x[i]-g.px[i])>.6)continue;const k=Math.min(n-1,Math.max(0,Math.floor(g.x[i]/W*n)));cols[k].push(g.y[i]-g.len[i]*.6);}return cols.map(a=>{if(a.length<12)return 1e9;a.sort((x,y)=>x-y);return a[Math.min(a.length-1,10)];});},fit:()=>{if(!W)return;KEEPG=H;size();KEEPG=0;if(still)draw();},wake:()=>{if(!still&&!running){running=true;requestAnimationFrame(frame);}},poke:(x,y,vx,vy)=>{ptr.x=x;ptr.y=y;ptr.vx=vx;ptr.vy=vy;ptr.on=true;},
   // for the settle check: how far the furthest piece is from home, in px and degrees
   drift:()=>pieces.reduce((m,p)=>({px:Math.max(m.px,Math.hypot(p.x-p.hx,p.y-p.hy)),deg:Math.max(m.deg,Math.abs(p.a-Math.round(p.a/6.2832)*6.2832)*180/Math.PI)}),{px:0,deg:0}),
   words:()=>{const q=SEC.getBoundingClientRect();return pieces.filter(p=>p.kind==='w'||p.kind==='ch'||p.kind==='p1').map(p=>[p.hx+q.left,p.hy+q.top]);},ready:()=>ready>=15};
