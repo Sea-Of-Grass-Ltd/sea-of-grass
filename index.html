@@ -870,8 +870,13 @@ main.cb{--cb-light:#EEF1F8;--cb-light2:#F4D9E6;--cb-ink:#24123A;--cb-dark:#24123
   --cb-side:max(20px,calc((100vw - 1240px) / 2));display:block;color:var(--cb-ink);font-family:var(--cb-body)}
 main.cb>*{margin:0}
 /* the opening: full screen, then it shrinks up into the bar */
-main.cb .cb-open{height:260vh;height:260svh;position:relative;z-index:0}
-main.cb .cb-open>.lf{position:sticky;top:0;left:0;right:0;height:100vh;height:100svh;min-height:0}   /* the meadow is the ground: pinned while the titles change over it */
+main.cb .cb-open{position:relative;z-index:0}
+main.cb .cb-open>.lf{position:sticky;top:0;left:0;right:0;height:100vh;height:100svh;min-height:0;margin-bottom:-100vh;margin-bottom:-100svh}
+main.cb .cb-gap{height:210vh;height:210svh}
+main.cb .cb-ch{position:relative;z-index:3;height:180vh;height:180svh;padding:0 var(--cb-side,24px);pointer-events:none}   /* a service's chapter: its card rides over the field while the blades change */
+main.cb .cb-ch .cb-chp{position:sticky;top:calc(50svh - 260px);width:min(460px,100%);margin-left:max(0px,calc((100vw - 1240px)/2));pointer-events:auto}
+html[data-theme="simple"] main.cb .cb-ch .cb-chp{background:#F4F1EA;border:2px solid #111;padding:clamp(16px,1.6vw,22px)}   /* over the field a card needs a face to read on */
+main.cb #brand.cb-ch .cb-chp{margin-left:auto;margin-right:max(0px,calc((100vw - 1240px)/2))}   /* the meadow is the ground: pinned while the titles change over it */
 main.cb .lf-title{position:absolute;inset:0 0 38% 0;display:grid;place-items:center;padding:calc(var(--cb-nav,64px) + 8px) var(--cb-side,24px) 0;pointer-events:none;z-index:2;opacity:0}
 html body main.cb .lf-title .cb-h{text-align:center;color:var(--lf-ink,#fff)}
 main.cb .cb-sr{position:absolute;width:1px;height:1px;margin:0;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
@@ -1099,7 +1104,7 @@ html[data-theme="dusk"]:not([data-scheme]){--lf-flowers:#FF7777,#E8E6E3}
 main.cb .cb-stage{position:relative}
 main.cb .cb-stage>.cb-head{position:sticky;top:0;min-height:100vh;min-height:100svh;display:grid;place-items:center;padding:0 var(--cb-side,24px);z-index:0}
 main.cb .cb-stage>.cb-head .cb-h{text-align:center;margin:0;transform-origin:50% 50%;will-change:transform,opacity}
-main.cb .cb-stage>.cb-svc{position:relative;z-index:1;margin-top:-40vh;margin-top:-40svh;background:transparent;padding-top:clamp(40px,5vw,72px)}
+main.cb .cb-stage>.cb-svc{position:relative;z-index:1;margin-top:0;background:transparent;padding-top:clamp(40px,5vw,72px)}
 main.cb .cb-stage>.cb-svc::before{content:"";position:absolute;inset:0;background:var(--cb-dark);z-index:-1;border-radius:clamp(20px,3vw,44px) clamp(20px,3vw,44px) 0 0}   /* the sheet the cards ride up on */
 main.cb .cb-stage .cb-p{will-change:transform}
 main.cb .ui{--u-pl:#151922;--u-ed:rgba(255,255,255,.1);--u-ink:#E9ECF1;--u-mute:rgba(233,236,241,.52);--u-ac:var(--cb-accent);--u-ok:#3DDC84;
@@ -1162,7 +1167,7 @@ main.cb .ui-tech .bpm .dot{background:#FF4D4D;--u-ok:#FF4D4D}
 @keyframes uiSlide{0%{left:12%}100%{left:88%}}
 @keyframes uiSpin{to{transform:rotateX(-24deg) rotateY(360deg)}}
 @media (prefers-reduced-motion:reduce){main.cb .ui *{animation:none!important}}
-@media (max-width:900px){main.cb .cb-stage>.cb-head{min-height:70svh}main.cb .cb-stage>.cb-svc{margin-top:-40svh}}
+@media (max-width:900px){main.cb .cb-stage>.cb-head{min-height:70svh}main.cb .cb-stage>.cb-svc{margin-top:0}}
 </style>
 <script>
 (function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#120607',glass:'#EEF1F8',neu:'#EFE6D8',brutal:'#FFFDF5',simple:'#F4F1EA',editorial:'#f3f1ea'};
@@ -1200,13 +1205,9 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
     <div class="lf-title" aria-hidden="true"><p class="cb-h">Three things, done properly.</p></div>
     <canvas id="lf-cv" aria-label="The headline and the Sea of Grass S over a heap of grass. Move your pointer or finger sideways through it: the S gets knocked and springs back, and the grass is scooped up and settles again. Press to throw more grass."></canvas>
   </section>
-  </div>
-
-  <div class="cb-stage">
-  <section class="cb-band cb-svc" id="services" aria-labelledby="cb-svc-h">
-    <h2 class="cb-sr" id="cb-svc-h">Three things, done properly.</h2>
-    <div class="cb-panels">
-      <article class="cb-p">
+  <div class="cb-gap" aria-hidden="true"></div>
+  <div class="cb-ch" id="services" data-field="grid">
+    <article class="cb-p cb-chp">
         <a class="ui ui-web" href="/preview/services/websites/" tabindex="-1" aria-hidden="true">
           <span class="pl win"><span class="bar"><i></i><i></i><i></i><span class="url">harpershardware.com</span></span>
             <span class="site"><b>Seed, feed and<br>hardware since 1952.</b><span class="ln" style="width:70%"></span><span class="ln" style="width:48%"></span><span class="btn">Visit the shop</span><span class="g3"><u></u><u></u><u></u></span></span></span>
@@ -1218,7 +1219,9 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
         <p class="cb-price"><b>From $250</b><span>Fixes from $250. New sites from $2,000. Care from $50 a month.</span></p>
         <p class="cb-more"><a href="/preview/services/websites/">Websites and hosting</a><a href="/preview/services/apps/">Apps</a></p>
       </article>
-      <article class="cb-p">
+  </div>
+  <div class="cb-ch" id="brand" data-field="meadow">
+    <article class="cb-p cb-chp">
         <a class="ui ui-brand" href="/preview/services/brand/" tabindex="-1" aria-hidden="true">
           <span class="pl kit"><span class="kt"><span>Brand kit</span><span>v3</span></span>
             <span class="mk"><svg viewBox="0 0 44 44"><rect width="44" height="44" rx="12" fill="#2F4A2A"/><path d="M13 31V13h4l10 12V13h4v18h-4L17 19v12z" fill="#F3E7B0"/></svg><span class="aa">Aa<small>Fraunces &middot; Inter</small></span></span>
@@ -1231,7 +1234,9 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
         <p class="cb-price"><b>Fixed quote</b><span>Priced after a free call and written down before work starts.</span></p>
         <p class="cb-more"><a href="/preview/services/brand/">Brand and identity</a><a href="/preview/services/illustration/">Illustration</a></p>
       </article>
-      <article class="cb-p">
+  </div>
+  <div class="cb-ch" id="creative-tech" data-field="meadow">
+    <article class="cb-p cb-chp">
         <a class="ui ui-tech" href="/preview/services/live-visuals/" tabindex="-1" aria-hidden="true">
           <span class="pl rack"><span class="kt"><span>Visuals &middot; live</span><span>CH 1</span></span>
             <span class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
@@ -1244,8 +1249,13 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
         <p class="cb-price"><b>Fixed quote</b><span>Priced after a free call and written down before work starts.</span></p>
         <p class="cb-more"><a href="/preview/services/live-visuals/">Live visuals</a><a href="/preview/services/characters/">3D characters</a></p>
       </article>
-    </div>
-    <p class="cb-promise">Nothing goes live until you&rsquo;ve said yes.</p>
+  </div>
+  </div>
+
+  <div class="cb-stage">
+  <section class="cb-band cb-svc" aria-labelledby="cb-svc-h">
+    <h2 class="cb-sr" id="cb-svc-h">Three things, done properly.</h2>
+        <p class="cb-promise">Nothing goes live until you&rsquo;ve said yes.</p>
   </section>
   </div>
 
@@ -1379,9 +1389,9 @@ function step(dt,T){const R=Math.max(90,Math.min(W,H)*.16),sp=Math.hypot(ptr.vx,
   for(let li=0;li<3;li++){const q=pieces.find(q=>q.kind==='rule'&&q.line===li);RULE[li]+=(((q&&ptr.on&&Math.abs(ptr.y-q.hy)<(MODE==='lockup'?H*.09:H*.18))?1:0)-RULE[li])*Math.min(1,dt*6);}
   const g=grass;if(ptr.down)ptr.held+=dt;
   if(ptr.down&&(!ptr.touch||(ptr.held>.3&&sp<150)))ptr.acc+=dt*(W<600?160:280);
-  const shots=ptr.burst+Math.floor(ptr.acc);ptr.acc-=Math.floor(ptr.acc);ptr.burst=0;for(let k=0;k<shots;k++)shoot(g,sp);
+  if(FM>.3){ptr.burst=0;ptr.acc=0;}const shots=ptr.burst+Math.floor(ptr.acc);ptr.acc-=Math.floor(ptr.acc);ptr.burst=0;for(let k=0;k<shots;k++)shoot(g,sp);
   if(H<GFULL-2)return; // while the opening is shrunk the grass is held still, so it is never squeezed
-  const sub=Math.min(4,Math.max(1,Math.round(dt*120)));for(let k=0;k<sub;k++)fluid(g,1/120,R);}
+  const sub=Math.min(4,Math.max(1,Math.round(dt*120)));for(let k=0;k<sub;k++)fluid(g,1/120,FM>.3?0:R);fieldStep(dt);}
 function shoot(g,sp){let b=0,by=-1;for(let k=0;k<24;k++){const i=Math.random()*g.n|0;if(g.y[i]>by){by=g.y[i];b=i;}} // a grain from deep in the heap
   const dir=sp>200?Math.atan2(ptr.vy,ptr.vx):-Math.PI/2,a=dir+(Math.random()-.5)*.9,v=650+Math.random()*700+Math.min(sp,1500)*.4;
   g.x[b]=ptr.x+(Math.random()-.5)*10;g.y[b]=ptr.y+(Math.random()-.5)*10;g.vx[b]=Math.cos(a)*v;g.vy[b]=Math.sin(a)*v;g.a[b]=Math.atan2(g.vx[b],-g.vy[b]);}
@@ -1445,6 +1455,33 @@ function markFill(path,key){const m=MFILL;
       if(k>=4){c.ellipse(x,y,1.6,7,((i*1.3)%1-.5)*.8,0,Math.PI*2);}else{for(let p=0;p<6;p++){const t=p*Math.PI/3;c.moveTo(x+Math.cos(t)*4.2,y+Math.sin(t)*4.2);c.ellipse(x+Math.cos(t)*2.4,y+Math.sin(t)*2.4,2.3,1.2,t,0,Math.PI*2);}}c.fill();}
     c.restore();c.lineWidth=2;c.strokeStyle='#4A7A3C';c.stroke(path);}
   else{c.fillStyle=MARKC;c.fill(path);}}
+// ---- the field: the same blades, re-set to another harmony. FIELD names it, FM is how far they've gone (0 meadow .. 1 there)
+let FIELD='grid',FM=0,FSEG=null,FTW=0,FTH=0,fox=null,foy=null,fT=null;
+function gridSegs(){ // nested √3 frame: each √3 rectangle splits across its long side into three √3 rectangles; four levels, each a little lighter
+  const segs=[],top=TOP+18,pad=Math.max(16,W*.03),aw=W-pad*2,ah=H-top-18,R3=Math.sqrt(3);
+  let w,h;if(aw/ah>R3){h=ah;w=h*R3;}else if(aw/ah>1/R3&&aw>ah){w=aw;h=w/R3;}else{w=aw;h=Math.min(ah,w*R3);}
+  const x0=(W-w)/2,y0=top+(ah-h)/2;
+  segs.push([x0,y0,x0+w,y0,0],[x0+w,y0,x0+w,y0+h,0],[x0+w,y0+h,x0,y0+h,0],[x0,y0+h,x0,y0,0]);
+  (function cut(x,y,w,h,l){if(l>3)return;if(w>=h){for(const k of[1,2]){const xx=x+w*k/3;segs.push([xx,y,xx,y+h,l]);}for(let k=0;k<3;k++)cut(x+w*k/3,y,w/3,h,l+1);}
+    else{for(const k of[1,2]){const yy=y+h*k/3;segs.push([x,yy,x+w,yy,l]);}for(let k=0;k<3;k++)cut(x,y+h*k/3,w,h/3,l+1);}})(x0,y0,w,h,1);
+  return segs;}
+function fieldTargets(){const g=grass;if(!g)return;const n=g.n,segs=gridSegs(),WT=[2.4,1.7,1.15,.75,.5];   // bigger levels get more blades: heavier lines
+  let tot=0;for(const q of segs){q.push(Math.hypot(q[2]-q[0],q[3]-q[1])*WT[q[4]]);tot+=q[5];}
+  fT={x:new Float32Array(n),y:new Float32Array(n),a:new Float32Array(n),lv:new Uint8Array(n)};fox=new Float32Array(n);foy=new Float32Array(n);
+  let si=0,acc=0;const order=new Uint32Array(n);for(let i=0;i<n;i++)order[i]=i;for(let i=n-1;i>0;i--){const j=(i*2654435761>>>0)%(i+1);const t=order[i];order[i]=order[j];order[j]=t;}
+  for(let k=0;k<n;k++){const u=(k+.5)/n*tot;while(si<segs.length-1&&acc+segs[si][5]<u){acc+=segs[si][5];si++;}const q=segs[si],f=Math.min(1,(u-acc)/q[5]),i=order[k];
+    fT.x[i]=q[0]+(q[2]-q[0])*f;fT.y[i]=q[1]+(q[3]-q[1])*f;fT.a[i]=Math.abs(q[2]-q[0])>Math.abs(q[3]-q[1])?Math.PI/2:0;fT.lv[i]=q[4];}
+  FTW=W;FTH=H;}
+function fieldStep(dt){if(FM<.002||!fT)return;const g=grass,n=g.n,R=Math.max(70,Math.min(W,H)*.14),k=Math.min(1,dt*7);   // the grid bends away from the pointer, and springs back
+  for(let i=0;i<n;i++){let tx=0,ty=0;if(ptr.on){const dx=fT.x[i]-ptr.x,dy=fT.y[i]-ptr.y,d2=dx*dx+dy*dy;if(d2<R*R*4){const d=Math.sqrt(d2)||1,f=Math.exp(-d2/(R*R))*R*.45;tx=dx/d*f;ty=dy/d*f;}}
+    fox[i]+=(tx-fox[i])*k;foy[i]+=(ty-foy[i])*k;}}
+function withField(fn){ // draw the blades part-way (or all the way) into the field, each leaving at its own moment
+  const g=grass;if(FM<.002||!fT){fn();return;}if(FTW!==W||FTH!==H)fieldTargets();const n=g.n,sx=g.x.slice(0,n),sy=g.y.slice(0,n),sa=g.a.slice(0,n);
+  for(let i=0;i<n;i++){const dl=((i*7919)%1000)/1000,m0=Math.min(1,Math.max(0,FM*1.7-dl*.7)),m=m0*m0*(3-2*m0);
+    const ox=fox[i],oy=foy[i],tx=fT.x[i]+ox,ty=fT.y[i]+oy,ta=fT.a[i]+(fT.a[i]?oy:-ox)*.012;
+    let da=ta-sa[i];da-=Math.round(da/Math.PI)*Math.PI;   // a blade lying along a line can point either way
+    g.x[i]=sx[i]+(tx-sx[i])*m;g.y[i]=sy[i]+(ty-sy[i])*m;g.a[i]=sa[i]+da*m;}
+  fn();g.x.set(sx);g.y.set(sy);g.a.set(sa);}
 let TITLE=1;function draw(){c.setTransform(DPR,0,0,DPR,0,0);c.clearRect(0,0,W,H);c.fillStyle=INK;c.strokeStyle=INK;
   for(const p of pieces){if(TITLE<.01)break;c.save();c.globalAlpha=TITLE;c.translate(p.x,p.y);c.rotate(p.a);
     if(p.kind==='p2'){c.setTransform(DPR,0,0,DPR,0,0);c.translate(p.x,p.y);c.rotate(p.a);c.scale(p.sc,p.sc);c.translate(-219,-174+36.26);markFill(P2,'p2');c.fillStyle=INK;}
@@ -1454,7 +1491,7 @@ let TITLE=1;function draw(){c.setTransform(DPR,0,0,DPR,0,0);c.clearRect(0,0,W,H)
     else if(p.kind==='rule'){const v=RULE[p.line];if(v>.02){c.globalAlpha=v*TITLE;c.fillRect(-p.w/2,-p.h/2,p.w*v,p.h);}}
     c.restore();}
   const g=grass;if(ready<15)return;c.fillStyle=GRASS;c.strokeStyle=GRASS;c.strokeStyle=GRASS;c.beginPath();
-  c.lineCap="round";meadowDraw(c,g,GRASS,(getComputedStyle(SEC).getPropertyValue('--lf-flowers').trim()||'#F3E7B0,#E8C34A,#6F8FB8,#B8553A').split(',').map(x=>x.trim()));}
+  c.lineCap="round";withField(()=>meadowDraw(c,g,GRASS,(getComputedStyle(SEC).getPropertyValue('--lf-flowers').trim()||'#F3E7B0,#E8C34A,#6F8FB8,#B8553A').split(',').map(x=>x.trim())));}
 function frame(now){const dt=last?Math.min(.033,(now-last)/1000):.016;last=now;ptr.vx*=.85;ptr.vy*=.85;
   if(ready<15){if(H>=GFULL-2){for(let k=0;k<6;k++)fluid(grass,1/120,0);ready++;if(ready===15)SEC.classList.add('grown');}else step(dt,now/1000);}else step(dt,now/1000); // a meadow grown part-way down waits to settle until the opening is full height // six settling steps a frame, then live
   draw();if(!still&&visible&&!SEC.classList.contains('docked'))requestAnimationFrame(frame);else{last=0;running=false;}}
@@ -1473,7 +1510,7 @@ mode('lockup',false);
 inks();['sog-theme','sog-scheme','sog-colour'].forEach(e=>document.addEventListener(e,()=>requestAnimationFrame(()=>{inks();const f=getComputedStyle(SEC).getPropertyValue('--lf-face').trim();(document.fonts&&f?document.fonts.load('400 40px '+f):Promise.resolve()).then(()=>{size();if(still){for(let k=0;k<90;k++)fluid(grass,1/120,0);ready=15;}draw();});})));
 size();if(still){for(let k=0;k<90;k++)fluid(grass,1/120,0);ready=15;draw();}else requestAnimationFrame(frame);
 new IntersectionObserver(es=>{const v=es[0].isIntersecting;if(v&&!visible&&!still&&!running){visible=true;running=true;requestAnimationFrame(frame);}visible=v;}).observe(SEC);
-window.sogOpening={title:(a)=>{if(Math.abs(a-TITLE)<.002)return;TITLE=a;if(still)draw();},grassLine:(n)=>{const g=grass,out=new Array(n).fill(1e9);if(!g||ready<15)return out;const cols=Array.from({length:n},()=>[]);for(let i=0;i<g.n;i++){if(Math.abs(g.y[i]-g.py[i])>.6||Math.abs(g.x[i]-g.px[i])>.6)continue;const k=Math.min(n-1,Math.max(0,Math.floor(g.x[i]/W*n)));cols[k].push(g.y[i]-g.len[i]*.6);}return cols.map(a=>{if(a.length<12)return 1e9;a.sort((x,y)=>x-y);return a[Math.min(a.length-1,10)];});},fit:()=>{if(!W)return;KEEPG=H;size();KEEPG=0;if(still)draw();},wake:()=>{if(!still&&!running){running=true;requestAnimationFrame(frame);}},poke:(x,y,vx,vy)=>{ptr.x=x;ptr.y=y;ptr.vx=vx;ptr.vy=vy;ptr.on=true;},
+window.sogOpening={field:(name,m)=>{if(name)FIELD=name;m=Math.max(0,Math.min(1,m));if(Math.abs(m-FM)<.002)return;FM=m;if(m>0&&!fT)fieldTargets();if(still)draw();},title:(a)=>{if(Math.abs(a-TITLE)<.002)return;TITLE=a;if(still)draw();},grassLine:(n)=>{const g=grass,out=new Array(n).fill(1e9);if(!g||ready<15)return out;const cols=Array.from({length:n},()=>[]);for(let i=0;i<g.n;i++){if(Math.abs(g.y[i]-g.py[i])>.6||Math.abs(g.x[i]-g.px[i])>.6)continue;const k=Math.min(n-1,Math.max(0,Math.floor(g.x[i]/W*n)));cols[k].push(g.y[i]-g.len[i]*.6);}return cols.map(a=>{if(a.length<12)return 1e9;a.sort((x,y)=>x-y);return a[Math.min(a.length-1,10)];});},fit:()=>{if(!W)return;KEEPG=H;size();KEEPG=0;if(still)draw();},wake:()=>{if(!still&&!running){running=true;requestAnimationFrame(frame);}},poke:(x,y,vx,vy)=>{ptr.x=x;ptr.y=y;ptr.vx=vx;ptr.vy=vy;ptr.on=true;},
   // for the settle check: how far the furthest piece is from home, in px and degrees
   drift:()=>pieces.reduce((m,p)=>({px:Math.max(m.px,Math.hypot(p.x-p.hx,p.y-p.hy)),deg:Math.max(m.deg,Math.abs(p.a-Math.round(p.a/6.2832)*6.2832)*180/Math.PI)}),{px:0,deg:0}),
   words:()=>{const q=SEC.getBoundingClientRect();return pieces.filter(p=>p.kind==='w'||p.kind==='ch'||p.kind==='p1').map(p=>[p.hx+q.left,p.hy+q.top]);},ready:()=>ready>=15};
@@ -1496,21 +1533,19 @@ addEventListener('scroll',show,{passive:true});show();
 (()=>{ // the meadow stays pinned; scrolling changes the titles over it like titles in a play: the identity line, then "Three things, done properly."
 const open=document.querySelector('main.cb .cb-open'),t2=open&&open.querySelector('.lf-title');if(!t2)return;
 let ticking=false;const sm=x=>{x=Math.min(1,Math.max(0,x));return x*x*(3-2*x);};
+const chs=[...open.querySelectorAll('.cb-ch')];
 function upd(){ticking=false;const vh=innerHeight,y=-open.getBoundingClientRect().top/vh;   // screens scrolled into the track
   const out=sm((y-.28)/.32),inn=sm((y-.5)/.3);
+  // each chapter calls up its harmony as it arrives and lets it go as it leaves
+  let best=null,bm=0;for(const ch of chs){const r=ch.getBoundingClientRect(),m=Math.min(sm((vh-r.top)/(vh*.75)),sm((r.bottom-vh*.35)/(vh*.75)));if(m>bm){bm=m;best=ch;}}
+  const f=best?best.dataset.field:'meadow';
   window.sogOpening&&sogOpening.title&&sogOpening.title(1-out);
-  t2.style.opacity=String(inn);t2.style.transform=`translateY(${(1-inn)*24}px)`;}
+  window.sogOpening&&sogOpening.field&&sogOpening.field(f==='meadow'?null:f,f==='meadow'?0:bm);
+  const gone=chs[0]?sm((vh-chs[0].getBoundingClientRect().top)/(vh*.6)):0;   // "Three things" steps aside as the first chapter comes
+  t2.style.opacity=String(inn*(1-gone));t2.style.transform=`translateY(${(1-inn)*24-gone*40}px)`;}
 addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(upd);}},{passive:true});
 addEventListener('resize',upd);addEventListener('load',upd);upd();
 })();
-</script>
-<script>/* "Three things": the statement holds still and steps back as the three cards rise over it, each at its own pace */
-(function(){const st=document.querySelector('main.cb .cb-stage');if(!st||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
-const h=document.querySelector('main.cb .lf-title .cb-h'),cards=[...st.querySelectorAll('.cb-p')],K=[60,150,240];let tick=false;
-function upd(){tick=false;const vh=innerHeight,r=st.querySelector('.cb-panels').getBoundingClientRect(),p=Math.min(1,Math.max(0,(vh-r.top)/(vh*.85)));
-  const f=Math.min(1,Math.max(0,(p-.3)/.6)),e=f*f*(3-2*f);h.style.transform=`scale(${1-.08*e})`;h.style.opacity=String(1-e);   // it reads in full until the sheet is well up, then steps back
-  cards.forEach((c,i)=>{const q=Math.min(1,Math.max(0,p*1.25-i*.12)),eq=1-Math.pow(1-q,3);c.style.transform=`translateY(${(1-eq)*K[i]}px)`;c.style.opacity=String(.25+.75*eq);});}
-addEventListener('scroll',()=>{if(!tick){tick=true;requestAnimationFrame(upd);}},{passive:true});addEventListener('resize',upd);upd();})();
 </script>
 </body>
 </html>
