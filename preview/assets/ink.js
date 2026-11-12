@@ -23,35 +23,54 @@ float n1(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
   return mix(mix(h1(i),h1(i+vec2(1,0)),f.x),mix(h1(i+vec2(0,1)),h1(i+vec2(1,1)),f.x),f.y);}
 `;
 const N=16;
+const NL=32;
 const SIM=COMMON+`
 uniform sampler2D uPrev;uniform vec2 uRes;uniform float uAsp,uTime;
-uniform vec4 uSeg[${N}];uniform vec2 uSR[${N}];uniform int uN;   // segment a->b in 0..1; radius (screen heights), strength
+uniform vec4 uSeg[${N}];uniform vec2 uSR[${N}];uniform int uN;   // segment a->b in 0..1; radius (screen heights), strength (<0 stirs the mist)
+uniform float uLine[${NL}];                                       // the grass's top edge across the width (0..1, up), 9 where there's none
+float line(float x){float f=clamp(x,0.,1.)*${NL-1}.;int i=int(floor(f));int j=min(i+1,${NL-1});return mix(uLine[i],uLine[j],fract(f));}
 void main(){
-  // the current: a slow curl that lifts and turns the ink like smoke
   vec2 q=uv*vec2(uAsp,1.);
+  float L=line(uv.x),hy=uv.y-L;                                   // height above the grass, in screen heights
+  float near=1.-smoothstep(.04,.26,hy);                           // close over the grass, the ink starts to settle
+  float zone=1.-smoothstep(-.005,.025,hy);                         // at the blade tops it becomes mist
+  // the current: a slow curl that lifts and turns the ink like smoke; over the grass it sinks and slides sideways
   float a=n1(q*3.2+vec2(0.,-uTime*.12))*12.566+n1(q*7.+vec2(uTime*.2,0.))*3.;
-  vec2 fl=vec2(cos(a)*.55,.35+sin(a)*.55)/uRes.y;
+  vec2 smoke=vec2(cos(a)*.55,.35+sin(a)*.55);
+  float side=(n1(vec2(q.x*1.3,uTime*.08))-.5)*2.4;
+  vec2 fl=mix(smoke,vec2(side,-1.1),near)/uRes.y;
   vec2 s=uv-fl,px=1./uRes;
   float c=texture(uPrev,s).r;
   float nb=(texture(uPrev,s+vec2(px.x,0.)*1.6).r+texture(uPrev,s-vec2(px.x,0.)*1.6).r
            +texture(uPrev,s+vec2(0.,px.y)*1.6).r+texture(uPrev,s-vec2(0.,px.y)*1.6).r)*.25;
-  float v=mix(c,max(c,nb),.9);          // the edge creeps outward
-  v=v*.992-.0009;                          // and it all fades
+  float v=mix(c,max(c,nb),.9*(1.-zone));                          // the edge creeps outward (not once it's mist)
+  v=v*mix(.992,.997,near)-.0009*(1.-near);   // ink settling over the grass holds on until it lands
+  // the mist: drifts along the grass, spreads sideways, lingers, thins with depth into the blades
+  vec2 ms=uv-vec2(side*.7,-.35*smoothstep(.01,.04,hy))/uRes.y;   // slides along; what's above sinks gently onto the tops
+  float m=texture(uPrev,ms).g;
+  float mb=(texture(uPrev,ms+vec2(px.x*3.,0.)).g+texture(uPrev,ms-vec2(px.x*3.,0.)).g+texture(uPrev,ms+vec2(px.x*6.,0.)).g+texture(uPrev,ms-vec2(px.x*6.,0.)).g)*.25;
+  m=mix(m,mb,.5);                                                  // spreads sideways, not up
+  m=min(1.,max(m,smoothstep(.02,.3,v)*zone*.9)+v*zone*.04);v*=1.-zone*.25;                              // ink reaching the tops turns to mist
+  m=m*mix(.9988,.975,1.-smoothstep(-.14,-.04,hy))*mix(1.,.96,smoothstep(.03,.08,hy))-.00012;   // lingers on the tops; gone deep in the grass or high above              // lingers on top, gone deep in the grass
   vec2 P=vec2(uv.x*uAsp,uv.y);
   for(int i=0;i<${N};i++){if(i>=uN)break;vec4 b=uSeg[i];
     vec2 A=vec2(b.x*uAsp,b.y),B=vec2(b.z*uAsp,b.w),ab=B-A;
     float t=clamp(dot(P-A,ab)/max(dot(ab,ab),1e-8),0.,1.);
     float D=length(P-A-ab*t)-uSR[i].x;
-    v=max(v,(1.-smoothstep(-1.5/uRes.y,1.5/uRes.y,D))*uSR[i].y);}
-  o=vec4(clamp(v,0.,1.),0.,0.,1.);}`;
+    float k=1.-smoothstep(-1.5/uRes.y,1.5/uRes.y,D);
+    if(uSR[i].y<0.)m*=1.-.35*(1.-smoothstep(-uSR[i].x,uSR[i].x*1.2,D+uSR[i].x));   // a hand through the grass parts the mist
+    else v=max(v,k*uSR[i].y);}
+  o=vec4(clamp(v,0.,1.),clamp(m,0.,1.),0.,1.);}`;
 const SHOW=COMMON+`
-uniform sampler2D uSim;uniform vec2 uRes;uniform float uTime,uCell;
+uniform sampler2D uSim;uniform vec2 uRes;uniform float uTime,uCell,uFog;
 vec2 vor(vec2 x){vec2 n=floor(x),f=fract(x);float a=8.,b=8.;
   for(int j=-1;j<=1;j++)for(int i=-1;i<=1;i++){vec2 g=vec2(i,j),r=g+h2(n+g)-f;float d=dot(r,r);if(d<a){b=a;a=d;}else if(d<b)b=d;}
   return vec2(sqrt(a),sqrt(b));}
 void main(){
-  float v=texture(uSim,uv).r;
-  if(v<.004){o=vec4(0.);return;}
+  vec2 sm=texture(uSim,uv).rg;float v=sm.r,m=sm.g;
+  float mf=0.;for(int k=-2;k<7;k++){float w=1.-abs(float(k)-1.5)/6.;mf+=texture(uSim,uv-vec2(0.,float(k)*uFog)).g*w;}mf/=5.;   // a soft band that rises off the tops
+  if(v<.004&&max(m,mf)<.004){o=vec4(0.);return;}
+  
   vec2 px=gl_FragCoord.xy;
   float g=h1(px+fract(uTime*7.)*137.);                       // film grain, new each frame
   vec2 vc=vor(px/uCell+vec2(0.,uTime*.15));float edge=vc.y-vc.x;
@@ -66,6 +85,8 @@ void main(){
   float streak=smoothstep(.44,.6,v)*(1.-core);               // dark streaks running from the beads into the core
   col=mix(col,vec4(0.,0.,0.,.9),streak*(.55+.45*inner));
   col=mix(col,vec4(vec3(.012,.016,.03)*(1.+g*.6),.97),core);
+  float fog=smoothstep(.0,.3,max(m,mf))*.7*(.55+.45*g)*(1.-col.a);                 // the mist on the grass, soft and grainy
+  col+=vec4(mix(blue,lite,.55)*fog,fog);
   col.rgb+=(h1(px)-.5)/255.;
   o=col;}`;
 function program(fs){
@@ -80,7 +101,7 @@ const vao=gl.createVertexArray();gl.bindVertexArray(vao);const vb=gl.createBuffe
 gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,2,gl.FLOAT,false,0,0);
 let W=0,H=0,SW=0,SH=0,sheets=[],cur=0,dpr=1;
 function sheet(w,h){const t=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,t);
-  gl.texImage2D(gl.TEXTURE_2D,0,gl.R16F,w,h,0,gl.RED,gl.HALF_FLOAT,null);
+  gl.texImage2D(gl.TEXTURE_2D,0,gl.RG16F,w,h,0,gl.RG,gl.HALF_FLOAT,null);
   for(const[k,v]of[[gl.TEXTURE_MIN_FILTER,gl.LINEAR],[gl.TEXTURE_MAG_FILTER,gl.LINEAR],[gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE],[gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE]])gl.texParameteri(gl.TEXTURE_2D,k,v);
   const f=gl.createFramebuffer();gl.bindFramebuffer(gl.FRAMEBUFFER,f);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,t,0);
   gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);return{t,f};}
@@ -92,33 +113,35 @@ function resize(){const r=SEC.getBoundingClientRect();if(Math.abs(r.width-W)<2&&
 const on=()=>getComputedStyle(SEC).getPropertyValue('--lf-mark-fill').trim()==='glass';
 let active=on();cv.style.display=active?'block':'none';
 // ---- pointer: segments since the last frame
-const segs=[];let ptr=null,down=false,downAt=0,lastAct=-1e9,running=false,visible=true;
+const segs=[];let inG=false,ptr=null,down=false,downAt=0,lastAct=-1e9,running=false,visible=true;
 const toUV=e=>{const r=SEC.getBoundingClientRect();return[(e.clientX-r.left)/r.width,1-(e.clientY-r.top)/H];};
 const ui=e=>e.target.closest&&e.target.closest('button,a,input,.fys,.fys-tab');
 function push(a,b,rad,str){segs.push([a[0],a[1],b[0],b[1],rad,str]);if(segs.length>N)segs.shift();lastAct=performance.now();wake();}
-SEC.addEventListener('pointermove',e=>{if(!active)return;const p=toUV(e);
+// over the grass the pointer is busy pushing blades: no ink there
+const inGrass=e=>{const r=SEC.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,f=Math.min(NL-1,Math.max(0,x*(NL-1))),k=Math.floor(f),L=LINE[k]+(LINE[Math.min(NL-1,k+1)]-LINE[k])*(f-k);return L>-1&&(e.clientY-r.top)>(1-L)*H-6;};   // below the resting meadow's top edge
+SEC.addEventListener('pointermove',e=>{if(!active)return;const p=toUV(e);if(inGrass(e)){if(ptr)push(ptr,p,30/H,-1);ptr=p;inG=true;return;}if(inG){inG=false;ptr=p;return;}
   if(ptr){const big=down;push(ptr,p,big?14/H:3.2/H,big?1:.42);}ptr=p;});
-SEC.addEventListener('pointerdown',e=>{if(!active||ui(e))return;const p=toUV(e);ptr=p;down=true;downAt=performance.now();push(p,p,24/H,1);});
+SEC.addEventListener('pointerdown',e=>{if(!active||ui(e))return;if(inGrass(e)){down=false;return;}const p=toUV(e);ptr=p;down=true;downAt=performance.now();push(p,p,24/H,1);});
 addEventListener('pointerup',()=>{down=false;});addEventListener('pointercancel',()=>{down=false;ptr=null;});
 SEC.addEventListener('pointerleave',()=>{ptr=null;down=false;});
 // ---- the loop
-const T0=performance.now();
+const T0=performance.now(),LINE=new Float32Array(NL).fill(-9);let fr=0;
 function frame(now){
   if(!active||!visible){running=false;return;}
-  if(down&&ptr){const held=Math.min(1,(now-downAt)/1500);push(ptr,ptr,(18+26*held)/H,1);}  // hold to pour a growing pool
+  if(down&&ptr&&!inG){const held=Math.min(1,(now-downAt)/1500);push(ptr,ptr,(18+26*held)/H,1);}  // hold to pour a growing pool
   const t=(now-T0)/1000;
   gl.disable(gl.BLEND);gl.useProgram(SIMP.p);
   gl.bindFramebuffer(gl.FRAMEBUFFER,sheets[1-cur].f);gl.viewport(0,0,SW,SH);
   gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,sheets[cur].t);gl.uniform1i(SIMP.u.uPrev,0);
   gl.uniform2f(SIMP.u.uRes,SW,SH);gl.uniform1f(SIMP.u.uAsp,W/H);gl.uniform1f(SIMP.u.uTime,t);
   const sg=new Float32Array(N*4),sr=new Float32Array(N*2);segs.forEach((s,i)=>{sg.set(s.slice(0,4),i*4);sr.set(s.slice(4),i*2);});
-  gl.uniform4fv(SIMP.u['uSeg[0]'],sg);gl.uniform2fv(SIMP.u['uSR[0]'],sr);gl.uniform1i(SIMP.u.uN,segs.length);segs.length=0;
+  if(!(fr++%8)){const o=window.sogOpening,gl0=o&&o.grassLine?o.grassLine(NL):null;for(let i=0;i<NL;i++)LINE[i]=gl0&&gl0[i]<1e8?1-gl0[i]/H:-9;}gl.uniform1fv(SIMP.u['uLine[0]'],LINE);gl.uniform4fv(SIMP.u['uSeg[0]'],sg);gl.uniform2fv(SIMP.u['uSR[0]'],sr);gl.uniform1i(SIMP.u.uN,segs.length);segs.length=0;
   gl.drawArrays(gl.TRIANGLES,0,3);cur=1-cur;
   gl.useProgram(SHOWP.p);gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,cv.width,cv.height);
   gl.bindTexture(gl.TEXTURE_2D,sheets[cur].t);gl.uniform1i(SHOWP.u.uSim,0);
-  gl.uniform2f(SHOWP.u.uRes,cv.width,cv.height);gl.uniform1f(SHOWP.u.uTime,t);gl.uniform1f(SHOWP.u.uCell,8*dpr);
+  gl.uniform2f(SHOWP.u.uRes,cv.width,cv.height);gl.uniform1f(SHOWP.u.uTime,t);gl.uniform1f(SHOWP.u.uCell,8*dpr);gl.uniform1f(SHOWP.u.uFog,7/H);
   gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);gl.drawArrays(gl.TRIANGLES,0,3);
-  if(now-lastAct<14000)requestAnimationFrame(frame);else running=false;}   // everything has faded by then; rest
+  if(now-lastAct<22000)requestAnimationFrame(frame);else running=false;}   // everything has faded by then; rest
 function wake(){if(!running&&active&&visible){running=true;requestAnimationFrame(frame);}}
 new IntersectionObserver(es=>{visible=es[0].isIntersecting;if(visible&&performance.now()-lastAct<14000)wake();}).observe(SEC);
 document.addEventListener('sog-theme',()=>requestAnimationFrame(()=>{active=on();cv.style.display=active?'block':'none';if(active)wake();}));
