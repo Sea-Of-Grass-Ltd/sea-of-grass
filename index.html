@@ -877,18 +877,36 @@ main.cb .cb-ch{position:relative;z-index:3;height:180vh;height:180svh;padding:0 
 main.cb .cb-ch .cb-chp{position:sticky;top:calc(50svh - 260px);width:min(460px,100%);margin-left:max(0px,calc((100vw - 1240px)/2));pointer-events:auto}
 html[data-theme="simple"] main.cb .cb-ch .cb-chp{background:#F4F1EA;border:2px solid #111;padding:clamp(16px,1.6vw,22px)}   /* over the field a card needs a face to read on */
 /* Websites: the card is the plot mown out of the meadow. No mock picture: the meadow round it is the picture; the words are set large across it */
-main.cb .cb-ch .cb-chp.cb-snap{box-sizing:border-box;max-width:none;border-radius:26px;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);grid-template-rows:auto auto auto;align-content:center;column-gap:clamp(28px,5vw,80px);row-gap:10px;padding:clamp(24px,4vw,64px)}
+main.cb .cb-ch .cb-chp.cb-snap{background:none!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-sizing:border-box;max-width:none;border-radius:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto auto auto;column-gap:clamp(24px,3vw,48px);padding:clamp(8px,2vh,28px) 0;align-content:center;row-gap:clamp(10px,1.6vh,18px)}
+/* Websites plot card (Refero: Square's and Shuttle's two-plan cards): name and line on top; two equal tiers on one grid, each a small label, a large price with its unit, one plain line; a footer rule with the new-site note and links */
 main.cb .cb-ch .cb-chp.cb-snap .ui{display:none}
-html body main.cb .cb-ch .cb-chp.cb-snap h3{grid-column:1;grid-row:1;font-size:clamp(44px,6.4vw,104px);line-height:.95;margin:0;align-self:end}
-html body main.cb .cb-ch .cb-chp.cb-snap>p:not(.cb-price):not(.cb-more){grid-column:1;grid-row:2;font-size:clamp(18px,1.7vw,26px);margin:0;align-self:start}
-/* the two prices are the offer: set as large as the heading, each with one plain line under it */
-html body main.cb .cb-ch .cb-chp.cb-snap .cb-price{grid-column:2;grid-row:1/3;margin:0;align-self:center;display:grid;gap:clamp(12px,1.6vw,22px)}
-html body main.cb .cb-ch .cb-chp.cb-snap .cb-tier{display:grid;gap:4px;opacity:1}
-html body main.cb .cb-ch .cb-chp.cb-snap .cb-tier b{font-size:clamp(30px,3.7vw,62px);line-height:1;letter-spacing:-.035em;white-space:nowrap}
-html body main.cb .cb-ch .cb-chp.cb-snap .cb-tier>span{font:400 clamp(15px,1.2vw,18px)/1.35 var(--cb-body);opacity:.8}
-html body main.cb .cb-ch .cb-chp.cb-snap .cb-tier-q>span{opacity:.65}
-html body main.cb .cb-ch .cb-chp.cb-snap .cb-more{grid-column:1;grid-row:3;margin:clamp(10px,1.4vw,20px) 0 0;align-self:start}
-@media (max-width:999px){main.cb .cb-ch .cb-chp.cb-snap{display:flex;flex-direction:column;justify-content:center;gap:10px;border-radius:20px;padding:22px}html body main.cb .cb-ch .cb-chp.cb-snap h3{font-size:clamp(34px,10vw,54px)}html body main.cb .cb-ch .cb-chp.cb-snap .cb-tier b{font-size:clamp(30px,9vw,44px)}html body main.cb .cb-ch .cb-chp.cb-snap .cb-price{gap:10px}}
+html body main.cb .cb-ch .cb-chp.cb-snap h3{grid-column:1;grid-row:1;font-size:clamp(40px,4.6vw,76px);line-height:1;margin:0;align-self:start;color:inherit}
+html body main.cb .cb-ch .cb-chp.cb-snap :is(h3 a,.cb-amt b,.cb-amt em,.cb-tier,.cb-note,p){color:inherit}
+html body main.cb .cb-ch .cb-chp.cb-snap>p:not(.cb-price):not(.cb-more):not(.cb-note){grid-column:1/3;grid-row:2;font-size:clamp(16px,1.3vw,20px);line-height:1.4;margin:6px 0 0;opacity:.8}
+html body main.cb .cb-ch .cb-chp.cb-snap .cb-price{grid-column:1/3;grid-row:3;margin:clamp(14px,3vh,40px) 0 clamp(10px,2.4vh,30px);align-self:center;display:grid;grid-template-columns:1fr 1fr;column-gap:clamp(24px,3vw,48px)}
+html body main.cb .cb-ch .cb-chp:is(.cb-snap,.cb-flat) .cb-tier{display:grid;align-content:start;gap:10px;border-top:1px solid color-mix(in srgb,currentColor 22%,transparent);padding-top:clamp(14px,1.4vw,20px);opacity:1}
+html body main.cb .cb-ch .cb-chp:is(.cb-snap,.cb-flat) .cb-tier i{font:500 12px/1.2 "IBM Plex Mono",Menlo,monospace;font-style:normal;letter-spacing:.16em;text-transform:uppercase;opacity:.7}
+html body main.cb .cb-ch .cb-chp:is(.cb-snap,.cb-flat) .cb-amt{display:flex;align-items:baseline;gap:10px;opacity:1}
+html body main.cb .cb-ch .cb-chp:is(.cb-snap,.cb-flat) .cb-amt b{font-size:clamp(46px,5.2vw,84px);line-height:.9;letter-spacing:-.04em}
+html body main.cb .cb-ch .cb-chp:is(.cb-snap,.cb-flat) .cb-amt em{font:500 clamp(14px,1.1vw,17px)/1 var(--cb-body);font-style:normal;opacity:.7}
+html body main.cb .cb-ch .cb-chp:is(.cb-snap,.cb-flat) .cb-tier>span:last-child{font:400 clamp(14px,1.1vw,16px)/1.45 var(--cb-body);opacity:.75;max-width:34ch}
+html body main.cb .cb-ch .cb-chp.cb-snap .cb-note{grid-column:1;grid-row:4;white-space:nowrap;margin:0;align-self:end;font:400 clamp(14px,1.1vw,16px)/1.4 var(--cb-body);opacity:.75}
+html body main.cb .cb-ch .cb-chp.cb-snap .cb-more{grid-column:2;grid-row:4;margin:0;align-self:end;justify-self:end}
+/* Brand and Creative tech follow Websites: no box, no mock picture, the type on the dark in the opening's ink; the price set as a tier. The S and the visual synth stay */
+main.cb .cb-ch .cb-chp.cb-flat{background:none!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;padding:0!important;border-radius:0}
+main.cb .cb-ch .cb-chp.cb-flat .ui{display:none}
+html body main.cb .cb-ch .cb-chp.cb-flat h3{font-size:clamp(40px,4.6vw,76px);line-height:1;margin:0;color:inherit}
+html body main.cb .cb-ch .cb-chp.cb-flat :is(h3 a,p,.cb-tier){color:inherit}
+html body main.cb .cb-ch .cb-chp.cb-flat>p:not(.cb-price):not(.cb-more){font-size:clamp(16px,1.3vw,20px);line-height:1.4;margin:10px 0 0;opacity:.8}
+html body main.cb .cb-ch .cb-chp.cb-flat .cb-price{display:block;margin:clamp(18px,3.4vh,40px) 0 clamp(14px,2.6vh,28px)}
+html body main.cb .cb-ch .cb-chp.cb-flat .cb-amt b{font-size:clamp(32px,3.2vw,52px)}
+html body main.cb .cb-ch .cb-chp.cb-flat .cb-more{margin:0}
+html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-ch .cb-chp.cb-flat h3{font-size:clamp(26px,2.6vw,42px);line-height:1.15}
+html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-ch .cb-chp.cb-flat .cb-amt b{font-size:clamp(24px,2.3vw,36px);line-height:1.15}
+/* Ember: Syne runs about 1.6x wider, so the plot card's big type is set smaller to keep the same footprint */
+html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-ch .cb-chp.cb-snap h3{font-size:clamp(26px,2.6vw,42px);line-height:1.15}
+html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-ch .cb-chp.cb-snap .cb-amt b{font-size:clamp(34px,3.6vw,58px);line-height:1.1;letter-spacing:-.02em}
+@media (max-width:999px){main.cb .cb-ch .cb-chp.cb-snap{display:flex;flex-direction:column;justify-content:center;gap:14px;padding:12px 0}main.cb .cb-ch .cb-chp.cb-snap>*{align-self:stretch!important;justify-self:auto!important;text-align:left!important;margin:0!important}html body main.cb .cb-ch .cb-chp.cb-snap .cb-price{width:100%;margin:10px 0!important}html body main.cb .cb-ch .cb-chp.cb-snap .cb-more{display:flex;gap:20px}html body main.cb .cb-ch .cb-chp.cb-snap>p:not(.cb-price):not(.cb-more):not(.cb-note){text-align:left;justify-self:start}html body main.cb .cb-ch .cb-chp.cb-snap .cb-price{grid-template-columns:1fr 1fr;column-gap:16px}html body main.cb .cb-ch .cb-chp.cb-snap .cb-amt{flex-direction:column;align-items:flex-start;gap:4px}html body main.cb .cb-ch .cb-chp.cb-snap .cb-amt b{font-size:clamp(36px,11vw,52px)}html body main.cb .cb-ch .cb-chp.cb-snap .cb-tier>span:last-child{display:none}}
 main.cb #brand.cb-ch .cb-chp{margin-left:auto;margin-right:max(0px,calc((100vw - 1240px)/2))}   /* the meadow is the ground: pinned while the titles change over it */
 main.cb .lf-title{position:absolute;inset:0 0 38% 0;display:grid;place-items:center;padding:calc(var(--cb-nav,64px) + 8px) var(--cb-side,24px) 0;pointer-events:none;z-index:2;opacity:0}
 html body main.cb .lf-title .cb-h{text-align:center;color:var(--lf-ink,#fff)}
@@ -1343,7 +1361,7 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
     <canvas id="lf-cv" aria-label="The headline and the Sea of Grass S over a heap of grass. Move your pointer or finger sideways through it: the S gets knocked and springs back, and the grass is scooped up and settles again. Press to throw more grass."></canvas>
   </section>
   <div class="cb-gap" aria-hidden="true"></div>
-  <div class="cb-ch" id="services" data-field="grid">
+  <div class="cb-ch" id="services" data-field="meadow">
     <article class="cb-p cb-chp">
         <a class="ui ui-web" href="/preview/services/websites/" tabindex="-1" aria-hidden="true">
           <span class="pl win"><span class="bar"><i></i><i></i><i></i><span class="url">harpershardware.com</span></span>
@@ -1353,12 +1371,12 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
         </a>
         <h3><a href="/preview/services/websites/">Websites</a></h3>
         <p>Fixes, new sites and hosting.</p>
-        <p class="cb-price cb-tiers"><span class="cb-tier"><b>From $250</b><span>Fixes and small jobs</span></span><span class="cb-tier"><b>$50 a month</b><span>Hosting, security and care</span></span><span class="cb-tier cb-tier-q"><span>New sites from $2,000</span></span></p>
+        <p class="cb-price cb-tiers"><span class="cb-tier"><i>Fixes</i><span class="cb-amt"><b>$250</b><em>from, once</em></span><span>Small jobs and repairs on the site you have.</span></span><span class="cb-tier"><i>Care</i><span class="cb-amt"><b>$50</b><em>a month</em></span><span>Hosting, security and small changes, looked after.</span></span></p><p class="cb-note">New sites from $2,000.</p>
         <p class="cb-more"><a href="/preview/services/websites/">Websites and hosting</a><a href="/preview/services/apps/">Apps</a></p>
       </article>
   </div>
   <div class="cb-ch" id="brand" data-field="mark">
-    <article class="cb-p cb-chp">
+    <article class="cb-p cb-chp cb-flat">
         <a class="ui ui-brand" href="/preview/services/brand/" tabindex="-1" aria-hidden="true">
           <span class="pl kit"><span class="kt"><span>Brand kit</span><span>v3</span></span>
             <span class="mk"><svg viewBox="0 0 44 44"><rect width="44" height="44" rx="12" fill="#2F4A2A"/><path d="M13 31V13h4l10 12V13h4v18h-4L17 19v12z" fill="#F3E7B0"/></svg><span class="aa">Aa<small>Fraunces &middot; Inter</small></span></span>
@@ -1368,16 +1386,16 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
         </a>
         <h3><a href="/preview/services/brand/">Brand</a></h3>
         <p>One look for your sign, menu, site and cards.</p>
-        <p class="cb-price"><b>Fixed quote</b><span>Priced after a free call and written down before work starts.</span></p>
+        <p class="cb-price cb-tiers"><span class="cb-tier"><i>Price</i><span class="cb-amt"><b>Fixed quote</b></span><span>Priced after a free call and written down before work starts.</span></span></p>
         <p class="cb-more"><a href="/preview/services/brand/">Brand and identity</a><a href="/preview/services/illustration/">Illustration</a></p>
       </article>
   </div>
   <div class="cb-ch" id="creative-tech" data-field="viz">
-    <article class="cb-p cb-chp">
+    <article class="cb-p cb-chp cb-flat">
 
         <h3><a href="/preview/services/live-visuals/">Creative tech</a></h3>
         <p>What a template can&rsquo;t do.</p>
-        <p class="cb-price"><b>Fixed quote</b><span>Priced after a free call and written down before work starts.</span></p>
+        <p class="cb-price cb-tiers"><span class="cb-tier"><i>Price</i><span class="cb-amt"><b>Fixed quote</b></span><span>Priced after a free call and written down before work starts.</span></span></p>
         <p class="cb-more"><a href="/preview/services/live-visuals/">Live visuals</a><a href="/preview/services/characters/">3D characters</a></p>
       
         <div class="vzd" role="group" aria-label="Controller for the visualizer in the grass">
@@ -1607,9 +1625,9 @@ function markFill(path,key){const m=MFILL;
   else{c.fillStyle=MARKC;c.fill(path);}}
 // ---- the field: the same blades, re-set to another harmony. FIELD names it, FM is how far they've gone (0 meadow .. 1 there)
 let GRECT=null,FIELD='grid',FM=0,FTW=0,FTH=0,fox=null,foy=null,fT=null;const FTS={};
-function plotRect(){ // Websites: a site is a plot. The meadow rises to fill the screen and one clean rectangle is mown out of it; the card is set into that plot
-  const wide=W>=1000,bot=H-(wide?92:84),top=TOP+16,pw=wide?Math.min(W*.64,1000):W-36,ph=Math.min(wide?Math.max(300,(bot-top)*.56):360,bot-top-70);
-  GRECT={x:(W-pw)/2,y:top+(bot-top-ph)/2,w:pw,h:ph,r:wide?26:20};return GRECT;}
+function plotRect(){ // Websites: the words sit on the dark above the lawn, like the title card before them
+  const wide=W>=1000,lawn=H*(wide?.27:.24),top=TOP+20,bot=H-lawn-24,pw=wide?Math.min(W*.72,1040):W-36;
+  GRECT={x:(W-pw)/2,y:top,w:pw,h:Math.max(300,bot-top),lawn};return GRECT;}
 function markTargets(){ // Brand: the field grows the mark. The S is drawn small off-screen; its edge gets a third of the blades, laid along the outline, and the rest fill it, standing up like a clipped hedge
   const g=grass,n=g.n,wide=W>=1000,hS=Math.min((H-TOP)*(wide?.8:.62),(wide?W*.44:W*.88)/1.357),sc=hS/258.56,wS=350.94*sc,ox=wide?Math.max(24,(W*.5-wS)/2+W*.02):(W-wS)/2,oy=TOP+(H-TOP-hS)/2;   // beside the card on a wide screen, behind it on a narrow one
   const k=.25,cw=Math.ceil(wS*k),ch=Math.ceil(hS*k),oc=document.createElement('canvas');oc.width=cw;oc.height=ch;const x=oc.getContext('2d');
@@ -1647,23 +1665,13 @@ function fieldTargets(){const g=grass;if(!g)return;if(FTW!==W||FTH!==H){for(cons
   if(!fox||fox.length!==g.n){fox=new Float32Array(g.n);foy=new Float32Array(g.n);}
   if(!FTS[FIELD]){if(FIELD==='viz'){const n=g.n,T={x:new Float32Array(n),y:new Float32Array(n),a:new Float32Array(n),dl:new Float32Array(n)};for(let i=0;i<n;i++)T.dl[i]=((i*7919)%1000)/1000;vizTargets(T,0);FTS.viz=T;}
   else FTS[FIELD]=FIELD==='mark'?markTargets():gridTargets();}fT=FTS[FIELD];}
-function gridTargets(){const g=grass,n=g.n,R=plotRect(),m=5,LM=g.d0*1.9;
+function gridTargets(){ // the meadow stays where it is and is mown into a level lawn: every blade upright, one even height, cut in a single pass from left to right
+  const g=grass,n=g.n,R=plotRect(),band=R.lawn,cols=Math.max(1,Math.round(Math.sqrt(n*W/band))),rows=Math.ceil(n/cols),hs=i=>((i*2654435761)>>>0)/4294967296;
   const fT={x:new Float32Array(n),y:new Float32Array(n),a:new Float32Array(n),dl:new Float32Array(n)};
-  const hal=(i,b)=>{let f=1,r=0;while(i>0){f/=b;r+=f*(i%b);i=Math.floor(i/b);}return r;},hs=i=>((i*2654435761)>>>0)/4294967296;
-  // a blade grows up from its foot, so nothing may root where its tip would cross the mown edge: the keep-out reaches further below the plot than beside or above it
-  const inside=(x,y,L)=>x>R.x-m&&x<R.x+R.w+m&&y>R.y-m&&y<R.y+R.h+L+m;
-  const ne=Math.round(n*.2),per=2*(R.w+R.h);let q=1;
-  for(let i=0;i<n;i++){const L=g.len[i]||g.d0*1.4;let x,y,a;
-    if(i<ne){ // the mown edge: a close hedge standing just outside the plot, leaning away from it
-      const u=hs(i+7)*per,o=3+hs(i+19)*9;
-      if(u<R.w){x=R.x+u;y=R.y-o;a=(hs(i+3)-.5)*.5;}
-      else if(u<R.w+R.h){x=R.x+R.w+o;y=R.y+(u-R.w)+L*.5;a=.32+hs(i+3)*.3;}
-      else if(u<2*R.w+R.h){x=R.x+(u-R.w-R.h);y=R.y+R.h+L+o;a=(hs(i+3)-.5)*.4;}
-      else{x=R.x-o;y=R.y+(u-2*R.w-R.h)+L*.5;a=-.32-hs(i+3)*.3;}}
-    else{do{x=hal(q,2)*W;y=TOP+hal(q,3)*(H-TOP+L*.6);q++;}while(inside(x,y,L));   // the field: even cover everywhere else
-      const dx=x<R.x?R.x-x:x>R.x+R.w?x-(R.x+R.w):0,near=Math.max(0,1-dx/90)*(y>R.y&&y<R.y+R.h+L?1:0);
-      a=(hs(i+3)-.5)*.34+(x<R.x?-1:1)*near*.3;}
-    fT.x[i]=x;fT.y[i]=y;fT.a[i]=a;fT.dl[i]=Math.min(1,Math.max(0,1-(y-TOP)/(H-TOP))*.85+hs(i+11)*.15);}   // it rises from the ground up
+  const order=new Uint32Array(n);for(let i=0;i<n;i++)order[i]=i;for(let i=n-1;i>0;i--){const j=(i*2654435761>>>0)%(i+1);const t=order[i];order[i]=order[j];order[j]=t;}
+  for(let k=0;k<n;k++){const i=order[k],c=k%cols,r=Math.floor(k/cols),L=g.len[i]||g.d0*1.4;
+    const x=(c+.5+(hs(i+5)-.5)*.8)/cols*W,y=H-(r+.5+(hs(i+9)-.5)*.6)/rows*(band-L)+2;   // feet spread through the band; tips stop at one clean line
+    fT.x[i]=x;fT.y[i]=y;fT.a[i]=(hs(i+3)-.5)*.12;fT.dl[i]=Math.min(1,Math.max(0,x/W*.9+hs(i+11)*.1));}
   return fT;}
 function fieldStep(dt){if(FM<.002||!fT)return;if(FIELD==='viz'){if(ptr.down&&!VZ.held){VZ.trig=1;}VZ.held=ptr.down;vizTargets(fT,dt);}const g=grass,n=g.n,R=Math.max(70,Math.min(W,H)*.14),k=Math.min(1,dt*7);   // the grid bends away from the pointer, and springs back
   for(let i=0;i<n;i++){let tx=0,ty=0;if(ptr.on){const dx=fT.x[i]-ptr.x,dy=fT.y[i]-ptr.y,d2=dx*dx+dy*dy;if(d2<R*R*4){const d=Math.sqrt(d2)||1,f=Math.exp(-d2/(R*R))*R*.45;tx=dx/d*f;ty=dy/d*f;}}
@@ -1731,9 +1739,10 @@ const chs=[...open.querySelectorAll('.cb-ch')],wc=open.querySelector('#services 
 const tc=open.querySelector('#creative-tech .cb-chp');
 function lay(){const o=window.sogOpening;if(tc&&o&&o.vizFree){const r=tc.getBoundingClientRect(),x=r.right+24,w=innerWidth-x-24;o.vizFree(w>=260?{x,w}:{x:0,w:innerWidth});}   // the visualizer plays in the room beside the Creative tech card
   const g=o&&o.gridRect&&o.gridRect();if(!wc)return;   // the Websites card becomes one of the grid's √3 rectangles
-  if(g){wc.classList.add('cb-snap');const pad=parseFloat(getComputedStyle(wc.parentElement).paddingLeft)||0;Object.assign(wc.style,{top:g.y+'px',marginLeft:(g.x-pad)+'px',width:g.w+'px',height:g.h+'px'});}
+  {const lf=document.querySelector('main.cb .lf'),ink=lf?getComputedStyle(lf).getPropertyValue('--lf-ink').trim():'';open.querySelectorAll('.cb-chp.cb-flat').forEach(e=>e.style.color=ink);}
+  if(g){wc.classList.add('cb-snap');const lf=document.querySelector('main.cb .lf');if(lf)wc.style.color=getComputedStyle(lf).getPropertyValue('--lf-ink').trim();const pad=parseFloat(getComputedStyle(wc.parentElement).paddingLeft)||0;Object.assign(wc.style,{top:g.y+'px',marginLeft:(g.x-pad)+'px',width:g.w+'px',height:g.h+'px'});}
   else{wc.classList.remove('cb-snap');wc.style.top=wc.style.marginLeft=wc.style.width=wc.style.height='';}}
-addEventListener('resize',()=>requestAnimationFrame(lay));addEventListener('load',lay);setTimeout(lay,300);
+addEventListener('resize',()=>requestAnimationFrame(lay));addEventListener('load',lay);setTimeout(lay,300);['sog-theme','sog-scheme'].forEach(ev=>document.addEventListener(ev,()=>setTimeout(lay,60)));   // a new style brings a new ink for the open cards
 function upd(){ticking=false;const vh=innerHeight,y=-open.getBoundingClientRect().top/vh;   // screens scrolled into the track
   const out=sm((y-.28)/.32),inn=sm((y-.5)/.3);
   // each chapter calls up its harmony as it arrives and lets it go as it leaves
