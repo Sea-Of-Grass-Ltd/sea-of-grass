@@ -694,7 +694,7 @@ html[data-theme="simple"] .fys-tab,html[data-theme="simple"] .fys-tab button{bor
 .cases .case.feature{grid-column:1/-1}.case-img{display:block;width:100%;aspect-ratio:2.4/1;object-fit:cover;border-radius:var(--r-card,12px)}html[data-theme="brutal"] .case-img{border-radius:0}.case-img.svc-img{aspect-ratio:1.732/1}
 /* ===== Scenes (style refresh, 2026-11): every home section is a full-screen scene with its own real background, snapped
    one to the next like a feed; content sits on the scene, not in bordered cards (Ember keeps its cards). Backgrounds are
-   painted by ::before (colour) and ::after (the Logo Field grass as a mask, the Duchess cans, the Fantasm porthole, the
+   painted by ::before (colour) and ::after (the Logo Field grass as a mask, the Duchess labels, the
    S mark large, a type wall), reaching both screen edges; main clips the overhang so the page never scrolls sideways.
    The new palettes: Dew (glass), Clay (neu), Ledger (simple), Dusk. Ember (brutal) keeps every colour. */
 main#top{overflow-x:clip}
@@ -711,8 +711,6 @@ main#top>.wrap>footer{position:relative;isolation:isolate}
 }
 @media (prefers-reduced-motion:reduce){html:has(main#top section.trust){scroll-snap-type:none}}
 /* the scene layers, filled per style below */
-main#top #services::after{background:var(--porthole-glow,none),url(/preview/assets/home/fantasm-porthole.webp) right max(var(--side),calc((100vw - 1280px) / 2 + var(--side))) top clamp(90px,12vh,140px)/min(34vw,440px) no-repeat;opacity:var(--porthole-o,.95)}
-main#top #services>.head{min-height:clamp(220px,34vw,460px);align-items:flex-end}
 main#top #work{--lab-w:min(94vw,1500px);--lab-pad:clamp(28px,4vh,48px)}
 main#top #work::after{background:url(/preview/work/duchess-nip-co/labels.webp) center top var(--lab-pad)/var(--lab-w) auto no-repeat;bottom:auto;height:calc(var(--lab-w) / 3.852 + var(--lab-pad) * 2)} /* the three labels, flat: no fade, no gradient */
 main#top #work>.head{margin-top:min(60vh,600px)}
@@ -726,8 +724,6 @@ main#top #contact>.live-grass{position:absolute;z-index:-1;left:calc(50% - 50vw)
 .live-grass canvas{display:block;width:100%;height:100%}
 main#top #contact{padding-bottom:max(160px,min(30vh,260px))}
 @media (max-width:760px){
-  main#top #services::after{background-position:right 16px top 84px;background-size:min(52vw,240px)}
-  main#top #services>.head{min-height:300px}
   main#top #work::after{height:56vh}main#top #work>.head{margin-top:32vh}
   main#top #process::after{font-size:clamp(70px,24vw,140px);-webkit-text-stroke-width:1.5px}
 }
@@ -746,7 +742,7 @@ html[data-theme="glass"]:not([data-scheme]) .slot{border:1px solid rgba(36,18,58
 html[data-theme="glass"]:not([data-scheme]) .lf{--lf-ground:#E6EAFB;--lf-ink:#24123A;--lf-mark:#24123A;--lf-grass:#7F89F0}
 html[data-theme="glass"]:not([data-scheme]) main#top section.trust{--sc:#F4D9E6;--scene:linear-gradient(180deg,#AEB9FF,#F4D9E6 62%,#FFE3D4)}
 html[data-theme="glass"]:not([data-scheme]) main#top section.trust::after{background:radial-gradient(closest-side,rgba(255,179,160,.75),rgba(244,217,230,.5) 45%,rgba(159,227,255,.35) 70%,transparent) center/min(80vw,900px) min(80vw,900px) no-repeat;filter:blur(30px)}
-html[data-theme="glass"]:not([data-scheme]) main#top #services{--sc:#24123A;--fg:#fff;--fg2:#F1ECFF;--soft:#D9D0EC;--steel:#BDB2D6;--rule:rgba(255,255,255,.2);--lav:#FF9A73;--field:rgba(255,255,255,.1);--porthole-glow:radial-gradient(closest-side,rgba(174,185,255,.35),transparent) right calc(max(var(--side),calc((100vw - 1280px) / 2 + var(--side))) - 6vw) top 6vh/min(48vw,620px) min(48vw,620px) no-repeat}
+html[data-theme="glass"]:not([data-scheme]) main#top #services{--sc:#24123A;--fg:#fff;--fg2:#F1ECFF;--soft:#D9D0EC;--steel:#BDB2D6;--rule:rgba(255,255,255,.2);--lav:#FF9A73;--field:rgba(255,255,255,.1);}
 html[data-theme="glass"]:not([data-scheme]) main#top #work{--sc:#F4D9E6}
 html[data-theme="glass"]:not([data-scheme]) main#top #process{--sc:#E6EAFB;--scene:linear-gradient(180deg,#EEF1F8,#DCE3FF);--wall:rgba(127,137,240,.35)}
 html[data-theme="glass"]:not([data-scheme]) main#top .thesis{--sc:#AEB9FF;--mark:rgba(36,18,58,.1);--soft:#2E1B48;--lav:#7A1F05}
@@ -799,7 +795,7 @@ html[data-theme="dusk"]:not([data-scheme]){--bg:#120607;--fg:#F1E9DD;--fg2:#E6DC
 html[data-theme="dusk"]:not([data-scheme]) .lf{--lf-ground:#120607;--lf-ink:#F1E9DD;--lf-mark:#F1E9DD;--lf-grass:#9D86FF}
 html[data-theme="dusk"]:not([data-scheme]) main#top section.trust{--sc:#120607}
 html[data-theme="dusk"]:not([data-scheme]) main#top section.trust::after{background:radial-gradient(closest-side,rgba(255,59,31,.5),rgba(42,22,56,.45) 50%,transparent) center/min(110vw,1300px) min(80vw,900px) no-repeat}
-html[data-theme="dusk"]:not([data-scheme]) main#top #services{--sc:#2A1638;--porthole-glow:radial-gradient(closest-side,rgba(255,59,31,.35),transparent) right calc(max(var(--side),calc((100vw - 1280px) / 2 + var(--side))) - 6vw) top 6vh/min(48vw,620px) min(48vw,620px) no-repeat}
+html[data-theme="dusk"]:not([data-scheme]) main#top #services{--sc:#2A1638;}
 html[data-theme="dusk"]:not([data-scheme]) main#top #work{--sc:#120607}
 html[data-theme="dusk"]:not([data-scheme]) main#top #process{--sc:#1E0D1F;--scene:linear-gradient(180deg,#2A1638,#120607);--wall:rgba(157,134,255,.3);--wall-font:Anton,Impact,sans-serif;--wall-case:uppercase}
 html[data-theme="dusk"]:not([data-scheme]) main#top .thesis{--sc:#120607;--mark:rgba(255,59,31,.22)}
@@ -843,7 +839,6 @@ html[data-theme="brutal"]:not([data-scheme]) main#top #work::after{top:24px}
 html[data-theme="brutal"]:not([data-scheme]) main#top>.wrap>section.s::before{background:none}
 html[data-theme="neu"]:not([data-scheme]) a.book,html[data-theme="neu"]:not([data-scheme]) :is(.ghost:not(.q),form button){background:#B4532C;color:#fff!important}
 html[data-theme="neu"]:not([data-scheme]) .ghost.q{background:#A9B89A;color:#3A2016}
-@media (max-width:760px){main#top #services::after{background-position:right 16px top 76px;background-size:min(40vw,170px)}main#top #services>.head{min-height:0;padding-top:min(42vw,190px)}}
 .case-img{height:auto}
 .cases .case.feature .case-img{aspect-ratio:1.578/1}
 main#top .steps .no{display:none}
@@ -934,7 +929,7 @@ main.cb .cb-foot b{margin-right:auto;font-weight:600}
   main.cb .cb-close{flex-direction:column;align-items:flex-start}
 }
 /* ---- each style's colours for the bands ---- */
-html[data-theme="neu"] main.cb{--cb-light:#EFE6D8;--cb-light2:#F3D9C2;--cb-ink:#3A2016;--cb-dark:#C8643B;--cb-panel:#F4C8A6;--cb-panel-ink:#3A2016;--cb-panel-edge:transparent;--cb-panel-r:34px;--cb-panel-shadow:10px 10px 22px rgba(90,40,18,.38),-6px -6px 16px rgba(255,214,180,.35);--cb-blur:none;
+html[data-theme="neu"] main.cb{--cb-headband:#EFE6D8;--cb-light:#EFE6D8;--cb-light2:#F3D9C2;--cb-ink:#3A2016;--cb-dark:#C8643B;--cb-panel:#F4C8A6;--cb-panel-ink:#3A2016;--cb-panel-edge:transparent;--cb-panel-r:34px;--cb-panel-shadow:10px 10px 22px rgba(90,40,18,.38),-6px -6px 16px rgba(255,214,180,.35);--cb-blur:none;
   --cb-work:#EFE6D8;--cb-tile:#E4D6C2;--cb-steps:#A9B89A;--cb-steps-ink:#3A2016;--cb-thesis:#F3D9C2;--cb-accent:#C8643B;--cb-close:#3A2016;--cb-close-ink:#EFE6D8;--cb-rule:#3A2016}
 html[data-theme="simple"] main.cb{--cb-light:#F4F1EA;--cb-light2:#F4F1EA;--cb-ink:#111;--cb-dark:#111;--cb-panel:#F4F1EA;--cb-panel-ink:#111;--cb-panel-edge:#F4F1EA;--cb-panel-r:0;--cb-panel-shadow:none;--cb-blur:none;
   --cb-work:#F4F1EA;--cb-tile:#E8E4DA;--cb-steps:#E2322A;--cb-steps-ink:#F4F1EA;--cb-thesis:#F4F1EA;--cb-accent:#E2322A;--cb-close:#111;--cb-close-ink:#F4F1EA;--cb-btn-r:0;--cb-rule:#111}
