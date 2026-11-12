@@ -1344,7 +1344,7 @@ const shades=(col)=>{col=col.trim();const hx=/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.tes
 let MFILL='';
 function markFill(path,key){const m=MFILL;
   if(m==='glass'){const gr=c.createLinearGradient(0,40,0,310);gr.addColorStop(0,'rgba(255,255,255,.22)');gr.addColorStop(.45,'rgba(255,255,255,.08)');gr.addColorStop(1,'rgba(255,255,255,.03)');
-    c.fillStyle=gr;c.fill(path);c.lineWidth=3;c.strokeStyle='rgba(167,202,255,.95)';c.stroke(path);c.lineWidth=1.2;c.strokeStyle='rgba(255,255,255,.55)';c.save();c.translate(0,-1.5);c.stroke(path);c.restore();}
+    c.fillStyle=gr;c.fill(path);c.save();const gp=.75+.25*Math.sin(performance.now()/1400);c.shadowColor=`rgba(110,165,255,${.75*gp})`;c.shadowBlur=22*DPR*gp;c.lineWidth=3;c.strokeStyle='rgba(167,202,255,.95)';c.stroke(path);c.shadowBlur=9*DPR;c.shadowColor='rgba(190,215,255,.6)';c.stroke(path);c.restore();c.lineWidth=1.2;c.strokeStyle='rgba(255,255,255,.55)';c.save();c.translate(0,-1.5);c.stroke(path);c.restore();}
   else if(m==='light'){const gr=c.createLinearGradient(0,40,0,310);gr.addColorStop(0,'#030A1C');gr.addColorStop(.35,'#00358A');gr.addColorStop(.7,'#0068F0');gr.addColorStop(1,'#7DB8FF');
     c.fillStyle=gr;c.fill(path);c.lineWidth=2.4;c.strokeStyle='#A7CAFF';c.stroke(path);}
   else if(m==='chalk'){c.fillStyle='#EEF1EA';c.fill(path);}
