@@ -13,12 +13,12 @@ function meadow(el){
   const colour=()=>{COL=getComputedStyle(el).color||'#888';};
   function build(){const r=el.getBoundingClientRect();W=Math.max(1,Math.round(r.width));H=Math.max(1,Math.round(r.height));
     DPR=Math.min(W<600?1.5:2,devicePixelRatio||1);cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);
-    const d0=W<600?9:11,band=H*.55,cols=Math.floor(W/d0),rows=Math.max(1,Math.floor(band/d0)),n=cols*rows,r0=rnd(7);
+    const d0=W<600?9:11,band=Math.min(H*.55,126),cols=Math.floor(W/d0),rows=Math.max(1,Math.floor(band/d0)),n=cols*rows,r0=rnd(7);
     g={n,d0,x:new Float32Array(n),y:new Float32Array(n),vx:new Float32Array(n),vy:new Float32Array(n),a:new Float32Array(n),px:new Float32Array(n),py:new Float32Array(n),
       len:new Float32Array(n),seed:new Uint8Array(n),gw:Math.ceil(W/d0+2),next:new Int32Array(n)};g.head=new Int32Array(g.gw*Math.ceil(H/d0+2));
     for(let i=0;i<n;i++){const cx=i%cols,cy=Math.floor(i/cols);g.x[i]=(cx+r0())*d0;g.y[i]=H-4-(cy+r0())*d0*1.05;g.len[i]=d0*(1.1+r0()*.7);g.seed[i]=r0()<.12?1:0;g.a[i]=(r0()-.5)*.3;}
     ready=0;}
-  function fluid(dt){const n=g.n,d0=g.d0,G=1500,PR=Math.max(70,Math.min(W,H*2.4)*.16),sp=Math.hypot(ptr.vx,ptr.vy);
+  function fluid(dt){const n=g.n,d0=g.d0,G=1500,PR=Math.max(70,Math.min(W,Math.min(H,230)*2.4)*.16),sp=Math.hypot(ptr.vx,ptr.vy);
     for(let i=0;i<n;i++){g.vy[i]+=G*dt;
       if(ptr.on){const dx=g.x[i]-ptr.x,dy=g.y[i]-ptr.y,d2=dx*dx+dy*dy;if(d2<PR*PR){const d=Math.sqrt(d2)||1,f=1-d/PR;
         g.vx[i]+=(ptr.vx-g.vx[i])*f*.35+dx/d*f*90;g.vy[i]+=(ptr.vy-g.vy[i])*f*.35+dy/d*f*90-f*Math.min(sp,2500)*.35;}}
@@ -33,7 +33,7 @@ function meadow(el){
       for(let i=0;i<n;i++){if(g.y[i]>H-3)g.y[i]=H-3;if(g.y[i]<2)g.y[i]=2;if(g.x[i]<2)g.x[i]=2;if(g.x[i]>W-2)g.x[i]=W-2;}}
     for(let i=0;i<n;i++){const v0=Math.hypot(g.vx[i],g.vy[i]);g.vx[i]=(g.x[i]-g.px[i])/dt*.995;g.vy[i]=(g.y[i]-g.py[i])/dt*.995;if(g.y[i]>=H-3)g.vx[i]*=.85;
       const v1=Math.hypot(g.vx[i],g.vy[i]),near=ptr.on&&Math.abs(g.x[i]-ptr.x)<PR*2.5&&Math.abs(g.y[i]-ptr.y)<PR*2.5,cap=near?1e9:v0+120;
-      if(v1>cap){g.vx[i]*=cap/v1;g.vy[i]*=cap/v1;}else if(v1<90&&g.y[i]>H*.3){const k=v1<30?.7:.92;g.vx[i]*=k;g.vy[i]*=k;}}
+      if(v1>cap){g.vx[i]*=cap/v1;g.vy[i]*=cap/v1;}else if(v1<90&&g.y[i]>H-160){const k=v1<30?.7:.92;g.vx[i]*=k;g.vy[i]*=k;}}
     for(let i=0;i<n;i++){const v=Math.hypot(g.vx[i],g.vy[i]),want=v>60?Math.atan2(g.vx[i],-g.vy[i]):Math.sin(g.x[i]*.05)*.18,da=((want-g.a[i]+Math.PI*3)%(Math.PI*2))-Math.PI;g.a[i]+=da*Math.min(1,dt*(v>60?14:5));}}
   function draw(){c.setTransform(DPR,0,0,DPR,0,0);c.clearRect(0,0,W,H);if(ready<15)return;c.fillStyle=COL;c.strokeStyle=COL;c.beginPath();
     for(let i=0;i<g.n;i++){if(g.seed[i])continue;const L=g.len[i],a=g.a[i],s=Math.sin(a),co=Math.cos(a),x=g.x[i]-s*L*.5,y=g.y[i]+co*L*.5,w=L*.13+.4;

@@ -370,7 +370,7 @@ html:is([data-theme="glass"],[data-theme="neu"],[data-theme="simple"],[data-them
 html:is([data-theme="glass"],[data-theme="neu"],[data-theme="simple"],[data-theme="dusk"]):not([data-scheme]) main>:is(.hero,section)::before{content:"";position:absolute;z-index:-2;top:0;bottom:0;left:calc(50% - 50vw);right:calc(50% - 50vw);background:var(--sc,var(--bg));pointer-events:none}
 html:is([data-theme="glass"],[data-theme="neu"],[data-theme="simple"],[data-theme="dusk"]):not([data-scheme]) main>.hero::before{top:-200px}
 main>.hero>.live-grass{display:none}
-html:is([data-theme="glass"],[data-theme="neu"],[data-theme="simple"],[data-theme="dusk"]):not([data-scheme]) main>.hero>.live-grass{display:block;position:absolute;z-index:-1;left:calc(50% - 50vw);right:calc(50% - 50vw);bottom:0;height:min(26vh,230px);color:var(--grass);pointer-events:none} /* live grass, not a picture */
+html:is([data-theme="glass"],[data-theme="neu"],[data-theme="simple"],[data-theme="dusk"]):not([data-scheme]) main>.hero>.live-grass{display:block;position:absolute;z-index:-1;left:calc(50% - 50vw);right:calc(50% - 50vw);top:0;bottom:0;height:auto;color:var(--grass);pointer-events:none} /* live grass, not a picture */
 .live-grass canvas{display:block;width:100%;height:100%}
 html:is([data-theme="glass"],[data-theme="neu"],[data-theme="simple"],[data-theme="dusk"]):not([data-scheme]) main>:is(.hero,section) :is(.box,.ex,.tier,.faq,.steps2 li,.gets>div,.pains li){--card:color-mix(in srgb,var(--fg) 6%,transparent)}
 html[data-theme="glass"]:not([data-scheme]) main>.hero{--sc:#E6EAFB;--grass:#7F89F0;}
