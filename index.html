@@ -1239,7 +1239,7 @@ main.cb .cb-close .cb-home canvas{display:block;width:100%;height:100%}
 
 
 /* Clay's opening: a warm printed brown with cream lettering (Refero: Hungry Tiger's grain stack, Houseplant's cream on chocolate); the live wash and a boiling grain move underneath, the leaves bright on top */
-html[data-theme="neu"]:not([data-scheme]) main.cb .lf{--lf-ground:#FFF4EC;--lf-ink:#3D1801;--lf-mark:#3D1801;background:#FFF4EC}
+html[data-theme="neu"]:not([data-scheme]) main.cb .lf{--lf-ground:#FFFFFF;--lf-ink:#3D1801;--lf-mark:#3D1801;background:#FFFFFF}
 html[data-theme="neu"]:not([data-scheme]) main.cb .lf .lf-title .cb-h{color:#3D1801}
 
 /* Clay's horizon: the Beacon study's range, printed into the brown behind the meadow (multiplied, like ink on the sheet) */
@@ -1253,9 +1253,7 @@ main.cb .lf-cloud{position:absolute;left:var(--cx);top:var(--cy);width:var(--cw)
 html[data-theme="neu"]:not([data-scheme]) main.cb .lf-range{transform:translateY(calc((1 - var(--rise,0)) * 22%));transform-origin:50% 100%}
 @media (prefers-reduced-motion:reduce){main.cb .lf{--rise:1!important}}
 
-/* Clay's engraving: a Front Range border in the Arts and Crafts manner (aspens, magpie, columbines, pasque flowers, yucca, ponderosa, grama, a meadowlark, Longs Peak in a wreath), one Nano Banana image keyed to cream ink, laid faintly into the printed ground around an open middle. It replaces the range and clouds for now. */
-main.cb .lf-engraving{display:none}
-/* the engraving now lives in the ground's shader (wash.js): it sways, parts round the pointer and rises in as you scroll */
+/* Clay: a pure white field, no engraving or printed ground; the range and clouds stay hidden */
 html[data-theme="neu"]:not([data-scheme]) main.cb :is(.lf-range,.lf-clouds){display:none}
 </style>
 <script>
@@ -1291,7 +1289,6 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
   <div class="cb-open">
   <section class="lf" id="opening" aria-labelledby="lf-h">
     <h1 class="lf-sr" id="lf-h">A design and technology studio for the Front Range.</h1>
-    <div class="lf-engraving" aria-hidden="true"></div>
     <svg class="lf-range" viewBox="0 0 1700 800" preserveAspectRatio="none" aria-hidden="true"><!-- the range from the Beacon study: Clay prints it into its ground, far behind the meadow -->
       <path fill="#3F1A08" fill-opacity=".55" d="M0 800 L0 461 L90 383 L170 353 L260 291 L330 358 L420 412 L480 422 L560 471 L640 470 L720 441 L800 451 L860 421 L950 339 L1040 309 L1110 228 L1200 119 L1290 127 L1360 102 L1450 167 L1540 211 L1620 327 L1700 372 L1700 800 Z"/>
     <path fill="#2E1205" fill-opacity=".6" d="M0 800 L0 480 L120 388 L240 360 L300 347 L390 427 L470 463 L540 471 L610 500 L700 489 L770 458 L850 463 L930 419 L1010 339 L1100 300 L1180 219 L1260 142 L1340 175 L1420 182 L1500 216 L1590 331 L1700 401 L1700 800 Z"/>
@@ -1423,7 +1420,6 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
 </main>
 
 <script src="/preview/assets/field-shapes.js"></script>
-<script src="/preview/assets/wash.js" defer></script>
 <script src="/preview/assets/ink.js" defer></script>
 <script>
 if(/[?&]draft\b/.test(location.search))document.documentElement.classList.add('draft');
