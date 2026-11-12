@@ -693,7 +693,7 @@ html[data-theme="simple"] .fys-tab,html[data-theme="simple"] .fys-tab button{bor
 .cases .case.feature{grid-column:1/-1}.case-img{display:block;width:100%;aspect-ratio:2.4/1;object-fit:cover;border-radius:var(--r-card,12px)}html[data-theme="brutal"] .case-img{border-radius:0}.case-img.svc-img{aspect-ratio:1.732/1}
 /* ===== Scenes (style refresh, 2026-11): every home section is a full-screen scene with its own real background, snapped
    one to the next like a feed; content sits on the scene, not in bordered cards (Ember keeps its cards). Backgrounds are
-   painted by ::before (colour) and ::after (the Logo Field grass as a mask, the Duchess cans, the Fantasm porthole, the
+   painted by ::before (colour) and ::after (the Logo Field grass as a mask, the Duchess labels, the
    S mark large, a type wall), reaching both screen edges; main clips the overhang so the page never scrolls sideways.
    The new palettes: Dew (glass), Clay (neu), Ledger (simple), Dusk. Ember (brutal) keeps every colour. */
 main#top{overflow-x:clip}
@@ -710,8 +710,6 @@ main#top>.wrap>footer{position:relative;isolation:isolate}
 }
 @media (prefers-reduced-motion:reduce){html:has(main#top section.trust){scroll-snap-type:none}}
 /* the scene layers, filled per style below */
-main#top #services::after{background:var(--porthole-glow,none),url(/preview/assets/home/fantasm-porthole.webp) right max(var(--side),calc((100vw - 1280px) / 2 + var(--side))) top clamp(90px,12vh,140px)/min(34vw,440px) no-repeat;opacity:var(--porthole-o,.95)}
-main#top #services>.head{min-height:clamp(220px,34vw,460px);align-items:flex-end}
 main#top #work{--lab-w:min(94vw,1500px);--lab-pad:clamp(28px,4vh,48px)}
 main#top #work::after{background:url(/preview/work/duchess-nip-co/labels.webp) center top var(--lab-pad)/var(--lab-w) auto no-repeat;bottom:auto;height:calc(var(--lab-w) / 3.852 + var(--lab-pad) * 2)} /* the three labels, flat: no fade, no gradient */
 main#top #work>.head{margin-top:min(60vh,600px)}
@@ -725,8 +723,6 @@ main#top #contact>.live-grass{position:absolute;z-index:-1;left:calc(50% - 50vw)
 .live-grass canvas{display:block;width:100%;height:100%}
 main#top #contact{padding-bottom:max(160px,min(30vh,260px))}
 @media (max-width:760px){
-  main#top #services::after{background-position:right 16px top 84px;background-size:min(52vw,240px)}
-  main#top #services>.head{min-height:300px}
   main#top #work::after{height:56vh}main#top #work>.head{margin-top:32vh}
   main#top #process::after{font-size:clamp(70px,24vw,140px);-webkit-text-stroke-width:1.5px}
 }
@@ -745,7 +741,7 @@ html[data-theme="glass"]:not([data-scheme]) .slot{border:1px solid rgba(36,18,58
 html[data-theme="glass"]:not([data-scheme]) .lf{--lf-ground:#E6EAFB;--lf-ink:#24123A;--lf-mark:#24123A;--lf-grass:#7F89F0}
 html[data-theme="glass"]:not([data-scheme]) main#top section.trust{--sc:#F4D9E6;--scene:linear-gradient(180deg,#AEB9FF,#F4D9E6 62%,#FFE3D4)}
 html[data-theme="glass"]:not([data-scheme]) main#top section.trust::after{background:radial-gradient(closest-side,rgba(255,179,160,.75),rgba(244,217,230,.5) 45%,rgba(159,227,255,.35) 70%,transparent) center/min(80vw,900px) min(80vw,900px) no-repeat;filter:blur(30px)}
-html[data-theme="glass"]:not([data-scheme]) main#top #services{--sc:#24123A;--fg:#fff;--fg2:#F1ECFF;--soft:#D9D0EC;--steel:#BDB2D6;--rule:rgba(255,255,255,.2);--lav:#FF9A73;--field:rgba(255,255,255,.1);--porthole-glow:radial-gradient(closest-side,rgba(174,185,255,.35),transparent) right calc(max(var(--side),calc((100vw - 1280px) / 2 + var(--side))) - 6vw) top 6vh/min(48vw,620px) min(48vw,620px) no-repeat}
+html[data-theme="glass"]:not([data-scheme]) main#top #services{--sc:#24123A;--fg:#fff;--fg2:#F1ECFF;--soft:#D9D0EC;--steel:#BDB2D6;--rule:rgba(255,255,255,.2);--lav:#FF9A73;--field:rgba(255,255,255,.1);}
 html[data-theme="glass"]:not([data-scheme]) main#top #work{--sc:#F4D9E6}
 html[data-theme="glass"]:not([data-scheme]) main#top #process{--sc:#E6EAFB;--scene:linear-gradient(180deg,#EEF1F8,#DCE3FF);--wall:rgba(127,137,240,.35)}
 html[data-theme="glass"]:not([data-scheme]) main#top .thesis{--sc:#AEB9FF;--mark:rgba(36,18,58,.1);--soft:#2E1B48;--lav:#7A1F05}
@@ -798,7 +794,7 @@ html[data-theme="dusk"]:not([data-scheme]){--bg:#120607;--fg:#F1E9DD;--fg2:#E6DC
 html[data-theme="dusk"]:not([data-scheme]) .lf{--lf-ground:#120607;--lf-ink:#F1E9DD;--lf-mark:#F1E9DD;--lf-grass:#9D86FF}
 html[data-theme="dusk"]:not([data-scheme]) main#top section.trust{--sc:#120607}
 html[data-theme="dusk"]:not([data-scheme]) main#top section.trust::after{background:radial-gradient(closest-side,rgba(255,59,31,.5),rgba(42,22,56,.45) 50%,transparent) center/min(110vw,1300px) min(80vw,900px) no-repeat}
-html[data-theme="dusk"]:not([data-scheme]) main#top #services{--sc:#2A1638;--porthole-glow:radial-gradient(closest-side,rgba(255,59,31,.35),transparent) right calc(max(var(--side),calc((100vw - 1280px) / 2 + var(--side))) - 6vw) top 6vh/min(48vw,620px) min(48vw,620px) no-repeat}
+html[data-theme="dusk"]:not([data-scheme]) main#top #services{--sc:#2A1638;}
 html[data-theme="dusk"]:not([data-scheme]) main#top #work{--sc:#120607}
 html[data-theme="dusk"]:not([data-scheme]) main#top #process{--sc:#1E0D1F;--scene:linear-gradient(180deg,#2A1638,#120607);--wall:rgba(157,134,255,.3);--wall-font:Anton,Impact,sans-serif;--wall-case:uppercase}
 html[data-theme="dusk"]:not([data-scheme]) main#top .thesis{--sc:#120607;--mark:rgba(255,59,31,.22)}
@@ -842,7 +838,6 @@ html[data-theme="brutal"]:not([data-scheme]) main#top #work::after{top:24px}
 html[data-theme="brutal"]:not([data-scheme]) main#top>.wrap>section.s::before{background:none}
 html[data-theme="neu"]:not([data-scheme]) a.book,html[data-theme="neu"]:not([data-scheme]) :is(.ghost:not(.q),form button){background:#B4532C;color:#fff!important}
 html[data-theme="neu"]:not([data-scheme]) .ghost.q{background:#A9B89A;color:#3A2016}
-@media (max-width:760px){main#top #services::after{background-position:right 16px top 76px;background-size:min(40vw,170px)}main#top #services>.head{min-height:0;padding-top:min(42vw,190px)}}
 .case-img{height:auto}
 .cases .case.feature .case-img{aspect-ratio:1.578/1}
 main#top .steps .no{display:none}
@@ -859,8 +854,92 @@ main#top #process .steps b{font-size:clamp(40px,5.2vw,84px);line-height:.95;lett
 html[data-theme="neu"] .thesis blockquote{--fit:14.5}html[data-theme="simple"] .thesis blockquote{--fit:13.7}html[data-theme="dusk"] .thesis blockquote{--fit:13.9}html[data-theme="brutal"] .thesis blockquote{--fit:27.2}html[data-theme="editorial"] .thesis blockquote{--fit:14.5}
 html[data-theme="neu"]:not([data-scheme]) .fys-tab{box-shadow:0 7px 14px -6px rgba(42,22,14,.55),0 2px 4px rgba(42,22,14,.22),inset 0 1px 0 rgba(255,250,240,.7)}
 main#top #contact{padding-bottom:calc(min(34vh,300px) + 36px)}
-main#top #work::after{height:calc(var(--lab-w) / 3.852 + var(--lab-pad) * 2)} /* every style: the labels row, then the headline below it */
-main#top #work>.head{margin-top:max(0px,calc(var(--lab-w) / 3.852 + var(--lab-pad) * 2 - clamp(96px,13vh,150px) + clamp(20px,3vh,40px)))}
+
+/* ===== Compact (/preview/compact/, 2026-11-12): the round-1 board, literally. The full opening shrinks into the top bar as
+   you scroll; then flat colour bands, each with one job: a giant services headline crossing from a light band into a dark
+   one, three big airy panels (a title and one line), one featured tile beside a plain index list, the four steps as giant
+   words, the thesis, and the close as a full accent band. Only this page has main.cb; main#top rules never reach it. */
+html:has(main.cb){scroll-snap-type:none!important}
+main.cb{--cb-light:#EEF1F8;--cb-light2:#F4D9E6;--cb-ink:#24123A;--cb-dark:#24123A;--cb-dark-ink:#fff;--cb-panel:rgba(255,255,255,.1);--cb-panel-ink:#fff;--cb-panel-edge:rgba(255,255,255,.22);--cb-panel-r:22px;--cb-panel-shadow:0 24px 60px rgba(0,0,0,.35);--cb-blur:blur(18px);
+  --cb-work:#F4D9E6;--cb-tile:#F2E9DC;--cb-steps:#FF5A2A;--cb-steps-ink:#24123A;--cb-thesis:linear-gradient(180deg,#F4D9E6,#E2E6FB);--cb-accent:#FF5A2A;--cb-close:#FF5A2A;--cb-close-ink:#fff;--cb-btn-r:999px;--cb-rule:#24123A;
+  --cb-hfont:Archivo,"Helvetica Neue",Arial,sans-serif;--cb-hw:800;--cb-body:"Inter Tight",Inter,"Helvetica Neue",Arial,sans-serif;
+  --cb-side:max(20px,calc((100vw - 1240px) / 2));display:block;color:var(--cb-ink);font-family:var(--cb-body)}
+main.cb>*{margin:0}
+/* the opening: full screen, then it shrinks up into the bar */
+main.cb .cb-open{height:100vh;height:100svh;position:relative;z-index:0}
+main.cb .cb-open>.lf{position:absolute;left:0;right:0;bottom:0;height:var(--cb-h,100svh);min-height:0}
+main.cb .cb-sr{position:absolute;width:1px;height:1px;margin:0;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+/* bands */
+main.cb .cb-band{position:relative;z-index:1;padding:clamp(56px,7vw,104px) var(--cb-side)}
+html body main.cb :is(h2,h3,p,a,li,blockquote,b,em,span){letter-spacing:normal}
+html body main.cb .cb-h{font-family:var(--cb-hfont);font-weight:var(--cb-hw);font-style:normal;font-size:clamp(54px,9.6vw,150px);line-height:.9;letter-spacing:-.05em;color:var(--cb-ink);margin:0;text-wrap:balance}
+html body main.cb .cb-h em,html body main.cb .cb-h b{font:inherit;letter-spacing:inherit;color:inherit}
+main.cb .cb-head{background:var(--cb-headband,linear-gradient(180deg,var(--cb-light),var(--cb-light2)));padding-bottom:0}
+main.cb .cb-head .cb-h{position:relative;z-index:2;margin-bottom:-.11em}
+main.cb .cb-svc{background:var(--cb-dark);padding-top:clamp(64px,7vw,110px);padding-bottom:clamp(72px,8vw,120px)}
+main.cb .cb-panels{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:clamp(16px,2.4vw,34px);max-width:1240px;margin:0 auto}
+main.cb .cb-p{position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:28px;min-height:clamp(190px,19vw,270px);padding:clamp(24px,2.6vw,38px);text-decoration:none;
+  background:var(--cb-panel);color:var(--cb-panel-ink);border:1px solid var(--cb-panel-edge);border-radius:var(--cb-panel-r);box-shadow:var(--cb-panel-shadow);backdrop-filter:var(--cb-blur);-webkit-backdrop-filter:var(--cb-blur);transition:transform .25s}
+main.cb .cb-p:hover{transform:translateY(-4px)}
+main.cb .cb-p:focus-visible{outline:3px solid var(--cb-accent);outline-offset:4px}
+html body main.cb .cb-p h3{font-family:var(--cb-hfont);font-weight:var(--cb-hw);font-style:normal;font-size:clamp(28px,3vw,44px);line-height:1;letter-spacing:-.03em;margin:0;color:inherit}
+main.cb .cb-p h3::after{content:"";display:block;width:clamp(120px,13vw,190px);height:5px;margin-top:16px;border-radius:3px;background:var(--cb-accent)}
+main.cb .cb-p:not(:first-child) h3::after{display:none}
+html body main.cb .cb-p p{font:400 clamp(17px,1.4vw,21px)/1.35 var(--cb-body);margin:0;max-width:30ch;color:inherit;opacity:.86}
+main.cb .cb-p:nth-child(1){grid-column:1/8;grid-row:1;z-index:1}
+main.cb .cb-p:nth-child(2){grid-column:8/13;grid-row:1;margin-top:clamp(36px,4vw,60px);align-self:start}
+main.cb .cb-p:nth-child(3){grid-column:2/8;grid-row:2;margin-top:calc(-1 * clamp(14px,1.6vw,24px));z-index:2}
+/* work: one big tile bleeding off the left, a plain index beside it */
+main.cb .cb-work{background:var(--cb-work);display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:clamp(24px,3vw,48px);align-items:center;padding-left:0}
+main.cb .cb-tile{display:block;background:var(--cb-tile);border-radius:0 var(--cb-panel-r) var(--cb-panel-r) 0;overflow:hidden;aspect-ratio:1.6/1}
+main.cb .cb-tile img{display:block;width:100%;height:100%;object-fit:cover}
+main.cb .cb-work .cb-cap{grid-column:1;padding-left:var(--cb-side);margin-top:-8px;font:500 12px/1.3 "IBM Plex Mono",Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;opacity:.75}
+main.cb .cb-index{list-style:none;margin:0;padding:0;border-top:2px solid var(--cb-rule);grid-column:2;grid-row:1}
+main.cb .cb-index li{border-bottom:2px solid var(--cb-rule)}
+html body main.cb .cb-index a{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:16px 2px;font:var(--cb-hw) clamp(22px,2.3vw,34px)/1.05 var(--cb-hfont);letter-spacing:-.025em;color:var(--cb-ink);text-decoration:none}
+main.cb .cb-index a span{font:400 clamp(14px,1.05vw,16px)/1.3 var(--cb-body);letter-spacing:0;opacity:.75;text-align:right}
+main.cb .cb-index a:hover{color:var(--cb-accent)}
+main.cb .cb-index a::after{content:"\2197";font-family:var(--cb-body);font-weight:400}
+/* the four steps as giant words */
+main.cb .cb-steps{background:var(--cb-steps);color:var(--cb-steps-ink);padding-block:clamp(44px,5vw,76px)}
+main.cb .cb-steps ol{list-style:none;margin:0 auto;padding:0;max-width:1240px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(12px,2vw,28px)}
+html body main.cb .cb-steps li{font-family:var(--cb-hfont);font-weight:var(--cb-hw);font-size:clamp(46px,7.6vw,118px);line-height:.9;letter-spacing:-.05em;color:var(--cb-steps-ink)}
+/* the thesis, two lines across the width */
+main.cb .cb-thesis{background:var(--cb-thesis)}
+html body main.cb .cb-thesis blockquote{margin:0 auto;max-width:1240px;container-type:inline-size;font-family:"Cormorant Garamond",Georgia,serif;font-weight:400;font-style:normal;line-height:1.08;color:var(--cb-ink)}
+main.cb .cb-thesis blockquote span{display:block;white-space:nowrap;font-size:min(88px,calc(100cqi / 13.6))}
+html body main.cb .cb-thesis blockquote em{font:inherit;color:var(--cb-accent);font-size:min(88px,calc(100cqi / 13.6))}
+/* the close: a full accent band */
+main.cb .cb-close{background:var(--cb-close);color:var(--cb-close-ink);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px 32px;padding-block:clamp(40px,4.6vw,68px)}
+html body main.cb .cb-close h2{font-family:var(--cb-hfont);font-weight:var(--cb-hw);font-style:normal;font-size:clamp(34px,4.6vw,72px);line-height:.95;letter-spacing:-.04em;margin:0;color:inherit}
+html body main.cb .cb-close a.cb-book{display:inline-flex;align-items:center;gap:10px;padding:14px 24px;border:2px solid currentColor;border-radius:var(--cb-btn-r);color:inherit;background:transparent;font:600 clamp(16px,1.3vw,20px)/1 var(--cb-body);text-decoration:none;white-space:nowrap}
+main.cb .cb-close a.cb-book:hover{background:var(--cb-close-ink);color:var(--cb-close)}
+main.cb .cb-foot{background:var(--cb-close);color:var(--cb-close-ink);padding-top:0;padding-bottom:clamp(28px,3vw,44px);display:flex;flex-wrap:wrap;gap:10px 28px;font:400 15px/1.4 var(--cb-body);border-top:1px solid color-mix(in srgb,var(--cb-close-ink) 30%,transparent)}
+main.cb .cb-foot{padding-top:22px}
+main.cb .cb-foot a{color:inherit}
+main.cb .cb-foot b{margin-right:auto;font-weight:600}
+@media (max-width:760px){
+  main.cb .cb-panels{grid-template-columns:1fr;row-gap:16px}
+  main.cb .cb-p:nth-child(n){grid-column:1;grid-row:auto;margin-top:0;min-height:0}
+  main.cb .cb-p:nth-child(2){margin-left:14%}main.cb .cb-p:nth-child(3){margin-right:10%;margin-top:-6px}
+  main.cb .cb-work{grid-template-columns:1fr;padding-right:var(--cb-side)}
+  main.cb .cb-index{grid-column:1;grid-row:auto;margin-left:var(--cb-side)}
+  main.cb .cb-steps ol{grid-template-columns:1fr 1fr;row-gap:18px}
+  main.cb .cb-close{flex-direction:column;align-items:flex-start}
+}
+/* ---- each style's colours for the bands ---- */
+html[data-theme="neu"] main.cb{--cb-headband:#EFE6D8;--cb-light:#EFE6D8;--cb-light2:#F3D9C2;--cb-ink:#3A2016;--cb-dark:#C8643B;--cb-panel:#F4C8A6;--cb-panel-ink:#3A2016;--cb-panel-edge:transparent;--cb-panel-r:34px;--cb-panel-shadow:10px 10px 22px rgba(90,40,18,.38),-6px -6px 16px rgba(255,214,180,.35);--cb-blur:none;
+  --cb-work:#EFE6D8;--cb-tile:#E4D6C2;--cb-steps:#A9B89A;--cb-steps-ink:#3A2016;--cb-thesis:#F3D9C2;--cb-accent:#C8643B;--cb-close:#3A2016;--cb-close-ink:#EFE6D8;--cb-rule:#3A2016}
+html[data-theme="simple"] main.cb{--cb-light:#F4F1EA;--cb-light2:#F4F1EA;--cb-ink:#111;--cb-dark:#111;--cb-panel:#F4F1EA;--cb-panel-ink:#111;--cb-panel-edge:#F4F1EA;--cb-panel-r:0;--cb-panel-shadow:none;--cb-blur:none;
+  --cb-work:#F4F1EA;--cb-tile:#E8E4DA;--cb-steps:#E2322A;--cb-steps-ink:#F4F1EA;--cb-thesis:#F4F1EA;--cb-accent:#E2322A;--cb-close:#111;--cb-close-ink:#F4F1EA;--cb-btn-r:0;--cb-rule:#111}
+html[data-theme="simple"] main.cb .cb-head{border-bottom:0}html[data-theme="simple"] main.cb .cb-thesis{border-top:2px solid #111}
+html[data-theme="dusk"] main.cb{--cb-light:#F1E9DD;--cb-light2:#E9DCF5;--cb-ink:#120607;--cb-dark:#120607;--cb-panel:rgba(157,134,255,.12);--cb-panel-ink:#F1E9DD;--cb-panel-edge:rgba(157,134,255,.4);--cb-panel-shadow:0 0 0 1px rgba(157,134,255,.2),0 20px 60px rgba(157,134,255,.18);
+  --cb-work:#F1E9DD;--cb-tile:#E6DACB;--cb-steps:#9D86FF;--cb-steps-ink:#120607;--cb-thesis:linear-gradient(180deg,#F1E9DD,#E9DCF5);--cb-accent:#FF3B1F;--cb-close:#FF3B1F;--cb-close-ink:#120607;--cb-rule:#120607}
+html[data-theme="brutal"] main.cb{--cb-light:#FFD43B;--cb-light2:#FFD43B;--cb-ink:#000;--cb-dark:#E0501C;--cb-panel:#fff;--cb-panel-ink:#000;--cb-panel-edge:#000;--cb-panel-r:0;--cb-panel-shadow:8px 8px 0 #000;--cb-blur:none;
+  --cb-work:#FFF8EC;--cb-tile:#F2E9DC;--cb-steps:#000;--cb-steps-ink:#FF6A2B;--cb-thesis:#FFF8EC;--cb-accent:#E0501C;--cb-close:#E0501C;--cb-close-ink:#fff;--cb-btn-r:0;--cb-rule:#000;--cb-hfont:Archivo,"Helvetica Neue",Arial,sans-serif}
+html[data-theme="brutal"] main.cb .cb-p{border-width:3px}
+html[data-theme="brutal"] body main.cb .cb-thesis blockquote em{background:none;box-shadow:none;padding:0}
+html[data-theme="brutal"] main.cb .cb-p h3::after{border-radius:0}
 </style>
 <script>
 (function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#120607',glass:'#EEF1F8',neu:'#EFE6D8',brutal:'#FFFDF5',simple:'#F4F1EA',editorial:'#f3f1ea'};
@@ -882,137 +961,61 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
 </head>
 <body>
 <header class="bar wrap">
-  <a class="brand" href="#top" aria-label="Sea of Grass, top of the page"><svg aria-hidden="true" viewBox="43.63 44.56 350.94 258.56" fill="currentColor" aria-hidden="true">
+  <a class="brand" href="#cbtop" aria-label="Sea of Grass, top of the page"><svg aria-hidden="true" viewBox="43.63 44.56 350.94 258.56" fill="currentColor" aria-hidden="true">
     <path d="M 60.1360,299.5890 C 40.8560,283.5000 37.9720,248.8600 54.1230,229.1250 C 61.9590,219.4780 73.2066,213.0913 85.9080,212.4050 L 279.9170,212.3880 C 292.7328,211.6894 302.2259,200.5242 302.6140,188.1740 C 303.0171,175.3461 294.1087,163.3937 280.9850,162.4350 L 160.3860,162.3770 C 155.6830,162.3750 152.4580,158.1300 152.2660,154.1930 C 152.0640,150.0420 155.5000,145.5160 160.3230,145.5160 L 323.2740,145.5180 C 363.5090,146.7569 394.2264,180.5210 394.5670,220.2810 C 394.9023,259.4236 360.4620,297.7100 320.2520,299.1580 C 320.2520,299.1580 69.9310,307.7640 60.1360,299.5890 Z"/>
     <path d="M 365.1390,47.9780 C 360.1170,47.5130 354.1470,47.1080 347.4230,46.7550 C 274.7440,42.9430 114.0820,45.2510 114.0820,45.2510 C 73.9994,46.9759 43.7290,80.8860 43.6260,120.3040 C 43.5230,159.4680 73.5199,193.9418 113.3820,195.4730 L 277.3270,195.8440 C 282.2870,195.8440 285.7460,192.0070 285.9600,187.6500 C 286.1670,183.4310 282.8680,178.9500 277.9760,178.9480 L 158.2750,178.9140 C 145.3037,178.2644 135.8119,166.8014 135.6040,154.2420 C 135.3960,141.6768 144.3477,129.9059 157.2620,128.9900 L 350.1640,128.8050 C 352.3160,128.8030 354.4280,128.6110 356.4990,128.2740 C 366.7370,126.6070 375.8830,121.0490 382.8160,113.4590 C 390.0330,105.5580 394.4238,95.7293 394.5320,85.6870 C 394.7250,67.7708 381.6430,52.8390 365.1390,47.9780 Z"/>
     <circle cx="357.983" cy="86.686" r="36.548"/>
   </svg><span>Sea of Grass</span></a>
-  <nav aria-label="Main"><a href="#services">Services</a><a href="#work">Work</a><a href="#about">About</a><a href="#contact">Contact</a><a class="client" href="/preview/client/">Client login</a><a class="book" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a meeting</a></nav>
+  <nav aria-label="Main"><a href="#services">Services</a><a href="#work">Work</a><a href="#contact">Contact</a><a class="client" href="/preview/client/">Client login</a><a class="book" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a meeting</a></nav>
 </header>
 
-<main id="top">
+<main class="cb" id="cbtop">
+  <div class="cb-open">
   <section class="lf" id="opening" aria-labelledby="lf-h">
     <h1 class="lf-sr" id="lf-h">A design and technology studio for the Front Range.</h1>
     <canvas id="lf-cv" aria-label="The headline and the Sea of Grass S over a heap of grass. Move your pointer or finger sideways through it: the S gets knocked and springs back, and the grass is scooped up and settles again. Press to throw more grass."></canvas>
   </section>
-  <div class="wrap">
-  <!-- Trust strip: after the Washington Post stat strip -->
-  <section class="s trust" aria-label="The studio in short">
-    <div class="facts">
-      <div><b>Front Range</b>We come to you.</div>
-      <div><b>From $250</b>Fixed prices, in writing.</div>
-      <div><b>On your phone</b>Every draft, before it goes live.</div>
-      <div><b>Our own tools</b>Built here, used daily.</div>
-    </div>
-  </section>
-
-  <!-- What we make: after Acne Studios client services (alternating text and image) -->
-  <section class="s" id="services" aria-labelledby="h-svc">
-    <div class="head"><div><p class="label">What we make</p><h2 id="h-svc"><span class="t">Three things,</span> <em>done</em> <b>properly.</b></h2></div>
-      <p>Each one priced up front.</p></div>
-    <div class="svc">
-      <div class="lead"><span class="no">01</span><h3><b>Websites</b> <em>and</em> <span class="t">hosting</span></h3><p class="one">Fixes, new sites and hosting.</p><ul><li>Fixes from $250</li><li>New sites from $2,000</li></ul>
-        <a class="ghost" href="/preview/services/websites/">Websites and hosting &rarr;</a></div>
-      <figure class="slotf real" data-slot="home-svc-websites"><a href="/preview/work/duchess-nip-co/"><img class="case-img svc-img" src="/preview/work/duchess-nip-co/site.jpg" alt="The Duchess Nip Co. website: the headline, a can and the three flavours" loading="lazy" style="object-position:50% 0"></a><figcaption class="slotcap">The Duchess Nip Co. site, for a fictional client.</figcaption></figure>
-    </div>
-
-    <div class="svc alt">
-      <div class="lead"><span class="no">02</span><h3><span class="t">Your</span> <b>brand</b></h3><p class="one">One look for your sign, menu, site and cards.</p><ul><li>Mark and wordmark</li><li>Colors and type</li></ul>
-        <a class="ghost" href="/preview/services/brand/">Brand and identity &rarr;</a></div>
-      <figure class="slotf real" data-slot="home-svc-brand"><a href="/preview/work/duchess-nip-co/"><img class="case-img svc-img" src="/preview/work/duchess-nip-co/brand.webp" alt="The Duchess N-cat mark, an N whose tail curls at the top and whose head wears a collar, beside three flavor labels: Nip, Nip &amp; Lemon and Midnight Nip" width="1600" height="1000" loading="lazy"></a><figcaption class="slotcap">Duchess Nip Co., a fictional client: the N-cat mark and the three labels.</figcaption></figure>
-    </div>
-
-    <div class="svc">
-      <div class="lead"><span class="no">03</span><h3><span class="t">Creative</span> <b>technology</b></h3><p class="one">What a template can’t do.</p><ul><li><a href="/preview/services/live-visuals/">Live visuals</a> and <a href="/preview/services/characters/">3D characters</a></li><li><a href="/preview/services/apps/">Apps</a> and <a href="/preview/services/illustration/">illustration</a></li></ul>
-        <a class="ghost" href="/preview/services/live-visuals/">Live visuals &rarr;</a></div>
-      <figure class="slotf real" data-slot="home-svc-creative"><a href="/preview/services/live-visuals/"><img class="lumi-img svc-img" src="/preview/assets/home/lumi.webp" alt="Lumi, the Fantasmagoria ghost: an ink-outlined ghost with crescent eyes and a pink tongue" width="695" height="743" loading="lazy"></a><figcaption class="slotcap">Lumi, the mascot of Fantasmagoria, our live-visuals tool.</figcaption></figure>
-    </div>
-
-  </section>
-
-  <!-- Proof: after Anthropic's customer stories grid -->
-  <section class="s" id="work" aria-labelledby="h-work">
-    <div class="head"><div><p class="label">Proof it&rsquo;s real</p><h2 id="h-work"><span class="t">Made</span> <em>right</em> <b>here.</b></h2></div>
-      <p>Our own products and studies, running today.</p></div>
-    <div class="cases">
-      <article class="case feature"><a href="/preview/work/duchess-nip-co/"><img class="case-img" src="/preview/work/duchess-nip-co/brand.webp" alt="The Duchess N-cat mark, an N whose tail curls at the top and whose head wears a collar, beside three flavor labels: Nip, Nip &amp; Lemon and Midnight Nip." width="1600" height="1000" loading="lazy"></a>
-        <span class="chip">Case study · fictional</span><h3><a href="/preview/work/duchess-nip-co/">Duchess Nip Co.</a></h3>
-        <p class="one">A catnip soda we made up, branded end to end: one mark, twelve symbols, three labels</p></article>
-      <article class="case"><a href="/preview/talaria/"><figure class="slotf " data-slot="home-case-talaria"><div class="slot" style="aspect-ratio:1.732/1" role="img" aria-label="Image to come: Talaria open on a laptop showing a project board, a coffee beside it; top-down desk shot, morning light."><span class="sid">Image · home-case-talaria · 1732 x 1000</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M60 30h180v104H60z M60 46h180 M72 58h44v64H72z M128 58h44v40h-44z M184 58h44v52h-44z M80 70h28 M80 82h20 M136 70h28 M192 70h28 M192 82h20"/></svg></div><figcaption class="slotcap">Talaria open on a laptop showing a project board, a coffee beside it; top-down desk shot, morning light.</figcaption></figure></a>
-        <span class="chip">Our product</span><h3><a href="/preview/talaria/">Talaria</a></h3>
-        <p class="one">A task app for Mac, Windows and the web</p></article>
-
-      <article class="case"><a href="/preview/studies/packfold/"><figure class="slotf real" data-slot="home-case-packfold"><img class="case-img svc-img" src="/preview/assets/work/packfold.webp" alt="Packfold: an orange carton folded seventy percent of the way on screen, with its inks and the .DXF button" width="1732" height="1000" loading="lazy"><figcaption class="slotcap">Packfold, folding a carton on screen.</figcaption></figure></a>
-        <span class="chip">Our product</span><h3><a href="/preview/studies/packfold/">Packfold</a></h3>
-        <p class="one">A tool that folds a carton on screen</p></article>
-
-      <article class="case"><a href="/preview/services/live-visuals/"><figure class="slotf real" data-slot="home-case-fantasm"><img class="lumi-img" src="/preview/assets/home/lumi.webp" alt="Lumi, the Fantasmagoria ghost" width="695" height="743" loading="lazy"></figure></a>
-        <span class="chip">Our product</span><h3><a href="/preview/services/live-visuals/">Fantasmagoria</a></h3>
-        <p class="one">The tool we play live visuals on</p></article>
-
-    </div>
-  </section>
   </div>
-  <div class="wrap">
-  <!-- How it goes: after Hers' connected step cards -->
-  <section class="s" id="process" aria-labelledby="h-proc">
-    <div class="head"><div><p class="label">How it goes</p><h2 id="h-proc"><span class="t">How a</span> <b>project</b> <em>goes.</em></h2></div>
-      <p>In writing, and approved on your phone.</p></div>
-    <ol class="steps">
-      <li><span class="no">01</span><b>Look</b><span class="cue">Free, 20 minutes</span></li>
-      <li><span class="no">02</span><b>Plan</b><span class="cue">Fixed price and date</span></li>
-      <li><span class="no">03</span><b>Make</b><span class="cue">Drafts on your phone</span></li>
-      <li><span class="no">04</span><b>Care</b><span class="cue">From $50 a month</span></li>
-    </ol>
-  </section>
 
-  <!-- Why it looks like this: after Resend's centred statement -->
-  <section class="s thesis" aria-label="Why it looks like this">
-    <p class="orn" aria-hidden="true"><i></i></p>
-    <blockquote><span class="l1"><span class="t">Plain used to be</span> <em>the cheap option.</em></span> <b class="l2">It isn&rsquo;t anymore.</b></blockquote>
-    <p>So we spend the time on detail.</p>
-    <p class="orn" aria-hidden="true" style="margin-top:28px"><i></i></p>
-  </section>
-
-  <!-- Who's behind it: after Asana's leadership rows -->
-  <section class="s" id="about" aria-labelledby="h-about">
-    <div class="head"><div><p class="label">Who&rsquo;s behind it</p><h2 id="h-about"><span class="t">Who you&rsquo;ll</span> <em>work</em> <b>with.</b></h2></div></div>
-    <div class="people">
-      <div class="person"><figure class="slotf portrait" data-slot="home-team-tristan"><div class="slot" style="aspect-ratio:1/1.155" role="img" aria-label="Image to come: Tristan at his drawing desk with sketches and a tablet; warm window light, shoulder-up, looking at the camera."><span class="sid">Image · home-team-tristan · 1000 x 1155</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M150 58a26 30 0 1 0 0.1 0 M96 160c6-36 30-48 54-48s48 12 54 48 M214 30h50v60h-50z M239 30v60 M214 60h50"/></svg></div><figcaption class="slotcap">Tristan at his drawing desk with sketches and a tablet; warm window light, shoulder-up, looking at the camera.</figcaption></figure><h3><span class="t">Tristan</span> <b>Brewer</b></h3><p class="role">Design, 3D and live visuals</p></div>
-      <div class="person"><figure class="slotf portrait" data-slot="home-team-bryce"><div class="slot" style="aspect-ratio:1/1.155" role="img" aria-label="Image to come: Bryce at a laptop in a café; warm afternoon light, shoulder-up, looking at the camera."><span class="sid">Image · home-team-bryce · 1000 x 1155</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M150 58a26 30 0 1 0 0.1 0 M96 160c6-36 30-48 54-48s48 12 54 48 M214 30h50v60h-50z M239 30v60 M214 60h50"/></svg></div><figcaption class="slotcap">Bryce at a laptop in a café; warm afternoon light, shoulder-up, looking at the camera.</figcaption></figure><h3><span class="t">Bryce</span> <b>Nielsen</b></h3><p class="role">Websites, hosting and security</p></div>
+  <div class="cb-band cb-head" id="services"><h2 class="cb-h">Three things, done properly.</h2></div>
+  <section class="cb-band cb-svc" aria-labelledby="cb-svc-h">
+    <h2 class="cb-sr" id="cb-svc-h">What we make</h2>
+    <div class="cb-panels">
+      <a class="cb-p" href="/preview/services/websites/"><h3>Websites</h3><p>Fixes, new sites and hosting.</p></a>
+      <a class="cb-p" href="/preview/services/brand/"><h3>Brand</h3><p>One look for your sign, menu, site and cards.</p></a>
+      <a class="cb-p" href="/preview/services/live-visuals/"><h3>Creative tech</h3><p>What a template can&rsquo;t do.</p></a>
     </div>
   </section>
 
-  <!-- Start: after Whereby's closing CTA; booking first, the form second -->
-  <section class="s" id="contact" aria-labelledby="h-contact">
-    <div class="live-grass" data-live-grass aria-hidden="true"></div>
-    <div class="start">
-      <div class="bookblock">
-        <p class="label">Start</p>
-        <h2 id="h-contact"><span class="t">Start with</span> <em>a</em> <b>short call.</b></h2>
-        <p>Fifteen or thirty minutes. You leave with a next step and a price range.</p>
-        <a class="ghost" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a 15 or 30 minute call &rarr;</a>
-        <div class="reach"><a href="mailto:hello@seaofgrass.studio">hello@seaofgrass.studio</a><a href="tel:+13037751333">303.775.1333</a></div>
-      </div>
-      <form id="f" novalidate aria-label="Or write to us">
-        <p class="label">Or write to us</p>
-        <label>Your name<input name="name" autocomplete="name" required></label>
-        <label>Business or website<input name="site" required></label>
-        <label>What you need<select name="need"><option>Not sure yet</option><option>A website or hosting</option><option>Branding</option><option>Creative technology</option><option>Book a meeting</option></select></label>
-        <label>A line about it<textarea name="msg"></textarea></label>
-        <div class="row"><button type="submit">Send &rarr;</button><p id="note" aria-live="polite">Opens your email app with this filled in.</p></div>
-      </form>
-    </div>
+  <section class="cb-band cb-work" id="work" aria-labelledby="cb-work-h">
+    <h2 class="cb-sr" id="cb-work-h">Our work</h2>
+    <a class="cb-tile" href="/preview/work/duchess-nip-co/" aria-label="Duchess Nip Co., a branding case study"><img src="/preview/work/duchess-nip-co/brand.webp" alt="The Duchess N-cat mark, an N whose tail curls at the top and whose head wears a collar, beside three flavor labels: Nip, Nip &amp; Lemon and Midnight Nip" width="1600" height="1000" loading="lazy"></a>
+    <ul class="cb-index">
+      <li><a href="/preview/work/duchess-nip-co/">Duchess Nip Co.</a></li>
+      <li><a href="/preview/talaria/">Talaria</a></li>
+      <li><a href="/preview/studies/packfold/">Packfold</a></li>
+      <li><a href="/preview/services/live-visuals/">Fantasmagoria</a></li>
+    </ul>
   </section>
 
-  <!-- Footer: after Intercom's columns -->
-  <footer class="cols">
-    <div><b>Sea of Grass</b><span>A design and technology studio in Berthoud, Colorado.</span></div>
-    <div><b>Services</b><a href="/preview/services/websites/">Websites and hosting</a><a href="/preview/services/brand/">Brand and identity</a><a href="/preview/services/live-visuals/">Live visuals</a><a href="/preview/services/characters/">3D characters</a><a href="/preview/services/apps/">Apps</a><a href="/preview/services/illustration/">Illustration</a></div>
-    <div><b>Studio</b><a href="#work">Work</a><a href="#about">About</a><a href="/preview/lab/">The Lab</a><a href="/preview/client/">Client login</a></div>
-    <div><b>Contact</b><a href="mailto:hello@seaofgrass.studio">hello@seaofgrass.studio</a><a href="tel:+13037751333">303.775.1333</a><a href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a call</a></div>
+  <section class="cb-band cb-steps" id="process" aria-label="How a project goes">
+    <ol><li>Look</li><li>Plan</li><li>Make</li><li>Care</li></ol>
+  </section>
+
+  <section class="cb-band cb-thesis" aria-label="Why it looks like this">
+    <blockquote><span>Plain used to be the cheap option.</span><em>It isn&rsquo;t anymore.</em></blockquote>
+  </section>
+
+  <section class="cb-band cb-close" id="contact" aria-labelledby="cb-close-h">
+    <h2 id="cb-close-h">Start with a short call.</h2>
+    <a class="cb-book" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a meeting <span aria-hidden="true">&rarr;</span></a>
+  </section>
+  <footer class="cb-band cb-foot">
+    <b>Sea of Grass, Berthoud, Colorado</b>
+    <a href="mailto:hello@seaofgrass.studio">hello@seaofgrass.studio</a>
+    <a href="/preview/lab/">The Lab</a>
+    <a href="/preview/client/">Client login</a>
   </footer>
-  </div>
 </main>
 
 <script>
@@ -1026,7 +1029,7 @@ document.querySelectorAll('[data-book]').forEach(a=>a.addEventListener('click',b
 if(/[?&]book\b/.test(location.search))addEventListener('load',()=>setTimeout(book,120));
 // shared links like /#services: land on the section once fonts and layout settle
 addEventListener('load',()=>{const el=location.hash&&document.getElementById(location.hash.slice(1));if(el)setTimeout(()=>el.scrollIntoView({behavior:'instant'}),60);});
-document.getElementById('f').addEventListener('submit',e=>{e.preventDefault();const f=e.target,v=k=>f.elements[k].value.trim(),n=document.getElementById('note');
+document.getElementById('f')&&document.getElementById('f').addEventListener('submit',e=>{e.preventDefault();const f=e.target,v=k=>f.elements[k].value.trim(),n=document.getElementById('note');
   const empty=['name','site'].filter(k=>!v(k));['name','site'].forEach(k=>f.elements[k].setAttribute('aria-invalid',String(empty.includes(k))));
   n.classList.toggle('err',!!empty.length);
   if(empty.length){n.textContent='Please add your name and business.';f.elements[empty[0]].focus();return;}
@@ -1038,7 +1041,7 @@ document.getElementById('f').addEventListener('submit',e=>{e.preventDefault();co
 // The opening (from the Logo Field study): the mark as loose physical pieces (a knock makes them hop and flip, springs bring them home) over a meadow of
 // grass blades and seed heads that behave like sand: the pointer scoops them into plumes, they pour back and heap up again. After Lusion's contact page.
 const SEC=document.getElementById('opening'),cv=document.getElementById('lf-cv'),c=cv.getContext('2d'),still=matchMedia('(prefers-reduced-motion: reduce)').matches;
-let TOP=0,visible=true,ready=0,INK='#fff',MARKC='#fff',GRASS='#fff';
+let KEEPG=0,running=true,TOP=0,visible=true,ready=0,INK='#fff',MARKC='#fff',GRASS='#fff';
 function inks(){const cs=getComputedStyle(SEC),v=n=>cs.getPropertyValue(n).trim();INK=v('--lf-ink')||'#fff';MARKC=v('--lf-mark')||INK;GRASS=v('--lf-grass')||INK;} // the style's colors for the opening // TOP: the site bar's height over the opening; ready counts the frames spent letting the heap settle
 const P1=new Path2D("M 60.1360,299.5890 C 40.8560,283.5000 37.9720,248.8600 54.1230,229.1250 C 61.9590,219.4780 73.2066,213.0913 85.9080,212.4050 L 279.9170,212.3880 C 292.7328,211.6894 302.2259,200.5242 302.6140,188.1740 C 303.0171,175.3461 294.1087,163.3937 280.9850,162.4350 L 160.3860,162.3770 C 155.6830,162.3750 152.4580,158.1300 152.2660,154.1930 C 152.0640,150.0420 155.5000,145.5160 160.3230,145.5160 L 323.2740,145.5180 C 363.5090,146.7569 394.2264,180.5210 394.5670,220.2810 C 394.9023,259.4236 360.4620,297.7100 320.2520,299.1580 C 320.2520,299.1580 69.9310,307.7640 60.1360,299.5890 Z"),P2=new Path2D("M 365.1390,47.9780 C 360.1170,47.5130 354.1470,47.1080 347.4230,46.7550 C 274.7440,42.9430 114.0820,45.2510 114.0820,45.2510 C 73.9994,46.9759 43.7290,80.8860 43.6260,120.3040 C 43.5230,159.4680 73.5199,193.9418 113.3820,195.4730 L 277.3270,195.8440 C 282.2870,195.8440 285.7460,192.0070 285.9600,187.6500 C 286.1670,183.4310 282.8680,178.9500 277.9760,178.9480 L 158.2750,178.9140 C 145.3037,178.2644 135.8119,166.8014 135.6040,154.2420 C 135.3960,141.6768 144.3477,129.9059 157.2620,128.9900 L 350.1640,128.8050 C 352.3160,128.8030 354.4280,128.6110 356.4990,128.2740 C 366.7370,126.6070 375.8830,121.0490 382.8160,113.4590 C 390.0330,105.5580 394.4238,95.7293 394.5320,85.6870 C 394.7250,67.7708 381.6430,52.8390 365.1390,47.9780 Z"),DOT=new Path2D();DOT.arc(357.983,86.686,36.548,0,Math.PI*2);
 let RULE=[0,0,0],MODE='mark',W=0,H=0,DPR=1,pieces=[],grass=null,ptr={x:-1e4,y:-1e4,vx:0,vy:0,on:false,down:false,held:0,touch:false,burst:0,acc:0},last=0;
@@ -1053,10 +1056,12 @@ function build(){pieces=[];const phone=W<600;
   const sy=top+markH/2,wy=top+markH+fs*1.05,ry=wy+fs*.32;S(mx,sy,markH);
   let x=mx-ww/2;for(const ch of word){const w=c.measureText(ch).width;if(ch!==' ')add('ch',x+w/2,wy,Math.max(w,fs*.4)*.6,{ch,fs,font:`800 ${fs}px Archivo, "Helvetica Neue", Arial, sans-serif`});x+=w;}
   const segs=phone?6:10,sw=ww/segs;for(let i=0;i<segs;i++)add('rule',mx-ww/2+sw*(i+.5),ry,sw*.5,{w:sw-3,h:Math.max(2,fs*.05)});}
+  if(KEEPG&&grass){const dH=H-KEEPG,g=grass;for(let i=0;i<g.N;i++)g.y[i]+=dH; // only the height changed: keep the heap on the ground, thin it to fit
+    const deep=MODE==='lockup',band=H*(deep?(phone?.34:.38):(phone?.27:.25));g.n=Math.max(1,Math.min(g.N,Math.floor(W/g.d0)*Math.floor(band/g.d0)));return;}
   // ---- the meadow: grass blades and seed heads as grains of a soft fluid, heaped along the bottom quarter
   const deep=MODE==='lockup',d0=deep?(phone?8:10):(phone?10:12),band=H*(deep?(phone?.34:.38):(phone?.27:.25)),cols=Math.floor(W/d0),rows=Math.floor(band/d0),n=cols*rows,r=rnd(7);
   grass={n,d0,x:new Float32Array(n),y:new Float32Array(n),vx:new Float32Array(n),vy:new Float32Array(n),a:new Float32Array(n),px:new Float32Array(n),py:new Float32Array(n),len:new Float32Array(n),seed:new Uint8Array(n),
-    head:new Int32Array(Math.ceil(W/d0+2)*Math.ceil(H/d0+2)),next:new Int32Array(n),gw:Math.ceil(W/d0+2)};
+    head:new Int32Array(Math.ceil(W/d0+2)*Math.ceil(H/d0+2)),next:new Int32Array(n),gw:Math.ceil(W/d0+2),N:n};
   for(let i=0;i<n;i++){const cx=i%cols,cy=Math.floor(i/cols);grass.x[i]=(cx+r())*d0;grass.y[i]=H-4-(cy+r())*d0*1.05;
     grass.len[i]=d0*(1.1+r()*.7);grass.seed[i]=r()<.12?1:0;grass.a[i]=(r()-.5)*.3;}
   ready=0;}
@@ -1126,9 +1131,9 @@ function draw(){c.setTransform(DPR,0,0,DPR,0,0);c.clearRect(0,0,W,H);c.fillStyle
   c.stroke();c.fill();}
 function frame(now){const dt=last?Math.min(.033,(now-last)/1000):.016;last=now;ptr.vx*=.85;ptr.vy*=.85;
   if(ready<15){for(let k=0;k<6;k++)fluid(grass,1/120,0);ready++;if(ready===15)SEC.classList.add('grown');}else step(dt,now/1000); // six settling steps a frame, then live
-  draw();if(!still&&visible)requestAnimationFrame(frame);else last=0;}
+  draw();if(!still&&visible&&!SEC.classList.contains('docked'))requestAnimationFrame(frame);else{last=0;running=false;}}
 // ---- input: mouse, pen and touch all move the same body; nothing happens under reduced motion
-function move(e){const q=SEC.getBoundingClientRect(),x=e.clientX-q.left,y=e.clientY-q.top;if(ptr.on){ptr.vx=ptr.vx*.5+(x-ptr.x)*.5*60;ptr.vy=ptr.vy*.5+(y-ptr.y)*.5*60;}ptr.x=x;ptr.y=y;ptr.on=true;}
+function move(e){const q=cv.getBoundingClientRect(),x=(e.clientX-q.left)*W/(q.width||W),y=(e.clientY-q.top)*H/(q.height||H);if(ptr.on){ptr.vx=ptr.vx*.5+(x-ptr.x)*.5*60;ptr.vy=ptr.vy*.5+(y-ptr.y)*.5*60;}ptr.x=x;ptr.y=y;ptr.on=true;}
 const ui=e=>e.target.closest&&e.target.closest('button,a');
 if(!still){SEC.addEventListener('pointermove',move);SEC.addEventListener('pointerdown',e=>{if(ui(e))return;ptr.on=false;move(e);ptr.down=true;ptr.held=0;ptr.touch=e.pointerType!=='mouse';ptr.burst+=W<600?28:40;});addEventListener('pointerup',()=>{ptr.down=false;});addEventListener('pointercancel',()=>{ptr.down=false;});SEC.addEventListener('pointerleave',()=>{ptr.on=false;ptr.x=ptr.y=-1e4;});addEventListener('pointercancel',()=>{ptr.on=false;ptr.x=ptr.y=-1e4;});SEC.addEventListener('pointerup',e=>{if(e.pointerType!=='mouse'){ptr.on=false;ptr.x=ptr.y=-1e4;}});}
 // ---- the ground color (remembered)
@@ -1141,8 +1146,8 @@ modes.forEach(b=>b.addEventListener('click',()=>{mode(b.dataset.mode);build();if
 mode('lockup',false);
 inks();['sog-theme','sog-scheme','sog-colour'].forEach(e=>document.addEventListener(e,()=>requestAnimationFrame(()=>{inks();if(still)draw();})));
 size();if(still){for(let k=0;k<90;k++)fluid(grass,1/120,0);ready=15;draw();}else requestAnimationFrame(frame);
-new IntersectionObserver(es=>{const v=es[0].isIntersecting;if(v&&!visible&&!still){visible=true;requestAnimationFrame(frame);}visible=v;}).observe(SEC);
-window.sogOpening={poke:(x,y,vx,vy)=>{ptr.x=x;ptr.y=y;ptr.vx=vx;ptr.vy=vy;ptr.on=true;},
+new IntersectionObserver(es=>{const v=es[0].isIntersecting;if(v&&!visible&&!still&&!running){visible=true;running=true;requestAnimationFrame(frame);}visible=v;}).observe(SEC);
+window.sogOpening={fit:()=>{if(!W)return;KEEPG=H;size();KEEPG=0;if(still)draw();},wake:()=>{if(!still&&!running){running=true;requestAnimationFrame(frame);}},poke:(x,y,vx,vy)=>{ptr.x=x;ptr.y=y;ptr.vx=vx;ptr.vy=vy;ptr.on=true;},
   // for the settle check: how far the furthest piece is from home, in px and degrees
   drift:()=>pieces.reduce((m,p)=>({px:Math.max(m.px,Math.hypot(p.x-p.hx,p.y-p.hy)),deg:Math.max(m.deg,Math.abs(p.a-Math.round(p.a/6.2832)*6.2832)*180/Math.PI)}),{px:0,deg:0}),
   words:()=>{const q=SEC.getBoundingClientRect();return pieces.filter(p=>p.kind==='w'||p.kind==='ch'||p.kind==='p1').map(p=>[p.hx+q.left,p.hy+q.top]);},ready:()=>ready>=15};
@@ -1161,6 +1166,17 @@ const show=()=>{const up=scrollY>24;tab.classList.toggle('up',up);tab.toggleAttr
 addEventListener('scroll',show,{passive:true});show();
 })();
 </script>
-<script src="/preview/assets/live-grass.js" defer></script>
+<script>
+(()=>{ // the opening shrinks to the top as you scroll: its bottom stays on the first band and it gets shorter, down to a top band
+const open=document.querySelector('main.cb .cb-open'),lf=open&&open.querySelector('.lf');if(!lf)return;
+if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+let ticking=false,lastH=0;
+function endH(){const vh=open.offsetHeight;return Math.round(Math.min(vh,Math.max(innerWidth<600?300:340,vh*(innerWidth<600?.4:.44))));}
+function upd(){ticking=false;const vh=open.offsetHeight,h=Math.round(Math.max(endH(),vh-Math.max(0,scrollY)));
+  if(h!==lastH){lastH=h;lf.style.setProperty('--cb-h',h+'px');window.sogOpening&&sogOpening.fit&&sogOpening.fit();}}
+addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(upd);}},{passive:true});
+addEventListener('resize',()=>{lastH=0;upd();});upd();
+})();
+</script>
 </body>
 </html>
