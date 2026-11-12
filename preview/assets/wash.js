@@ -48,16 +48,16 @@ void main(){
       bl+=w;
       tide=max(tide,(smoothstep(R*.9,R*.96,dist)-smoothstep(R*.96,R*1.03,dist))*life);
       // each bloom carries its own pigment: apricot or peach above, sage, olive or ochre low
-      vec3 blue=h4<.45?vec3(.62,.78,.93):(h4<.8?vec3(.60,.68,.90):vec3(.74,.79,.86)),warm=vec3(.98,.80,.64);   // cerulean, ultramarine, a grey-blue; apricot near the horizon
+      vec3 blue=h4<.45?vec3(.20,.56,.86):(h4<.8?vec3(.24,.34,.84):vec3(.12,.30,.50)),warm=vec3(.99,.60,.26);   // cerulean, ultramarine, Prussian; cadmium orange at the horizon   // cerulean, ultramarine, a grey-blue; apricot near the horizon
       tint+=mix(blue,warm,clamp(low*.9+(h4-.5)*.2,0.,1.))*w;tw+=w;}}
-  vec3 pig=tw>1e-4?tint/tw:mix(vec3(.64,.76,.92),vec3(.98,.80,.64),low);
+  vec3 pig=tw>1e-4?tint/tw:mix(vec3(.22,.48,.86),vec3(.99,.60,.26),low);
   // where the wash lies: a graded sky, deepest overhead, nothing at the horizon but a little warm light; lighter behind the headline
   vec2 tm=(uv-vec2(.3,.56))/vec2(.3,.18);float bare=exp(-dot(tm,tm));
-  float lay=(pow(el,.7)*1.05+low*smoothstep(.18,.32,uv.y)*.35)*(1.-.45*bare);
+  float lay=(pow(el,.6)*1.25+low*smoothstep(.16,.32,uv.y)*.6)*(1.-.35*bare);
   float DS=lay*(.38+.62*clamp(bl,0.,1.3))+tide*.14*lay;
   float gran=n1(fc*1.1)*.5+n1(fc*.3+7.)*.3+h1(floor(fc*.8))*.2;   // granulation in the paper's tooth
   DS*=.86+.28*gran;
-  vec3 col=paper(fc)*pow(pig,vec3(DS*1.35));
+  vec3 col=paper(fc)*pow(pig,vec3(DS*1.15));
   o=vec4(col,1.);}`;
 function sh(t,s){const x=gl.createShader(t);gl.shaderSource(x,s);gl.compileShader(x);if(!gl.getShaderParameter(x,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(x));return x;}
 let pr;try{pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,VS));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,FS));gl.bindAttribLocation(pr,0,'p');gl.linkProgram(pr);
