@@ -1,7 +1,6 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta name="robots" content="noindex,nofollow">
 <!-- Google tag (gtag.js) -->
 <script>/* analytics waits until the page has loaded and gone idle, so it never competes with the first view */addEventListener('load',function(){var go=function(){var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-61Q2DRMD3H';document.head.appendChild(s);};'requestIdleCallback' in window?requestIdleCallback(go,{timeout:4000}):setTimeout(go,2000);});</script>
 <script>
@@ -11,9 +10,18 @@
   gtag('config', 'G-61Q2DRMD3H');
 </script>
 <meta charset="utf-8" />
-<link rel="canonical" href="https://seaofgrass.studio/services/brand/" />
+<link rel="canonical" href="https://seaofgrass.studio/preview/services/brand/" />
 <meta name="theme-color" content="#090909" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Sea of Grass" />
+<meta property="og:url" content="https://seaofgrass.studio/preview/services/brand/" />
+<meta property="og:title" content="Brand and identity · Sea of Grass" />
+<meta property="og:description" content="Your sign, menu, site and cards don’t look like the same business. Brand and identity from Sea of Grass, Berthoud, CO." />
+<meta property="og:image" content="https://seaofgrass.studio/preview/assets/share.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
 <title>Brand and identity · Sea of Grass</title>
 <meta name="description" content="Your sign, menu, site and cards don’t look like the same business. Brand and identity from Sea of Grass, Berthoud, CO." />
 <link rel="icon" href="/preview/assets/favicon.svg" type="image/svg+xml" />
@@ -148,7 +156,7 @@ html:is([data-theme="neu"],[data-theme="brutal"],[data-theme="simple"],[data-the
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:400 17px/1.55 var(--sans)}
 a{color:inherit}
-.wrap{max-width:1120px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px),4vw);padding-right:max(20px,env(safe-area-inset-right,0px),4vw)}
+.wrap{max-width:1240px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px),4vw);padding-right:max(20px,env(safe-area-inset-right,0px),4vw)}
 header.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:max(18px,env(safe-area-inset-top,0px)) 16px;border-bottom:1px solid var(--rule)}
 .home{display:block;width:30px}.home img{display:block;width:100%;filter:invert(1)}
 .top nav{display:flex;gap:24px;font:400 15px/1 var(--sans)}
@@ -358,6 +366,9 @@ html[data-theme="glass"]:not([data-scheme]) body{background:#E6EAFB}
 html[data-theme="neu"]:not([data-scheme]) body{background:#EFE6D8}
 html[data-theme="simple"]:not([data-scheme]) body{background:#F4F1EA}
 html[data-theme="dusk"]:not([data-scheme]) body{background:#120607}
+/* 2026-11-12 repairs: one get-card or example fills its row when it is alone; text-only get cards */
+.exs:has(>figure.ex:only-child){grid-template-columns:minmax(0,1fr);max-width:720px}.hero>figure{min-width:0}.hero{min-width:0}
+.home{display:flex;align-items:center;gap:10px;width:auto;text-decoration:none;color:var(--fg);font:500 15px/1 var(--sans);white-space:nowrap}.home img{width:30px;flex:none}
 </style>
 <script>
 (function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#120607',glass:'#EEF1F8',neu:'#EFE6D8',brutal:'#FFFDF5',simple:'#F4F1EA',editorial:'#f3f1ea'};
@@ -380,15 +391,15 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
 <body>
 <div class="wrap">
   <header class="top">
-    <a class="home" href="/preview/"><img src="/preview/assets/logo.svg" alt="Sea of Grass, home" width="34" height="25"></a>
-    <nav aria-label="Main"><a class="hide-s" href="/preview/#services" aria-current="page">Services</a><a class="hide-s" href="/preview/#work">Work</a><a class="hide-s" href="/preview/#about">About</a><a class="hide-s" href="#start">Contact</a><a class="hide-s" href="/preview/client/">Client login</a><a class="book" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a meeting</a></nav>
+    <a class="home" href="/"><img src="/preview/assets/logo.svg" alt="" width="34" height="25"><span>Sea of Grass</span></a>
+    <nav aria-label="Main"><a class="hide-s" href="/#services" aria-current="page">Services</a><a class="hide-s" href="/#work">Work</a><a class="hide-s" href="/#about">About</a><a class="hide-s" href="#start">Contact</a><a class="hide-s" href="/preview/client/">Client login</a><a class="book" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a meeting</a></nav>
   </header>
   <main>
   <!-- 1 Hero: the problem in one line (after Mercury's split hero) -->
   <div class="hero">
     <div class="live-grass" data-live-grass aria-hidden="true"></div>
     <div>
-      <p class="kick">Service 02 · Sea of Grass</p>
+      <p class="kick">Brand · Sea of Grass</p>
       <h1><span class="t">Brand</span> <em>and</em> <b>identity</b></h1>
       <p class="lead quote">“We need something that looks like Berthoud, not a template.”</p>
       <div class="acts"><a class="btn" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a meeting &rarr;</a><a class="btn q" href="#prices">See prices</a></div>
@@ -399,19 +410,19 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
   <section aria-labelledby="h-who"><div class="sec-h"><div><p class="kick2">Who it&rsquo;s for</p><h2 id="h-who"><span class="t">Sound</span> <b>familiar?</b></h2></div><p>If you&rsquo;ve said one of these, this is for you.</p></div>
     <ul class="pains"><li>“Every printer gives us a slightly different logo.”</li><li>“Our sign and our website look like two different shops.”</li><li>“Our sign, menu, site and cards don’t look like the same business.”</li></ul></section>
   <!-- 3 What you get -->
-  <section aria-labelledby="h-get"><div class="sec-h"><div><p class="kick2">What you get</p><h2 id="h-get"><span class="t">What</span> <b>you get</b></h2></div><p>Plainly, and written down before we start.</p></div>
+  <section aria-labelledby="h-get"><div class="sec-h"><div><h2 id="h-get"><span class="t">What</span> <b>you get</b></h2></div><p>Plainly, and written down before we start.</p></div>
     <div class="gets"><div><figure class="slotf real" data-slot="brand-get-1"><a href="/preview/work/duchess-nip-co/"><img class="slot-img fit-contain" src="/preview/work/duchess-nip-co/mark-ncat-cream.webp" alt="The Duchess N-cat: the left stem curls into a tail, the right stem is the neck with a wedge head, a moon eye, whiskers, a ginger collar with a D tag, and toe-bean feet" width="900" height="900" loading="lazy"></a><figcaption class="slotcap">The mark: an N that is also a cat, from the curl of the tail to the toe beans.</figcaption></figure><h3>A mark and wordmark</h3><p>Drawn by hand, finished as clean vector files.</p></div><div><figure class="slotf real" data-slot="brand-get-2"><a href="/preview/work/duchess-nip-co/"><img class="slot-img fit-cover" src="/preview/work/duchess-nip-co/symbols.jpg" alt="Twelve Duchess Nip Co. symbols built from one kit of five parts, and the ornament border" loading="lazy"></a><figcaption class="slotcap">The guide: twelve symbols from one kit of five parts, the one ornament border, and the rules behind them.</figcaption></figure><h3>Colors and type</h3><p>Chosen to go with them, written down for anyone to use.</p></div><div><figure class="slotf real" data-slot="brand-get-3"><a href="/preview/work/duchess-nip-co/"><img class="slot-img fit-contain" src="/preview/work/duchess-nip-co/labels.webp" alt="Three Duchess Nip Co. labels: Nip in ginger, Nip &amp; Lemon in lemon yellow and Midnight Nip in plum" width="2400" height="623" loading="lazy"></a><figcaption class="slotcap">The mark on the product: one label per flavor.</figcaption></figure><h3>Files for everything</h3><p>Print, screen and the sign shop.</p></div></div></section>
   <!-- 4 Examples (after Front's story cards) -->
   <section aria-labelledby="h-ex"><div class="sec-h"><div><p class="kick2">Examples</p><h2 id="h-ex"><span class="t">What it</span> <b>looks like</b></h2></div><p>Our own work and studies until client stories are ready to share. See a whole job in <a href="/preview/work/duchess-nip-co/">Duchess Nip Co., a fictional case study</a>.</p></div>
     <div class="exs"><figure class="ex"><figure class="slotf real" data-slot="brand-example-1"><a href="/preview/work/duchess-nip-co/"><img class="slot-img fit-contain" src="/preview/work/duchess-nip-co/posts.jpg" alt="Three Duchess Nip Co. launch posts" loading="lazy"></a><figcaption class="slotcap">Three launch posts: the can, the six-pack and the sticker.</figcaption></figure><figcaption class="cap">Duchess Nip Co.: the launch posts</figcaption></figure><figure class="ex"><figure class="slotf real" data-slot="brand-example-2"><a href="/preview/work/duchess-nip-co/"><img class="slot-img fit-cover" src="/preview/work/duchess-nip-co/site.jpg" alt="The one-page Duchess Nip Co. shop" loading="lazy"></a><figcaption class="slotcap">The one-page shop, with its cat-proof order button.</figcaption></figure><figcaption class="cap">Duchess Nip Co.: the shop</figcaption></figure></div></section>
   <!-- 5 How it goes (after Hers' connected steps) -->
-  <section aria-labelledby="h-how"><div class="sec-h"><div><p class="kick2">How it goes</p><h2 id="h-how"><span class="t">How it</span> <b>goes</b></h2></div><p>Nothing goes live until you&rsquo;ve said yes.</p></div>
+  <section aria-labelledby="h-how"><div class="sec-h"><div><h2 id="h-how"><span class="t">How it</span> <b>goes</b></h2></div><p>Nothing goes live until you&rsquo;ve said yes.</p></div>
     <ol class="steps2"><li><span class="no">01</span><b>Look</b><p>A call about your business and what it should feel like.</p><span class="cue">Free</span></li><li><span class="no">02</span><b>Plan</b><p>Scope, price and date, in writing.</p><span class="cue">Fixed price</span></li><li><span class="no">03</span><b>Make</b><p>Sketches, then two directions, then one finished mark.</p><span class="cue">Two rounds</span></li><li><span class="no">04</span><b>Hand over</b><p>Every file, and a guide to use them.</p><span class="cue">Yours to keep</span></li></ol></section>
   <!-- 6 Prices (after Epidemic Sound's plan cards) -->
-  <section id="prices" aria-labelledby="h-prices"><div class="sec-h"><div><p class="kick2">Prices</p><h2 id="h-prices"><b>Prices</b></h2></div><p>Every project is different, so the price is fixed after a free call and written down before any work starts.</p></div>
+  <section id="prices" aria-labelledby="h-prices"><div class="sec-h"><div><h2 id="h-prices"><b>Prices</b></h2></div><p>Every project is different, so the price is fixed after a free call and written down before any work starts.</p></div>
     <div class="tiers"><div class="tier"><h3>Mark refresh</h3><span class="pr q">Fixed quote after the free call</span><ul><li>Your current mark, cleaned up</li><li>Vector files</li><li>Colors written down</li></ul><a class="btn" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a call</a></div><div class="tier"><h3>New identity</h3><span class="pr q">Fixed quote after the free call</span><ul><li>Mark and wordmark</li><li>Colors and type</li><li>Files for print and screen</li></ul><a class="btn" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a call</a></div><div class="tier"><h3>Identity and ornament</h3><span class="pr q">Fixed quote after the free call</span><ul><li>Everything in New identity</li><li>Borders and patterns</li><li>Sign and packaging files</li></ul><a class="btn" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a call</a></div></div></section>
   <!-- 7 Questions -->
-  <section aria-labelledby="h-faq"><div class="sec-h"><div><p class="kick2">Questions</p><h2 id="h-faq"><b>Questions</b></h2></div></div>
+  <section aria-labelledby="h-faq"><div class="sec-h"><div><h2 id="h-faq"><b>Questions</b></h2></div></div>
     <dl class="faq"><dt>How many options do we see?</dt><dd>Two directions from sketches, then we finish the one you pick.</dd><dt>Can you match our existing colors?</dt><dd>Yes, or move them on gently if they’re fighting each other.</dd></dl></section>
   <!-- 8 Book (after Whereby's closing CTA) -->
   <div class="start" id="start">
@@ -427,7 +438,7 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
   </div>
   <section aria-labelledby="h-more">
     <h2 id="h-more"><span class="t">Also from</span> <b>the studio</b></h2>
-    <ul class="others"><li><a href="../websites/"><span class="no">01</span>Websites and hosting</a></li><li><a href="../characters/"><span class="no">03</span>3D characters and animation</a></li><li><a href="../live-visuals/"><span class="no">04</span>Live visuals</a></li><li><a href="../apps/"><span class="no">05</span>App development</a></li><li><a href="../illustration/"><span class="no">06</span>Character and illustration</a></li></ul>
+    <ul class="others"><li><a href="../websites/">Websites and hosting</a></li><li><a href="../characters/">3D characters and animation</a></li><li><a href="../live-visuals/">Live visuals</a></li><li><a href="../apps/">App development</a></li><li><a href="../illustration/">Character and illustration</a></li></ul>
   </section>
   </main>
   <footer>Sea of Grass &middot; Berthoud, Colorado &middot; <a href="/preview/client/">Client login</a> &middot; <a href="/preview/lab/">The Lab</a></footer>
