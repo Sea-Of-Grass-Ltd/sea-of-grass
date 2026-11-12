@@ -58,8 +58,9 @@ void main(){
   float DS=lay*(.38+.62*clamp(bl,0.,1.3))+tide*.14*lay;
   float gran=n1(fc*1.1)*.5+n1(fc*.3+7.)*.3+h1(floor(fc*.8))*.2;   // granulation in the paper's tooth
   DS*=.86+.28*gran;
-  vec3 base=paper(fc),col=mix(base*pow(pig,vec3(DS*.9)),base+pig*.16,smoothstep(.5,1.2,bl)*lay*.6);   // sienna lifts where blooms gather, umber sinks at their rims
-  // printed grain, as Make-Up's paper boils: re-seeded about ten times a second, laid over like an overlay, with a fine dot screen
+  vec3 base=paper(fc),col=mix(base*pow(pig,vec3(DS*.9)),base+pig*.16,smoothstep(.5,1.2,bl)*lay*.6);
+  col=mix(base,col,.3);   // the wash only breathes faintly under the print   // sienna lifts where blooms gather, umber sinks at their rims
+  // printed grain, fixed to the sheet, laid over like an overlay, with a fine dot screen
   vec2 gq=floor(fc)+vec2(uBoil*37.,uBoil*91.);float gn=ih(uvec3(uvec2(gq),uint(uBoil)))*.7+n1(fc*.35+uBoil*3.1)*.3,ov=.5+(gn-.5)*.55;
   col=mix(col,mix(2.*col*ov,1.-2.*(1.-col)*(1.-ov),step(.5,ov)),.6);
   vec2 dsc=mod(fc,3.)-1.;col*=1.-.06*step(dot(dsc,dsc),.6);
@@ -72,7 +73,7 @@ const vb=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vb);gl.bufferData(gl.AR
 const on=()=>document.documentElement.dataset.theme==='neu'&&!document.documentElement.hasAttribute('data-scheme');
 let W=0,H=0,act=false,vis=true,running=false,last=0,ptr=[0,0],pOn=0,pS=[0,0];const T0=performance.now()-60000*Math.random();
 function size(){const r=SEC.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,1.5);W=Math.round(r.width*d);H=Math.round(r.height*d);cv.width=W;cv.height=H;}
-function draw(now){gl.viewport(0,0,W,H);gl.useProgram(pr);gl.uniform2f(uRes,W,H);gl.uniform1f(uTime,(now-T0)/1000);gl.uniform1f(uBoil,Math.floor((now-T0)/100)%97);
+function draw(now){gl.viewport(0,0,W,H);gl.useProgram(pr);gl.uniform2f(uRes,W,H);gl.uniform1f(uTime,(now-T0)/1000);gl.uniform1f(uBoil,0.);   // the grain holds still: a printed sheet, not static on a screen
   pS[0]+=(ptr[0]-pS[0])*.12;pS[1]+=(ptr[1]-pS[1])*.12;gl.uniform2f(uPtr,pS[0],pS[1]);gl.uniform1f(uPtrOn,pOn);gl.drawArrays(gl.TRIANGLES,0,3);}
 function frame(now){if(!act||!vis){running=false;return;}requestAnimationFrame(frame);if(now-last<40)return;last=now;draw(now);}   // about 25 a second: watercolour moves slowly
 function wake(){if(still){draw(performance.now());return;}if(!running&&act&&vis){running=true;requestAnimationFrame(frame);}}
