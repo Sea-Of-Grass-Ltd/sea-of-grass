@@ -18,8 +18,8 @@ function circles(c,g,COL,FL){ // Ledger (Refero: The New Yorker + V–A–C): an
   batch(c,g,[INK],i=>k(i)<4?0:-1,(c,g,i)=>{const r=d*(.3+.3*hsh(i+5));c.moveTo(g.x[i]+r,g.y[i]);c.arc(g.x[i],g.y[i],r,0,6.2832);},false,true,1.15);
   batch(c,g,[INK],i=>k(i)===5||k(i)===6?0:-1,(c,g,i)=>{const L=d*(.5+.5*hsh(i+6)),v=hsh(i+9)<.35;v?(c.moveTo(g.x[i],g.y[i]-L),c.lineTo(g.x[i],g.y[i]+L)):(c.moveTo(g.x[i]-L,g.y[i]),c.lineTo(g.x[i]+L,g.y[i]));},false,true,1.15);
   batch(c,g,[INK],i=>k(i)===7?0:-1,(c,g,i)=>{const L=d*.32;c.moveTo(g.x[i]-L*2.2,g.y[i]);c.lineTo(g.x[i]-L*.6,g.y[i]);c.moveTo(g.x[i]+L*.6,g.y[i]);c.lineTo(g.x[i]+L*2.2,g.y[i]);},false,true,1.15);
-  batch(c,g,[INK],i=>k(i)===8?0:-1,(c,g,i)=>{const L=d*.7,a=hsh(i+2)<.5?0:-Math.PI/4,ca=Math.cos(a),sa=Math.sin(a),x=g.x[i],y=g.y[i],tx=x+ca*L,ty=y+sa*L;   // → or ↗
-    c.moveTo(x-ca*L,y-sa*L);c.lineTo(tx,ty);c.moveTo(tx-ca*L*.5+sa*L*.4,ty-sa*L*.5-ca*L*.4);c.lineTo(tx,ty);c.lineTo(tx-ca*L*.5-sa*L*.4,ty-sa*L*.5+ca*L*.4);},false,true,1.15);
+  c.fillStyle=INK;c.textAlign='center';c.textBaseline='middle';const ORN=['\u261E','\u2766','\u2042','\u00A7','\u00B6','\u273B'];   // printer's ornaments in place of arrows (Refero: The New Yorker, Esquire): manicule, fleuron, asterism, section, pilcrow, star
+  for(let i=0;i<g.n;i++){if(k(i)!==8)continue;const o=Math.floor(hsh(i+2)*ORN.length),sz=d*(1.15+.35*hsh(i+6));c.font=`${sz|0}px Georgia,"Times New Roman",serif`;c.save();c.translate(g.x[i],g.y[i]);c.rotate((hsh(i+4)-.5)*.5);c.fillText(ORN[o],0,0);c.restore();}
   batch(c,g,[INK],i=>k(i)===9?0:-1,(c,g,i)=>{const r=d*.14;c.moveTo(g.x[i]+r,g.y[i]);c.arc(g.x[i],g.y[i],r,0,6.2832);},true,false);
   batch(c,g,[red],i=>k(i)===4?0:-1,(c,g,i)=>{const r=d*.36;c.moveTo(g.x[i]+r,g.y[i]);c.arc(g.x[i],g.y[i],r,0,6.2832);},true,false);}
 function y2k(c,g,COL,FL){ // Ember: Colorado wildflowers as flat poster cutouts (Refero: THE1's hard-edged flat colour, no outlines or shine). Columbine, Indian paintbrush, blanket flower, flax, among green leaves
