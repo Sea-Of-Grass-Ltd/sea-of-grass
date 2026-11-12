@@ -1635,10 +1635,11 @@ function markTargets(){ // Brand: the mark is mown into the meadow. Blades cover
   const T={x:new Float32Array(n),y:new Float32Array(n),a:new Float32Array(n),dl:new Float32Array(n)},hs=i=>((i*2654435761)>>>0)/4294967296;
   const hal=(i,b)=>{let f=1,r=0;while(i>0){f/=b;r+=f*(i%b);i=Math.floor(i/b);}return r;};
   const M=(px,py)=>{const a=Math.floor((px-ox)*k),b=Math.floor((py-oy)*k);return I(a,b)||I(a+1,b)||I(a-1,b)||I(a,b+1)||I(a,b-1);};   // inside the S, with a hair of margin
-  const x0=F?0:0,x1=F?F.x+F.w+12:W,y0=TOP,y1=H;let q=1;
+  const x0=0,x1=F?F.x+F.w+40:W,y0=TOP,y1=H,FR=F?Math.min(240,(x1-x0)*.3):0;let q=1;
+  const thin=(px,q)=>{if(!FR)return false;const t=(px-(x1-FR))/FR;return t>0&&hs(q*7+1)<Math.pow(t,.9);};   // toward the words the meadow thins out, so it fades instead of stopping in a hard edge
   for(let i=0;i<n;i++){const L=g.len[i]||g.d0*1.4,a=(hs(i+3)-.5)*.34;let px,py,tries=0;
     do{px=x0+hal(q,2)*(x1-x0);py=y0+hal(q,3)*(y1-y0+L*.6);q++;tries++;}
-    while(tries<400&&(M(px,py)||M(px+Math.sin(a)*L*.5,py-Math.cos(a)*L*.5)||M(px+Math.sin(a)*L,py-Math.cos(a)*L)));   // nothing roots where any part of it would stand in the cut
+    while(tries<400&&(thin(px,q)||M(px,py)||M(px+Math.sin(a)*L*.5,py-Math.cos(a)*L*.5)||M(px+Math.sin(a)*L,py-Math.cos(a)*L)));   // nothing roots where any part of it would stand in the cut
     T.x[i]=px;T.y[i]=py;T.a[i]=a;T.dl[i]=Math.min(1,Math.max(0,1-(py-TOP)/(H-TOP))*.85+hs(i+11)*.15);}   // it rises from the ground up
   return T;}
 // Creative tech: the blades become a visualizer, after the Live visuals synth's scenes (Spirograph Sludge, Portal Punch,
