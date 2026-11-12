@@ -35,10 +35,19 @@ function meadow(el){
       const v1=Math.hypot(g.vx[i],g.vy[i]),near=ptr.on&&Math.abs(g.x[i]-ptr.x)<PR*2.5&&Math.abs(g.y[i]-ptr.y)<PR*2.5,cap=near?1e9:v0+120;
       if(v1>cap){g.vx[i]*=cap/v1;g.vy[i]*=cap/v1;}else if(v1<90&&g.y[i]>H-160){const k=v1<30?.7:.92;g.vx[i]*=k;g.vy[i]*=k;}}
     for(let i=0;i<n;i++){const v=Math.hypot(g.vx[i],g.vy[i]),want=v>60?Math.atan2(g.vx[i],-g.vy[i]):Math.sin(g.x[i]*.05)*.18,da=((want-g.a[i]+Math.PI*3)%(Math.PI*2))-Math.PI;g.a[i]+=da*Math.min(1,dt*(v>60?14:5));}}
-  function draw(){c.setTransform(DPR,0,0,DPR,0,0);c.clearRect(0,0,W,H);if(ready<15)return;c.fillStyle=COL;c.strokeStyle=COL;c.beginPath();
-    for(let i=0;i<g.n;i++){if(g.seed[i])continue;const L=g.len[i],a=g.a[i],s=Math.sin(a),co=Math.cos(a),x=g.x[i]-s*L*.5,y=g.y[i]+co*L*.5,w=L*.13+.4;
-      c.moveTo(x-co*w,y-s*w);c.lineTo(x+s*L,y-co*L);c.lineTo(x+co*w,y+s*w);}
-    c.fill();c.lineWidth=.9;c.beginPath();
+  const shades=(col)=>{col=col.trim();const hx=/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(col)?(col.length===4?col.slice(1).split('').map(h=>parseInt(h+h,16)):[1,3,5].map(j=>parseInt(col.slice(j,j+2),16))):null;const m=hx||col.match(/\d+(\.\d+)?/g)||[0,0,0],r=+m[0],g2=+m[1],b=+m[2],f=(k)=>k>0?`rgb(${r+(255-r)*k|0},${g2+(255-g2)*k|0},${b+(255-b)*k|0})`:`rgb(${r*(1+k)|0},${g2*(1+k)|0},${b*(1+k)|0})`;return[f(-.16),col,f(.2)];};
+function draw(){c.setTransform(DPR,0,0,DPR,0,0);c.clearRect(0,0,W,H);if(ready<15)return;c.fillStyle=COL;c.strokeStyle=COL;c.lineCap="round";c.beginPath();
+  {const SHD=shades(COL);for(let q=0;q<3;q++){c.fillStyle=SHD[q];c.strokeStyle=SHD[q];c.beginPath();
+  for(let i=0;i<g.n;i++){if(g.seed[i]||i%3!==q)continue;const k=(i*7919)%10,a=g.a[i];
+    if(k<4){const L=g.len[i]*1.25,bend=(i%7-3)*.06+a*.35,s=Math.sin(a),co=Math.cos(a),x=g.x[i]-s*L*.5,y=g.y[i]+co*L*.5,w=L*.07+.5,tx=x+Math.sin(a+bend)*L,ty=y-Math.cos(a+bend)*L,mx=x+s*L*.55,my=y-co*L*.55;
+      c.moveTo(x-co*w,y-s*w);c.quadraticCurveTo(mx-co*w*.6,my-s*w*.6,tx,ty);c.quadraticCurveTo(mx+co*w*.6,my+s*w*.6,x+co*w,y+s*w);}}
+  c.fill();c.lineWidth=1.1;c.beginPath();
+  for(let i=0;i<g.n;i++){if(g.seed[i]||i%3!==q)continue;const k=(i*7919)%10,a=g.a[i];
+    if(k>=4&&k<8){const L=g.len[i]*1.3,bend=(i%5-2)*.08,x=g.x[i]-Math.sin(a)*L*.5,y=g.y[i]+Math.cos(a)*L*.5;
+      c.moveTo(x,y);c.quadraticCurveTo(x+Math.sin(a)*L*.6,y-Math.cos(a)*L*.6,x+Math.sin(a+bend)*L,y-Math.cos(a+bend)*L);}
+    else if(k>=8){const L=g.len[i]*1.1,x=g.x[i],y=g.y[i]+L*.4;
+      for(const o of[-.32,0,.3]){const b=a+o;c.moveTo(x,y);c.quadraticCurveTo(x+Math.sin(b)*L*.5,y-Math.cos(b)*L*.55,x+Math.sin(b*1.15)*L,y-Math.cos(b*1.15)*L);}}}
+  c.stroke();}c.fillStyle=COL;c.strokeStyle=COL;}c.lineWidth=.9;c.beginPath();
     for(let i=0;i<g.n;i++){if(!g.seed[i])continue;const L=g.len[i]*1.1,a=g.a[i],x=g.x[i]-Math.sin(a)*L*.5,y=g.y[i]+Math.cos(a)*L*.5,tx=x+Math.sin(a)*L,ty=y-Math.cos(a)*L;
       c.moveTo(x,y);c.lineTo(tx,ty);c.moveTo(tx+2.2,ty);c.ellipse(tx,ty,1.4,2.6,a,0,Math.PI*2);}
     c.stroke();c.fill();}
