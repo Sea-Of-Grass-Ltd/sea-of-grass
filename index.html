@@ -47,7 +47,7 @@ html[data-theme="glass"]{--bg:#0b1a24;--fg:#eef6f8;--fg2:#d8e8ec;--soft:#a9c3c9;
 html[data-theme="neu"]{--bg:#ece7e1;--fg:#3a332c;--fg2:#463e36;--soft:#6f655b;--steel:#6e6458;--rule:rgba(58,51,44,.1);--violet:#ece7e1;--accent2:#ece7e1;--on-accent:#8f3f25;
   --lav:#9a4529;--bar:rgba(236,231,225,.88);--shadow:none;--card:#ece7e1;--field:#ece7e1;--panel:rgba(236,231,225,.9);--err:#c0392b;--r-btn:18px;--r-ctl:14px;--r-card:24px;color-scheme:light;--neu-dark:#cdc3b8;--neu-light:#fff}
 html[data-theme="brutal"]{--bg:#FFFDF5;--fg:#000;--fg2:#000;--soft:#1f1f1f;--steel:#333;--rule:#000;--violet:#000;--accent2:#000;--on-accent:#fff;
-  --lav:#FF6B6B;--bar:#fff;--shadow:none;--card:#fff;--field:#fff;--panel:#fff;--err:#a3001b;--r-btn:0;--r-ctl:0;--r-card:0;--display:Syne,"Space Grotesk",sans-serif;--sans:Inter,"Helvetica Neue",Arial,sans-serif;--mono:"Space Mono",Menlo,monospace;--nb-y:#FFD23F;--nb-c:#FF6B6B;--nb-s:#74B9FF;--nb-g:#88D498;--nb-o:#FFA552;--nb-l:#B8A9FA;--nb-ink:#000;color-scheme:light}
+  --lav:#FF6B6B;--bar:#fff;--shadow:none;--card:#fff;--field:#fff;--panel:#fff;--err:#a3001b;--r-btn:0;--r-ctl:0;--r-card:0;--display:Unbounded,"Space Grotesk",sans-serif;--sans:Inter,"Helvetica Neue",Arial,sans-serif;--mono:"Space Mono",Menlo,monospace;--nb-y:#FFD23F;--nb-c:#FF6B6B;--nb-s:#74B9FF;--nb-g:#88D498;--nb-o:#FFA552;--nb-l:#B8A9FA;--nb-ink:#000;color-scheme:light}
 html[data-theme="simple"]{--bg:#F1EEE6;--fg:#1A1714;--fg2:#1A1714;--soft:#3F3A35;--steel:#5A544D;--rule:#1A1714;--violet:#1A1714;--accent2:#000;--on-accent:#F1EEE6;
   --lav:#1A1714;--bar:#F1EEE6;--shadow:none;--card:#E8E4DA;--field:#F7F5EF;--panel:rgba(241,238,230,.94);--err:#A32A0A;--r-btn:0;--r-ctl:0;--r-card:0;--display:Archivo,"Helvetica Neue",sans-serif;--sans:Archivo,"Helvetica Neue",Arial,sans-serif;color-scheme:light}
 html[data-theme="editorial"]{--bg:#f3f1ea;--fg:#1f2a24;--fg2:#28342d;--soft:#53605a;--steel:#5c6560;--rule:rgba(31,42,36,.18);--violet:#1f2a24;--accent2:#000;--on-accent:#f3f1ea;
@@ -60,7 +60,7 @@ html[data-theme="glass"] :is(h1,h2,blockquote,.svc h3,.person h3) em{font-family
 html[data-theme="neu"] :is(h1,h2,.svc h3,.person h3){font-family:"Inter Tight",sans-serif;font-weight:300;letter-spacing:-.03em}
 html[data-theme="neu"] :is(h1,h2,blockquote,.svc h3,.person h3) em{font-family:"Inter Tight",sans-serif;font-style:normal;font-weight:500;font-size:1em;letter-spacing:-.03em}
 html[data-theme="brutal"] :is(h1,h2,h3,blockquote){color:var(--fg);-webkit-text-stroke:0;text-shadow:none;text-wrap:balance}
-html[data-theme="brutal"] h1{font-family:Syne,"Space Grotesk",sans-serif;font-weight:800;letter-spacing:-.04em;line-height:1.16}
+html[data-theme="brutal"] h1{font-family:Unbounded,"Space Grotesk",sans-serif;font-weight:800;letter-spacing:-.04em;line-height:1.16}
 html[data-theme="brutal"] :is(h2,h3,.svc h3,.person h3){font-family:"Space Grotesk",sans-serif;font-weight:700;letter-spacing:-.02em;line-height:1.14}
 html[data-theme="brutal"] :is(h1,h2,h3,blockquote) :is(b,.t){font-weight:inherit;color:inherit}
 /* the highlighter: one box per phrase, the same height on every line (cap height plus descenders), never reaching into the next line */
@@ -83,7 +83,7 @@ html[data-theme="neu"] :is(input,select,textarea){border:0;box-shadow:inset 4px 
 html[data-theme="neu"] :is(.ghost:not(.q),form button,.btn,.dark,a.book){color:var(--on-accent)!important;font-weight:600}
 html[data-theme="neu"]:not([data-scheme]) .ghost:not(.q){background:#f2d3c2;color:#3a332c}html[data-theme="neu"]:not([data-scheme]) .ghost.q{background:#d3e3d8;color:#3a332c}html[data-theme="neu"]:not([data-scheme]) a.book{background:#dcd3ee;color:#3a332c}
 /* Neubrutalism, to the neubrutalism.com spec: a neutral ground, a black outline and one to three accents per area;
-   3px black borders, hard 0-blur shadows (3, 5, 8px), square corners, no gradients; Syne / Space Grotesk / Inter / Space Mono.
+   3px black borders, hard 0-blur shadows (3, 5, 8px), square corners, no gradients; Unbounded / Space Grotesk / Inter / Space Mono.
    Buttons: Default yellow, Primary black, Ghost white. Hover lifts 2px onto a 7px shadow; press sinks 3px and the shadow goes. */
 html[data-theme="brutal"] body{font-family:Inter,"Helvetica Neue",Arial,sans-serif}
 /* square corners on everything (neubrutalism.com: border-radius 0); only truly round parts curve: the dial and the toggle switch with its knob */
@@ -282,7 +282,7 @@ html[data-theme="glass"] .slot{border:1px solid rgba(255,255,255,.25)}
 .fys .ch.f3{font-family:"Anybody",sans-serif;font-weight:800;font-stretch:125%;font-size:.86em}
 .fys .ch.f4{font-family:var(--mono);font-weight:400;font-size:.8em}
 .fys .ch.f5{font-family:var(--sans);font-weight:300}
-.fys .ch.f6{font-family:Syne,"Space Grotesk",sans-serif;font-weight:800;letter-spacing:-.03em;font-size:.9em}
+.fys .ch.f6{font-family:Unbounded,"Space Grotesk",sans-serif;font-weight:800;letter-spacing:-.03em;font-size:.9em}
 .fys-row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:20px 40px;border-top:1px solid var(--rule);padding-top:22px}
 .fys .hint{margin:0;max-width:52ch;color:var(--soft)}
 .fys-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:var(--s3);align-items:center}
@@ -491,7 +491,7 @@ html[data-theme="brutal"] main#top .steps b{font:700 clamp(28px,2.6vw,38px)/1 "S
 html[data-theme="brutal"] main#top .steps .no{font-family:"Space Mono",monospace;color:#333}
 /* why it looks like this: the yellow strip of the page, type only */
 html[data-theme="brutal"] main#top .thesis{max-width:none;--hl:#fff}
-html[data-theme="brutal"] main#top .thesis blockquote{font:800 clamp(34px,4.6vw,66px)/1.16 Syne,"Space Grotesk",sans-serif;letter-spacing:-.035em;max-width:1000px;margin:24px auto}
+html[data-theme="brutal"] main#top .thesis blockquote{font:800 clamp(34px,4.6vw,66px)/1.16 Unbounded,"Space Grotesk",sans-serif;letter-spacing:-.035em;max-width:1000px;margin:24px auto}
 /* who's behind it: two Standard cards */
 html[data-theme="brutal"] main#top .people{border:0;gap:32px}
 html[data-theme="brutal"] main#top .person{padding:24px!important;border:3px solid #000!important;margin-top:0!important}
@@ -903,7 +903,7 @@ html body main.cb .cb-ch .cb-chp.cb-flat .cb-amt b{font-size:clamp(32px,3.2vw,52
 html body main.cb .cb-ch .cb-chp.cb-flat .cb-more{margin:0}
 html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-ch .cb-chp.cb-flat h3{font-size:clamp(26px,2.6vw,42px);line-height:1.15}
 html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-ch .cb-chp.cb-flat .cb-amt b{font-size:clamp(24px,2.3vw,36px);line-height:1.15}
-/* Ember: Syne runs about 1.6x wider, so the plot card's big type is set smaller to keep the same footprint */
+/* Ember: Unbounded runs about 1.5x wider, so the plot card's big type is set smaller to keep the same footprint */
 html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-ch .cb-chp.cb-snap h3{font-size:clamp(26px,2.6vw,42px);line-height:1.15}
 html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-ch .cb-chp.cb-snap .cb-amt b{font-size:clamp(34px,3.6vw,58px);line-height:1.1;letter-spacing:-.02em}
 @media (max-width:999px){main.cb .cb-ch .cb-chp.cb-snap{display:flex;flex-direction:column;justify-content:center;gap:14px;padding:12px 0}main.cb .cb-ch .cb-chp.cb-snap>*{align-self:stretch!important;justify-self:auto!important;text-align:left!important;margin:0!important}html body main.cb .cb-ch .cb-chp.cb-snap .cb-price{width:100%;margin:10px 0!important}html body main.cb .cb-ch .cb-chp.cb-snap .cb-more{display:flex;gap:20px}html body main.cb .cb-ch .cb-chp.cb-snap>p:not(.cb-price):not(.cb-more):not(.cb-note){text-align:left;justify-self:start}html body main.cb .cb-ch .cb-chp.cb-snap .cb-price{grid-template-columns:1fr 1fr;column-gap:16px}html body main.cb .cb-ch .cb-chp.cb-snap .cb-amt{flex-direction:column;align-items:flex-start;gap:4px}html body main.cb .cb-ch .cb-chp.cb-snap .cb-amt b{font-size:clamp(36px,11vw,52px)}html body main.cb .cb-ch .cb-chp.cb-snap .cb-tier>span:last-child{display:none}}
@@ -1098,16 +1098,16 @@ html[data-theme="simple"]:not([data-scheme]) body main.cb .cb-thesis blockquote{
 /* --- Ember --- */
 html[data-theme="brutal"]:not([data-scheme]){--bg:#D9D9D9;--fg:#1F1F1F;--fg2:#1F1F1F;--soft:#1F1F1F;--rule:#1F1F1F;--violet:#1F1F1F;--accent2:#000;--on-accent:#FBB833;--bar:#FBB833}
 html[data-theme="brutal"]:not([data-scheme]) body main.cb{--cb-light:#D9D9D9;--cb-light2:#D9D9D9;--cb-headband:#D9D9D9;--cb-ink:#1F1F1F;--cb-dark:#FBB833;--cb-dark-ink:#1F1F1F;--cb-panel:#fff;--cb-panel-ink:#1F1F1F;--cb-panel-edge:#1F1F1F;--cb-panel-r:0;--cb-panel-shadow:10px 10px 0 #1F1F1F;--cb-blur:none;
-  --cb-work:#D9D9D9;--cb-tile:#fff;--cb-steps:#027B49;--cb-steps-ink:#FBB833;--cb-thesis:#F19EC8;--cb-accent:#FA4D43;--cb-close:#FA4D43;--cb-close-ink:#1F1F1F;--cb-btn-r:0;--cb-rule:#1F1F1F;--cb-hfont:Syne,"Space Grotesk",sans-serif;--cb-hw:800;--cb-body:"Space Grotesk",Inter,sans-serif}
+  --cb-work:#D9D9D9;--cb-tile:#fff;--cb-steps:#027B49;--cb-steps-ink:#FBB833;--cb-thesis:#F19EC8;--cb-accent:#FA4D43;--cb-close:#FA4D43;--cb-close-ink:#1F1F1F;--cb-btn-r:0;--cb-rule:#1F1F1F;--cb-hfont:Unbounded,"Space Grotesk",sans-serif;--cb-hw:700;--cb-body:"Space Grotesk",Inter,sans-serif}
 html[data-theme="brutal"]:not([data-scheme]) .lf{--lf-ground:#FBB833;--lf-ink:#1F1F1F;--lf-mark:#1F1F1F;--lf-grass:#1F1F1F}
 html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-p{border-width:4px}
 html[data-theme="brutal"]:not([data-scheme]) body main.cb :is(.cb-feature .cb-tile,.cb-index a img,.cb-pimg){border:4px solid #1F1F1F;border-radius:0}
-html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-h{letter-spacing:-.02em;font-size:clamp(34px,5.6vw,92px);line-height:1.12}
-/* Ember's Syne grows wider as it gets bolder: at 800 it runs about 1.6x the width of the other styles' faces, so its big type is set smaller to keep the same footprint */
+html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-h{letter-spacing:-.02em;font-size:clamp(30px,4.8vw,84px);line-height:1.12}
+/* Ember's Unbounded is a wide face: about 1.5x the width of the other styles' faces, so its big type is set smaller to keep the same footprint */
 html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-steps li b{font-size:clamp(26px,3.1vw,50px);letter-spacing:-.02em;line-height:1.15}
 html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-steps ol{gap:clamp(18px,3vw,44px)}
 html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-close h2{font-size:clamp(28px,3.4vw,54px);letter-spacing:-.02em;line-height:1.15}
-/* Syne's descenders (g, y, p) hang long: every Ember line gets extra leading so they clear the line below */
+/* Ember's descenders (g, y, p): every Ember line gets extra leading so they clear the line below */
 html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-thesis blockquote :is(span,em){line-height:1.16}
 html[data-theme="brutal"]:not([data-scheme]) .lf{--lf-lh:1.38}
 html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-reach a{font-size:clamp(20px,1.9vw,30px)}
@@ -1132,7 +1132,7 @@ html[data-theme="dusk"]:not([data-scheme]) body main.cb .cb-people i{border-colo
 html[data-theme="glass"]:not([data-scheme]) .lf{--lf-face:Manrope,Inter,sans-serif;--lf-t:300;--lf-b:600;--lf-em:400}
 html[data-theme="neu"]:not([data-scheme]) .lf{--lf-face:"Bricolage Grotesque",Inter,sans-serif;--lf-t:500;--lf-b:800;--lf-em:500}
 html[data-theme="simple"]:not([data-scheme]) .lf{--lf-face:"Libre Caslon Display",Georgia,serif;--lf-t:400;--lf-b:400;--lf-em:italic 400}
-html[data-theme="brutal"]:not([data-scheme]) .lf{--lf-face:Syne,"Space Grotesk",sans-serif;--lf-t:700;--lf-b:800;--lf-em:700}
+html[data-theme="brutal"]:not([data-scheme]) .lf{--lf-face:Unbounded,"Space Grotesk",sans-serif;--lf-t:400;--lf-b:800;--lf-em:400}   /* Ember speaks in Unbounded: as wide and funky as Syne was, but with whole g, y and p tails (Syne cuts them short and flat) */
 html[data-theme="dusk"]:not([data-scheme]) .lf{--lf-face:"Instrument Serif",Georgia,serif;--lf-t:400;--lf-b:400;--lf-em:italic 400}   /* Dusk (Refero: Format) speaks in one delicate editorial serif, with italics for the quiet words; no light/bold sans pairing like Dew */
 /* the thesis uses the style's own heading face everywhere except Ledger and Dusk, which set their own above */
 html:is([data-theme="glass"],[data-theme="neu"],[data-theme="brutal"]):not([data-scheme]) body main.cb .cb-thesis blockquote{font-family:var(--cb-hfont);font-weight:var(--cb-hw);letter-spacing:-.03em}
@@ -1318,7 +1318,7 @@ html[data-theme="neu"]:not([data-scheme]) main.cb :is(.lf-range,.lf-clouds){disp
 <script>
 (function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#120607',glass:'#EEF1F8',neu:'#EFE6D8',brutal:'#FFFDF5',simple:'#F4F1EA',editorial:'#f3f1ea'};
 function get(){try{var v=localStorage.getItem(K);return OK[v]?v:'glass';}catch(e){return 'glass';}}
-var FONT={"dusk": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Anton&family=Inter+Tight:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "glass": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=Inter+Tight:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "neu": "https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;700&family=Fraunces:opsz,wght@9..144,900&family=Inter:wght@500&family=IBM+Plex+Mono:wght@400;500&display=swap", "brutal": "https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700;900&family=Space+Mono:wght@400;700&display=swap", "simple": "https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap", "editorial": "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter+Tight:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap", "letters": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Cormorant+Garamond:wght@300&family=Anybody:wdth,wght@125,800&family=Syne:wght@800&family=Inter+Tight:wght@300;700&family=IBM+Plex+Mono:wght@400;500&display=swap"};function font(k){if(!FONT[k]||document.getElementById('sog-f-'+k))return;var l=document.createElement('link');l.rel='stylesheet';l.id='sog-f-'+k;l.href=FONT[k];document.head.appendChild(l);}
+var FONT={"dusk": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Anton&family=Inter+Tight:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "glass": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=Inter+Tight:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "neu": "https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;700&family=Fraunces:opsz,wght@9..144,900&family=Inter:wght@500&family=IBM+Plex+Mono:wght@400;500&display=swap", "brutal": "https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700;900&family=Space+Mono:wght@400;700&display=swap", "simple": "https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap", "editorial": "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter+Tight:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap", "letters": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Cormorant+Garamond:wght@300&family=Anybody:wdth,wght@125,800&family=Syne:wght@800&family=Inter+Tight:wght@300;700&family=IBM+Plex+Mono:wght@400;500&display=swap"};function font(k){if(!FONT[k]||document.getElementById('sog-f-'+k))return;var l=document.createElement('link');l.rel='stylesheet';l.id='sog-f-'+k;l.href=FONT[k];document.head.appendChild(l);}
 window.sogFonts={letters:function(){font('letters');}};
 function apply(t){if(!OK[t])t='dusk';font(t);var r=document.documentElement;if(r.getAttribute('data-theme')===t)return;r.setAttribute('data-theme',t);
   var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',BG[t]);
@@ -1333,7 +1333,7 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
 </script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@800&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=DM+Sans:wght@400;500;700&family=Libre+Caslon+Display&family=Libre+Franklin:wght@400;600&family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&family=Inter+Tight:wght@200;300;400;500&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;800&display=swap">
 </head>
 <body>
 <header class="bar wrap">

@@ -39,7 +39,7 @@ html[data-theme="glass"]{--bg:#0b1a24;--fg:#eef6f8;--fg2:#d8e8ec;--soft:#a9c3c9;
 html[data-theme="neu"]{--bg:#ece7e1;--fg:#3a332c;--fg2:#463e36;--soft:#6f655b;--steel:#6e6458;--rule:rgba(58,51,44,.1);--violet:#ece7e1;--accent2:#ece7e1;--on-accent:#8f3f25;
   --lav:#9a4529;--bar:rgba(236,231,225,.88);--shadow:none;--card:#ece7e1;--field:#ece7e1;--panel:rgba(236,231,225,.9);--err:#c0392b;--r-btn:18px;--r-ctl:14px;--r-card:24px;color-scheme:light;--neu-dark:#cdc3b8;--neu-light:#fff}
 html[data-theme="brutal"]{--bg:#FFFDF5;--fg:#000;--fg2:#000;--soft:#1f1f1f;--steel:#333;--rule:#000;--violet:#000;--accent2:#000;--on-accent:#fff;
-  --lav:#FF6B6B;--bar:#fff;--shadow:none;--card:#fff;--field:#fff;--panel:#fff;--err:#a3001b;--r-btn:0;--r-ctl:0;--r-card:0;--display:Syne,"Space Grotesk",sans-serif;--sans:Inter,"Helvetica Neue",Arial,sans-serif;--mono:"Space Mono",Menlo,monospace;--nb-y:#FFD23F;--nb-c:#FF6B6B;--nb-s:#74B9FF;--nb-g:#88D498;--nb-o:#FFA552;--nb-l:#B8A9FA;--nb-ink:#000;color-scheme:light}
+  --lav:#FF6B6B;--bar:#fff;--shadow:none;--card:#fff;--field:#fff;--panel:#fff;--err:#a3001b;--r-btn:0;--r-ctl:0;--r-card:0;--display:Unbounded,"Space Grotesk",sans-serif;--sans:Inter,"Helvetica Neue",Arial,sans-serif;--mono:"Space Mono",Menlo,monospace;--nb-y:#FFD23F;--nb-c:#FF6B6B;--nb-s:#74B9FF;--nb-g:#88D498;--nb-o:#FFA552;--nb-l:#B8A9FA;--nb-ink:#000;color-scheme:light}
 html[data-theme="simple"]{--bg:#F1EEE6;--fg:#1A1714;--fg2:#1A1714;--soft:#3F3A35;--steel:#5A544D;--rule:#1A1714;--violet:#1A1714;--accent2:#000;--on-accent:#F1EEE6;
   --lav:#1A1714;--bar:#F1EEE6;--shadow:none;--card:#E8E4DA;--field:#F7F5EF;--panel:rgba(241,238,230,.94);--err:#A32A0A;--r-btn:0;--r-ctl:0;--r-card:0;--display:Archivo,"Helvetica Neue",sans-serif;--sans:Archivo,"Helvetica Neue",Arial,sans-serif;color-scheme:light}
 html[data-theme="editorial"]{--bg:#f3f1ea;--fg:#1f2a24;--fg2:#28342d;--soft:#53605a;--steel:#5c6560;--rule:rgba(31,42,36,.18);--violet:#1f2a24;--accent2:#000;--on-accent:#f3f1ea;
@@ -52,7 +52,7 @@ html[data-theme="glass"] :is(h1,h2,blockquote,.svc h3,.person h3) em{font-family
 html[data-theme="neu"] :is(h1,h2,.svc h3,.person h3){font-family:"Inter Tight",sans-serif;font-weight:300;letter-spacing:-.03em}
 html[data-theme="neu"] :is(h1,h2,blockquote,.svc h3,.person h3) em{font-family:"Inter Tight",sans-serif;font-style:normal;font-weight:500;font-size:1em;letter-spacing:-.03em}
 html[data-theme="brutal"] :is(h1,h2,h3,blockquote){color:var(--fg);-webkit-text-stroke:0;text-shadow:none;text-wrap:balance}
-html[data-theme="brutal"] h1{font-family:Syne,"Space Grotesk",sans-serif;font-weight:800;letter-spacing:-.04em;line-height:1.16}
+html[data-theme="brutal"] h1{font-family:Unbounded,"Space Grotesk",sans-serif;font-weight:800;letter-spacing:-.04em;line-height:1.16}
 html[data-theme="brutal"] :is(h2,h3,.svc h3,.person h3){font-family:"Space Grotesk",sans-serif;font-weight:700;letter-spacing:-.02em;line-height:1.14}
 html[data-theme="brutal"] :is(h1,h2,h3,blockquote) :is(b,.t){font-weight:inherit;color:inherit}
 /* the highlighter: one box per phrase, the same height on every line (cap height plus descenders), never reaching into the next line */
@@ -75,7 +75,7 @@ html[data-theme="neu"] :is(input,select,textarea){border:0;box-shadow:inset 4px 
 html[data-theme="neu"] :is(.ghost:not(.q),form button,.btn,.dark,a.book){color:var(--on-accent)!important;font-weight:600}
 html[data-theme="neu"]:not([data-scheme]) .ghost:not(.q){background:#f2d3c2;color:#3a332c}html[data-theme="neu"]:not([data-scheme]) .ghost.q{background:#d3e3d8;color:#3a332c}html[data-theme="neu"]:not([data-scheme]) a.book{background:#dcd3ee;color:#3a332c}
 /* Neubrutalism, to the neubrutalism.com spec: a neutral ground, a black outline and one to three accents per area;
-   3px black borders, hard 0-blur shadows (3, 5, 8px), square corners, no gradients; Syne / Space Grotesk / Inter / Space Mono.
+   3px black borders, hard 0-blur shadows (3, 5, 8px), square corners, no gradients; Unbounded / Space Grotesk / Inter / Space Mono.
    Buttons: Default yellow, Primary black, Ghost white. Hover lifts 2px onto a 7px shadow; press sinks 3px and the shadow goes. */
 html[data-theme="brutal"] body{font-family:Inter,"Helvetica Neue",Arial,sans-serif}
 /* square corners on everything (neubrutalism.com: border-radius 0); only truly round parts curve: the dial and the toggle switch with its knob */
@@ -493,7 +493,7 @@ html[data-theme="brutal"]:not([data-scheme]) body [aria-labelledby="h-prices"]{-
 html[data-theme="brutal"]:not([data-scheme]) body [aria-labelledby="h-faq"]{--band:#D9D9D9}
 html[data-theme="brutal"]:not([data-scheme]) body main>.start{--band:#FA4D43}
 html[data-theme="brutal"]:not([data-scheme]) body [aria-labelledby="h-more"]{--band:#D9D9D9}
-html[data-theme="brutal"]:not([data-scheme]) body main :is(h1,h2),html[data-theme="brutal"]:not([data-scheme]) body main :is(h1,h2) :is(b,.t,em){font-family:Syne,"Space Grotesk",sans-serif!important;font-weight:800!important;font-style:normal!important;text-transform:none;letter-spacing:-.03em}
+html[data-theme="brutal"]:not([data-scheme]) body main :is(h1,h2),html[data-theme="brutal"]:not([data-scheme]) body main :is(h1,h2) :is(b,.t,em){font-family:Unbounded,"Space Grotesk",sans-serif!important;font-weight:800!important;font-style:normal!important;text-transform:none;letter-spacing:-.03em}
 html[data-theme="brutal"]:not([data-scheme]) body{font-family:"Space Grotesk",Inter,sans-serif}
 html[data-theme="brutal"] header.top .home img{filter:invert(1)!important}
 /* the meadow's flowers, per style (Primavera: greens speckled with small blooms) */
@@ -506,7 +506,7 @@ html[data-theme="dusk"]:not([data-scheme]){--lf-flowers:#FF7777,#E8E6E3}
 <script>
 (function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#120607',glass:'#EEF1F8',neu:'#EFE6D8',brutal:'#FFFDF5',simple:'#F4F1EA',editorial:'#f3f1ea'};
 function get(){try{var v=localStorage.getItem(K);return OK[v]?v:'dusk';}catch(e){return 'dusk';}}
-var FONT={"dusk": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "glass": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Inter+Tight:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "neu": "https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "brutal": "https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap", "simple": "https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap", "editorial": "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter+Tight:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap", "letters": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Cormorant+Garamond:wght@300&family=Anybody:wdth,wght@125,800&family=Syne:wght@800&family=Inter+Tight:wght@300;700&family=IBM+Plex+Mono:wght@400;500&display=swap"};function font(k){if(!FONT[k]||document.getElementById('sog-f-'+k))return;var l=document.createElement('link');l.rel='stylesheet';l.id='sog-f-'+k;l.href=FONT[k];document.head.appendChild(l);}
+var FONT={"dusk": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "glass": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Inter+Tight:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "neu": "https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "brutal": "https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap", "simple": "https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap", "editorial": "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter+Tight:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap", "letters": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Cormorant+Garamond:wght@300&family=Anybody:wdth,wght@125,800&family=Unbounded:wght@400;600;700;800&family=Inter+Tight:wght@300;700&family=IBM+Plex+Mono:wght@400;500&display=swap"};function font(k){if(!FONT[k]||document.getElementById('sog-f-'+k))return;var l=document.createElement('link');l.rel='stylesheet';l.id='sog-f-'+k;l.href=FONT[k];document.head.appendChild(l);}
 window.sogFonts={letters:function(){font('letters');}};
 function apply(t){if(!OK[t])t='dusk';font(t);var r=document.documentElement;if(r.getAttribute('data-theme')===t)return;r.setAttribute('data-theme',t);
   var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',BG[t]);
@@ -522,7 +522,7 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
 <script>if(/[?&]draft\b/.test(location.search))document.documentElement.classList.add('draft');</script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,800;1,9..144,700&family=IBM+Plex+Mono:wght@500&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=DM+Sans:wght@400;500;700&family=Libre+Caslon+Display&family=Libre+Franklin:wght@400;600&family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&family=Inter+Tight:wght@200;300;400;500&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800&display=swap">
 </head>
 <body>
 <div class="wrap">
