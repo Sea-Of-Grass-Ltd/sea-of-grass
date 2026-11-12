@@ -1219,7 +1219,7 @@ document.getElementById('f')&&document.getElementById('f').addEventListener('sub
 // The opening (from the Logo Field study): the mark as loose physical pieces (a knock makes them hop and flip, springs bring them home) over a meadow of
 // grass blades and seed heads that behave like sand: the pointer scoops them into plumes, they pour back and heap up again. After Lusion's contact page.
 const SEC=document.getElementById('opening'),cv=document.getElementById('lf-cv'),c=cv.getContext('2d'),still=matchMedia('(prefers-reduced-motion: reduce)').matches;
-let KEEPG=0,running=true,TOP=0,visible=true,ready=0,INK='#fff',MARKC='#fff',GRASS='#fff';
+let KEEPG=0,GFULL=0,running=true,TOP=0,visible=true,ready=0,INK='#fff',MARKC='#fff',GRASS='#fff';
 function inks(){const cs=getComputedStyle(SEC),v=n=>cs.getPropertyValue(n).trim();INK=v('--lf-ink')||'#fff';MARKC=v('--lf-mark')||INK;GRASS=v('--lf-grass')||INK;} // the style's colors for the opening // TOP: the site bar's height over the opening; ready counts the frames spent letting the heap settle
 const P1=new Path2D("M 60.1360,299.5890 C 40.8560,283.5000 37.9720,248.8600 54.1230,229.1250 C 61.9590,219.4780 73.2066,213.0913 85.9080,212.4050 L 279.9170,212.3880 C 292.7328,211.6894 302.2259,200.5242 302.6140,188.1740 C 303.0171,175.3461 294.1087,163.3937 280.9850,162.4350 L 160.3860,162.3770 C 155.6830,162.3750 152.4580,158.1300 152.2660,154.1930 C 152.0640,150.0420 155.5000,145.5160 160.3230,145.5160 L 323.2740,145.5180 C 363.5090,146.7569 394.2264,180.5210 394.5670,220.2810 C 394.9023,259.4236 360.4620,297.7100 320.2520,299.1580 C 320.2520,299.1580 69.9310,307.7640 60.1360,299.5890 Z"),P2=new Path2D("M 365.1390,47.9780 C 360.1170,47.5130 354.1470,47.1080 347.4230,46.7550 C 274.7440,42.9430 114.0820,45.2510 114.0820,45.2510 C 73.9994,46.9759 43.7290,80.8860 43.6260,120.3040 C 43.5230,159.4680 73.5199,193.9418 113.3820,195.4730 L 277.3270,195.8440 C 282.2870,195.8440 285.7460,192.0070 285.9600,187.6500 C 286.1670,183.4310 282.8680,178.9500 277.9760,178.9480 L 158.2750,178.9140 C 145.3037,178.2644 135.8119,166.8014 135.6040,154.2420 C 135.3960,141.6768 144.3477,129.9059 157.2620,128.9900 L 350.1640,128.8050 C 352.3160,128.8030 354.4280,128.6110 356.4990,128.2740 C 366.7370,126.6070 375.8830,121.0490 382.8160,113.4590 C 390.0330,105.5580 394.4238,95.7293 394.5320,85.6870 C 394.7250,67.7708 381.6430,52.8390 365.1390,47.9780 Z"),DOT=new Path2D();DOT.arc(357.983,86.686,36.548,0,Math.PI*2);
 let RULE=[0,0,0],MODE='mark',W=0,H=0,DPR=1,pieces=[],grass=null,ptr={x:-1e4,y:-1e4,vx:0,vy:0,on:false,down:false,held:0,touch:false,burst:0,acc:0},last=0;
@@ -1234,9 +1234,10 @@ function build(){pieces=[];const phone=W<600;
   const sy=top+markH/2,wy=top+markH+fs*1.05,ry=wy+fs*.32;S(mx,sy,markH);
   let x=mx-ww/2;for(const ch of word){const w=c.measureText(ch).width;if(ch!==' ')add('ch',x+w/2,wy,Math.max(w,fs*.4)*.6,{ch,fs,font:`800 ${fs}px Archivo, "Helvetica Neue", Arial, sans-serif`});x+=w;}
   const segs=phone?6:10,sw=ww/segs;for(let i=0;i<segs;i++)add('rule',mx-ww/2+sw*(i+.5),ry,sw*.5,{w:sw-3,h:Math.max(2,fs*.05)});}
-  if(KEEPG&&grass){const dH=H-KEEPG,g=grass;for(let i=0;i<g.N;i++)g.y[i]+=dH; // only the height changed: keep the heap on the ground, thin it to fit
-    const deep=MODE==='lockup',band=H*(deep?(phone?.40:.38):(phone?.27:.25));g.n=Math.max(1,Math.min(g.N,Math.floor(W/g.d0)*Math.floor(band/g.d0)));return;}
+  if(KEEPG&&grass){const dH=H-KEEPG,g=grass;for(let i=0;i<g.N;i++)g.y[i]+=dH; // only the height changed: keep the heap on the ground
+    g.n=g.N;return;} // keep every blade: the frame closes over the meadow, the meadow does not shrink
   // ---- the meadow: grass blades and seed heads as grains of a soft fluid, heaped along the bottom quarter
+  GFULL=H;
   const deep=MODE==='lockup',d0=deep?(phone?8:10):(phone?10:12),band=H*(deep?(phone?.40:.38):(phone?.27:.25)),cols=Math.floor(W/d0),rows=Math.floor(band/d0),n=cols*rows,r=rnd(7);
   grass={n,d0,x:new Float32Array(n),y:new Float32Array(n),vx:new Float32Array(n),vy:new Float32Array(n),a:new Float32Array(n),px:new Float32Array(n),py:new Float32Array(n),len:new Float32Array(n),seed:new Uint8Array(n),
     head:new Int32Array(Math.ceil(W/d0+2)*Math.ceil(H/d0+2)),next:new Int32Array(n),gw:Math.ceil(W/d0+2),N:n};
@@ -1268,6 +1269,7 @@ function step(dt,T){const R=Math.max(90,Math.min(W,H)*.16),sp=Math.hypot(ptr.vx,
   const g=grass;if(ptr.down)ptr.held+=dt;
   if(ptr.down&&(!ptr.touch||(ptr.held>.3&&sp<150)))ptr.acc+=dt*(W<600?160:280);
   const shots=ptr.burst+Math.floor(ptr.acc);ptr.acc-=Math.floor(ptr.acc);ptr.burst=0;for(let k=0;k<shots;k++)shoot(g,sp);
+  if(H<GFULL-2)return; // while the opening is shrunk the grass is held still, so it is never squeezed
   const sub=Math.min(4,Math.max(1,Math.round(dt*120)));for(let k=0;k<sub;k++)fluid(g,1/120,R);}
 function shoot(g,sp){let b=0,by=-1;for(let k=0;k<24;k++){const i=Math.random()*g.n|0;if(g.y[i]>by){by=g.y[i];b=i;}} // a grain from deep in the heap
   const dir=sp>200?Math.atan2(ptr.vy,ptr.vx):-Math.PI/2,a=dir+(Math.random()-.5)*.9,v=650+Math.random()*700+Math.min(sp,1500)*.4;
