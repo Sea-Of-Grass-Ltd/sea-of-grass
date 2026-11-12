@@ -1239,6 +1239,17 @@ main.cb .cb-close{position:relative;isolation:isolate;padding-bottom:calc(clamp(
 main.cb .cb-close>*:not(.cb-home){position:relative;z-index:1}
 main.cb .cb-close .cb-home{position:absolute;inset:0;z-index:0;pointer-events:none}
 main.cb .cb-close .cb-home canvas{display:block;width:100%;height:100%}
+/* the close: the call and the people side by side in one band (Refero: Missive's two-column contact, Harry Atkins' people beside the facts), no separate About stripe */
+main.cb .cb-close{align-items:flex-start;gap:36px clamp(32px,6vw,110px)}
+main.cb .cb-close .cb-call{flex:1 1 440px;min-width:0}
+html body main.cb .cb-close .cb-call .cb-reach{text-align:left;margin:26px 0 0}
+html body main.cb .cb-close .cb-call .cb-reach a{font-size:clamp(22px,2.2vw,32px)}
+main.cb .cb-close .cb-closewho{flex:0 1 440px;min-width:0;display:grid;gap:18px;align-content:start;padding-top:clamp(4px,.8vw,12px)}
+html body main.cb .cb-close .cb-closewho h2.cb-kick{font:500 13px/1.3 "IBM Plex Mono",Menlo,monospace;letter-spacing:.16em;text-transform:uppercase;color:inherit;margin:0;opacity:.85}
+html body main.cb .cb-close .cb-people{grid-template-columns:1fr;gap:16px;margin:0;max-width:none}
+html body main.cb .cb-close .cb-people :is(b,.cb-line){color:inherit!important}
+html body main.cb .cb-close .cb-people i{border:2px solid currentColor!important;color:inherit!important;background:transparent!important;box-shadow:none!important;width:clamp(52px,4.4vw,68px)}
+html body main.cb .cb-close .cb-where{font:400 15px/1.4 var(--cb-body);margin:0;opacity:.8}
 
 
 
@@ -1394,17 +1405,6 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
     </ol>
   </section>
 
-  <section class="cb-band cb-who" id="about" aria-labelledby="cb-who-h">
-    <h2 class="cb-kick" id="cb-who-h">Who you&rsquo;ll work with</h2>
-    <div class="cb-whogrid">
-    <p class="cb-facts"><span>Berthoud, Colorado</span><a href="tel:+13037751333">303.775.1333</a><a href="mailto:hello@seaofgrass.studio">hello@seaofgrass.studio</a></p>
-    <ul class="cb-people">
-      <li><i aria-hidden="true">TB</i><span><b>Tristan Brewer</b><span class="cb-line">Design, 3D and live visuals</span></span></li>
-      <li><i aria-hidden="true">BN</i><span><b>Bryce Nielsen</b><span class="cb-line">Websites, hosting and security</span></span></li>
-    </ul>
-    </div>
-  </section>
-
   <section class="cb-band cb-thesis" aria-label="Why it looks like this">
     <blockquote><span>Plain used to be the cheap option.</span><em>It isn&rsquo;t anymore.</em></blockquote>
     <p class="cb-fys">This page wears five looks. Pick one from the bar at the bottom of your screen. Every client gets their own.</p>
@@ -1412,12 +1412,20 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
 
   <section class="cb-band cb-close" id="contact" aria-labelledby="cb-close-h">
     <div class="live-grass cb-home" data-live-grass="fall" aria-hidden="true"></div>
-    <div>
+    <div class="cb-call">
       <h2 id="cb-close-h">Start with a short call.</h2>
       <p>Fifteen or thirty minutes. Tell us what you have; you leave with a next step and a price range.</p>
       <a class="cb-book" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a meeting <span aria-hidden="true">&rarr;</span></a>
+      <p class="cb-reach"><a href="tel:+13037751333">303.775.1333</a><a href="mailto:hello@seaofgrass.studio">hello@seaofgrass.studio</a></p>
     </div>
-    <p class="cb-reach"><a href="tel:+13037751333">303.775.1333</a><a href="mailto:hello@seaofgrass.studio">hello@seaofgrass.studio</a></p>
+    <div class="cb-closewho" id="about" aria-labelledby="cb-who-h">
+      <h2 class="cb-kick" id="cb-who-h">Who you&rsquo;ll work with</h2>
+      <ul class="cb-people">
+        <li><i aria-hidden="true">TB</i><span><b>Tristan Brewer</b><span class="cb-line">Design, 3D and live visuals</span></span></li>
+        <li><i aria-hidden="true">BN</i><span><b>Bryce Nielsen</b><span class="cb-line">Websites, hosting and security</span></span></li>
+      </ul>
+      <p class="cb-where">Berthoud, Colorado</p>
+    </div>
   </section>
   <footer class="cb-band cb-foot">
     <b>Sea of Grass, Berthoud, Colorado</b>
