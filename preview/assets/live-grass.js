@@ -23,7 +23,7 @@ function meadow(el){
       if(ptr.on){const dx=g.x[i]-ptr.x,dy=g.y[i]-ptr.y,d2=dx*dx+dy*dy;if(d2<PR*PR){const d=Math.sqrt(d2)||1,f=1-d/PR;
         g.vx[i]+=(ptr.vx-g.vx[i])*f*.35+dx/d*f*90;g.vy[i]+=(ptr.vy-g.vy[i])*f*.35+dy/d*f*90-f*Math.min(sp,2500)*.35;}}
       g.px[i]=g.x[i];g.py[i]=g.y[i];g.x[i]+=g.vx[i]*dt;g.y[i]+=g.vy[i]*dt;}
-    const gw=g.gw,head=g.head,next=g.next;
+    const need=g.gw*Math.ceil(H/d0+2);if(g.head.length<need)g.head=new Int32Array(need);const gw=g.gw,head=g.head,next=g.next;
     for(let it=0;it<3;it++){head.fill(-1);
       for(let i=0;i<n;i++){const cx=Math.max(0,Math.min(gw-1,(g.x[i]/d0|0)+1)),cy=Math.max(0,(g.y[i]/d0|0)+1),h=cy*gw+cx;if(h<head.length){next[i]=head[h];head[h]=i;}else next[i]=-1;}
       for(let i=0;i<n;i++){const cx=Math.max(0,Math.min(gw-1,(g.x[i]/d0|0)+1)),cy=Math.max(0,(g.y[i]/d0|0)+1);
