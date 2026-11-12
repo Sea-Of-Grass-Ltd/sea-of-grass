@@ -704,11 +704,167 @@ html[data-theme="simple"] .fys-tab,html[data-theme="simple"] .fys-tab button{bor
 @media (max-width:400px){.fys-tab{padding-left:10px}.fys-tab button{padding:9px 4px;font-size:11.5px}} /* the narrowest phones still fit all five */
 @media (prefers-reduced-motion:reduce){.fys-tab{transition:none}}
 .cases .case.feature{grid-column:1/-1}.case-img{display:block;width:100%;aspect-ratio:2.4/1;object-fit:cover;border-radius:var(--r-card,12px)}html[data-theme="brutal"] .case-img{border-radius:0}.case-img.svc-img{aspect-ratio:1.732/1}
+/* ===== Scenes (style refresh, 2026-11): every home section is a full-screen scene with its own real background, snapped
+   one to the next like a feed; content sits on the scene, not in bordered cards (Ember keeps its cards). Backgrounds are
+   painted by ::before (colour) and ::after (the Logo Field grass as a mask, the Duchess cans, the Fantasm porthole, the
+   S mark large, a type wall), reaching both screen edges; main clips the overhang so the page never scrolls sideways.
+   The new palettes: Dew (glass), Clay (neu), Ledger (simple), Dusk. Ember (brutal) keeps every colour. */
+main#top{overflow-x:clip}
+main#top>.wrap>section.s{position:relative;isolation:isolate;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:center;
+  margin-top:0;padding-block:clamp(96px,13vh,150px) clamp(72px,10vh,120px);--sc:var(--bg);background:var(--sc);color:var(--fg)}
+main#top>.wrap>section.trust{min-height:84vh;min-height:84svh}
+main#top>.wrap>section.s::before,main#top>.wrap>section.s::after{content:"";position:absolute;top:0;bottom:0;left:calc(50% - 50vw);right:calc(50% - 50vw);pointer-events:none}
+main#top>.wrap>section.s::before{z-index:-2;background:var(--scene,var(--sc))}
+main#top>.wrap>section.s::after{z-index:-1}
+main#top>.wrap>footer{position:relative;isolation:isolate}
+@media (prefers-reduced-motion:no-preference){
+  html:has(main#top section.trust){scroll-snap-type:y proximity}
+  main#top>.lf,main#top>.wrap>section.s{scroll-snap-align:start}
+}
+@media (prefers-reduced-motion:reduce){html:has(main#top section.trust){scroll-snap-type:none}}
+/* the scene layers, filled per style below */
+main#top .trust .facts{counter-reset:fact}
+main#top .trust .facts>div{counter-increment:fact}
+main#top #services::after{background:var(--porthole-glow,none),url(/preview/assets/home/fantasm-porthole.webp) right max(var(--side),calc((100vw - 1280px) / 2 + var(--side))) top clamp(90px,12vh,140px)/min(34vw,440px) no-repeat;opacity:var(--porthole-o,.95)}
+main#top #services>.head{min-height:clamp(220px,34vw,460px);align-items:flex-end}
+main#top #work::after{background:url(/preview/work/duchess-nip-co/cans.jpg) center 42%/cover no-repeat;bottom:auto;height:min(78vh,760px);
+  -webkit-mask:linear-gradient(#000 35%,transparent 88%);mask:linear-gradient(#000 35%,transparent 88%);opacity:var(--cans-o,1)}
+main#top #work>.head{margin-top:min(60vh,600px)}
+main#top #process::after{content:"Look Plan Make Care Look Plan Make Care";display:flex;align-items:center;justify-content:center;flex-wrap:wrap;overflow:hidden;
+  font:900 clamp(90px,17vw,260px)/.84 var(--wall-font,Inter,sans-serif);letter-spacing:-.05em;text-transform:var(--wall-case,none);text-align:center;
+  color:transparent;-webkit-text-stroke:2px var(--wall,rgba(0,0,0,.12));word-spacing:.15em}
+main#top .thesis::after{background:var(--mark,rgba(0,0,0,.08));-webkit-mask:url(/preview/assets/logo.svg) center/min(92vw,1180px) auto no-repeat;mask:url(/preview/assets/logo.svg) center/min(92vw,1180px) auto no-repeat}
+main#top .thesis{max-width:none}main#top .thesis>*{max-width:1000px;margin-inline:auto}
+main#top #contact::after{top:auto;height:min(34vh,300px);background:var(--grass,currentColor);
+  -webkit-mask:url(/preview/assets/home/grass-mask.webp) center bottom/cover no-repeat;mask:url(/preview/assets/home/grass-mask.webp) center bottom/cover no-repeat}
+main#top #contact{padding-bottom:max(160px,min(30vh,260px))}
+@media (max-width:760px){
+  main#top #services::after{background-position:right 16px top 84px;background-size:min(52vw,240px)}
+  main#top #services>.head{min-height:300px}
+  main#top #work::after{height:56vh}main#top #work>.head{margin-top:32vh}
+  main#top #process::after{font-size:clamp(70px,24vw,140px);-webkit-text-stroke-width:1.5px}
+}
+
+/* content on the scene: no bordered cards (Dew, Clay, Dusk; Ledger keeps its rules, Ember its cards) */
+html:is([data-theme="glass"],[data-theme="neu"],[data-theme="dusk"]):not([data-scheme]) main#top :is(.svc,.case,.person,.steps>li,.bookblock,.facts,.facts>div){background:transparent;border:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+html:is([data-theme="glass"],[data-theme="neu"],[data-theme="dusk"]):not([data-scheme]) main#top :is(.svc,.person,.steps>li,.case,.bookblock){padding-inline:0}
+
+/* ---------------- Dew: a morning sky you scroll through ---------------- */
+html[data-theme="glass"]:not([data-scheme]){--bg:#EEF1F8;--fg:#24123A;--fg2:#2E1B48;--soft:#4A3D63;--steel:#5D5275;--rule:rgba(36,18,58,.16);--violet:#FF5A2A;--accent2:#FF7448;--on-accent:#24123A;
+  --lav:#C2380E;--bar:rgba(238,241,248,.72);--shadow:0 2px 24px rgba(36,18,58,.12);--card:rgba(255,255,255,.45);--field:rgba(255,255,255,.6);--panel:rgba(238,241,248,.9);--err:#B3261E;color-scheme:light}
+html[data-theme="glass"]:not([data-scheme]) body{background:var(--bg)}
+html[data-theme="glass"]:not([data-scheme]) :is(.ghost:not(.q),form button,.btn,.dark,a.book){box-shadow:0 8px 26px rgba(255,90,42,.35)}
+html[data-theme="glass"]:not([data-scheme]) :is(input,select,textarea){background:rgba(255,255,255,.55);border:1px solid rgba(36,18,58,.2)}
+html[data-theme="glass"]:not([data-scheme]) .slot{border:1px solid rgba(36,18,58,.2)}
+html[data-theme="glass"]:not([data-scheme]) .lf{--lf-ground:#E6EAFB;--lf-ink:#24123A;--lf-mark:#24123A;--lf-grass:#7F89F0}
+html[data-theme="glass"]:not([data-scheme]) main#top section.trust{--sc:#F4D9E6;--scene:linear-gradient(180deg,#AEB9FF,#F4D9E6 62%,#FFE3D4)}
+html[data-theme="glass"]:not([data-scheme]) main#top section.trust::after{background:radial-gradient(closest-side,rgba(255,179,160,.75),rgba(244,217,230,.5) 45%,rgba(159,227,255,.35) 70%,transparent) center/min(80vw,900px) min(80vw,900px) no-repeat;filter:blur(30px)}
+html[data-theme="glass"]:not([data-scheme]) main#top #services{--sc:#24123A;--fg:#fff;--fg2:#F1ECFF;--soft:#D9D0EC;--steel:#BDB2D6;--rule:rgba(255,255,255,.2);--lav:#FF9A73;--field:rgba(255,255,255,.1);--porthole-glow:radial-gradient(closest-side,rgba(174,185,255,.35),transparent) right calc(max(var(--side),calc((100vw - 1280px) / 2 + var(--side))) - 6vw) top 6vh/min(48vw,620px) min(48vw,620px) no-repeat}
+html[data-theme="glass"]:not([data-scheme]) main#top #work{--sc:#F4D9E6}
+html[data-theme="glass"]:not([data-scheme]) main#top #process{--sc:#E6EAFB;--scene:linear-gradient(180deg,#EEF1F8,#DCE3FF);--wall:rgba(127,137,240,.35)}
+html[data-theme="glass"]:not([data-scheme]) main#top .thesis{--sc:#AEB9FF;--mark:rgba(36,18,58,.1);--soft:#2E1B48;--lav:#7A1F05}
+html[data-theme="glass"]:not([data-scheme]) main#top #about{--sc:#E8DDF0;--scene:linear-gradient(180deg,#DCE3FF,#F4D9E6)}
+html[data-theme="glass"]:not([data-scheme]) main#top #contact{--sc:#FF5A2A;--grass:#D8461C;--fg:#24123A;--fg2:#24123A;--soft:#2E1225;--steel:#3A1730;--rule:rgba(36,18,58,.3);--field:rgba(36,18,58,.08);--violet:#24123A;--accent2:#3A2258;--on-accent:#fff;--lav:#24123A;--err:#24123A;color:#24123A}
+html[data-theme="glass"]:not([data-scheme]) main#top #contact :is(input,select,textarea){background:rgba(255,255,255,.2);border-color:rgba(36,18,58,.4);color:#24123A}
+html[data-theme="glass"]:not([data-scheme]) main#top #contact select option{color:#24123A}
+/* Dew's four facts: four frosted panes across the whole width, on the sunrise */
+html[data-theme="glass"]:not([data-scheme]) main#top .trust .facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-inline:calc(50% - 50vw);gap:0}
+html[data-theme="glass"]:not([data-scheme]) main#top .trust .facts>div{background:rgba(255,255,255,.38);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:0;border-left:1px solid rgba(255,255,255,.85);box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
+  min-height:min(48vh,440px);display:flex;flex-direction:column;justify-content:flex-end;padding:clamp(22px,2.6vw,40px)!important;font:500 clamp(15px,1.2vw,18px)/1.35 Inter,sans-serif;color:#24123A}
+html[data-theme="glass"]:not([data-scheme]) main#top .trust .facts>div:first-child{border-left:0}
+html[data-theme="glass"]:not([data-scheme]) main#top .trust .facts>div::before{content:"0" counter(fact);font:800 15px Inter,sans-serif;letter-spacing:.12em;color:#C2380E;margin-bottom:12px}
+html[data-theme="glass"]:not([data-scheme]) main#top .trust .facts>div b{font:800 clamp(34px,4vw,62px)/.95 Inter,sans-serif;letter-spacing:-.045em;color:#24123A;margin-bottom:14px}
+
+/* ---------------- Clay: warm earth, big soft slabs ---------------- */
+html[data-theme="neu"]:not([data-scheme]){--bg:#EFE6D8;--fg:#3A2016;--fg2:#452A1E;--soft:#5E4434;--steel:#6B5040;--rule:rgba(58,32,22,.16);--violet:#EFE6D8;--accent2:#EFE6D8;--on-accent:#9A4626;
+  --lav:#A94F2A;--bar:rgba(239,230,216,.9);--card:#EFE6D8;--field:#F6EFE4;--panel:rgba(239,230,216,.92);--neu-dark:#D4C4AE;--neu-light:#FFF8EE;color-scheme:light}
+html[data-theme="neu"]:not([data-scheme]) .lf{--lf-ground:#EFE6D8;--lf-ink:#3A2016;--lf-mark:#3A2016;--lf-grass:#C8643B}
+html[data-theme="neu"]:not([data-scheme]) main#top section.trust{--sc:#C8643B}
+html[data-theme="neu"]:not([data-scheme]) main#top #services{--sc:#3A2016;--bg:#3A2016;--fg:#EFE6D8;--fg2:#EFE6D8;--soft:#E1D2BF;--steel:#CDBBA6;--rule:rgba(239,230,216,.22);--lav:#F29EBD;--field:rgba(239,230,216,.1);--neu-dark:#2A160F;--neu-light:#4E2D20}
+html[data-theme="neu"]:not([data-scheme]) main#top #work{--sc:#F4C8A6;--bg:#F4C8A6;--neu-dark:#D9AC8A;--neu-light:#FFE4CC}
+html[data-theme="neu"]:not([data-scheme]) main#top #process{--sc:#EFE6D8;--wall:rgba(200,100,59,.3);--wall-font:Fraunces,Georgia,serif}
+html[data-theme="neu"]:not([data-scheme]) main#top .thesis{--sc:#A9B89A;--bg:#A9B89A;--mark:rgba(58,32,22,.13);--soft:#3A2016;--rule:rgba(58,32,22,.3);--lav:#6E2E14}
+html[data-theme="neu"]:not([data-scheme]) main#top #about{--sc:#F4C8A6;--bg:#F4C8A6;--neu-dark:#D9AC8A;--neu-light:#FFE4CC}
+html[data-theme="neu"]:not([data-scheme]) main#top #contact{--sc:#A9B89A;--bg:#A9B89A;--grass:#3A2016;--soft:#2E1A12;--steel:#3A2016;--rule:rgba(58,32,22,.3);--field:#BCC9AF;--neu-dark:#8E9C80;--neu-light:#C4D3B4}
+/* Clay's four facts: four big slabs on the terracotta, each its own colour, turned a little */
+html[data-theme="neu"]:not([data-scheme]) main#top .trust .facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;padding-inline:14px}
+html[data-theme="neu"]:not([data-scheme]) main#top .trust .facts>div{--rot:-2deg;background:#F4C8A6;border-radius:40px;transform:rotate(var(--rot));margin:0 -12px;box-shadow:0 18px 0 rgba(58,32,22,.2);border:0;
+  min-height:min(40vh,360px);display:flex;flex-direction:column;justify-content:flex-end;padding:clamp(24px,2.4vw,36px)!important;font:500 clamp(15px,1.15vw,17px)/1.35 Inter,sans-serif;color:#3A2016;position:relative}
+html[data-theme="neu"]:not([data-scheme]) main#top .trust .facts>div:nth-child(1){z-index:4}
+html[data-theme="neu"]:not([data-scheme]) main#top .trust .facts>div:nth-child(2){--rot:1.5deg;background:#EFE6D8;z-index:3}
+html[data-theme="neu"]:not([data-scheme]) main#top .trust .facts>div:nth-child(3){--rot:-1deg;background:#A9B89A;z-index:2}
+html[data-theme="neu"]:not([data-scheme]) main#top .trust .facts>div:nth-child(4){--rot:2deg;background:#F29EBD;z-index:1}
+html[data-theme="neu"]:not([data-scheme]) main#top .trust .facts>div b{font:900 clamp(32px,3.6vw,58px)/.92 Fraunces,Georgia,serif;letter-spacing:-.02em;color:#3A2016;margin-bottom:12px}
+
+/* ---------------- Ledger: the printed ledger, in full pages (its fact strip is untouched) ---------------- */
+html[data-theme="simple"]:not([data-scheme]){--bg:#F4F1EA;--fg:#111111;--fg2:#111111;--soft:#3A3632;--steel:#5A544D;--rule:#111111;--violet:#111111;--lav:#111111;--bar:#F4F1EA;--card:#EAE6DC;--field:#FAF8F3;--panel:rgba(244,241,234,.95)}
+html[data-theme="simple"]:not([data-scheme]) main#top>.wrap>section.trust{min-height:0}
+html[data-theme="simple"]:not([data-scheme]) .lf{--lf-ground:#F4F1EA;--lf-ink:#111111;--lf-mark:#E2322A;--lf-grass:#111111}
+html[data-theme="simple"]:not([data-scheme]) main#top #services{--sc:#0B5D3B;--bg:#0B5D3B;--fg:#F4F1EA;--fg2:#F4F1EA;--soft:#DCE6DF;--steel:#C3D3C8;--rule:#F4F1EA;--violet:#F4F1EA;--lav:#F4F1EA}
+html[data-theme="simple"]:not([data-scheme]) main#top #work{--sc:#E6DDDE;--bg:#E6DDDE}
+html[data-theme="simple"]:not([data-scheme]) main#top #process{--wall:rgba(17,17,17,.12)}
+html[data-theme="simple"]:not([data-scheme]) main#top .thesis{--sc:#111111;--bg:#111111;--fg:#F4F1EA;--fg2:#F4F1EA;--soft:#D6D1C7;--rule:#F4F1EA;--mark:rgba(226,50,42,.5)}
+html[data-theme="simple"]:not([data-scheme]) main#top #contact{--sc:#111111;--bg:#111111;--fg:#F4F1EA;--fg2:#F4F1EA;--soft:#D6D1C7;--steel:#BDB7AC;--rule:#F4F1EA;--violet:#F4F1EA;--lav:#F4F1EA;--field:#1C1C1C;--grass:#F4F1EA;--err:#FF8A80}
+html[data-theme="simple"]:not([data-scheme]) main#top #contact :is(input,select,textarea){color:#F4F1EA;border-color:#F4F1EA}
+
+/* ---------------- Dusk: a cinema at nightfall ---------------- */
+html[data-theme="dusk"]:not([data-scheme]){--bg:#120607;--fg:#F1E9DD;--fg2:#E6DCCD;--soft:#C9BCAB;--steel:#A8998A;--rule:rgba(241,233,221,.16);--violet:#FF3B1F;--accent2:#E5331A;--on-accent:#120607;
+  --lav:#B9A8FF;--bar:rgba(18,6,7,.6);--card:#1D0D10;--field:rgba(241,233,221,.05);--panel:rgba(18,6,7,.9)}
+html[data-theme="dusk"]:not([data-scheme]) .lf{--lf-ground:#120607;--lf-ink:#F1E9DD;--lf-mark:#F1E9DD;--lf-grass:#9D86FF}
+html[data-theme="dusk"]:not([data-scheme]) main#top section.trust{--sc:#120607}
+html[data-theme="dusk"]:not([data-scheme]) main#top section.trust::after{background:radial-gradient(closest-side,rgba(255,59,31,.5),rgba(42,22,56,.45) 50%,transparent) center/min(110vw,1300px) min(80vw,900px) no-repeat}
+html[data-theme="dusk"]:not([data-scheme]) main#top #services{--sc:#2A1638;--porthole-glow:radial-gradient(closest-side,rgba(255,59,31,.35),transparent) right calc(max(var(--side),calc((100vw - 1280px) / 2 + var(--side))) - 6vw) top 6vh/min(48vw,620px) min(48vw,620px) no-repeat}
+html[data-theme="dusk"]:not([data-scheme]) main#top #work{--sc:#120607}
+html[data-theme="dusk"]:not([data-scheme]) main#top #process{--sc:#1E0D1F;--scene:linear-gradient(180deg,#2A1638,#120607);--wall:rgba(157,134,255,.3);--wall-font:Anton,Impact,sans-serif;--wall-case:uppercase}
+html[data-theme="dusk"]:not([data-scheme]) main#top .thesis{--sc:#120607;--mark:rgba(255,59,31,.22)}
+html[data-theme="dusk"]:not([data-scheme]) main#top #about{--sc:#2A1638}
+html[data-theme="dusk"]:not([data-scheme]) main#top #contact{--sc:#FF3B1F;--grass:#120607;--fg:#120607;--fg2:#120607;--soft:#2A0C08;--steel:#3A120C;--rule:rgba(18,6,7,.35);--field:rgba(18,6,7,.1);--violet:#120607;--accent2:#120607;--on-accent:#F1E9DD;--lav:#120607;--err:#120607;color:#120607}
+html[data-theme="dusk"]:not([data-scheme]) main#top #contact :is(input,select,textarea){color:#120607;border-color:rgba(18,6,7,.45);background:rgba(18,6,7,.08)}
+/* Dusk's four facts: film titles, glowing lavender seams edge to edge, an ember glow behind */
+html[data-theme="dusk"]:not([data-scheme]) main#top .trust .facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-inline:calc(50% - 50vw);padding-inline:max(var(--side),calc((100vw - 1280px) / 2 + var(--side)));
+  border-top:1px solid #9D86FF;border-bottom:1px solid #9D86FF;box-shadow:0 -1px 14px -2px rgba(157,134,255,.7),0 1px 14px -2px rgba(157,134,255,.7)}
+html[data-theme="dusk"]:not([data-scheme]) main#top .trust .facts>div{padding:clamp(28px,4vh,48px) clamp(16px,2vw,30px)!important;font:400 clamp(12px,.95vw,15px)/1.4 "IBM Plex Mono",monospace;color:#B9A8FF;border:0}
+html[data-theme="dusk"]:not([data-scheme]) main#top .trust .facts>div+div{border-left:1px solid #9D86FF;box-shadow:-10px 0 16px -12px rgba(157,134,255,.9)}
+html[data-theme="dusk"]:not([data-scheme]) main#top .trust .facts>div::before{content:"— 0" counter(fact);display:block;font:500 13px "IBM Plex Mono",monospace;letter-spacing:.2em;color:#FF5A3F;margin-bottom:12px}
+html[data-theme="dusk"]:not([data-scheme]) main#top .trust .facts>div b{font:400 clamp(40px,4.4vw,70px)/.92 Anton,Impact,sans-serif;text-transform:uppercase;letter-spacing:0;color:#F1E9DD;margin-bottom:14px}
+
+/* ---------------- Ember: same colours and cards; the facts flip to one black band ---------------- */
+html[data-theme="brutal"]:not([data-scheme]) main#top section.trust{--band:#000;--stripe:var(--nb-y);color:#fff}
+html[data-theme="brutal"]:not([data-scheme]) main#top section.trust .facts{border:0;border-top:6px solid #fff;border-bottom:6px solid #fff;gap:0;margin-inline:calc(50% - 50vw);padding-inline:max(var(--side),calc((100vw - 1280px) / 2 + var(--side)))}
+html[data-theme="brutal"]:not([data-scheme]) main#top section.trust .facts>div{background:transparent!important;border:0!important;box-shadow:none!important;padding:28px 24px!important;color:#fff;font:700 clamp(14px,1.1vw,17px)/1.35 Inter,sans-serif}
+html[data-theme="brutal"]:not([data-scheme]) main#top section.trust .facts>div+div{border-left:6px solid #fff!important}
+html[data-theme="brutal"]:not([data-scheme]) main#top section.trust .facts>div::before{content:"0" counter(fact);display:block;font:900 14px Inter,sans-serif;letter-spacing:.12em;color:#FF6B3D;margin-bottom:8px}
+html[data-theme="brutal"]:not([data-scheme]) main#top section.trust .facts>div b{background:none;border:0;margin:0 0 12px;padding:0;font:900 clamp(38px,4.6vw,68px)/.92 Inter,sans-serif;letter-spacing:-.05em;color:var(--nb-y)}
+html[data-theme="brutal"]:not([data-scheme]) main#top #process{--wall:rgba(0,0,0,.1)}
+html[data-theme="brutal"]:not([data-scheme]) main#top .thesis{--mark:rgba(0,0,0,.1)}
+html[data-theme="brutal"]:not([data-scheme]) main#top #contact{--grass:#E0501C}
+html[data-theme="brutal"]:not([data-scheme]) main#top #work::after{top:24px}
+@media (max-width:900px){html[data-theme="brutal"]:not([data-scheme]) main#top section.trust .facts{grid-template-columns:1fr 1fr}html[data-theme="brutal"]:not([data-scheme]) main#top section.trust .facts>div:nth-child(3){border-left:0!important}html[data-theme="brutal"]:not([data-scheme]) main#top section.trust .facts>div:nth-child(n+3){border-top:6px solid #fff!important}}
+
+/* ---------------- phones: the facts stack, each still a full-width moment ---------------- */
+@media (max-width:760px){
+  html:is([data-theme="glass"],[data-theme="dusk"]):not([data-scheme]) main#top .trust .facts,html[data-theme="neu"]:not([data-scheme]) main#top .trust .facts{grid-template-columns:1fr}
+  html[data-theme="glass"]:not([data-scheme]) main#top .trust .facts{gap:14px}
+  html[data-theme="glass"]:not([data-scheme]) main#top .trust .facts>div{min-height:0;border-left:0;padding:24px max(var(--side),env(safe-area-inset-left,0px)) 24px!important}
+  html[data-theme="glass"]:not([data-scheme]) main#top .trust .facts>div b{font-size:40px;line-height:1.02}
+  html[data-theme="dusk"]:not([data-scheme]) main#top .trust .facts>div{padding:24px 6px!important}
+  html[data-theme="dusk"]:not([data-scheme]) main#top .trust .facts>div+div{border-left:0;box-shadow:none;border-top:1px solid #9D86FF}
+  html[data-theme="dusk"]:not([data-scheme]) main#top .trust .facts>div+div{box-shadow:0 -1px 12px -2px rgba(157,134,255,.7)}
+  html[data-theme="dusk"]:not([data-scheme]) main#top .trust .facts>div b{font-size:clamp(44px,13vw,60px);line-height:1.04}
+  html[data-theme="neu"]:not([data-scheme]) main#top .trust .facts{padding-inline:6px}
+  html[data-theme="neu"]:not([data-scheme]) main#top .trust .facts>div{min-height:0;margin:-10px 0 0;border-radius:30px;padding:20px 22px!important}
+  html[data-theme="neu"]:not([data-scheme]) main#top .trust .facts>div b{font-size:38px}
+}
+@media (max-width:560px){html[data-theme="brutal"]:not([data-scheme]) main#top section.trust .facts{grid-template-columns:1fr}html[data-theme="brutal"]:not([data-scheme]) main#top section.trust .facts>div+div{border-left:0!important;border-top:6px solid #fff!important}}
+html[data-theme="brutal"]:not([data-scheme]) main#top>.wrap>section.s::before{background:none}
+html[data-theme="neu"]:not([data-scheme]) a.book,html[data-theme="neu"]:not([data-scheme]) :is(.ghost:not(.q),form button){background:#B4532C;color:#fff!important}
+html[data-theme="neu"]:not([data-scheme]) .ghost.q{background:#A9B89A;color:#3A2016}
+@media (max-width:760px){main#top #services::after{background-position:right 16px top 76px;background-size:min(40vw,170px)}main#top #services>.head{min-height:0;padding-top:min(42vw,190px)}}
 </style>
 <script>
-(function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#090909',glass:'#0b1a24',neu:'#ece7e1',brutal:'#FFFDF5',simple:'#F1EEE6',editorial:'#f3f1ea'};
+(function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#120607',glass:'#EEF1F8',neu:'#EFE6D8',brutal:'#FFFDF5',simple:'#F4F1EA',editorial:'#f3f1ea'};
 function get(){try{var v=localStorage.getItem(K);return OK[v]?v:'glass';}catch(e){return 'glass';}}
-var FONT={"dusk": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "glass": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Inter+Tight:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "neu": "https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "brutal": "https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap", "simple": "https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap", "editorial": "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter+Tight:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap", "letters": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Cormorant+Garamond:wght@300&family=Anybody:wdth,wght@125,800&family=Syne:wght@800&family=Inter+Tight:wght@300;700&family=IBM+Plex+Mono:wght@400;500&display=swap"};function font(k){if(!FONT[k]||document.getElementById('sog-f-'+k))return;var l=document.createElement('link');l.rel='stylesheet';l.id='sog-f-'+k;l.href=FONT[k];document.head.appendChild(l);}
+var FONT={"dusk": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Anton&family=Inter+Tight:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "glass": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=Inter+Tight:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "neu": "https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;700&family=Fraunces:opsz,wght@9..144,900&family=Inter:wght@500&family=IBM+Plex+Mono:wght@400;500&display=swap", "brutal": "https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700;900&family=Space+Mono:wght@400;700&display=swap", "simple": "https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap", "editorial": "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter+Tight:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap", "letters": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Cormorant+Garamond:wght@300&family=Anybody:wdth,wght@125,800&family=Syne:wght@800&family=Inter+Tight:wght@300;700&family=IBM+Plex+Mono:wght@400;500&display=swap"};function font(k){if(!FONT[k]||document.getElementById('sog-f-'+k))return;var l=document.createElement('link');l.rel='stylesheet';l.id='sog-f-'+k;l.href=FONT[k];document.head.appendChild(l);}
 window.sogFonts={letters:function(){font('letters');}};
 function apply(t){if(!OK[t])t='dusk';font(t);var r=document.documentElement;if(r.getAttribute('data-theme')===t)return;r.setAttribute('data-theme',t);
   var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',BG[t]);
