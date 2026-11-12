@@ -2,7 +2,7 @@
    made of many soft blooms that run together: each a little darker where it landed, lobed at its edge, with fine
    streaks from its middle and a faint tide line where its water stopped. They keep blooming and fading, slowly, and
    the pointer pushes them about as it passes, so the ground is never quite the same. Pigment is a filter on the
-   paper (thicker is darker and richer): a sky, cerulean and ultramarine deepest overhead, thinning to paper at the horizon, a little apricot light just above the grass.
+   paper (thicker is darker and richer): on Beings' chocolate, dark on dark: sienna lifting where blooms gather, umber sinking at their rims.
    The headline's corner is left nearly bare paper. Clay only; one still frame under reduced motion. */
 (function(){
 const SEC=document.getElementById('opening'),base=document.getElementById('lf-cv');
@@ -21,7 +21,7 @@ uniform vec2 uRes,uPtr;uniform float uTime,uPtrOn;
 float h1(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float n1(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h1(i),h1(i+vec2(1,0)),f.x),mix(h1(i+vec2(0,1)),h1(i+vec2(1,1)),f.x),f.y);}
 vec3 paper(vec2 fc){float f=n1(fc*vec2(.9,.11))*.5+n1(fc*vec2(.13,.8))*.5,t=n1(fc*.45),g=h1(floor(fc));
-  return vec3(.965,.944,.905)*(.955+.03*f+.025*t+.015*g);}
+  return vec3(.239,.094,.004)*(.93+.07*f+.05*t+.03*g);}   // chocolate paper: Beings' chapter colour, with fibres and tooth
 void main(){
   vec2 fc=gl_FragCoord.xy,uv=fc/uRes;float bs=uRes.y/1000.,asp=uRes.x/uRes.y;
   vec2 sq=fc/(300.*bs);float tt=uTime*.04;
@@ -48,16 +48,16 @@ void main(){
       bl+=w;
       tide=max(tide,(smoothstep(R*.9,R*.96,dist)-smoothstep(R*.96,R*1.03,dist))*life);
       // each bloom carries its own pigment: apricot or peach above, sage, olive or ochre low
-      vec3 blue=h4<.45?vec3(.20,.56,.86):(h4<.8?vec3(.24,.34,.84):vec3(.12,.30,.50)),warm=vec3(.99,.60,.26);   // cerulean, ultramarine, Prussian; cadmium orange at the horizon   // cerulean, ultramarine, a grey-blue; apricot near the horizon
+      vec3 blue=h4<.45?vec3(.62,.30,.12):(h4<.8?vec3(.30,.16,.10):vec3(.48,.22,.10)),warm=vec3(.78,.40,.16);   // dark on dark: burnt sienna, umber, a warmer glow low down   // cerulean, ultramarine, a grey-blue; apricot near the horizon
       tint+=mix(blue,warm,clamp(low*.9+(h4-.5)*.2,0.,1.))*w;tw+=w;}}
-  vec3 pig=tw>1e-4?tint/tw:mix(vec3(.22,.48,.86),vec3(.99,.60,.26),low);
+  vec3 pig=tw>1e-4?tint/tw:mix(vec3(.45,.22,.10),vec3(.78,.40,.16),low);
   // where the wash lies: a graded sky, deepest overhead, nothing at the horizon but a little warm light; lighter behind the headline
   vec2 tm=(uv-vec2(.3,.56))/vec2(.3,.18);float bare=exp(-dot(tm,tm));
   float lay=(pow(el,.6)*1.25+low*smoothstep(.16,.32,uv.y)*.6)*(1.-.35*bare);
   float DS=lay*(.38+.62*clamp(bl,0.,1.3))+tide*.14*lay;
   float gran=n1(fc*1.1)*.5+n1(fc*.3+7.)*.3+h1(floor(fc*.8))*.2;   // granulation in the paper's tooth
   DS*=.86+.28*gran;
-  vec3 col=paper(fc)*pow(pig,vec3(DS*1.15));
+  vec3 base=paper(fc),col=mix(base*pow(pig,vec3(DS*.9)),base+pig*.16,smoothstep(.5,1.2,bl)*lay*.6);   // sienna lifts where blooms gather, umber sinks at their rims
   o=vec4(col,1.);}`;
 function sh(t,s){const x=gl.createShader(t);gl.shaderSource(x,s);gl.compileShader(x);if(!gl.getShaderParameter(x,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(x));return x;}
 let pr;try{pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,VS));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,FS));gl.bindAttribLocation(pr,0,'p');gl.linkProgram(pr);
