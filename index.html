@@ -870,8 +870,10 @@ main.cb{--cb-light:#EEF1F8;--cb-light2:#F4D9E6;--cb-ink:#24123A;--cb-dark:#24123
   --cb-side:max(20px,calc((100vw - 1240px) / 2));display:block;color:var(--cb-ink);font-family:var(--cb-body)}
 main.cb>*{margin:0}
 /* the opening: full screen, then it shrinks up into the bar */
-main.cb .cb-open{height:100vh;height:100svh;position:relative;z-index:0}
-main.cb .cb-open>.lf{position:absolute;left:0;right:0;bottom:0;height:var(--cb-h,100svh);min-height:0}
+main.cb .cb-open{height:260vh;height:260svh;position:relative;z-index:0}
+main.cb .cb-open>.lf{position:sticky;top:0;left:0;right:0;height:100vh;height:100svh;min-height:0}   /* the meadow is the ground: pinned while the titles change over it */
+main.cb .lf-title{position:absolute;inset:0 0 38% 0;display:grid;place-items:center;padding:calc(var(--cb-nav,64px) + 8px) var(--cb-side,24px) 0;pointer-events:none;z-index:2;opacity:0}
+html body main.cb .lf-title .cb-h{text-align:center;color:var(--lf-ink,#fff)}
 main.cb .cb-sr{position:absolute;width:1px;height:1px;margin:0;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 /* bands */
 main.cb .cb-band{position:relative;z-index:1;padding:clamp(56px,7vw,104px) var(--cb-side)}
@@ -1097,7 +1099,7 @@ html[data-theme="dusk"]:not([data-scheme]){--lf-flowers:#FF7777,#E8E6E3}
 main.cb .cb-stage{position:relative}
 main.cb .cb-stage>.cb-head{position:sticky;top:0;min-height:100vh;min-height:100svh;display:grid;place-items:center;padding:0 var(--cb-side,24px);z-index:0}
 main.cb .cb-stage>.cb-head .cb-h{text-align:center;margin:0;transform-origin:50% 50%;will-change:transform,opacity}
-main.cb .cb-stage>.cb-svc{position:relative;z-index:1;margin-top:-22vh;margin-top:-22svh;background:transparent;padding-top:clamp(40px,5vw,72px)}
+main.cb .cb-stage>.cb-svc{position:relative;z-index:1;margin-top:-40vh;margin-top:-40svh;background:transparent;padding-top:clamp(40px,5vw,72px)}
 main.cb .cb-stage>.cb-svc::before{content:"";position:absolute;inset:0;background:var(--cb-dark);z-index:-1;border-radius:clamp(20px,3vw,44px) clamp(20px,3vw,44px) 0 0}   /* the sheet the cards ride up on */
 main.cb .cb-stage .cb-p{will-change:transform}
 main.cb .ui{--u-pl:#151922;--u-ed:rgba(255,255,255,.1);--u-ink:#E9ECF1;--u-mute:rgba(233,236,241,.52);--u-ac:var(--cb-accent);--u-ok:#3DDC84;
@@ -1160,7 +1162,7 @@ main.cb .ui-tech .bpm .dot{background:#FF4D4D;--u-ok:#FF4D4D}
 @keyframes uiSlide{0%{left:12%}100%{left:88%}}
 @keyframes uiSpin{to{transform:rotateX(-24deg) rotateY(360deg)}}
 @media (prefers-reduced-motion:reduce){main.cb .ui *{animation:none!important}}
-@media (max-width:900px){main.cb .cb-stage>.cb-head{min-height:70svh}main.cb .cb-stage>.cb-svc{margin-top:-10svh}}
+@media (max-width:900px){main.cb .cb-stage>.cb-head{min-height:70svh}main.cb .cb-stage>.cb-svc{margin-top:-40svh}}
 </style>
 <script>
 (function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#120607',glass:'#EEF1F8',neu:'#EFE6D8',brutal:'#FFFDF5',simple:'#F4F1EA',editorial:'#f3f1ea'};
@@ -1195,14 +1197,14 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
   <div class="cb-open">
   <section class="lf" id="opening" aria-labelledby="lf-h">
     <h1 class="lf-sr" id="lf-h">A design and technology studio for the Front Range.</h1>
+    <div class="lf-title" aria-hidden="true"><p class="cb-h">Three things, done properly.</p></div>
     <canvas id="lf-cv" aria-label="The headline and the Sea of Grass S over a heap of grass. Move your pointer or finger sideways through it: the S gets knocked and springs back, and the grass is scooped up and settles again. Press to throw more grass."></canvas>
   </section>
   </div>
 
   <div class="cb-stage">
-  <div class="cb-band cb-head" id="services"><h2 class="cb-h">Three things, done properly.</h2></div>
-  <section class="cb-band cb-svc" aria-labelledby="cb-svc-h">
-    <h2 class="cb-sr" id="cb-svc-h">What we make</h2>
+  <section class="cb-band cb-svc" id="services" aria-labelledby="cb-svc-h">
+    <h2 class="cb-sr" id="cb-svc-h">Three things, done properly.</h2>
     <div class="cb-panels">
       <article class="cb-p">
         <a class="ui ui-web" href="/preview/services/websites/" tabindex="-1" aria-hidden="true">
@@ -1346,7 +1348,7 @@ function build(){pieces=[];const phone=W<600;
     g.n=g.N;return;} // keep every blade: the frame closes over the meadow, the meadow does not shrink
   // ---- the meadow: grass blades and seed heads as grains of a soft fluid, heaped along the bottom quarter
   // always grow the full meadow, sized to the opening at full height, even when the page loads or restyles part-way down (the opening is shrunk then)
-  const HF=Math.max(H,Math.round((SEC.parentElement||SEC).getBoundingClientRect().height));GFULL=HF;
+  const HF=H;GFULL=HF;   // the opening no longer shrinks, so the meadow is grown at its own height
   const deep=MODE==='lockup',d0=deep?(phone?8:10):(phone?10:12),band=HF*(deep?(phone?.40:.38):(phone?.27:.25)),cols=Math.floor(W/d0),rows=Math.floor(band/d0),n=cols*rows,r=rnd(7);
   grass={n,d0,x:new Float32Array(n),y:new Float32Array(n),vx:new Float32Array(n),vy:new Float32Array(n),a:new Float32Array(n),px:new Float32Array(n),py:new Float32Array(n),len:new Float32Array(n),seed:new Uint8Array(n),
     head:new Int32Array(Math.ceil(W/d0+2)*Math.ceil(H/d0+2)),next:new Int32Array(n),gw:Math.ceil(W/d0+2),N:n};
@@ -1443,13 +1445,13 @@ function markFill(path,key){const m=MFILL;
       if(k>=4){c.ellipse(x,y,1.6,7,((i*1.3)%1-.5)*.8,0,Math.PI*2);}else{for(let p=0;p<6;p++){const t=p*Math.PI/3;c.moveTo(x+Math.cos(t)*4.2,y+Math.sin(t)*4.2);c.ellipse(x+Math.cos(t)*2.4,y+Math.sin(t)*2.4,2.3,1.2,t,0,Math.PI*2);}}c.fill();}
     c.restore();c.lineWidth=2;c.strokeStyle='#4A7A3C';c.stroke(path);}
   else{c.fillStyle=MARKC;c.fill(path);}}
-function draw(){c.setTransform(DPR,0,0,DPR,0,0);c.clearRect(0,0,W,H);c.fillStyle=INK;c.strokeStyle=INK;
-  for(const p of pieces){c.save();c.translate(p.x,p.y);c.rotate(p.a);
+let TITLE=1;function draw(){c.setTransform(DPR,0,0,DPR,0,0);c.clearRect(0,0,W,H);c.fillStyle=INK;c.strokeStyle=INK;
+  for(const p of pieces){if(TITLE<.01)break;c.save();c.globalAlpha=TITLE;c.translate(p.x,p.y);c.rotate(p.a);
     if(p.kind==='p2'){c.setTransform(DPR,0,0,DPR,0,0);c.translate(p.x,p.y);c.rotate(p.a);c.scale(p.sc,p.sc);c.translate(-219,-174+36.26);markFill(P2,'p2');c.fillStyle=INK;}
     else if(p.kind==='p1'){c.setTransform(DPR,0,0,DPR,0,0);c.translate(p.x,p.y);c.rotate(p.a);c.scale(p.sc,p.sc);c.translate(-219,-174-36.26);markFill(P1,'p1');c.fillStyle=INK;}
     else if(p.kind==='dot'){c.setTransform(DPR,0,0,DPR,0,0);c.translate(p.x,p.y);c.rotate(p.a);c.scale(p.sc,p.sc);c.translate(-357.983,-86.686);markFill(DOT);c.fillStyle=INK;}
     else if(p.kind==='ch'||p.kind==='w'){c.font=p.font;c.textAlign='center';c.textBaseline='alphabetic';c.fillText(p.ch,0,p.fs*(p.kind==='w'?.28:.36));}
-    else if(p.kind==='rule'){const v=RULE[p.line];if(v>.02){c.globalAlpha=v;c.fillRect(-p.w/2,-p.h/2,p.w*v,p.h);}}
+    else if(p.kind==='rule'){const v=RULE[p.line];if(v>.02){c.globalAlpha=v*TITLE;c.fillRect(-p.w/2,-p.h/2,p.w*v,p.h);}}
     c.restore();}
   const g=grass;if(ready<15)return;c.fillStyle=GRASS;c.strokeStyle=GRASS;c.strokeStyle=GRASS;c.beginPath();
   c.lineCap="round";meadowDraw(c,g,GRASS,(getComputedStyle(SEC).getPropertyValue('--lf-flowers').trim()||'#F3E7B0,#E8C34A,#6F8FB8,#B8553A').split(',').map(x=>x.trim()));}
@@ -1471,7 +1473,7 @@ mode('lockup',false);
 inks();['sog-theme','sog-scheme','sog-colour'].forEach(e=>document.addEventListener(e,()=>requestAnimationFrame(()=>{inks();const f=getComputedStyle(SEC).getPropertyValue('--lf-face').trim();(document.fonts&&f?document.fonts.load('400 40px '+f):Promise.resolve()).then(()=>{size();if(still){for(let k=0;k<90;k++)fluid(grass,1/120,0);ready=15;}draw();});})));
 size();if(still){for(let k=0;k<90;k++)fluid(grass,1/120,0);ready=15;draw();}else requestAnimationFrame(frame);
 new IntersectionObserver(es=>{const v=es[0].isIntersecting;if(v&&!visible&&!still&&!running){visible=true;running=true;requestAnimationFrame(frame);}visible=v;}).observe(SEC);
-window.sogOpening={grassLine:(n)=>{const g=grass,out=new Array(n).fill(1e9);if(!g||ready<15)return out;const cols=Array.from({length:n},()=>[]);for(let i=0;i<g.n;i++){if(Math.abs(g.y[i]-g.py[i])>.6||Math.abs(g.x[i]-g.px[i])>.6)continue;const k=Math.min(n-1,Math.max(0,Math.floor(g.x[i]/W*n)));cols[k].push(g.y[i]-g.len[i]*.6);}return cols.map(a=>{if(a.length<12)return 1e9;a.sort((x,y)=>x-y);return a[Math.min(a.length-1,10)];});},fit:()=>{if(!W)return;KEEPG=H;size();KEEPG=0;if(still)draw();},wake:()=>{if(!still&&!running){running=true;requestAnimationFrame(frame);}},poke:(x,y,vx,vy)=>{ptr.x=x;ptr.y=y;ptr.vx=vx;ptr.vy=vy;ptr.on=true;},
+window.sogOpening={title:(a)=>{if(Math.abs(a-TITLE)<.002)return;TITLE=a;if(still)draw();},grassLine:(n)=>{const g=grass,out=new Array(n).fill(1e9);if(!g||ready<15)return out;const cols=Array.from({length:n},()=>[]);for(let i=0;i<g.n;i++){if(Math.abs(g.y[i]-g.py[i])>.6||Math.abs(g.x[i]-g.px[i])>.6)continue;const k=Math.min(n-1,Math.max(0,Math.floor(g.x[i]/W*n)));cols[k].push(g.y[i]-g.len[i]*.6);}return cols.map(a=>{if(a.length<12)return 1e9;a.sort((x,y)=>x-y);return a[Math.min(a.length-1,10)];});},fit:()=>{if(!W)return;KEEPG=H;size();KEEPG=0;if(still)draw();},wake:()=>{if(!still&&!running){running=true;requestAnimationFrame(frame);}},poke:(x,y,vx,vy)=>{ptr.x=x;ptr.y=y;ptr.vx=vx;ptr.vy=vy;ptr.on=true;},
   // for the settle check: how far the furthest piece is from home, in px and degrees
   drift:()=>pieces.reduce((m,p)=>({px:Math.max(m.px,Math.hypot(p.x-p.hx,p.y-p.hy)),deg:Math.max(m.deg,Math.abs(p.a-Math.round(p.a/6.2832)*6.2832)*180/Math.PI)}),{px:0,deg:0}),
   words:()=>{const q=SEC.getBoundingClientRect();return pieces.filter(p=>p.kind==='w'||p.kind==='ch'||p.kind==='p1').map(p=>[p.hx+q.left,p.hy+q.top]);},ready:()=>ready>=15};
@@ -1491,20 +1493,20 @@ addEventListener('scroll',show,{passive:true});show();
 })();
 </script>
 <script>
-(()=>{ // the opening shrinks to the top as you scroll: its bottom stays on the first band and it gets shorter, down to a top band
-const open=document.querySelector('main.cb .cb-open'),lf=open&&open.querySelector('.lf');if(!lf)return;
-if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
-let ticking=false,lastH=0;
-function endH(){const vh=open.offsetHeight;return Math.round(Math.min(vh,Math.max(innerWidth<600?300:340,vh*(innerWidth<600?.4:.44))));}
-function upd(){ticking=false;const vh=open.offsetHeight,h=Math.round(Math.max(endH(),vh-Math.max(0,scrollY)));
-  if(h!==lastH){lastH=h;lf.style.setProperty('--cb-h',h+'px');window.sogOpening&&sogOpening.fit&&sogOpening.fit();}}
+(()=>{ // the meadow stays pinned; scrolling changes the titles over it like titles in a play: the identity line, then "Three things, done properly."
+const open=document.querySelector('main.cb .cb-open'),t2=open&&open.querySelector('.lf-title');if(!t2)return;
+let ticking=false;const sm=x=>{x=Math.min(1,Math.max(0,x));return x*x*(3-2*x);};
+function upd(){ticking=false;const vh=innerHeight,y=-open.getBoundingClientRect().top/vh;   // screens scrolled into the track
+  const out=sm((y-.28)/.32),inn=sm((y-.5)/.3);
+  window.sogOpening&&sogOpening.title&&sogOpening.title(1-out);
+  t2.style.opacity=String(inn);t2.style.transform=`translateY(${(1-inn)*24}px)`;}
 addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(upd);}},{passive:true});
-addEventListener('resize',()=>{lastH=0;upd();});upd();
+addEventListener('resize',upd);addEventListener('load',upd);upd();
 })();
 </script>
 <script>/* "Three things": the statement holds still and steps back as the three cards rise over it, each at its own pace */
 (function(){const st=document.querySelector('main.cb .cb-stage');if(!st||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
-const h=st.querySelector('.cb-h'),cards=[...st.querySelectorAll('.cb-p')],K=[60,150,240];let tick=false;
+const h=document.querySelector('main.cb .lf-title .cb-h'),cards=[...st.querySelectorAll('.cb-p')],K=[60,150,240];let tick=false;
 function upd(){tick=false;const vh=innerHeight,r=st.querySelector('.cb-panels').getBoundingClientRect(),p=Math.min(1,Math.max(0,(vh-r.top)/(vh*.85)));
   const f=Math.min(1,Math.max(0,(p-.3)/.6)),e=f*f*(3-2*f);h.style.transform=`scale(${1-.08*e})`;h.style.opacity=String(1-e);   // it reads in full until the sheet is well up, then steps back
   cards.forEach((c,i)=>{const q=Math.min(1,Math.max(0,p*1.25-i*.12)),eq=1-Math.pow(1-q,3);c.style.transform=`translateY(${(1-eq)*K[i]}px)`;c.style.opacity=String(.25+.75*eq);});}
