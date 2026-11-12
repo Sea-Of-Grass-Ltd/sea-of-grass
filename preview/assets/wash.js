@@ -17,7 +17,7 @@ const VS=`#version 300 es
 in vec2 p;void main(){gl_Position=vec4(p,0.,1.);}`;
 const FS=`#version 300 es
 precision highp float;out vec4 o;
-uniform vec2 uRes,uPtr;uniform float uTime,uPtrOn,uBoil;uniform vec3 uBase;
+uniform vec2 uRes,uPtr;uniform float uTime,uPtrOn,uBoil,uRise,uHasEng;uniform vec3 uBase;uniform sampler2D uEng;uniform float uEngAsp;
 float ih(uvec3 v){v=v*1664525u+1013904223u;v.x+=v.y*v.z;v.y+=v.z*v.x;v.z+=v.x*v.y;v^=v>>16u;v.x+=v.y*v.z;return float(v.x&0xffffu)/65535.;}   // an integer hash: grain with no diagonal artefacts
 float h1(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float n1(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h1(i),h1(i+vec2(1,0)),f.x),mix(h1(i+vec2(0,1)),h1(i+vec2(1,1)),f.x),f.y);}
@@ -64,20 +64,37 @@ void main(){
   vec2 gq=floor(fc)+vec2(uBoil*37.,uBoil*91.);float gn=ih(uvec3(uvec2(gq),uint(uBoil)))*.7+n1(fc*.35+uBoil*3.1)*.3,ov=.5+(gn-.5)*.55;
   col=mix(col,mix(2.*col*ov,1.-2.*(1.-col)*(1.-ov),step(.5,ov)),.6);
   vec2 dsc=mod(fc,3.)-1.;col*=1.-.06*step(dot(dsc,dsc),.6);
+  // the Front Range engraving, printed tone on tone and alive: it sways in a slow wind (more toward the edges), parts around the pointer, and rises in as you scroll
+  if(uHasEng>.5){
+    float sa=asp/uEngAsp;vec2 ei=uv;if(sa>1.){ei.y=(uv.y-.5)/sa+.5;}else{ei.x=(uv.x-.5)*sa+.5;}   // cover-fit
+    ei.y=1.-ei.y;
+    float edge=smoothstep(.15,.5,abs(uv.x-.5)),tw=uTime*.18;
+    vec2 wind=vec2(n1(ei*3.+vec2(tw,0.))-.5,n1(ei*3.+vec2(7.,tw*.8))-.5)*(.004+.008*edge);
+    vec2 dp=P-uPtr;float pr=.16,pp=uPtrOn*exp(-dot(dp,dp)/(pr*pr));wind+=vec2(dp.x,-dp.y)/max(length(dp),1e-3)*pp*.02;
+    ei+=wind;ei.y+=(1.-uRise)*.07;
+    vec2 tx=1./vec2(1376.,768.);float e=(texture(uEng,ei).a*2.+texture(uEng,ei+vec2(tx.x,0.)).a+texture(uEng,ei-vec2(tx.x,0.)).a+texture(uEng,ei+vec2(0.,tx.y)).a+texture(uEng,ei-vec2(0.,tx.y)).a)/6.;
+    float fade=smoothstep(.34,.58,uv.y)*(.55+.45*uRise);
+    col*=1.-e*fade*.4;                                                   // darker silhouettes, multiplied into the sheet
+    col=mix(col,col+vec3(.05,.045,.03),e*fade*smoothstep(.55,1.,e)*.25*gran);   // a little light caught on the deepest cuts, broken by the grain
+  }
   o=vec4(col,1.);}`;
 function sh(t,s){const x=gl.createShader(t);gl.shaderSource(x,s);gl.compileShader(x);if(!gl.getShaderParameter(x,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(x));return x;}
 let pr;try{pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,VS));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,FS));gl.bindAttribLocation(pr,0,'p');gl.linkProgram(pr);
   if(!gl.getProgramParameter(pr,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(pr));}catch(e){console.warn('wash',e);cv.remove();return;}
-const U=n=>gl.getUniformLocation(pr,n),uRes=U('uRes'),uTime=U('uTime'),uBoil=U('uBoil'),uBaseL=U('uBase'),uPtr=U('uPtr'),uPtrOn=U('uPtrOn');
+const U=n=>gl.getUniformLocation(pr,n),uRes=U('uRes'),uTime=U('uTime'),uBoil=U('uBoil'),uBaseL=U('uBase'),uRiseL=U('uRise'),uHasEngL=U('uHasEng'),uEngL=U('uEng'),uEngAspL=U('uEngAsp'),uPtr=U('uPtr'),uPtrOn=U('uPtrOn');
 const vb=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vb);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,2,gl.FLOAT,false,0,0);
 const on=()=>document.documentElement.dataset.theme==='neu'&&!document.documentElement.hasAttribute('data-scheme');
 let W=0,H=0,act=false,vis=true,running=false,last=0,ptr=[0,0],pOn=0,pS=[0,0];const T0=performance.now()-60000*Math.random();
 function size(){const r=SEC.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,1.5);W=Math.round(r.width*d);H=Math.round(r.height*d);cv.width=W;cv.height=H;}
-function draw(now){gl.viewport(0,0,W,H);gl.useProgram(pr);gl.uniform2f(uRes,W,H);gl.uniform1f(uTime,(now-T0)/1000);gl.uniform1f(uBoil,0.);gl.uniform3fv(uBaseL,BASE);   // the grain holds still: a printed sheet, not static on a screen
+function draw(now){gl.viewport(0,0,W,H);gl.useProgram(pr);gl.uniform2f(uRes,W,H);gl.uniform1f(uTime,(now-T0)/1000);gl.uniform1f(uBoil,0.);gl.uniform3fv(uBaseL,BASE);gl.uniform1f(uRiseL,parseFloat(SEC.style.getPropertyValue('--rise'))||0);gl.uniform1f(uHasEngL,engOK?1:0);gl.uniform1f(uEngAspL,1376/768);if(engOK){gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,engT);gl.uniform1i(uEngL,0);}   // the grain holds still: a printed sheet, not static on a screen
   pS[0]+=(ptr[0]-pS[0])*.12;pS[1]+=(ptr[1]-pS[1])*.12;gl.uniform2f(uPtr,pS[0],pS[1]);gl.uniform1f(uPtrOn,pOn);gl.drawArrays(gl.TRIANGLES,0,3);}
 function frame(now){if(!act||!vis){running=false;return;}requestAnimationFrame(frame);if(now-last<40)return;last=now;draw(now);}   // about 25 a second: watercolour moves slowly
 function wake(){if(still){draw(performance.now());return;}if(!running&&act&&vis){running=true;requestAnimationFrame(frame);}}
-let BASE=[.478,.247,.118];function readBase(){const c=getComputedStyle(SEC).getPropertyValue('--lf-ground').trim(),m=/^#([0-9a-f]{6})$/i.exec(c);if(m)BASE=[1,3,5].map(i=>parseInt(c.slice(i,i+2),16)/255);}   // the ground colour comes from the style
+let BASE=[.478,.247,.118];
+// the engraving: Clay's Front Range border, loaded once into a texture
+let engOK=false;const engT=gl.createTexture(),engI=new Image();engI.onload=()=>{gl.bindTexture(gl.TEXTURE_2D,engT);gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,false);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,engI);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);engOK=true;wake();};
+engI.src='/preview/assets/grounds/front-range-engraving.webp';function readBase(){const c=getComputedStyle(SEC).getPropertyValue('--lf-ground').trim(),m=/^#([0-9a-f]{6})$/i.exec(c);if(m)BASE=[1,3,5].map(i=>parseInt(c.slice(i,i+2),16)/255);}   // the ground colour comes from the style
 function apply(){readBase();act=on();cv.style.display=act?'block':'none';if(act){size();wake();}}
 SEC.addEventListener('pointermove',e=>{const r=SEC.getBoundingClientRect();ptr=[(e.clientX-r.left)/r.height,1-(e.clientY-r.top)/r.height];pOn=1;});
 SEC.addEventListener('pointerleave',()=>{pOn=0;});
