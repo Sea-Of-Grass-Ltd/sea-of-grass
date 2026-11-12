@@ -988,6 +988,10 @@ main.cb .cb-work{display:block;padding-left:var(--cb-side)}
 main.cb .cb-workgrid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:clamp(24px,3vw,48px);align-items:start;max-width:1240px;margin:0 auto}
 html body main.cb .cb-feature{display:grid;gap:6px;color:var(--cb-ink);text-decoration:none}
 main.cb .cb-feature .cb-tile{border-radius:var(--cb-panel-r);margin-bottom:10px}
+/* the Duchess feature, for now: just the word, set large on the tile, until the brand is redone */
+main.cb .cb-feature .cb-word{display:grid;place-items:center;aspect-ratio:1.6/1;background:var(--cb-tile);container-type:inline-size;overflow:hidden}
+html body main.cb .cb-feature .cb-word span{font-family:var(--cb-hfont);font-weight:var(--cb-hw);font-size:21cqi;line-height:1;letter-spacing:-.04em;color:var(--cb-ink)}
+html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-feature .cb-word span{font-size:13cqi;letter-spacing:-.02em}
 html body main.cb :is(.cb-feature,.cb-index,.cb-people) b{font:var(--cb-hw) clamp(22px,2.2vw,32px)/1.05 var(--cb-hfont);letter-spacing:-.025em;color:var(--cb-ink)}
 html body main.cb .cb-line{display:block;font:400 clamp(15px,1.15vw,17px)/1.4 var(--cb-body);opacity:.8;margin-top:4px;color:var(--cb-ink)}
 main.cb .cb-index{grid-column:auto;grid-row:auto}
@@ -1425,7 +1429,7 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
     <h2 class="cb-kick" id="cb-work-h">Work</h2>
     <div class="cb-workgrid">
       <a class="cb-feature" href="/preview/work/duchess-nip-co/">
-        <span class="cb-tile"><img src="/preview/work/duchess-nip-co/brand.webp" alt="The Duchess N-cat mark, an N whose tail curls at the top and whose head wears a collar, beside three flavor labels: Nip, Nip &amp; Lemon and Midnight Nip" width="1600" height="1000" loading="lazy"></span>
+        <span class="cb-tile cb-word" aria-hidden="true"><span>Duchess</span></span>
         <b>Duchess Nip Co. <i>01</i></b><span class="cb-type">Brand and identity &middot; case study</span><span class="cb-line">A whole brand from one letter: mark, labels, launch and a shop. A made-up client, a real job.</span>
       </a>
       <ul class="cb-index">
