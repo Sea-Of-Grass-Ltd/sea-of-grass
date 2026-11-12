@@ -1,6 +1,6 @@
 /* Field shapes: what each style's "grass" is made of. The same grains, the same physics and the same harmonies (meadow,
    grid, S, visualizer, the falling close); only the piece changes. Dew keeps its blades (drawn by the page's own meadowDraw).
-   Ledger: circles, a halftone of dots and rings with the red as its flowers. Ember: Colorado wildflowers as flat poster
+   Ledger: Swiss rules, black bars on 0/45/90 degrees with red squares and dots and a few grotesk figures. Ember: Colorado wildflowers as flat poster
    cutouts (columbine, paintbrush, blanket flower, flax). Clay: houseplant leaves, sprouts and seed pods. Dusk: a silver bead field.
    window.sogShapes.kind() names the current style's piece ('grass' means: use the blades). */
 (()=>{
@@ -13,15 +13,23 @@ function tone(col,k){const [r,g,b]=rgb(col);return k>0?`rgb(${r+(255-r)*k|0},${g
 function batch(c,g,cols,pick,shape,fill,stroke,lw){const N=cols.length;
   for(let q=0;q<N;q++){c.beginPath();let any=false;for(let i=0;i<g.n;i++){if(pick(i)!==q)continue;shape(c,g,i);any=true;}
     if(!any)continue;if(fill){c.fillStyle=cols[q];c.fill();}if(stroke){c.lineWidth=lw;c.strokeStyle=stroke===true?cols[q]:stroke;c.stroke();}}}
-function circles(c,g,COL,FL){ // Ledger (Refero: The New Yorker + V–A–C): an annotated index in ink. Open rings, hairline rules and dashes, a few small arrows; red rubric dots as its flowers
-  const d=g.d0,INK=COL,red=FL[0]||'#DB3334',k=i=>g.seed[i]?4:Math.floor(hsh(i+3)*10);   // 0-3 rings, 4 red, 5-6 rules, 7 dashes, 8 arrows, 9 small dots
-  batch(c,g,[INK],i=>k(i)<4?0:-1,(c,g,i)=>{const r=d*(.3+.3*hsh(i+5));c.moveTo(g.x[i]+r,g.y[i]);c.arc(g.x[i],g.y[i],r,0,6.2832);},false,true,1.15);
-  batch(c,g,[INK],i=>k(i)===5||k(i)===6?0:-1,(c,g,i)=>{const L=d*(.5+.5*hsh(i+6)),v=hsh(i+9)<.35;v?(c.moveTo(g.x[i],g.y[i]-L),c.lineTo(g.x[i],g.y[i]+L)):(c.moveTo(g.x[i]-L,g.y[i]),c.lineTo(g.x[i]+L,g.y[i]));},false,true,1.15);
-  batch(c,g,[INK],i=>k(i)===7?0:-1,(c,g,i)=>{const L=d*.32;c.moveTo(g.x[i]-L*2.2,g.y[i]);c.lineTo(g.x[i]-L*.6,g.y[i]);c.moveTo(g.x[i]+L*.6,g.y[i]);c.lineTo(g.x[i]+L*2.2,g.y[i]);},false,true,1.15);
-  c.fillStyle=INK;c.textAlign='center';c.textBaseline='middle';const ORN=['\u261E','\u2766','\u2042','\u00A7','\u00B6','\u273B'];   // printer's ornaments in place of arrows (Refero: The New Yorker, Esquire): manicule, fleuron, asterism, section, pilcrow, star
-  for(let i=0;i<g.n;i++){if(k(i)!==8)continue;const o=Math.floor(hsh(i+2)*ORN.length),sz=d*(1.15+.35*hsh(i+6));c.font=`${sz|0}px Georgia,"Times New Roman",serif`;c.save();c.translate(g.x[i],g.y[i]);c.rotate((hsh(i+4)-.5)*.5);c.fillText(ORN[o],0,0);c.restore();}
-  batch(c,g,[INK],i=>k(i)===9?0:-1,(c,g,i)=>{const r=d*.14;c.moveTo(g.x[i]+r,g.y[i]);c.arc(g.x[i],g.y[i],r,0,6.2832);},true,false);
-  batch(c,g,[red],i=>k(i)===4?0:-1,(c,g,i)=>{const r=d*.36;c.moveTo(g.x[i]+r,g.y[i]);c.arc(g.x[i],g.y[i],r,0,6.2832);},true,false);}
+function circles(c,g,COL,FL){ // Ledger, Swiss (Refero: SVZ's black with signal-red flashes, Displace's Swiss grotesk; after Müller-Brockmann's musica viva posters): one vocabulary only.
+  // Black rules in two weights and three lengths that come to rest on 0, 45 or 90 degrees and swing freely when pushed; red squares and dots as the only accent; a few small grotesk figures like ledger entries
+  const d=g.d0,INK=COL,red=FL[0]||'#DB3334',P=Math.PI;
+  const mx=x=>{x=Math.imul(x^x>>>16,0x45d9f3b);x=Math.imul(x^x>>>16,0x45d9f3b);return((x^x>>>16)>>>0)/4294967296;},h=(i,s)=>mx(i*97+s*7919);   // well mixed, so the choices don't line up
+  const k=i=>g.seed[i]&&h(i,1)<.45?9:Math.floor(h(i,2)*40);          // 0-15 hairlines, 16-21 heavy rules, 22-23 small squares, 24 figures, 25+ and 9 empty: room to breathe
+  const A=[0,0,0,P/2,P/2,P/4,-P/4];
+  const ang=i=>A[Math.floor(h(i,3)*A.length)]+g.a[i]-Math.sin(g.x[i]*.05)*.18;   // at rest the blade's own sway is taken out, so it sits exactly on its angle
+  const L=i=>d*[.6,1.05,1.7][Math.floor(h(i,4)*3)];
+  const rule=(c,g,i)=>{const a=ang(i),l=L(i),sx=Math.sin(a)*l,sy=-Math.cos(a)*l;c.moveTo(g.x[i]-sx,g.y[i]-sy);c.lineTo(g.x[i]+sx,g.y[i]+sy);};
+  c.lineCap='butt';
+  batch(c,g,[INK],i=>k(i)<16&&k(i)!==9?0:-1,rule,false,true,Math.max(1,d*.09));
+  batch(c,g,[INK],i=>k(i)>=16&&k(i)<22?0:-1,rule,false,true,Math.max(2.5,d*.26));
+  const sq=(c,g,i,r)=>{const a=ang(i),co=Math.cos(a),si=Math.sin(a);const p=[[-r,-r],[r,-r],[r,r],[-r,r]].map(([x,y])=>[g.x[i]+x*co-y*si,g.y[i]+x*si+y*co]);c.moveTo(p[0][0],p[0][1]);for(let j=1;j<4;j++)c.lineTo(p[j][0],p[j][1]);c.closePath();};
+  batch(c,g,[INK],i=>k(i)>=22&&k(i)<24?0:-1,(c,g,i)=>sq(c,g,i,d*.16),true,false);
+  batch(c,g,[red],i=>g.seed[i]&&k(i)===9?0:-1,(c,g,i)=>{if(h(i,5)<.5)sq(c,g,i,d*.3);else{const r=d*.34;c.moveTo(g.x[i]+r,g.y[i]);c.arc(g.x[i],g.y[i],r,0,6.2832);}},true,false);
+  c.fillStyle=INK;c.textAlign='center';c.textBaseline='middle';c.font=`500 ${Math.round(d*.75)}px Inter,"Helvetica Neue",Helvetica,Arial,sans-serif`;
+  for(let i=0;i<g.n;i++){if(k(i)!==24)continue;c.fillText(String(1+Math.floor(h(i,6)*99)).padStart(2,'0'),g.x[i],g.y[i]);}}
 function y2k(c,g,COL,FL){ // Ember: Colorado wildflowers as flat poster cutouts (Refero: THE1's hard-edged flat colour, no outlines or shine). Columbine, Indian paintbrush, blanket flower, flax, among green leaves
   const d=g.d0,GR=['#027B49','#1E5E3A'],CO='#FA4D43',PK='#F19EC8',WH='#FFFFFF',YE='#FBB833',DK='#1F1F1F',P=Math.PI;
   const kind=i=>g.seed[i]||hsh(i+31)<.3?1+Math.floor(hsh(i+13)*4):0;   // 0 leaf, 1 columbine, 2 paintbrush, 3 blanket flower, 4 flax
