@@ -648,6 +648,27 @@ html[data-theme="glass"] .hero .fx .chip i{box-shadow:inset 0 0 0 1px rgba(255,2
   .hero .beat1{padding-top:clamp(110px,17vh,170px)}
   .hero .beat2{padding-block:var(--s3) var(--s4)}
 }
+
+/* ---- the opening: the Logo Field lockup (from the study), Ember by default, in every style ---- */
+.lf{position:relative;height:100vh;height:100svh;min-height:540px;overflow:hidden;background:var(--lf-ground);color:#fff;touch-action:pan-y;transition:background .5s;--lf-ground:#e0501c;isolation:isolate;--lf-chip:color-mix(in srgb,var(--lf-ground) 72%,#000);--lf-deep:color-mix(in srgb,var(--lf-ground) 62%,#000)} /* chips sit on a darker tint of the ground so their small white type passes contrast */
+.lf[data-look="cobalt"]{--lf-ground:#1d3fd6}.lf[data-look="prairie"]{--lf-ground:#28563a}.lf[data-look="ember"]{--lf-ground:#e0501c}
+.lf canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y}
+.lf .lf-ui{position:absolute;z-index:2;font:500 11px/1 "IBM Plex Mono",Menlo,monospace;letter-spacing:.14em;text-transform:uppercase;color:#fff;margin:0}
+.lf .lf-looks,.lf .lf-modes{display:flex;gap:8px;right:max(16px,env(safe-area-inset-right,0px))}
+.lf .lf-looks{top:calc(var(--lf-top,72px) + 14px)}.lf .lf-modes{top:calc(var(--lf-top,72px) + 52px)}
+.lf .lf-ui button{font:inherit;letter-spacing:inherit;text-transform:inherit;color:#fff;background:var(--lf-chip);border:1px solid rgba(255,255,255,.6);border-radius:999px;padding:7px 11px;cursor:pointer;box-shadow:none;min-height:0}
+.lf .lf-ui button[aria-pressed="true"]{background:#fff;color:var(--lf-deep)}
+.lf .lf-ui button:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.lf .lf-hint{bottom:max(22px,env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--lf-chip);transition:background .5s;border:1px solid rgba(255,255,255,.6);border-radius:999px;padding:10px 16px;white-space:nowrap;pointer-events:none}
+.lf .lf-sr{position:absolute;width:1px;height:1px;margin:0;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
+@media (max-width:600px){ /* phones: the controls sit along the foot, under the grass, clear of the headline */
+  .lf .lf-looks,.lf .lf-modes{top:auto;bottom:max(16px,env(safe-area-inset-bottom,0px));gap:6px}
+  .lf .lf-looks{left:max(16px,env(safe-area-inset-left,0px));right:auto}.lf .lf-modes{right:max(16px,env(safe-area-inset-right,0px))}
+  .lf .lf-ui button{padding:7px 8px;font-size:10px;letter-spacing:.1em}
+  .lf .lf-hint{bottom:calc(max(16px,env(safe-area-inset-bottom,0px)) + 40px);font-size:10px;letter-spacing:.1em}
+}
+/* the live-sky scene below now opens straight on Find Your Style: its headline lives in the opening above */
+.hero .beat1{display:none}
 </style>
 <script>
 (function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#090909',glass:'#0b1a24',neu:'#ece7e1',brutal:'#FFFDF5',simple:'#F1EEE6',editorial:'#f3f1ea'};
@@ -708,6 +729,7 @@ window.sogColour={get:get,set:function(h,s){var v={h:Math.round((h%360+360)%360)
 document.addEventListener('sog-theme',apply);document.addEventListener('sog-scheme',apply);
 addEventListener('storage',function(e){if(e.key===K)apply();});apply();if(D.on||D.hue)run();})();
 </script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@800&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 </head>
 <body>
 <header class="bar wrap">
@@ -720,13 +742,20 @@ addEventListener('storage',function(e){if(e.key===K)apply();});apply();if(D.on||
 </header>
 
 <main id="top">
+  <section class="lf" id="opening" data-look="ember" aria-labelledby="lf-h">
+    <h1 class="lf-sr" id="lf-h">A design and technology studio for the Front Range.</h1>
+    <canvas id="lf-cv" aria-label="The headline and the Sea of Grass S over a heap of grass. Move your pointer or finger sideways through it: the words hop and spring back, and the grass is scooped up and settles again. Press to throw more grass."></canvas>
+    <div class="lf-ui lf-looks" role="group" aria-label="Ground color"><button type="button" data-look="cobalt" aria-pressed="false">Cobalt</button><button type="button" data-look="prairie" aria-pressed="false">Prairie</button><button type="button" data-look="ember" aria-pressed="true">Ember</button></div>
+    <div class="lf-ui lf-modes" role="group" aria-label="What sits over the grass"><button type="button" data-mode="mark" aria-pressed="false">Mark</button><button type="button" data-mode="lockup" aria-pressed="true">Lockup</button></div>
+    <p class="lf-ui lf-hint" aria-hidden="true">Move through the grass &middot; press to throw more</p>
+  </section>
   <div class="pin" id="pin">
   <section class="hero" id="hero" aria-label="Introduction">
     <div class="winbox" aria-hidden="true"><div class="tb"><span>Live sky</span></div></div>
     <canvas id="cv" aria-label="The Sea of Grass mark over a field of grass; a gust of grass cuts it apart. The grass bends under your pointer or finger."></canvas>
     <div class="copy wrap beat beat1"><div class="in">
       <p class="label">Creative studio &middot; Front Range</p>
-      <h1><span class="t">A</span> <b>design</b> <em>and</em> <b>technology</b> <span class="t">studio</span> <em>for the</em> <b>Front Range.</b></h1>
+      <p class="h1"><span class="t">A</span> <b>design</b> <em>and</em> <b>technology</b> <span class="t">studio</span> <em>for the</em> <b>Front Range.</b></p>
       <p class="lede">Websites, brands and creative technology for local businesses.</p>
       <div class="acts"><a class="ghost" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a meeting &rarr;</a><a class="ghost q" href="#work">See the work</a></div>
       <nav class="tiles" aria-label="Shortcuts"><button class="tile t-tog" type="button" aria-pressed="false" aria-label="Show tonight’s sky"><i></i><i class="on"></i><span class="tl">Tonight</span></button><a class="tile t-love" href="#work" aria-label="See the work"><svg aria-hidden="true" width="48" height="44" viewBox="0 0 24 22"><path d="M12 20.5S2.5 14.6 2.5 7.9A4.9 4.9 0 0 1 12 5.6a4.9 4.9 0 0 1 9.5 2.3c0 6.7-9.5 12.6-9.5 12.6z" fill="#FFD23F" stroke="#000" stroke-width="2" stroke-linejoin="round"/></svg><span class="tl">Work</span></a><a class="tile t-burst" href="#style" aria-label="Find your style"><svg aria-hidden="true" width="62" height="62" viewBox="0 0 80 80"><polygon points="40.0,6.0 45.7,18.7 57.0,10.6 55.6,24.4 69.4,23.0 61.3,34.3 74.0,40.0 61.3,45.7 69.4,57.0 55.6,55.6 57.0,69.4 45.7,61.3 40.0,74.0 34.3,61.3 23.0,69.4 24.4,55.6 10.6,57.0 18.7,45.7 6.0,40.0 18.7,34.3 10.6,23.0 24.4,24.4 23.0,10.6 34.3,18.7" fill="#88D498" stroke="#000" stroke-width="3.5" stroke-linejoin="round"/></svg><span class="tl">Style</span></a></nav>
@@ -1660,7 +1689,7 @@ window.sogFX={ // the panel's controls talk to the scene through this
 function S(t){if(t<.4)return 0;return slow(seg(t,.4,4.6));}
 const TEND=4.8, reduce=matchMedia('(prefers-reduced-motion: reduce)').matches, hero=document.getElementById('hero');
 let t0=performance.now()+500, tShow=reduce?TEND:0, tPrev=tShow, visible=true, raf=0;
-const pinEl=document.getElementById('pin');let scrollP=0,tCur=.4;const B1=document.querySelector('.hero .beat1'),B2=document.querySelector('.hero .beat2');function beat(el,v,dy){el.style.opacity=v.toFixed(3);el.style.transform=v<1?`translateY(${((1-v)*dy).toFixed(1)}px)`:'';el.classList.toggle('off',v<.01);el.classList.toggle('dim',v<.5);}function beats(p){if(reduce||!B1||!B2)return;const a=cl((p-.22)/.2,0,1),b=cl((p-.4)/.15,0,1);beat(B1,1-a,-48);beat(B2,b,48);B2V=b;if(b>0&&window.sogFonts)sogFonts.letters();if(b>.3&&FX)fxLive();}const breakAt=p=>.4+cl(p/.45,0,1)*(TEND-.6);function readScroll(){const r=pinEl.getBoundingClientRect(),run=Math.max(1,r.height-innerHeight);scrollP=cl(-r.top/run,0,1);hero.classList.toggle('scrolled',scrollP>.02);beats(scrollP);}addEventListener('scroll',readScroll,{passive:true});addEventListener('resize',readScroll);readScroll();document.addEventListener('click',e=>{const a=e.target.closest('a[href="#style"]');if(!a||reduce)return;e.preventDefault();const run=pinEl.offsetHeight-innerHeight;scrollTo({top:pinEl.offsetTop+run*.62,behavior:'smooth'});});function clock(now){const tg=reduce?0:breakAt(scrollP);tCur+=(tg-tCur)*.2;return tCur;}
+const pinEl=document.getElementById('pin');let scrollP=0,tCur=.4;const B1=document.querySelector('.hero .beat1'),B2=document.querySelector('.hero .beat2');function beat(el,v,dy){el.style.opacity=v.toFixed(3);el.style.transform=v<1?`translateY(${((1-v)*dy).toFixed(1)}px)`:'';el.classList.toggle('off',v<.01);el.classList.toggle('dim',v<.5);}function beats(p){if(reduce||!B1||!B2)return;const a=1,b=1;beat(B1,1-a,-48);beat(B2,b,48);B2V=b;if(b>0&&window.sogFonts)sogFonts.letters();if(b>.3&&FX)fxLive();}const breakAt=p=>.4+cl(p/.45,0,1)*(TEND-.6);function readScroll(){const r=pinEl.getBoundingClientRect(),run=Math.max(1,r.height-innerHeight);scrollP=cl(-r.top/run,0,1);hero.classList.toggle('scrolled',scrollP>.02);beats(scrollP);}addEventListener('scroll',readScroll,{passive:true});addEventListener('resize',readScroll);readScroll();document.addEventListener('click',e=>{const a=e.target.closest('a[href="#style"]');if(!a||reduce)return;e.preventDefault();const run=pinEl.offsetHeight-innerHeight;scrollTo({top:pinEl.offsetTop+run*.62,behavior:'smooth'});});function clock(now){const tg=reduce?0:breakAt(scrollP);tCur+=(tg-tCur)*.2;return tCur;}
 let ptr=null; const pprev={x:0,y:0,has:false};
 function local(x,y){const r=cv.getBoundingClientRect();return[x-r.left,y-r.top];}
 function setPtr(x,y){[x,y]=local(x,y);const vx=pprev.has?x-pprev.x:0,vy=pprev.has?y-pprev.y:0;ptr={x,y,vx,vy,k:1};pprev.x=x;pprev.y=y;pprev.has=true;}
@@ -1803,6 +1832,118 @@ if(fx&&window.sogFX){const chips=[...fx.querySelectorAll('.chip')],knob=fx.query
   ['sog-fx','sog-colour','sog-drift'].forEach(ev=>document.addEventListener(ev,show));show();}
 // the Neubrutalism shortcut tile: show tonight's real sky (the weather readout stays live)
 const tog=document.querySelector('.t-tog');if(tog)tog.addEventListener('click',()=>{const on=tog.getAttribute('aria-pressed')!=='true';tog.setAttribute('aria-pressed',String(on));if(window.sogWeather)window.sogWeather.tonight(on);});
+})();
+</script>
+<script>
+(()=>{
+// The opening (from the Logo Field study): the mark as loose physical pieces (a knock makes them hop and flip, springs bring them home) over a meadow of
+// grass blades and seed heads that behave like sand: the pointer scoops them into plumes, they pour back and heap up again. After Lusion's contact page.
+const SEC=document.getElementById('opening'),cv=document.getElementById('lf-cv'),c=cv.getContext('2d'),still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let TOP=0,visible=true,ready=0; // TOP: the site bar's height over the opening; ready counts the frames spent letting the heap settle
+const P1=new Path2D("M 60.1360,299.5890 C 40.8560,283.5000 37.9720,248.8600 54.1230,229.1250 C 61.9590,219.4780 73.2066,213.0913 85.9080,212.4050 L 279.9170,212.3880 C 292.7328,211.6894 302.2259,200.5242 302.6140,188.1740 C 303.0171,175.3461 294.1087,163.3937 280.9850,162.4350 L 160.3860,162.3770 C 155.6830,162.3750 152.4580,158.1300 152.2660,154.1930 C 152.0640,150.0420 155.5000,145.5160 160.3230,145.5160 L 323.2740,145.5180 C 363.5090,146.7569 394.2264,180.5210 394.5670,220.2810 C 394.9023,259.4236 360.4620,297.7100 320.2520,299.1580 C 320.2520,299.1580 69.9310,307.7640 60.1360,299.5890 Z"),P2=new Path2D("M 365.1390,47.9780 C 360.1170,47.5130 354.1470,47.1080 347.4230,46.7550 C 274.7440,42.9430 114.0820,45.2510 114.0820,45.2510 C 73.9994,46.9759 43.7290,80.8860 43.6260,120.3040 C 43.5230,159.4680 73.5199,193.9418 113.3820,195.4730 L 277.3270,195.8440 C 282.2870,195.8440 285.7460,192.0070 285.9600,187.6500 C 286.1670,183.4310 282.8680,178.9500 277.9760,178.9480 L 158.2750,178.9140 C 145.3037,178.2644 135.8119,166.8014 135.6040,154.2420 C 135.3960,141.6768 144.3477,129.9059 157.2620,128.9900 L 350.1640,128.8050 C 352.3160,128.8030 354.4280,128.6110 356.4990,128.2740 C 366.7370,126.6070 375.8830,121.0490 382.8160,113.4590 C 390.0330,105.5580 394.4238,95.7293 394.5320,85.6870 C 394.7250,67.7708 381.6430,52.8390 365.1390,47.9780 Z"),DOT=new Path2D();DOT.arc(357.983,86.686,36.548,0,Math.PI*2);
+let RULE=[0,0,0],MODE='mark',W=0,H=0,DPR=1,pieces=[],grass=null,ptr={x:-1e4,y:-1e4,vx:0,vy:0,on:false,down:false,held:0,touch:false,burst:0,acc:0},last=0;
+// ---- the logo's pieces: the S's two halves, its dot, each letter of the wordmark, and the rule under it in segments
+function build(){pieces=[];const phone=W<600;
+  const add=(kind,x,y,r,extra)=>pieces.push(Object.assign({kind,hx:x,hy:y,x,y,a:0,vx:0,vy:0,va:0,r,line:0},extra));
+  const S=(mx,sy,markH)=>{const sc=markH/259,sCx=219,sCy=174;add('p2',mx,sy-markH*.14,markH*.36,{sc});add('p1',mx,sy+markH*.14,markH*.36,{sc});add('dot',mx+(357.983-sCx)*sc,sy+(86.686-sCy)*sc,36.548*sc,{sc});};
+  if(MODE==='lockup')lockup(phone,add,S);else{
+  const sc=Math.min(W*(phone?.5:.24),H*.3)/350,mx=W/2,top=Math.max(TOP+16,H*(phone?.14:.12));
+  const markH=259*sc,word='Sea of Grass',fs=Math.min(W*(phone?.13:.085),H*.11);
+  c.font=`800 ${fs}px Archivo, "Helvetica Neue", Arial, sans-serif`;const ww=c.measureText(word).width;
+  const sy=top+markH/2,wy=top+markH+fs*1.05,ry=wy+fs*.32;S(mx,sy,markH);
+  let x=mx-ww/2;for(const ch of word){const w=c.measureText(ch).width;if(ch!==' ')add('ch',x+w/2,wy,Math.max(w,fs*.4)*.6,{ch,fs,font:`800 ${fs}px Archivo, "Helvetica Neue", Arial, sans-serif`});x+=w;}
+  const segs=phone?6:10,sw=ww/segs;for(let i=0;i<segs;i++)add('rule',mx-ww/2+sw*(i+.5),ry,sw*.5,{w:sw-3,h:Math.max(2,fs*.05)});}
+  // ---- the meadow: grass blades and seed heads as grains of a soft fluid, heaped along the bottom quarter
+  const deep=MODE==='lockup',d0=deep?(phone?8:10):(phone?10:12),band=H*(deep?(phone?.34:.38):(phone?.27:.25)),cols=Math.floor(W/d0),rows=Math.floor(band/d0),n=cols*rows,r=rnd(7);
+  grass={n,d0,x:new Float32Array(n),y:new Float32Array(n),vx:new Float32Array(n),vy:new Float32Array(n),a:new Float32Array(n),px:new Float32Array(n),py:new Float32Array(n),len:new Float32Array(n),seed:new Uint8Array(n),
+    head:new Int32Array(Math.ceil(W/d0+2)*Math.ceil(H/d0+2)),next:new Int32Array(n),gw:Math.ceil(W/d0+2)};
+  for(let i=0;i<n;i++){const cx=i%cols,cy=Math.floor(i/cols);grass.x[i]=(cx+r())*d0;grass.y[i]=H-4-(cy+r())*d0*1.05;
+    grass.len[i]=d0*(1.1+r()*.7);grass.seed[i]=r()<.12?1:0;grass.a[i]=(r()-.5)*.3;}
+  ready=0;}
+function lockup(phone,add,S){ // 'A design and / technology studio / for the Front Range.' as on the front page: light, bold and italic voices
+  const lines=[[['A','t'],['design','b'],['and','em']],[['technology','b'],['studio','t']],[['for','em'],['the','em'],['Front','b'],['Range.','b']]];
+  const font=(v,fs)=>(v==='t'?'300 ':v==='b'?'600 ':'italic 400 ')+fs+'px "Cormorant Garamond", Georgia, serif';
+  const maxW=phone?W-40:W*.5;let fs=phone?Math.min(W*.13,H*.075):Math.min(W*.068,H*.13);
+  const lw=f=>Math.max(...lines.map(l=>{let w=0;for(const[t,v]of l){c.font=font(v,f);w+=c.measureText(t+' ').width;}return w;}));
+  fs=Math.min(fs,fs*maxW/lw(fs));const lh=fs*1.08,x0=phone?20:W*.08,y0=phone?Math.max(TOP+20,H*.13):Math.max(TOP+24,H*.43-lh*1.6),gap=fs*.24;
+  lines.forEach((l,li)=>{let x=x0;const by=y0+fs*.85+li*lh,w0=x;
+    for(const[t,v]of l){c.font=font(v,fs);const w=c.measureText(t).width;add('w',x+w/2,by-fs*.28,Math.max(w,fs*.5)*.55,{ch:t,fs,font:font(v,fs),line:li});x+=w+gap;}
+    const ww=x-gap-w0,segs=Math.max(3,Math.round(ww/(fs*.9))),sw=ww/segs;for(let i=0;i<segs;i++)add('rule',w0+sw*(i+.5),by+fs*.16,sw*.5,{w:sw-3,h:Math.max(2,fs*.045),line:li});});
+  const blockH=lh*3;if(phone){const mh=Math.min(H*.17,W*.42);S(W*.5,y0+blockH+mh*.75,mh);}else{const mh=Math.min(blockH*1.15,W*.26);S(W*.76,y0+blockH*.5,mh);}}
+function rnd(s){return()=>{s=(s*16807)%2147483647;return(s-1)/2147483646;};}
+function size(){const r=SEC.getBoundingClientRect(),bar=document.querySelector('header.bar');DPR=Math.min(W<600?1.5:2,devicePixelRatio||1);W=Math.round(r.width);H=Math.round(r.height);
+  TOP=bar&&getComputedStyle(bar).position==='fixed'?Math.max(0,bar.getBoundingClientRect().height):0;SEC.style.setProperty('--lf-top',TOP+'px');cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);build();}
+// ---- physics: the pointer is a moving body; pieces are knocked by its speed and pulled home by a spring
+function step(dt,T){const R=Math.max(90,Math.min(W,H)*.16),sp=Math.hypot(ptr.vx,ptr.vy);
+  for(const p of pieces){const dx=p.x-ptr.x,dy=p.y-ptr.y,d=Math.hypot(dx,dy)||1,reach=R+p.r;
+    const hit=Math.min(1.6,Math.max(0,sp-40)*.02);if(ptr.on&&hit>0&&d<reach){const f=(1-d/reach)*hit;p.vx+=dx/d*f*30*dt+ptr.vx*f*.006;p.vy+=dy/d*f*30*dt-f*40*dt+ptr.vy*f*.006;p.va+=(dx*ptr.vy-dy*ptr.vx)/(d*d+900)*f*(p.kind==='ch'?.35:p.kind==='w'?.22:.08);}
+    p.vx+=(p.hx-p.x)*20*dt;p.vy+=(p.hy-p.y)*20*dt;const up=Math.round(p.a/6.2832)*6.2832;p.va+=-(p.a-up)*20*dt;p.va=Math.max(-1.5,Math.min(1.5,p.va));const k=Math.pow(6e-6,dt);p.vx*=k;p.vy*=k;p.va*=k;p.x+=p.vx*dt*10;p.y+=p.vy*dt*10;p.a+=p.va*dt*10;
+    if(Math.abs(p.x-p.hx)+Math.abs(p.y-p.hy)<.25&&Math.abs(p.a-up)<.002&&Math.abs(p.vx)+Math.abs(p.vy)+Math.abs(p.va)*50<.5){p.x=p.hx;p.y=p.hy;p.a=p.va=p.vx=p.vy=0;}}
+  for(let li=0;li<3;li++){const q=pieces.find(q=>q.kind==='rule'&&q.line===li);RULE[li]+=(((q&&ptr.on&&Math.abs(ptr.y-q.hy)<(MODE==='lockup'?H*.09:H*.18))?1:0)-RULE[li])*Math.min(1,dt*6);}
+  const g=grass;if(ptr.down)ptr.held+=dt;
+  if(ptr.down&&(!ptr.touch||(ptr.held>.3&&sp<150)))ptr.acc+=dt*(W<600?160:280);
+  const shots=ptr.burst+Math.floor(ptr.acc);ptr.acc-=Math.floor(ptr.acc);ptr.burst=0;for(let k=0;k<shots;k++)shoot(g,sp);
+  const sub=Math.min(4,Math.max(1,Math.round(dt*120)));for(let k=0;k<sub;k++)fluid(g,1/120,R);}
+function shoot(g,sp){let b=0,by=-1;for(let k=0;k<24;k++){const i=Math.random()*g.n|0;if(g.y[i]>by){by=g.y[i];b=i;}} // a grain from deep in the heap
+  const dir=sp>200?Math.atan2(ptr.vy,ptr.vx):-Math.PI/2,a=dir+(Math.random()-.5)*.9,v=650+Math.random()*700+Math.min(sp,1500)*.4;
+  g.x[b]=ptr.x+(Math.random()-.5)*10;g.y[b]=ptr.y+(Math.random()-.5)*10;g.vx[b]=Math.cos(a)*v;g.vy[b]=Math.sin(a)*v;g.a[b]=Math.atan2(g.vx[b],-g.vy[b]);}
+function fluid(g,dt,R){ // position-based grains: forces move them, then they are pushed a blade apart so the heap keeps its height
+  const n=g.n,d0=g.d0,G=1500,PR=R*.85,sp=Math.hypot(ptr.vx,ptr.vy),px0=g.px,py0=g.py;
+  for(let i=0;i<n;i++){g.vy[i]+=G*dt;
+    if(ptr.on){const dx=g.x[i]-ptr.x,dy=g.y[i]-ptr.y,d2=dx*dx+dy*dy;if(d2<PR*PR){const d=Math.sqrt(d2)||1,f=1-d/PR;
+      // scoop: grains take on the pointer's motion and are lifted with it; a slow pointer only shoulders them aside (a bow wave)
+      g.vx[i]+=(ptr.vx-g.vx[i])*f*.35+dx/d*f*90;g.vy[i]+=(ptr.vy-g.vy[i])*f*.35+dy/d*f*90-f*Math.min(sp,2500)*.35;}}
+    px0[i]=g.x[i];py0[i]=g.y[i];g.x[i]+=g.vx[i]*dt;g.y[i]+=g.vy[i]*dt;}
+  const gw=g.gw,head=g.head,next=g.next;
+  for(let it=0;it<3;it++){head.fill(-1);
+    for(let i=0;i<n;i++){const cx=Math.max(0,Math.min(gw-1,(g.x[i]/d0|0)+1)),cy=Math.max(0,(g.y[i]/d0|0)+1),h=cy*gw+cx;if(h<head.length){next[i]=head[h];head[h]=i;}else next[i]=-1;}
+    for(let i=0;i<n;i++){const cx=Math.max(0,Math.min(gw-1,(g.x[i]/d0|0)+1)),cy=Math.max(0,(g.y[i]/d0|0)+1);
+      for(let oy=-1;oy<=1;oy++)for(let ox=-1;ox<=1;ox++){const h=(cy+oy)*gw+cx+ox;if(h<0||h>=head.length)continue;
+        for(let j=head[h];j>=0;j=next[j]){if(j<=i)continue;const dx=g.x[j]-g.x[i],dy=g.y[j]-g.y[i],d2=dx*dx+dy*dy;if(d2>=d0*d0)continue;
+          const d=Math.sqrt(d2)||.01,push=(d0-d)*.5/d,ex=d2?dx*push:.3,ey=d2?dy*push:0;g.x[i]-=ex;g.y[i]-=ey;g.x[j]+=ex;g.y[j]+=ey;}}}
+    for(let i=0;i<n;i++){if(g.y[i]>H-3)g.y[i]=H-3;if(g.y[i]<2)g.y[i]=2;if(g.x[i]<2)g.x[i]=2;if(g.x[i]>W-2)g.x[i]=W-2;}}
+  for(let i=0;i<n;i++){const v0=Math.hypot(g.vx[i],g.vy[i]);g.vx[i]=(g.x[i]-px0[i])/dt*.995;g.vy[i]=(g.y[i]-py0[i])/dt*.995;if(g.y[i]>=H-3)g.vx[i]*=.85; // the ground holds grains back
+    const v1=Math.hypot(g.vx[i],g.vy[i]),near=ptr.on&&Math.abs(g.x[i]-ptr.x)<PR*2.5&&Math.abs(g.y[i]-ptr.y)<PR*2.5,cap=near?1e9:v0+120;
+    if(v1>cap){g.vx[i]*=cap/v1;g.vy[i]*=cap/v1;}else if(v1<90&&g.y[i]>H*.45){const k=v1<30?.7:.92;g.vx[i]*=k;g.vy[i]*=k;}}
+  for(let i=0;i<n;i++){ // a blade lies along its flight and stands back up once it lands
+    const v=Math.hypot(g.vx[i],g.vy[i]),want=v>60?Math.atan2(g.vx[i],-g.vy[i]):Math.sin(g.x[i]*.05)*.18,da=((want-g.a[i]+Math.PI*3)%(Math.PI*2))-Math.PI;g.a[i]+=da*Math.min(1,dt*(v>60?14:5));}}
+// ---- drawing: one flat ground, white everything
+function draw(){c.setTransform(DPR,0,0,DPR,0,0);c.clearRect(0,0,W,H);c.fillStyle='#fff';c.strokeStyle='#fff';
+  for(const p of pieces){c.save();c.translate(p.x,p.y);c.rotate(p.a);
+    if(p.kind==='p2'){c.setTransform(DPR,0,0,DPR,0,0);c.translate(p.x,p.y);c.rotate(p.a);c.scale(p.sc,p.sc);c.translate(-219,-174+36.26);c.fill(P2);}
+    else if(p.kind==='p1'){c.setTransform(DPR,0,0,DPR,0,0);c.translate(p.x,p.y);c.rotate(p.a);c.scale(p.sc,p.sc);c.translate(-219,-174-36.26);c.fill(P1);}
+    else if(p.kind==='dot'){c.setTransform(DPR,0,0,DPR,0,0);c.translate(p.x,p.y);c.rotate(p.a);c.scale(p.sc,p.sc);c.translate(-357.983,-86.686);c.fill(DOT);}
+    else if(p.kind==='ch'||p.kind==='w'){c.font=p.font;c.textAlign='center';c.textBaseline='alphabetic';c.fillText(p.ch,0,p.fs*(p.kind==='w'?.28:.36));}
+    else if(p.kind==='rule'){const v=RULE[p.line];if(v>.02){c.globalAlpha=v;c.fillRect(-p.w/2,-p.h/2,p.w*v,p.h);}}
+    c.restore();}
+  const g=grass;if(ready<15)return;c.beginPath();
+  for(let i=0;i<g.n;i++){if(g.seed[i])continue;const L=g.len[i],a=g.a[i],s=Math.sin(a),co=Math.cos(a),x=g.x[i]-s*L*.5,y=g.y[i]+co*L*.5,w=L*.13+.4;
+    c.moveTo(x-co*w,y-s*w);c.lineTo(x+s*L,y-co*L);c.lineTo(x+co*w,y+s*w);} // a tapered blade
+  c.fill();c.lineWidth=.9;c.beginPath();
+  for(let i=0;i<g.n;i++){if(!g.seed[i])continue;const L=g.len[i]*1.1,a=g.a[i],x=g.x[i]-Math.sin(a)*L*.5,y=g.y[i]+Math.cos(a)*L*.5,tx=x+Math.sin(a)*L,ty=y-Math.cos(a)*L;
+    c.moveTo(x,y);c.lineTo(tx,ty);c.moveTo(tx+2.2,ty);c.ellipse(tx,ty,1.4,2.6,a,0,Math.PI*2);} // a stalk with a seed head
+  c.stroke();c.fill();}
+function frame(now){const dt=last?Math.min(.033,(now-last)/1000):.016;last=now;ptr.vx*=.85;ptr.vy*=.85;
+  if(ready<15){for(let k=0;k<6;k++)fluid(grass,1/120,0);ready++;if(ready===15)SEC.classList.add('grown');}else step(dt,now/1000); // six settling steps a frame, then live
+  draw();if(!still&&visible)requestAnimationFrame(frame);else last=0;}
+// ---- input: mouse, pen and touch all move the same body; nothing happens under reduced motion
+function move(e){const q=SEC.getBoundingClientRect(),x=e.clientX-q.left,y=e.clientY-q.top;if(ptr.on){ptr.vx=ptr.vx*.5+(x-ptr.x)*.5*60;ptr.vy=ptr.vy*.5+(y-ptr.y)*.5*60;}ptr.x=x;ptr.y=y;ptr.on=true;}
+const ui=e=>e.target.closest&&e.target.closest('button,a');
+if(!still){SEC.addEventListener('pointermove',move);SEC.addEventListener('pointerdown',e=>{if(ui(e))return;ptr.on=false;move(e);ptr.down=true;ptr.held=0;ptr.touch=e.pointerType!=='mouse';ptr.burst+=W<600?28:40;});addEventListener('pointerup',()=>{ptr.down=false;});addEventListener('pointercancel',()=>{ptr.down=false;});SEC.addEventListener('pointerleave',()=>{ptr.on=false;ptr.x=ptr.y=-1e4;});addEventListener('pointercancel',()=>{ptr.on=false;ptr.x=ptr.y=-1e4;});SEC.addEventListener('pointerup',e=>{if(e.pointerType!=='mouse'){ptr.on=false;ptr.x=ptr.y=-1e4;}});}
+// ---- the ground color (remembered)
+const looks=[...SEC.querySelectorAll('.lf-looks button')];function look(k,keep){SEC.dataset.look=k;looks.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.look===k)));if(keep!==false)try{localStorage.setItem('sog-opening-look',k);}catch(e){}}
+looks.forEach(b=>b.addEventListener('click',()=>look(b.dataset.look)));{let k='ember';try{k=localStorage.getItem('sog-opening-look')||k;}catch(e){}look(k,false);}
+let rw=innerWidth;addEventListener('resize',()=>{if(Math.abs(innerWidth-rw)<2&&W>0&&Math.abs(SEC.getBoundingClientRect().height-H)<120)return;rw=innerWidth;size();if(still){for(let k=0;k<90;k++)fluid(grass,1/120,0);ready=15;draw();}});document.fonts&&Promise.all(['300 40px "Cormorant Garamond"','600 40px "Cormorant Garamond"','italic 400 40px "Cormorant Garamond"','800 40px Archivo'].map(f=>document.fonts.load(f))).then(()=>{size();if(still)draw();});
+// the Mark / Lockup toggle: remembered, and #lockup or #mark opens straight onto one
+const modes=[...SEC.querySelectorAll('.lf-modes button')];function mode(k,keep){MODE=k;modes.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===k)));if(keep!==false)try{localStorage.setItem('sog-opening-mode',k);}catch(e){}}
+modes.forEach(b=>b.addEventListener('click',()=>{mode(b.dataset.mode);build();if(still)draw();}));
+{let k='lockup';try{k=localStorage.getItem('sog-opening-mode')||k;}catch(e){}mode(k,false);}
+size();if(still){for(let k=0;k<90;k++)fluid(grass,1/120,0);ready=15;draw();}else requestAnimationFrame(frame);
+new IntersectionObserver(es=>{const v=es[0].isIntersecting;if(v&&!visible&&!still){visible=true;requestAnimationFrame(frame);}visible=v;}).observe(SEC);
+window.sogOpening={poke:(x,y,vx,vy)=>{ptr.x=x;ptr.y=y;ptr.vx=vx;ptr.vy=vy;ptr.on=true;},
+  // for the settle check: how far the furthest piece is from home, in px and degrees
+  drift:()=>pieces.reduce((m,p)=>({px:Math.max(m.px,Math.hypot(p.x-p.hx,p.y-p.hy)),deg:Math.max(m.deg,Math.abs(p.a-Math.round(p.a/6.2832)*6.2832)*180/Math.PI)}),{px:0,deg:0}),
+  words:()=>{const q=SEC.getBoundingClientRect();return pieces.filter(p=>p.kind==='w'||p.kind==='ch'||p.kind==='p1').map(p=>[p.hx+q.left,p.hy+q.top]);},ready:()=>ready>=15};
 })();
 </script>
 </body>
