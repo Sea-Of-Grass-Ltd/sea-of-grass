@@ -361,7 +361,9 @@ html:is([data-theme="glass"],[data-theme="neu"],[data-theme="simple"],[data-them
 html:is([data-theme="glass"],[data-theme="neu"],[data-theme="simple"],[data-theme="dusk"]):not([data-scheme]) main>.hero{padding-bottom:clamp(180px,30vh,270px)}
 html:is([data-theme="glass"],[data-theme="neu"],[data-theme="simple"],[data-theme="dusk"]):not([data-scheme]) main>:is(.hero,section)::before{content:"";position:absolute;z-index:-2;top:0;bottom:0;left:calc(50% - 50vw);right:calc(50% - 50vw);background:var(--sc,var(--bg));pointer-events:none}
 html:is([data-theme="glass"],[data-theme="neu"],[data-theme="simple"],[data-theme="dusk"]):not([data-scheme]) main>.hero::before{top:-200px}
-html:is([data-theme="glass"],[data-theme="neu"],[data-theme="simple"],[data-theme="dusk"]):not([data-scheme]) main>.hero::after{content:"";position:absolute;z-index:-1;left:calc(50% - 50vw);right:calc(50% - 50vw);bottom:0;height:min(26vh,230px);background:var(--grass);-webkit-mask:url(/preview/assets/home/grass-mask.webp) center bottom/cover no-repeat;mask:url(/preview/assets/home/grass-mask.webp) center bottom/cover no-repeat;pointer-events:none}
+main>.hero>.live-grass{display:none}
+html:is([data-theme="glass"],[data-theme="neu"],[data-theme="simple"],[data-theme="dusk"]):not([data-scheme]) main>.hero>.live-grass{display:block;position:absolute;z-index:-1;left:calc(50% - 50vw);right:calc(50% - 50vw);bottom:0;height:min(26vh,230px);color:var(--grass);pointer-events:none} /* live grass, not a picture */
+.live-grass canvas{display:block;width:100%;height:100%}
 html:is([data-theme="glass"],[data-theme="neu"],[data-theme="simple"],[data-theme="dusk"]):not([data-scheme]) main>:is(.hero,section) :is(.box,.ex,.tier,.faq,.steps2 li,.gets>div,.pains li){--card:color-mix(in srgb,var(--fg) 6%,transparent)}
 html[data-theme="glass"]:not([data-scheme]) main>.hero{--sc:#E6EAFB;--grass:#7F89F0;}
 html[data-theme="glass"]:not([data-scheme]) main>section:nth-of-type(1){--sc:#F4D9E6;}
@@ -435,7 +437,7 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
 
   <!-- 1 The brand in use -->
   <div class="cs-grid" aria-label="Duchess Nip Co. in use">
-    <figure class="g-brand"><img src="brand.jpg" alt="The Duchess mark, an N that is also a cat, beside the wordmark DUCHESS and three cans: Nip, Lemon and Midnight." width="1200" height="720"></figure>
+    <figure class="g-brand"><img src="brand.webp" alt="The Duchess N-cat mark, an N whose tail curls at the top and whose head wears a collar, beside three flavor labels: Nip, Nip &amp; Lemon and Midnight Nip." width="1600" height="1000"></figure>
     <figure class="g-p1"><img src="post-1.jpg" alt="Launch post: Berthoud’s first catnip soda. Your cat already knows." width="720" height="900" loading="lazy"></figure>
     <figure class="g-p3"><img src="post-3.jpg" alt="Sticker post: a paw print and HANDS OFF, unless you have thumbs." width="720" height="900" loading="lazy"></figure>
     <figure class="g-sym"><img src="symbols.jpg" alt="The twelve symbols, each built from five parts taken from the mark and the paw." width="1500" height="900" loading="lazy"></figure>
@@ -444,13 +446,14 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
 
   <!-- 2 Hero claim and boxed stat -->
   <div class="hero cs-hero">
+    <div class="live-grass" data-live-grass aria-hidden="true"></div>
     <div>
       <p class="kick">Case study · Brand and identity · fictional</p>
       <h1><span class="t">A whole</span> <b>brand</b> <em>from one</em> <b>letter.</b></h1>
-      <p class="lead">Duchess runs a tiny soda works in Berthoud. We gave her a name, a mark, a can, a launch and a shop, all grown from an N that is also a cat.</p>
+      <p class="lead">Duchess runs a tiny soda works in Berthoud. We gave her a name, a mark, three labels, a launch and a shop, all grown from an N that is also a cat.</p>
     </div>
     <dl class="cs-stat" aria-label="What was made">
-      <div><dt>1</dt><dd>mark</dd></div><div><dt>12</dt><dd>symbols</dd></div><div><dt>3</dt><dd>cans</dd></div><div><dt>3</dt><dd>launch posts</dd></div><div><dt>1</dt><dd>shop</dd></div>
+      <div><dt>1</dt><dd>mark</dd></div><div><dt>12</dt><dd>symbols</dd></div><div><dt>3</dt><dd>labels</dd></div><div><dt>3</dt><dd>launch posts</dd></div><div><dt>1</dt><dd>shop</dd></div>
     </dl>
   </div>
 
@@ -459,20 +462,20 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
     <div class="tiers cs-two">
       <div class="tier"><h3>The Job</h3><p>Duchess brews a catnip soda. Catnip is a mint that grows wild along the ditches out on the plains; as a drink it tastes like lemony mint. She needed everything: a name, a mark, a can for three flavors, a launch around town and a place to order.</p>
         <ul><li>A name with some swagger</li><li>A mark that works from a can to a favicon</li><li>Packaging, posts and a shop</li></ul></div>
-      <div class="tier"><h3>The Outcome</h3><p>Duchess Nip Co., with the line “Brewed for people. Approved by cats.” One mark, drawn on a block grid, sets the rules for everything else: the symbols, the can label and the shop.</p>
-        <ul><li>An N that is also a cat, legible at 16 px</li><li>Twelve symbols from one kit of five parts</li><li>One ornament, used once per can</li></ul></div>
+      <div class="tier"><h3>The Outcome</h3><p>Duchess Nip Co., with the line “Brewed for people. Approved by cats.” One mark sets the rules for everything else: the symbols, the labels and the shop.</p>
+        <ul><li>An N that is also a cat, from tail to toe beans</li><li>Twelve symbols from one kit of five parts</li><li>One hand-drawn tin label per flavor</li></ul></div>
     </div>
   </section>
 
   <!-- 4 The brand system -->
-  <section aria-labelledby="h-get"><div class="sec-h"><div><p class="kick2">The brand system</p><h2 id="h-get"><span class="t">The</span> <b>brand system</b></h2></div><p>Four parts, one rule: every piece is measured in blocks the width of the mark’s stem.</p></div>
+  <section aria-labelledby="h-get"><div class="sec-h"><div><p class="kick2">The brand system</p><h2 id="h-get"><span class="t">The</span> <b>brand system</b></h2></div><p>Four parts, all grown from the N-cat.</p></div>
     <div class="cs-sys">
-      <div class="tier cs-card"><p class="kick2">Primary logo mark</p><div class="cs-art"><img src="mark.svg" alt="The Duchess mark: an N whose left stem is a cat’s hind leg and tail, whose diagonal is its back, and whose right stem ends in a wedge head with a crescent eye." width="425" height="389"></div>
-        <p>The N is a cat sitting tall: the tail’s curl at the top is answered by the hind heel at the bottom, both feet sit on the baseline, and the narrow wedge head comes from Tristan’s own sketches. At 16 px the tail and the heel still read.</p></div>
+      <div class="tier cs-card"><p class="kick2">Primary logo mark</p><div class="cs-art"><img src="mark-ncat-cream.webp" alt="The Duchess N-cat: the left stem curls into a tail, the right stem is the neck with a wedge head, a moon eye, whiskers, a ginger collar with a D tag, and toe-bean feet." width="900" height="900"></div>
+        <p>The N is a cat sitting tall: the left stem curls into a tail, the right stem is the neck, topped by a wedge head with a moon for an eye and whiskers. A ginger collar carries a D tag, and both feet end in toe beans on the baseline.</p></div>
       <div class="tier cs-card"><p class="kick2">Icon system</p><div class="cs-art wide"><img src="symbols.jpg" alt="Twelve symbols on a 6 by 6 block grid: paw, catnip leaf, sprig, fizz, Nip honey bee, lemon, blackberry, moon, where to buy, order can, approved by cats, next." width="1500" height="900" loading="lazy"></div>
         <p>Twelve symbols on one block grid taken from the mark: the catnip leaf and sprig, the paw with its heart pad and claws, the bee for Nip, the cat-can for ordering. Each sits on a 6 × 6 block canvas and is tested at 24 and 16 px, and reversed.</p></div>
       <div class="tier cs-card"><p class="kick2">Core palette</p><ul class="cs-sw"><li><i style="background:#2A1B22"></i><b>Ink</b><span>#2A1B22</span><small>type, the mark</small></li><li><i style="background:#F4EAD9"></i><b>Cream</b><span>#F4EAD9</span><small>the can, the ground</small></li><li><i style="background:#D98A4A"></i><b>Ginger</b><span>#D98A4A</span><small>Duchess’s coat; Nip</small></li><li><i style="background:#EAB47F"></i><b>Peach</b><span>#EAB47F</span><small>the label oval</small></li><li><i style="background:#4A2340"></i><b>Plum</b><span>#4A2340</span><small>Midnight</small></li><li><i style="background:#7F9A7C"></i><b>Leaf</b><span>#7F9A7C</span><small>the catnip border</small></li><li><i style="background:#E7C64A"></i><b>Lemon</b><span>#E7C64A</span><small>Nip & Lemon</small></li></ul>
-        <p>Cream cans with Duchess’s ginger, one deep plum for the night flavor, and the green of real catnip. No mountains, no topo lines.</p></div>
+        <p>Duchess’s ginger for Nip, lemon yellow for Nip &amp; Lemon, one deep plum for the night flavor, cream banners and the green of real catnip. No mountains, no topo lines.</p></div>
       <div class="tier cs-card"><p class="kick2">Display typeface</p><div class="cs-type"><p class="cs-f1">Duchess Nip Co.</p><p class="cs-f2">Brewed for people. Approved by cats.</p><p class="cs-f3">IBM Plex Mono · labels · Berthoud, CO</p></div>
         <p>Fraunces in its heaviest cut for the name and the headlines, its italic for the voice, and IBM Plex Mono, widely spaced, for labels. Both are free fonts.</p></div>
     </div>
@@ -480,7 +483,7 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
 
   <!-- 5 Applications -->
   <section aria-labelledby="h-ex"><div class="sec-h"><div><p class="kick2">Applications</p><h2 id="h-ex"><span class="t">Where it</span> <b>shows up</b></h2></div><p>Cans, a launch around town, and a shop with a cat-proof order button.</p></div>
-    <figure class="cs-cans"><img src="cans.jpg" alt="Three slim cans, front and back: Nip (catnip and honey), Nip &amp; Lemon and Midnight Nip (catnip and blackberry). Each front has the mark in the catnip-leaf border and the flavor symbol; each back has the cat badge, the slogan and the ingredients." width="1600" height="760" loading="lazy"><figcaption class="cap">Three flavors, front and back. The only ornate band on each can is the catnip-leaf border; the back is one even column of plain facts.</figcaption></figure>
+    <figure class="cs-cans"><img src="labels.webp" alt="Three hand-drawn tin labels: Nip in ginger, Nip &amp; Lemon in lemon yellow and Midnight Nip in plum. Each has the N-cat in a round badge, ribbons reading Brewed for people and Approved by cats, catnip sprigs and the flavor’s fruit." width="2400" height="623" loading="lazy"><figcaption class="cap">Three flavors, one label each: the N-cat in its badge, the slogan on two ribbons, and the flavor in the colour of the ground.</figcaption></figure>
     <div class="cs-posts">
       <figure><img src="post-1.jpg" alt="Launch post: Berthoud’s first catnip soda." width="720" height="900" loading="lazy"><figcaption class="cap">The launch</figcaption></figure>
       <figure><img src="post-2.jpg" alt="Six-pack post: She checks every can, with the Midnight can." width="720" height="900" loading="lazy"><figcaption class="cap">The six-pack</figcaption></figure>
@@ -497,5 +500,6 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
 </main>
   <footer>Sea of Grass &middot; Berthoud, Colorado &middot; <a href="/preview/client/">Client login</a> &middot; <a href="/preview/lab/">The Lab</a></footer>
 </div>
+<script src="/preview/assets/live-grass.js" defer></script>
 </body>
 </html>

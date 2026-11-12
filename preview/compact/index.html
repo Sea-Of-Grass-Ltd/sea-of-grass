@@ -713,16 +713,17 @@ main#top>.wrap>footer{position:relative;isolation:isolate}
 /* the scene layers, filled per style below */
 main#top #services::after{background:var(--porthole-glow,none),url(/preview/assets/home/fantasm-porthole.webp) right max(var(--side),calc((100vw - 1280px) / 2 + var(--side))) top clamp(90px,12vh,140px)/min(34vw,440px) no-repeat;opacity:var(--porthole-o,.95)}
 main#top #services>.head{min-height:clamp(220px,34vw,460px);align-items:flex-end}
-main#top #work::after{background:url(/preview/work/duchess-nip-co/cans.jpg) center 42%/cover no-repeat;bottom:auto;height:min(78vh,760px);
-  -webkit-mask:linear-gradient(#000 35%,transparent 88%);mask:linear-gradient(#000 35%,transparent 88%);opacity:var(--cans-o,1)}
+main#top #work{--lab-w:min(94vw,1500px);--lab-pad:clamp(28px,4vh,48px)}
+main#top #work::after{background:url(/preview/work/duchess-nip-co/labels.webp) center top var(--lab-pad)/var(--lab-w) auto no-repeat;bottom:auto;height:calc(var(--lab-w) / 3.852 + var(--lab-pad) * 2)} /* the three labels, flat: no fade, no gradient */
 main#top #work>.head{margin-top:min(60vh,600px)}
 main#top #process::after{content:"Look Plan Make Care Look Plan Make Care";display:flex;align-items:center;justify-content:center;flex-wrap:wrap;overflow:hidden;
   font:900 clamp(90px,17vw,260px)/.84 var(--wall-font,Inter,sans-serif);letter-spacing:-.05em;text-transform:var(--wall-case,none);text-align:center;
   color:transparent;-webkit-text-stroke:2px var(--wall,rgba(0,0,0,.12));word-spacing:.15em}
 main#top .thesis::after{background:var(--mark,rgba(0,0,0,.08));-webkit-mask:url(/preview/assets/logo.svg) center/min(92vw,1180px) auto no-repeat;mask:url(/preview/assets/logo.svg) center/min(92vw,1180px) auto no-repeat}
 main#top .thesis{max-width:none}main#top .thesis>*{max-width:1000px;margin-inline:auto}
-main#top #contact::after{top:auto;height:min(34vh,300px);background:var(--grass,currentColor);
-  -webkit-mask:url(/preview/assets/home/grass-mask.webp) center bottom/cover no-repeat;mask:url(/preview/assets/home/grass-mask.webp) center bottom/cover no-repeat}
+main#top #contact::after{content:none} /* the grass is live now: .live-grass below */
+main#top #contact>.live-grass{position:absolute;z-index:-1;left:calc(50% - 50vw);right:calc(50% - 50vw);bottom:0;height:min(34vh,300px);pointer-events:none;color:var(--grass,currentColor)}
+.live-grass canvas{display:block;width:100%;height:100%}
 main#top #contact{padding-bottom:max(160px,min(30vh,260px))}
 @media (max-width:760px){
   main#top #services::after{background-position:right 16px top 84px;background-size:min(52vw,240px)}
@@ -994,7 +995,7 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
 
   <section class="cb-band cb-work" id="work" aria-labelledby="cb-work-h">
     <h2 class="cb-sr" id="cb-work-h">Our work</h2>
-    <a class="cb-tile" href="/preview/work/duchess-nip-co/" aria-label="Duchess Nip Co., a branding case study"><img src="/preview/work/duchess-nip-co/brand.jpg" alt="The Duchess Nip Co. mark, an N that is also a cat, with three cans" width="1200" height="720" loading="lazy"></a>
+    <a class="cb-tile" href="/preview/work/duchess-nip-co/" aria-label="Duchess Nip Co., a branding case study"><img src="/preview/work/duchess-nip-co/brand.webp" alt="The Duchess N-cat mark, an N whose tail curls at the top and whose head wears a collar, beside three flavor labels: Nip, Nip &amp; Lemon and Midnight Nip" width="1600" height="1000" loading="lazy"></a>
     <ul class="cb-index">
       <li><a href="/preview/work/duchess-nip-co/">Duchess Nip Co.</a></li>
       <li><a href="/preview/talaria/">Talaria</a></li>

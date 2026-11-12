@@ -713,16 +713,17 @@ main#top>.wrap>footer{position:relative;isolation:isolate}
 /* the scene layers, filled per style below */
 main#top #services::after{background:var(--porthole-glow,none),url(/preview/assets/home/fantasm-porthole.webp) right max(var(--side),calc((100vw - 1280px) / 2 + var(--side))) top clamp(90px,12vh,140px)/min(34vw,440px) no-repeat;opacity:var(--porthole-o,.95)}
 main#top #services>.head{min-height:clamp(220px,34vw,460px);align-items:flex-end}
-main#top #work::after{background:url(/preview/work/duchess-nip-co/cans.jpg) center 42%/cover no-repeat;bottom:auto;height:min(78vh,760px);
-  -webkit-mask:linear-gradient(#000 35%,transparent 88%);mask:linear-gradient(#000 35%,transparent 88%);opacity:var(--cans-o,1)}
+main#top #work{--lab-w:min(94vw,1500px);--lab-pad:clamp(28px,4vh,48px)}
+main#top #work::after{background:url(/preview/work/duchess-nip-co/labels.webp) center top var(--lab-pad)/var(--lab-w) auto no-repeat;bottom:auto;height:calc(var(--lab-w) / 3.852 + var(--lab-pad) * 2)} /* the three labels, flat: no fade, no gradient */
 main#top #work>.head{margin-top:min(60vh,600px)}
 main#top #process::after{content:"Look Plan Make Care Look Plan Make Care";display:flex;align-items:center;justify-content:center;flex-wrap:wrap;overflow:hidden;
   font:900 clamp(90px,17vw,260px)/.84 var(--wall-font,Inter,sans-serif);letter-spacing:-.05em;text-transform:var(--wall-case,none);text-align:center;
   color:transparent;-webkit-text-stroke:2px var(--wall,rgba(0,0,0,.12));word-spacing:.15em}
 main#top .thesis::after{background:var(--mark,rgba(0,0,0,.08));-webkit-mask:url(/preview/assets/logo.svg) center/min(92vw,1180px) auto no-repeat;mask:url(/preview/assets/logo.svg) center/min(92vw,1180px) auto no-repeat}
 main#top .thesis{max-width:none}main#top .thesis>*{max-width:1000px;margin-inline:auto}
-main#top #contact::after{top:auto;height:min(34vh,300px);background:var(--grass,currentColor);
-  -webkit-mask:url(/preview/assets/home/grass-mask.webp) center bottom/cover no-repeat;mask:url(/preview/assets/home/grass-mask.webp) center bottom/cover no-repeat}
+main#top #contact::after{content:none} /* the grass is live now: .live-grass below */
+main#top #contact>.live-grass{position:absolute;z-index:-1;left:calc(50% - 50vw);right:calc(50% - 50vw);bottom:0;height:min(34vh,300px);pointer-events:none;color:var(--grass,currentColor)}
+.live-grass canvas{display:block;width:100%;height:100%}
 main#top #contact{padding-bottom:max(160px,min(30vh,260px))}
 @media (max-width:760px){
   main#top #services::after{background-position:right 16px top 84px;background-size:min(52vw,240px)}
@@ -859,6 +860,8 @@ main#top #process .steps b{font-size:clamp(40px,5.2vw,84px);line-height:.95;lett
 html[data-theme="neu"] .thesis blockquote{--fit:14.5}html[data-theme="simple"] .thesis blockquote{--fit:13.7}html[data-theme="dusk"] .thesis blockquote{--fit:13.9}html[data-theme="brutal"] .thesis blockquote{--fit:27.2}html[data-theme="editorial"] .thesis blockquote{--fit:14.5}
 html[data-theme="neu"]:not([data-scheme]) .fys-tab{box-shadow:0 7px 14px -6px rgba(42,22,14,.55),0 2px 4px rgba(42,22,14,.22),inset 0 1px 0 rgba(255,250,240,.7)}
 main#top #contact{padding-bottom:calc(min(34vh,300px) + 36px)}
+main#top #work::after{height:calc(var(--lab-w) / 3.852 + var(--lab-pad) * 2)} /* every style: the labels row, then the headline below it */
+main#top #work>.head{margin-top:max(0px,calc(var(--lab-w) / 3.852 + var(--lab-pad) * 2 - clamp(96px,13vh,150px) + clamp(20px,3vh,40px)))}
 </style>
 <script>
 (function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#120607',glass:'#EEF1F8',neu:'#EFE6D8',brutal:'#FFFDF5',simple:'#F4F1EA',editorial:'#f3f1ea'};
@@ -917,7 +920,7 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
     <div class="svc alt">
       <div class="lead"><span class="no">02</span><h3><span class="t">Your</span> <b>brand</b></h3><p class="one">One look for your sign, menu, site and cards.</p><ul><li>Mark and wordmark</li><li>Colors and type</li></ul>
         <a class="ghost" href="/preview/services/brand/">Brand and identity &rarr;</a></div>
-      <figure class="slotf real" data-slot="home-svc-brand"><a href="/preview/work/duchess-nip-co/"><img class="case-img svc-img" src="/preview/work/duchess-nip-co/brand.jpg" alt="The Duchess Nip Co. mark, wordmark and three cans" loading="lazy"></a><figcaption class="slotcap">Duchess Nip Co., a fictional client: the mark, the wordmark and the cans.</figcaption></figure>
+      <figure class="slotf real" data-slot="home-svc-brand"><a href="/preview/work/duchess-nip-co/"><img class="case-img svc-img" src="/preview/work/duchess-nip-co/brand.webp" alt="The Duchess N-cat mark, an N whose tail curls at the top and whose head wears a collar, beside three flavor labels: Nip, Nip &amp; Lemon and Midnight Nip" width="1600" height="1000" loading="lazy"></a><figcaption class="slotcap">Duchess Nip Co., a fictional client: the N-cat mark and the three labels.</figcaption></figure>
     </div>
 
     <div class="svc">
@@ -933,9 +936,9 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
     <div class="head"><div><p class="label">Proof it&rsquo;s real</p><h2 id="h-work"><span class="t">Made</span> <em>right</em> <b>here.</b></h2></div>
       <p>Our own products and studies, running today.</p></div>
     <div class="cases">
-      <article class="case feature"><a href="/preview/work/duchess-nip-co/"><img class="case-img" src="/preview/work/duchess-nip-co/brand.jpg" alt="The Duchess Nip Co. mark, an N that is also a cat, with three cans." width="1200" height="720" loading="lazy"></a>
+      <article class="case feature"><a href="/preview/work/duchess-nip-co/"><img class="case-img" src="/preview/work/duchess-nip-co/brand.webp" alt="The Duchess N-cat mark, an N whose tail curls at the top and whose head wears a collar, beside three flavor labels: Nip, Nip &amp; Lemon and Midnight Nip." width="1600" height="1000" loading="lazy"></a>
         <span class="chip">Case study · fictional</span><h3><a href="/preview/work/duchess-nip-co/">Duchess Nip Co.</a></h3>
-        <p class="one">A catnip soda we made up, branded end to end: one mark, twelve symbols, three cans</p></article>
+        <p class="one">A catnip soda we made up, branded end to end: one mark, twelve symbols, three labels</p></article>
       <article class="case"><a href="/preview/talaria/"><figure class="slotf " data-slot="home-case-talaria"><div class="slot" style="aspect-ratio:1.732/1" role="img" aria-label="Image to come: Talaria open on a laptop showing a project board, a coffee beside it; top-down desk shot, morning light."><span class="sid">Image · home-case-talaria · 1732 x 1000</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M60 30h180v104H60z M60 46h180 M72 58h44v64H72z M128 58h44v40h-44z M184 58h44v52h-44z M80 70h28 M80 82h20 M136 70h28 M192 70h28 M192 82h20"/></svg></div><figcaption class="slotcap">Talaria open on a laptop showing a project board, a coffee beside it; top-down desk shot, morning light.</figcaption></figure></a>
         <span class="chip">Our product</span><h3><a href="/preview/talaria/">Talaria</a></h3>
         <p class="one">A task app for Mac, Windows and the web</p></article>
@@ -983,6 +986,7 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
 
   <!-- Start: after Whereby's closing CTA; booking first, the form second -->
   <section class="s" id="contact" aria-labelledby="h-contact">
+    <div class="live-grass" data-live-grass aria-hidden="true"></div>
     <div class="start">
       <div class="bookblock">
         <p class="label">Start</p>
@@ -1158,5 +1162,6 @@ const show=()=>{const up=scrollY>24;tab.classList.toggle('up',up);tab.toggleAttr
 addEventListener('scroll',show,{passive:true});show();
 })();
 </script>
+<script src="/preview/assets/live-grass.js" defer></script>
 </body>
 </html>
