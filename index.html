@@ -1213,6 +1213,7 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
   </footer>
 </main>
 
+<script src="/preview/assets/ink.js" defer></script>
 <script>
 if(/[?&]draft\b/.test(location.search))document.documentElement.classList.add('draft');
 // Book a meeting: goes to the scheduling page once one exists; until then, the contact form set to a meeting
@@ -1341,16 +1342,6 @@ const meadowDraw=(c,g,COL,FL)=>{const SHD=meadowGreens(COL),NQ=SHD.length;c.line
 const shades=(col)=>{col=col.trim();const hx=/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(col)?(col.length===4?col.slice(1).split('').map(h=>parseInt(h+h,16)):[1,3,5].map(j=>parseInt(col.slice(j,j+2),16))):null;const m=hx||col.match(/\d+(\.\d+)?/g)||[0,0,0],r=+m[0],g2=+m[1],b=+m[2],f=(k)=>k>0?`rgb(${r+(255-r)*k|0},${g2+(255-g2)*k|0},${b+(255-b)*k|0})`:`rgb(${r*(1+k)|0},${g2*(1+k)|0},${b*(1+k)|0})`;return[f(-.16),col,f(.2)];};
 // the S's fill: each style can ask for flat ink (default), glass, rising blue light, or a meadow (set --lf-mark-fill on .lf)
 let MFILL='';
-// in Dew, a tap on the dark ground sends rings across it: a dark trough, a bright crest, a chain of beads, two weaker echoes
-const RIP=[],RLIFE=2.4;
-function ripples(){if(!RIP.length)return;const now=performance.now()/1000,RM=Math.min(520,Math.max(W,H)*.5);
-  for(let j=RIP.length-1;j>=0;j--){const r=RIP[j],t=now-r.t0;if(t>RLIFE+.6){RIP.splice(j,1);continue;}const f=Math.max(0,1-t/RLIFE);
-    for(const [lag,amp] of [[0,1],[.28,.55],[.56,.3]]){const tt=t-lag;if(tt<0||tt>RLIFE)continue;const R=(1-Math.pow(1-tt/RLIFE,2.2))*RM;if(R<4)continue;const a=Math.max(0,1-tt/RLIFE)*amp;
-      const g=c.createRadialGradient(r.x,r.y,R*.45,r.x,r.y,R+16);g.addColorStop(0,'rgba(5,7,13,0)');g.addColorStop(.55,`rgba(0,0,0,${.8*a})`);g.addColorStop(.8,`rgba(110,165,255,${.35*a})`);g.addColorStop(.9,`rgba(240,247,255,${.75*a})`);g.addColorStop(1,'rgba(255,255,255,0)');
-      c.fillStyle=g;c.beginPath();c.arc(r.x,r.y,R+16,0,Math.PI*2);c.fill();
-      if(lag===0){const n=Math.max(10,Math.round(R/7)),br=R*.74;for(let i=0;i<n;i++){const th=i/n*Math.PI*2+r.sp,bx=r.x+Math.cos(th)*br,by=r.y+Math.sin(th)*br;
-        c.beginPath();c.ellipse(bx,by,Math.max(1.5,R*.05),Math.max(1,R*.022),th,0,Math.PI*2);c.fillStyle=`rgba(0,0,0,${.95*a})`;c.fill();c.lineWidth=1;c.strokeStyle=`rgba(210,232,255,${.7*a})`;c.stroke();}}}}}
-function rippleAt(x,y){if(MFILL!=='glass')return;RIP.push({x,y,t0:performance.now()/1000,sp:Math.random()*6.28});while(RIP.length>8)RIP.shift();}
 function markFill(path,key){const m=MFILL;
   if(m==='glass'){const gr=c.createLinearGradient(0,40,0,310);gr.addColorStop(0,'rgba(255,255,255,.22)');gr.addColorStop(.45,'rgba(255,255,255,.08)');gr.addColorStop(1,'rgba(255,255,255,.03)');
     c.fillStyle=gr;c.fill(path);c.lineWidth=3;c.strokeStyle='rgba(167,202,255,.95)';c.stroke(path);c.lineWidth=1.2;c.strokeStyle='rgba(255,255,255,.55)';c.save();c.translate(0,-1.5);c.stroke(path);c.restore();}
@@ -1362,7 +1353,7 @@ function markFill(path,key){const m=MFILL;
       if(k>=4){c.ellipse(x,y,1.6,7,((i*1.3)%1-.5)*.8,0,Math.PI*2);}else{for(let p=0;p<6;p++){const t=p*Math.PI/3;c.moveTo(x+Math.cos(t)*4.2,y+Math.sin(t)*4.2);c.ellipse(x+Math.cos(t)*2.4,y+Math.sin(t)*2.4,2.3,1.2,t,0,Math.PI*2);}}c.fill();}
     c.restore();c.lineWidth=2;c.strokeStyle='#4A7A3C';c.stroke(path);}
   else{c.fillStyle=MARKC;c.fill(path);}}
-function draw(){c.setTransform(DPR,0,0,DPR,0,0);c.clearRect(0,0,W,H);ripples();c.fillStyle=INK;c.strokeStyle=INK;
+function draw(){c.setTransform(DPR,0,0,DPR,0,0);c.clearRect(0,0,W,H);c.fillStyle=INK;c.strokeStyle=INK;
   for(const p of pieces){c.save();c.translate(p.x,p.y);c.rotate(p.a);
     if(p.kind==='p2'){c.setTransform(DPR,0,0,DPR,0,0);c.translate(p.x,p.y);c.rotate(p.a);c.scale(p.sc,p.sc);c.translate(-219,-174+36.26);markFill(P2,'p2');c.fillStyle=INK;}
     else if(p.kind==='p1'){c.setTransform(DPR,0,0,DPR,0,0);c.translate(p.x,p.y);c.rotate(p.a);c.scale(p.sc,p.sc);c.translate(-219,-174-36.26);markFill(P1,'p1');c.fillStyle=INK;}
@@ -1378,7 +1369,7 @@ function frame(now){const dt=last?Math.min(.033,(now-last)/1000):.016;last=now;p
 // ---- input: mouse, pen and touch all move the same body; nothing happens under reduced motion
 function move(e){const q=cv.getBoundingClientRect(),x=(e.clientX-q.left)*W/(q.width||W),y=(e.clientY-q.top)*H/(q.height||H);if(ptr.on){ptr.vx=ptr.vx*.5+(x-ptr.x)*.5*60;ptr.vy=ptr.vy*.5+(y-ptr.y)*.5*60;}ptr.x=x;ptr.y=y;ptr.on=true;}
 const ui=e=>e.target.closest&&e.target.closest('button,a');
-if(!still){SEC.addEventListener('pointermove',move);SEC.addEventListener('pointerdown',e=>{if(ui(e))return;{const q=cv.getBoundingClientRect();rippleAt((e.clientX-q.left)*W/(q.width||W),(e.clientY-q.top)*H/(q.height||H));}ptr.on=false;move(e);ptr.down=true;ptr.held=0;ptr.touch=e.pointerType!=='mouse';ptr.burst+=W<600?28:40;});addEventListener('pointerup',()=>{ptr.down=false;});addEventListener('pointercancel',()=>{ptr.down=false;});SEC.addEventListener('pointerleave',()=>{ptr.on=false;ptr.x=ptr.y=-1e4;});addEventListener('pointercancel',()=>{ptr.on=false;ptr.x=ptr.y=-1e4;});SEC.addEventListener('pointerup',e=>{if(e.pointerType!=='mouse'){ptr.on=false;ptr.x=ptr.y=-1e4;}});}
+if(!still){SEC.addEventListener('pointermove',move);SEC.addEventListener('pointerdown',e=>{if(ui(e))return;ptr.on=false;move(e);ptr.down=true;ptr.held=0;ptr.touch=e.pointerType!=='mouse';ptr.burst+=W<600?28:40;});addEventListener('pointerup',()=>{ptr.down=false;});addEventListener('pointercancel',()=>{ptr.down=false;});SEC.addEventListener('pointerleave',()=>{ptr.on=false;ptr.x=ptr.y=-1e4;});addEventListener('pointercancel',()=>{ptr.on=false;ptr.x=ptr.y=-1e4;});SEC.addEventListener('pointerup',e=>{if(e.pointerType!=='mouse'){ptr.on=false;ptr.x=ptr.y=-1e4;}});}
 // ---- the ground color (remembered)
 const looks=[...SEC.querySelectorAll('.lf-looks button')];function look(k,keep){SEC.dataset.look=k;looks.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.look===k)));if(keep!==false)try{localStorage.setItem('sog-opening-look',k);}catch(e){}}
 looks.forEach(b=>b.addEventListener('click',()=>look(b.dataset.look)));
