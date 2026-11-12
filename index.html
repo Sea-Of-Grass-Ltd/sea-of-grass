@@ -1074,21 +1074,25 @@ html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-h{letter-spacing:-
 html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-close a.cb-book{background:#1F1F1F;color:#FBB833;border-color:#1F1F1F;box-shadow:6px 6px 0 #fff}
 html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-people i{background:#FBB833;border-width:4px;border-radius:0}
 /* --- Dusk --- */
-html[data-theme="dusk"]:not([data-scheme]){--bg:#0A0A0B;--fg:#E8E6E3;--fg2:#E8E6E3;--soft:#8C8C90;--rule:rgba(232,230,227,.14);--violet:#FF7777;--accent2:#FF5C5C;--on-accent:#0A0A0B;--bar:rgba(10,10,11,.72)}
+html[data-theme="dusk"]:not([data-scheme]){--bg:#0A0A0B;--fg:#E8E6E3;--fg2:#E8E6E3;--soft:#8C8C90;--rule:rgba(232,230,227,.14);--violet:#FF3601;--accent2:#E52E00;--on-accent:#0A0A0B;--bar:rgba(10,10,11,.72)}
 html[data-theme="dusk"]:not([data-scheme]) body{background:#0A0A0B}
+/* Format's actions (Refero): small lit rectangles, 6px corners, 14px medium text; vermilion primary, film-style outlined secondary */
+html[data-theme="dusk"]:not([data-scheme]) :is(.bar,.top) nav :is(a.book,a.client){border-radius:6px!important;height:38px;display:inline-flex;align-items:center;padding:0 20px;font:500 14px/1 "Inter Tight",Inter,sans-serif}
+html[data-theme="dusk"]:not([data-scheme]) :is(.bar,.top) nav a.client{background:rgba(221,221,221,.12);border:1px solid rgba(221,221,221,.55)}
+html[data-theme="dusk"]:not([data-scheme]) :is(.bar,.top) nav a.book{background:#FF3601;color:#0E0202;box-shadow:0 0 18px rgba(255,54,1,.28)}
 html[data-theme="dusk"]:not([data-scheme]) body main.cb{--cb-light:#0A0A0B;--cb-light2:#0A0A0B;--cb-headband:#0A0A0B;--cb-ink:#E8E6E3;--cb-dark:#0A0A0B;--cb-dark-ink:#E8E6E3;--cb-panel:#141416;--cb-panel-ink:#E8E6E3;--cb-panel-edge:#2A2A2E;--cb-panel-r:10px;--cb-panel-shadow:none;--cb-blur:none;
-  --cb-work:#0A0A0B;--cb-tile:#141416;--cb-steps:#0A0A0B;--cb-steps-ink:#FF7777;--cb-thesis:#0A0A0B;--cb-accent:#FF7777;--cb-close:#FF7777;--cb-close-ink:#0A0A0B;--cb-btn-r:999px;--cb-rule:#2A2A2E;--cb-hfont:"Inter Tight",Inter,sans-serif;--cb-hw:300;--cb-body:"Inter Tight",Inter,sans-serif}
-html[data-theme="dusk"]:not([data-scheme]) .lf{--lf-ground:#0A0A0B;--lf-ink:#E8E6E3;--lf-mark:#FF7777;--lf-grass:#6E6E74}
-html[data-theme="dusk"]:not([data-scheme]) body main.cb :is(.cb-h,.cb-steps li b){letter-spacing:-.055em}
+  --cb-work:#0A0A0B;--cb-tile:#141416;--cb-steps:#0A0A0B;--cb-steps-ink:#FF3601;--cb-thesis:#0A0A0B;--cb-accent:#FF3601;--cb-close:#FF3601;--cb-close-ink:#0A0A0B;--cb-btn-r:6px;--cb-rule:#2A2A2E;--cb-hfont:"Instrument Serif",Georgia,serif;--cb-hw:400;--cb-body:"Inter Tight",Inter,sans-serif}
+html[data-theme="dusk"]:not([data-scheme]) .lf{--lf-ground:#0A0A0B;--lf-ink:#E8E6E3;--lf-mark:#FF3601;--lf-grass:#6E6E74}
+html[data-theme="dusk"]:not([data-scheme]) body main.cb :is(.cb-h,.cb-steps li b){letter-spacing:-.01em;line-height:.92}
 html[data-theme="dusk"]:not([data-scheme]) body main.cb :is(.cb-p h3,.cb-feature b,.cb-index b,.cb-people b,.cb-price b,.cb-reach a,.cb-close h2){font-weight:400}
 html[data-theme="dusk"]:not([data-scheme]) body main.cb .cb-band+.cb-band{border-top:1px solid #1E1E21}
 html[data-theme="dusk"]:not([data-scheme]) body main.cb .cb-thesis blockquote{font-family:"Inter Tight",sans-serif;font-weight:200}
-html[data-theme="dusk"]:not([data-scheme]) body main.cb .cb-people i{border-color:#FF7777;color:#FF7777}
+html[data-theme="dusk"]:not([data-scheme]) body main.cb .cb-people i{border-color:#FF3601;color:#FF3601}
 html[data-theme="glass"]:not([data-scheme]) .lf{--lf-face:Manrope,Inter,sans-serif;--lf-t:300;--lf-b:600;--lf-em:400}
 html[data-theme="neu"]:not([data-scheme]) .lf{--lf-face:"Bricolage Grotesque",Inter,sans-serif;--lf-t:500;--lf-b:800;--lf-em:500}
 html[data-theme="simple"]:not([data-scheme]) .lf{--lf-face:"Libre Caslon Display",Georgia,serif;--lf-t:400;--lf-b:400;--lf-em:italic 400}
 html[data-theme="brutal"]:not([data-scheme]) .lf{--lf-face:Syne,"Space Grotesk",sans-serif;--lf-t:700;--lf-b:800;--lf-em:700}
-html[data-theme="dusk"]:not([data-scheme]) .lf{--lf-face:"Inter Tight",Inter,sans-serif;--lf-t:200;--lf-b:400;--lf-em:300}
+html[data-theme="dusk"]:not([data-scheme]) .lf{--lf-face:"Instrument Serif",Georgia,serif;--lf-t:400;--lf-b:400;--lf-em:italic 400}   /* Dusk (Refero: Format) speaks in one delicate editorial serif, with italics for the quiet words; no light/bold sans pairing like Dew */
 /* the thesis uses the style's own heading face everywhere except Ledger and Dusk, which set their own above */
 html:is([data-theme="glass"],[data-theme="neu"],[data-theme="brutal"]):not([data-scheme]) body main.cb .cb-thesis blockquote{font-family:var(--cb-hfont);font-weight:var(--cb-hw);letter-spacing:-.03em}
 html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-thesis blockquote{letter-spacing:-.02em}
@@ -1239,6 +1243,9 @@ main.cb .cb-close .cb-home canvas{display:block;width:100%;height:100%}
 
 
 /* Clay's opening: a warm printed brown with cream lettering (Refero: Hungry Tiger's grain stack, Houseplant's cream on chocolate); the live wash and a boiling grain move underneath, the leaves bright on top */
+/* Dusk: a dark stage (Format's burgundy-black) with one warm follow-spot from above; dusk.js moves it with the pointer */
+html[data-theme="dusk"]:not([data-scheme]) main.cb .lf{--lf-ground:#0E0202;--lf-ink:#F4E6D0;--lf-mark:#FF3601;background:radial-gradient(calc(var(--sr,22vw)*1.5) 105% at var(--sx,50%) -6%,rgba(242,190,104,.5),rgba(196,104,40,.2) 46%,rgba(14,2,2,0) 80%),#0E0202}
+html[data-theme="dusk"]:not([data-scheme]) main.cb .lf .lf-title .cb-h{color:#F4E6D0}
 html[data-theme="neu"]:not([data-scheme]) main.cb .lf{--lf-ground:#FFFFFF;--lf-ink:#3D1801;--lf-mark:#3D1801;background:#FFFFFF}
 html[data-theme="neu"]:not([data-scheme]) main.cb .lf .lf-title .cb-h{color:#3D1801}
 
@@ -1422,6 +1429,7 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
 <script src="/preview/assets/field-shapes.js"></script>
 <script src="/preview/assets/ink.js" defer></script>
 <script src="/preview/assets/clay.js" defer></script>
+<script src="/preview/assets/dusk.js" defer></script>
 <script>
 if(/[?&]draft\b/.test(location.search))document.documentElement.classList.add('draft');
 // Book a meeting: goes to the scheduling page once one exists; until then, the contact form set to a meeting
