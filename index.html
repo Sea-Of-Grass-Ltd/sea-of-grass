@@ -1229,6 +1229,12 @@ main.cb .vzd-fx{flex:1;display:grid;justify-items:center;gap:5px;padding:9px 0;f
 main.cb .vzd-fx i{font-style:normal;font-size:15px}
 main.cb .vzd :is(button,input):focus-visible{outline:2px solid var(--cb-accent);outline-offset:3px}
 @media (pointer:coarse){main.cb .vzd-tabs button{padding:10px 0}main.cb .vzd input[type=range]{height:34px}}
+
+/* the page comes home: at the call, the blades fall back into a meadow along the foot of the closing band */
+main.cb .cb-close{position:relative;isolation:isolate;padding-bottom:calc(clamp(40px,4.6vw,68px) + 120px)}
+main.cb .cb-close>*:not(.cb-home){position:relative;z-index:1}
+main.cb .cb-close .cb-home{position:absolute;inset:0;z-index:0;pointer-events:none}
+main.cb .cb-close .cb-home canvas{display:block;width:100%;height:100%}
 </style>
 <script>
 (function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#120607',glass:'#EEF1F8',neu:'#EFE6D8',brutal:'#FFFDF5',simple:'#F4F1EA',editorial:'#f3f1ea'};
@@ -1369,6 +1375,7 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
   </section>
 
   <section class="cb-band cb-close" id="contact" aria-labelledby="cb-close-h">
+    <div class="live-grass cb-home" data-live-grass="fall" aria-hidden="true"></div>
     <div>
       <h2 id="cb-close-h">Start with a short call.</h2>
       <p>Fifteen or thirty minutes. Tell us what you have; you leave with a next step and a price range.</p>
@@ -1679,5 +1686,11 @@ d.querySelectorAll('.vzd-fx').forEach(b=>b.addEventListener('click',()=>{const v
 (function tick(){if(V()&&V().cycle)paint();requestAnimationFrame(tick);})();paint();
 })();
 </script>
+<script>/* the closing meadow takes the opening's grass colour in every style */
+(function(){const m=document.querySelector('main.cb .cb-home'),o=document.getElementById('opening');if(!m||!o)return;
+const set=()=>{m.style.color=getComputedStyle(o).getPropertyValue('--lf-grass').trim()||'#7fa860';};set();
+['sog-theme','sog-scheme'].forEach(t=>document.addEventListener(t,()=>requestAnimationFrame(set)));})();
+</script>
+<script src="/preview/assets/live-grass.js" defer></script>
 </body>
 </html>
