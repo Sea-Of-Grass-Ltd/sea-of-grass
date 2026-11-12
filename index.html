@@ -884,14 +884,25 @@ html body main.cb .cb-ch .cb-chp.cb-snap h3{grid-column:1;grid-row:1;font-size:c
 html body main.cb .cb-ch .cb-chp.cb-snap :is(h3 a,.cb-amt b,.cb-amt em,.cb-tier,.cb-note,p){color:inherit}
 html body main.cb .cb-ch .cb-chp.cb-snap>p:not(.cb-price):not(.cb-more):not(.cb-note){grid-column:1/3;grid-row:2;font-size:clamp(16px,1.3vw,20px);line-height:1.4;margin:6px 0 0;opacity:.8}
 html body main.cb .cb-ch .cb-chp.cb-snap .cb-price{grid-column:1/3;grid-row:3;margin:clamp(14px,3vh,40px) 0 clamp(10px,2.4vh,30px);align-self:center;display:grid;grid-template-columns:1fr 1fr;column-gap:clamp(24px,3vw,48px)}
-html body main.cb .cb-ch .cb-chp.cb-snap .cb-tier{display:grid;align-content:start;gap:10px;border-top:1px solid color-mix(in srgb,currentColor 22%,transparent);padding-top:clamp(14px,1.4vw,20px);opacity:1}
-html body main.cb .cb-ch .cb-chp.cb-snap .cb-tier i{font:500 12px/1.2 "IBM Plex Mono",Menlo,monospace;font-style:normal;letter-spacing:.16em;text-transform:uppercase;opacity:.7}
-html body main.cb .cb-ch .cb-chp.cb-snap .cb-amt{display:flex;align-items:baseline;gap:10px;opacity:1}
-html body main.cb .cb-ch .cb-chp.cb-snap .cb-amt b{font-size:clamp(46px,5.2vw,84px);line-height:.9;letter-spacing:-.04em}
-html body main.cb .cb-ch .cb-chp.cb-snap .cb-amt em{font:500 clamp(14px,1.1vw,17px)/1 var(--cb-body);font-style:normal;opacity:.7}
-html body main.cb .cb-ch .cb-chp.cb-snap .cb-tier>span:last-child{font:400 clamp(14px,1.1vw,16px)/1.45 var(--cb-body);opacity:.75;max-width:34ch}
+html body main.cb .cb-ch .cb-chp:is(.cb-snap,.cb-flat) .cb-tier{display:grid;align-content:start;gap:10px;border-top:1px solid color-mix(in srgb,currentColor 22%,transparent);padding-top:clamp(14px,1.4vw,20px);opacity:1}
+html body main.cb .cb-ch .cb-chp:is(.cb-snap,.cb-flat) .cb-tier i{font:500 12px/1.2 "IBM Plex Mono",Menlo,monospace;font-style:normal;letter-spacing:.16em;text-transform:uppercase;opacity:.7}
+html body main.cb .cb-ch .cb-chp:is(.cb-snap,.cb-flat) .cb-amt{display:flex;align-items:baseline;gap:10px;opacity:1}
+html body main.cb .cb-ch .cb-chp:is(.cb-snap,.cb-flat) .cb-amt b{font-size:clamp(46px,5.2vw,84px);line-height:.9;letter-spacing:-.04em}
+html body main.cb .cb-ch .cb-chp:is(.cb-snap,.cb-flat) .cb-amt em{font:500 clamp(14px,1.1vw,17px)/1 var(--cb-body);font-style:normal;opacity:.7}
+html body main.cb .cb-ch .cb-chp:is(.cb-snap,.cb-flat) .cb-tier>span:last-child{font:400 clamp(14px,1.1vw,16px)/1.45 var(--cb-body);opacity:.75;max-width:34ch}
 html body main.cb .cb-ch .cb-chp.cb-snap .cb-note{grid-column:1;grid-row:4;white-space:nowrap;margin:0;align-self:end;font:400 clamp(14px,1.1vw,16px)/1.4 var(--cb-body);opacity:.75}
 html body main.cb .cb-ch .cb-chp.cb-snap .cb-more{grid-column:2;grid-row:4;margin:0;align-self:end;justify-self:end}
+/* Brand and Creative tech follow Websites: no box, no mock picture, the type on the dark in the opening's ink; the price set as a tier. The S and the visual synth stay */
+main.cb .cb-ch .cb-chp.cb-flat{background:none!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;padding:0!important;border-radius:0}
+main.cb .cb-ch .cb-chp.cb-flat .ui{display:none}
+html body main.cb .cb-ch .cb-chp.cb-flat h3{font-size:clamp(40px,4.6vw,76px);line-height:1;margin:0;color:inherit}
+html body main.cb .cb-ch .cb-chp.cb-flat :is(h3 a,p,.cb-tier){color:inherit}
+html body main.cb .cb-ch .cb-chp.cb-flat>p:not(.cb-price):not(.cb-more){font-size:clamp(16px,1.3vw,20px);line-height:1.4;margin:10px 0 0;opacity:.8}
+html body main.cb .cb-ch .cb-chp.cb-flat .cb-price{display:block;margin:clamp(18px,3.4vh,40px) 0 clamp(14px,2.6vh,28px)}
+html body main.cb .cb-ch .cb-chp.cb-flat .cb-amt b{font-size:clamp(32px,3.2vw,52px)}
+html body main.cb .cb-ch .cb-chp.cb-flat .cb-more{margin:0}
+html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-ch .cb-chp.cb-flat h3{font-size:clamp(26px,2.6vw,42px);line-height:1.15}
+html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-ch .cb-chp.cb-flat .cb-amt b{font-size:clamp(24px,2.3vw,36px);line-height:1.15}
 /* Ember: Syne runs about 1.6x wider, so the plot card's big type is set smaller to keep the same footprint */
 html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-ch .cb-chp.cb-snap h3{font-size:clamp(26px,2.6vw,42px);line-height:1.15}
 html[data-theme="brutal"]:not([data-scheme]) body main.cb .cb-ch .cb-chp.cb-snap .cb-amt b{font-size:clamp(34px,3.6vw,58px);line-height:1.1;letter-spacing:-.02em}
@@ -1365,7 +1376,7 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
       </article>
   </div>
   <div class="cb-ch" id="brand" data-field="mark">
-    <article class="cb-p cb-chp">
+    <article class="cb-p cb-chp cb-flat">
         <a class="ui ui-brand" href="/preview/services/brand/" tabindex="-1" aria-hidden="true">
           <span class="pl kit"><span class="kt"><span>Brand kit</span><span>v3</span></span>
             <span class="mk"><svg viewBox="0 0 44 44"><rect width="44" height="44" rx="12" fill="#2F4A2A"/><path d="M13 31V13h4l10 12V13h4v18h-4L17 19v12z" fill="#F3E7B0"/></svg><span class="aa">Aa<small>Fraunces &middot; Inter</small></span></span>
@@ -1375,16 +1386,16 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
         </a>
         <h3><a href="/preview/services/brand/">Brand</a></h3>
         <p>One look for your sign, menu, site and cards.</p>
-        <p class="cb-price"><b>Fixed quote</b><span>Priced after a free call and written down before work starts.</span></p>
+        <p class="cb-price cb-tiers"><span class="cb-tier"><i>Price</i><span class="cb-amt"><b>Fixed quote</b></span><span>Priced after a free call and written down before work starts.</span></span></p>
         <p class="cb-more"><a href="/preview/services/brand/">Brand and identity</a><a href="/preview/services/illustration/">Illustration</a></p>
       </article>
   </div>
   <div class="cb-ch" id="creative-tech" data-field="viz">
-    <article class="cb-p cb-chp">
+    <article class="cb-p cb-chp cb-flat">
 
         <h3><a href="/preview/services/live-visuals/">Creative tech</a></h3>
         <p>What a template can&rsquo;t do.</p>
-        <p class="cb-price"><b>Fixed quote</b><span>Priced after a free call and written down before work starts.</span></p>
+        <p class="cb-price cb-tiers"><span class="cb-tier"><i>Price</i><span class="cb-amt"><b>Fixed quote</b></span><span>Priced after a free call and written down before work starts.</span></span></p>
         <p class="cb-more"><a href="/preview/services/live-visuals/">Live visuals</a><a href="/preview/services/characters/">3D characters</a></p>
       
         <div class="vzd" role="group" aria-label="Controller for the visualizer in the grass">
@@ -1728,9 +1739,10 @@ const chs=[...open.querySelectorAll('.cb-ch')],wc=open.querySelector('#services 
 const tc=open.querySelector('#creative-tech .cb-chp');
 function lay(){const o=window.sogOpening;if(tc&&o&&o.vizFree){const r=tc.getBoundingClientRect(),x=r.right+24,w=innerWidth-x-24;o.vizFree(w>=260?{x,w}:{x:0,w:innerWidth});}   // the visualizer plays in the room beside the Creative tech card
   const g=o&&o.gridRect&&o.gridRect();if(!wc)return;   // the Websites card becomes one of the grid's √3 rectangles
+  {const lf=document.querySelector('main.cb .lf'),ink=lf?getComputedStyle(lf).getPropertyValue('--lf-ink').trim():'';open.querySelectorAll('.cb-chp.cb-flat').forEach(e=>e.style.color=ink);}
   if(g){wc.classList.add('cb-snap');const lf=document.querySelector('main.cb .lf');if(lf)wc.style.color=getComputedStyle(lf).getPropertyValue('--lf-ink').trim();const pad=parseFloat(getComputedStyle(wc.parentElement).paddingLeft)||0;Object.assign(wc.style,{top:g.y+'px',marginLeft:(g.x-pad)+'px',width:g.w+'px',height:g.h+'px'});}
   else{wc.classList.remove('cb-snap');wc.style.top=wc.style.marginLeft=wc.style.width=wc.style.height='';}}
-addEventListener('resize',()=>requestAnimationFrame(lay));addEventListener('load',lay);setTimeout(lay,300);
+addEventListener('resize',()=>requestAnimationFrame(lay));addEventListener('load',lay);setTimeout(lay,300);['sog-theme','sog-scheme'].forEach(ev=>document.addEventListener(ev,()=>setTimeout(lay,60)));   // a new style brings a new ink for the open cards
 function upd(){ticking=false;const vh=innerHeight,y=-open.getBoundingClientRect().top/vh;   // screens scrolled into the track
   const out=sm((y-.28)/.32),inn=sm((y-.5)/.3);
   // each chapter calls up its harmony as it arrives and lets it go as it leaves
