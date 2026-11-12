@@ -713,8 +713,8 @@ main#top>.wrap>footer{position:relative;isolation:isolate}
 /* the scene layers, filled per style below */
 main#top #services::after{background:var(--porthole-glow,none),url(/preview/assets/home/fantasm-porthole.webp) right max(var(--side),calc((100vw - 1280px) / 2 + var(--side))) top clamp(90px,12vh,140px)/min(34vw,440px) no-repeat;opacity:var(--porthole-o,.95)}
 main#top #services>.head{min-height:clamp(220px,34vw,460px);align-items:flex-end}
-main#top #work::after{background:url(/preview/work/duchess-nip-co/cans.jpg) center 42%/cover no-repeat;bottom:auto;height:min(78vh,760px);
-  -webkit-mask:linear-gradient(#000 35%,transparent 88%);mask:linear-gradient(#000 35%,transparent 88%);opacity:var(--cans-o,1)}
+main#top #work{--lab-w:min(94vw,1500px);--lab-pad:clamp(28px,4vh,48px)}
+main#top #work::after{background:url(/preview/work/duchess-nip-co/labels.webp) center top var(--lab-pad)/var(--lab-w) auto no-repeat;bottom:auto;height:calc(var(--lab-w) / 3.852 + var(--lab-pad) * 2)} /* the three labels, flat: no fade, no gradient */
 main#top #work>.head{margin-top:min(60vh,600px)}
 main#top #process::after{content:"Look Plan Make Care Look Plan Make Care";display:flex;align-items:center;justify-content:center;flex-wrap:wrap;overflow:hidden;
   font:900 clamp(90px,17vw,260px)/.84 var(--wall-font,Inter,sans-serif);letter-spacing:-.05em;text-transform:var(--wall-case,none);text-align:center;
@@ -995,7 +995,7 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
 
   <section class="cb-band cb-work" id="work" aria-labelledby="cb-work-h">
     <h2 class="cb-sr" id="cb-work-h">Our work</h2>
-    <a class="cb-tile" href="/preview/work/duchess-nip-co/" aria-label="Duchess Nip Co., a branding case study"><img src="/preview/work/duchess-nip-co/brand.jpg" alt="The Duchess Nip Co. mark, an N that is also a cat, with three cans" width="1200" height="720" loading="lazy"></a>
+    <a class="cb-tile" href="/preview/work/duchess-nip-co/" aria-label="Duchess Nip Co., a branding case study"><img src="/preview/work/duchess-nip-co/brand.webp" alt="The Duchess N-cat mark, an N whose tail curls at the top and whose head wears a collar, beside three flavor labels: Nip, Nip &amp; Lemon and Midnight Nip" width="1600" height="1000" loading="lazy"></a>
     <ul class="cb-index">
       <li><a href="/preview/work/duchess-nip-co/">Duchess Nip Co.</a></li>
       <li><a href="/preview/talaria/">Talaria</a></li>
