@@ -859,6 +859,9 @@ main#top #process .steps b{font-size:clamp(40px,5.2vw,84px);line-height:.95;lett
 html[data-theme="neu"] .thesis blockquote{--fit:14.5}html[data-theme="simple"] .thesis blockquote{--fit:13.7}html[data-theme="dusk"] .thesis blockquote{--fit:13.9}html[data-theme="brutal"] .thesis blockquote{--fit:27.2}html[data-theme="editorial"] .thesis blockquote{--fit:14.5}
 html[data-theme="neu"]:not([data-scheme]) .fys-tab{box-shadow:0 7px 14px -6px rgba(42,22,14,.55),0 2px 4px rgba(42,22,14,.22),inset 0 1px 0 rgba(255,250,240,.7)}
 main#top #contact{padding-bottom:calc(min(34vh,300px) + 36px)}
+html[data-theme="neu"] main#top #work::after{-webkit-mask:none;mask:none} /* Clay: the cans scene ends on a clean edge, no gradient fade */
+html[data-theme="neu"] main#top #work>.head{margin-top:calc(min(78vh,760px) - clamp(96px,13vh,150px) + clamp(36px,5vh,64px))} /* the headline starts below the cans' edge, never across it */
+@media (max-width:760px){html[data-theme="neu"] main#top #work>.head{margin-top:calc(56vh - clamp(96px,13vh,150px) + 32px)}}
 </style>
 <script>
 (function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#120607',glass:'#EEF1F8',neu:'#EFE6D8',brutal:'#FFFDF5',simple:'#F4F1EA',editorial:'#f3f1ea'};
