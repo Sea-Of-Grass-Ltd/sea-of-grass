@@ -1,7 +1,6 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta name="robots" content="noindex,nofollow">
 <!-- Google tag (gtag.js) -->
 <script>/* analytics waits until the page has loaded and gone idle, so it never competes with the first view */addEventListener('load',function(){var go=function(){var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-61Q2DRMD3H';document.head.appendChild(s);};'requestIdleCallback' in window?requestIdleCallback(go,{timeout:4000}):setTimeout(go,2000);});</script>
 <script>
@@ -11,7 +10,7 @@
   gtag('config', 'G-61Q2DRMD3H');
 </script>
 <meta charset="utf-8" />
-<link rel="canonical" href="https://seaofgrass.studio/services/apps/" />
+<link rel="canonical" href="https://seaofgrass.studio/preview/services/apps/" />
 <meta name="theme-color" content="#090909" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
 <title>App development · Sea of Grass</title>
@@ -358,6 +357,8 @@ html[data-theme="glass"]:not([data-scheme]) body{background:#E6EAFB}
 html[data-theme="neu"]:not([data-scheme]) body{background:#EFE6D8}
 html[data-theme="simple"]:not([data-scheme]) body{background:#F4F1EA}
 html[data-theme="dusk"]:not([data-scheme]) body{background:#120607}
+/* 2026-11-12 repairs: one get-card or example fills its row when it is alone; text-only get cards */
+.exs:has(>figure.ex:only-child){grid-template-columns:minmax(0,1fr);max-width:720px}.hero>figure{min-width:0}.hero{min-width:0}
 </style>
 <script>
 (function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#120607',glass:'#EEF1F8',neu:'#EFE6D8',brutal:'#FFFDF5',simple:'#F4F1EA',editorial:'#f3f1ea'};
@@ -380,38 +381,38 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
 <body>
 <div class="wrap">
   <header class="top">
-    <a class="home" href="/preview/"><img src="/preview/assets/logo.svg" alt="Sea of Grass, home" width="34" height="25"></a>
-    <nav aria-label="Main"><a class="hide-s" href="/preview/#services" aria-current="page">Services</a><a class="hide-s" href="/preview/#work">Work</a><a class="hide-s" href="/preview/#about">About</a><a class="hide-s" href="#start">Contact</a><a class="hide-s" href="/preview/client/">Client login</a><a class="book" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a meeting</a></nav>
+    <a class="home" href="/"><img src="/preview/assets/logo.svg" alt="Sea of Grass, home" width="34" height="25"></a>
+    <nav aria-label="Main"><a class="hide-s" href="/#services" aria-current="page">Services</a><a class="hide-s" href="/#work">Work</a><a class="hide-s" href="/#about">About</a><a class="hide-s" href="#start">Contact</a><a class="hide-s" href="/preview/client/">Client login</a><a class="book" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a meeting</a></nav>
   </header>
   <main>
   <!-- 1 Hero: the problem in one line (after Mercury's split hero) -->
   <div class="hero">
     <div class="live-grass" data-live-grass aria-hidden="true"></div>
     <div>
-      <p class="kick">Service 05 · Sea of Grass</p>
+      <p class="kick">Websites · Sea of Grass</p>
       <h1><b>Apps</b> <span class="t">for a real job</span></h1>
       <p class="lead">A spreadsheet or paper process is costing you hours each week.</p>
       <div class="acts"><a class="btn" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a meeting &rarr;</a><a class="btn q" href="#prices">See prices</a></div>
     </div>
-    <figure class="slotf " data-slot="apps-hero"><div class="slot" style="aspect-ratio:1.732/1" role="img" aria-label="Image to come: A small custom app on a laptop replacing a messy spreadsheet shown on a second screen; office desk, daylight."><span class="sid">Image · apps-hero · 1732 x 1000</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M50 26h200v116H50z M50 42h200 M58 34h4 M68 34h4 M92 42v100 M104 56h132 M104 72h132 M104 88h100 M104 104h132 M104 120h80"/></svg></div><figcaption class="slotcap">A small custom app on a laptop replacing a messy spreadsheet shown on a second screen; office desk, daylight.</figcaption></figure>
+    <figure class="slotf real" data-slot="apps-hero"><img class="slot-img " src="/preview/assets/work/packfold.webp" alt="Packfold: an orange carton folding on screen, with its inks and the .DXF button" width="1732" height="1000" loading="lazy"></figure>
   </div>
   <!-- 2 Who it's for -->
   <section aria-labelledby="h-who"><div class="sec-h"><div><p class="kick2">Who it&rsquo;s for</p><h2 id="h-who"><span class="t">Sound</span> <b>familiar?</b></h2></div><p>If you&rsquo;ve said one of these, this is for you.</p></div>
     <ul class="pains"><li>“We track jobs in a spreadsheet nobody trusts.”</li><li>“Half the team sees an old version.”</li><li>“There’s an app for everything except what we actually do.”</li></ul></section>
   <!-- 3 What you get -->
-  <section aria-labelledby="h-get"><div class="sec-h"><div><p class="kick2">What you get</p><h2 id="h-get"><span class="t">What</span> <b>you get</b></h2></div><p>Plainly, and written down before we start.</p></div>
-    <div class="gets"><div><figure class="slotf " data-slot="apps-get-1"><div class="slot" style="aspect-ratio:1.732/1" role="img" aria-label="Image to come: Sketches of an app on paper next to the finished app on a laptop; overhead desk shot."><span class="sid">Image · apps-get-1 · 1732 x 1000</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M50 26h200v116H50z M50 42h200 M58 34h4 M68 34h4 M92 42v100 M104 56h132 M104 72h132 M104 88h100 M104 104h132 M104 120h80"/></svg></div><figcaption class="slotcap">Sketches of an app on paper next to the finished app on a laptop; overhead desk shot.</figcaption></figure><h3>Design and build</h3><p>From the first sketch to an app you can install.</p></div><div><figure class="slotf " data-slot="apps-get-2"><div class="slot" style="aspect-ratio:1.732/1" role="img" aria-label="Image to come: The same app on a Mac, a Windows laptop and a phone; side by side."><span class="sid">Image · apps-get-2 · 1732 x 1000</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M70 40h120v74H70z M58 114h144l-10 12H68z M214 58h34v66h-34z M226 118h10"/></svg></div><figcaption class="slotcap">The same app on a Mac, a Windows laptop and a phone; side by side.</figcaption></figure><h3>Mac, Windows and web</h3><p>Wherever your team works.</p></div><div><figure class="slotf " data-slot="apps-get-3"><div class="slot" style="aspect-ratio:1.732/1" role="img" aria-label="Image to come: Two people at different desks seeing the same board in the app; split shot."><span class="sid">Image · apps-get-3 · 1732 x 1000</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M60 30h180v104H60z M60 46h180 M72 58h44v64H72z M128 58h44v40h-44z M184 58h44v52h-44z M80 70h28 M80 82h20 M136 70h28 M192 70h28 M192 82h20"/></svg></div><figcaption class="slotcap">Two people at different desks seeing the same board in the app; split shot.</figcaption></figure><h3>Shared and cared for</h3><p>Accounts, shared data, and updates after it ships.</p></div></div></section>
+  <section aria-labelledby="h-get"><div class="sec-h"><div><h2 id="h-get"><span class="t">What</span> <b>you get</b></h2></div><p>Plainly, and written down before we start.</p></div>
+    <div class="gets"><div><h3>Design and build</h3><p>From the first sketch to an app you can install.</p></div><div><h3>Mac, Windows and web</h3><p>Wherever your team works.</p></div><div><h3>Shared and cared for</h3><p>Accounts, shared data, and updates after it ships.</p></div></div></section>
   <!-- 4 Examples (after Front's story cards) -->
   <section aria-labelledby="h-ex"><div class="sec-h"><div><p class="kick2">Examples</p><h2 id="h-ex"><span class="t">What it</span> <b>looks like</b></h2></div><p>Our own work and studies until client stories are ready to share.</p></div>
-    <div class="exs"><figure class="ex"><figure class="slotf " data-slot="apps-example-1"><div class="slot" style="aspect-ratio:1.732/1" role="img" aria-label="Image to come: Talaria: our task app showing a project board; screen capture on a laptop."><span class="sid">Image · apps-example-1 · 1732 x 1000</span><svg viewBox="0 0 300 173" aria-hidden="true"><path d="M60 30h180v104H60z M60 46h180 M72 58h44v64H72z M128 58h44v40h-44z M184 58h44v52h-44z M80 70h28 M80 82h20 M136 70h28 M192 70h28 M192 82h20"/></svg></div><figcaption class="slotcap">Talaria: our task app showing a project board; screen capture on a laptop.</figcaption></figure><figcaption class="cap">Talaria, our task app</figcaption></figure><figure class="ex"><figure class="slotf real" data-slot="apps-example-2"><a href="/preview/studies/packfold/"><img class="slot-img" src="/preview/assets/work/packfold.webp" alt="Packfold: an orange carton folded on screen, with its inks and the .DXF button that writes the cutting file" width="1732" height="1000" loading="lazy"></a><figcaption class="slotcap">Packfold: fold a carton on screen, export the real dieline.</figcaption></figure><figcaption class="cap">Packfold, box to cutting file</figcaption></figure></div></section>
+    <div class="exs"><figure class="ex"><figure class="slotf real" data-slot="apps-example-1"><a href="/talaria/"><img class="slot-img " src="/preview/assets/work/talaria.webp" alt="The Talaria download page, with one row per kind of computer" width="1732" height="1000" loading="lazy"></a></figure><figcaption class="cap">Talaria, our task app</figcaption></figure><figure class="ex"><figure class="slotf real" data-slot="apps-example-2"><a href="/preview/studies/packfold/"><img class="slot-img" src="/preview/assets/work/packfold.webp" alt="Packfold: an orange carton folded on screen, with its inks and the .DXF button that writes the cutting file" width="1732" height="1000" loading="lazy"></a><figcaption class="slotcap">Packfold: fold a carton on screen, export the real dieline.</figcaption></figure><figcaption class="cap">Packfold, box to cutting file</figcaption></figure></div></section>
   <!-- 5 How it goes (after Hers' connected steps) -->
-  <section aria-labelledby="h-how"><div class="sec-h"><div><p class="kick2">How it goes</p><h2 id="h-how"><span class="t">How it</span> <b>goes</b></h2></div><p>Nothing goes live until you&rsquo;ve said yes.</p></div>
+  <section aria-labelledby="h-how"><div class="sec-h"><div><h2 id="h-how"><span class="t">How it</span> <b>goes</b></h2></div><p>Nothing goes live until you&rsquo;ve said yes.</p></div>
     <ol class="steps2"><li><span class="no">01</span><b>Look</b><p>What the job is and where the time goes.</p><span class="cue">Free</span></li><li><span class="no">02</span><b>Plan</b><p>Scope, price and date, in writing.</p><span class="cue">Fixed price</span></li><li><span class="no">03</span><b>Make</b><p>Working builds you try each week.</p><span class="cue">Weekly builds</span></li><li><span class="no">04</span><b>Care</b><p>Updates and fixes after launch.</p><span class="cue">Care plan</span></li></ol></section>
   <!-- 6 Prices (after Epidemic Sound's plan cards) -->
-  <section id="prices" aria-labelledby="h-prices"><div class="sec-h"><div><p class="kick2">Prices</p><h2 id="h-prices"><b>Prices</b></h2></div><p>Every project is different, so the price is fixed after a free call and written down before any work starts.</p></div>
+  <section id="prices" aria-labelledby="h-prices"><div class="sec-h"><div><h2 id="h-prices"><b>Prices</b></h2></div><p>Every project is different, so the price is fixed after a free call and written down before any work starts.</p></div>
     <div class="tiers"><div class="tier"><h3>Small tool</h3><span class="pr q">Fixed quote after the free call</span><ul><li>One job, done well</li><li>One platform</li><li>Handover</li></ul><a class="btn" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a call</a></div><div class="tier"><h3>Team app</h3><span class="pr q">Fixed quote after the free call</span><ul><li>Accounts and shared data</li><li>Mac, Windows and web</li><li>Training</li></ul><a class="btn" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a call</a></div><div class="tier"><h3>App and care</h3><span class="pr q">Fixed quote after the free call</span><ul><li>Everything in Team app</li><li>Updates</li><li>Support</li></ul><a class="btn" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a call</a></div></div></section>
   <!-- 7 Questions -->
-  <section aria-labelledby="h-faq"><div class="sec-h"><div><p class="kick2">Questions</p><h2 id="h-faq"><b>Questions</b></h2></div></div>
+  <section aria-labelledby="h-faq"><div class="sec-h"><div><h2 id="h-faq"><b>Questions</b></h2></div></div>
     <dl class="faq"><dt>Who owns the code?</dt><dd>You do.</dd></dl></section>
   <!-- 8 Book (after Whereby's closing CTA) -->
   <div class="start" id="start">
@@ -427,7 +428,7 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
   </div>
   <section aria-labelledby="h-more">
     <h2 id="h-more"><span class="t">Also from</span> <b>the studio</b></h2>
-    <ul class="others"><li><a href="../websites/"><span class="no">01</span>Websites and hosting</a></li><li><a href="../brand/"><span class="no">02</span>Brand and identity</a></li><li><a href="../characters/"><span class="no">03</span>3D characters and animation</a></li><li><a href="../live-visuals/"><span class="no">04</span>Live visuals</a></li><li><a href="../illustration/"><span class="no">06</span>Character and illustration</a></li></ul>
+    <ul class="others"><li><a href="../websites/">Websites and hosting</a></li><li><a href="../brand/">Brand and identity</a></li><li><a href="../characters/">3D characters and animation</a></li><li><a href="../live-visuals/">Live visuals</a></li><li><a href="../illustration/">Character and illustration</a></li></ul>
   </section>
   </main>
   <footer>Sea of Grass &middot; Berthoud, Colorado &middot; <a href="/preview/client/">Client login</a> &middot; <a href="/preview/lab/">The Lab</a></footer>
