@@ -17,11 +17,12 @@ const VS=`#version 300 es
 in vec2 p;void main(){gl_Position=vec4(p,0.,1.);}`;
 const FS=`#version 300 es
 precision highp float;out vec4 o;
-uniform vec2 uRes,uPtr;uniform float uTime,uPtrOn;
+uniform vec2 uRes,uPtr;uniform float uTime,uPtrOn,uBoil;
+float ih(uvec3 v){v=v*1664525u+1013904223u;v.x+=v.y*v.z;v.y+=v.z*v.x;v.z+=v.x*v.y;v^=v>>16u;v.x+=v.y*v.z;return float(v.x&0xffffu)/65535.;}   // an integer hash: grain with no diagonal artefacts
 float h1(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float n1(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h1(i),h1(i+vec2(1,0)),f.x),mix(h1(i+vec2(0,1)),h1(i+vec2(1,1)),f.x),f.y);}
 vec3 paper(vec2 fc){float f=n1(fc*vec2(.9,.11))*.5+n1(fc*vec2(.13,.8))*.5,t=n1(fc*.45),g=h1(floor(fc));
-  return vec3(.239,.094,.004)*(.93+.07*f+.05*t+.03*g);}   // chocolate paper: Beings' chapter colour, with fibres and tooth
+  return vec3(.478,.247,.118)*(.93+.07*f+.05*t+.03*g);}   // warm brown paper (#7A3F1E), with fibres and tooth
 void main(){
   vec2 fc=gl_FragCoord.xy,uv=fc/uRes;float bs=uRes.y/1000.,asp=uRes.x/uRes.y;
   vec2 sq=fc/(300.*bs);float tt=uTime*.04;
@@ -58,16 +59,20 @@ void main(){
   float gran=n1(fc*1.1)*.5+n1(fc*.3+7.)*.3+h1(floor(fc*.8))*.2;   // granulation in the paper's tooth
   DS*=.86+.28*gran;
   vec3 base=paper(fc),col=mix(base*pow(pig,vec3(DS*.9)),base+pig*.16,smoothstep(.5,1.2,bl)*lay*.6);   // sienna lifts where blooms gather, umber sinks at their rims
+  // printed grain, as Make-Up's paper boils: re-seeded about ten times a second, laid over like an overlay, with a fine dot screen
+  vec2 gq=floor(fc)+vec2(uBoil*37.,uBoil*91.);float gn=ih(uvec3(uvec2(gq),uint(uBoil)))*.7+n1(fc*.35+uBoil*3.1)*.3,ov=.5+(gn-.5)*.55;
+  col=mix(col,mix(2.*col*ov,1.-2.*(1.-col)*(1.-ov),step(.5,ov)),.6);
+  vec2 dsc=mod(fc,3.)-1.;col*=1.-.06*step(dot(dsc,dsc),.6);
   o=vec4(col,1.);}`;
 function sh(t,s){const x=gl.createShader(t);gl.shaderSource(x,s);gl.compileShader(x);if(!gl.getShaderParameter(x,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(x));return x;}
 let pr;try{pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,VS));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,FS));gl.bindAttribLocation(pr,0,'p');gl.linkProgram(pr);
   if(!gl.getProgramParameter(pr,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(pr));}catch(e){console.warn('wash',e);cv.remove();return;}
-const U=n=>gl.getUniformLocation(pr,n),uRes=U('uRes'),uTime=U('uTime'),uPtr=U('uPtr'),uPtrOn=U('uPtrOn');
+const U=n=>gl.getUniformLocation(pr,n),uRes=U('uRes'),uTime=U('uTime'),uBoil=U('uBoil'),uPtr=U('uPtr'),uPtrOn=U('uPtrOn');
 const vb=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vb);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,2,gl.FLOAT,false,0,0);
 const on=()=>document.documentElement.dataset.theme==='neu'&&!document.documentElement.hasAttribute('data-scheme');
 let W=0,H=0,act=false,vis=true,running=false,last=0,ptr=[0,0],pOn=0,pS=[0,0];const T0=performance.now()-60000*Math.random();
 function size(){const r=SEC.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,1.5);W=Math.round(r.width*d);H=Math.round(r.height*d);cv.width=W;cv.height=H;}
-function draw(now){gl.viewport(0,0,W,H);gl.useProgram(pr);gl.uniform2f(uRes,W,H);gl.uniform1f(uTime,(now-T0)/1000);
+function draw(now){gl.viewport(0,0,W,H);gl.useProgram(pr);gl.uniform2f(uRes,W,H);gl.uniform1f(uTime,(now-T0)/1000);gl.uniform1f(uBoil,Math.floor((now-T0)/100)%97);
   pS[0]+=(ptr[0]-pS[0])*.12;pS[1]+=(ptr[1]-pS[1])*.12;gl.uniform2f(uPtr,pS[0],pS[1]);gl.uniform1f(uPtrOn,pOn);gl.drawArrays(gl.TRIANGLES,0,3);}
 function frame(now){if(!act||!vis){running=false;return;}requestAnimationFrame(frame);if(now-last<40)return;last=now;draw(now);}   // about 25 a second: watercolour moves slowly
 function wake(){if(still){draw(performance.now());return;}if(!running&&act&&vis){running=true;requestAnimationFrame(frame);}}
