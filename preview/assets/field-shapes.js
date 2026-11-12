@@ -1,7 +1,7 @@
 /* Field shapes: what each style's "grass" is made of. The same grains, the same physics and the same harmonies (meadow,
    grid, S, visualizer, the falling close); only the piece changes. Dew keeps its blades (drawn by the page's own meadowDraw).
    Ledger: circles, a halftone of dots and rings with the red as its flowers. Ember: Y2K shapes with black outlines
-   (sparkles, stars, daisies, pills, hearts). Clay: soft clay pebbles. Dusk: moons, twinkles and dots.
+   (sparkles, stars, daisies, pills, hearts). Clay: houseplant leaves, sprouts and seed pods. Dusk: moons, twinkles and dots.
    window.sogShapes.kind() names the current style's piece ('grass' means: use the blades). */
 (()=>{
 const KIND={simple:'circles',brutal:'y2k',neu:'pebbles',dusk:'stars'};
@@ -27,11 +27,19 @@ function y2k(c,g,COL,FL){const d=g.d0*.95,P=[...FL,COL].filter(Boolean);
   const pick=i=>Math.floor(hsh(i+11)*P.length),shape=(c,g,i)=>S[Math.floor(hsh(i)*S.length)](c,g.x[i],g.y[i],g.a[i]+hsh(i+2)*6.28,d*(.42+.22*hsh(i+9)));
   batch(c,g,P,pick,shape,true,'#000',1.1);
   c.fillStyle='#000';c.beginPath();for(let i=0;i<g.n;i++){if(Math.floor(hsh(i)*S.length)!==2)continue;const r=d*.22;c.moveTo(g.x[i]+r,g.y[i]);c.arc(g.x[i],g.y[i],r,0,6.2832);}c.fill();}   // daisy hearts
-function pebbles(c,g,COL,FL){const d=g.d0,P=[tone(COL,-.18),COL,tone(COL,.22),...FL.slice(0,3)];
-  const shape=(c,g,i)=>{const rx=d*(.55+.3*hsh(i+4)),ry=rx*(.55+.3*hsh(i+6));c.moveTo(g.x[i]+rx*Math.cos(g.a[i]),g.y[i]+rx*Math.sin(g.a[i]));c.ellipse(g.x[i],g.y[i],rx,ry,g.a[i],0,6.2832);};
-  c.save();c.translate(0,2);batch(c,g,['rgba(58,32,22,.18)'],()=>0,shape,true,false);c.restore();   // a soft shadow under each
-  batch(c,g,P,i=>g.seed[i]?3+(i%Math.max(1,P.length-3)):Math.floor(hsh(i+1)*3),shape,true,false);
-  batch(c,g,['rgba(255,255,255,.35)'],()=>0,(c,g,i)=>{const r=d*.16;c.moveTo(g.x[i]-d*.2+r,g.y[i]-d*.18);c.arc(g.x[i]-d*.2,g.y[i]-d*.18,r,0,6.2832);},true,false);}   // the glint that makes it clay
+function pebbles(c,g,COL,FL){ // Clay (Refero: Houseplant + Beings): real, tactile, organic. Houseplant leaves with a chocolate midrib, little sprouts, terracotta seed pods and cones; flat fills, no shine
+  const d=g.d0,LV=['#A9B89A','#7F8F5C','#5E6E43','#C9C7A0'],INK='#3A2016',POD=['#C8643B','#D9A23A','#E4D6C2'];
+  const kindOf=i=>g.seed[i]?2:(hsh(i+21)<.16?1:0);
+  const leaf=(c,x,y,a,L,w)=>{const s=Math.sin(a),co=Math.cos(a),tx=x+s*L,ty=y-co*L,mx=x+s*L*.45,my=y-co*L*.45,nx=co*w,ny=s*w;   // an ovate leaf from its base to its tip
+    c.moveTo(x,y);c.quadraticCurveTo(mx-nx,my-ny,tx,ty);c.quadraticCurveTo(mx+nx,my+ny,x,y);};
+  const base=(g,i,L)=>{const a=g.a[i];return[g.x[i]-Math.sin(a)*L*.45,g.y[i]+Math.cos(a)*L*.45];};
+  batch(c,g,LV,i=>kindOf(i)===0?Math.floor(hsh(i+1)*LV.length):-1,(c,g,i)=>{const L=d*(1.6+.7*hsh(i+4)),[x,y]=base(g,i,L);leaf(c,x,y,g.a[i]+(hsh(i+5)-.5)*.5,L,L*.42);},true,false);
+  batch(c,g,[LV[1]],i=>kindOf(i)===1?0:-1,(c,g,i)=>{const L=d*.85,[x,y]=base(g,i,L*1.4),a=g.a[i];c.moveTo(x,y);c.lineTo(x+Math.sin(a)*L*.7,y-Math.cos(a)*L*.7);   // a sprout: a stem and two small leaves
+    const sx=x+Math.sin(a)*L*.7,sy=y-Math.cos(a)*L*.7;leaf(c,sx,sy,a-.7,L*.8,L*.32);leaf(c,sx,sy,a+.7,L*.8,L*.32);},true,true,1.1);
+  c.globalAlpha=.55;batch(c,g,[INK],i=>kindOf(i)===0&&hsh(i+7)<.7?0:-1,(c,g,i)=>{const L=d*(1.6+.7*hsh(i+4)),[x,y]=base(g,i,L),a=g.a[i]+(hsh(i+5)-.5)*.5;c.moveTo(x,y);c.lineTo(x+Math.sin(a)*L*.82,y-Math.cos(a)*L*.82);},false,true,.8);c.globalAlpha=1;   // the midribs
+  batch(c,g,POD,i=>kindOf(i)===2?i%POD.length:-1,(c,g,i)=>{const x=g.x[i],y=g.y[i],r=d*.42;
+    if(i%2){c.moveTo(x-r,y+r*.6);c.quadraticCurveTo(x,y-r*2.2,x+r,y+r*.6);c.quadraticCurveTo(x,y+r*1.1,x-r,y+r*.6);}   // a cone
+    else{c.moveTo(x+r,y);c.ellipse(x,y,r,r*.8,g.a[i],0,6.2832);}},true,INK,.8);}   // a seed pod
 function stars(c,g,COL,FL){const d=g.d0,P=[tone(COL,.55),tone(COL,.2),...FL];
   batch(c,g,P,i=>g.seed[i]?2+(i%Math.max(1,P.length-2)):(hsh(i+8)<.5?0:1),(c,g,i)=>{const x=g.x[i],y=g.y[i],k=hsh(i),s=d*(.3+.35*hsh(i+3));
     if(k<.3){c.moveTo(x+s,y);c.arc(x,y,s,-.9,3.6);c.arc(x+s*.45,y-s*.2,s*.8,3.3,-.6,true);c.closePath();}   // crescent
