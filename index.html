@@ -1244,7 +1244,7 @@ main.cb .cb-close .cb-home canvas{display:block;width:100%;height:100%}
 
 /* Clay's opening: a warm printed brown with cream lettering (Refero: Hungry Tiger's grain stack, Houseplant's cream on chocolate); the live wash and a boiling grain move underneath, the leaves bright on top */
 /* Dusk: a dark stage (Format's burgundy-black) with one warm follow-spot from above; dusk.js moves it with the pointer */
-html[data-theme="dusk"]:not([data-scheme]) main.cb .lf{--lf-ground:#0E0A07;--lf-ink:#EFE3CC;--lf-mark:#EFE3CC;background:radial-gradient(calc(var(--sr,22vw)*1.5) 105% at var(--sx,50%) -6%,rgba(242,190,104,.5),rgba(196,104,40,.2) 46%,rgba(14,2,2,0) 80%),#0E0A07}
+html[data-theme="dusk"]:not([data-scheme]) main.cb .lf{--lf-mark-fill:glow;--lf-ground:#0E0A07;--lf-ink:#EFE3CC;--lf-mark:#EFE3CC;background:radial-gradient(calc(var(--sr,22vw)*1.5) 105% at var(--sx,50%) -6%,rgba(var(--spot,242,190,104),.5),rgba(var(--spot,242,190,104),.16) 46%,rgba(14,10,7,0) 80%),#0E0A07}
 html[data-theme="dusk"]:not([data-scheme]) main.cb .lf .lf-title .cb-h{color:#EFE3CC}
 html[data-theme="neu"]:not([data-scheme]) main.cb .lf{--lf-ground:#FFFFFF;--lf-ink:#3D1801;--lf-mark:#3D1801;background:#FFFFFF}
 html[data-theme="neu"]:not([data-scheme]) main.cb .lf .lf-title .cb-h{color:#3D1801}
@@ -1565,6 +1565,9 @@ function markFill(path,key){const m=MFILL;
     c.fillStyle=gr;c.fill(path);c.lineWidth=3;c.strokeStyle='rgba(167,202,255,.95)';c.stroke(path);c.lineWidth=1.2;c.strokeStyle='rgba(255,255,255,.55)';c.save();c.translate(0,-1.5);c.stroke(path);c.restore();}
   else if(m==='light'){const gr=c.createLinearGradient(0,40,0,310);gr.addColorStop(0,'#030A1C');gr.addColorStop(.35,'#00358A');gr.addColorStop(.7,'#0068F0');gr.addColorStop(1,'#7DB8FF');
     c.fillStyle=gr;c.fill(path);c.lineWidth=2.4;c.strokeStyle='#A7CAFF';c.stroke(path);}
+  else if(m==='glow'){const t=(window.sogSpot&&window.sogSpot.tint)||[242,190,104],tc=`rgb(${t[0]|0},${t[1]|0},${t[2]|0})`;   // Dusk: the S is a lamp, its glow takes the spotlight's drifting hue
+    c.save();c.shadowColor=tc;c.shadowBlur=60;c.fillStyle=tc;c.fill(path);c.shadowBlur=22;c.fill(path);c.restore();
+    const gr=c.createLinearGradient(0,40,0,310);gr.addColorStop(0,'#FFF8EA');gr.addColorStop(.6,`rgb(${255-(255-t[0])*.35|0},${255-(255-t[1])*.35|0},${255-(255-t[2])*.35|0})`);gr.addColorStop(1,tc);c.fillStyle=gr;c.fill(path);}
   else if(m==='chalk'){c.fillStyle='#EEF1EA';c.fill(path);}
   else if(m==='meadow'){c.fillStyle='#1E3319';c.fill(path);c.save();c.clip(path);const FL=['#F3E7B0','#E8C34A','#7FA3D6','#C0603F','#4A7A3C','#6F9A52','#2E5226'];
     for(let i=0;i<520;i++){const x=40+((i*97.3)%360),y=40+((i*57.7)%270),k=i%FL.length;c.fillStyle=FL[k];c.beginPath();

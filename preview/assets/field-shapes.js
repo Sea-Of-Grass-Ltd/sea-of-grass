@@ -70,8 +70,9 @@ function stars(c,g,COL,FL){ // Dusk (Refero: Format, useformat.ai): a wild meado
   const mx=x=>{x=Math.imul(x^x>>>16,0x45d9f3b);x=Math.imul(x^x>>>16,0x45d9f3b);return((x^x>>>16)>>>0)/4294967296;},h=(i,s)=>mx(i*97+s*7919);
   const lit=i=>{const dx=(g.x[i]-S.x)/S.r;return Math.exp(-dx*dx)*S.k;};
   const lv=i=>Math.max(0,Math.min(5,Math.floor(lit(i)*5.2+h(i,9)*.8)));          // 0 silhouette .. 5 full light
-  const STEM=['#1C0806','#3A1609','#6A2E10','#A55A1E','#D58E3A','#F2BE68'];
-  const ROSE=['#241A10','#3E2C18','#6A4A26','#A57A40','#D9AE6A','#F6DDA6'];   // the flowers catch the light as pale gold, not red (Refero: Amrit Palace's ochre and cream, Slash's champagne)
+  const T=S.tint||[242,190,104],DK=[24,16,10],mixc=(a,b,f)=>`rgb(${a.map((v,j)=>v+(b[j]-v)*f|0).join(',')})`;   // lit pieces take the spotlight's current hue (dusk.js drifts it)
+  const STEM=[0,.18,.38,.6,.82,1].map(f=>mixc(DK,T,f));
+  const ROSE=[0,.2,.42,.66,.88,1].map(f=>mixc([36,26,16],T.map(v=>v+(255-v)*.45),f));   // flowers: a paler version of the light
   const k=i=>g.seed[i]&&h(i,1)<.45?9:Math.floor(h(i,2)*9);                                   // 0-5 grass, 6-7 seed stems, 8 umbels, 9 flowers
   const tip=(i,L,bend)=>{const a=g.a[i]+(h(i,3)-.5)*.5,bx=g.x[i],by=g.y[i]+L*.25,tx=bx+Math.sin(a)*L,ty=by-Math.cos(a)*L,cx=bx+Math.sin(a+bend)*L*.55,cy=by-Math.cos(a+bend)*L*.55;return[bx,by,cx,cy,tx,ty];};
   c.lineCap='round';
