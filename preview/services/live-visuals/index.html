@@ -413,6 +413,11 @@ html:not([data-theme="brutal"]) section.more h2 :is(b,.t){font:inherit!important
 html:not([data-theme="brutal"]) .others{gap:8px 22px}
 html:not([data-theme="brutal"]) .others a{border:0!important;background:none!important;box-shadow:none!important;backdrop-filter:none!important;padding:0;border-radius:0;font:600 clamp(15px,1.15vw,17px)/1.4 var(--sans);color:var(--fg);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px;text-decoration-color:currentColor}
 @media (max-width:760px){html:not([data-theme="brutal"]) main>.start .reach{justify-items:start}.promise{align-items:flex-start;flex-direction:column}}
+.synth{position:relative;aspect-ratio:1.732/1;border-radius:var(--r-card,12px);overflow:hidden;background:#111;cursor:pointer}
+.synth canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.synth-next{position:absolute;right:12px;bottom:12px;font:500 13px/1 var(--mono,"IBM Plex Mono",monospace);letter-spacing:.04em;color:#fff;background:rgba(0,0,0,.55);border:0;border-radius:999px;padding:9px 13px;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.synth-next:focus-visible{outline:2px solid #fff;outline-offset:2px}
+html[data-theme="brutal"] .synth{border:3px solid #000;border-radius:0}html[data-theme="brutal"] .synth-next{border-radius:0}
 </style>
 <script>
 (function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#120607',glass:'#EEF1F8',neu:'#EFE6D8',brutal:'#FFFDF5',simple:'#F4F1EA',editorial:'#f3f1ea'};
@@ -449,7 +454,7 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
       <p class="lead">Your event or venue needs a show that reacts to the room.</p>
       <div class="acts"><a class="btn" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a meeting &rarr;</a><a class="btn q" href="#prices">See prices</a></div>
     </div>
-    <figure class="slotf real" data-slot="live-visuals-hero"><a href="/preview/studies/fever/"><img class="slot-img " src="/preview/assets/work/fever.webp" alt="Fever: a street of coloured houses running to the horizon, breaking apart on the right" width="1732" height="1000" loading="lazy"></a></figure>
+    <figure class="slotf real synthf" data-slot="live-visuals-hero"><div class="synth" role="img" aria-label="Tristan's visual synthesizer running live: shapes and colours that change on their own. Tap it for the next mode."><canvas id="viz"></canvas><button type="button" class="synth-next" aria-label="Next mode"><span class="synth-name">Next mode</span> &rarr;</button></div><figcaption class="slotcap">Live: the synthesizer from tristan.design. Tap for the next of sixteen modes.</figcaption></figure>
   </div>
   <!-- 2 Who it's for -->
   <section aria-labelledby="h-who"><div class="sec-h"><div><p class="kick2">Who it&rsquo;s for</p><h2 id="h-who"><span class="t">Sound</span> <b>familiar?</b></h2></div><p>If you&rsquo;ve said one of these, this is for you.</p></div>
@@ -488,6 +493,10 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
   </main>
   <footer>Sea of Grass &middot; Berthoud, Colorado &middot; <a href="/preview/client/">Client login</a> &middot; <a href="/preview/lab/">The Lab</a></footer>
 </div>
+<script src="/preview/assets/synth.js" defer></script>
+<script>addEventListener('DOMContentLoaded',()=>{const E=window.EYESY,box=document.querySelector('.synth'),nm=box&&box.querySelector('.synth-name');if(!E||!box)return;
+const show=()=>{nm.textContent=E.MODES[E.S.mode].n};E.S.mode=Math.floor(Math.random()*(E.MODES.length-1));show();
+box.addEventListener('click',()=>{E.S.mode=(E.S.mode+1)%E.MODES.length;E.trigger();E.reset();show();});});</script>
 <script src="/preview/assets/live-grass.js" defer></script>
 </body>
 </html>
