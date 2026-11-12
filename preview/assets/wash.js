@@ -2,7 +2,7 @@
    made of many soft blooms that run together: each a little darker where it landed, lobed at its edge, with fine
    streaks from its middle and a faint tide line where its water stopped. They keep blooming and fading, slowly, and
    the pointer pushes them about as it passes, so the ground is never quite the same. Pigment is a filter on the
-   paper (thicker is darker and richer): apricot and peach above, sage, olive and a little ochre settling low.
+   paper (thicker is darker and richer): a sky, cerulean and ultramarine deepest overhead, thinning to paper at the horizon, a little apricot light just above the grass.
    The headline's corner is left nearly bare paper. Clay only; one still frame under reduced motion. */
 (function(){
 const SEC=document.getElementById('opening'),base=document.getElementById('lf-cv');
@@ -30,7 +30,7 @@ void main(){
   if(uPtrOn>.5){vec2 dh=P-uPtr;float r=.2;push=dh/r*exp(-dot(dh,dh)/(r*r))*1.6;}
   vec2 g0=sq+push*.45+vec2(-push.y,push.x)*.5*sin(uTime*.4);
   float bl=0.,tide=0.;vec3 tint=vec3(0.);float tw=0.;
-  float low=1.-smoothstep(.12,.62,uv.y);   // how near the ground: warm sky above, green pooling below
+  float el=smoothstep(.3,1.,uv.y),low=1.-smoothstep(.3,.55,uv.y);   // height in the sky: deep overhead, thinning to paper at the horizon, a warm glow just above it
   for(int sc=0;sc<2;sc++){
     vec2 g=g0*(sc==0?1.:1.8)+float(sc)*7.3,gi=floor(g);
     for(int y=-1;y<=1;y++)for(int x=-1;x<=1;x++){
@@ -48,12 +48,12 @@ void main(){
       bl+=w;
       tide=max(tide,(smoothstep(R*.9,R*.96,dist)-smoothstep(R*.96,R*1.03,dist))*life);
       // each bloom carries its own pigment: apricot or peach above, sage, olive or ochre low
-      vec3 warm=mix(vec3(.98,.76,.58),vec3(.97,.70,.66),h4),green=h4<.45?vec3(.70,.78,.60):(h4<.8?vec3(.63,.67,.47):vec3(.90,.76,.48));
-      tint+=mix(warm,green,clamp(low+(h4-.5)*.35,0.,1.))*w;tw+=w;}}
-  vec3 pig=tw>1e-4?tint/tw:mix(vec3(.98,.78,.62),vec3(.68,.74,.56),low);
-  // where the wash lies: a sun-warmed sky to the right, pooling green below, the headline's corner left as paper
-  vec2 tm=(uv-vec2(.3,.56))/vec2(.3,.2);float bare=exp(-dot(tm,tm));
-  float lay=clamp(.25+.75*smoothstep(.3,.95,uv.x)*smoothstep(.3,1.,uv.y)+.95*low,0.,1.2)*(1.-.75*bare);
+      vec3 blue=h4<.45?vec3(.62,.78,.93):(h4<.8?vec3(.60,.68,.90):vec3(.74,.79,.86)),warm=vec3(.98,.80,.64);   // cerulean, ultramarine, a grey-blue; apricot near the horizon
+      tint+=mix(blue,warm,clamp(low*.9+(h4-.5)*.2,0.,1.))*w;tw+=w;}}
+  vec3 pig=tw>1e-4?tint/tw:mix(vec3(.64,.76,.92),vec3(.98,.80,.64),low);
+  // where the wash lies: a graded sky, deepest overhead, nothing at the horizon but a little warm light; lighter behind the headline
+  vec2 tm=(uv-vec2(.3,.56))/vec2(.3,.18);float bare=exp(-dot(tm,tm));
+  float lay=(pow(el,.7)*1.05+low*smoothstep(.18,.32,uv.y)*.35)*(1.-.45*bare);
   float DS=lay*(.38+.62*clamp(bl,0.,1.3))+tide*.14*lay;
   float gran=n1(fc*1.1)*.5+n1(fc*.3+7.)*.3+h1(floor(fc*.8))*.2;   // granulation in the paper's tooth
   DS*=.86+.28*gran;
