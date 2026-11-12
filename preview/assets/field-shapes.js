@@ -65,13 +65,13 @@ function pebbles(c,g,COL,FL){ // Clay (Refero: Houseplant + Beings): real, tacti
     if(i%2){c.moveTo(x-r,y+r*.6);c.quadraticCurveTo(x,y-r*2.2,x+r,y+r*.6);c.quadraticCurveTo(x,y+r*1.1,x-r,y+r*.6);}   // a cone
     else{c.moveTo(x+r,y);c.ellipse(x,y,r,r*.8,g.a[i],0,6.2832);}},true,INK,.8);}   // a seed pod
 function stars(c,g,COL,FL){ // Dusk (Refero: Format, useformat.ai): a wild meadow on a dark stage under one warm spotlight. Grasses, tall seed stems and umbels,
-  // with a few dark red flowers; whatever stands in the pool of light is lit amber, everything outside it falls to a burgundy-black silhouette. The pointer moves the light (dusk.js)
+  // with a few pale gold flowers; whatever stands in the pool of light is lit amber, everything outside it falls to a burgundy-black silhouette. The pointer moves the light (dusk.js)
   const d=g.d0,S=window.sogSpot||{x:c.canvas.clientWidth*.5,r:c.canvas.clientWidth*.24,k:1},P=Math.PI;
   const mx=x=>{x=Math.imul(x^x>>>16,0x45d9f3b);x=Math.imul(x^x>>>16,0x45d9f3b);return((x^x>>>16)>>>0)/4294967296;},h=(i,s)=>mx(i*97+s*7919);
   const lit=i=>{const dx=(g.x[i]-S.x)/S.r;return Math.exp(-dx*dx)*S.k;};
   const lv=i=>Math.max(0,Math.min(5,Math.floor(lit(i)*5.2+h(i,9)*.8)));          // 0 silhouette .. 5 full light
   const STEM=['#1C0806','#3A1609','#6A2E10','#A55A1E','#D58E3A','#F2BE68'];
-  const ROSE=['#2A0706','#4E0E0A','#7E1710','#B4251A','#E2402A','#FF6A45'];
+  const ROSE=['#241A10','#3E2C18','#6A4A26','#A57A40','#D9AE6A','#F6DDA6'];   // the flowers catch the light as pale gold, not red (Refero: Amrit Palace's ochre and cream, Slash's champagne)
   const k=i=>g.seed[i]&&h(i,1)<.45?9:Math.floor(h(i,2)*9);                                   // 0-5 grass, 6-7 seed stems, 8 umbels, 9 flowers
   const tip=(i,L,bend)=>{const a=g.a[i]+(h(i,3)-.5)*.5,bx=g.x[i],by=g.y[i]+L*.25,tx=bx+Math.sin(a)*L,ty=by-Math.cos(a)*L,cx=bx+Math.sin(a+bend)*L*.55,cy=by-Math.cos(a+bend)*L*.55;return[bx,by,cx,cy,tx,ty];};
   c.lineCap='round';
