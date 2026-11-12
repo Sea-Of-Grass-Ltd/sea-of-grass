@@ -13,6 +13,15 @@
 <link rel="canonical" href="https://seaofgrass.studio/preview/services/characters/" />
 <meta name="theme-color" content="#090909" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Sea of Grass" />
+<meta property="og:url" content="https://seaofgrass.studio/preview/services/characters/" />
+<meta property="og:title" content="3D characters and animation · Sea of Grass" />
+<meta property="og:description" content="You need a mascot or character that moves, not a stock clip. 3D characters and animation from Sea of Grass, Berthoud, CO." />
+<meta property="og:image" content="https://seaofgrass.studio/preview/assets/share.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
 <title>3D characters and animation · Sea of Grass</title>
 <meta name="description" content="You need a mascot or character that moves, not a stock clip. 3D characters and animation from Sea of Grass, Berthoud, CO." />
 <link rel="icon" href="/preview/assets/favicon.svg" type="image/svg+xml" />
@@ -147,7 +156,7 @@ html:is([data-theme="neu"],[data-theme="brutal"],[data-theme="simple"],[data-the
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:400 17px/1.55 var(--sans)}
 a{color:inherit}
-.wrap{max-width:1120px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px),4vw);padding-right:max(20px,env(safe-area-inset-right,0px),4vw)}
+.wrap{max-width:1240px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px),4vw);padding-right:max(20px,env(safe-area-inset-right,0px),4vw)}
 header.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:max(18px,env(safe-area-inset-top,0px)) 16px;border-bottom:1px solid var(--rule)}
 .home{display:block;width:30px}.home img{display:block;width:100%;filter:invert(1)}
 .top nav{display:flex;gap:24px;font:400 15px/1 var(--sans)}
@@ -359,6 +368,7 @@ html[data-theme="dusk"]:not([data-scheme]) body{background:#120607}
 .slot-img{display:block;width:100%;height:auto;aspect-ratio:1.732/1;object-fit:cover;object-position:top;border-radius:var(--r-card,12px);background:#F4EAD9}.slot-img.fit-contain{object-fit:contain;object-position:center}html[data-theme="brutal"] .slot-img{border-radius:0;border:3px solid #000}
 /* 2026-11-12 repairs: one get-card or example fills its row when it is alone; text-only get cards */
 .exs:has(>figure.ex:only-child){grid-template-columns:minmax(0,1fr);max-width:720px}.hero>figure{min-width:0}.hero{min-width:0}
+.home{display:flex;align-items:center;gap:10px;width:auto;text-decoration:none;color:var(--fg);font:500 15px/1 var(--sans);white-space:nowrap}.home img{width:30px;flex:none}
 </style>
 <script>
 (function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#120607',glass:'#EEF1F8',neu:'#EFE6D8',brutal:'#FFFDF5',simple:'#F4F1EA',editorial:'#f3f1ea'};
@@ -381,7 +391,7 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
 <body>
 <div class="wrap">
   <header class="top">
-    <a class="home" href="/"><img src="/preview/assets/logo.svg" alt="Sea of Grass, home" width="34" height="25"></a>
+    <a class="home" href="/"><img src="/preview/assets/logo.svg" alt="" width="34" height="25"><span>Sea of Grass</span></a>
     <nav aria-label="Main"><a class="hide-s" href="/#services" aria-current="page">Services</a><a class="hide-s" href="/#work">Work</a><a class="hide-s" href="/#about">About</a><a class="hide-s" href="#start">Contact</a><a class="hide-s" href="/preview/client/">Client login</a><a class="book" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a meeting</a></nav>
   </header>
   <main>

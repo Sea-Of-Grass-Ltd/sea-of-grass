@@ -19,6 +19,10 @@
 <meta property="og:site_name" content="Sea of Grass" />
 <meta property="og:url" content="https://seaofgrass.studio/" />
 <meta property="og:title" content="Sea of Grass · Creative studio, Berthoud CO" />
+<meta property="og:image" content="https://seaofgrass.studio/preview/assets/share.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
 <meta property="og:description" content="Creative technology, websites and hosting, and branding for Northern Colorado." />
 <link rel="icon" href="/preview/assets/favicon.svg" type="image/svg+xml" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -983,6 +987,25 @@ html[data-theme="brutal"] main.cb{--cb-light:#FFD43B;--cb-light2:#FFD43B;--cb-in
 html[data-theme="brutal"] main.cb .cb-p{border-width:3px}
 html[data-theme="brutal"] body main.cb .cb-thesis blockquote em{background:none;box-shadow:none;padding:0}
 html[data-theme="brutal"] main.cb .cb-p h3::after{border-radius:0}
+/* second pass, 2026-11-12. Displace: name, a large plain price, a short scope line, one shared promise under the cards; one accent band only; no gradients behind reading sections. Harry Atkins: work as numbered records with a literal type; facts in the margin beside the people. */
+html body main.cb .cb-p .cb-price{display:grid;gap:4px;font:inherit}
+html body main.cb .cb-price b{font-family:var(--cb-hfont);font-weight:var(--cb-hw);font-size:clamp(26px,2.4vw,36px);line-height:1;letter-spacing:-.03em;color:inherit}
+html body main.cb .cb-price span{font:400 clamp(14px,1.05vw,16px)/1.4 var(--cb-body);opacity:.8;color:inherit}
+html body main.cb .cb-promise{max-width:1240px;margin:clamp(22px,2.4vw,34px) auto 0;font:400 clamp(18px,1.6vw,24px)/1.3 var(--cb-body);color:var(--cb-dark-ink,#fff)}
+html body main.cb .cb-type{display:block;font:500 12px/1.3 "IBM Plex Mono",Menlo,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--cb-ink);opacity:.7;margin-top:6px}
+html body main.cb .cb-feature b{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+html body main.cb .cb-feature b i,main.cb .cb-index li::after{font:500 13px/1 "IBM Plex Mono",Menlo,monospace;font-style:normal;letter-spacing:.08em;color:var(--cb-ink);opacity:.45}
+main.cb .cb-index{counter-reset:rec 1}main.cb .cb-index li{counter-increment:rec;position:relative}
+main.cb .cb-index li::after{content:"0" counter(rec);position:absolute;right:2px;top:18px}
+main.cb .cb-index a::after{display:none}
+html body main.cb .cb-index a{grid-template-columns:clamp(96px,11vw,150px) minmax(0,1fr);padding-right:34px}
+main.cb .cb-whogrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:clamp(24px,3vw,48px);max-width:1240px;margin:0 auto;align-items:start}
+html body main.cb .cb-facts{display:grid;gap:6px;margin:0;font:400 clamp(15px,1.15vw,17px)/1.4 var(--cb-body);color:var(--cb-ink)}
+html body main.cb .cb-facts a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+main.cb .cb-whogrid .cb-people{margin:0;max-width:none}
+html[data-theme="glass"] main.cb,html:not([data-theme]) main.cb{--cb-steps:#AEB7FF;--cb-steps-ink:#24123A;--cb-headband:#EEF1F8;--cb-thesis:#EEF1F8}
+html[data-theme="dusk"] main.cb{--cb-thesis:#F1E9DD}
+@media (max-width:760px){main.cb .cb-whogrid{grid-template-columns:1fr}}
 </style>
 <script>
 (function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#120607',glass:'#EEF1F8',neu:'#EFE6D8',brutal:'#FFFDF5',simple:'#F4F1EA',editorial:'#f3f1ea'};
@@ -1028,24 +1051,25 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
         <a class="cb-pimg" href="/preview/services/websites/" tabindex="-1" aria-hidden="true"><img src="/preview/assets/renders/websites-hero.webp" alt="" width="1732" height="966" loading="lazy"></a>
         <h3><a href="/preview/services/websites/">Websites</a></h3>
         <p>Fixes, new sites and hosting.</p>
-        <p class="cb-price">Fixes from $250. Sites from $2,000. Care from $50 a month.</p>
+        <p class="cb-price"><b>From $250</b><span>Fixes from $250. New sites from $2,000. Care from $50 a month.</span></p>
         <p class="cb-more"><a href="/preview/services/websites/">Websites and hosting</a><a href="/preview/services/apps/">Apps</a></p>
       </article>
       <article class="cb-p">
         <a class="cb-pimg" href="/preview/services/brand/" tabindex="-1" aria-hidden="true"><img src="/preview/work/duchess-nip-co/symbols.jpg" alt="" width="1500" height="927" loading="lazy"></a>
         <h3><a href="/preview/services/brand/">Brand</a></h3>
         <p>One look for your sign, menu, site and cards.</p>
-        <p class="cb-price">A fixed price, written down after a free call.</p>
+        <p class="cb-price"><b>Fixed quote</b><span>Priced after a free call and written down before work starts.</span></p>
         <p class="cb-more"><a href="/preview/services/brand/">Brand and identity</a><a href="/preview/services/illustration/">Illustration</a></p>
       </article>
       <article class="cb-p">
         <a class="cb-pimg" href="/preview/services/live-visuals/" tabindex="-1" aria-hidden="true"><img src="/preview/assets/home/characters.jpg" alt="" width="400" height="300" loading="lazy"></a>
         <h3><a href="/preview/services/live-visuals/">Creative tech</a></h3>
         <p>What a template can&rsquo;t do.</p>
-        <p class="cb-price">A fixed price, written down after a free call.</p>
+        <p class="cb-price"><b>Fixed quote</b><span>Priced after a free call and written down before work starts.</span></p>
         <p class="cb-more"><a href="/preview/services/live-visuals/">Live visuals</a><a href="/preview/services/characters/">3D characters</a></p>
       </article>
     </div>
+    <p class="cb-promise">Nothing goes live until you&rsquo;ve said yes.</p>
   </section>
 
   <section class="cb-band cb-work" id="work" aria-labelledby="cb-work-h">
@@ -1053,12 +1077,12 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
     <div class="cb-workgrid">
       <a class="cb-feature" href="/preview/work/duchess-nip-co/">
         <span class="cb-tile"><img src="/preview/work/duchess-nip-co/brand.webp" alt="The Duchess N-cat mark, an N whose tail curls at the top and whose head wears a collar, beside three flavor labels: Nip, Nip &amp; Lemon and Midnight Nip" width="1600" height="1000" loading="lazy"></span>
-        <b>Duchess Nip Co.</b><span class="cb-line">A whole brand from one letter: mark, labels, launch and a shop. A made-up client, a real job.</span>
+        <b>Duchess Nip Co. <i>01</i></b><span class="cb-type">Brand and identity &middot; case study</span><span class="cb-line">A whole brand from one letter: mark, labels, launch and a shop. A made-up client, a real job.</span>
       </a>
       <ul class="cb-index">
-        <li><a href="/preview/talaria/"><img src="/preview/assets/work/talaria-thumb.webp" alt="" width="780" height="520" loading="lazy"><span><b>Talaria</b><span class="cb-line">The task app we built for the studio.</span></span></a></li>
-        <li><a href="/preview/studies/packfold/"><img src="/preview/assets/work/packfold.webp" alt="" width="1732" height="1000" loading="lazy"><span><b>Packfold</b><span class="cb-line">Fold a carton on screen, then export the cut file.</span></span></a></li>
-        <li><a href="/preview/services/live-visuals/"><img class="cb-contain" src="/preview/assets/home/lumi.webp" alt="" width="695" height="743" loading="lazy"><span><b>Fantasmagoria</b><span class="cb-line">Our tool for live visuals, played like an instrument.</span></span></a></li>
+        <li><a href="/preview/talaria/"><img src="/preview/assets/work/talaria-thumb.webp" alt="" width="780" height="520" loading="lazy"><span><b>Talaria</b><span class="cb-type">App</span><span class="cb-line">The task app we built for the studio.</span></span></a></li>
+        <li><a href="/preview/studies/packfold/"><img src="/preview/assets/work/packfold.webp" alt="" width="1732" height="1000" loading="lazy"><span><b>Packfold</b><span class="cb-type">Web tool</span><span class="cb-line">Fold a carton on screen, then export the cut file.</span></span></a></li>
+        <li><a href="/preview/services/live-visuals/"><img class="cb-contain" src="/preview/assets/home/lumi.webp" alt="" width="695" height="743" loading="lazy"><span><b>Fantasmagoria</b><span class="cb-type">Live visuals</span><span class="cb-line">Our tool for live visuals, played like an instrument.</span></span></a></li>
       </ul>
     </div>
   </section>
@@ -1075,11 +1099,13 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
 
   <section class="cb-band cb-who" id="about" aria-labelledby="cb-who-h">
     <h2 class="cb-kick" id="cb-who-h">Who you&rsquo;ll work with</h2>
+    <div class="cb-whogrid">
+    <p class="cb-facts"><span>Berthoud, Colorado</span><a href="tel:+13037751333">303.775.1333</a><a href="mailto:hello@seaofgrass.studio">hello@seaofgrass.studio</a></p>
     <ul class="cb-people">
       <li><i aria-hidden="true">TB</i><span><b>Tristan Brewer</b><span class="cb-line">Design, 3D and live visuals</span></span></li>
       <li><i aria-hidden="true">BN</i><span><b>Bryce Nielsen</b><span class="cb-line">Websites, hosting and security</span></span></li>
     </ul>
-    <p class="cb-where">Two people in Berthoud, Colorado.</p>
+    </div>
   </section>
 
   <section class="cb-band cb-thesis" aria-label="Why it looks like this">
