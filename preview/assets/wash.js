@@ -59,10 +59,11 @@ void main(){
   float gran=n1(fc*1.1)*.5+n1(fc*.3+7.)*.3+h1(floor(fc*.8))*.2;   // granulation in the paper's tooth
   DS*=.86+.28*gran;
   vec3 base=paper(fc),col=mix(base*pow(pig,vec3(DS*.9)),base+pig*.16,smoothstep(.5,1.2,bl)*lay*.6);
-  col=mix(base,col,.3);   // the wash only breathes faintly under the print   // sienna lifts where blooms gather, umber sinks at their rims
+  col=mix(base,col,.3*(1.-dot(uBase,vec3(.3,.59,.11))*.85));   // on a light ground the wash all but vanishes: the paper stays white   // the wash only breathes faintly under the print   // sienna lifts where blooms gather, umber sinks at their rims
   // printed grain, fixed to the sheet, laid over like an overlay, with a fine dot screen
   vec2 gq=floor(fc)+vec2(uBoil*37.,uBoil*91.);float gn=ih(uvec3(uvec2(gq),uint(uBoil)))*.7+n1(fc*.35+uBoil*3.1)*.3,ov=.5+(gn-.5)*.55;
-  col=mix(col,mix(2.*col*ov,1.-2.*(1.-col)*(1.-ov),step(.5,ov)),.6);
+  float bL=dot(uBase,vec3(.3,.59,.11));   // a light ground takes a lighter hand: less grain, a paler print
+  col=mix(col,mix(2.*col*ov,1.-2.*(1.-col)*(1.-ov),step(.5,ov)),.6*(1.-bL*.75));
   vec2 dsc=mod(fc,3.)-1.;col*=1.-.06*step(dot(dsc,dsc),.6);
   // the Front Range engraving, printed tone on tone and alive: it sways in a slow wind (more toward the edges), parts around the pointer, and rises in as you scroll
   if(uHasEng>.5){
@@ -74,7 +75,7 @@ void main(){
     ei+=wind;ei.y+=(1.-uRise)*.07;
     vec2 tx=1./vec2(1376.,768.);float e=(texture(uEng,ei).a*2.+texture(uEng,ei+vec2(tx.x,0.)).a+texture(uEng,ei-vec2(tx.x,0.)).a+texture(uEng,ei+vec2(0.,tx.y)).a+texture(uEng,ei-vec2(0.,tx.y)).a)/6.;
     float fade=smoothstep(.34,.58,uv.y)*(.55+.45*uRise);
-    col*=1.-e*fade*.4;                                                   // darker silhouettes, multiplied into the sheet
+    col*=1.-e*fade*mix(.4,.16,bL);                                                   // darker silhouettes, multiplied into the sheet
     col=mix(col,col+vec3(.05,.045,.03),e*fade*smoothstep(.55,1.,e)*.25*gran);   // a little light caught on the deepest cuts, broken by the grain
   }
   o=vec4(col,1.);}`;
