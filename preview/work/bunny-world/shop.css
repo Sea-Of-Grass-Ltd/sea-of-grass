@@ -21,6 +21,7 @@ p{margin:0 0 12px}
 .demo a{color:#FFF6E9;text-decoration:none;display:inline-flex;align-items:center;gap:6px;vertical-align:middle}.demo a:hover{text-decoration:underline}
 .demo b{color:#fff;font-weight:500}
 /* the Bunny World wordmark: type only, Gabarito Black, the same setting as the landing page */
+.demo .bw-wm img{display:inline-block;height:20px;width:auto;vertical-align:middle;margin:-4px 0}
 .demo .bw-wm span{font:900 15px/1 Gabarito,Inter,sans-serif;letter-spacing:-.025em;color:#FFF6E9}
 
 /* controls */
