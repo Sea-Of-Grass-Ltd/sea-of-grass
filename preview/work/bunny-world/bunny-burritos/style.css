@@ -43,3 +43,7 @@ h2{font-size:clamp(46px,7vw,104px);line-height:.9;text-transform:uppercase;color
 .map{border:3px solid #faae33;border-radius:24px}
 .hours td{border-color:rgba(250,174,51,.3)}
 @media (max-width:760px){.nav{grid-template-columns:auto 1fr}.nav .pills:first-child{display:none}.visit{grid-template-columns:1fr}}
+
+/* hero photo test (2026-11-14): the photo fills the arched frame; the burrito and the rabbit sit in the lower middle, away from the corners the arch cuts off */
+.hero .art.photo{aspect-ratio:4/3;background:#823513}
+.hero .art.photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 62%}
