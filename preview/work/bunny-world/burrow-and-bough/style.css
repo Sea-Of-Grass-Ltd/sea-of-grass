@@ -1,0 +1,34 @@
+/* Burrow & Bough. Lead: Houseplant (Refero) – warm cream and chocolate, atmospheric interior scene, extended campaign caps, dense shopping grid after a broad pause.
+   Borrowed: Givingli (Refero) – heart red and dusty blue as whole object grounds; the warmth of something chosen and wrapped by a person. */
+:root{--bg:#f4f1e0;--ink:#321e1e;--muted:#6d5a52;--line:rgba(50,30,30,.2);--accent:#c42121;--on-accent:#f4f1e0;--field:#fffdf4;--r:0;--btn-r:0;--ctl-r:0;
+  --hf:Unbounded,sans-serif;--hw:700;--bf:"Instrument Sans",sans-serif;--mf:"Instrument Sans",sans-serif}
+.promo{background:#c42121;color:#f4f1e0;text-align:center;font:600 12px/1 var(--bf);letter-spacing:.14em;text-transform:uppercase;padding:10px}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:16px;background:#321e1e;color:#f4f1e0}
+.logo{font:700 16px/1 var(--hf);text-transform:uppercase;letter-spacing:.04em;text-decoration:none}
+.nav nav{display:flex;gap:22px;font:500 14px/1 var(--bf)}.nav a{text-decoration:none}.bag{border:1px solid #f4f1e0;padding:8px 12px}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);background:#321e1e;color:#f4f1e0}
+.hero .art svg{width:100%;height:100%;object-fit:cover}
+.panel{display:grid;align-content:center;gap:16px;padding:clamp(28px,5vw,80px)}
+.k{font:600 12px/1 var(--bf);letter-spacing:.16em;text-transform:uppercase;opacity:.7;margin:0}
+.hero h1{font-size:clamp(34px,4.6vw,72px);line-height:1;text-transform:uppercase;letter-spacing:-.01em}
+.hero p{max-width:40ch;font-size:17px;opacity:.88}
+.cats{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:380px}
+.cats a{border:1px solid rgba(244,241,224,.6);padding:14px;text-align:center;font:600 13px/1 var(--bf);letter-spacing:.12em;text-transform:uppercase;text-decoration:none}
+.cats a:hover{background:#f4f1e0;color:#321e1e}
+h2{font-size:clamp(26px,3.2vw,46px);text-transform:uppercase;line-height:1.05}
+.shop{padding-block:clamp(40px,6vw,88px)}
+.shop .head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:14px;margin-bottom:22px}.shop .head .chips{margin:0}
+.chip{border-radius:999px;border-color:#321e1e;font-weight:500}.chip[aria-pressed="true"]{background:#321e1e;color:#f4f1e0}
+.prods{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:22px 16px}
+.prod{display:grid;gap:8px;align-content:start}.prod[hidden]{display:none}
+.ob{aspect-ratio:1;display:grid;place-items:center}.ob svg{width:62%}
+.pi{display:flex;justify-content:space-between;gap:10px;align-items:baseline}.pi b{font-weight:600}
+.prod p{margin:0;font-size:14px;color:var(--muted)}
+.btn{text-transform:uppercase;letter-spacing:.1em;font-size:13px;background:#321e1e;color:#f4f1e0}
+.btn.ghost{border:1px solid #321e1e;color:#321e1e;background:transparent}.btn.ghost:hover{background:#321e1e;color:#f4f1e0}
+.cart{background:#e5e0ca;padding:22px}.cart h3{font:700 18px/1 var(--hf);text-transform:uppercase;margin-bottom:10px}
+.news{background:#5a6a92;color:#f4f1e0;padding-block:clamp(40px,6vw,80px);--line:rgba(244,241,224,.4)}
+.news input{background:#f4f1e0;color:#321e1e}.news .btn{background:#f4f1e0;color:#321e1e}
+.visit{padding-block:clamp(40px,6vw,80px)}.visit h2{margin-bottom:20px}
+.map{filter:sepia(.3)}
+@media (max-width:860px){.hero{grid-template-columns:1fr}.nav nav a:not(.bag){display:none}}
