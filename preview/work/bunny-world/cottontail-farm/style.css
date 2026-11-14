@@ -1,0 +1,38 @@
+/* Cottontail Farm. Lead: Farm Minerals (Refero) – cream and deep olive, immersive green product scenes in natural light, one light grotesk, compact technical captions in precise rows.
+   Borrowed: Arva (Refero) – pastoral pacing and a tiny flash of electric seed-lime, reserved for "now". */
+:root{--bg:#f4ede6;--ink:#404f1d;--muted:#636f3d;--line:rgba(64,79,29,.22);--accent:#404f1d;--on-accent:#f4ede6;--field:#fbf7f2;--r:2px;--btn-r:999px;--ctl-r:10px;
+  --hf:"Hanken Grotesk",sans-serif;--hw:300;--bf:"Hanken Grotesk",sans-serif;--mf:"Hanken Grotesk",sans-serif}
+.nav{position:absolute;z-index:5;left:0;right:0;display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:18px;color:#f4ede6}
+.logo{display:flex;align-items:center;gap:10px;font:500 15px/1 var(--bf);letter-spacing:.02em;text-decoration:none}.logo svg{width:16px}
+.nav nav{display:flex;gap:26px;font:400 13px/1 var(--bf);letter-spacing:.08em;text-transform:uppercase}.nav nav a{text-decoration:none;opacity:.85}
+.pill{display:inline-flex;align-items:center;min-height:42px;padding:0 18px;border-radius:999px;border:1px solid currentColor;font:500 13px/1 var(--bf);letter-spacing:.06em;text-transform:uppercase;text-decoration:none}
+.pill.light{background:#f4ede6;color:#1f2509;border-color:#f4ede6}
+.hero{position:relative;min-height:min(100vh,900px);display:grid;align-items:end;overflow:hidden;color:#f4ede6;background:#1f2509}
+.hero .art{position:absolute;inset:0}.hero .art svg{width:100%;height:100%}
+.hero::after{content:"";position:absolute;inset:auto 0 0;height:45%;background:linear-gradient(180deg,transparent,rgba(31,37,9,.85))}
+.over{position:relative;z-index:1;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:24px;padding-bottom:clamp(30px,5vw,64px)}
+.hero h1{font-size:clamp(48px,7.4vw,118px);line-height:.98;letter-spacing:-.035em;font-weight:300}
+.side{max-width:330px}.side p{font-size:15px;line-height:1.5;opacity:.9}
+.cap{font:500 11px/1.3 var(--bf);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
+h2{font-size:clamp(36px,4.6vw,68px);line-height:1;letter-spacing:-.03em}
+.h p{max-width:40ch;color:var(--muted)}
+.season-s,.csa,.faq{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.8fr);gap:clamp(18px,4vw,64px);padding-block:clamp(44px,6vw,96px);border-top:1px solid var(--line)}
+.season{width:100%;border-collapse:collapse;font-size:14px}
+.season th{font:500 11px/1 var(--bf);letter-spacing:.14em;text-transform:uppercase;text-align:center;padding:10px 2px;color:var(--muted)}.season th:first-child{text-align:left}
+.season td{border-top:1px solid var(--line);padding:14px 2px;text-align:center}.season td:first-child{text-align:left;font-size:16px}
+.season i{display:inline-block;width:80%;height:8px;border-radius:4px;background:#7c914c}
+.season .now{background:rgba(232,254,133,.45)}.season th.now{color:#404f1d}
+.upick{background:#404f1d;color:#f4ede6;padding-block:clamp(44px,6vw,96px);--line:rgba(244,237,230,.22);--field:#4a5b24;--muted:#cfd5b4;--accent:#e8fe85;--on-accent:#1f2509}
+.upick .cap{color:#cfd5b4}.upick .h p{color:#cfd5b4}
+.panel{background:#36431a;border-radius:4px;padding:clamp(18px,2.6vw,32px)}
+.slots button[aria-pressed="true"]{background:#e8fe85;color:#1f2509}
+.tot{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:baseline;font:500 12px/1 var(--bf);letter-spacing:.14em;text-transform:uppercase;margin:6px 0}.tot b{font:300 40px/1 var(--hf);letter-spacing:-.03em;text-transform:none}.tot span{letter-spacing:.06em;text-transform:none;font-size:14px}
+.btn{text-transform:uppercase;letter-spacing:.08em;font-size:13px}
+fieldset{border:0;padding:0;margin:0}
+.shares{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--line)}
+.share{display:grid;gap:4px;padding:18px;border-left:1px solid var(--line);cursor:pointer;font-weight:400}.share:first-child{border-left:0}
+.share input{position:absolute;opacity:0}.share .n{font:300 34px/1 var(--hf);letter-spacing:-.03em}.share .d{font-size:13px;color:var(--muted)}.share .p{font:500 13px/1 var(--bf);letter-spacing:.1em}
+.share:has(input:checked){background:#404f1d;color:#f4ede6}.share:has(input:checked) .d{color:#cfd5b4}
+.visit{background:#e9e0d4;padding-block:clamp(44px,6vw,96px)}
+.map{border-radius:4px;filter:sepia(.25) saturate(.8)}
+@media (max-width:860px){.nav nav{display:none}.season-s,.csa,.faq{grid-template-columns:1fr}.shares{grid-template-columns:1fr}.share{border-left:0;border-top:1px solid var(--line)}.share:first-child{border-top:0}.tbl{overflow-x:auto}}

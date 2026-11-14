@@ -1,80 +1,71 @@
 <!doctype html>
-<html lang="en" data-theme="glass">
+<html lang="en">
 <head>
 <script>addEventListener('load',function(){var go=function(){var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-61Q2DRMD3H';document.head.appendChild(s);};'requestIdleCallback' in window?requestIdleCallback(go,{timeout:4000}):setTimeout(go,2000);});
 window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-61Q2DRMD3H');</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0A0C11">
+<meta name="theme-color" content="#823513">
 <title>Bunny Burritos · Bunny World · Sea of Grass</title>
-<meta name="description" content="A demo restaurant site: menu with filters, online ordering, delivery links, reservations and live hours.">
+<meta name="description" content="A demo restaurant site: menu with filters, pickup ordering, delivery links, reservations and live hours.">
 <link rel="canonical" href="https://seaofgrass.studio/preview/work/bunny-world/bunny-burritos/">
 <meta property="og:type" content="website"><meta property="og:site_name" content="Sea of Grass"><meta property="og:url" content="https://seaofgrass.studio/preview/work/bunny-world/bunny-burritos/">
-<meta property="og:title" content="Bunny Burritos · Bunny World · Sea of Grass"><meta property="og:description" content="A demo restaurant site: menu with filters, online ordering, delivery links, reservations and live hours.">
+<meta property="og:title" content="Bunny Burritos · Bunny World · Sea of Grass"><meta property="og:description" content="A demo restaurant site: menu with filters, pickup ordering, delivery links, reservations and live hours.">
 <meta property="og:image" content="https://seaofgrass.studio/preview/assets/share.jpg"><meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/preview/assets/favicon.svg" type="image/svg+xml">
-<script>
-(function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1},BG={dusk:'#0E0A07',glass:'#0A0C11',neu:'#FFF4EC',brutal:'#D9D9D9',simple:'#FBFAF7'};
-function get(){try{var v=localStorage.getItem(K);return OK[v]?v:'glass';}catch(e){return 'glass';}}
-function apply(t){if(!OK[t])t='glass';var r=document.documentElement;if(r.getAttribute('data-theme')===t)return;r.setAttribute('data-theme',t);
-  var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',BG[t]);document.dispatchEvent(new CustomEvent('sog-theme',{detail:t}));}
-window.sogTheme={get:get,apply:apply,set:function(t){try{localStorage.setItem(K,t);}catch(e){}apply(t);}};
-apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValue);});})();
-</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,800&family=DM+Sans:wght@400;500;700&family=Libre+Caslon+Display&family=Libre+Franklin:wght@400;500;600;700&family=Syne:wght@700;800&family=Space+Grotesk:wght@400;500;700&family=Space+Mono&family=Instrument+Serif&family=Inter+Tight:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="../bw.css?v=3">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&family=Gabarito:wght@900&family=Inter:wght@400;600&display=swap">
+<link rel="stylesheet" href="../shop.css?v=8">
+<link rel="stylesheet" href="style.css?v=8">
 </head>
 <body>
-<header class="top">
-  <a class="home" href="/"><svg aria-hidden="true" viewBox="43.63 44.56 350.94 258.56" fill="currentColor"><path d="M 60.1360,299.5890 C 40.8560,283.5000 37.9720,248.8600 54.1230,229.1250 C 61.9590,219.4780 73.2066,213.0913 85.9080,212.4050 L 279.9170,212.3880 C 292.7328,211.6894 302.2259,200.5242 302.6140,188.1740 C 303.0171,175.3461 294.1087,163.3937 280.9850,162.4350 L 160.3860,162.3770 C 155.6830,162.3750 152.4580,158.1300 152.2660,154.1930 C 152.0640,150.0420 155.5000,145.5160 160.3230,145.5160 L 323.2740,145.5180 C 363.5090,146.7569 394.2264,180.5210 394.5670,220.2810 C 394.9023,259.4236 360.4620,297.7100 320.2520,299.1580 C 320.2520,299.1580 69.9310,307.7640 60.1360,299.5890 Z"/><path d="M 365.1390,47.9780 C 360.1170,47.5130 354.1470,47.1080 347.4230,46.7550 C 274.7440,42.9430 114.0820,45.2510 114.0820,45.2510 C 73.9994,46.9759 43.7290,80.8860 43.6260,120.3040 C 43.5230,159.4680 73.5199,193.9418 113.3820,195.4730 L 277.3270,195.8440 C 282.2870,195.8440 285.7460,192.0070 285.9600,187.6500 C 286.1670,183.4310 282.8680,178.9500 277.9760,178.9480 L 158.2750,178.9140 C 145.3037,178.2644 135.8119,166.8014 135.6040,154.2420 C 135.3960,141.6768 144.3477,129.9059 157.2620,128.9900 L 350.1640,128.8050 C 352.3160,128.8030 354.4280,128.6110 356.4990,128.2740 C 366.7370,126.6070 375.8830,121.0490 382.8160,113.4590 C 390.0330,105.5580 394.4238,95.7293 394.5320,85.6870 C 394.7250,67.7708 381.6430,52.8390 365.1390,47.9780 Z"/></svg><span>Sea of Grass</span></a>
-  <nav aria-label="Main"><a class="hide-s" href="/#services">Services</a><a class="hide-s" href="/#work" aria-current="page">Work</a><a class="hide-s" href="/preview/work/bunny-world/">Bunny World</a><a class="book" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a meeting</a></nav>
-</header>
-<div class="ribbon"><span><a href="../">Bunny World</a> &middot; a demo site by Sea of Grass</span><span>Bunny Burritos is made up. Everything works; nothing is sent.</span></div><main><section class="shop-hero wrap">
-  <div>
-    <span class="mark"><svg viewBox="0 0 60 84" fill="currentColor" aria-hidden="true"><ellipse cx="21" cy="20" rx="6.5" ry="19" transform="rotate(-12 21 20)"/><ellipse cx="39" cy="20" rx="6.5" ry="19" transform="rotate(12 39 20)"/><circle cx="30" cy="46" r="15"/><ellipse cx="30" cy="72" rx="20" ry="14"/></svg></span>
-    <p class="kick">Restaurant &middot; Mexican</p>
-    <h1>Bunny Burritos</h1>
-    <p class="lede">Carrot-chile burritos, street tacos and a salsa bar the size of a garden bed. Order ahead, book a table, or have it hopped over.</p>
-    <div class="acts"><a class="btn" href="#menu">Order for pickup</a><a class="btn ghost" href="#book">Book a table</a></div>
-  </div>
-  <div class="card">
-    <p class="kick">What this site does</p>
-    <ul class="does" style="margin-top:0;grid-template-columns:1fr"><li>A menu in real text that Google and phones can read, with vegetarian, gluten-free and spicy filters</li><li>Order online for pickup, with tax and a pickup time</li><li>Links to your delivery apps</li><li>Table reservations with times that are really free</li><li>Hours that say open or closed right now, and a map</li></ul>
-  </div>
-</section>
-<section class="sec wrap" id="menu"><p class="kick">Menu &amp; order online</p><h2>The menu</h2><p class="lede">Tap a filter, add what you want, and pick it up hot. Delivery? Use the app you like.</p>
-  <div class="split"><div>
-    <div class="chips" data-filter="bb-menu" role="group" aria-label="Filter the menu"><button class="chip" data-f="all" aria-pressed="true">Everything</button><button class="chip" data-f="veg" aria-pressed="false">Vegetarian</button><button class="chip" data-f="gf" aria-pressed="false">Gluten-free</button><button class="chip" data-f="spicy" aria-pressed="false">Spicy</button><button class="chip" data-f="kids" aria-pressed="false">Kits &amp; kids</button></div>
-    <ul class="list" id="bb-menu">
-      <li data-tags="veg"><b>The Big Carrot burrito<span class="tags"><span class="tag">Veg</span></span></b><span class="add"><button class="btn ghost" type="button" data-add="The Big Carrot burrito" data-price="12.5" aria-label="Add The Big Carrot burrito, $12.50">Add &middot; $12.50</button></span><small>Roasted carrot, black beans, rice, pickled onion, cotija, carrot-top salsa verde.</small></li>
-      <li data-tags="spicy"><b>Green chile pork burrito<span class="tags"><span class="tag hot">Spicy</span></span></b><span class="add"><button class="btn ghost" type="button" data-add="Green chile pork burrito" data-price="13.75" aria-label="Add Green chile pork burrito, $13.75">Add &middot; $13.75</button></span><small>Slow pork in Pueblo green chile, smothered, with rice and pinto beans.</small></li>
-      <li data-tags="gf"><b>Al pastor tacos (3)<span class="tags"><span class="tag">GF</span></span></b><span class="add"><button class="btn ghost" type="button" data-add="Al pastor tacos (3)" data-price="11" aria-label="Add Al pastor tacos (3), $11.00">Add &middot; $11.00</button></span><small>Corn tortillas, pineapple, cilantro, onion. Corn only, so gluten-free.</small></li>
-      <li data-tags="veg gf"><b>Mushroom asada tacos (3)<span class="tags"><span class="tag">Veg</span><span class="tag">GF</span></span></b><span class="add"><button class="btn ghost" type="button" data-add="Mushroom asada tacos (3)" data-price="10.5" aria-label="Add Mushroom asada tacos (3), $10.50">Add &middot; $10.50</button></span><small>Charred mushrooms, avocado salsa, radish. Corn tortillas.</small></li>
-      <li data-tags="spicy gf"><b>Habanero carnitas bowl<span class="tags"><span class="tag hot">Spicy</span><span class="tag">GF</span></span></b><span class="add"><button class="btn ghost" type="button" data-add="Habanero carnitas bowl" data-price="13" aria-label="Add Habanero carnitas bowl, $13.00">Add &middot; $13.00</button></span><small>Crisp carnitas, rice, beans, habanero crema. Hot, and we mean it.</small></li>
-      <li data-tags="kids veg"><b>Little Hopper quesadilla<span class="tags"><span class="tag">Veg</span></span></b><span class="add"><button class="btn ghost" type="button" data-add="Little Hopper quesadilla" data-price="6.5" aria-label="Add Little Hopper quesadilla, $6.50">Add &middot; $6.50</button></span><small>Cheese quesadilla, apple slices, a juice box. For kits (that is, baby rabbits).</small></li>
-      <li data-tags="veg gf spicy"><b>Chips &amp; three salsas<span class="tags"><span class="tag">Veg</span><span class="tag">GF</span></span></b><span class="add"><button class="btn ghost" type="button" data-add="Chips and three salsas" data-price="5.5" aria-label="Add Chips &amp; three salsas, $5.50">Add &middot; $5.50</button></span><small>Roja, verde and carrot-habanero.</small></li>
-      <li data-tags="veg gf kids"><b>Horchata, large<span class="tags"><span class="tag">Veg</span><span class="tag">GF</span></span></b><span class="add"><button class="btn ghost" type="button" data-add="Horchata, large" data-price="4" aria-label="Add Horchata, large, $4.00">Add &middot; $4.00</button></span><small>House-made, cinnamon and rice.</small></li>
-    </ul>
-    <p class="note" style="margin-top:14px">Delivery through:</p>
-    <div class="chips"><a class="chip" href="#" data-demo-link="Demo only: on a real site this opens your DoorDash page.">DoorDash &#8599;</a><a class="chip" href="#" data-demo-link="Demo only: on a real site this opens your Uber Eats page.">Uber Eats &#8599;</a><a class="chip" href="#" data-demo-link="Demo only: on a real site this opens your Grubhub page.">Grubhub &#8599;</a></div>
-  </div>
-  <aside class="card cart" id="bb-cart" data-cart data-tax="0.0705" data-empty="Nothing in your order yet. Add something from the menu." aria-label="Your order">
-  <h3 style="font-size:26px;margin-bottom:10px">Your order (<span data-count>0</span>)</h3>
+<div class="demo"><span><a href="../">&larr; Bunny World</a> &middot; a demo by <a href="/">Sea of Grass</a></span><span>Made-up shop. Everything works; nothing is sent.</span></div>
+<header class="nav wrap"><nav class="pills" aria-label="Bunny Burritos"><a href="#menu">Menu</a><a href="#book">Tables</a><a href="#visit">Find us</a></nav>
+<a class="logo" href="#top" aria-label="Bunny Burritos, top"><svg viewBox="-40 -100 80 190" aria-hidden="true"><g transform="translate(0 0) rotate(0) scale(1)"><ellipse cx="0" cy="52" rx="34" ry="32" fill="#faae33"/><path d="M-20 -14 C-34 -60 -32 -96 -16 -98 C-2 -96 -2 -56 -6 -18Z" fill="#faae33"/><path d="M20 -14 C34 -60 32 -96 16 -98 C2 -96 2 -56 6 -18Z" fill="#faae33"/><circle cx="0" cy="8" r="26" fill="#faae33"/><circle cx="-9" cy="4" r="3.2" fill="#823513" stroke="none"/><circle cx="9" cy="4" r="3.2" fill="#823513" stroke="none"/><path d="M-4 13 L4 13 L0 18Z" fill="#823513" stroke="none"/></g></svg><span>Bunny<br>Burritos</span></a>
+<nav class="pills r" aria-label="Order"><a class="hot" href="#menu">Order pickup</a></nav></header>
+<main id="top">
+<section class="hero wrap"><p class="rule">Carrot-chile burritos &middot; Berthoud, Colorado &middot; since the first carrot</p>
+<h1>Big Burritos</h1><p class="sub">Hopped over hot</p>
+<div class="art"><svg viewBox="0 0 800 600" role="img" aria-label="A bunny peeking over a giant foil-wrapped burrito, poster style">
+<defs><pattern id="bbd" width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="5.0" cy="5.0" r="2" fill="#faae33" opacity="0.5"/></pattern><clipPath id="bbc"><rect width="800" height="600"/></clipPath></defs>
+<g clip-path="url(#bbc)"><rect width="800" height="600" fill="#823513"/><path d="M400 330 L1020 330 L1018 384Z" fill="#9a4318"/><path d="M400 330 L1011 438 L999 490Z" fill="#9a4318"/><path d="M400 330 L983 542 L962 592Z" fill="#9a4318"/><path d="M400 330 L937 640 L908 686Z" fill="#9a4318"/><path d="M400 330 L875 729 L838 768Z" fill="#9a4318"/><path d="M400 330 L799 805 L756 838Z" fill="#9a4318"/><path d="M400 330 L710 867 L662 892Z" fill="#9a4318"/><path d="M400 330 L612 913 L560 929Z" fill="#9a4318"/><path d="M400 330 L508 941 L454 948Z" fill="#9a4318"/><path d="M400 330 L400 950 L346 948Z" fill="#9a4318"/><path d="M400 330 L292 941 L240 929Z" fill="#9a4318"/><path d="M400 330 L188 913 L138 892Z" fill="#9a4318"/><path d="M400 330 L90 867 L44 838Z" fill="#9a4318"/><path d="M400 330 L1 805 L-38 768Z" fill="#9a4318"/><path d="M400 330 L-75 729 L-108 686Z" fill="#9a4318"/><path d="M400 330 L-137 640 L-162 592Z" fill="#9a4318"/><path d="M400 330 L-183 542 L-199 490Z" fill="#9a4318"/><path d="M400 330 L-211 438 L-218 384Z" fill="#9a4318"/><path d="M400 330 L-220 330 L-218 276Z" fill="#9a4318"/><path d="M400 330 L-211 222 L-199 170Z" fill="#9a4318"/><path d="M400 330 L-183 118 L-162 68Z" fill="#9a4318"/><path d="M400 330 L-137 20 L-108 -26Z" fill="#9a4318"/><path d="M400 330 L-75 -69 L-38 -108Z" fill="#9a4318"/><path d="M400 330 L1 -145 L44 -178Z" fill="#9a4318"/><path d="M400 330 L90 -207 L138 -232Z" fill="#9a4318"/><path d="M400 330 L188 -253 L240 -269Z" fill="#9a4318"/><path d="M400 330 L292 -281 L346 -288Z" fill="#9a4318"/><path d="M400 330 L400 -290 L454 -288Z" fill="#9a4318"/><path d="M400 330 L508 -281 L560 -269Z" fill="#9a4318"/><path d="M400 330 L612 -253 L662 -232Z" fill="#9a4318"/><path d="M400 330 L710 -207 L756 -178Z" fill="#9a4318"/><path d="M400 330 L799 -145 L838 -108Z" fill="#9a4318"/><path d="M400 330 L875 -69 L908 -26Z" fill="#9a4318"/><path d="M400 330 L937 20 L962 68Z" fill="#9a4318"/><path d="M400 330 L983 118 L999 170Z" fill="#9a4318"/><path d="M400 330 L1011 222 L1018 276Z" fill="#9a4318"/><rect width="800" height="600" fill="url(#bbd)"/>
+<circle cx="400" cy="330" r="170" fill="#faae33"/>
+<g transform="translate(470 250) rotate(0) scale(1.5)"><ellipse cx="0" cy="52" rx="34" ry="32" fill="#fff4e2"/><path d="M-20 -14 C-34 -60 -32 -96 -16 -98 C-2 -96 -2 -56 -6 -18Z" fill="#fff4e2"/><path d="M20 -14 C34 -60 32 -96 16 -98 C2 -96 2 -56 6 -18Z" fill="#fff4e2"/><path d="M-15 -30 C-24 -62 -22 -82 -15 -84 C-8 -82 -7 -60 -9 -30Z" fill="#d1255c"/><path d="M15 -30 C24 -62 22 -82 15 -84 C8 -82 7 -60 9 -30Z" fill="#d1255c"/><circle cx="0" cy="8" r="26" fill="#fff4e2"/><circle cx="-9" cy="4" r="3.2" fill="#402011" stroke="none"/><circle cx="9" cy="4" r="3.2" fill="#402011" stroke="none"/><path d="M-4 13 L4 13 L0 18Z" fill="#402011" stroke="none"/></g>
+<g transform="rotate(-18 400 380)"><rect x="170" y="320" width="460" height="150" rx="75" fill="#f3c27a" stroke="#402011" stroke-width="8"/>
+<path d="M520 320 h35 a75 75 0 0 1 0 150 h-35Z" fill="#c9ced6" stroke="#402011" stroke-width="8"/>
+<path d="M540 330 l20 20 M545 380 l25 10 M540 430 l22 -14" stroke="#7b818b" stroke-width="5" stroke-linecap="round"/>
+<path d="M175 395 q40 -30 80 0 t80 0" fill="none" stroke="#e8a85a" stroke-width="7" stroke-linecap="round"/>
+<ellipse cx="190" cy="395" rx="22" ry="68" fill="#5a8f2c" stroke="#402011" stroke-width="6"/><circle cx="186" cy="370" r="9" fill="#d1255c"/><circle cx="194" cy="410" r="8" fill="#faae33"/><circle cx="183" cy="430" r="6" fill="#fff4e2"/></g>
+<g transform="translate(150 150) rotate(-25)"><path d="M0 0 C30 -10 70 10 80 50 C60 40 30 30 0 20Z" fill="#d1255c" stroke="#402011" stroke-width="5"/><path d="M0 10 l-14 -12" stroke="#5a8f2c" stroke-width="7" stroke-linecap="round"/></g>
+<g transform="translate(640 140) rotate(30)"><path d="M0 0 C30 -10 70 10 80 50 C60 40 30 30 0 20Z" fill="#5a8f2c" stroke="#402011" stroke-width="5"/><path d="M0 10 l-14 -12" stroke="#402011" stroke-width="7" stroke-linecap="round"/></g></g></svg></div>
+<div class="hero-row"><p>Street tacos, smothered burritos and a salsa bar the size of a garden bed. Order ahead, book a table, or have it hopped over.</p><a class="btn" href="#menu">Start an order</a></div></section>
+<section class="menu wrap" id="menu"><p class="rule">The menu &middot; order for pickup</p><h2>What's cooking</h2>
+<div class="split"><div><div class="chips" data-filter="bb-menu" role="group" aria-label="Filter the menu"><button class="chip" type="button" data-f="all" aria-pressed="true">Everything</button><button class="chip" type="button" data-f="veg" aria-pressed="false">Vegetarian</button><button class="chip" type="button" data-f="gf" aria-pressed="false">Gluten-free</button><button class="chip" type="button" data-f="spicy" aria-pressed="false">Spicy</button><button class="chip" type="button" data-f="kids" aria-pressed="false">For kits</button></div>
+<ul class="list" id="bb-menu">
+<li data-tags="veg"><b>The Big Carrot burrito<span class="tags"><span class="tag">Veg</span></span></b><span class="add"><button class="btn ghost" type="button" data-add="The Big Carrot burrito" data-price="12.5" aria-label="Add The Big Carrot burrito, $12.50">Add &middot; $12.50</button></span><small>Roasted carrot, black beans, rice, pickled onion, cotija, carrot-top salsa verde.</small></li>
+<li data-tags="spicy"><b>Green chile pork burrito<span class="tags"><span class="tag hot">Spicy</span></span></b><span class="add"><button class="btn ghost" type="button" data-add="Green chile pork burrito" data-price="13.75" aria-label="Add Green chile pork burrito, $13.75">Add &middot; $13.75</button></span><small>Slow pork in Pueblo green chile, smothered, with rice and pintos.</small></li>
+<li data-tags="gf"><b>Al pastor tacos (3)<span class="tags"><span class="tag">GF</span></span></b><span class="add"><button class="btn ghost" type="button" data-add="Al pastor tacos (3)" data-price="11" aria-label="Add Al pastor tacos (3), $11.00">Add &middot; $11.00</button></span><small>Corn tortillas, pineapple, cilantro, onion.</small></li>
+<li data-tags="veg gf"><b>Mushroom asada tacos (3)<span class="tags"><span class="tag">Veg</span><span class="tag">GF</span></span></b><span class="add"><button class="btn ghost" type="button" data-add="Mushroom asada tacos (3)" data-price="10.5" aria-label="Add Mushroom asada tacos (3), $10.50">Add &middot; $10.50</button></span><small>Charred mushrooms, avocado salsa, radish.</small></li>
+<li data-tags="spicy gf"><b>Habanero carnitas bowl<span class="tags"><span class="tag hot">Spicy</span><span class="tag">GF</span></span></b><span class="add"><button class="btn ghost" type="button" data-add="Habanero carnitas bowl" data-price="13" aria-label="Add Habanero carnitas bowl, $13.00">Add &middot; $13.00</button></span><small>Crisp carnitas, rice, beans, habanero crema. Hot, and we mean it.</small></li>
+<li data-tags="kids veg"><b>Little Hopper quesadilla<span class="tags"><span class="tag">Veg</span></span></b><span class="add"><button class="btn ghost" type="button" data-add="Little Hopper quesadilla" data-price="6.5" aria-label="Add Little Hopper quesadilla, $6.50">Add &middot; $6.50</button></span><small>Cheese quesadilla, apple slices, a juice box. For kits (baby rabbits).</small></li>
+<li data-tags="veg gf spicy"><b>Chips &amp; three salsas<span class="tags"><span class="tag">Veg</span><span class="tag">GF</span></span></b><span class="add"><button class="btn ghost" type="button" data-add="Chips and three salsas" data-price="5.5" aria-label="Add Chips &amp; three salsas, $5.50">Add &middot; $5.50</button></span><small>Roja, verde and carrot-habanero.</small></li>
+<li data-tags="veg gf kids"><b>Horchata, large<span class="tags"><span class="tag">Veg</span><span class="tag">GF</span></span></b><span class="add"><button class="btn ghost" type="button" data-add="Horchata, large" data-price="4" aria-label="Add Horchata, large, $4.00">Add &middot; $4.00</button></span><small>House-made, cinnamon and rice.</small></li>
+</ul>
+<div class="deliver"><span>Delivery through</span><a class="chip" href="#" data-demo-link="Demo only: on a real site this opens your DoorDash page.">DoorDash &#8599;</a><a class="chip" href="#" data-demo-link="Demo only: on a real site this opens your Uber Eats page.">Uber Eats &#8599;</a><a class="chip" href="#" data-demo-link="Demo only: on a real site this opens your Grubhub page.">Grubhub &#8599;</a></div></div>
+<aside class="cart " id="bb-cart" data-cart data-tax="0.0705" data-empty="Nothing yet. Add something from the menu." aria-label="Your order">
+  <h3>Your order <span class="count">(<span data-count>0</span>)</span></h3>
   <ul></ul><div class="sum"></div>
   <form class="form" data-demo="BB" data-ok="Order in. See you soon.">
-    
-    <label>When<select data-sum="When"><option>As soon as it is ready (about 20 min)</option><option>In 45 minutes</option><option>In an hour</option><option>At 6:00 pm</option><option>At 6:30 pm</option><option>At 7:00 pm</option></select></label>
+    <label>When<select data-sum="When"><option>As soon as it is ready (about 20 min)</option><option>In 45 minutes</option><option>In an hour</option><option>At 6:00 pm</option><option>At 7:00 pm</option></select></label>
     <label>Name<input name="name" autocomplete="name" required data-sum="Name"></label>
     <label>Phone, for a text when it's ready<input name="tel" type="tel" autocomplete="tel" required></label>
     <button class="btn" type="submit" data-checkout disabled>Place order</button>
     <div class="done" role="status"></div>
   </form>
-</aside>
-  </div>
-</section>
-<section class="sec wrap" id="book"><p class="kick">Reservations</p><h2>Book a table</h2><p class="lede">Pick a party size, a night and a time that's still open. Taken times are greyed out.</p>
-  <div class="split"><div class="card"><form class="form" data-demo="BBR" data-ok="Table booked.">
+</aside></div></section>
+<section class="tables" id="book"><div class="wrap split"><div><p class="rule">Reservations</p><h2>Save a table</h2><p class="lead">Pick a party size, a night and a time that's still open. Taken times are crossed out.</p>
+<div class="poster-note"><b>Back room</b> seats 24. Taco-bar catering for up to 150, with warmers.</div></div>
+<div class="panel"><form class="form" data-demo="BBR" data-ok="Table booked.">
   <div class="row"><label>Party size<select data-sum="Party"><option>2 bunnies</option><option>3 bunnies</option><option>4 bunnies</option><option>5 bunnies</option><option>6 bunnies</option><option>7 or more: we will call</option></select></label><label>Seating<select data-sum="Seating"><option>Anywhere</option><option>Patio</option><option>Booth</option></select></label></div>
   <div data-slots data-days="2,3,4,5,6" data-times="17:00,17:30,18:00,18:30,19:00,19:30,20:00" data-seed="bb"></div>
   <input type="hidden" name="date" data-sum="Day"><input type="hidden" name="time" required data-sum="Time" data-msg="Pick a day and a time first.">
@@ -82,19 +73,10 @@ apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValu
   <p class="err" role="alert"></p>
   <button class="btn" type="submit">Reserve</button>
   <div class="done" role="status"></div>
-</form></div>
-  <div class="card"><h3 style="font-size:24px;margin-bottom:10px">Big group or party?</h3><p>The back room seats 24. Taco bar catering for up to 150, delivered with warmers.</p><details><summary>Do you take walk-ins?</summary><p>Always. Reservations just hold a table for you on busy nights.</p></details><details><summary>Is the patio dog-friendly?</summary><p>Yes, and rabbit-friendly too.</p></details><details><summary>Can you cater?</summary><p>Order trays 48 hours ahead by phone or the form above.</p></details></div></div>
-</section>
-<section class="sec wrap" id="visit"><p class="kick">Hours &amp; map</p><h2>Come by</h2><p class="lede">The sign updates itself: it reads Colorado time and says whether the door is open right now.</p>
-  <div class="split"><div class="card"><div class="hours" data-hours='{"0": null, "1": null, "2": ["11:00", "21:00"], "3": ["11:00", "21:00"], "4": ["11:00", "21:00"], "5": ["11:00", "22:00"], "6": ["10:00", "22:00"]}'></div><p style="margin-top:16px"><b>412 Carrot Ave (made up), Berthoud, CO</b><br><a href="tel:9705550142">(970) 555-0142</a> &middot; <a href="#" data-demo-link="Demo only: on a real site this opens directions in your maps app.">Directions</a></p></div><iframe class="map" loading="lazy" title="Map of downtown Berthoud" src="https://www.openstreetmap.org/export/embed.html?bbox=-105.0880%2C40.3045%2C-105.0745%2C40.3120&amp;layer=mapnik"></iframe></div>
-  <p class="note" style="margin-top:10px">The map shows downtown Berthoud, standing in for a real address.</p></section>
-</main><section class="close wrap">
-  <h2>Run a restaurant? Your site can do this.</h2>
-  <p>A menu that reads on a phone, online ordering, delivery links, reservations and live hours. We build it in your own look, hook it to the tools you already use, and keep it running. Fixed price, in writing.</p>
-  <a class="btn" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a free 20-minute look</a>
-</section>
-<footer class="foot"><span>Sea of Grass &middot; Berthoud, Colorado</span><a href="/preview/work/bunny-world/">Back to Bunny World</a><span>Every shop here is made up. No real businesses, people or orders.</span></footer>
-<div class="fys-tab" role="group" aria-label="Find Your Style" inert><span class="ft-l">Find Your Style</span><button type="button" data-t="glass" aria-pressed="false">Dew</button><button type="button" data-t="neu" aria-pressed="false">Clay</button><button type="button" data-t="simple" aria-pressed="false">Ledger</button><button type="button" data-t="brutal" aria-pressed="false">Ember</button><button type="button" data-t="dusk" aria-pressed="false">Dusk</button></div>
-<script src="../bw.js?v=3" defer></script>
+</form></div></div></section>
+<section class="visit wrap" id="visit"><div><p class="rule">Find us</p><h2>412 Carrot Ave</h2><p class="lead">Made-up address, real map of downtown Berthoud. <a href="tel:9705550142">(970) 555-0142</a></p><div class="hours" data-hours='{"0": null, "1": null, "2": ["11:00", "21:00"], "3": ["11:00", "21:00"], "4": ["11:00", "21:00"], "5": ["11:00", "22:00"], "6": ["10:00", "22:00"]}'></div></div><iframe class="map" loading="lazy" title="Map of downtown Berthoud" src="https://www.openstreetmap.org/export/embed.html?bbox=-105.0880%2C40.3045%2C-105.0745%2C40.3120&amp;layer=mapnik"></iframe></section>
+</main>
+<section class="want"><div><h2>Run a restaurant? Your site can do all of this.</h2><p>Built in your own look, hooked to the tools you already use, kept running. Fixed price, in writing.</p></div><div style="display:flex;flex-wrap:wrap;gap:10px"><a href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a free 20-minute look</a><a class="back" href="../">Back to Bunny World</a></div></section>
+<script src="../bw.js?v=8" defer></script>
 </body>
 </html>
