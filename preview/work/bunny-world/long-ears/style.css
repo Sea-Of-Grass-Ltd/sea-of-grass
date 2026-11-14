@@ -27,4 +27,4 @@ input,select,textarea{border:0;border-bottom:1px solid #000;padding-inline:0}
 .btn{background:#193f32;justify-self:start}
 .quote{padding-block:clamp(40px,6vw,90px)}
 .revs{display:grid;gap:22px}.review{margin:0;border-top:1px solid #000;padding-top:16px}.review p{font:italic 400 20px/1.4 Lora,Georgia,serif}.stars{color:#193f32}
-@media (max-width:860px){.nav nav a:not(.q){display:none}.ledger{grid-template-columns:1fr}.nums{grid-template-columns:1fr}.area{grid-template-columns:1fr}}
+@media (max-width:860px){.hero{height:min(72vh,600px)}.nav nav a:not(.q){display:none}.ledger{grid-template-columns:1fr}.nums{grid-template-columns:1fr}.area{grid-template-columns:1fr}}

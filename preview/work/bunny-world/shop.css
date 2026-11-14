@@ -17,8 +17,8 @@ p{margin:0 0 12px}
 .note{font-size:14px;color:var(--muted)}
 
 /* the Sea of Grass strip: says it's a demo, leads back */
-.demo{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px 16px;padding:8px var(--side);background:#0A0C11;color:#C7C7C8;font:500 12px/1.4 "IBM Plex Mono",Menlo,monospace;letter-spacing:.02em}
-.demo a{color:#fff;text-decoration:none}.demo a:hover{text-decoration:underline}
+.demo{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px 16px;padding:8px var(--side);background:#1E1A3A;color:#d9d4e8;font:500 12px/1.4 "IBM Plex Mono",Menlo,monospace;letter-spacing:.02em}
+.demo a{color:#FFF6E9;text-decoration:none;display:inline-flex;align-items:center;gap:6px;vertical-align:middle}.demo a:hover{text-decoration:underline}
 .demo b{color:#fff;font-weight:500}
 
 /* controls */
@@ -117,9 +117,9 @@ details p{margin:10px 0 0;color:var(--muted)}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 
 /* the closing pitch from Sea of Grass, under every shop */
-.want{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px 32px;padding:clamp(28px,4vw,48px) var(--side);background:#0A0C11;color:#EEF1EA;font-family:Inter,system-ui,sans-serif}
-.want h2{font:600 clamp(24px,2.8vw,38px)/1.1 Manrope,Inter,sans-serif;letter-spacing:-.02em;max-width:24ch}
+.want{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px 32px;padding:clamp(28px,4vw,48px) var(--side);background:#1E1A3A;color:#FFF6E9;font-family:Inter,system-ui,sans-serif;border-top:3px solid #FF6B2C}
+.want h2{font:900 clamp(24px,2.8vw,38px)/1.05 Gabarito,Inter,sans-serif;letter-spacing:-.02em;max-width:24ch}
 .want p{margin:8px 0 0;color:#C7C7C8;max-width:56ch;font-size:16px}
-.want a{display:inline-flex;align-items:center;min-height:48px;padding:12px 20px;border-radius:14px;background:#509DFC;color:#0A0C11;font-weight:600;text-decoration:none;white-space:nowrap}
-.want .back{background:transparent;color:#EEF1EA;border:1px solid rgba(238,241,234,.3)}
+.want a{display:inline-flex;align-items:center;min-height:48px;padding:12px 20px;border-radius:14px;background:#FF6B2C;color:#1E1A3A;font-weight:700;text-decoration:none;white-space:nowrap}
+.want .back{background:transparent;color:#FFF6E9;border:2px solid rgba(255,246,233,.4)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
