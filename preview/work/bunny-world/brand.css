@@ -21,7 +21,8 @@ h2{font-size:clamp(34px,4.6vw,64px)}
 .credit{background:var(--ink);color:var(--cream);text-align:center;font:500 12px/1.4 var(--mf);letter-spacing:.04em;padding:9px 16px}
 .credit a{color:var(--carrot);font-weight:500}
 .nav{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:12px;background:color-mix(in srgb,var(--cream) 92%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--hair)}
-.logo{display:flex;align-items:center;gap:8px;text-decoration:none;font:900 26px/1 var(--hf);letter-spacing:-.035em}
+/* the Bunny World wordmark: type only (Gabarito Black, tight), no pictogram; the same setting on the shop pages */
+.logo{display:flex;align-items:center;gap:8px;text-decoration:none;font:900 28px/1 var(--hf);letter-spacing:-.035em}
 .nav nav{display:flex;align-items:center;gap:24px;font:700 16px/1 var(--hf)}.nav nav a{text-decoration:none}
 .nav .cta{background:var(--carrot);color:var(--ink);border:var(--line) solid var(--ink);border-radius:var(--rad);padding:10px 16px}
 .hero{background:linear-gradient(180deg,var(--sky) 0%,#c9dcff 38%,var(--blush) 72%,var(--cream) 100%);border-bottom:var(--line) solid var(--ink);overflow:hidden}
