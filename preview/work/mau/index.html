@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Mau’s Catnip Soda · case study · Sea of Grass</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* Draft, 2026-11-14: the opening of the Mau's case study in the site's Ember style
+   (concrete grey, poster black, sign yellow, coral; thick borders, hard shadows; Syne + Space Grotesk + Space Mono).
+   One big object on a flat field, after Teenage Engineering's product pages. */
+:root{--grey:#D9D9D9;--ink:#1F1F1F;--yellow:#FBB833;--coral:#FA4D43;--green:#027B49;--cream:#F2EADC;--b:4px}
+*{box-sizing:border-box;margin:0}
+html,body{background:var(--grey);color:var(--ink)}
+body{font:500 17px/1.5 "Space Grotesk",system-ui,sans-serif}
+a{color:inherit}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px clamp(16px,4vw,48px);background:var(--yellow);border-bottom:var(--b) solid var(--ink)}
+.bar .home{font:800 20px/1 Syne,sans-serif;text-decoration:none;letter-spacing:-.02em}
+.bar nav{display:flex;gap:clamp(12px,2vw,28px);align-items:center;font-weight:700}
+.bar nav a{text-decoration:none}
+.btn{display:inline-block;background:var(--ink);color:var(--yellow);font-weight:700;text-decoration:none;padding:12px 18px;border:var(--b) solid var(--ink);box-shadow:5px 5px 0 #fff;transition:transform .12s,box-shadow .12s}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #fff}
+.open{background:var(--yellow);border-bottom:var(--b) solid var(--ink);padding:clamp(28px,5vw,72px) clamp(16px,4vw,48px) clamp(36px,6vw,88px)}
+.open-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:clamp(24px,4vw,64px);align-items:center;max-width:1320px;margin:0 auto}
+.kick{font:700 13px/1.4 "Space Mono",monospace;letter-spacing:.14em;text-transform:uppercase;display:inline-block;background:var(--ink);color:var(--yellow);padding:6px 10px;margin-bottom:22px}
+h1{font:800 clamp(56px,9vw,148px)/1.04 Syne,sans-serif;letter-spacing:-.035em}
+h1 span{display:block;font-size:.48em;letter-spacing:-.02em;line-height:1.2;margin-top:.12em}
+.lede{font-size:clamp(19px,1.6vw,24px);line-height:1.45;max-width:30ch;margin:26px 0 30px}
+.lede i{font-style:normal;background:#fff;border:3px solid var(--ink);padding:0 .25em;white-space:nowrap}
+.stage{position:relative;background:var(--cream);border:var(--b) solid var(--ink);box-shadow:12px 12px 0 var(--ink);aspect-ratio:4/5;max-height:78vh;justify-self:end;width:100%}
+.stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+.stage .tag{position:absolute;left:-4px;top:-4px;font:700 12px/1 "Space Mono",monospace;letter-spacing:.12em;text-transform:uppercase;background:var(--coral);color:var(--ink);border:var(--b) solid var(--ink);padding:9px 12px;pointer-events:none;z-index:2}
+.facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--ink);color:var(--yellow);border-bottom:var(--b) solid var(--ink)}
+.facts div{padding:22px clamp(16px,2.4vw,32px);border-right:2px solid #3a3a3a}
+.facts div:last-child{border-right:0}
+.facts dt{font:700 12px/1.3 "Space Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:#bdbdbd;margin-bottom:8px}
+.facts dd{font:700 clamp(16px,1.4vw,20px)/1.3 "Space Grotesk",sans-serif}
+.next{max-width:1320px;margin:0 auto;padding:40px clamp(16px,4vw,48px) 80px;font:700 13px/1.4 "Space Mono",monospace;letter-spacing:.12em;text-transform:uppercase}
+@media (max-width:860px){
+  .open-grid{grid-template-columns:1fr}
+  .stage{justify-self:stretch;aspect-ratio:4/5;max-height:none;width:calc(100% - 8px);box-shadow:8px 8px 0 var(--ink)}
+  .bar .btn{padding:10px 12px;white-space:nowrap;font-size:15px}
+  html,body{overflow-x:hidden}
+  .facts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .facts div:nth-child(2){border-right:0}
+  .facts div:nth-child(-n+2){border-bottom:2px solid #3a3a3a}
+  .bar nav .hide-s{display:none}
+}
+</style>
+</head>
+<body>
+<header class="bar">
+  <a class="home" href="/">Sea of Grass</a>
+  <nav><a class="hide-s" href="/#work">Work</a><a class="hide-s" href="/#services">Services</a><a class="btn" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a meeting</a></nav>
+</header>
+<main>
+  <section class="open" aria-labelledby="h-mau">
+    <div class="open-grid">
+      <div>
+        <p class="kick">Case study 01 · Brand &amp; packaging</p>
+        <h1 id="h-mau">Mau&rsquo;s<span>Catnip Soda</span></h1>
+        <p class="lede">A cat made of three letters, M, A and U, and a can wrapped in ink and vines. <i>A made-up client, a real job.</i></p>
+        <a class="btn" href="#mark">See how the cat was drawn &darr;</a>
+      </div>
+      <div class="stage">
+        <span class="tag">Drag to turn</span>
+        <iframe src="can.html" title="The Spooky blackberry can, a live 3D model you can turn" loading="lazy"></iframe>
+      </div>
+    </div>
+  </section>
+  <dl class="facts">
+    <div><dt>Client</dt><dd>Mau&rsquo;s Catnip Soda (fictional)</dd></div>
+    <div><dt>Made</dt><dd>Mark, lockups, can label, tab</dd></div>
+    <div><dt>First flavour</dt><dd>Spooky &middot; blackberry</dd></div>
+    <div><dt>Studio</dt><dd>Berthoud, Colorado</dd></div>
+  </dl>
+  <p class="next" id="mark">Next: the letter-creature &mdash; draft, sections to come</p>
+</main>
+</body>
+</html>
