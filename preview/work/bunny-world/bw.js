@@ -116,10 +116,4 @@ $$('.ba input').forEach(r=>{const set=()=>r.closest('.ba').style.setProperty('--
 $$('[data-zips]').forEach(f=>f.addEventListener('submit',e=>{e.preventDefault();const z=$('input',f).value.trim(),o=$('.zip-out',f),Z=JSON.parse(f.dataset.zips);
   o.textContent=!/^\d{5}$/.test(z)?'Enter a five-digit zip code.':Z[z]?`Yes, we come to ${Z[z]}. ${f.dataset.yes||''}`:(f.dataset.no||'That one is outside our usual area, but ask anyway: we sometimes travel for bigger jobs.');}));
 
-/* ---- Find Your Style tab ---- */
-const tab=$('.fys-tab');if(tab){const bs=$$('button',tab);
-  const mark=()=>{const t=window.sogTheme?sogTheme.get():'glass';bs.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.t===t)));};
-  bs.forEach(b=>b.addEventListener('click',()=>{if(window.sogTheme)sogTheme.set(b.dataset.t);mark();}));
-  document.addEventListener('sog-theme',mark);mark();
-  const show=()=>{const up=scrollY>24;tab.classList.toggle('up',up);tab.toggleAttribute('inert',!up);};addEventListener('scroll',show,{passive:true});show();}
 })();

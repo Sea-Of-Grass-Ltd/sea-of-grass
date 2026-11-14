@@ -239,23 +239,6 @@ html[data-theme="simple"] .shopcard:nth-child(even){--aw1:#DB3334!important;--aw
 .shopcard .feats{font-size:15px;color:var(--soft);margin:0}
 .shopcard .for{font-size:14px;margin:0}
 
-/* ---- Find Your Style, the same bottom tab as the home page ---- */
-.fys-tab{position:fixed;z-index:40;left:50%;bottom:max(14px,env(safe-area-inset-bottom,0px));transform:translate(-50%,calc(100% + 40px));display:flex;align-items:center;gap:6px;
-  padding:6px 6px 6px 16px;background:color-mix(in srgb,var(--bg) 94%,transparent);color:var(--ink);border:1px solid var(--rule);border-radius:999px;
-  box-shadow:0 10px 30px rgba(0,0,0,.18);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:transform .45s cubic-bezier(.2,.8,.2,1);max-width:calc(100vw - 32px)}
-.fys-tab.up{transform:translate(-50%,0)}
-.fys-tab .ft-l{font:500 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;margin-right:6px}
-.fys-tab button{font-size:13px;font-weight:600;line-height:1;background:transparent;border:1px solid transparent;border-radius:999px;padding:10px 13px;cursor:pointer;min-height:38px;white-space:nowrap;color:var(--ink)}
-.fys-tab button:hover{border-color:var(--rule)}
-.fys-tab button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
-html[data-theme="brutal"] .fys-tab{background:#fff;border:3px solid #000;border-radius:0;box-shadow:6px 6px 0 #000;backdrop-filter:none}
-html[data-theme="brutal"] .fys-tab button{border-radius:0}
-html[data-theme="simple"] .fys-tab,html[data-theme="simple"] .fys-tab button{border-radius:0}
-@media (max-width:600px){
-  .fys-tab{width:calc(100vw - 32px);overflow-x:auto;scrollbar-width:none;justify-content:flex-start;padding:5px 5px 5px 12px;gap:2px}
-  .fys-tab::-webkit-scrollbar{display:none}
-  .fys-tab .ft-l{font-size:9px;letter-spacing:.08em;margin-right:4px;flex:0 0 auto}
-  .fys-tab button{padding:9px 6px;font-size:12px;min-height:34px;flex:0 0 auto}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 /* Syne runs wide at 800: Ember's big headings are set smaller so long names stay on the screen */
 h1,h2,h3{overflow-wrap:break-word}

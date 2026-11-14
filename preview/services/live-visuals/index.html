@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="simple">
 <head>
 <!-- Google tag (gtag.js) -->
 <script>/* analytics waits until the page has loaded and gone idle, so it never competes with the first view */addEventListener('load',function(){var go=function(){var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-61Q2DRMD3H';document.head.appendChild(s);};'requestIdleCallback' in window?requestIdleCallback(go,{timeout:4000}):setTimeout(go,2000);});</script>
@@ -148,7 +148,6 @@ html[data-scheme="pastel"]{--bg:#f6f3f8;--fg:#272238;--fg2:#332d47;--soft:#4d466
 html[data-scheme="teal"]{--bg:#071b1e;--fg:#e4f5f2;--fg2:#c9e6e1;--soft:#a1cdc6;--steel:#86b6af;--rule:rgba(228,245,242,.16);--violet:#2db3a5;--accent2:#4ebfb3;--on-accent:#04191b;--lav:#4fd6c8;--bar:rgba(7,27,30,.88);--card:#0d262a;--field:#051214;--panel:rgba(7,27,30,.92);--neu-dark:#040e0f;--neu-light:#1b2d30;color-scheme:dark}
 html[data-scheme="riso"]{--bg:#fffbef;--fg:#151515;--fg2:#222222;--soft:#474747;--steel:#5e5e5e;--rule:rgba(21,21,21,.16);--violet:#2350e6;--accent2:#2045c0;--on-accent:#ffffff;--lav:#c92a1a;--bar:rgba(255,251,239,.88);--card:#fff1d6;--field:#fffcf5;--panel:rgba(255,251,239,.92);--neu-dark:#d6d3c9;--neu-light:#fffefa;color-scheme:light}
 html[data-theme="neu"][data-scheme]{--violet:var(--bg);--accent2:var(--bg);--on-accent:var(--lav);--card:var(--bg);--field:var(--bg)}
-  -webkit-mask:radial-gradient(circle,transparent 0 44px,#000 45px);mask:radial-gradient(circle,transparent 0 44px,#000 45px)}
 /* end of theme tokens */
 
 html:is([data-theme="neu"],[data-theme="brutal"],[data-theme="simple"],[data-theme="editorial"]) .home img{filter:none}
@@ -527,19 +526,18 @@ html[data-theme="dusk"]:not([data-scheme]){--lf-flowers:#FF7777,#E8E6E3}
 </style>
 <script>
 (function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#120607',glass:'#EEF1F8',neu:'#EFE6D8',brutal:'#FFFDF5',simple:'#F4F1EA',editorial:'#f3f1ea'};
-function get(){try{var v=localStorage.getItem(K);return OK[v]?v:'dusk';}catch(e){return 'dusk';}}
+function get(){var v=document.documentElement.getAttribute('data-theme');return OK[v]?v:'glass';}
 var FONT={"dusk": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "glass": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Inter+Tight:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "neu": "https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "brutal": "https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap", "simple": "https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap", "editorial": "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter+Tight:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap", "letters": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Cormorant+Garamond:wght@300&family=Anybody:wdth,wght@125,800&family=Syne:wght@800&family=Inter+Tight:wght@300;700&family=IBM+Plex+Mono:wght@400;500&display=swap"};function font(k){if(!FONT[k]||document.getElementById('sog-f-'+k))return;var l=document.createElement('link');l.rel='stylesheet';l.id='sog-f-'+k;l.href=FONT[k];document.head.appendChild(l);}
 window.sogFonts={letters:function(){font('letters');}};
-function apply(t){if(!OK[t])t='dusk';font(t);var r=document.documentElement;if(r.getAttribute('data-theme')===t)return;r.setAttribute('data-theme',t);
-  var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',BG[t]);
+function apply(t){if(!OK[t])t='glass';font(t);var r=document.documentElement,m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',BG[t]);if(r.getAttribute('data-theme')===t)return;r.setAttribute('data-theme',t);
   document.dispatchEvent(new CustomEvent('sog-theme',{detail:t}));}
-window.sogTheme={get:get,apply:apply,set:function(t){try{localStorage.setItem(K,t);}catch(e){}apply(t);}};
-apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValue);});})();
-(function(){var K='sog-scheme',OK={"dusk": 1, "prairie": 1, "ink": 1, "terra": 1, "pastel": 1, "teal": 1, "riso": 1};function get(){try{var v=localStorage.getItem(K);return OK[v]?v:'own';}catch(e){return 'own';}}
+window.sogTheme={get:get,apply:apply};
+apply(get());})();
+(function(){var K='sog-scheme',OK={"dusk": 1, "prairie": 1, "ink": 1, "terra": 1, "pastel": 1, "teal": 1, "riso": 1};function get(){var v=document.documentElement.getAttribute('data-scheme');return OK[v]?v:'own';}
 function apply(s){if(!OK[s])s='own';var r=document.documentElement;if((r.getAttribute('data-scheme')||'own')===s)return;
   if(s==='own')r.removeAttribute('data-scheme');else r.setAttribute('data-scheme',s);document.dispatchEvent(new CustomEvent('sog-scheme',{detail:s}));}
-window.sogScheme={get:get,apply:apply,set:function(s){try{localStorage.setItem(K,s);}catch(e){}apply(s);}};
-apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValue);});})();
+window.sogScheme={get:get,apply:apply};
+apply(get());})();
 </script>
 <script>if(/[?&]draft\b/.test(location.search))document.documentElement.classList.add('draft');</script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@800&display=swap">

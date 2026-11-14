@@ -115,7 +115,7 @@ let active=on();cv.style.display=active?'block':'none';
 // ---- pointer: segments since the last frame
 const segs=[];let inG=false,ptr=null,down=false,downAt=0,lastAct=-1e9,running=false,visible=true;
 const toUV=e=>{const r=SEC.getBoundingClientRect();return[(e.clientX-r.left)/r.width,1-(e.clientY-r.top)/H];};
-const ui=e=>e.target.closest&&e.target.closest('button,a,input,.fys,.fys-tab');
+const ui=e=>e.target.closest&&e.target.closest('button,a,input,.fys');
 function push(a,b,rad,str){segs.push([a[0],a[1],b[0],b[1],rad,str]);if(segs.length>N)segs.shift();lastAct=performance.now();wake();}
 // over the grass the pointer is busy pushing blades: no ink there
 const inGrass=e=>{const r=SEC.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,f=Math.min(NL-1,Math.max(0,x*(NL-1))),k=Math.floor(f),L=LINE[k]+(LINE[Math.min(NL-1,k+1)]-LINE[k])*(f-k);return L>-1&&(e.clientY-r.top)>(1-L)*H-6;};   // below the resting meadow's top edge

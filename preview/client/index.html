@@ -189,19 +189,18 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(-
 </style>
 <script>
 (function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#090909',glass:'#0b1a24',neu:'#ece7e1',brutal:'#FFFDF5',simple:'#F1EEE6',editorial:'#f3f1ea'};
-function get(){try{var v=localStorage.getItem(K);return OK[v]?v:'dusk';}catch(e){return 'dusk';}}
+function get(){var v=document.documentElement.getAttribute('data-theme');return OK[v]?v:'glass';}
 var FONT={"dusk": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "glass": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Inter+Tight:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "neu": "https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "brutal": "https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap", "simple": "https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap", "editorial": "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter+Tight:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap", "letters": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Cormorant+Garamond:wght@300&family=Anybody:wdth,wght@125,800&family=Syne:wght@800&family=Inter+Tight:wght@300;700&family=IBM+Plex+Mono:wght@400;500&display=swap"};function font(k){if(!FONT[k]||document.getElementById('sog-f-'+k))return;var l=document.createElement('link');l.rel='stylesheet';l.id='sog-f-'+k;l.href=FONT[k];document.head.appendChild(l);}
 window.sogFonts={letters:function(){font('letters');}};
-function apply(t){if(!OK[t])t='dusk';font(t);var r=document.documentElement;if(r.getAttribute('data-theme')===t)return;r.setAttribute('data-theme',t);
-  var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',BG[t]);
+function apply(t){if(!OK[t])t='glass';font(t);var r=document.documentElement,m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',BG[t]);if(r.getAttribute('data-theme')===t)return;r.setAttribute('data-theme',t);
   document.dispatchEvent(new CustomEvent('sog-theme',{detail:t}));}
-window.sogTheme={get:get,apply:apply,set:function(t){try{localStorage.setItem(K,t);}catch(e){}apply(t);}};
-apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValue);});})();
-(function(){var K='sog-scheme',OK={"dusk": 1, "prairie": 1, "ink": 1, "terra": 1, "pastel": 1, "teal": 1, "riso": 1};function get(){try{var v=localStorage.getItem(K);return OK[v]?v:'own';}catch(e){return 'own';}}
+window.sogTheme={get:get,apply:apply};
+apply(get());})();
+(function(){var K='sog-scheme',OK={"dusk": 1, "prairie": 1, "ink": 1, "terra": 1, "pastel": 1, "teal": 1, "riso": 1};function get(){var v=document.documentElement.getAttribute('data-scheme');return OK[v]?v:'own';}
 function apply(s){if(!OK[s])s='own';var r=document.documentElement;if((r.getAttribute('data-scheme')||'own')===s)return;
   if(s==='own')r.removeAttribute('data-scheme');else r.setAttribute('data-scheme',s);document.dispatchEvent(new CustomEvent('sog-scheme',{detail:s}));}
-window.sogScheme={get:get,apply:apply,set:function(s){try{localStorage.setItem(K,s);}catch(e){}apply(s);}};
-apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValue);});})();
+window.sogScheme={get:get,apply:apply};
+apply(get());})();
 </script>
 </head>
 <body>
