@@ -1,6 +1,6 @@
 # Bunny World: Refero references
 
-**Logo:** a leaping bunny drawn as one swooping shape on two equal governing circles (`logo/mark-construction.svg`). The body is the arc between them, the ear a negative-space slot, the tail and eye dots. The twist: it leaps out of a browser window. Its unit runs the brand: 1m = 8px, lines ½m = 4px, corners 2½m = 20px (the head), dots ⅓m, shadows drop 1m. Tagline: "Hop in. Find yours." Variants on the sheet: Leap, Window (built), Badge. The earlier letter-creature options are kept as `logo/letter-creature-options-superseded.svg`.
+**Logo:** not settled. A plain "Bunny World" wordmark in Gabarito stands in until Tristan settles the mark another way. Tagline: "Hop in. Find yours."
 
 Each shop has its own look, led by one Refero style and borrowing a trait from a second. Nothing is copied wholesale: the palettes, fonts and layouts are rebuilt for a made-up bunny business. Every stylesheet also names its references in its first comment.
 
