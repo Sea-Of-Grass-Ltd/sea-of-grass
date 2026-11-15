@@ -148,3 +148,52 @@ h2{font-size:clamp(34px,4.6vw,72px);line-height:.95;letter-spacing:-.04em}
 @media (max-width:980px){.tab-open{display:none}}
 @media (max-width:760px){.open-dev.ph{display:inline-flex;position:relative;left:auto;bottom:auto;transform:none;margin-top:-22px;order:2}.open-dev.ph:hover{transform:translateY(-2px)}.callouts{order:3}.stage{margin-bottom:0}
   .worry{grid-template-columns:auto 1fr;gap:12px}.worry .w-ch{display:none}.worry .w-ic{width:38px;height:38px}}
+
+/* ---- Buy dropdown (2026-11-15): plans from the price strip, a look picker, the shared cart ---- */
+.buy{position:relative}
+.buy-btn{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:9px 14px 9px 16px;border-radius:999px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);font:600 15px/1 var(--bf);cursor:pointer;transition:background .15s,color .15s}
+.buy-btn svg{transition:transform .2s var(--ease)}
+.buy-btn:hover,.buy.on .buy-btn{background:var(--ink);color:var(--cream)}
+.buy.on .buy-btn svg{transform:rotate(180deg)}
+.buy-btn:focus-visible,.buy-add:focus-visible,.buy-pick select:focus-visible,.buy-foot a:focus-visible{outline:3px solid var(--carrot);outline-offset:2px}
+.buy-panel{position:absolute;right:0;top:calc(100% + 12px);width:min(520px,calc(100vw - 32px));z-index:30;opacity:0;transform:translateY(-6px) scale(.985);transform-origin:top right;transition:opacity .18s,transform .22s var(--ease)}
+.buy-panel.in{opacity:1;transform:none}
+.buy-in{background:#fff;color:var(--ink);border:1px solid var(--hair);border-radius:22px;box-shadow:0 30px 70px rgba(30,26,58,.22);padding:8px;overflow:hidden}
+.buy-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center;padding:14px 14px;border-radius:16px}
+.buy-row+.buy-row{border-top:1px solid var(--hair);border-radius:0}
+.buy-row.site{grid-template-columns:66px minmax(0,1fr) auto;background:var(--cream);border-radius:16px}
+.buy-row.site+.buy-row{border-top:0}
+.buy-look img{display:block;width:66px;height:auto;border-radius:10px;box-shadow:0 6px 16px rgba(30,26,58,.18);aspect-ratio:390/844;object-fit:cover;background:#eee}
+.buy-k{margin:0 0 4px;font:500 11px/1 var(--mf);letter-spacing:.12em;text-transform:uppercase;color:var(--carrot)}
+.buy-txt h3{margin:0;font:800 19px/1.15 var(--hf);letter-spacing:-.01em}
+.buy-note{margin:4px 0 0;font:400 14px/1.4 var(--bf);color:var(--soft)}
+.buy-pick{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin-top:8px;font:500 13px/1 var(--bf);color:var(--soft)}
+.buy-pick select{min-height:36px;padding:6px 30px 6px 12px;border:1px solid var(--hair);border-radius:999px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6' fill='none' stroke='%231E1A3A' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 10px center/14px;-webkit-appearance:none;appearance:none;font:600 14px/1 var(--bf);color:var(--ink);cursor:pointer;max-width:100%}
+.buy-act{display:grid;justify-items:end;gap:8px}
+.buy-pr{margin:0;font:800 22px/1 var(--hf);letter-spacing:-.01em;white-space:nowrap;font-variant-numeric:lining-nums}.buy-pr em{font:500 12px/1 var(--bf);font-style:normal;color:var(--soft);margin-right:4px}.buy-pr small{font:500 13px/1 var(--bf);color:var(--soft)}
+.buy-add{min-height:40px;padding:10px 16px;border-radius:999px;border:0;background:var(--ink);color:var(--cream);font:600 14px/1 var(--bf);cursor:pointer;white-space:nowrap;transition:background .15s}
+.buy-add:hover{background:#352f5c}
+.buy-row.site .buy-add{background:var(--carrot);color:var(--ink)}.buy-row.site .buy-add:hover{background:#ff8450}
+.buy-add.in{background:#e3f4ea;color:#1f6b40}.buy-add:disabled{cursor:default}
+.buy-foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 12px;padding:12px 14px 8px;border-top:1px solid var(--hair);font:500 13px/1.3 var(--bf)}
+.buy-foot a{color:var(--ink)}.buy-foot span{color:var(--soft)}
+/* the shared cart button, in Bunny World's header */
+.nav .shop-cartbtn{min-height:40px}
+@media (max-width:760px){
+  .nav nav{gap:8px}
+  .buy{position:static}
+  .buy-btn{padding:9px 12px 9px 14px}
+  .buy-panel{position:fixed;left:12px;right:12px;width:auto;top:calc(var(--navh,64px) + 8px);max-height:calc(100vh - var(--navh,64px) - 24px);overflow:auto;transform-origin:top center}
+  .buy-row{grid-template-columns:minmax(0,1fr);gap:10px}
+  .buy-row.site{grid-template-columns:56px minmax(0,1fr)}
+  .buy-row.site .buy-act{grid-column:1/-1}
+  .buy-look img{width:56px}
+  .buy-act{grid-auto-flow:column;justify-content:space-between;align-items:center;justify-items:start}
+  .nav .shop-cartbtn .shop-cartlbl{display:none}
+}
+@media (prefers-reduced-motion:reduce){.buy-panel,.buy-btn svg{transition:none}}
+/* the shared drawer is display:grid even while hidden, so its shadow showed at the right edge: keep it out until opened */
+.shop-drawer[hidden]{display:none}
+.nav nav .buy-foot a{display:inline}
+.logo span{white-space:nowrap}
+@media (max-width:440px){.nav .cta{display:none}.nav nav{gap:6px}}
