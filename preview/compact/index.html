@@ -668,29 +668,6 @@ html[data-theme="dusk"] .lf{--lf-ground:#0d0a14;--lf-ink:#f7f9fa;--lf-mark:#f7f9
 html[data-theme="editorial"] .lf{--lf-ground:#f3f1ea;--lf-ink:#1f2a24;--lf-mark:#1f2a24;--lf-grass:#55705f}
 html[data-scheme] .lf{--lf-ground:var(--bg);--lf-ink:var(--fg);--lf-mark:var(--fg);--lf-grass:var(--lav)} /* a chosen color scheme carries into the opening */
 .lf .lf-sr{color:var(--lf-ink)}
-/* ---- Find Your Style: the bottom tab that slides up once you scroll ---- */
-.fys-tab{position:fixed;z-index:40;left:50%;bottom:max(14px,env(safe-area-inset-bottom,0px));transform:translate(-50%,calc(100% + 40px));display:flex;align-items:center;gap:6px;
-  padding:6px 6px 6px 16px;background:color-mix(in srgb,var(--bg) 94%,transparent);color:var(--fg);border:1px solid var(--rule,currentColor);border-radius:999px;
-  box-shadow:0 10px 30px rgba(0,0,0,.18);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:transform .45s cubic-bezier(.2,.8,.2,1);max-width:calc(100vw - 32px)}
-.fys-tab.up{transform:translate(-50%,0)}
-.fys-tab .ft-l{font:500 11px/1 var(--mono,"IBM Plex Mono",monospace);letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;margin-right:6px;color:var(--fg)}
-.fys-tab button{font-family:inherit;font-size:13px;font-weight:600;line-height:1;color:var(--fg);background:transparent;border:1px solid transparent;border-radius:999px;padding:10px 13px;cursor:pointer;min-height:38px;white-space:nowrap;box-shadow:none}
-.fys-tab button:hover{border-color:var(--rule,currentColor)}
-.fys-tab button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
-.fys-tab button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
-html[data-theme="brutal"] .fys-tab{background:#fff;color:#000;border:3px solid #000;border-radius:0;box-shadow:6px 6px 0 #000;backdrop-filter:none;-webkit-backdrop-filter:none;--fg:#000;--bg:#fff}
-html[data-theme="brutal"] .fys-tab button{border-radius:0;color:#000}html[data-theme="brutal"] .fys-tab button[aria-pressed="true"]{background:#000;color:#fff}
-html[data-theme="neu"] .fys-tab{border:0;box-shadow:8px 8px 16px var(--neu-dark,#c4b8ab),-8px -8px 16px var(--neu-light,#fff)}
-html[data-theme="simple"] .fys-tab,html[data-theme="simple"] .fys-tab button{border-radius:0}
-@media (max-width:600px){ /* phones: one row; it scrolls sideways if the screen is narrower than the row */
-  .fys-tab{width:calc(100vw - 32px);overflow-x:auto;scrollbar-width:none;justify-content:flex-start;padding:5px 5px 5px 12px;gap:2px}
-  .fys-tab::-webkit-scrollbar{display:none}
-  .fys-tab .ft-l{font-size:9px;letter-spacing:.08em;margin-right:4px;flex:0 0 auto}
-  .fys-tab button{padding:9px 6px;font-size:12px;min-height:34px;flex:0 0 auto}
-}
-
-@media (max-width:400px){.fys-tab{padding-left:10px}.fys-tab button{padding:9px 4px;font-size:11.5px}} /* the narrowest phones still fit all five */
-@media (prefers-reduced-motion:reduce){.fys-tab{transition:none}}
 .cases .case.feature{grid-column:1/-1}.case-img{display:block;width:100%;aspect-ratio:2.4/1;object-fit:cover;border-radius:var(--r-card,12px)}html[data-theme="brutal"] .case-img{border-radius:0}.case-img.svc-img{aspect-ratio:1.732/1}
 /* ===== Scenes (style refresh, 2026-11): every home section is a full-screen scene with its own real background, snapped
    one to the next like a feed; content sits on the scene, not in bordered cards (Ember keeps its cards). Backgrounds are
@@ -853,7 +830,6 @@ main#top #process .steps b{font-size:clamp(40px,5.2vw,84px);line-height:.95;lett
 .thesis blockquote{container-type:inline-size;width:100%;box-sizing:border-box;--fit:14.9}
 .thesis blockquote .l1{font-size:max(22px,min(1em,calc(100cqi / var(--fit))))}
 html[data-theme="neu"] .thesis blockquote{--fit:14.5}html[data-theme="simple"] .thesis blockquote{--fit:13.7}html[data-theme="dusk"] .thesis blockquote{--fit:13.9}html[data-theme="brutal"] .thesis blockquote{--fit:27.2}html[data-theme="editorial"] .thesis blockquote{--fit:14.5}
-html[data-theme="neu"]:not([data-scheme]) .fys-tab{box-shadow:0 7px 14px -6px rgba(42,22,14,.55),0 2px 4px rgba(42,22,14,.22),inset 0 1px 0 rgba(255,250,240,.7)}
 main#top #contact{padding-bottom:calc(min(34vh,300px) + 36px)}
 
 /* ===== Compact (/preview/compact/, 2026-11-12): the round-1 board, literally. The full opening shrinks into the top bar as
@@ -944,19 +920,18 @@ html[data-theme="brutal"] main.cb .cb-p h3::after{border-radius:0}
 </style>
 <script>
 (function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#120607',glass:'#EEF1F8',neu:'#EFE6D8',brutal:'#FFFDF5',simple:'#F4F1EA',editorial:'#f3f1ea'};
-function get(){try{var v=localStorage.getItem(K);return OK[v]?v:'glass';}catch(e){return 'glass';}}
+function get(){var v=document.documentElement.getAttribute('data-theme');return OK[v]?v:'glass';}
 var FONT={"dusk": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Anton&family=Inter+Tight:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "glass": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=Inter+Tight:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "neu": "https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;700&family=Fraunces:opsz,wght@9..144,900&family=Inter:wght@500&family=IBM+Plex+Mono:wght@400;500&display=swap", "brutal": "https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700;900&family=Space+Mono:wght@400;700&display=swap", "simple": "https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap", "editorial": "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter+Tight:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap", "letters": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Cormorant+Garamond:wght@300&family=Anybody:wdth,wght@125,800&family=Syne:wght@800&family=Inter+Tight:wght@300;700&family=IBM+Plex+Mono:wght@400;500&display=swap"};function font(k){if(!FONT[k]||document.getElementById('sog-f-'+k))return;var l=document.createElement('link');l.rel='stylesheet';l.id='sog-f-'+k;l.href=FONT[k];document.head.appendChild(l);}
 window.sogFonts={letters:function(){font('letters');}};
-function apply(t){if(!OK[t])t='dusk';font(t);var r=document.documentElement;if(r.getAttribute('data-theme')===t)return;r.setAttribute('data-theme',t);
-  var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',BG[t]);
+function apply(t){if(!OK[t])t='glass';font(t);var r=document.documentElement,m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',BG[t]);if(r.getAttribute('data-theme')===t)return;r.setAttribute('data-theme',t);
   document.dispatchEvent(new CustomEvent('sog-theme',{detail:t}));}
-window.sogTheme={get:get,apply:apply,set:function(t){try{localStorage.setItem(K,t);}catch(e){}apply(t);}};
-apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValue);});})();
-(function(){var K='sog-scheme',OK={"dusk": 1, "prairie": 1, "ink": 1, "terra": 1, "pastel": 1, "teal": 1, "riso": 1};function get(){try{var v=localStorage.getItem(K);return OK[v]?v:'own';}catch(e){return 'own';}}
+window.sogTheme={get:get,apply:apply};
+apply(get());})();
+(function(){var K='sog-scheme',OK={"dusk": 1, "prairie": 1, "ink": 1, "terra": 1, "pastel": 1, "teal": 1, "riso": 1};function get(){var v=document.documentElement.getAttribute('data-scheme');return OK[v]?v:'own';}
 function apply(s){if(!OK[s])s='own';var r=document.documentElement;if((r.getAttribute('data-scheme')||'own')===s)return;
   if(s==='own')r.removeAttribute('data-scheme');else r.setAttribute('data-scheme',s);document.dispatchEvent(new CustomEvent('sog-scheme',{detail:s}));}
-window.sogScheme={get:get,apply:apply,set:function(s){try{localStorage.setItem(K,s);}catch(e){}apply(s);}};
-apply(get());addEventListener('storage',function(e){if(e.key===K)apply(e.newValue);});})();
+window.sogScheme={get:get,apply:apply};
+apply(get());})();
 </script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@800&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 </head>
@@ -1151,19 +1126,6 @@ window.sogOpening={fit:()=>{if(!W)return;KEEPG=H;size();KEEPG=0;if(still)draw();
   // for the settle check: how far the furthest piece is from home, in px and degrees
   drift:()=>pieces.reduce((m,p)=>({px:Math.max(m.px,Math.hypot(p.x-p.hx,p.y-p.hy)),deg:Math.max(m.deg,Math.abs(p.a-Math.round(p.a/6.2832)*6.2832)*180/Math.PI)}),{px:0,deg:0}),
   words:()=>{const q=SEC.getBoundingClientRect();return pieces.filter(p=>p.kind==='w'||p.kind==='ch'||p.kind==='p1').map(p=>[p.hx+q.left,p.hy+q.top]);},ready:()=>ready>=15};
-})();
-</script>
-<div class="fys-tab" role="group" aria-label="Find Your Style" inert>
-  <span class="ft-l">Find Your Style</span><button type="button" data-t="glass" aria-pressed="false">Dew</button><button type="button" data-t="neu" aria-pressed="false">Clay</button><button type="button" data-t="simple" aria-pressed="false">Ledger</button><button type="button" data-t="brutal" aria-pressed="false">Ember</button><button type="button" data-t="dusk" aria-pressed="false">Dusk</button>
-</div>
-<script>
-(()=>{ // Find Your Style: the bottom tab. It slides up once you start scrolling; a pick restyles the whole page in place
-const tab=document.querySelector('.fys-tab'),bs=[...tab.querySelectorAll('button')];
-const mark=()=>{const t=window.sogTheme?sogTheme.get():'glass';bs.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.t===t)));};
-bs.forEach(b=>b.addEventListener('click',()=>{if(window.sogTheme)sogTheme.set(b.dataset.t);mark();}));
-document.addEventListener('sog-theme',mark);mark();
-const show=()=>{const up=scrollY>24;tab.classList.toggle('up',up);tab.toggleAttribute('inert',!up);};
-addEventListener('scroll',show,{passive:true});show();
 })();
 </script>
 <script>
