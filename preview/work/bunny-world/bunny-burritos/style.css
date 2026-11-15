@@ -2,14 +2,14 @@
    Borrowed: Roberta's (Refero) – halftone texture and irreverent little drawings. */
 :root{--bg:#823513;--ink:#fff4e2;--muted:#f7d9b0;--line:rgba(250,174,51,.45);--accent:#faae33;--on-accent:#402011;--field:#6e2c10;--r:0;--btn-r:999px;--ctl-r:14px;
   --hf:Anton,Impact,sans-serif;--hw:400;--bf:"Work Sans",sans-serif;--mf:"Work Sans",sans-serif}
-/* regional background (2026-11-14, Tristan: "the source material has a multiply effect on it"): the Front Range plants as pale greys on white,
-   multiplied onto the #823513 ground so they come out a little darker orange (Hungry Tiger's way), fixed behind the sections, fine film grain on top. */
+/* regional background (2026-11-14, Tristan: "the source material has a multiply effect on it"): the Front Range plants as pale greys on white, doubled to fill the frame
+   (corners rolled into the centre), multiplied onto the #823513 ground so they come out about 8-12% darker (his rule: too faint beats too bold) (Hungry Tiger's way), fixed behind the sections, fine film grain on top. */
 body{background:#823513}
 body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;background:#823513 url(/preview/assets/work/bunny-world/burritos-bg-multiply-1920.jpg) center/cover no-repeat;background-blend-mode:multiply;background-image:image-set(url(/preview/assets/work/bunny-world/burritos-bg-multiply-1920.webp) type("image/webp"),url(/preview/assets/work/bunny-world/burritos-bg-multiply-1920.jpg) type("image/jpeg"))}
 body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:url(/preview/assets/work/bunny-world/burritos-grain.png) 0 0/256px 256px;background-image:image-set(url(/preview/assets/work/bunny-world/burritos-grain.webp) type("image/webp"),url(/preview/assets/work/bunny-world/burritos-grain.png) type("image/png"));opacity:.32;mix-blend-mode:overlay}
 @media (min-width:1700px),(min-width:1000px) and (min-resolution:2dppx){body::before{background-image:image-set(url(/preview/assets/work/bunny-world/burritos-bg-multiply-2688.webp) type("image/webp"),url(/preview/assets/work/bunny-world/burritos-bg-multiply-1920.jpg) type("image/jpeg"))}}
 @media (max-width:900px){body::before{background-image:image-set(url(/preview/assets/work/bunny-world/burritos-bg-multiply-1280.webp) type("image/webp"),url(/preview/assets/work/bunny-world/burritos-bg-multiply-1920.jpg) type("image/jpeg"))}}
-@media (max-aspect-ratio:1/1){body::before{background-size:auto 100%;background-position:7% 50%}}
+@media (max-aspect-ratio:1/1){body::before{background-size:auto 100%;background-position:30% 50%}}
 .nav{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;padding-block:16px}
 .pills{display:flex;gap:6px;flex-wrap:wrap}.pills.r{justify-content:flex-end}
 .pills a{font:600 12px/1 var(--bf);letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:#402011;background:#faae33;border-radius:999px;padding:10px 14px}
