@@ -140,10 +140,9 @@ input,select{border:2px solid #000;border-radius:6px}
 /* the cans: big, on their own colour panels */
 .cans-band{border-bottom:2px solid #000}
 .cans-head{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px 40px;padding:clamp(28px,4vw,56px) clamp(14px,4vw,60px) clamp(16px,2vw,24px)}.cans-head .big{max-width:34ch}
-.cans{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:2px solid #000}
-.can{background:var(--panel);display:grid;justify-items:center;text-align:center;padding:0 0 18px;border-right:2px solid #000;border-bottom:2px solid #000}
-.can:nth-child(3n){border-right:0}
-.can a{display:block;width:100%}.can img{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover}
+.cans{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px;background:#000;border-top:2px solid #000;border-bottom:2px solid #000}
+.can{background:var(--panel);display:grid;justify-items:center;text-align:center;padding:0 0 18px;align-content:start}
+.can-open{appearance:none;display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in}.can-open:focus-visible{outline:3px solid #000;outline-offset:-6px}.can img{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover}
 .can b{font:900 clamp(20px,1.9vw,28px)/1 var(--hf);font-variation-settings:"SOFT" 100;margin-top:4px}.can span{font:500 12px/1.4 var(--mf);text-transform:uppercase}
 .can[style*="#2A160C"]{color:#ffe845}
 /* to go */
@@ -164,3 +163,34 @@ input,select{border:2px solid #000;border-radius:6px}
   .posters{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:10px}.poster{flex:0 0 72%;scroll-snap-align:start;min-height:240px}
   .cans{display:flex;overflow-x:auto;scroll-snap-type:x mandatory}.can{flex:0 0 74%;scroll-snap-align:start;border-right:2px solid #000!important}
   .tonight .drop{flex-basis:100%}}
+
+/* can detail (2026-11-14, Tristan: "clicked a can and it ... repositioned the block and told you facts about the beer") */
+.cans.has-open{grid-auto-flow:row dense}.can.open{grid-column:span 2;grid-row:span 2;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);grid-template-rows:auto auto 1fr;justify-items:stretch;text-align:left;align-items:start;padding:0}
+.can.open .can-open{grid-row:1/4;cursor:zoom-out}.can.open>b,.can.open>span{display:none}
+.facts{grid-column:2;grid-row:1/4;position:relative;padding:clamp(22px,3vw,44px) clamp(22px,3.4vw,52px) clamp(22px,3vw,40px) clamp(4px,1vw,12px);animation:facts-in .45s .2s cubic-bezier(.2,.8,.2,1) both}
+@keyframes facts-in{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+.facts h3{font:900 clamp(36px,4.4vw,68px)/.9 var(--hf);font-variation-settings:"SOFT" 100,"WONK" 1;letter-spacing:-.03em;margin:8px 0 18px;outline:0}
+.facts dl{margin:0;display:grid;grid-template-columns:1fr 1fr;gap:0 clamp(16px,2.4vw,32px)}
+.facts dl div{padding:12px 0;border-top:1.5px solid currentColor}
+.facts dt{font:500 11px/1.2 var(--mf);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}.facts dd{margin:0;font:400 16px/1.4 var(--bf)}
+.facts .find{grid-column:1/-1;background:rgba(255,255,255,.55);border:1.5px solid #000;border-radius:12px;padding:12px 14px;margin:6px 0}
+.facts .ink{font:500 12px/1.4 var(--mf);text-transform:uppercase;margin:16px 0 0;opacity:.8}
+.fx{position:absolute;top:14px;right:14px;width:42px;height:42px;border-radius:50%;border:2px solid currentColor;background:transparent;color:inherit;font:400 26px/1 var(--bf);cursor:pointer}
+.fx:hover{background:#000;color:#ffe845;border-color:#000}
+.can[style*="#2A160C"] .facts .find{background:rgba(255,232,69,.12);border-color:#ffe845}
+.more{appearance:none;border:0;background:none;padding:0;margin-top:4px;width:max-content;font:500 11px/1 var(--mf);text-transform:uppercase;color:#000;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+/* phones: a bottom sheet */
+.can-sheet{position:fixed;inset:0;z-index:100}
+.sheet-bg{position:absolute;inset:0;background:rgba(0,0,0,.5);opacity:0;transition:opacity .3s}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-height:88vh;overflow:auto;background:var(--panel);border-top:2px solid #000;border-radius:22px 22px 0 0;transform:translateY(100%);transition:transform .32s cubic-bezier(.2,.8,.2,1);display:grid;grid-template-columns:110px 1fr;gap:0 4px;padding:10px 0 24px}
+.can-sheet.on .sheet-bg{opacity:1}.can-sheet.on .sheet{transform:none}
+.sheet .grip{grid-column:1/-1;justify-self:center;width:44px;height:5px;border-radius:3px;background:rgba(0,0,0,.35);margin-bottom:6px}
+.sheet picture{grid-column:1}.sheet picture img{width:100%;height:auto}
+.sheet .facts{grid-column:2;grid-row:auto;padding:4px 16px 0 6px;animation:none}
+.sheet .facts .label{padding-right:48px}.sheet .facts h3{font-size:34px;margin:6px 46px 12px 0}.sheet .facts dl{grid-template-columns:1fr}.sheet .fx{top:4px;right:10px}
+.can-sheet[style*="#2A160C"] .sheet{color:#ffe845}
+body.sheet-lock{overflow:hidden}
+@media (max-width:900px) and (min-width:641px){.can.open{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr)}.facts dl{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.facts{animation:none}.sheet,.sheet-bg{transition:opacity .2s}.sheet{transform:none;opacity:0}.can-sheet.on .sheet{opacity:1}}
+.can.open{align-items:stretch}.can.open .can-open{height:100%}.can.open .can-open picture{display:block;height:100%}.can.open .can-open img{height:100%;aspect-ratio:auto;object-fit:contain;object-position:50% 50%}
+.can.open .facts{align-self:center}
