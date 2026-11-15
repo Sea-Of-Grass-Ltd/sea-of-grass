@@ -7,3 +7,6 @@ node_modules/
 # This repo is public and Pages serves everything in it.
 Business Info/
 *.pdf
+
+# share-card build captures (tools/og/build.py)
+tools/og/cap/
