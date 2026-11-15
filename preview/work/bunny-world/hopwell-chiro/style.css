@@ -175,3 +175,53 @@ cite{font:500 12px/1 var(--mf);letter-spacing:.06em;text-transform:uppercase;fon
  .hook .fig{padding:10px;border-radius:30px}
  .spot[data-spot=head]{top:9%!important}.spot[data-spot=neck]{top:27%!important}.spot[data-spot=shoulder]{top:33%!important;left:74%!important}.spot[data-spot=mid]{top:47%!important}.spot[data-spot=low]{top:68%!important}.spot[data-spot=hip]{top:86%!important;left:33%!important}.hook figcaption{padding:8px 6px 0}
 }
+
+/* ---- Neumorphism sitewide (Tristan: "I meant for Hopwell in general"). Same light, same rules as the hook:
+   raised = idle, pressed = chosen or a field to type in. No outlines anywhere. */
+:root{--up:-6px -6px 14px var(--hi),7px 7px 16px var(--lo);--up-s:-4px -4px 9px var(--hi),4px 4px 10px var(--lo);
+  --in:inset 3px 3px 7px var(--lo2),inset -3px -3px 7px var(--hi)}
+/* header and buttons */
+.call{border:0;background:var(--bg);box-shadow:var(--up-s)}
+.btn{box-shadow:-4px -4px 10px var(--hi),6px 6px 14px rgba(25,40,48,.32);transition:box-shadow .15s,transform .15s}
+.btn:hover{box-shadow:-5px -5px 12px var(--hi),8px 8px 18px rgba(25,40,48,.36)}
+.btn:active{box-shadow:inset 3px 3px 7px rgba(0,0,0,.45),inset -2px -2px 5px rgba(255,255,255,.12)}
+.bar{background:var(--bg);box-shadow:inset 0 -1px 0 rgba(163,152,128,.25),inset 0 4px 8px -4px var(--lo)}
+.bar b{background:var(--bg);box-shadow:var(--in);padding:3px 10px}
+/* sections become soft raised surfaces (no borders) */
+.box{background:var(--bg);border:0;border-radius:28px;padding:clamp(20px,2.6vw,30px);box-shadow:var(--up)}
+.pair{gap:32px}
+input,select,textarea{border:0;background:var(--bg);box-shadow:var(--in);border-radius:14px}
+input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+input[type=checkbox]{box-shadow:none}
+input[type=range]{box-shadow:none;background:transparent}
+.ok{background:var(--bg);border:0;border-radius:16px;padding:14px 16px;box-shadow:var(--in)}
+.ok.no{background:var(--bg);color:#9A4A26}
+.days button,.slots button{border:0;background:var(--bg);box-shadow:var(--up-s);color:var(--ink)}
+.days button[aria-pressed="true"],.slots button[aria-pressed="true"]{background:#E4E0D6;color:var(--ink);font-weight:600;box-shadow:var(--in)}
+.days button[aria-pressed="true"] b{text-decoration:underline;text-decoration-color:var(--ink);text-underline-offset:4px}
+.slots button[aria-pressed="true"]::before{content:"✓ "}
+.days button:disabled,.slots button:disabled{box-shadow:none;background:transparent;opacity:.45}
+.days{padding:8px 6px 14px;margin-inline:-6px}
+.slots{padding:4px 2px 6px}
+.done{border:0;background:var(--bg);box-shadow:var(--in);border-radius:16px}
+.pre{border:0;background:var(--bg);box-shadow:var(--in);border-radius:14px;padding:12px 14px}
+/* visits */
+.visits{border-top:0;padding-top:8px;gap:20px}
+.v{background:var(--bg);border-radius:24px;padding:22px;box-shadow:var(--up)}
+.v span{background:var(--bg);box-shadow:var(--in)}
+/* first visit: photo slots sit in raised frames */
+.ph.wide,.ph.sq{box-shadow:inset 3px 3px 8px rgba(80,70,50,.25),inset -2px -2px 6px rgba(255,255,255,.35)}
+.first .ph.wide{box-shadow:inset 3px 3px 8px rgba(80,70,50,.25),0 0 0 12px var(--bg),-8px -8px 18px 12px var(--hi),9px 9px 20px 12px var(--lo);margin:12px}
+.steps li{background:var(--bg);border-radius:28px;padding:12px 12px 20px;box-shadow:var(--up)}
+.steps li h3,.steps li p{padding-inline:8px}
+.faq{display:grid;gap:14px}
+details{border:0;background:var(--bg);border-radius:20px;padding:16px 20px;box-shadow:var(--up-s)}
+details[open]{box-shadow:var(--in)}
+/* reviews, hours, map */
+.reviews{border-top:0;padding-top:16px}
+blockquote{background:var(--bg);border-radius:28px;padding:26px 28px;box-shadow:var(--up)}
+.hrs .box{padding:26px}
+.hours td{border-bottom:0;box-shadow:0 1px 0 rgba(163,152,128,.25)}
+.hours tr.today td{background:#E4E0D6}
+.map{border-radius:28px;box-shadow:var(--up);border:12px solid var(--bg)}
+@media (max-width:900px){.pair{gap:28px}.first .ph.wide{margin:12px}}
