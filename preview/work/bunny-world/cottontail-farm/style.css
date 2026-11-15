@@ -130,3 +130,16 @@ body[data-season="summer"] .m-field.sun{fill:#f2b705}body[data-season="fall"] .m
 @media (prefers-reduced-motion:reduce){.season,.mast,.farmmap,.btn,.pin{transition:none}}
 [data-tix][hidden],.tix-off[hidden],.m-card[hidden]{display:none}
 @media (max-width:980px){.tix{grid-template-columns:minmax(0,1fr)}}.tix-l,.tix-r{min-width:0}@media (max-width:560px){.m-card{left:50%!important;width:86%}}
+
+/* photos: the season strip follows the season tab; the maze from above; the hayride */
+.seas-photo{position:relative;aspect-ratio:21/8;border-radius:18px;overflow:hidden;margin:18px 0 28px;background:rgba(0,0,0,.08)}
+.seas-photo .sp{position:absolute;inset:0;opacity:0;transition:opacity .5s}
+.seas-photo img,.maze-pic img,.hay-pic img{display:block;width:100%;height:100%;object-fit:cover}
+body[data-season="summer"] .sp.summer,body[data-season="fall"] .sp.fall,body[data-season="off"] .sp.off{opacity:1}
+.maze-pic{margin:32px 0 0}.maze-pic picture{display:block;aspect-ratio:21/9;border-radius:18px;overflow:hidden}
+.maze-pic figcaption,.hay-pic figcaption{margin-top:10px;font-size:14px;opacity:.8}
+.grp-wrap{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr);gap:clamp(24px,4vw,56px);align-items:start}
+.grp-wrap .grp{max-width:none}
+.hay-pic{margin:24px 0 0}.hay-pic picture{display:block;aspect-ratio:3/2;border-radius:18px;overflow:hidden}
+@media (max-width:860px){.seas-photo{aspect-ratio:16/9}.grp-wrap{grid-template-columns:minmax(0,1fr)}.hay-pic{margin:0}.maze-pic picture{aspect-ratio:4/3}}
+@media (prefers-reduced-motion:reduce){.seas-photo .sp{transition:none}}
