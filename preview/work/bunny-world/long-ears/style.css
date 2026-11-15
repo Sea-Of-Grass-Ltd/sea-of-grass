@@ -22,9 +22,8 @@ h2{font-size:clamp(40px,5.4vw,80px);text-transform:lowercase;margin:0 0 18px}
 .mast nav .btn{min-height:42px;padding:10px 18px;background:var(--gold);color:var(--pine)}
 /* hero */
 .hero{position:relative;height:min(80vh,680px);overflow:hidden;background:#2f4a33;color:#fff;margin:0}
-.hero .art{position:absolute;inset:0;transform:scale(1.35);transform-origin:50% 100%}
-.hero .art svg{width:100%;height:100%;filter:saturate(1.15) sepia(.18) brightness(.92)}
-.hero .art svg text,.hero .art svg [stroke],.hero .art svg g[transform^="translate(560 470)"]{display:none}
+.hero .art{position:absolute;inset:0}
+.hero .art picture,.hero .art img{display:block;width:100%;height:100%;object-fit:cover;object-position:60% 60%}
 .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,32,22,.12) 25%,rgba(20,32,22,.66));pointer-events:none}
 .hero .over{position:absolute;left:0;right:0;bottom:clamp(24px,5vw,56px);z-index:2}
 .tag{display:inline-block;margin:0 0 14px;padding:7px 12px;border-radius:999px;background:var(--cream);color:var(--pine);font:500 12px/1.3 var(--mf);letter-spacing:.12em;text-transform:uppercase}
@@ -58,8 +57,8 @@ h2{font-size:clamp(40px,5.4vw,80px);text-transform:lowercase;margin:0 0 18px}
 .t-note{margin:16px 0 0;font-size:15px;line-height:1.45;color:rgba(245,240,227,.85);min-height:3em}
 .pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .side{margin:0;border-radius:18px;overflow:hidden;background:#000;position:relative}
-.side .pic{aspect-ratio:4/3;position:relative}.side .pic svg{position:absolute;inset:0;width:100%;height:100%}
-.side.turf .pic svg{filter:sepia(var(--sep,0)) saturate(var(--sat,1)) hue-rotate(var(--hue,0deg));transition:filter .35s}
+.side .pic{aspect-ratio:4/3;position:relative;overflow:hidden}.side .pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.side.turf .pic img{filter:sepia(var(--sep,0)) saturate(var(--sat,1)) hue-rotate(var(--hue,0deg));transition:filter .35s}
 .side figcaption{display:grid;gap:2px;padding:10px 12px;background:var(--cream);color:var(--pine)}.side figcaption b{font:800 18px/1 var(--hf)}.side figcaption span{font-size:13px;color:var(--muted)}
 .side.turf.hot figcaption{background:#f3dccb}
 .t-num{width:100%;border-collapse:collapse;margin-top:12px;font-variant-numeric:tabular-nums}
@@ -123,8 +122,20 @@ h2{font-size:clamp(40px,5.4vw,80px);text-transform:lowercase;margin:0 0 18px}
   .cards{grid-template-columns:1fr}.pair{grid-template-columns:1fr 1fr;gap:6px}.side figcaption span{display:none}
   .t-now{grid-template-columns:1fr 1fr 1fr}.t-ticks span:nth-child(even){visibility:hidden}
 }
-@media (prefers-reduced-motion:reduce){.side.turf .pic svg,.aug-card{transition:none}}
+@media (prefers-reduced-motion:reduce){.side.turf .pic img,.aug-card{transition:none}}
 .b-l,.b-form,.t-ctl,.t-stage{min-width:0}
 @media (max-width:900px){.t-grid,.t-year,.b-grid,.intro,.area{grid-template-columns:minmax(0,1fr)}}
 .tag{max-width:calc(100vw - 32px);white-space:normal}
 .aug-card .tz-size{font:500 11px/1 var(--mf);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+
+/* photos: the before/after slider and three finished jobs */
+.ba{aspect-ratio:4/3;max-height:78svh}
+.ba picture,.ba img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.ba .after{clip-path:inset(0 0 0 var(--cut,50%))}
+.ba .after img{clip-path:none}
+.jobs{list-style:none;margin:28px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;max-width:1100px}
+.jobs li{display:grid;gap:6px;align-content:start}
+.jobs img{width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;border-radius:18px;display:block;margin-bottom:6px}
+.jobs b{font:700 18px/1.2 var(--hf)}.jobs span{font-size:15px;color:var(--muted)}
+@media (max-width:760px){.jobs{grid-template-columns:minmax(0,1fr);gap:24px}.jobs img{aspect-ratio:4/3}}
+@media (max-width:760px){.hero .art img{object-position:72% 85%}}
