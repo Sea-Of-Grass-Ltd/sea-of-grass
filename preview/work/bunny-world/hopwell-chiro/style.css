@@ -225,3 +225,10 @@ blockquote{background:var(--bg);border-radius:28px;padding:26px 28px;box-shadow:
 .hours tr.today td{background:#E4E0D6}
 .map{border-radius:28px;box-shadow:var(--up);border:12px solid var(--bg)}
 @media (max-width:900px){.pair{gap:28px}.first .ph.wide{margin:12px}}
+
+/* Desktop: the photo frame stretches to the full height of the steps + answer column, so both columns end together. */
+@media (min-width:901px){
+ .hook{align-items:stretch}
+ .hook .fig{position:static;display:flex;flex-direction:column}
+ .hook .stage{aspect-ratio:auto;flex:1;min-height:520px}
+}
