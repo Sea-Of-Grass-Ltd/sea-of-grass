@@ -220,9 +220,9 @@ html[data-look="bold"]{--cream:#0B0B0B;--ink:#FFFFFF;--soft:#B5B5B5;--hair:rgba(
   --mark:#FFFFFF;color-scheme:dark}
 html[data-look="warm"]{--cream:#FFE4C8;--ink:#0A3128;--soft:#3F5E54;--hair:rgba(10,49,40,.18);--card:#FFF4E6;--carrot:#D2381F;--on-accent:#FFF6EA;
   --stage:#14433D;--on-stage:#FFF6EA;--stage-accent:#FFB627;--clover:#008168;--spark:#D2381F;--hf:"Young Serif",Georgia,serif;--hk:.86;--hls:-.03em;--htt:none;
-  --hero-bg:#FFE4C8;--globe:#FFB627;
+  --hero-bg:#FFE4C8;
   --mark:#14433D;color-scheme:light}
-/* Warm, 2026-11-15 (Tristan: "two dull colours stacked"): peach field, green ink, tomato on the button and arrow, marigold on the globe and Main Street */
+/* Warm, 2026-11-15 (Tristan: "two dull colours stacked"): peach field, green ink, tomato on the button and arrow, marigold on Main Street; the globe stays cut out of the bunny like every look */
 html[data-look="warm"] .lh-go{background:var(--carrot);color:var(--on-accent)}
 html[data-look="sunny"]{--cream:#FFE845;--ink:#000000;--soft:#2B2B2B;--hair:rgba(0,0,0,.2);--card:#FFFBE9;--carrot:#000000;--on-accent:#FFE845;
   --stage:#000000;--on-stage:#FFE845;--stage-accent:#FFE845;--clover:#1D7A3E;--spark:#FFFFFF;--hf:Fraunces,Georgia,serif;--hk:.88;--hls:-.04em;--htt:none;
@@ -247,8 +247,6 @@ html[data-look="sunny"]{--cream:#FFE845;--ink:#000000;--soft:#2B2B2B;--hair:rgba
 .lh-mark:focus-visible{outline:3px solid var(--spark);outline-offset:12px;border-radius:24px}
 .lh-fill,.lh-sweep{position:absolute;inset:0;-webkit-mask:url(brand/mark-ink.svg?v=2) center/100% 100% no-repeat;mask:url(brand/mark-ink.svg?v=2) center/100% 100% no-repeat}
 .lh-fill{background:var(--mark)}
-/* a flat disc behind the globe: its openings show this colour instead of the field (Warm only for now) */
-.lh-mark::before{content:"";position:absolute;left:50%;top:72.55%;width:60%;height:40%;translate:-50% -50%;border-radius:50%;background:var(--globe,transparent)}
 /* the glint is one hard-edged solid band in the look's spark colour: no fades (Tristan: no gradients, 2026-11-15) */
 .lh-sweep{background:linear-gradient(115deg,transparent 46%,var(--spark) 46%,var(--spark) 52%,transparent 52%);background-size:300% 100%;background-position:100% 0;opacity:0}
 .lh-hint{position:absolute;left:-12%;top:4%;display:flex;align-items:flex-start;gap:2px;margin:0;color:var(--ink);font:600 26px/1 Caveat,"Comic Sans MS",cursive;letter-spacing:0;text-transform:none;pointer-events:none;opacity:0;transform:translateY(6px) rotate(-4deg);transition:opacity .4s,transform .4s}
