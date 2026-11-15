@@ -143,3 +143,13 @@ body[data-season="summer"] .sp.summer,body[data-season="fall"] .sp.fall,body[dat
 .hay-pic{margin:24px 0 0}.hay-pic picture{display:block;aspect-ratio:3/2;border-radius:18px;overflow:hidden}
 @media (max-width:860px){.seas-photo{aspect-ratio:16/9}.grp-wrap{grid-template-columns:minmax(0,1fr)}.hay-pic{margin:0}.maze-pic picture{aspect-ratio:4/3}}
 @media (prefers-reduced-motion:reduce){.seas-photo .sp{transition:none}}
+
+/* form skin (2026-11-15): numbers and picks wear the season colour (Volkshotel agenda). Shared step engine lives in shop.css; this only changes the look. */
+.q-ready{counter-reset:q}
+.q-step{counter-increment:q}
+.q-n{font-size:0!important}
+.q-n::before{content:counter(q,decimal-leading-zero);font-size:12px}
+.q-n{background:var(--s1);color:var(--sbg);font-weight:600}
+.q-sum{border-left:4px solid var(--s1)}
+.q-opt[aria-pressed="true"]{background:var(--s1);border-color:var(--s1);color:var(--sbg)}
+.file-pick b{background:var(--s1);color:var(--sbg)}

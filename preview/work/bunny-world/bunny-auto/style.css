@@ -56,3 +56,15 @@ h2 span{font:400 13px/1 var(--mf);letter-spacing:.12em;color:var(--muted);vertic
 .side.wall{margin-bottom:clamp(20px,2.4vw,30px)}.side.wall img{aspect-ratio:4/3;object-fit:cover}
 @media (max-width:900px){.book-grid{grid-template-columns:1fr}.book-grid .side img{aspect-ratio:4/3;object-fit:cover;object-position:50% 70%}}
 @media (max-width:600px){.hero .art.photo{aspect-ratio:16/10}.hero::before{display:none}.band img{aspect-ratio:16/9}}
+
+/* form skin (2026-11-15): spec-sheet numbering, mono readouts, yellow kept for actions (Lamborghini / SpaceX). Shared step engine lives in shop.css; this only changes the look. */
+.q-ready{counter-reset:q}
+.q-step{counter-increment:q}
+.q-n{font-size:0!important}
+.q-n::before{content:counter(q,decimal-leading-zero);font-size:11px}
+.q-n{border-radius:0;width:auto;height:auto;padding:5px 6px;background:none;color:var(--accent);border:1px solid var(--accent);font-family:var(--mf)}
+.q-h{font:600 23px/1.05 var(--hf);text-transform:uppercase;letter-spacing:.05em}
+.q-sum{border:0;border-left:3px solid var(--accent);background:var(--field)}
+.q-sum b{font:500 14px/1.2 var(--mf);text-transform:uppercase;letter-spacing:.05em}
+.q-opt{font:600 16px/1 var(--hf);text-transform:uppercase;letter-spacing:.07em}
+.file-pick{border:1px dashed rgba(255,255,255,.3)}
