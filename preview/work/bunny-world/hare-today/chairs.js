@@ -90,11 +90,38 @@ function sum(){const b=pick.slot?pick.slot.barber:null,ok=pick.svc&&pick.slot;
   conf.disabled=!ok;}
 function setBarb(k){pick.barb=k;$$('.barb').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.barb===k)));
   whoEl.textContent=k==='any'?'anyone':BARBERS.find(b=>b.k===k).n;buildDays();sum();}
-$$('.barb').forEach(b=>b.addEventListener('click',()=>setBarb(b.dataset.barb)));
-SERV.forEach(s=>s.b.addEventListener('click',()=>{pick.svc=s;SERV.forEach(x=>x.b.setAttribute('aria-pressed',String(x===s)));buildSlots();if(pick.slot)pick.slot=null;sum();}));
-$$('[data-bookwith]').forEach(b=>b.addEventListener('click',()=>{setBarb(b.dataset.bookwith);const sec=$('#book');sec.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});
+$$('.barb').forEach(b=>b.addEventListener('click',()=>{setBarb(b.dataset.barb);done1=true;opened=0;flow(true);}));
+SERV.forEach(s=>s.b.addEventListener('click',()=>{pick.svc=s;SERV.forEach(x=>x.b.setAttribute('aria-pressed',String(x===s)));buildSlots();if(pick.slot)pick.slot=null;sum();opened=0;flow(true);}));
+$$('[data-bookwith]').forEach(b=>b.addEventListener('click',()=>{setBarb(b.dataset.bookwith);done1=true;opened=0;flow(false);const sec=$('#book');sec.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});
   setTimeout(()=>{const f=$('.svc');f&&f.focus({preventScroll:true});},reduce?0:500);}));
 setBarb('any');
+
+/* ---- one question at a time: a step collapses to a one-line summary once answered, and the next one opens under it ---- */
+let done1=false,opened=0;                       // opened: a finished step the visitor reopened with "Change"
+const R=n=>$('[data-reveal="'+n+'"]'),BODY=n=>$('[data-body="'+n+'"]'),SB=n=>$('[data-sum-btn="'+n+'"]');
+function show(el,on){el.classList.toggle('on',on);if(on)el.removeAttribute('inert');else el.setAttribute('inert','');}
+function isDone(n){return n===1?done1:n===2?!!pick.svc:!!pick.slot;}
+function label(n){if(n===1)return pick.barb==='any'?'First available':BARBERS.find(b=>b.k===pick.barb).n;
+  if(n===2)return pick.svc.n+' · '+pick.svc.min+' min · $'+pick.svc.price;
+  return pick.day.d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})+' at '+fmtT(pick.slot.t)+(pick.barb==='any'?' with '+pick.slot.barber.n:'');}
+function flow(move){let first=0;
+  for(const n of [1,2,3]){const d=isDone(n),reach=n===1||[1,2,3].slice(0,n-1).every(isDone);
+    show(R(n),reach);
+    const open=reach&&(!d||opened===n);show(BODY(n),open);
+    SB(n).hidden=!(d&&!open);if(d)$('[data-sum-val="'+n+'"]').textContent=label(n);
+    if(reach&&!d&&!first)first=n;}
+  const all=[1,2,3].every(isDone);show(R(4),all);
+  if(move){const t=first?R(first):all?R(4):null;
+    if(t)setTimeout(()=>{const r=t.getBoundingClientRect();if(r.bottom>innerHeight-40||r.top<0)t.scrollIntoView({behavior:reduce?'auto':'smooth',block:'nearest'});
+      const f=first?$('button:not(:disabled)',BODY(first)):$('#cf-n');f&&f.focus({preventScroll:true});},reduce?0:340);}}
+[1,2,3].forEach(n=>SB(n).addEventListener('click',()=>{opened=n;flow(false);const f=$('button[aria-pressed="true"],button:not(:disabled)',BODY(n));setTimeout(()=>f&&f.focus({preventScroll:true}),reduce?0:340);}));
+slotsEl.addEventListener('click',e=>{const b=e.target.closest('button');if(b&&!b.disabled){opened=0;flow(true);}});
+daysEl.addEventListener('click',e=>{if(e.target.closest('button'))flow(false);});
+const cform=$('[data-confirm-form]'),cdone=$('[data-cf-done]');
+cform.addEventListener('submit',e=>{e.preventDefault();if(!cform.reportValidity())return;const b=pick.slot.barber,ref='HT-'+(1000+Math.floor(Math.random()*9000));
+  cdone.hidden=false;cdone.innerHTML='<b>You’re booked, '+$('#cf-n').value.trim().split(' ')[0].replace(/</g,'')+'.</b> '+b.n+', '+pick.svc.n+', '+pick.day.d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})+' at '+fmtT(pick.slot.t)+'. A reminder text goes out the day before. Reference '+ref+'. <span class="note">Demo: nothing was sent.</span>';
+  $('.cf-fields',cform).hidden=true;$('[data-summary]',cform).hidden=true;});
+flow(false);
 
 /* ---- the booking-app hand-off (a drawer, the way Boulevard-style widgets open) ---- */
 const dr=$('[data-drawer]'),drBody=$('[data-dr-body]');let lastFocus=null;
@@ -111,9 +138,11 @@ function openDrawer(){lastFocus=document.activeElement;const ok=pick.svc&&pick.s
   const g=$('[data-go-pick]',drBody);if(g)g.onclick=()=>{closeDrawer();$('#book').scrollIntoView({behavior:reduce?'auto':'smooth'});};
   setTimeout(()=>{const t=$('input,button',drBody);t&&t.focus();},reduce?0:250);}
 function closeDrawer(){dr.classList.remove('on');document.body.classList.remove('dr-on');setTimeout(()=>{dr.hidden=true;},reduce?0:250);lastFocus&&lastFocus.focus&&lastFocus.focus();}
-$$('[data-book]').forEach(b=>b.addEventListener('click',openDrawer));conf.addEventListener('click',openDrawer);
+$$('[data-book]').forEach(b=>b.addEventListener('click',openDrawer));
 $$('[data-close]',dr).forEach(b=>b.addEventListener('click',closeDrawer));
 document.addEventListener('keydown',e=>{if(dr.hidden)return;if(e.key==='Escape')closeDrawer();
   if(e.key==='Tab'){const f=$$('button,input,a[href]',$('.dr-panel')).filter(x=>!x.disabled&&x.offsetParent);if(!f.length)return;const a=f[0],z=f[f.length-1];
     if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus();}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus();}}});
 })();
+/* hide the floating Book button while the booking block is on screen */
+(function(){var b=document.getElementById('book');if(!('IntersectionObserver' in window)||!b)return;new IntersectionObserver(function(e){document.body.classList.toggle('book-in',e[0].isIntersecting);}).observe(b);})();
