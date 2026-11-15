@@ -1,0 +1,45 @@
+<!doctype html>
+<!-- Share-preview card (1200x630) in Dew. Rendered headless by tools/og/build.py; not a page of the site.
+     Query: k = kicker, t = title (wrap one word in *stars* for the blue accent), d = line, img = page capture path. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=block">
+<style>
+*{box-sizing:border-box;margin:0}
+html,body{width:1200px;height:630px;overflow:hidden}
+body{position:relative;background:#0A0C11;color:#EEF1EA;font-family:Inter,sans-serif;-webkit-font-smoothing:antialiased}
+.glow{position:absolute;inset:0;background:radial-gradient(620px 420px at 980px 640px,rgba(0,104,240,.55),transparent 70%),radial-gradient(520px 300px at 1100px 40px,rgba(109,167,255,.16),transparent 70%),linear-gradient(180deg,#0A0C11 0%,#071026 70%,#0B1F4D 100%)}
+.txt{position:absolute;left:64px;top:56px;bottom:52px;width:560px;display:flex;flex-direction:column}
+.brand{display:flex;align-items:center;gap:12px;font:600 26px/1 Inter,sans-serif;letter-spacing:-.01em}
+.brand img{width:40px;filter:invert(1)}
+.mid{margin-top:auto;margin-bottom:auto}
+.k{font:500 19px/1.3 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:#6DA7FF;margin-bottom:22px}
+h1{font:500 66px/1.0 Manrope,sans-serif;letter-spacing:-.045em}
+h1 em{font-style:normal;color:#6DA7FF}
+h1.long{font-size:56px}
+.d{margin-top:22px;font:400 25px/1.35 Inter,sans-serif;color:#C7C7C8;max-width:540px}
+.url{font:500 17px/1 "IBM Plex Mono",monospace;letter-spacing:.12em;color:#8F949C;text-transform:lowercase}
+.shot{position:absolute;left:668px;top:84px;width:720px;border-radius:16px;overflow:hidden;background:#05070B;border:1px solid rgba(238,241,234,.18);box-shadow:0 40px 90px rgba(0,0,0,.6)}
+.shot .bar{height:30px;background:#141922;display:flex;align-items:center;gap:7px;padding:0 13px;border-bottom:1px solid rgba(238,241,234,.08)}
+.shot .bar i{width:10px;height:10px;border-radius:50%;background:#2A3140}
+.shot img{display:block;width:720px;height:450px;object-fit:cover;object-position:top left}
+</style>
+</head>
+<body>
+<div class="glow"></div>
+<div class="shot"><div class="bar"><i></i><i></i><i></i></div><img id="img" alt=""></div>
+<div class="txt">
+  <div class="brand"><img src="/preview/assets/logo.svg" alt=""><span>Sea of Grass</span></div>
+  <div class="mid"><p class="k" id="k"></p><h1 id="t"></h1><p class="d" id="d"></p></div>
+  <p class="url">seaofgrass.studio</p>
+</div>
+<script>
+const q=new URLSearchParams(location.search),esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+document.getElementById('k').textContent=q.get('k')||'';
+const t=esc(q.get('t')||'').replace(/\*([^*]+)\*/g,'<em>$1</em>'),h=document.getElementById('t');h.innerHTML=t;if((q.get('t')||'').length>34)h.classList.add('long');
+document.getElementById('d').textContent=q.get('d')||'';
+document.getElementById('img').src=q.get('img')||'';
+</script>
+</body>
+</html>
