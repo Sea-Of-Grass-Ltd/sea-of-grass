@@ -64,7 +64,7 @@ const st={spot:'low',long:'weeks',worse:'sitting',flags:new Set()};
 const tag=$('[data-tag]');
 function drawSpot(){$$('[data-spot]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.spot===st.spot)));
   const dot=$(`.spot[data-spot="${st.spot}"]`);
-  if(dot){tag.textContent=SPOTS[st.spot].name;tag.style.left=dot.style.left;tag.style.top=dot.style.top;tag.classList.toggle('left',parseFloat(dot.style.left)>60);}
+  if(dot){const cs=getComputedStyle(dot);tag.textContent=SPOTS[st.spot].name;tag.style.left=cs.left;tag.style.top=cs.top;tag.classList.toggle('left',dot.offsetLeft>dot.parentNode.clientWidth*.6);}
   $('[data-where]').textContent=SPOTS[st.spot].name+' ✓';}
 $$('[data-spot]').forEach(b=>b.addEventListener('click',()=>{st.spot=b.dataset.spot;drawSpot();drawAns();}));
 $$('[data-group]').forEach(g=>{const bs=$$('button',g),multi=g.hasAttribute('data-multi'),k=g.dataset.group;
@@ -93,5 +93,5 @@ $('[data-a-book]').addEventListener('click',()=>{const o=nextOpen(),s=SPOTS[st.s
 /* ---- "updated N min ago" on the scheduler line ---- */
 const syn=$('[data-synced]');let ago=0;setInterval(()=>{ago=(ago+1)%5;syn.textContent=ago?`updated ${ago} min ago`:'updated just now';},60000);
 
-drawSpot();drawAns();
+drawSpot();drawAns();addEventListener('resize',drawSpot);
 })();

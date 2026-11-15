@@ -144,3 +144,34 @@ cite{font:500 12px/1 var(--mf);letter-spacing:.06em;text-transform:uppercase;fon
 .pre{border-radius:0;background:none;border-left:2px solid var(--apricot);padding:4px 0 4px 12px}
 .hrs .box{padding-top:18px}
 @media (max-width:900px){.pair{gap:40px}}
+
+/* ---- Neumorphism trial, hook only (Tristan, 2026-11-15: "a neumorphism look would actually work really well here").
+   Soft extrusion in the paper colour, lit from the top left: a white highlight and a warm stone shadow. No outlines.
+   Contrast kept by ink text, a ✓ on chosen chips and apricot only for the chosen spot. */
+:root{--bg:#EEEBE3;--hi:rgba(255,255,255,.95);--lo:rgba(163,152,128,.42);--lo2:rgba(163,152,128,.55)}
+.hook .fig{background:var(--bg);border-radius:34px;padding:12px;box-shadow:-8px -8px 18px var(--hi),9px 9px 20px var(--lo)}
+.hook .stage{border-radius:24px;box-shadow:inset 3px 3px 8px rgba(80,70,50,.25),inset -2px -2px 6px rgba(255,255,255,.35)}
+.hook figcaption{padding:12px 8px 2px}
+.hook .spot{background:var(--bg);border:0;width:34px;height:34px;box-shadow:-4px -4px 8px rgba(255,255,255,.7),4px 4px 9px rgba(70,60,40,.4)}
+.hook .spot:hover{box-shadow:-5px -5px 10px rgba(255,255,255,.8),5px 5px 11px rgba(70,60,40,.45)}
+.hook .spot[aria-pressed="true"]{background:var(--bg);box-shadow:inset 3px 3px 6px rgba(70,60,40,.4),inset -3px -3px 6px rgba(255,255,255,.8)}
+.hook .spot[aria-pressed="true"]::after{content:"";position:absolute;inset:9px;border-radius:50%;background:var(--apricot);box-shadow:0 0 0 3px rgba(232,135,91,.25)}
+.hook .tag{box-shadow:-3px -3px 7px rgba(255,255,255,.6),3px 3px 8px rgba(70,60,40,.3)}
+.hook .q{border:0;padding:14px 0 6px}
+.panel .q:first-child{padding-top:0}
+.hook .q .n{background:var(--bg);box-shadow:inset 2px 2px 4px var(--lo2),inset -2px -2px 4px var(--hi)}
+.hook .chip{background:var(--bg);border:0;color:#3C4B52;min-height:42px;padding:9px 16px;box-shadow:-4px -4px 9px var(--hi),4px 4px 10px var(--lo);transition:box-shadow .15s}
+.hook .chip:hover{color:var(--ink)}
+.hook .chip[aria-pressed="true"]{background:#E4E0D6;color:var(--ink);font-weight:600;box-shadow:inset 3px 3px 7px var(--lo2),inset -3px -3px 7px var(--hi)}
+.hook .chip[aria-pressed="true"]::before{content:"✓ ";}
+.hook .ans{box-shadow:-8px -8px 18px var(--hi),10px 12px 24px rgba(25,40,48,.35)}
+.hook .ans .btn.lt{background:#F4F2EB;box-shadow:inset 0 -2px 0 rgba(25,40,48,.15)}
+.hook .chips.sm .chip{background:transparent;color:#DDE3E5;box-shadow:inset 0 0 0 1px #3E5059}
+.hook .chips.sm .chip::before{content:none}
+.hook .chips.sm .chip[aria-pressed="true"]{background:var(--apricot);color:var(--ink);box-shadow:none}
+@media (max-width:900px){
+ .hook{gap:18px}.head{padding-block:8px 16px}.head .sub{font-size:16px}h1{font-size:40px}
+ .hook .stage{aspect-ratio:auto;height:min(76vw,38svh)}
+ .hook .fig{padding:10px;border-radius:30px}
+ .spot[data-spot=head]{top:9%!important}.spot[data-spot=neck]{top:27%!important}.spot[data-spot=shoulder]{top:33%!important;left:74%!important}.spot[data-spot=mid]{top:47%!important}.spot[data-spot=low]{top:68%!important}.spot[data-spot=hip]{top:86%!important;left:33%!important}.hook figcaption{padding:8px 6px 0}
+}
