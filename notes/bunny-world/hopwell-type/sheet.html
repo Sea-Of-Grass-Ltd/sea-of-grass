@@ -1,0 +1,58 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hopwell type and look</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Albert+Sans:ital,wght@0,400;0,500;1,400&family=Figtree:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+:root{--stone:#E6E3D8;--paper:#F4F2EB;--ink:#192830;--sage:#CDD3BB;--sage2:#E4E7DA;--apricot:#E8875B;--muted:#55646B}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:400 16px/1.5 Figtree,sans-serif}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+.mono{font:500 12px/1 "Geist Mono",monospace;letter-spacing:.08em;text-transform:uppercase}
+header{display:flex;justify-content:space-between;align-items:center;padding:20px 0}
+.logo{font:400 34px/1 "Albert Sans",sans-serif;letter-spacing:-.01em}
+nav{display:flex;gap:26px;align-items:center;font-weight:500;font-size:15px}
+.btn{background:var(--ink);color:var(--paper);border-radius:999px;padding:12px 18px;font-weight:600;font-size:15px}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:28px;align-items:stretch;padding:24px 0 48px}
+.lead{display:flex;flex-direction:column;justify-content:center;gap:20px}
+h1{font:400 clamp(52px,7vw,104px)/.95 "Albert Sans",sans-serif;letter-spacing:-.02em;margin:0}
+h1 i{color:#3E5560}
+.lead p{font-size:19px;color:var(--muted);max-width:34ch;margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px}.chip{background:var(--sage2);border:1px solid var(--sage);border-radius:999px;padding:9px 13px;font-weight:500;font-size:14px}
+.chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.stage{position:relative;border-radius:28px;min-height:560px;overflow:hidden;background:linear-gradient(160deg,#D9D3C4,#BFB8A6 60%,#A9A190)}
+.ph{position:absolute;left:24px;top:22px;color:#4c473c}
+.dot{position:absolute;width:26px;height:26px;border-radius:50%;background:rgba(244,242,235,.85);border:2px solid var(--paper);box-shadow:0 0 0 6px rgba(244,242,235,.25)}
+.dot.on{background:var(--apricot);box-shadow:0 0 0 8px rgba(232,135,91,.3)}
+.res{position:absolute;right:20px;bottom:20px;width:min(330px,calc(100% - 40px));background:var(--paper);border-radius:20px;padding:18px 18px 16px;display:grid;gap:10px;box-shadow:0 12px 40px rgba(25,40,48,.18)}
+.res h3{font:400 30px/1 "Albert Sans",sans-serif;margin:0}.res .k{color:var(--apricot)}
+.row{display:flex;justify-content:space-between;font-size:14px;border-top:1px solid #DAD7CC;padding-top:8px}.row b{font-weight:600}
+.res .btn{text-align:center}
+.spec{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;padding:36px 0;border-top:1px solid #D6D3C8}
+.spec div{display:grid;gap:10px;align-content:start}
+.big{font:400 64px/1 "Albert Sans",sans-serif}.big i{font-style:italic}
+.txt{font:400 18px/1.45 Figtree,sans-serif}
+.num{font:500 30px/1 "Geist Mono",monospace}
+.pal{display:flex;gap:10px;padding:0 0 40px;flex-wrap:wrap}.sw{width:150px;border-radius:14px;overflow:hidden;border:1px solid #D6D3C8;font-size:13px}.sw i{display:block;height:64px}.sw span{display:block;padding:8px 10px}
+@media (max-width:700px){nav a{display:none}.hero{grid-template-columns:minmax(0,1fr)}.stage{min-height:460px}.spec{grid-template-columns:minmax(0,1fr)}.sw{width:calc(50% - 5px)}}
+</style></head><body><div class="wrap">
+<header><span class="logo">hopwell</span><nav><a>Where it hurts</a><a>Visits</a><a>Insurance</a><a>Intake</a><span class="btn">Book a first visit</span></nav></header>
+<section class="hero">
+ <div class="lead"><span class="mono">Family chiropractic · Berthoud</span>
+  <h1>Point to where <i>it hurts.</i></h1>
+  <p>Tap the spot, tell us how long and what makes it worse. We’ll show you what a first visit looks like and the next open time.</p>
+  <div class="chips"><span class="chip">A few days</span><span class="chip on">2–6 weeks</span><span class="chip">Months</span></div>
+  <div class="chips"><span class="chip on">Sitting</span><span class="chip">Mornings</span><span class="chip">Lifting</span><span class="chip">Sleeping</span></div>
+ </div>
+ <div class="stage"><span class="ph mono">Photo to come: back view, no face</span>
+  <span class="dot" style="left:47%;top:15%"></span><span class="dot" style="left:30%;top:27%"></span><span class="dot" style="left:64%;top:27%"></span>
+  <span class="dot" style="left:47%;top:36%"></span><span class="dot on" style="left:47%;top:55%"></span><span class="dot" style="left:35%;top:68%"></span>
+  <div class="res"><span class="mono k">Low back · 2–6 weeks · sitting</span><h3>New patient exam</h3>
+   <div class="row"><span>How long</span><b>60 min</b></div><div class="row"><span>Next open</span><b>Thu 8:40 am</b></div><div class="row"><span>With your plan</span><b>$25 copay</b></div>
+   <span class="btn">Book Thursday</span></div>
+ </div>
+</section>
+<section class="spec">
+ <div><span class="mono">Headings · Albert Sans</span><span class="big">Gentle, <i>thorough</i> care.</span></div>
+ <div><span class="mono">Text and UI · Figtree</span><span class="txt">Your first visit is an hour: we talk, check how you move, and only adjust if it will help. Most people know their plan by the end.</span></div>
+ <div><span class="mono">Times and numbers · Geist Mono</span><span class="num">Thu 8:40 · 60 min · $25</span></div>
+</section>
+<div class="pal"><div class="sw"><i style="background:#F4F2EB"></i><span>Paper #F4F2EB</span></div><div class="sw"><i style="background:#E6E3D8"></i><span>Stone #E6E3D8</span></div><div class="sw"><i style="background:#CDD3BB"></i><span>Sage #CDD3BB</span></div><div class="sw"><i style="background:#192830"></i><span>Blue-black #192830</span></div><div class="sw"><i style="background:#E8875B"></i><span>Apricot #E8875B</span></div></div>
+</div></body></html>
