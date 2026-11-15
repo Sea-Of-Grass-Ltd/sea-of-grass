@@ -1,0 +1,54 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bunny World hero mock</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gabarito:wght@500;700;800;900&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{--ink:#1E1A3A;--cream:#FFF6E9;--carrot:#FF6B2C;--soft:#5a5470;--hair:rgba(30,26,58,.16);--hf:Gabarito,system-ui,sans-serif;--bf:Inter,system-ui,sans-serif;--mf:"IBM Plex Mono",monospace;--side:max(20px,calc((100vw - 1240px)/2))}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font:400 17px/1.5 var(--bf)}
+.credit{background:var(--ink);color:var(--cream);text-align:center;font:500 12px/1.4 var(--mf);letter-spacing:.06em;padding:9px 16px}.credit a{color:var(--carrot)}
+.nav{display:flex;justify-content:space-between;align-items:center;padding:14px var(--side);border-bottom:1px solid var(--hair);font:500 15px/1 var(--bf)}
+.nav .small{font:900 18px/1 var(--hf);letter-spacing:-.03em;opacity:0}.nav nav{display:flex;gap:26px}
+.hero{padding:clamp(40px,6vw,84px) var(--side) 40px;text-align:center}
+.lock{display:inline-flex;align-items:flex-end;gap:clamp(12px,1.6vw,22px)}
+.mk{position:relative;height:clamp(150px,17vw,230px);aspect-ratio:170/255}
+.mk img{width:100%;height:100%;display:block}
+.gl{position:absolute;width:var(--s);height:var(--s);transform:translate(-50%,-50%)}
+.gl svg{width:100%;height:100%;display:block}
+.wm{font:900 clamp(64px,10.4vw,150px)/.82 var(--hf);letter-spacing:-.055em;margin-bottom:clamp(6px,.6vw,10px);text-align:left}
+.local{margin:clamp(22px,2.4vw,34px) auto 0;font:500 13px/1.5 var(--mf);letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
+.q{margin:clamp(28px,3.4vw,52px) 0 18px;font:800 clamp(30px,3.4vw,48px)/1 var(--hf);letter-spacing:-.035em}
+.chips{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;max-width:880px;margin:0 auto}
+.chip{min-height:48px;padding:12px 18px;border-radius:999px;border:1.5px solid var(--ink);background:transparent;font:700 17px/1 var(--hf);color:var(--ink)}
+.chip.on{background:var(--ink);color:var(--cream)}
+.chip.ghost{border-style:dashed;opacity:.7}
+.match{max-width:1100px;margin:34px auto 0;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:clamp(20px,3vw,44px);align-items:center;text-align:left;border-top:1px solid var(--hair);padding-top:34px}
+.match img{width:100%;border-radius:14px;box-shadow:0 24px 60px rgba(30,26,58,.22)}
+.match .k{font:500 12px/1.3 var(--mf);letter-spacing:.14em;text-transform:uppercase;color:var(--soft);margin:0 0 10px}
+.match h3{font:900 clamp(34px,3.6vw,52px)/.92 var(--hf);letter-spacing:-.04em;margin:0 0 12px}
+.match p{margin:0 0 18px;color:var(--soft)}
+.feats{display:flex;flex-wrap:wrap;gap:6px 14px;margin:0 0 22px;padding:0;list-style:none;font:600 15px/1.3 var(--bf)}.feats li::before{content:"✓ ";color:var(--carrot)}
+.acts{display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:15px 22px;border-radius:999px;background:var(--ink);color:var(--cream);font:700 17px/1 var(--hf);text-decoration:none}
+.btn.line{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.price{font:500 13px/1.4 var(--mf);color:var(--soft);margin-top:12px}
+.frame{border-bottom:6px dashed #d9cbb6}
+@media (max-width:700px){.nav nav{display:none}.lock{flex-direction:column;align-items:center;gap:8px}.wm{text-align:center}.match{grid-template-columns:minmax(0,1fr)}.chip{font-size:16px;padding:11px 15px;min-height:44px}.local{max-width:30ch}}
+</style></head><body>
+<div class="credit">A demo by <a>Sea of Grass</a> · made-up shops, real working sites</div>
+<header class="nav"><span class="small">Bunny World</span><nav><a>The shops</a><a>Prices</a><a>How it works</a></nav><span style="font:700 15px/1 var(--hf)">Book a free look →</span></header>
+<section class="hero">
+ <div class="lock"><div class="mk"><img src="../../../preview/work/bunny-world/brand/mark-ink.svg" alt="">
+  <!-- glints sit where light would catch a ball lit from the top left: two on the head's upper-left facets, one small low-right -->
+  <span class="gl" style="left:21%;top:65%;--s:24%"><svg viewBox="-10 -10 20 20"><path d="M0-10 L1.6-1.6 10 0 1.6 1.6 0 10-1.6 1.6-10 0-1.6-1.6Z" fill="#fff"/></svg></span>
+  <span class="gl" style="left:40%;top:53%;--s:12%"><svg viewBox="-10 -10 20 20"><path d="M0-10 L1.6-1.6 10 0 1.6 1.6 0 10-1.6 1.6-10 0-1.6-1.6Z" fill="#FFB7C5"/></svg></span>
+  <span class="gl" style="left:79%;top:89%;--s:11%"><svg viewBox="-10 -10 20 20"><path d="M0-10 L1.6-1.6 10 0 1.6 1.6 0 10-1.6 1.6-10 0-1.6-1.6Z" fill="#fff" opacity=".8"/></svg></span>
+ </div><div class="wm">Bunny<br>World</div></div>
+ <p class="local">Northern Colorado has bunnies everywhere. Now it has their shops.</p>
+ <h1 class="q">What kind of shop do you run?</h1>
+ <div class="chips" role="group">
+  <span class="chip">Restaurant</span><span class="chip">Auto shop</span><span class="chip">Bakery</span><span class="chip on">Barbershop</span><span class="chip">Taproom</span><span class="chip">Farm</span><span class="chip">Gift shop</span><span class="chip">Landscaper</span><span class="chip">Clinic</span><span class="chip ghost">Something else</span>
+ </div>
+ <div class="match"><img src="../../../preview/assets/work/bunny-world/poster-hare-today-laptop.webp" alt="Hare Today, the barbershop demo">
+ <div><p class="k">Your match · barbershop</p><h3>Hare Today</h3><p>A live chair board shows who&rsquo;s free and how long the wait is, and booking asks one question at a time.</p>
+ <ul class="feats"><li>Live chair board</li><li>Book by barber</li><li>Join the crew</li></ul>
+ <div class="acts"><a class="btn">Try Hare Today →</a><a class="btn line">Get one like this</a></div><p class="price">Small business site · from $2,000 · fixed price in writing</p></div></div>
+</section></body></html>
