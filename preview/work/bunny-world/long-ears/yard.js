@@ -36,6 +36,9 @@ function draw(){const m=st.m,c=calc(m),N=NOW[st.now];
   const stress=[.8,.8,.55,.15,0,.15,.55,1,.5,.45,.8,.8][m];
   turfFig.style.setProperty('--sep',(stress*.85).toFixed(2));turfFig.style.setProperty('--sat',(1-stress*.55).toFixed(2));turfFig.style.setProperty('--hue',(-stress*28).toFixed(0)+'deg');
   turfFig.classList.toggle('hot',m===7);
+  /* the hero teaser always shows August for the yard set here, from the same model */
+  const au=calc(7);$('[data-tz-t]').textContent=fmt(au.gt)+' gal';$('[data-tz-w]').textContent=fmt(au.gw)+' gal';
+  $('[data-tz-wbar]').style.width=(au.gt?92*au.gw/au.gt:0).toFixed(0)+'%';$('[data-tz-size]').textContent=`${fmt(st.size)} sq ft ${NOW[st.now].name.toLowerCase()} · August`;
   const y=year();
   $('[data-year]').innerHTML=`Switching this yard saves about <b>${fmt(y.g)} gallons</b> and <b>${money(y.b)}</b> in water a year, plus <b>${fmt(y.h)} hours</b> of mowing (or about <b>${money(y.mow)}</b> if you pay someone).`;
   reb();}

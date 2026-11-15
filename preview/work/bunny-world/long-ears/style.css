@@ -127,3 +127,4 @@ h2{font-size:clamp(40px,5.4vw,80px);text-transform:lowercase;margin:0 0 18px}
 .b-l,.b-form,.t-ctl,.t-stage{min-width:0}
 @media (max-width:900px){.t-grid,.t-year,.b-grid,.intro,.area{grid-template-columns:minmax(0,1fr)}}
 .tag{max-width:calc(100vw - 32px);white-space:normal}
+.aug-card .tz-size{font:500 11px/1 var(--mf);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
