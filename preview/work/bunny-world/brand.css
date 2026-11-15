@@ -30,7 +30,7 @@ h2{font-size:clamp(34px,4.6vw,72px);line-height:.95;letter-spacing:-.04em}
 .nav nav{display:flex;align-items:center;gap:clamp(14px,2vw,28px);font:500 15px/1 var(--bf)}.nav nav a{text-decoration:none}.nav nav a:hover{text-decoration:underline;text-underline-offset:4px}
 .nav .cta{background:var(--carrot);color:var(--on-accent);border-radius:999px;padding:10px 16px;font-weight:600}.nav .cta:hover{text-decoration:none;filter:brightness(1.07)}
 /* hero: left-aligned like the SOG home, tight */
-.hero{padding-top:clamp(44px,6vw,88px);padding-bottom:clamp(40px,5vw,72px);background:linear-gradient(180deg,#dcebff 0%,var(--cream) 100%)}
+.hero{padding-top:clamp(44px,6vw,88px);padding-bottom:clamp(40px,5vw,72px);background:var(--cream)}
 .hero h1{font-size:clamp(64px,11vw,168px);line-height:.88;letter-spacing:-.05em}
 .lede{max-width:46ch;margin-top:clamp(18px,2vw,26px);font:400 clamp(18px,1.6vw,22px)/1.4 var(--bf);color:var(--soft)}
 /* prices: three big numbers with small labels, hairline rules (as the SOG home's Websites panel) */
@@ -81,7 +81,7 @@ h2{font-size:clamp(34px,4.6vw,72px);line-height:.95;letter-spacing:-.04em}
 .tab[aria-selected="true"] .tn{color:var(--stage-accent);opacity:1}
 .stage{position:relative;padding:0 clamp(40px,7%,96px) clamp(30px,5%,60px) 0;min-width:0}
 .laptop .lid{background:#0d0b1c;border-radius:16px 16px 4px 4px;padding:1.6% 1.6% 2.4%;border:1px solid rgba(255,246,233,.2)}
-.laptop .base{height:14px;margin:0 -5%;background:linear-gradient(#cfcbe0,#8f8aa8);border-radius:0 0 18px 18px}
+.laptop .base{height:14px;margin:0 -5%;background:#a9a4c0;border-radius:0 0 18px 18px}
 .screen{position:relative;overflow:hidden;background:#fff}
 .laptop .screen{aspect-ratio:16/10;border-radius:4px}
 .phone{position:absolute;right:0;bottom:0;width:clamp(120px,22%,210px);padding:7px;background:#0d0b1c;border-radius:30px;border:1px solid rgba(255,246,233,.25);box-shadow:0 30px 60px rgba(0,0,0,.45)}
@@ -208,24 +208,26 @@ h2{font-size:clamp(34px,4.6vw,72px);line-height:.95;letter-spacing:-.04em}
    sunny  Yellowbird sunshine yellow and black, a rubbery serif (the taproom / farm range) */
 :root,html[data-look="disco"]{--cream:#1B0F2A;--ink:#FFF8EE;--soft:#C9B8E8;--hair:rgba(255,248,238,.16);--card:#25163A;--carrot:#FFF8EE;--on-accent:#1B0F2A;
   --stage:#120A1F;--on-stage:#FFF8EE;--stage-accent:#FF3386;--clover:#6FD3A0;--spark:#FF3386;--hf:Gabarito,system-ui,sans-serif;--hk:1;--hls:-.05em;--htt:none;
-  --hero-bg:radial-gradient(42% 55% at 74% 42%,rgba(201,184,232,.16),transparent 70%),linear-gradient(180deg,#1B0F2A 0%,#2A1740 100%);
-  --mark:linear-gradient(150deg,#ffffff 0%,#e7e9ef 30%,#b9bdc9 46%,#f6f7fa 54%,#c4c8d3 72%,#8f94a3 100%);--mark-shadow:rgba(0,0,0,.45);--glow:rgba(201,184,232,.22);color-scheme:dark}
+  --hero-bg:#1B0F2A;
+  --mark:#FFF8EE;color-scheme:dark}
 html[data-look="clean"]{--cream:#F5F7F9;--ink:#181A1D;--soft:#5B616B;--hair:rgba(24,26,29,.14);--card:#FFFFFF;--carrot:#A772F9;--on-accent:#181A1D;
   --stage:#181A1D;--on-stage:#F5F7F9;--stage-accent:#C7A5FF;--clover:#2E9E63;--spark:#A772F9;--hf:Inter,system-ui,sans-serif;--hk:.92;--hls:-.065em;--htt:none;
-  --hero-bg:radial-gradient(40% 55% at 74% 42%,rgba(167,114,249,.10),transparent 70%),#F5F7F9;
-  --mark:#181A1D;--mark-shadow:rgba(24,26,29,.12);--glow:rgba(167,114,249,.12);color-scheme:light}
+  --hero-bg:#F5F7F9;
+  --mark:#181A1D;color-scheme:light}
 html[data-look="bold"]{--cream:#0B0B0B;--ink:#FFFFFF;--soft:#B5B5B5;--hair:rgba(255,255,255,.16);--card:#161616;--carrot:#FF4C00;--on-accent:#000000;
   --stage:#000000;--on-stage:#FFFFFF;--stage-accent:#FF4C00;--clover:#4ED08A;--spark:#FF4C00;--hf:"Big Shoulders Display",Impact,sans-serif;--hk:1.12;--hls:0em;--htt:uppercase;
-  --hero-bg:radial-gradient(40% 55% at 74% 42%,rgba(255,76,0,.12),transparent 70%),#0B0B0B;
-  --mark:#FFFFFF;--mark-shadow:rgba(0,0,0,.6);--glow:rgba(255,76,0,.14);color-scheme:dark}
-html[data-look="warm"]{--cream:#FFF6EA;--ink:#0A3128;--soft:#4C6A60;--hair:rgba(10,49,40,.15);--card:#FFFDF8;--carrot:#FF9EC8;--on-accent:#0A3128;
-  --stage:#14433D;--on-stage:#FFF6EA;--stage-accent:#FF9EC8;--clover:#008168;--spark:#FF9EC8;--hf:"Young Serif",Georgia,serif;--hk:.86;--hls:-.03em;--htt:none;
-  --hero-bg:radial-gradient(40% 55% at 74% 42%,rgba(255,158,200,.22),transparent 70%),#FFF6EA;
-  --mark:#14433D;--mark-shadow:rgba(10,49,40,.16);--glow:rgba(255,158,200,.25);color-scheme:light}
+  --hero-bg:#0B0B0B;
+  --mark:#FFFFFF;color-scheme:dark}
+html[data-look="warm"]{--cream:#FFE4C8;--ink:#0A3128;--soft:#3F5E54;--hair:rgba(10,49,40,.18);--card:#FFF4E6;--carrot:#D2381F;--on-accent:#FFF6EA;
+  --stage:#14433D;--on-stage:#FFF6EA;--stage-accent:#FFB627;--clover:#008168;--spark:#D2381F;--hf:"Young Serif",Georgia,serif;--hk:.86;--hls:-.03em;--htt:none;
+  --hero-bg:#FFE4C8;
+  --mark:#14433D;color-scheme:light}
+/* Warm, 2026-11-15 (Tristan: "two dull colours stacked"): peach field, green ink, tomato on the button and arrow, marigold on Main Street; the globe stays cut out of the bunny like every look */
+html[data-look="warm"] .lh-go{background:var(--carrot);color:var(--on-accent)}
 html[data-look="sunny"]{--cream:#FFE845;--ink:#000000;--soft:#2B2B2B;--hair:rgba(0,0,0,.2);--card:#FFFBE9;--carrot:#000000;--on-accent:#FFE845;
   --stage:#000000;--on-stage:#FFE845;--stage-accent:#FFE845;--clover:#1D7A3E;--spark:#FFFFFF;--hf:Fraunces,Georgia,serif;--hk:.88;--hls:-.04em;--htt:none;
-  --hero-bg:radial-gradient(40% 55% at 74% 42%,rgba(255,255,255,.45),transparent 70%),#FFE845;
-  --mark:#000000;--mark-shadow:rgba(0,0,0,.18);--glow:rgba(255,255,255,.5);color-scheme:light}
+  --hero-bg:#FFE845;
+  --mark:#000000;color-scheme:light}
 /* the light changing: a quick crossfade (View Transitions where supported; otherwise an instant swap) */
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.32s}
 
@@ -236,22 +238,21 @@ html[data-look="sunny"]{--cream:#FFE845;--ink:#000000;--soft:#2B2B2B;--hair:rgba
 .hero .lede{color:var(--soft);max-width:38ch}
 .lh-q{margin-top:clamp(22px,3vw,34px)}
 .lh-qh{display:flex;align-items:center;gap:10px;font:800 clamp(20px,1.8vw,24px)/1.15 var(--bf);letter-spacing:-.01em;margin:0 0 14px}
-.lh-n{display:inline-grid;place-items:center;flex:none;width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--cream);font:600 13px/1 var(--mf)}
 .lh-go{display:inline-flex;align-items:center;gap:8px;margin-top:16px;padding:16px 24px;border-radius:999px;background:var(--ink);color:var(--cream);text-decoration:none;font:700 18px/1 var(--bf)}
 .lh-go[hidden]{display:none}.lh-go:hover{transform:translateY(-2px)}
 .lh-call{display:inline-block;margin-top:16px;color:var(--soft);font:500 15px/1.3 var(--bf);text-underline-offset:4px}
 .lh-call:hover{color:var(--ink)}
 .lh-stage{position:relative;display:grid;place-items:center;align-content:center;gap:14px;min-height:min(64vh,580px)}
-.lh-glow{position:absolute;width:80%;aspect-ratio:1;border-radius:50%;top:46%;left:50%;translate:-50% -50%;background:radial-gradient(circle,var(--glow),transparent 70%);pointer-events:none}
-.lh-mark{position:relative;appearance:none;border:0;padding:0;background:none;cursor:pointer;height:min(54vh,500px);aspect-ratio:170/255;filter:drop-shadow(0 22px 40px var(--mark-shadow));-webkit-tap-highlight-color:transparent}
+.lh-mark{position:relative;appearance:none;border:0;padding:0;background:none;cursor:pointer;height:min(54vh,500px);aspect-ratio:170/255;-webkit-tap-highlight-color:transparent}
 .lh-mark:focus-visible{outline:3px solid var(--spark);outline-offset:12px;border-radius:24px}
 .lh-fill,.lh-sweep{position:absolute;inset:0;-webkit-mask:url(brand/mark-ink.svg?v=2) center/100% 100% no-repeat;mask:url(brand/mark-ink.svg?v=2) center/100% 100% no-repeat}
 .lh-fill{background:var(--mark)}
-.lh-sweep{background:linear-gradient(115deg,transparent 40%,color-mix(in srgb,var(--spark) 0%,transparent) 44%,color-mix(in srgb,var(--spark) 60%,transparent) 48.5%,#fff 50%,color-mix(in srgb,var(--spark) 60%,transparent) 51.5%,transparent 56%);background-size:300% 100%;background-position:100% 0;opacity:0}
+/* the glint is one hard-edged solid band in the look's spark colour: no fades (Tristan: no gradients, 2026-11-15) */
+.lh-sweep{background:linear-gradient(115deg,transparent 46%,var(--spark) 46%,var(--spark) 52%,transparent 52%);background-size:300% 100%;background-position:100% 0;opacity:0}
 .lh-hint{position:absolute;left:-12%;top:4%;display:flex;align-items:flex-start;gap:2px;margin:0;color:var(--ink);font:600 26px/1 Caveat,"Comic Sans MS",cursive;letter-spacing:0;text-transform:none;pointer-events:none;opacity:0;transform:translateY(6px) rotate(-4deg);transition:opacity .4s,transform .4s}
 .lh-hint span{white-space:nowrap}
 .lh-hint svg{width:70px;height:auto;margin:20px 0 0 2px;color:var(--spark)}
-html[data-look="warm"] .lh-hint svg,html[data-look="sunny"] .lh-hint svg{color:var(--ink)}
+html[data-look="sunny"] .lh-hint svg{color:var(--ink)}
 .lh-hint.on{opacity:1;transform:rotate(-4deg)}
 @media (prefers-reduced-motion:no-preference){
   .lh-mark.pop{animation:lhPop .55s cubic-bezier(.3,1.6,.5,1)}
@@ -262,3 +263,5 @@ html[data-look="warm"] .lh-hint svg,html[data-look="sunny"] .lh-hint svg{color:v
 @keyframes lhSweep{0%{background-position:100% 0;opacity:1}99%{opacity:1}100%{background-position:0 0;opacity:0}}
 @media (max-width:820px){.lh-grid{grid-template-columns:1fr}.lh-stage{order:-1;min-height:0;padding:4px 0}.lh-mark{height:min(30vh,230px)}
   .lh-hint{left:auto;right:-6px;top:-2%;flex-direction:column;align-items:flex-end;font-size:19px;transform:rotate(4deg)}.lh-hint.on{transform:rotate(4deg)}.lh-hint svg{width:46px;margin:2px 50px 0 0;transform:scaleX(-1) rotate(-8deg)}}
+/* the cart drawer is flat on the landing too (shared cart.css uses a dark wash) */
+.shop-drawer{background:#0A0C11}
