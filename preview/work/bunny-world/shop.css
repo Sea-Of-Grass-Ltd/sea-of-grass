@@ -167,3 +167,11 @@ input[type=file]:hover{border-color:var(--ink)}
 input[type=file]::file-selector-button{margin-right:14px;padding:10px 16px;border:0;border-radius:var(--btn-r);background:var(--accent);color:var(--on-accent);font:600 15px/1 var(--bf);cursor:pointer}
 input[type=file]::-webkit-file-upload-button{margin-right:14px;padding:10px 16px;border:0;border-radius:var(--btn-r);background:var(--accent);color:var(--on-accent);font:600 15px/1 var(--bf);cursor:pointer}
 .dark-ui input[type=date],.dark-ui input[type=file]{color-scheme:dark}
+/* day chips for "which day" questions (bw.js): a scrolling row of day cards in the shop's own field/accent colours */
+.q-days{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 8px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+.q-day{flex:none;display:grid;justify-items:center;gap:2px;min-width:62px;padding:10px 8px;border:1px solid var(--line);border-radius:var(--ctl-r);background:var(--field);color:var(--ink);cursor:pointer;scroll-snap-align:start;font:inherit}
+.q-day small{font:500 12px/1.2 var(--mf);color:var(--muted)}
+.q-day b{font:var(--hw) 24px/1 var(--hf)}
+.q-day:hover{border-color:var(--ink)}
+.q-day[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.q-day[aria-pressed="true"] small{color:inherit;opacity:.85}

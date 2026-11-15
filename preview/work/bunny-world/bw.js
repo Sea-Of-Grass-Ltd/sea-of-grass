@@ -99,7 +99,7 @@ $$('form[data-demo]').forEach(f=>f.addEventListener('submit',e=>{e.preventDefaul
   if(!f.reportValidity())return;
   const done=$('.done',f);const ref=(f.dataset.demo||'BW')+'-'+String(1000+Math.floor(Math.random()*9000));
   const cart=f.closest('[data-cart]');
-  const lines=$$('[data-sum]',f).map(i=>{if((i.type==='checkbox'||i.type==='radio')&&!i.checked)return null;const v=i.tagName==='SELECT'?i.selectedOptions[0].text:i.value;return v?`${i.dataset.sum}: ${v}`:null;}).filter(Boolean);
+  const lines=$$('[data-sum]',f).map(i=>{if((i.type==='checkbox'||i.type==='radio')&&!i.checked)return null;const v=i.tagName==='SELECT'?i.selectedOptions[0].text:i.type==='date'&&i.value?new Date(i.value+'T12:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'}):i.value;return v?`${i.dataset.sum}: ${v}`:null;}).filter(Boolean);
   if(cart)lines.unshift('Total: '+cart.dataset.total);
   $$('[data-out]',f).forEach(o=>lines.push((o.dataset.label||'Total')+': '+o.textContent));
   done.innerHTML=`<b>${f.dataset.ok||'Sent.'}</b>${lines.map(l=>`<span style="display:block">${l.replace(/</g,'&lt;')}</span>`).join('')}<span class="note" style="display:block;margin-top:8px">Reference ${ref}. Demo only: nothing was sent. On your site this goes to your inbox, phone or booking calendar.</span>`;
@@ -118,6 +118,25 @@ $$('.ba input').forEach(r=>{const set=()=>r.closest('.ba').style.setProperty('--
 /* ---- check a zip code against the service area ---- */
 $$('[data-zips]').forEach(f=>f.addEventListener('submit',e=>{e.preventDefault();const z=$('input',f).value.trim(),o=$('.zip-out',f),Z=JSON.parse(f.dataset.zips);
   o.textContent=!/^\d{5}$/.test(z)?'Enter a five-digit zip code.':Z[z]?`Yes, we come to ${Z[z]}. ${f.dataset.yes||''}`:(f.dataset.no||'That one is outside our usual area, but ask anyway: we sometimes travel for bigger jobs.');}));
+
+/* ---- day chips: a "which day" date field becomes a row of tappable day cards (2026-11-15: no raw mm/dd/yyyy anywhere).
+   Two weeks from min (or tomorrow), capped by max; re-drawn if a shop script sets min/max later (Cottontail's season window).
+   The real input stays as the value, hidden. Birthdays (autocomplete=bday) keep the styled date field. */
+$$('[data-q] input[type=date]:not([autocomplete=bday])').forEach(inp=>{
+  const step=inp.closest('[data-q]'),solo=$$('input:not([type=hidden]),select,textarea',step).length===1;
+  const row=document.createElement('div');row.className='q-days';row.setAttribute('role','group');row.setAttribute('aria-label',step.dataset.q);
+  const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  const draw=()=>{row.textContent='';const t=new Date();t.setHours(12,0,0,0);t.setDate(t.getDate()+1);
+    let d=inp.min?new Date(inp.min+'T12:00'):t;if(d<t)d=t;const end=inp.max?new Date(inp.max+'T12:00'):null;
+    for(let k=0;k<14&&(!end||d<=end);k++,d=new Date(d.getTime()+864e5)){const v=iso(d),b=document.createElement('button');b.type='button';b.className='q-day';b.dataset.v=v;
+      b.dataset.sumText=d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});b.setAttribute('aria-pressed',String(inp.value===v));
+      b.innerHTML=`<small>${d.toLocaleDateString('en-US',{weekday:'short'})}</small><b>${d.getDate()}</b><small>${d.toLocaleDateString('en-US',{month:'short'})}</small>`;
+      b.setAttribute('aria-label',d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'}));
+      b.addEventListener('click',()=>{inp.value=v;inp.dispatchEvent(new Event('input',{bubbles:true}));inp.dispatchEvent(new Event('change',{bubbles:true}));
+        $$('.q-day',row).forEach(x=>x.setAttribute('aria-pressed',String(x===b)));});row.appendChild(b);}};
+  draw();new MutationObserver(draw).observe(inp,{attributes:true,attributeFilter:['min','max']});
+  const lab=inp.closest('label');(lab||inp).classList.add('sr');(lab||inp).after(row);inp.tabIndex=-1;
+  if(solo)step.dataset.qAuto='.q-day';});
 
 
 /* ---- one question at a time (Tristan, 2026-11-15: "the simple page with a hook being all you see until things come out afterwards").

@@ -144,5 +144,6 @@ document.addEventListener('keydown',e=>{if(dr.hidden)return;if(e.key==='Escape')
   if(e.key==='Tab'){const f=$$('button,input,a[href]',$('.dr-panel')).filter(x=>!x.disabled&&x.offsetParent);if(!f.length)return;const a=f[0],z=f[f.length-1];
     if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus();}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus();}}});
 })();
-/* hide the floating Book button while the booking block is on screen */
-(function(){var b=document.getElementById('book');if(!('IntersectionObserver' in window)||!b)return;new IntersectionObserver(function(e){document.body.classList.toggle('book-in',e[0].isIntersecting);}).observe(b);})();
+/* hide the floating Book button while the booking block or any form is on screen (2026-11-15: it covered "Send it" on the crew form) */
+(function(){if(!('IntersectionObserver' in window))return;var els=[].slice.call(document.querySelectorAll('#book,form,[data-steps]'));if(!els.length)return;var on=new Set();
+var io=new IntersectionObserver(function(es){es.forEach(function(e){e.isIntersecting?on.add(e.target):on.delete(e.target);});document.body.classList.toggle('book-in',on.size>0);});els.forEach(function(el){io.observe(el);});})();
