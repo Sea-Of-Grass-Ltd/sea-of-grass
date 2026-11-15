@@ -107,7 +107,10 @@ $$('form[data-demo]').forEach(f=>f.addEventListener('submit',e=>{e.preventDefaul
   if(cart&&cart.bwClear)cart.bwClear();}));
 
 /* ---- uploads: list the photos picked ---- */
-$$('input[type=file][data-list]').forEach(i=>i.addEventListener('change',()=>{const o=document.getElementById(i.dataset.list);o.textContent=i.files.length?[...i.files].map(f=>f.name).join(', '):'';}));
+$$('input[type=file]').forEach(i=>{const box=document.createElement('span');box.className='file-pick';box.setAttribute('aria-hidden','true');
+  const say=()=>{const n=i.files.length;box.innerHTML=`<b>${n?'Change photos':'Add photos'}</b><span>${n?[...i.files].map(f=>f.name).join(', '):'From your phone or computer'}</span>`;};
+  say();i.classList.add('sr');i.after(box);
+  i.addEventListener('change',()=>{say();const o=i.dataset.list&&document.getElementById(i.dataset.list);if(o)o.textContent='';});});
 
 /* ---- before / after ---- */
 $$('.ba input').forEach(r=>{const set=()=>r.closest('.ba').style.setProperty('--cut',r.value+'%');r.addEventListener('input',set);set();});
