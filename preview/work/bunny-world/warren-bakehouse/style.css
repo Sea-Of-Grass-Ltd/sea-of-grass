@@ -105,3 +105,18 @@ h2{font-size:clamp(40px,5.4vw,78px);line-height:.95;letter-spacing:-.02em}
 .lbl::after{content:"6:30";display:grid;place-items:center;width:40px;height:40px;top:9px;font:500 10px/1 var(--mf);letter-spacing:.04em;color:var(--ink);opacity:.8;transform:rotate(-14deg)}
 @media (max-width:560px){.clock{font-size:clamp(44px,14vw,70px)}.loaf{padding:14px}.loaf .say{font-size:14.5px}}
 .loaf.sold .lbl::after{opacity:0}
+/* clock and counts in lining, tabular figures (DM Mono): digits sit on the line and don't jitter as they tick */
+.clock{font-family:var(--mf);font-weight:500;font-variant-numeric:lining-nums tabular-nums;letter-spacing:-.04em;font-size:clamp(46px,6.4vw,104px);line-height:1;display:flex;align-items:baseline;gap:0}
+.clock b{font-weight:500}
+.clock i{font-style:normal;font-size:.4em;font-weight:400;letter-spacing:0;color:#c9a87a;margin:0 .55em 0 .12em}
+.clock i:last-child{margin-right:0}
+.left b{font-family:var(--mf);font-weight:500;font-size:34px;letter-spacing:-.03em;font-variant-numeric:lining-nums tabular-nums}
+.hold1,.list .price,.list .btn,.total b,.price{font-variant-numeric:lining-nums tabular-nums}
+.list .price,.total b{font-family:var(--mf);font-weight:500}
+/* a warm slot behind every lazy photo, so a slow load never shows as a hole */
+.cake-pre picture,.visit-photo picture,.case-photo picture{display:block;background:#ead2a4;border-radius:6px}
+@media (max-width:560px){.clock{font-size:clamp(40px,12.5vw,64px)}}
+/* Gabarito: sturdy, warm, lining tabular figures with a plain zero */
+.clock{font-family:Gabarito,var(--bf);letter-spacing:-.02em}.clock b{font-weight:900}
+.clock i{font-family:var(--mf);font-weight:500;margin:0 .5em 0 .14em}
+.left b{font-family:Gabarito,var(--bf);font-weight:900;letter-spacing:-.01em}

@@ -17,6 +17,9 @@ function now(){if(!fast)return realNow();const s=fast.from+(Date.now()-fast.t0)/
 /* seconds until the next bell, from (day, sec) */
 function untilNext(n){for(let k=0;k<8;k++){const d=(n.day+k)%7;if(!(d in CLOSE))continue;const at=k*86400+BELL;if(at>n.sec)return at-n.sec;}return 0;}
 const hms=t=>{t=Math.max(0,Math.ceil(t));const h=Math.floor(t/3600),m=Math.floor(t%3600/60),s=t%60;return`${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`;};
+/* the clock: numbers lead, the h/m/s units sit small beside them; aria-label keeps it readable as words */
+const clockHTML=t=>{t=Math.max(0,Math.ceil(t));const p=[Math.floor(t/3600),Math.floor(t%3600/60),t%60].map(v=>String(v).padStart(2,'0'));
+  return`<b>${p[0]}</b><i>h</i><b>${p[1]}</b><i>m</i><b>${p[2]}</b><i>s</i>`;};
 const hm=t=>{t=Math.max(0,Math.round(t/60));const h=Math.floor(t/60),m=t%60;return h?`${h}h ${m}m`:`${m}m`;};
 
 const clock=$('[data-clock]'),state=$('[data-bell-state]'),sub=$('[data-bell-sub]'),tick=$('[data-ticker]'),fastB=$('[data-fast]');
@@ -33,7 +36,7 @@ function feed(msg){const t=Date.now();if(t-lastFeed<2500)return;lastFeed=t;tick.
 const clockTxt=n=>{let h=Math.floor(n.sec/3600),m=Math.floor(n.sec%3600/60);const ap=h>=12?'pm':'am';h=h%12||12;return`${h}:${String(m).padStart(2,'0')} ${ap}`;};
 
 function draw(){const n=now(),ph=phase(n),next=untilNext(n);
-  clock.textContent=hms(next);
+  clock.innerHTML=clockHTML(next);clock.setAttribute('aria-label',hms(next).replace(/(\d+)h (\d+)m (\d+)s/,'$1 hours $2 minutes $3 seconds'));
   bell.dataset.phase=ph;
   const sinceBell=n.sec-BELL;
   if(ph==='before'){state.textContent='The bell rings in';sub.textContent=`Six named loaves are proofing. They come out at 6:30 sharp; hold one now and it waits for you.`;}
