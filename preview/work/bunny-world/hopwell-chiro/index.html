@@ -15,7 +15,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
 <link rel="icon" href="../brand/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Albert+Sans:ital,wght@0,400;0,500;1,400&family=Figtree:wght@400;500;600&family=Geist+Mono:wght@400;500&family=IBM+Plex+Mono:wght@500&family=Gabarito:wght@900&display=swap">
-<link rel="stylesheet" href="../shop.css?v=10">
+<link rel="stylesheet" href="../shop.css?v=11">
 <link rel="stylesheet" href="style.css?v=20">
 </head>
 <body>
@@ -67,17 +67,11 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
   <div class="plans"><h3>We bill these plans directly</h3><ul class="pills"><li>Acorn Mutual</li><li>Clover Care</li><li>United Burrow Health</li><li>Bluebell Cross</li><li>Meadowcare (65+)</li></ul></div>
   <div class="plans"><h3>Without insurance</h3><dl class="self"><div><dt>New patient exam</dt><dd>$65</dd></div><div><dt>Adjustment</dt><dd>$45</dd></div><div><dt>Massage, 60 min</dt><dd>$85</dd></div></dl><p class="note">Pay at the visit. HSA and FSA cards welcome, and we email a receipt you can submit.</p></div></div>
  <div class="box" id="book"><p class="kick">Book</p><h2>Pick a time</h2>
-  <form class="form" data-demo="HW" data-ok="Booked. Your intake link is on its way.">
-   <div class="row"><label>Visit<select data-sum="Visit" data-visit><option>New patient exam (60 min)</option><option>Adjustment (20 min)</option><option>Massage (60 min)</option><option>Kids and pregnancy care (30 min)</option></select></label><label>With<select data-sum="With"><option>First available</option><option>Dr. Wren Hopwell</option><option>Dr. Ash Hopwell</option></select></label></div>
-   <div data-slots data-days="1,2,3,4,5" data-times="8:40,9:20,10:20,11:00,13:00,14:20,15:20,16:40" data-seed="hw"></div>
-   <input type="hidden" name="date" data-sum="Day"><input type="hidden" name="time" required data-sum="Time" data-msg="Pick a day and a time first.">
-   <input type="hidden" data-sum="About" data-about>
-   <div class="row"><label>Name<input autocomplete="name" required data-sum="Name"></label><label>Phone or email<input required autocomplete="email"></label></div>
-   <p class="sync"><i aria-hidden="true"></i>Syncs with your scheduler (Zocdoc, Jane and others) &middot; <span data-synced>updated just now</span></p>
-   <p class="err" role="alert"></p>
+  <form class="form" data-demo="HW" data-ok="Booked. Your intake link is on its way." data-steps><div data-q="Which visit?"><label>Visit<select data-sum="Visit" data-visit><option>New patient exam (60 min)</option><option>Adjustment (20 min)</option><option>Massage (60 min)</option><option>Kids and pregnancy care (30 min)</option></select></label></div><div data-q="With whom?"><label>With<select data-sum="With"><option>First available</option><option>Dr. Wren Hopwell</option><option>Dr. Ash Hopwell</option></select></label></div><div data-q="Pick a time" data-q-auto=".slots button" data-q-sum="input[name=date],input[name=time]" data-q-keep><div data-slots data-days="1,2,3,4,5" data-times="8:40,9:20,10:20,11:00,13:00,14:20,15:20,16:40" data-seed="hw"></div>
+   <input type="hidden" name="date" data-sum="Day"><input type="hidden" name="time" required data-sum="Time" data-msg="Pick a day and a time first."><input type="hidden" data-sum="About" data-about></div><div data-q="Where do we send the reminder?"><div class="row"><label>Name<input autocomplete="name" required data-sum="Name"></label><label>Phone or email<input required autocomplete="email"></label></div><p class="sync"><i aria-hidden="true"></i>Syncs with your scheduler (Zocdoc, Jane and others) &middot; <span data-synced>updated just now</span></p><p class="err" role="alert"></p>
    <button class="btn" type="submit">Book my visit</button>
    <div class="done" role="status"></div>
-  </form></div>
+  </div></form></div>
 </section>
 
 <section class="visits wrap" id="visits" aria-labelledby="visits-h"><h2 id="visits-h" class="sr">Visits and prices</h2>
@@ -99,15 +93,8 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
 </section>
 
 <section class="intake wrap" id="intake" aria-labelledby="intake-h"><div class="ih"><p class="kick">New patients</p><h2 id="intake-h">Intake, before you arrive</h2><p>Saves fifteen minutes in the waiting room. If you used &ldquo;Where it hurts&rdquo;, it&rsquo;s already started. On a real site this is a secure, HIPAA-ready form service; this demo keeps it on the page.</p></div>
- <div class="box"><form class="form" data-demo="INTAKE" data-ok="Form complete. Thank you.">
-  <p class="pre" data-pre hidden></p>
-  <div class="row"><label>Full name<input required autocomplete="name" data-sum="Name"></label><label>Date of birth<input type="date" required></label></div>
-  <div class="row"><label>What brings you in?<select data-sum="Reason" data-reason><option value="low">Low back pain</option><option value="neck">Neck pain</option><option value="head">Headaches</option><option value="shoulder">Shoulder pain</option><option value="mid">Pain between the shoulder blades</option><option value="hip">Hip or leg pain</option><option value="other">General wellness</option></select></label>
-   <label>How long?<select data-sum="For" data-for><option value="days">A few days</option><option value="weeks">2 to 6 weeks</option><option value="months">Months</option></select></label></div>
-  <label>Worse when<input data-sum="Worse when" data-worse></label>
-  <label>Pain right now, 0 to 10: <b data-show="pain">3</b><input type="range" min="0" max="10" value="3" data-bind="pain"></label>
-  <label class="check"><input type="checkbox" required> I agree to the office policies</label>
-  <button class="btn" type="submit">Submit the form</button><div class="done" role="status"></div></form></div>
+ <div class="box"><form class="form" data-demo="INTAKE" data-ok="Form complete. Thank you." data-steps><p class="pre" data-pre hidden></p><div data-q="What brings you in?"><label>What brings you in?<select data-sum="Reason" data-reason><option value="low">Low back pain</option><option value="neck">Neck pain</option><option value="head">Headaches</option><option value="shoulder">Shoulder pain</option><option value="mid">Pain between the shoulder blades</option><option value="hip">Hip or leg pain</option><option value="other">General wellness</option></select></label></div><div data-q="How long has it hurt?"><label>How long?<select data-sum="For" data-for><option value="days">A few days</option><option value="weeks">2 to 6 weeks</option><option value="months">Months</option></select></label></div><div data-q="What makes it worse?"><label>Worse when<input data-sum="Worse when" data-worse></label></div><div data-q="How much does it hurt right now?"><label>Pain right now, 0 to 10: <b data-show="pain">3</b><input type="range" min="0" max="10" value="3" data-bind="pain"></label></div><div data-q="About you"><div class="row"><label>Full name<input required autocomplete="name" data-sum="Name"></label><label>Date of birth<input type="date" required></label></div><label class="check"><input type="checkbox" required> I agree to the office policies</label>
+  <button class="btn" type="submit">Submit the form</button><div class="done" role="status"></div></div></form></div>
 </section>
 
 <section class="reviews wrap" aria-label="Reviews">
@@ -118,7 +105,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
 <section class="hrs wrap" id="hours"><div class="box"><p class="kick">Hours</p><div class="hours" data-hours='{"0": null, "1": ["8:00", "18:00"], "2": ["8:00", "18:00"], "3": ["8:00", "17:00"], "4": ["8:00", "18:00"], "5": ["8:00", "17:00"], "6": null}'></div><p>19 Meadow Ct, Suite 2 (made up) &middot; <a href="tel:9705550190">(970) 555-0190</a></p></div><iframe class="map" loading="lazy" title="Map of downtown Berthoud" src="https://www.openstreetmap.org/export/embed.html?bbox=-105.0880%2C40.3045%2C-105.0745%2C40.3120&amp;layer=mapnik"></iframe></section>
 </main>
 <section class="want"><div><h2>Run a clinic or health practice? Your site can do all of this.</h2><p>Built in your own look, hooked to the tools you already use, kept running. Fixed price, in writing.</p></div><div style="display:flex;flex-wrap:wrap;gap:10px"><a href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a free 20-minute look</a><a class="back" href="../">Back to Bunny World</a></div></section>
-<script src="../bw.js?v=8" defer></script>
-<script src="clinic.js?v=3" defer></script>
+<script src="../bw.js?v=9" defer></script>
+<script src="clinic.js?v=4" defer></script>
 </body>
 </html>

@@ -126,3 +126,26 @@ details p{margin:10px 0 0;color:var(--muted)}
 .want a{display:inline-flex;align-items:center;min-height:48px;padding:12px 20px;border-radius:14px;background:#FF6B2C;color:#1E1A3A;font-weight:700;text-decoration:none;white-space:nowrap}
 .want .back{background:transparent;color:#FFF6E9;border:2px solid rgba(255,246,233,.4)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+/* one question at a time (bw.js data-steps). Uses each shop's own tokens, so it keeps the shop's look. */
+.reveal{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .32s cubic-bezier(.2,0,0,1),opacity .24s ease}
+.reveal.on{grid-template-rows:1fr;opacity:1}
+.rv-in{overflow:hidden;min-height:0}
+.q-ready{display:grid;gap:0}
+.q-step.on+.q-step.on,.q-ready>.q-step.on~.q-step.on{margin-top:18px}
+.q-body.on>.rv-in{padding:2px 2px 4px}
+.q-h{display:flex;align-items:center;gap:10px;margin:0 0 10px;font-family:var(--hf);font-weight:var(--hw);font-size:20px;line-height:1.15}
+.q-n{display:inline-grid;place-items:center;flex:none;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--on-accent);font:600 12px/1 var(--mf)}
+.q-sum{display:flex;align-items:center;gap:10px;width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:var(--ctl-r);background:var(--field);color:var(--ink);text-align:left;cursor:pointer;font:inherit}
+.q-sum b{flex:1;min-width:0;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.q-sum span{color:var(--accent);font-weight:700}
+.q-sum u{font:500 12px/1 var(--mf);text-transform:uppercase;letter-spacing:.08em;text-underline-offset:3px;color:var(--muted)}
+.q-sum[hidden]{display:none}
+.q-sum:hover{border-color:var(--ink)}
+.q-opts{display:flex;flex-wrap:wrap;gap:8px}
+.q-opt{min-height:44px;padding:10px 16px;border:1px solid var(--line);border-radius:var(--btn-r);background:var(--field);color:var(--ink);font:500 15px/1.25 var(--bf);cursor:pointer;text-align:left}
+.q-opt:hover{border-color:var(--ink)}
+.q-opt[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.q-next{justify-self:start;margin-top:4px}
+.q-body .rv-in{display:grid;gap:14px}
+@media (prefers-reduced-motion:reduce){.reveal{transition:none}}

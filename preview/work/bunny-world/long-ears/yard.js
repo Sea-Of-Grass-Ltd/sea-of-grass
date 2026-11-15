@@ -61,7 +61,8 @@ $('[data-toquote]').addEventListener('click',()=>{const y=year();
   const cost=st.size*6;$('[data-q-budget]').value=cost<2000?'Under $2,000':cost<10000?'$2,000 – $10,000':cost<25000?'$10,000 – $25,000':'Over $25,000';
   const ft=$('[data-fromtest]');ft.hidden=false;
   ft.innerHTML=`<b>From your August Test:</b> ${fmt(st.size)} sq ft of ${NOW[st.now].name.toLowerCase()}, about ${fmt(y.g)} gallons a year to save${rebate?`, ${rebate[0]} rebate`:''}. We&rsquo;ll start from these.`;
-  $('[data-q-notes]').value=`August Test: ${fmt(st.size)} sq ft, ${NOW[st.now].name.toLowerCase()} now${rebate?', zip '+zipIn.value.trim():''}.`;});
+  $('[data-q-notes]').value=`August Test: ${fmt(st.size)} sq ft, ${NOW[st.now].name.toLowerCase()} now${rebate?', zip '+zipIn.value.trim():''}.`;
+  const qf=$('[data-q-job]').closest('[data-steps]');if(qf&&qf.bwSteps)[0,1,2,3].forEach(k=>qf.bwSteps.done(k));});
 draw();
 
 /* ---- blowout / start-up route booker ---- */

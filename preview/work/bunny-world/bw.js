@@ -116,4 +116,63 @@ $$('.ba input').forEach(r=>{const set=()=>r.closest('.ba').style.setProperty('--
 $$('[data-zips]').forEach(f=>f.addEventListener('submit',e=>{e.preventDefault();const z=$('input',f).value.trim(),o=$('.zip-out',f),Z=JSON.parse(f.dataset.zips);
   o.textContent=!/^\d{5}$/.test(z)?'Enter a five-digit zip code.':Z[z]?`Yes, we come to ${Z[z]}. ${f.dataset.yes||''}`:(f.dataset.no||'That one is outside our usual area, but ask anyway: we sometimes travel for bigger jobs.');}));
 
+
+/* ---- one question at a time (Tristan, 2026-11-15: "the simple page with a hook being all you see until things come out afterwards").
+   Any element with data-steps: each child marked data-q="Question" becomes a step. Only the first shows; answering it collapses it
+   to a one-line summary ("Oil change ✓ Change") and the next step slides in beneath. Contact details go in the last step.
+   How a step is answered:
+   - a single <select> becomes a row of tappable choices (the select stays as the value, hidden);
+   - data-q-auto="selector": a click on a matching button answers it (time slots, days, barbers);
+   - anything else gets a Next button that checks the fields first.
+   The step holding the submit button is the last one. data-q-sum="selector,..." picks what the summary shows.
+   el.bwSteps.done(i) marks a step answered from code (e.g. a hand-off that pre-fills the form). */
+$$('[data-steps]').forEach(root=>{
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const steps=$$('[data-q]',root).filter(s=>s.closest('[data-steps]')===root);
+  const done=steps.map(()=>false);let reopened=-1;
+  const clean=t=>String(t).replace(/\s+/g,' ').trim();
+  steps.forEach((s,i)=>{
+    const body=document.createElement('div');body.className='rv-in';while(s.firstChild)body.appendChild(s.firstChild);
+    const final=!!$('[type=submit]',body);
+    const sel=$$('select',body),others=$$('input:not([type=hidden]),textarea',body);
+    const chips=!s.hasAttribute('data-q-keep')&&sel.length===1&&!others.length&&!s.dataset.qAuto;
+    if(chips){const se=sel[0],row=document.createElement('div');row.className='q-opts';row.setAttribute('role','group');row.setAttribute('aria-label',s.dataset.q);
+      [...se.options].forEach(o=>{const b=document.createElement('button');b.type='button';b.className='q-opt';b.textContent=o.textContent;b.setAttribute('aria-pressed','false');
+        b.addEventListener('click',()=>{se.value=o.value;se.dispatchEvent(new Event('input',{bubbles:true}));se.dispatchEvent(new Event('change',{bubbles:true}));
+          $$('.q-opt',row).forEach(x=>x.setAttribute('aria-pressed',String(x===b)));answer(i);});row.appendChild(b);});
+      const lab=se.closest('label');(lab||se).classList.add('sr');lab?lab.after(row):se.after(row);s._sel=se;}
+    if(!final&&!chips&&!s.dataset.qAuto){const nx=document.createElement('button');nx.type='button';nx.className='btn q-next';nx.textContent='Next';
+      nx.addEventListener('click',()=>{const bad=$$('input:not([type=hidden]),select,textarea',body).find(f=>!f.checkValidity());if(bad){bad.reportValidity();return;}answer(i);});
+      body.appendChild(nx);}
+    if(s.dataset.qAuto)body.addEventListener('click',e=>{if(!e.isTrusted)return;const b=e.target.closest(s.dataset.qAuto);if(b&&!b.disabled)setTimeout(()=>answer(i),0);}); // scripts pre-picking a day don't count
+    const head=document.createElement('p');head.className='q-h';head.innerHTML=`<span class="q-n">${i+1}</span>`;head.appendChild(document.createTextNode(s.dataset.q));
+    const sum=document.createElement('button');sum.type='button';sum.className='q-sum';sum.hidden=true;sum.innerHTML='<b></b><span aria-hidden="true">✓</span><u>Change</u>';
+    sum.addEventListener('click',()=>{reopened=i;flow(false);setTimeout(()=>{const f=$('[aria-pressed="true"],input:not([type=hidden]),select,textarea,button',s._body);f&&f.focus({preventScroll:true});},reduce?0:340);});
+    const wrapBody=document.createElement('div');wrapBody.className='reveal q-body';wrapBody.appendChild(body);
+    const inner=document.createElement('div');inner.className='rv-in';inner.append(head,sum,wrapBody);
+    s.classList.add('reveal','q-step');s.appendChild(inner);s._body=body;s._wrap=wrapBody;s._sum=sum;s._final=final;});
+  function value(s){
+    if(s.dataset.qSum)return s.dataset.qSum.split(',').map(q=>{const e=$(q.trim(),root);return e?clean(e.value!==undefined&&e.tagName!=='P'&&e.tagName!=='B'&&e.tagName!=='SPAN'?e.value:e.textContent):'';}).filter(Boolean).join(' · ');
+    if(s._sel)return clean(s._sel.selectedOptions[0].textContent);
+    if(s.dataset.qText){const f=$$('input:not([type=hidden]),select,textarea',s._body);   // e.g. "{0} kids · {1} adults"
+      return s.dataset.qText.split(' · ').map(part=>{const m=part.match(/\{(\d+)\}/);if(!m)return part;const e=f[+m[1]];if(!e)return '';
+        const v=e.type==='checkbox'?(e.checked?'yes':''):e.tagName==='SELECT'?e.selectedOptions[0].textContent:e.value;return v&&v!=='0'?clean(part.replace(m[0],e.type==='checkbox'?'':clean(v))):'';}).filter(Boolean).join(' · ');}
+    if(s.dataset.qAuto){const b=$$(s.dataset.qAuto,s._body).find(x=>x.getAttribute('aria-pressed')==='true');return b?clean(b.dataset.sumText||[...b.childNodes].map(n=>n.textContent).filter(t=>t.trim()).join(' · ')):'';}
+    return $$('input:not([type=hidden]),select,textarea',s._body).map(f=>{
+      if(f.type==='checkbox'||f.type==='radio')return f.checked?clean(f.value!=='on'?f.value:(f.closest('label')||{}).textContent||''):'';
+      if(f.tagName==='SELECT')return clean(f.selectedOptions[0].textContent);
+      if(f.type==='file')return f.files.length?f.files.length+(f.files.length>1?' photos':' photo'):'';
+      if(f.type==='date'&&f.value)return new Date(f.value+'T12:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+      return clean(f.value);}).filter(Boolean).join(' · ')||'Skipped';}
+  function show(el,on){el.classList.toggle('on',on);if(on)el.removeAttribute('inert');else el.setAttribute('inert','');}
+  function flow(move){let first=-1;
+    steps.forEach((s,i)=>{const reach=i===0||done.slice(0,i).every(Boolean),open=reach&&(!done[i]||reopened===i||s._final);
+      show(s,reach);show(s._wrap,open);if(s._sel){const v=s._sel.value;$$('.q-opt',s._body).forEach((b,k)=>b.setAttribute('aria-pressed',String(done[i]&&s._sel.options[k].value===v)));}s._sum.hidden=!(done[i]&&!open);if(done[i]&&!s._final)$('b',s._sum).textContent=value(s);
+      if(reach&&!done[i]&&first<0)first=i;});
+    if(move&&first>=0){const t=steps[first];setTimeout(()=>{const r=t.getBoundingClientRect();if(r.bottom>innerHeight-24||r.top<0)t.scrollIntoView({behavior:reduce?'auto':'smooth',block:'nearest'});
+      const f=$('.q-opt,[aria-pressed]:not(:disabled),input:not([type=hidden]),select,textarea',t._body);f&&f.focus({preventScroll:true});},reduce?0:340);}}
+  function answer(i){done[i]=true;reopened=-1;flow(true);}
+  root.bwSteps={done(i){done[i]=true;reopened=-1;flow(false);},refresh(){flow(false);}};
+  root.classList.add('q-ready');flow(false);});
+
 })();
