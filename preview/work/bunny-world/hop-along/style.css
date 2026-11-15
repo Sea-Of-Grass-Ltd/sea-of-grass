@@ -42,3 +42,15 @@ input,select{border:3px solid #000}
 @media (max-width:900px){.cans{grid-template-columns:1fr 1fr}}
 @media (max-width:600px){.cans{grid-template-columns:1fr}.nav nav{gap:12px;font-size:12px}.evs li{grid-template-columns:56px 1fr}.evs a{grid-column:2;grid-row:auto;justify-self:start;margin-top:6px}}
 @media (prefers-reduced-motion:reduce){.tick span{animation:none}}
+
+/* photo set (2026-11-14, Tristan approved): photos replace the cartoon sun-bunny. Same frame everywhere: 3px black border, the shop's hard black shadow */
+.hero .art.photo{max-width:760px;margin:0 auto clamp(14px,2vw,26px);border:3px solid #000;border-radius:28px;overflow:hidden;box-shadow:8px 8px 0 #000;background:#ffe845}
+.hero .art.photo img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover}
+.shot{margin:0}
+.shot img{display:block;width:100%;height:auto;border:3px solid #000;border-radius:22px;box-shadow:6px 6px 0 #000;background:#fff7d6}
+.shot.flight{margin:22px 0 26px;max-width:880px}.shot.flight img{aspect-ratio:3/2;object-fit:cover}
+.evgrid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(20px,3vw,40px);align-items:start}
+.shot.patio img,.shot.room img{aspect-ratio:4/3;object-fit:cover}
+.shot.room{margin:4px 0 20px}.shot.room img{box-shadow:none}
+@media (max-width:900px){.evgrid{grid-template-columns:1fr}}
+@media (max-width:600px){.shot img{border-radius:16px;box-shadow:4px 4px 0 #000}.hero .art.photo{border-radius:20px;box-shadow:5px 5px 0 #000}}
