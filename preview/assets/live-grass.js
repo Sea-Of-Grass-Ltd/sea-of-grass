@@ -13,7 +13,7 @@ function meadow(el){
   const colour=()=>{COL=getComputedStyle(el).color||'#888';};
   function build(){const r=el.getBoundingClientRect();W=Math.max(1,Math.round(r.width));H=Math.max(1,Math.round(r.height));
     DPR=Math.min(W<600?1.5:2,devicePixelRatio||1);cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);
-    const d0=(W<600?9:11)*(window.sogShapes?sogShapes.scale():1),band=Math.min(H*.55,126),cols=Math.floor(W/d0),rows=Math.max(1,Math.floor(band/d0)),n=cols*rows,r0=rnd(7);
+    const d0=(W<600?9:11)*(window.sogShapes?sogShapes.scale():1),band=el.dataset.band?H*+el.dataset.band:Math.min(H*.55,126),cols=Math.floor(W/d0),rows=Math.max(1,Math.floor(band/d0)),n=cols*rows,r0=rnd(7);
     g={n,d0,x:new Float32Array(n),y:new Float32Array(n),vx:new Float32Array(n),vy:new Float32Array(n),a:new Float32Array(n),px:new Float32Array(n),py:new Float32Array(n),
       len:new Float32Array(n),seed:new Uint8Array(n),gw:Math.ceil(W/d0+2),next:new Int32Array(n)};g.head=new Int32Array(g.gw*Math.ceil(H/d0+2));
     for(let i=0;i<n;i++){const cx=i%cols,cy=Math.floor(i/cols);g.x[i]=(cx+r0())*d0;g.y[i]=FALL?-(r0()*H*1.1+cy*d0*.9+10):H-4-(cy+r0())*d0*1.05;g.len[i]=d0*(1.1+r0()*.7);g.seed[i]=r0()<.12?1:0;g.a[i]=(r0()-.5)*.3;}
