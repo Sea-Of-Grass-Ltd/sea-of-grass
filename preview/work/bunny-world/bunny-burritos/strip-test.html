@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>addEventListener('load',function(){var go=function(){var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-61Q2DRMD3H';document.head.appendChild(s);};'requestIdleCallback' in window?requestIdleCallback(go,{timeout:4000}):setTimeout(go,2000);});
+window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-61Q2DRMD3H');</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#823513">
+<title>Strip test · Bunny Burritos · Bunny World · Sea of Grass</title>
+<meta name="description" content="A demo restaurant site: menu with filters, pickup ordering, delivery links, reservations and live hours.">
+<link rel="canonical" href="https://seaofgrass.studio/preview/work/bunny-world/bunny-burritos/">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Sea of Grass"><meta property="og:url" content="https://seaofgrass.studio/preview/work/bunny-world/bunny-burritos/">
+<meta property="og:title" content="Bunny Burritos · Bunny World · Sea of Grass"><meta property="og:description" content="A demo restaurant site: menu with filters, pickup ordering, delivery links, reservations and live hours.">
+<meta property="og:image" content="https://seaofgrass.studio/preview/assets/og/bw-bunny-burritos.jpg"><meta name="twitter:card" content="summary_large_image"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Bunny Burritos, a demo restaurant site in Bunny World by Sea of Grass">
+<link rel="icon" href="favicon.svg?v=1" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&family=Gabarito:wght@900&family=Inter:wght@400;600&display=swap">
+<link rel="stylesheet" href="../shop.css?v=14">
+<link rel="stylesheet" href="style.css?v=16">
+<meta name="robots" content="noindex">
+<style>/* strip test (2026-11-15): three flat food loops split by thin accent rules; not the live shop */
+.strip{display:grid;gap:3px;background:var(--accent);border-block:3px solid var(--accent);margin:clamp(18px,3vw,32px) 0}
+.band{display:block;width:100%;aspect-ratio:3.6/1;object-fit:cover;background:var(--field)}
+@media (max-width:700px){.band{aspect-ratio:2.4/1}}
+</style>
+</head>
+<body>
+<div class="demo"><span><a class="bw-wm" href="../" aria-label="Back to Bunny World">&larr; <img src="../brand/mark-small-cream.svg?v=2" alt="" width="13" height="20"><span>Bunny World</span></a> &middot; a demo by <a href="/">Sea of Grass</a></span><span>Made-up shop. Everything works; nothing is sent.</span></div>
+<header class="nav wrap"><nav class="pills" aria-label="Bunny Burritos"><a href="#menu">Menu</a><a href="#book">Tables</a><a href="#visit">Find us</a></nav>
+<a class="logo" href="#top" aria-label="Bunny Burritos, top"><img src="mark.svg?v=1" alt="" width="46" height="80"><span>Bunny<br>Burritos</span></a>
+<nav class="pills r" aria-label="Order"><a class="hot" href="#menu">Order pickup</a></nav></header>
+<main id="top">
+<section class="hero wrap"><p class="rule">Carrot-chile burritos &middot; Berthoud, Colorado &middot; since the first carrot</p>
+<h1>Big Burritos</h1><p class="sub">Hopped over hot</p>
+<div class="strip" aria-label="Salsa, lime and tortilla, looping">
+<video class="band" src="strip/salsa.mp4" autoplay muted loop playsinline preload="auto"></video>
+<video class="band" src="strip/lime.mp4" autoplay muted loop playsinline preload="auto"></video>
+<video class="band" src="strip/tortilla.mp4" autoplay muted loop playsinline preload="auto"></video>
+</div>
+<script>/* reduced motion: hold each band on its first frame */
+if(matchMedia('(prefers-reduced-motion: reduce)').matches)document.querySelectorAll('.strip video').forEach(v=>{v.removeAttribute('autoplay');v.pause();});</script>
+<div class="hero-row"><p>Street tacos, smothered burritos and a salsa bar the size of a garden bed. Order ahead, book a table, or have it hopped over.</p><a class="btn" href="#menu">Start an order</a></div>
+<div class="getit" aria-labelledby="getit-h"><div class="getit-h"><p class="rule">No pants required</p><h2 id="getit-h">Get it delivered</h2></div><div class="apps"><a class="app dd" href="#" data-demo-link="Demo only: on a real site this opens your DoorDash page.">DoorDash<span aria-hidden="true">&#8599;</span></a><a class="app gh" href="#" data-demo-link="Demo only: on a real site this opens your Grubhub page.">Grubhub<span aria-hidden="true">&#8599;</span></a><a class="app ue" href="#" data-demo-link="Demo only: on a real site this opens your Uber Eats page.">Uber Eats<span aria-hidden="true">&#8599;</span></a></div><p class="getit-note">Hot to your door in about 35 minutes, anywhere in Berthoud.</p></div></section>
+<section class="menu wrap" id="menu"><p class="rule">The menu &middot; order for pickup</p><h2>What's cooking</h2><div class="shots"><figure><picture><source type="image/webp" srcset="/preview/assets/work/bunny-world/burritos-tacos-640.webp 640w, /preview/assets/work/bunny-world/burritos-tacos-960.webp 960w, /preview/assets/work/bunny-world/burritos-tacos-1280.webp 1280w" sizes="(max-width: 900px) calc(50vw - 24px), 590px"><img src="/preview/assets/work/bunny-world/burritos-tacos-900.jpg" width="900" height="672" alt="Three al pastor tacos with pineapple, onion and cilantro on a hot-pink enamel tray, with salsa verde and lime" loading="lazy" decoding="async"></picture><figcaption>Al pastor tacos &middot; $11</figcaption></figure><figure><picture><source type="image/webp" srcset="/preview/assets/work/bunny-world/burritos-chips-640.webp 640w, /preview/assets/work/bunny-world/burritos-chips-960.webp 960w, /preview/assets/work/bunny-world/burritos-chips-1280.webp 1280w" sizes="(max-width: 900px) calc(50vw - 24px), 590px"><img src="/preview/assets/work/bunny-world/burritos-chips-900.jpg" width="900" height="672" alt="Tortilla chips in a gold bowl with salsa roja, salsa verde and carrot-habanero salsa" loading="lazy" decoding="async"></picture><figcaption>Chips &amp; three salsas &middot; $5.50</figcaption></figure></div>
+<div class="split"><div><div class="chips" data-filter="bb-menu" role="group" aria-label="Filter the menu"><button class="chip" type="button" data-f="all" aria-pressed="true">Everything</button><button class="chip" type="button" data-f="veg" aria-pressed="false">Vegetarian</button><button class="chip" type="button" data-f="gf" aria-pressed="false">Gluten-free</button><button class="chip" type="button" data-f="spicy" aria-pressed="false">Spicy</button><button class="chip" type="button" data-f="kids" aria-pressed="false">For kits</button></div>
+<ul class="list" id="bb-menu">
+<li data-tags="veg"><b>The Big Carrot burrito<span class="tags"><span class="tag">Veg</span></span></b><span class="add"><button class="btn ghost" type="button" data-add="The Big Carrot burrito" data-price="12.5" aria-label="Add The Big Carrot burrito, $12.50">Add &middot; $12.50</button></span><small>Roasted carrot, black beans, rice, pickled onion, cotija, carrot-top salsa verde.</small></li>
+<li data-tags="spicy"><b>Green chile pork burrito<span class="tags"><span class="tag hot">Spicy</span></span></b><span class="add"><button class="btn ghost" type="button" data-add="Green chile pork burrito" data-price="13.75" aria-label="Add Green chile pork burrito, $13.75">Add &middot; $13.75</button></span><small>Slow pork in Pueblo green chile, smothered, with rice and pintos.</small></li>
+<li data-tags="gf"><b>Al pastor tacos (3)<span class="tags"><span class="tag">GF</span></span></b><span class="add"><button class="btn ghost" type="button" data-add="Al pastor tacos (3)" data-price="11" aria-label="Add Al pastor tacos (3), $11.00">Add &middot; $11.00</button></span><small>Corn tortillas, pineapple, cilantro, onion.</small></li>
+<li data-tags="veg gf"><b>Mushroom asada tacos (3)<span class="tags"><span class="tag">Veg</span><span class="tag">GF</span></span></b><span class="add"><button class="btn ghost" type="button" data-add="Mushroom asada tacos (3)" data-price="10.5" aria-label="Add Mushroom asada tacos (3), $10.50">Add &middot; $10.50</button></span><small>Charred mushrooms, avocado salsa, radish.</small></li>
+<li data-tags="spicy gf"><b>Habanero carnitas bowl<span class="tags"><span class="tag hot">Spicy</span><span class="tag">GF</span></span></b><span class="add"><button class="btn ghost" type="button" data-add="Habanero carnitas bowl" data-price="13" aria-label="Add Habanero carnitas bowl, $13.00">Add &middot; $13.00</button></span><small>Crisp carnitas, rice, beans, habanero crema. Hot, and we mean it.</small></li>
+<li data-tags="kids veg"><b>Little Hopper quesadilla<span class="tags"><span class="tag">Veg</span></span></b><span class="add"><button class="btn ghost" type="button" data-add="Little Hopper quesadilla" data-price="6.5" aria-label="Add Little Hopper quesadilla, $6.50">Add &middot; $6.50</button></span><small>Cheese quesadilla, apple slices, a juice box. For kits (baby rabbits).</small></li>
+<li data-tags="veg gf spicy"><b>Chips &amp; three salsas<span class="tags"><span class="tag">Veg</span><span class="tag">GF</span></span></b><span class="add"><button class="btn ghost" type="button" data-add="Chips and three salsas" data-price="5.5" aria-label="Add Chips &amp; three salsas, $5.50">Add &middot; $5.50</button></span><small>Roja, verde and carrot-habanero.</small></li>
+<li data-tags="veg gf kids"><b>Horchata, large<span class="tags"><span class="tag">Veg</span><span class="tag">GF</span></span></b><span class="add"><button class="btn ghost" type="button" data-add="Horchata, large" data-price="4" aria-label="Add Horchata, large, $4.00">Add &middot; $4.00</button></span><small>House-made, cinnamon and rice.</small></li>
+</ul>
+<div class="deliver"><span>Delivery through</span><a class="chip" href="#" data-demo-link="Demo only: on a real site this opens your DoorDash page.">DoorDash &#8599;</a><a class="chip" href="#" data-demo-link="Demo only: on a real site this opens your Uber Eats page.">Uber Eats &#8599;</a><a class="chip" href="#" data-demo-link="Demo only: on a real site this opens your Grubhub page.">Grubhub &#8599;</a></div></div>
+<aside class="cart " id="bb-cart" data-cart data-tax="0.0705" data-empty="Nothing yet. Add something from the menu." aria-label="Your order">
+  <h3>Your order <span class="count">(<span data-count>0</span>)</span></h3>
+  <ul></ul><div class="sum"></div>
+  <form class="form" data-demo="BB" data-ok="Order in. See you soon." data-steps><div data-q="When do you want it?"><label>When<select data-sum="When"><option>As soon as it is ready (about 20 min)</option><option>In 45 minutes</option><option>In an hour</option><option>At 6:00 pm</option><option>At 7:00 pm</option></select></label></div><div data-q="Who is it for?">
+    <label>Name<input name="name" autocomplete="name" required data-sum="Name"></label>
+    <label>Phone, for a text when it's ready<input name="tel" type="tel" autocomplete="tel" required></label>
+    <button class="btn" type="submit" data-checkout disabled>Place order</button>
+    <div class="done" role="status"></div>
+  </div></form>
+</aside></div></section>
+<section class="tables" id="book"><div class="wrap split"><div><p class="rule">Reservations</p><h2>Save a table</h2><p class="lead">Pick a party size, a night and a time that's still open. Taken times are crossed out.</p>
+<div class="poster-note"><b>Back room</b> seats 24. Taco-bar catering for up to 150, with warmers.</div><figure class="room"><picture><source type="image/webp" srcset="/preview/assets/work/bunny-world/burritos-back-room-640.webp 640w, /preview/assets/work/bunny-world/burritos-back-room-960.webp 960w, /preview/assets/work/bunny-world/burritos-back-room-1280.webp 1280w" sizes="(max-width: 860px) calc(100vw - 32px), 680px"><img src="/preview/assets/work/bunny-world/burritos-back-room-900.jpg" width="900" height="672" alt="The back room at dusk: a long wooden table laid for six under string lights, marigolds in the middle" loading="lazy" decoding="async"></picture></figure></div>
+<div class="panel"><form class="form" data-demo="BBR" data-ok="Table booked." data-steps><div data-q="How many bunnies?"><label>Party size<select data-sum="Party"><option>2 bunnies</option><option>3 bunnies</option><option>4 bunnies</option><option>5 bunnies</option><option>6 bunnies</option><option>7 or more: we will call</option></select></label></div><div data-q="Where would you like to sit?"><label>Seating<select data-sum="Seating"><option>Anywhere</option><option>Patio</option><option>Booth</option></select></label></div><div data-q="Pick a time" data-q-auto=".slots button" data-q-sum="input[name=date],input[name=time]"><div data-slots data-days="2,3,4,5,6" data-times="17:00,17:30,18:00,18:30,19:00,19:30,20:00" data-seed="bb"></div>
+  <input type="hidden" name="date" data-sum="Day"><input type="hidden" name="time" required data-sum="Time" data-msg="Pick a day and a time first."></div><div data-q="Who is the table for?"><div class="row"><label>Name<input autocomplete="name" required data-sum="Name"></label><label>Phone or email<input required autocomplete="email"></label></div><p class="err" role="alert"></p>
+  <button class="btn" type="submit">Reserve</button>
+  <div class="done" role="status"></div>
+</div></form></div></div></section>
+<section class="visit wrap" id="visit"><div><p class="rule">Find us</p><h2>412 Carrot Ave</h2><p class="lead">Made-up address, real map of downtown Berthoud. <a href="tel:9705550142">(970) 555-0142</a></p><div class="hours" data-hours='{"0": null, "1": null, "2": ["11:00", "21:00"], "3": ["11:00", "21:00"], "4": ["11:00", "21:00"], "5": ["11:00", "22:00"], "6": ["10:00", "22:00"]}'></div></div><iframe class="map" loading="lazy" title="Map of downtown Berthoud" src="https://www.openstreetmap.org/export/embed.html?bbox=-105.0880%2C40.3045%2C-105.0745%2C40.3120&amp;layer=mapnik"></iframe></section>
+</main>
+<section class="want"><div><h2>Run a restaurant? Your site can do all of this.</h2><p>Built in your own look, hooked to the tools you already use, kept running. Fixed price, in writing.</p></div><div style="display:flex;flex-wrap:wrap;gap:10px"><a href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a free 20-minute look</a><a class="back" href="../">Back to Bunny World</a></div></section>
+<script src="../bw.js?v=11" defer></script>
+</body>
+</html>
