@@ -24,8 +24,9 @@ addEventListener('storage',function(e){if(e.key===KEY){cart=read();render();}});
 /* ---- product cards, from the config ---- */
 function priceHTML(p){return '<span class="shop-pr">'+(p.from?'<small>From</small> ':'')+money(p.price)+(p.interval?'<small>/'+(p.interval==='month'?'mo':p.interval)+'</small>':'')+'</span>';}
 document.querySelectorAll('[data-shop-cards]').forEach(function(box){
+  var pick=box.dataset.shopPick||'',badge=box.dataset.shopBadge||'Recommended';   // data-shop-pick="care" marks one card as the recommended one
   box.innerHTML=box.dataset.shopCards.split(',').map(function(id){id=id.trim();var p=P[id];if(!p)return '';
-    return '<article class="shop-card" data-id="'+id+'"><h3>'+esc(p.name)+'</h3>'+priceHTML(p)+
+    return '<article class="shop-card'+(id===pick?' pick':'')+'" data-id="'+id+'">'+(id===pick?'<span class="shop-badge">'+esc(badge)+'</span>':'')+'<h3>'+esc(p.name)+'</h3>'+priceHTML(p)+
       (p.interval?'<p class="shop-sub">Billed monthly</p>':'<p class="shop-sub">Paid once</p>')+
       '<p class="shop-blurb">'+esc(p.blurb)+'</p><ul>'+p.lines.map(function(l){return '<li>'+esc(l)+'</li>';}).join('')+'</ul>'+
       '<button type="button" class="shop-add" data-add="'+id+'">Add to cart</button></article>';}).join('');
