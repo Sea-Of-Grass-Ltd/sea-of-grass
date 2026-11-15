@@ -1,7 +1,7 @@
 /* Burrow & Bough. Lead: Houseplant (Refero) – warm cream and chocolate, atmospheric interior scene, extended campaign caps, dense shopping grid after a broad pause.
    Borrowed: Givingli (Refero) – heart red and dusty blue as whole object grounds; the warmth of something chosen and wrapped by a person. */
 :root{--bg:#f4f1e0;--ink:#321e1e;--muted:#6d5a52;--line:rgba(50,30,30,.2);--accent:#c42121;--on-accent:#f4f1e0;--field:#fffdf4;--r:0;--btn-r:0;--ctl-r:0;
-  --hf:Unbounded,sans-serif;--hw:700;--bf:"Instrument Sans",sans-serif;--mf:"Instrument Sans",sans-serif}
+  --hf:Newsreader,Georgia,serif;--hw:700;--bf:"Instrument Sans",sans-serif;--mf:"Instrument Sans",sans-serif}
 .promo{background:#c42121;color:#f4f1e0;text-align:center;font:600 12px/1 var(--bf);letter-spacing:.14em;text-transform:uppercase;padding:10px}
 .nav{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:16px;background:#321e1e;color:#f4f1e0}
 .logo{font:700 16px/1 var(--hf);text-transform:uppercase;letter-spacing:.04em;text-decoration:none}
@@ -32,3 +32,11 @@ h2{font-size:clamp(26px,3.2vw,46px);text-transform:uppercase;line-height:1.05}
 .visit{padding-block:clamp(40px,6vw,80px)}.visit h2{margin-bottom:20px}
 .map{filter:sepia(.3)}
 @media (max-width:860px){.hero{grid-template-columns:1fr}.nav nav a:not(.bag){display:none}}
+/* type proposal (2026-11-15): warm book serif in sentence case, after Pattern, Faire and Lulu and Georgia on Refero */
+h1,h2,h3{font-family:var(--hf);font-weight:400;font-optical-sizing:auto}
+.hero h1{text-transform:none;font-size:clamp(44px,5.6vw,88px);line-height:.98;letter-spacing:-.02em}
+.hero h1 em{font-style:italic;color:#e7b545}
+h2{text-transform:none;letter-spacing:-.015em;font-size:clamp(30px,3.6vw,52px)}
+.logo{font:500 22px/1 var(--hf);text-transform:none;letter-spacing:-.01em}
+.cart h3{font:500 22px/1 var(--hf);text-transform:none}
+.prod .pi b{font:500 19px/1.15 var(--hf)}
