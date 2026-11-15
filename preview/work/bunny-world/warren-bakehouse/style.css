@@ -38,3 +38,14 @@ h2{font-size:clamp(40px,5.4vw,78px);line-height:.95;letter-spacing:-.02em}
 .visit{display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,3vw,36px)}
 .card{background:#fff3cc;border:1px solid var(--line);border-radius:6px;padding:24px}.card h3{font:400 26px/1 var(--hf);margin-bottom:6px}
 @media (max-width:760px){.nav nav a:not(.hold){display:none}.frame{aspect-ratio:4/3.4}.visit{grid-template-columns:1fr}}
+/* photos (2026-11-15) */
+.frame picture,.frame img{display:block;width:100%;height:100%;object-fit:cover;object-position:62% 55%}
+.frame .stamp,.frame .tagline{z-index:1}
+.cake-pre picture,.cake-pre img{display:block;width:100%;height:auto;border-radius:6px}
+.cake-pre span{top:21%;padding:0 30%;transform:rotate(-2deg)}
+.side-col{display:grid;gap:16px;align-content:start}
+.case-photo{margin:0}.case-photo img{display:block;width:100%;height:auto;aspect-ratio:4/4.2;object-fit:cover;border-radius:6px}
+.visit-photo{grid-column:1/-1;margin:0}.visit-photo img{display:block;width:100%;height:auto;aspect-ratio:21/8;object-fit:cover;object-position:50% 60%;border-radius:6px}
+@media (max-width:760px){.visit-photo img{aspect-ratio:4/3}.case-photo img{aspect-ratio:4/3}}
+.side-col{align-self:stretch}
+@media (max-width:760px){.frame{aspect-ratio:auto;padding-top:132px;background:linear-gradient(#b4936f,#bd9c7a)}.frame picture,.frame img{height:auto;aspect-ratio:3/2;object-position:50% 50%;-webkit-mask-image:linear-gradient(transparent,#000 38%);mask-image:linear-gradient(transparent,#000 38%)}}
