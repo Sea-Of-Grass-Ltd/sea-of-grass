@@ -15,12 +15,18 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
 <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gabarito:wght@500;700;800;900&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
-<link rel="stylesheet" href="brand.css?v=31">
+<link rel="stylesheet" href="/preview/assets/shop/cart.css">
+<link rel="stylesheet" href="brand.css?v=33">
 </head>
 <body>
 <div class="credit">A demo by <a href="/">Sea of Grass</a> &middot; every shop works, nothing is sent</div>
 <header class="nav"><a class="logo" href="#top"><img src="brand/mark-ink.svg?v=2" alt="" width="37" height="56"><span>Bunny World</span></a>
-<nav aria-label="Bunny World"><a href="#shops">The shops</a><a href="#how">How it works</a><a href="#faq" data-faq-open>Switching</a><a class="cta" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a call</a></nav></header>
+<nav aria-label="Bunny World"><a href="#shops">The shops</a><a href="#how">How it works</a><a href="#faq" data-faq-open>Switching</a><div class="buy" data-buy><button class="buy-btn" type="button" aria-expanded="false" aria-controls="buy-panel">Buy <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="buy-panel" id="buy-panel" role="region" aria-label="Buy from Bunny World" hidden><div class="buy-in">
+<div class="buy-row site"><div class="buy-look" aria-hidden="true"><img data-buy-thumb src="/preview/assets/work/bunny-world/poster-bunny-burritos-phone.webp" alt="" width="66" height="143"></div><div class="buy-txt"><p class="buy-k">Most picked</p><h3>A small business site</h3><label class="buy-pick"><span>In the look of</span><select data-buy-look><option value="bunny-burritos">Bunny Burritos</option><option value="bunny-auto">Bunny Auto</option><option value="warren-bakehouse">The Warren Bakehouse</option><option value="hare-today">Hare Today</option><option value="hop-along">Hop Along</option><option value="cottontail-farm">Cottontail Farm</option><option value="burrow-and-bough">Burrow &amp; Bough</option><option value="long-ears">Long Ears</option><option value="hopwell-chiro">Hopwell</option></select></label><p class="buy-note">Built in that look, with your name, photos and colours.</p></div><div class="buy-act"><p class="buy-pr"><em>from</em>$2,000</p><button class="buy-add" type="button" data-add="bw-site-bunny-burritos" data-buy-site>Add to cart</button></div></div>
+<div class="buy-row"><div class="buy-txt"><h3>Fix one broken thing</h3><p class="buy-note">One thing broken, wrong or out of date, fixed in a few days.</p></div><div class="buy-act"><p class="buy-pr"><em>from</em>$250</p><button class="buy-add" type="button" data-add="fix">Add to cart</button></div></div>
+<div class="buy-row"><div class="buy-txt"><h3>Care plan</h3><p class="buy-note">Hosting, updates, and one person to text. Cancel any month.</p></div><div class="buy-act"><p class="buy-pr">$50<small>/mo</small></p><button class="buy-add" type="button" data-add="care">Add to cart</button></div></div>
+<div class="buy-foot"><a href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Not sure which? Book a free 20-minute look &rarr;</a><span>Demo &middot; no payment is taken</span></div>
+</div></div></div><a class="cta" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a call</a></nav></header>
 <main id="top">
 <section class="hero band"><div class="in">
 <p class="kick">Bunny World &middot; nine working demo sites</p>
@@ -60,5 +66,8 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
 </main>
 <footer class="foot band"><a class="logo foot-logo" href="#top"><img src="brand/mark-small-cream.svg?v=2" alt="" width="20" height="30"><span>Bunny World</span></a><span>Every shop is made up. No real businesses, people or orders.</span><span>A demo by <a href="/">Sea of Grass</a>, Berthoud, Colorado</span></footer>
 <script src="landing.js?v=4" defer></script>
+<script src="/preview/assets/shop/checkout-links.js" defer></script>
+<script src="/preview/assets/shop/cart.js" defer></script>
+<script src="buy.js?v=1" defer></script>
 </body>
 </html>
