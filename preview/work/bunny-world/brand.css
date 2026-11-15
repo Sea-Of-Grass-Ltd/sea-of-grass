@@ -30,7 +30,7 @@ h2{font-size:clamp(34px,4.6vw,72px);line-height:.95;letter-spacing:-.04em}
 .nav nav{display:flex;align-items:center;gap:clamp(14px,2vw,28px);font:500 15px/1 var(--bf)}.nav nav a{text-decoration:none}.nav nav a:hover{text-decoration:underline;text-underline-offset:4px}
 .nav .cta{background:var(--carrot);color:var(--on-accent);border-radius:999px;padding:10px 16px;font-weight:600}.nav .cta:hover{text-decoration:none;filter:brightness(1.07)}
 /* hero: left-aligned like the SOG home, tight */
-.hero{padding-top:clamp(44px,6vw,88px);padding-bottom:clamp(40px,5vw,72px);background:linear-gradient(180deg,#dcebff 0%,var(--cream) 100%)}
+.hero{padding-top:clamp(44px,6vw,88px);padding-bottom:clamp(40px,5vw,72px);background:var(--cream)}
 .hero h1{font-size:clamp(64px,11vw,168px);line-height:.88;letter-spacing:-.05em}
 .lede{max-width:46ch;margin-top:clamp(18px,2vw,26px);font:400 clamp(18px,1.6vw,22px)/1.4 var(--bf);color:var(--soft)}
 /* prices: three big numbers with small labels, hairline rules (as the SOG home's Websites panel) */
@@ -208,24 +208,24 @@ h2{font-size:clamp(34px,4.6vw,72px);line-height:.95;letter-spacing:-.04em}
    sunny  Yellowbird sunshine yellow and black, a rubbery serif (the taproom / farm range) */
 :root,html[data-look="disco"]{--cream:#1B0F2A;--ink:#FFF8EE;--soft:#C9B8E8;--hair:rgba(255,248,238,.16);--card:#25163A;--carrot:#FFF8EE;--on-accent:#1B0F2A;
   --stage:#120A1F;--on-stage:#FFF8EE;--stage-accent:#FF3386;--clover:#6FD3A0;--spark:#FF3386;--hf:Gabarito,system-ui,sans-serif;--hk:1;--hls:-.05em;--htt:none;
-  --hero-bg:radial-gradient(42% 55% at 74% 42%,rgba(201,184,232,.16),transparent 70%),linear-gradient(180deg,#1B0F2A 0%,#2A1740 100%);
-  --mark:linear-gradient(150deg,#ffffff 0%,#e7e9ef 30%,#b9bdc9 46%,#f6f7fa 54%,#c4c8d3 72%,#8f94a3 100%);--mark-shadow:rgba(0,0,0,.45);--glow:rgba(201,184,232,.22);color-scheme:dark}
+  --hero-bg:#1B0F2A;
+  --mark:linear-gradient(150deg,#ffffff 0%,#e7e9ef 30%,#b9bdc9 46%,#f6f7fa 54%,#c4c8d3 72%,#8f94a3 100%);color-scheme:dark}
 html[data-look="clean"]{--cream:#F5F7F9;--ink:#181A1D;--soft:#5B616B;--hair:rgba(24,26,29,.14);--card:#FFFFFF;--carrot:#A772F9;--on-accent:#181A1D;
   --stage:#181A1D;--on-stage:#F5F7F9;--stage-accent:#C7A5FF;--clover:#2E9E63;--spark:#A772F9;--hf:Inter,system-ui,sans-serif;--hk:.92;--hls:-.065em;--htt:none;
-  --hero-bg:radial-gradient(40% 55% at 74% 42%,rgba(167,114,249,.10),transparent 70%),#F5F7F9;
-  --mark:#181A1D;--mark-shadow:rgba(24,26,29,.12);--glow:rgba(167,114,249,.12);color-scheme:light}
+  --hero-bg:#F5F7F9;
+  --mark:#181A1D;color-scheme:light}
 html[data-look="bold"]{--cream:#0B0B0B;--ink:#FFFFFF;--soft:#B5B5B5;--hair:rgba(255,255,255,.16);--card:#161616;--carrot:#FF4C00;--on-accent:#000000;
   --stage:#000000;--on-stage:#FFFFFF;--stage-accent:#FF4C00;--clover:#4ED08A;--spark:#FF4C00;--hf:"Big Shoulders Display",Impact,sans-serif;--hk:1.12;--hls:0em;--htt:uppercase;
-  --hero-bg:radial-gradient(40% 55% at 74% 42%,rgba(255,76,0,.12),transparent 70%),#0B0B0B;
-  --mark:#FFFFFF;--mark-shadow:rgba(0,0,0,.6);--glow:rgba(255,76,0,.14);color-scheme:dark}
+  --hero-bg:#0B0B0B;
+  --mark:#FFFFFF;color-scheme:dark}
 html[data-look="warm"]{--cream:#FFF6EA;--ink:#0A3128;--soft:#4C6A60;--hair:rgba(10,49,40,.15);--card:#FFFDF8;--carrot:#FF9EC8;--on-accent:#0A3128;
   --stage:#14433D;--on-stage:#FFF6EA;--stage-accent:#FF9EC8;--clover:#008168;--spark:#FF9EC8;--hf:"Young Serif",Georgia,serif;--hk:.86;--hls:-.03em;--htt:none;
-  --hero-bg:radial-gradient(40% 55% at 74% 42%,rgba(255,158,200,.22),transparent 70%),#FFF6EA;
-  --mark:#14433D;--mark-shadow:rgba(10,49,40,.16);--glow:rgba(255,158,200,.25);color-scheme:light}
+  --hero-bg:#FFF6EA;
+  --mark:#14433D;color-scheme:light}
 html[data-look="sunny"]{--cream:#FFE845;--ink:#000000;--soft:#2B2B2B;--hair:rgba(0,0,0,.2);--card:#FFFBE9;--carrot:#000000;--on-accent:#FFE845;
   --stage:#000000;--on-stage:#FFE845;--stage-accent:#FFE845;--clover:#1D7A3E;--spark:#FFFFFF;--hf:Fraunces,Georgia,serif;--hk:.88;--hls:-.04em;--htt:none;
-  --hero-bg:radial-gradient(40% 55% at 74% 42%,rgba(255,255,255,.45),transparent 70%),#FFE845;
-  --mark:#000000;--mark-shadow:rgba(0,0,0,.18);--glow:rgba(255,255,255,.5);color-scheme:light}
+  --hero-bg:#FFE845;
+  --mark:#000000;color-scheme:light}
 /* the light changing: a quick crossfade (View Transitions where supported; otherwise an instant swap) */
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.32s}
 
@@ -242,8 +242,7 @@ html[data-look="sunny"]{--cream:#FFE845;--ink:#000000;--soft:#2B2B2B;--hair:rgba
 .lh-call{display:inline-block;margin-top:16px;color:var(--soft);font:500 15px/1.3 var(--bf);text-underline-offset:4px}
 .lh-call:hover{color:var(--ink)}
 .lh-stage{position:relative;display:grid;place-items:center;align-content:center;gap:14px;min-height:min(64vh,580px)}
-.lh-glow{position:absolute;width:80%;aspect-ratio:1;border-radius:50%;top:46%;left:50%;translate:-50% -50%;background:radial-gradient(circle,var(--glow),transparent 70%);pointer-events:none}
-.lh-mark{position:relative;appearance:none;border:0;padding:0;background:none;cursor:pointer;height:min(54vh,500px);aspect-ratio:170/255;filter:drop-shadow(0 22px 40px var(--mark-shadow));-webkit-tap-highlight-color:transparent}
+.lh-mark{position:relative;appearance:none;border:0;padding:0;background:none;cursor:pointer;height:min(54vh,500px);aspect-ratio:170/255;-webkit-tap-highlight-color:transparent}
 .lh-mark:focus-visible{outline:3px solid var(--spark);outline-offset:12px;border-radius:24px}
 .lh-fill,.lh-sweep{position:absolute;inset:0;-webkit-mask:url(brand/mark-ink.svg?v=2) center/100% 100% no-repeat;mask:url(brand/mark-ink.svg?v=2) center/100% 100% no-repeat}
 .lh-fill{background:var(--mark)}
