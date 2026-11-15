@@ -14,9 +14,8 @@
   /* only the active shop loads: the frames get their src when the showcase is near the screen, and on each tab change */
   const tabs = [...document.querySelectorAll('.tab')];
   const stage = document.querySelector('.stage');
-  const nowB = document.querySelector('.stage-foot .now b'), nowS = document.querySelector('.stage-foot .now span');
-  const open = document.querySelector('.stage-foot .open-site'), cos = document.querySelector('.callouts');
-  let seen = false, cur = tabs[0];
+    const openDevs = [...document.querySelectorAll('.open-dev')], tabOpen = document.querySelector('.tab-open'), cos = document.querySelector('.callouts');
+  let seen = false, cur = tabs[0]; cur.after(tabOpen);
   const phoneOnly = () => matchMedia('(max-width: 760px)').matches;
   const load = (t) => {
     const k = t.dataset.shop;
@@ -34,8 +33,8 @@
     if (t === cur && seen) return;
     tabs.forEach(x => { const on = x === t; x.setAttribute('aria-selected', on); x.tabIndex = on ? 0 : -1; });
     stage.setAttribute('aria-labelledby', t.id);
-    nowB.textContent = t.dataset.name; nowS.textContent = t.querySelector('.tt').textContent;
-    open.href = t.dataset.shop + '/';
+    tabOpen.href = t.dataset.shop + '/'; openDevs.forEach(o => { o.href = t.dataset.shop + '/'; o.querySelector('b').textContent = t.dataset.name; });
+    t.after(tabOpen);
     cos.innerHTML = t.dataset.feats.split('|').map((f, j) => `<li class="co co${j}"><span>${f}</span></li>`).join('');
     stage.classList.remove('swap'); void stage.offsetWidth; if (!reduce) stage.classList.add('swap');
     cur = t; if (seen) load(t);
