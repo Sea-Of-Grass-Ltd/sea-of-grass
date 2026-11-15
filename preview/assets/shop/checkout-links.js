@@ -28,6 +28,12 @@ window.SOG_SHOP = {
       blurb: 'We look after the site so you don’t have to.',
       lines: ['Hosting and security updates', 'Your hours and menu changed when you text us', 'One person to text', 'Cancel any month'] // PLACEHOLDER inclusions
     },
+    starter: {
+      name: 'Starter site',
+      price: 1200, from: false, interval: null, maxQty: 1,          // PLACEHOLDER price
+      blurb: 'One page in a ready Bunny World look, with your name, photos and colours.',
+      lines: ['One page: hours, menu or services, photos, map, a call button', 'A link button to the booking or ordering tool you already use', 'One round of changes', 'The $1,200 counts toward a full site if you upgrade within 90 days'] // PLACEHOLDER inclusions
+    },
     kickoff: {
       name: 'Kickoff',
       price: 250, from: false, interval: null, maxQty: 1,            // PLACEHOLDER price
