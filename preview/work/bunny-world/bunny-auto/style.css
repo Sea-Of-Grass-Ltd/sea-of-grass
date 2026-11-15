@@ -45,3 +45,14 @@ h2 span{font:400 13px/1 var(--mf);letter-spacing:.12em;color:var(--muted);vertic
 @media (max-width:600px){.hero{min-height:0;display:block}.hero .art{position:relative;aspect-ratio:16/10}.hero::after{display:none}.over{padding-top:18px}}
 @media (max-width:860px){.nav nav{display:none}.stats{grid-template-columns:1fr 1fr}.stats div:nth-child(3){border-left:0;padding-left:0}.stats div{border-top:1px solid var(--line)}
  .specs li{grid-template-columns:36px 1fr auto;}.specs .t{grid-column:2/-1}.specs .dur{display:none}.visit{grid-template-columns:1fr}}
+
+/* photo set (2026-11-14, Tristan approved): photos replace the drawn coupe; same dark studio look throughout */
+.hero .art.photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:62% 50%}
+.hero::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.55),rgba(0,0,0,0) 55%)}
+.hero .over{position:relative;z-index:2}
+.band{margin:0 0 clamp(24px,3vw,40px)}.band img{display:block;width:100%;height:auto;aspect-ratio:21/9;object-fit:cover;object-position:60% 50%}
+.book-grid{display:grid;grid-template-columns:minmax(0,.75fr) minmax(0,1.25fr);gap:clamp(18px,3vw,40px);align-items:start}
+.side{margin:0}.side img{display:block;width:100%;height:auto}
+.side.wall{margin-bottom:clamp(20px,2.4vw,30px)}.side.wall img{aspect-ratio:4/3;object-fit:cover}
+@media (max-width:900px){.book-grid{grid-template-columns:1fr}.book-grid .side img{aspect-ratio:4/3;object-fit:cover;object-position:50% 70%}}
+@media (max-width:600px){.hero .art.photo{aspect-ratio:16/10}.hero::before{display:none}.band img{aspect-ratio:16/9}}
