@@ -34,8 +34,8 @@ CARDS = {
   'bw-hare-today':      ('Bunny World · demo site', 'Hare Today *Barbers*', 'A barbershop site: walk-in wait times and booking by barber.'),
   'bw-hop-along':       ('Bunny World · demo site', 'Hop Along *Taproom*', 'A taproom site: a live tap list, events and party requests.'),
   'bw-cottontail-farm': ('Bunny World · demo site', 'Cottontail *Farm*', 'A farm festival site: seasonal pages, timed tickets, a farm map.'),
-  'bw-burrow-and-bough':('Bunny World · demo site', 'Burrow & *Bough*', 'A gift shop site: product filters, pickup or shipping, gift wrap.'),
-  'bw-long-ears':       ('Bunny World · demo site', 'Long Ears *Landscaping*', 'A landscaping site: before-and-after, service area, quote form.'),
+  'bw-burrow-and-bough':('Bunny World · demo site', 'Burrow & *Bough*', 'A gift shop site: a three-tap gift finder, pickup or shipping, gift wrap.'),
+  'bw-long-ears':       ('Bunny World · demo site', 'Long Ears *Landscaping*', 'A landscaping site: the August Test, turf vs water-wise, blowout booking.'),
   'bw-hopwell-chiro':   ('Bunny World · demo site', 'Hopwell *Chiropractic*', 'A clinic site: new-patient booking, insurance check, intake form.'),
 }
 
