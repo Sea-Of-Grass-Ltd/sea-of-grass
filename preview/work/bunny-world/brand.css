@@ -126,3 +126,25 @@ h2{font-size:clamp(34px,4.6vw,72px);line-height:.95;letter-spacing:-.04em}
   .prices{grid-template-columns:1fr}.prices div+div{border-left:0;border-top:1px solid var(--hair);padding-left:0}.prices div{grid-template-columns:1fr auto;align-items:end;padding:14px 0}.prices b{font-size:clamp(34px,10vw,44px);text-align:right}.prices em{display:inline;margin:0 6px 0 0;font-size:12px}
   .how ol{grid-template-columns:1fr}.stage-foot{justify-content:center;text-align:center}.a p{padding-right:0}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* 2026-11-14 (Tristan: the worry link and "Open the full site" "both get lost") */
+.hero .acts{margin-top:clamp(20px,2.4vw,30px)}
+.worry{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:16px;width:100%;margin-top:clamp(18px,2vw,26px);padding:16px clamp(16px,2vw,24px);text-decoration:none;text-align:left;background:#fff;border:1px solid var(--hair);border-left:4px solid var(--clover);border-radius:16px;box-shadow:0 10px 30px rgba(30,26,58,.06);transition:background .2s,transform .25s var(--ease)}
+.worry:hover{background:#f4fbf6;color:var(--ink);transform:translateY(-1px)}
+.worry .w-ic{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:#e3f4ea;color:var(--clover)}
+.worry .w-tx{display:grid;gap:3px}.worry .w-tx b{font:800 clamp(17px,1.5vw,20px)/1.2 var(--hf);letter-spacing:-.01em}.worry .w-tx span{font:400 15px/1.35 var(--bf);color:var(--soft)}
+.worry .w-ch{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;border:1px solid var(--hair);transition:transform .35s var(--ease)}
+.worry[aria-expanded="true"] .w-ch{transform:rotate(180deg)}
+.worry span{transition:none}.worry[aria-expanded="true"] span:not(.w-ch){transform:none}
+.faq.open{margin-top:12px}
+/* open the shop: on the device itself, and beside the active tab */
+.laptop{position:relative}.open-dev{position:absolute;left:50%;transform:translateX(-50%);bottom:-12px;z-index:3;display:inline-flex;align-items:center;gap:8px;padding:14px 22px;border-radius:999px;background:var(--carrot);color:var(--ink);font:700 17px/1 var(--hf);text-decoration:none;white-space:nowrap;box-shadow:0 10px 30px rgba(0,0,0,.35);transition:transform .25s var(--ease),background .2s}
+.open-dev:hover{background:#ff8450;transform:translateX(-50%) translateY(-2px)}
+.open-dev span{font-size:19px}
+.stage{margin-bottom:28px}.open-dev.ph{display:none}
+.tab-open{display:block;padding:0 4px 12px 54px;margin-top:-6px;border-bottom:1px solid rgba(255,246,233,.18);color:var(--carrot);font:600 14px/1.2 var(--bf);text-decoration:none}
+.tab-open:hover{text-decoration:underline;text-underline-offset:3px}
+.tabs .tab[aria-selected="true"]{border-bottom:0}
+@media (max-width:980px){.tab-open{display:none}}
+@media (max-width:760px){.open-dev.ph{display:inline-flex;position:relative;left:auto;bottom:auto;transform:none;margin-top:-22px;order:2}.open-dev.ph:hover{transform:translateY(-2px)}.callouts{order:3}.stage{margin-bottom:0}
+  .worry{grid-template-columns:auto 1fr;gap:12px}.worry .w-ch{display:none}.worry .w-ic{width:38px;height:38px}}
