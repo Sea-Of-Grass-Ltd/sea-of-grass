@@ -36,7 +36,7 @@ CARDS = {
   'bw-cottontail-farm': ('Bunny World · demo site', 'Cottontail *Farm*', 'A farm festival site: seasonal pages, timed tickets, a farm map.'),
   'bw-burrow-and-bough':('Bunny World · demo site', 'Burrow & *Bough*', 'A gift shop site: a three-tap gift finder, pickup or shipping, gift wrap.'),
   'bw-long-ears':       ('Bunny World · demo site', 'Long Ears *Landscaping*', 'A landscaping site: the August Test, turf vs water-wise, blowout booking.'),
-  'bw-hopwell-chiro':   ('Bunny World · demo site', 'Hopwell *Chiropractic*', 'A clinic site: new-patient booking, insurance check, intake form.'),
+  'bw-hopwell-chiro':   ('Bunny World · demo site', 'Hopwell *Chiropractic*', 'A clinic site: point to where it hurts, a live insurance check, booking.'),
 }
 
 def render(name):
