@@ -34,11 +34,12 @@ References from Refero (no chiropractors on Refero; these are the closest calm, 
 - **Fresha first-visit check** (refero screen 770b0ede): "Is this your first visit?" on the left with a summary card on the right. The answer-card layout.
 - **Hers intake questions** (refero screen d1f3c27d): one question, big tappable answers. The chips.
 
-- **Type:** **Instrument Serif** for headlines (with italics for the soft word), **Figtree** for text and UI, **Geist Mono** for times, prices and labels. No other shop uses these. Replaces Source Serif 4 and Inter.
+- **Type:** **Albert Sans** (regular, with its italic for the soft word) for headlines, **Figtree** for text and UI, **Geist Mono** for times, prices and labels. No other shop uses these. Replaces Source Serif 4 and Inter.
+  - Why not a serif (Tristan, 2026-11-15: unsure about the condensed Instrument Serif): on Refero the field splits. Function, Doctronic and Luffu use serifs or flared type; Biograph, Radial, Hims, Baba and A Better Lou use plain sans at a regular weight. The calm, human ones (Radial, Biograph) use a large, regular-weight sans in sentence case, not a bold one. Albert Sans is that: open, friendly and quiet, suited to a local family clinic rather than a premium lab. Contact sheet: `hopwell-type/heading-fonts-refero.jpg`. Belleza (an Optima-like flared face, the nearest free match to Luffu) was tried and dropped: one weight only, and its italic is faked.
 - **Palette:** paper `#F4F2EB`, stone `#E6E3D8`, sage `#CDD3BB`, blue-black `#192830` ink and buttons, apricot `#E8875B` only for the chosen spot and the answer card's label.
 - **Shapes:** big soft radii (28px stage, pill chips and buttons), no drawn art, no icons beyond the cart.
 
-Type and look sheet: `hopwell-type/look-desktop.jpg` and `look-375.jpg` (from `sheet.html`; the photo slot is a placeholder).
+Type and look sheet: `hopwell-type/look-desktop.jpg` (from `sheet.html`; the photo slot is a placeholder).
 
 ## Photos (replace the drawn hero; no drawn or clipart art anywhere)
 Look: a bright, calm Berthoud treatment room, morning window light, linen, wood and plants; honest and warm, 35 mm film grain. **No faces, no text, no brands, no medical gore.** The recurring bunny prop is a small pale ceramic rabbit somewhere in every shot.
