@@ -144,3 +144,29 @@ section.menu>.h{grid-column:1/-1}
 .menu-pics img,.crew-pic img{display:block;width:100%;height:auto;border-radius:6px}
 .crew-pic{margin:20px 0 6px}
 @media (max-width:860px){section.menu{grid-template-columns:minmax(0,1fr)}.menu-pics{position:static;grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* ---- one question at a time (Tristan: a single question; answer it and the next pops up underneath).
+   Pattern from stepped checkouts on Refero (Tripadvisor, Airbnb): an answered step collapses to one row with the
+   choice and a Change link; the next step opens beneath it. Height and fade only, no bounce. */
+.steps{display:block}
+.reveal{display:grid;grid-template-rows:0fr;opacity:0;margin-top:0;transition:grid-template-rows .32s cubic-bezier(.2,0,0,1),opacity .24s ease,margin-top .32s cubic-bezier(.2,0,0,1)}
+.reveal.on{grid-template-rows:1fr;opacity:1}
+.steps>.reveal.on{margin-top:22px}.steps>.reveal:first-child{margin-top:0}
+.rv-in{overflow:hidden;min-height:0}
+.step-body.on>.rv-in{padding:2px}
+.step legend{margin-bottom:10px}
+.step-sum{display:flex;align-items:center;gap:10px;width:100%;padding:14px 16px;background:#fff;border:1px solid var(--line);border-left:4px solid #0d0d0d;text-align:left;cursor:pointer;font:inherit}
+.step-sum b{font:800 22px/1.05 var(--hf);text-transform:uppercase;flex:1;min-width:0}
+.step-sum span{color:var(--accent);font-weight:700}
+.step-sum u{font:500 12px/1 var(--mf);text-transform:uppercase;letter-spacing:.08em;text-underline-offset:3px}
+.step-sum:hover{border-color:#0d0d0d}
+.step-sum:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.sum-bar{display:grid;gap:12px}
+.cf-fields{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;gap:10px}
+.cf-fields input{min-height:48px;padding:10px 12px;border:1px solid #3a3a3a;background:#1a1a1a;color:#fff;font-size:16px;border-radius:0}
+.cf-fields input::placeholder{color:#9a9a96}
+.cf-done{margin:0;font-size:16px;line-height:1.45}.cf-done b{color:#fff}.cf-done .note{color:#bdbdb8}
+@media (max-width:760px){.cf-fields{grid-template-columns:minmax(0,1fr)}.step-sum b{font-size:19px}}
+@media (prefers-reduced-motion:reduce){.reveal{transition:none}}
+.step-sum[hidden],.sum-bar [hidden]{display:none!important}
+@media (max-width:760px){body.book-in .fab{display:none}}
