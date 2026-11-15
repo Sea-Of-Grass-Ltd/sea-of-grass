@@ -101,3 +101,4 @@ html.shop-open{overflow:hidden}
   .shop-cards.joined .shop-card+.shop-card{border-left:0;border-top:1px solid rgba(238,241,234,.1)}
   .shop-cards.joined .shop-card.pick{margin:0 -1px;padding-top:clamp(22px,2.2vw,32px);padding-bottom:clamp(22px,2.2vw,32px)}
   .shop-cards.joined .shop-card.pick+.shop-card{border-top-color:transparent}}
+.shop-drawer[hidden],.shop-veil[hidden]{display:none}
