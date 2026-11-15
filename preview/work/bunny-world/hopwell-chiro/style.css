@@ -232,3 +232,15 @@ blockquote{background:var(--bg);border-radius:28px;padding:26px 28px;box-shadow:
  .hook .fig{position:static;display:flex;flex-direction:column}
  .hook .stage{aspect-ratio:auto;flex:1;min-height:520px}
 }
+
+/* insurance and booking end together; the insurance side carries the plan list and self-pay prices */
+.pair{align-items:stretch}
+.plans{display:grid;gap:10px;padding-top:6px}
+.plans h3{font-size:20px}
+.pills{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.pills li{background:var(--bg);box-shadow:var(--in);border-radius:999px;padding:7px 13px;font-size:14px;font-weight:500}
+.self{margin:0;display:grid;gap:2px;background:var(--bg);box-shadow:var(--in);border-radius:16px;padding:6px 16px}
+.self div{display:flex;justify-content:space-between;padding:9px 0;box-shadow:0 1px 0 rgba(163,152,128,.25)}
+.self div:last-child{box-shadow:none}
+.self dt{font-size:15px}.self dd{margin:0;font:500 15px/1.4 var(--mf)}
+@media (min-width:901px){#book{display:flex;flex-direction:column}#book form{flex:1;display:flex;flex-direction:column}#book form>[type=submit]{margin-top:auto}}
