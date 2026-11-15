@@ -173,7 +173,7 @@ cite{font:500 12px/1 var(--mf);letter-spacing:.06em;text-transform:uppercase;fon
  .hook{gap:18px}.head{padding-block:8px 16px}.head .sub{font-size:16px}h1{font-size:40px}
  .hook .stage{aspect-ratio:auto;height:min(76vw,38svh)}
  .hook .fig{padding:10px;border-radius:30px}
- .spot[data-spot=head]{top:9%!important}.spot[data-spot=neck]{top:27%!important}.spot[data-spot=shoulder]{top:33%!important;left:74%!important}.spot[data-spot=mid]{top:47%!important}.spot[data-spot=low]{top:68%!important}.spot[data-spot=hip]{top:86%!important;left:33%!important}.hook figcaption{padding:8px 6px 0}
+.hook figcaption{padding:8px 6px 0}
 }
 
 /* ---- Neumorphism sitewide (Tristan: "I meant for Hopwell in general"). Same light, same rules as the hook:
@@ -244,3 +244,13 @@ blockquote{background:var(--bg);border-radius:28px;padding:26px 28px;box-shadow:
 .self div:last-child{box-shadow:none}
 .self dt{font-size:15px}.self dd{margin:0;font:500 15px/1.4 var(--mf)}
 @media (min-width:901px){#book{display:flex;flex-direction:column}#book form{flex:1;display:flex;flex-direction:column}#book form>[type=submit]{margin-top:auto}}
+
+/* photos in: the back photo keeps its own 4:5 shape inside the frame (dots are placed on the photo, not the frame);
+   any spare room in the frame shows a soft blurred copy of the same photo */
+.ph{overflow:hidden}.ph picture,.ph img{display:block;width:100%;height:100%;object-fit:cover}
+.ph.sq img{aspect-ratio:1/1}
+.stage{position:relative;overflow:hidden;container-type:size;display:grid;place-items:center;background:#CDBFA8}
+.stage .blur{position:absolute;inset:-30px;width:calc(100% + 60px);height:calc(100% + 60px);object-fit:cover;filter:blur(22px) saturate(.9);opacity:.85}
+.shot{position:relative;flex:none;width:max(100cqw,80cqh);height:max(100cqh,125cqw)}
+.shot picture,.shot img{display:block;width:100%;height:100%;object-fit:cover}
+@media (max-width:900px){.hook .stage{height:min(88vw,41svh)}.head .sub{font-size:15px}.shot{width:min(100cqw,80cqh);height:min(100cqh,125cqw)}}
