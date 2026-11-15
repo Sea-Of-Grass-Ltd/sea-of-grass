@@ -46,3 +46,30 @@ window.SOG_SHOP = {
     'care+fix+kickoff': 'https://buy.stripe.com/PLACEHOLDER-care-fix-kickoff'
   }
 };
+
+/* Bunny World: a small business site in the look of one of the nine demo shops.
+   ALL PLACEHOLDER (price from the Bunny World price strip, "from $2,000"), demo mode only.
+   No Payment Links yet: in live mode these fall back to the demo checkout until links exist.
+   Fix and Care on Bunny World reuse the 'fix' and 'care' products above. */
+(function(P){
+  var LOOKS = [
+    ['bunny-burritos', 'Bunny Burritos', 'restaurant and food truck'],
+    ['bunny-auto', 'Bunny Auto', 'auto repair and detailing'],
+    ['warren-bakehouse', 'The Warren Bakehouse', 'bakery and café'],
+    ['hare-today', 'Hare Today', 'barbershop'],
+    ['hop-along', 'Hop Along', 'brewery and taproom'],
+    ['cottontail-farm', 'Cottontail Farm', 'farm and seasonal festival'],
+    ['burrow-and-bough', 'Burrow & Bough', 'gift shop'],
+    ['long-ears', 'Long Ears', 'landscaping and trades'],
+    ['hopwell-chiro', 'Hopwell', 'chiropractor and clinic']
+  ];
+  LOOKS.forEach(function(l){
+    P['bw-site-' + l[0]] = {
+      name: 'Small business site · ' + l[1] + ' look',
+      price: 2000, from: true, interval: null, maxQty: 1,            // PLACEHOLDER price
+      blurb: 'A working site for your ' + l[2] + ', built in the ' + l[1] + ' look and fitted to your business.',
+      lines: ['Built in the ' + l[1] + ' look, in your name, photos and colours', 'Booking, orders or forms wired to the tools you use', 'Fixed price in writing before we start', 'Your domain, email and Google listing stay put'], // PLACEHOLDER inclusions
+      look: l[0], lookName: l[1]
+    };
+  });
+})(window.SOG_SHOP.products);
