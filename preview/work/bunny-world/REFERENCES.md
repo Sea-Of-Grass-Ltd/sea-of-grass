@@ -18,3 +18,12 @@ Each shop has its own look, led by one Refero style and borrowing a trait from a
 | Hopwell Family Chiropractic | Ease Health, "botanical systems in flow" | Radial, "sunlit ripples of reassurance" | Forest-green serif heads, a pale-leaf hero panel, a dusty-blue stage with floating interface cards, rounded shells |
 
 Art: every picture is drawn in code (SVG) in each shop's own style, so there are no stock photos and no licence questions. Real client sites would use their own photos in the same frames.
+
+## Landing redesign (2026-11-14)
+Tristan: "a bunch of cards stacked on top of each other" and "made by totally different people than the SOG main page".
+- **Layout system:** the seaofgrass.studio home (`/index.html`, Dew). Copied: the 1240 px container on a side gutter, mono uppercase kickers, big tight headings, hairline rules between items, prices as big numbers with small labels, big step words, and a full-colour close band.
+- **Live showcase**, from Refero screens:
+  - [Sana AI](https://refero.design/pages/46f88085-22a3-43f1-9838-e7e34ce7eaae): tabbed feature showcase, where one big preview swaps with the selected tab.
+  - [Contra theme picker](https://refero.design/pages/345b0cc5-4176-483d-bb8d-1937d8012fb0): a big live preview beside a stacked list of choices.
+  - [Pedestal](https://refero.design/pages/2161b3ff-d665-4a7c-96b7-c64745e3cfbc): small labelled callouts pinned to the product view.
+- **Switching FAQ**, from [Mercury FAQ](https://refero.design/pages/d2c507ad-2415-4f12-95ed-37cc8369dae6): a narrow column of hairline accordion rows with a plus/minus icon.
