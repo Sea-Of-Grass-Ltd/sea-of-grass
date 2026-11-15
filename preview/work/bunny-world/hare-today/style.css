@@ -170,3 +170,17 @@ section.menu>.h{grid-column:1/-1}
 @media (prefers-reduced-motion:reduce){.reveal{transition:none}}
 .step-sum[hidden],.sum-bar [hidden]{display:none!important}
 @media (max-width:760px){body.book-in .fab{display:none}}
+
+/* form skin (2026-11-15): departure-board mono on black, signal red only on the tick (GlossGenius / Fresha). Shared step engine lives in shop.css; this only changes the look. */
+.q-ready{counter-reset:q}
+.q-step{counter-increment:q}
+.q-n{font-size:0!important}
+.q-n::before{content:counter(q,decimal-leading-zero);font-size:12px}
+.q-n{border-radius:0;background:var(--ink);color:#fff;font-family:var(--mf);width:30px;height:26px}
+.q-h{font:800 27px/1 var(--hf);text-transform:uppercase;letter-spacing:.01em}
+.q-sum{background:var(--ink);border-color:var(--ink);color:#fff}
+.q-sum b{font:500 14px/1.2 var(--mf);text-transform:uppercase;letter-spacing:.06em}
+.q-sum u{color:#bdbdbd}
+.q-opt{border:1.5px solid var(--ink);font:500 13px/1.25 var(--mf);text-transform:uppercase;letter-spacing:.06em}
+.q-opt[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.file-pick{border:1.5px dashed var(--ink)}

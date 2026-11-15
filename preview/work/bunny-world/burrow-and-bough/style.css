@@ -130,3 +130,11 @@ h2{text-transform:none;letter-spacing:-.015em;font-size:clamp(30px,3.6vw,52px)}
 .ob picture,.ob img{display:block;width:100%;height:100%;object-fit:cover}
 .ob{overflow:hidden}
 @media (max-width:860px){.hero .art{aspect-ratio:4/4.2}}
+
+/* form skin (2026-11-15): square paper labels, serif questions, red only when picked (Houseplant / Givingli). Shared step engine lives in shop.css; this only changes the look. */
+.q-h{font:500 23px/1.15 var(--hf);font-style:italic}
+.q-n{border-radius:0;background:var(--accent);color:var(--on-accent);font-style:normal}
+.q-opt{font:600 13px/1.25 var(--mf);text-transform:uppercase;letter-spacing:.1em;border-color:var(--ink)}
+.q-sum{border-color:var(--ink)}
+.q-sum b{font-family:var(--hf);font-weight:500;font-size:17px}
+.file-pick{border:1px dashed var(--ink)}
