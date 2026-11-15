@@ -74,9 +74,8 @@ figure{margin:0}
 .grid2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid3{grid-template-columns:repeat(3,minmax(0,1fr))}.grid4{grid-template-columns:repeat(4,minmax(0,1fr))}
 .band{border-top:var(--b) solid var(--ink);border-bottom:var(--b) solid var(--ink)}
 
-/* opener film between 2 and 3 */
-.film{background:var(--cream)}
-.film video{display:block;width:100%;max-width:1320px;margin:0 auto;aspect-ratio:16/9;object-fit:cover;background:var(--cream)}
+/* opener film, in the lockups section */
+.film video{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:var(--cream)}
 
 /* ---- 3 The rules ---- */
 .rules-board{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:clamp(16px,2.4vw,32px);align-items:stretch}
@@ -151,7 +150,7 @@ figure{margin:0}
 
 /* ---- 7 Coming next ---- */
 .fl .art{position:relative;background:#4A1A5E}
-.fl .art img{display:block;width:100%;height:auto}
+.fl .art img{display:block;width:100%;height:auto}.fl .art img.ic{border-top:var(--b) solid var(--ink)}
 .fl h3{font:800 clamp(28px,2.6vw,40px)/1.05 Syne,sans-serif;letter-spacing:-.02em}
 .fl .cap{display:grid;gap:6px}
 .fl .stamp{position:absolute;right:-4px;top:-4px;font:700 12px/1 "Space Mono",monospace;letter-spacing:.12em;text-transform:uppercase;background:var(--coral);border:var(--b) solid var(--ink);padding:9px 12px;z-index:2}
@@ -200,7 +199,7 @@ figure{margin:0}
       <div>
         <p class="kick">Case study 01 · Brand &amp; packaging</p>
         <h1 id="h-mau">Mau&rsquo;s<span>Catnip Soda</span></h1>
-        <p class="lede">A cat made of three letters, M, A and U, and a can wrapped in ink and vines. <i>A made-up client, a real job.</i></p>
+        <p class="lede">A cat made of three letters, M, A and U, and three cans wrapped in ink: vines, flames and water. <i>A made-up client, a real job.</i></p>
         <a class="btn" href="#mark">See how the cat was drawn &darr;</a>
       </div>
       <div class="stage">
@@ -229,10 +228,6 @@ figure{margin:0}
       </ul>
     </div>
   </section>
-  <div class="film band" aria-label="The logo opener, a short looping film">
-    <video src="opener.mp4" poster="opener-poster.webp" muted loop playsinline autoplay preload="metadata"></video>
-  </div>
-
   <section class="sec" id="rules" aria-labelledby="h-rules">
     <div class="sec-head">
       <h2 id="h-rules">The rules it&rsquo;s drawn by.</h2>
@@ -287,6 +282,7 @@ figure{margin:0}
       <figure class="card lk lk-st"><div class="art" data-svg="lockup-stacked.svg" role="img" aria-label="Stacked lockup: the mark over Mau's, Catnip Soda"></div><figcaption><b>Stacked</b>Mau&rsquo;s set to the head&rsquo;s width, 1m below it. Catnip Soda at &frac14; its cap height.</figcaption></figure>
       <figure class="card lk lk-ho"><div class="art" data-svg="lockup-horizontal.svg" role="img" aria-label="Horizontal lockup: the head beside Mau's, Catnip Soda"></div><figcaption><b>Horizontal</b>No whiskers. Mau&rsquo;s as tall as the ears are deep; Catnip Soda on the head&rsquo;s base line.</figcaption></figure>
     </div>
+    <figure class="card film row-gap"><video src="opener.mp4" poster="opener-poster.webp" muted loop playsinline autoplay preload="metadata" aria-label="The logo opener: coloured tiles shuffle and settle into the stacked lockup"></video><figcaption><b>In motion</b>The opener. The brand&rsquo;s colours shuffle as tiles, then settle into the stacked lockup.</figcaption></figure>
     <div class="grid4 row-gap">
       <figure class="card cw cw-1"><div class="art" data-svg="mark-parts.svg"></div><figcaption><b>Primary</b>Ink on witching purple</figcaption></figure>
       <figure class="card cw cw-2"><div class="art" data-svg="mark-parts.svg"></div><figcaption><b>On light</b>Plum on bone</figcaption></figure>
@@ -357,12 +353,12 @@ figure{margin:0}
    <div style="max-width:1224px;margin:0 auto">
     <div class="sec-head">
       <h2 id="h-next">Coming next.</h2>
-      <p>Each flavour gets its own set of shapes built on the same grid, so the cans read as one family. Spicy and Sunny have their icons drawn; their cans are next.</p>
+      <p>Each flavour gets its own set of shapes built on the same grid, so the cans read as one family. All three labels are drawn in one ink; the colour pass is next.</p>
     </div>
     <div class="grid3">
-      <figure class="card fl"><div class="art"><span class="stamp on">Shown here</span><img src="icons-spooky.webp" width="600" height="400" loading="lazy" alt="Spooky icons: crescent moon, bat, web, blackberry, paw, fizz"></div><div class="cap"><h3>Spooky</h3><span class="mono">Blackberry &middot; moons, bats, webs</span></div></figure>
-      <figure class="card fl wip"><div class="art"><span class="stamp">In progress</span><img src="icons-spicy.webp" width="600" height="400" loading="lazy" alt="Spicy icons in progress: ember crescent, firebird, flame corner, chili, blaze, star anise"></div><div class="cap"><h3>Spicy</h3><span class="mono">Chili &middot; embers, firebirds, flame</span></div></figure>
-      <figure class="card fl wip"><div class="art"><span class="stamp">In progress</span><img src="icons-sunny.webp" width="600" height="400" loading="lazy" alt="Sunny icons in progress: sunrise, columbine, butterfly, citrus slice, paintbrush, mule's ears"></div><div class="cap"><h3>Sunny</h3><span class="mono">Citrus &middot; Colorado wildflowers</span></div></figure>
+      <figure class="card fl"><div class="art"><span class="stamp on">Shown here</span><img src="label-spooky.webp" width="1200" height="637" loading="lazy" alt="The Spooky label: one ink on purple, with vines, bats, webs and blackberries"><img class="ic" src="icons-spooky.webp" width="900" height="150" loading="lazy" alt="Spooky icons: crescent moon, bat, web corner, blackberry, paw, fizz"></div><div class="cap"><h3>Spooky</h3><span class="mono">Blackberry &middot; moons, bats, webs</span></div></figure>
+      <figure class="card fl"><div class="art"><span class="stamp">Colour next</span><img src="label-spicy.webp" width="1200" height="636" loading="lazy" alt="The Spicy label: one ink on red, with prickly pears, saguaros, chilis and flames"><img class="ic" src="icons-spicy.webp" width="900" height="150" loading="lazy" alt="Spicy icons: ember crescent, prickly pear, chili, blaze, saguaro, agave"></div><div class="cap"><h3>Spicy</h3><span class="mono">Prickly pear &middot; cactus, agave, chili, flame</span></div></figure>
+      <figure class="card fl"><div class="art"><span class="stamp">Colour next</span><img src="label-sunny.webp" width="1200" height="636" loading="lazy" alt="The Sunny label: one ink on blue, with sunflowers, columbines, citrus slices and water drops"><img class="ic" src="icons-sunny.webp" width="900" height="150" loading="lazy" alt="Sunny icons: sunrise, blue columbine, butterfly, citrus slice, Indian paintbrush, mule's ears"></div><div class="cap"><h3>Sunny</h3><span class="mono">Citrus blossom &middot; sun, water, wildflowers</span></div></figure>
     </div>
    </div>
   </section>
