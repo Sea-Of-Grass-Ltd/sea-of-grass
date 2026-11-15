@@ -1,44 +1,102 @@
-/* Hop Along Taproom. Lead: Yellowbird (Refero) – saturated yellow and black, rubbery retro serif lettering, cartoon mascot, typewriter labels, cream stages for the goods.
-   Borrowed: Mana (Refero) – colour arrives as whole scenes (a sticker-pink events band), roomy compositions around the product. */
-:root{--bg:#ffe845;--ink:#000;--muted:#2b2b2b;--line:#000;--accent:#000;--on-accent:#ffe845;--field:#fff;--r:22px;--btn-r:999px;--ctl-r:14px;
-  --hf:Fraunces,Georgia,serif;--hw:900;--bf:Archivo,sans-serif;--mf:"Courier Prime",monospace}
-.tick{overflow:hidden;white-space:nowrap;background:#000;color:#ffe845;font:700 13px/1 var(--mf);padding:9px 0;text-transform:uppercase}
-.tick span{display:inline-block;animation:tick 26s linear infinite}@keyframes tick{to{transform:translateX(-50%)}}
-.nav{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding-block:12px;border-bottom:3px solid #000}
-.nav nav{display:flex;gap:22px;font:700 14px/1 var(--bf);text-transform:uppercase}.nav nav.r{justify-content:flex-end}.nav a{text-decoration:none}
-.mark svg{width:30px}
-.hero{text-align:center;padding:clamp(10px,2vw,24px) var(--side) 0}
-.hero .art{max-width:760px;margin:0 auto}
-.hero h1{font-size:clamp(54px,16vw,260px);line-height:.8;letter-spacing:-.03em;margin-top:-1vw;font-variation-settings:"SOFT" 100,"WONK" 1}
-.sub{font:700 14px/1 var(--mf);text-transform:uppercase;margin:clamp(30px,4vw,56px) 0 clamp(30px,5vw,60px)}
-h2{font-size:clamp(48px,7vw,104px);line-height:.88;letter-spacing:-.02em;margin-bottom:14px}
-.typer{font:400 16px/1.4 var(--mf);max-width:56ch}
-.taps{padding-block:clamp(36px,5vw,72px);background:#fff7d6;border-top:3px solid #000}
-.chip{border:3px solid #000;font:700 13px/1 var(--bf);text-transform:uppercase;background:#fff}
+/* Hop Along Taproom, rebuilt 2026-11-14 from the real Refero screens (notes/bunny-world/hop-along/refero, REFERENCES.md).
+   Lead: Yellowbird (yellowbirdfoods.com): yellow ground, thin black rules, text nav round a small centred badge, an edge-to-edge
+   soft-serif wordmark with a starburst sticker, a big centred grotesk statement, cream stages with a thin black line, black
+   rectangular buttons, a ruled quote band with mono label and arrows, a rounded media block with a small "now playing" card,
+   a marquee strip, a white band, a newsletter footer with mono link columns.
+   Borrowed: MANA (manayerbamate.com): products as whole-colour panels, name in caps at the top, the object centred. */
+:root{--bg:#ffe845;--ink:#000;--muted:#2b2b2b;--line:#000;--accent:#000;--on-accent:#ffe845;--field:#fff;--r:18px;--btn-r:4px;--ctl-r:6px;
+  --hf:Fraunces,Georgia,serif;--hw:900;--bf:Archivo,sans-serif;--mf:"IBM Plex Mono",monospace;--cream:#fffbe9;--pink:#ff8fb1}
+body{background:#ffe845}
+.label{font:500 12px/1.3 var(--mf);letter-spacing:.06em;text-transform:uppercase;margin:0}
+.big{font:400 clamp(24px,2.6vw,40px)/1.12 var(--bf);letter-spacing:-.02em;margin:0}
+.btn{display:inline-block;background:#000;color:#ffe845;border:0;border-radius:4px;font:500 14px/1 var(--mf);text-transform:uppercase;letter-spacing:.04em;padding:13px 18px;text-decoration:none}
+/* top bar + nav: thin rules, text links either side of a small badge */
+.tick{overflow:hidden;white-space:nowrap;background:#000;color:#ffe845;font:500 12px/1 var(--mf);padding:8px 0;text-transform:uppercase}
+.tick span{display:inline-block;animation:tick 30s linear infinite}@keyframes tick{to{transform:translateX(-50%)}}
+.nav{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px;padding:10px clamp(14px,1.4vw,20px);border-bottom:2px solid #000}
+.nav nav{display:flex;gap:clamp(14px,2vw,30px);font:400 clamp(15px,1.25vw,19px)/1 var(--bf);text-transform:uppercase}.nav nav.r{justify-content:flex-end;align-items:center}
+.nav a{text-decoration:none;color:#000}.nav a:hover{text-decoration:underline;text-underline-offset:4px}
+.nav .cta{background:#000;color:#ffe845;border-radius:4px;padding:9px 12px;font:500 13px/1 var(--mf)}
+.badge{display:grid;place-items:center;width:52px;height:52px;border:2px solid #000;border-radius:50%;text-decoration:none;color:#000;font:900 13px/.9 var(--hf);font-variation-settings:"SOFT" 100,"WONK" 1;text-align:center;text-transform:uppercase}
+/* hero: the photo on a stage, the wordmark edge to edge, a starburst sticker */
+.hero{position:relative;padding:clamp(18px,2.4vw,34px) 0 0;text-align:center;border-bottom:2px solid #000;overflow:hidden}
+.hero-pic{width:min(640px,calc(100% - 32px));margin:0 auto;border:2px solid #000;border-radius:18px 18px 0 0;border-bottom:0;overflow:hidden;background:#f6cb12}
+.hero-pic img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover}
+.hero h1{font:900 clamp(78px,20.5vw,330px)/.78 var(--hf);font-variation-settings:"SOFT" 100,"WONK" 1;letter-spacing:-.045em;margin:-.06em 0 0;padding:0 0 .17em;white-space:nowrap;position:relative}
+.sticker{position:absolute;width:clamp(120px,13vw,190px);height:auto;transform:rotate(14deg)}
+.sticker text{letter-spacing:.04em}
+.hero .sticker{right:clamp(10px,6vw,110px);top:clamp(20px,6vw,90px)}
+/* the statement */
+.intro{padding:clamp(34px,5vw,72px) clamp(16px,8vw,140px);text-align:center;border-bottom:2px solid #000}
+.intro p{font:400 clamp(26px,3.3vw,50px)/1.08 var(--bf);letter-spacing:-.03em;margin:0 auto;max-width:24ch}
+/* taps: MANA colour panels */
+.taps{border-bottom:2px solid #000}
+.taps-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;padding:14px clamp(14px,1.4vw,20px);border-bottom:2px solid #000}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:2px solid #000;border-radius:4px;background:transparent;color:#000;font:500 12px/1 var(--mf);text-transform:uppercase;padding:9px 12px}
 .chip[aria-pressed="true"]{background:#000;color:#ffe845}
-.cans{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
-.can{display:grid;grid-template-columns:70px 1fr;grid-template-rows:auto auto 1fr auto;column-gap:16px;background:#fff;border:3px solid #000;border-radius:22px;padding:18px;box-shadow:6px 6px 0 #000}
-.can[hidden]{display:none}
-.glass{grid-row:1/-1;width:70px;height:110px;border:3px solid #000;border-top:0;border-radius:0 0 14px 14px;background:linear-gradient(#fff 0 18%,var(--beer) 18%);position:relative}
-.glass::before{content:"";position:absolute;left:-6px;right:-6px;top:-10px;height:24px;background:#fff;border:3px solid #000;border-radius:14px}
-.can b{font:900 24px/1 var(--hf);font-variation-settings:"SOFT" 100}
-.can .meta{font:700 12px/1 var(--mf);text-transform:uppercase;margin:6px 0}
-.can small{font-size:14px;color:#2b2b2b}.can .price{font:700 14px/1 var(--mf);margin-top:8px}
-.can.kicked{opacity:.6}.can.kicked::after{content:"KICKED";position:absolute;margin:-6px 0 0 150px;background:#e2386b;color:#fff;font:700 12px/1 var(--mf);padding:6px 8px;border:2px solid #000;transform:rotate(8deg)}
-.can{position:relative}
-.events{background:#ff8fb1;border-block:3px solid #000;padding-block:clamp(36px,5vw,72px)}
-.evs{list-style:none;margin:0;padding:0}
-.evs li{display:grid;grid-template-columns:80px 1fr auto;gap:4px 18px;align-items:center;padding:16px 0;border-bottom:3px solid #000}
-.evs .d{grid-row:1/3;font:900 34px/1 var(--hf);font-variation-settings:"SOFT" 100}
-.evs b{font:700 20px/1.1 var(--bf)}.evs small{grid-column:2;font-size:15px}
-.evs a{grid-row:1/3;grid-column:3;font:700 13px/1 var(--mf);text-transform:uppercase;background:#fff;border:3px solid #000;border-radius:999px;padding:10px 14px;text-decoration:none}
-.party{padding-block:clamp(36px,5vw,72px)}
-.stage{background:#fff;border:3px solid #000;border-radius:28px;padding:clamp(18px,2.6vw,32px);box-shadow:8px 8px 0 #000}
-.stage.dark{background:#000;color:#ffe845;--line:rgba(255,232,69,.35)}
-.stage h2{font-size:clamp(36px,4.4vw,60px)}
-input,select{border:3px solid #000}
-.btn{background:#000;color:#ffe845;font:700 15px/1 var(--bf);text-transform:uppercase}
-.est{display:flex;justify-content:space-between;align-items:baseline;font:700 14px/1 var(--mf);text-transform:uppercase}.est b{font:900 36px/1 var(--hf)}
-@media (max-width:900px){.cans{grid-template-columns:1fr 1fr}}
-@media (max-width:600px){.cans{grid-template-columns:1fr}.nav nav{gap:12px;font-size:12px}.evs li{grid-template-columns:56px 1fr}.evs a{grid-column:2;grid-row:auto;justify-self:start;margin-top:6px}}
-@media (prefers-reduced-motion:reduce){.tick span{animation:none}}
+.taps-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.tap{position:relative;background:var(--panel);display:grid;grid-template-rows:auto 1fr auto;justify-items:center;text-align:center;gap:10px;padding:clamp(18px,2vw,28px) 16px clamp(16px,2vw,24px);min-height:clamp(300px,30vw,440px);border-right:2px solid #000;border-bottom:2px solid #000}
+.tap:nth-child(3n){border-right:0}
+.tap[hidden]{display:none}
+.tap b{font:400 clamp(20px,2vw,30px)/1 var(--bf);text-transform:uppercase;letter-spacing:-.01em}
+.tap .glass{align-self:center;margin-top:18px;width:clamp(78px,7vw,110px);height:clamp(130px,12vw,190px);border:3px solid #000;border-top:0;border-radius:0 0 18px 18px;background:linear-gradient(#fff 0 20%,var(--beer) 20%);position:relative;box-shadow:inset -10px 0 0 rgba(255,255,255,.25)}
+.tap .glass::before{content:"";position:absolute;left:-8px;right:-8px;top:-14px;height:30px;background:#fff;border:3px solid #000;border-radius:18px}
+.tap .meta,.tap .price{font:500 12px/1.3 var(--mf);text-transform:uppercase}
+.tap small{font:400 15px/1.3 var(--bf);max-width:24ch}
+.tap .price{background:#000;color:#ffe845;border-radius:4px;padding:6px 9px}
+.tap[style*="#2a160c"]{color:#ffe845}.tap[style*="#2a160c"] .glass{border-color:#ffe845}.tap[style*="#2a160c"] .glass::before{border-color:#ffe845}.tap[style*="#2a160c"] .price{background:#ffe845;color:#000}
+.tap.kicked{opacity:1}.tap.kicked .glass{opacity:.45}
+.tap.kicked::after{content:"KICKED";position:absolute;top:18px;right:18px;background:#000;color:#fff;font:500 12px/1 var(--mf);padding:7px 9px;transform:rotate(8deg)}
+.taps-note{padding:12px clamp(14px,1.4vw,20px)}
+/* flight band: picture left, statement right, black button */
+.flight-band{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:clamp(20px,4vw,64px);align-items:center;padding:clamp(28px,4vw,60px) clamp(14px,4vw,60px);border-bottom:2px solid #000}
+.flight-band .big{margin-bottom:22px}
+.frame{margin:0;border:2px solid #000;border-radius:18px;overflow:hidden;background:var(--cream)}
+.frame img{display:block;width:100%;height:auto}
+/* quote band: ruled, mono label, big serif, arrows at the edges */
+.quote{position:relative;text-align:center;padding:clamp(34px,5vw,72px) clamp(48px,10vw,160px) clamp(26px,3vw,40px);border-bottom:2px solid #000}
+.quotes{display:grid}.quotes blockquote{grid-area:1/1;margin:14px 0 0;opacity:0;visibility:hidden;transition:opacity .3s;font:900 clamp(30px,4.2vw,66px)/1.02 var(--hf);font-variation-settings:"SOFT" 100,"WONK" 0;letter-spacing:-.025em}
+.quotes blockquote.on{opacity:1;visibility:visible}
+.quotes cite{display:block;margin-top:18px;font:500 12px/1 var(--mf);font-style:normal;text-transform:uppercase}
+.qa{position:absolute;top:50%;background:none;border:0;font:400 28px/1 var(--bf);color:#000;cursor:pointer;padding:10px}.qa.prev{left:clamp(4px,2vw,24px)}.qa.next{right:clamp(4px,2vw,24px)}
+.dots{display:flex;justify-content:center;gap:6px;margin-top:20px}.dots i{width:9px;height:9px;border:1.5px solid #000;border-radius:50%}.dots i.on{background:#000}
+/* events: rounded media block with a small card on it */
+.events{padding:clamp(12px,1.4vw,20px);border-bottom:2px solid #000}
+.media{position:relative;border-radius:22px;overflow:hidden;border:2px solid #000;background:#000}
+.media img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}
+.now{position:absolute;left:clamp(12px,2vw,28px);top:clamp(12px,2vw,28px);width:min(400px,46%);background:#ffe845;border:2px solid #000;border-radius:14px;padding:14px 16px 6px}
+.evs{list-style:none;margin:8px 0 0;padding:0}
+.evs li{display:grid;grid-template-columns:44px 1fr auto;gap:2px 10px;align-items:center;padding:9px 0;border-top:1.5px solid #000}
+.evs .d{grid-row:1/3;font:500 12px/1 var(--mf);text-transform:uppercase}
+.evs b{font:500 16px/1.15 var(--bf)}.evs small{grid-column:2;font:400 13px/1.3 var(--bf)}
+.evs a{grid-row:1/3;grid-column:3;font:500 11px/1 var(--mf);text-transform:uppercase;color:#000;border:1.5px solid #000;border-radius:4px;padding:7px 8px;text-decoration:none;white-space:nowrap}
+.marquee{overflow:hidden;white-space:nowrap;border-bottom:2px solid #000;padding:12px 0;font:500 13px/1 var(--mf);text-transform:uppercase}
+.marquee span{display:inline-block;animation:tick 36s linear infinite}
+/* white band: back room */
+.party{position:relative;background:#fff;padding:clamp(34px,5vw,72px) clamp(14px,4vw,60px);border-bottom:2px solid #000}
+.party h2{font:900 clamp(46px,7vw,112px)/.9 var(--hf);font-variation-settings:"SOFT" 100,"WONK" 1;letter-spacing:-.035em;text-align:center;margin:0 0 clamp(24px,3vw,44px)}
+.sticker.small{width:clamp(96px,9vw,130px);right:clamp(12px,6vw,100px);top:clamp(14px,3vw,40px);transform:rotate(-10deg)}
+.party-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(18px,3vw,40px);align-items:start}
+.card{background:var(--cream);border:2px solid #000;border-radius:18px;padding:clamp(18px,2.4vw,30px)}
+.card.dark{background:#000;color:#ffe845;--line:rgba(255,232,69,.35)}
+.card h2{font:900 clamp(36px,4vw,60px)/.9 var(--hf);font-variation-settings:"SOFT" 100;margin:0 0 14px}
+input,select{border:2px solid #000;border-radius:6px}
+.est{display:flex;justify-content:space-between;align-items:baseline;font:500 13px/1 var(--mf);text-transform:uppercase}.est b{font:900 36px/1 var(--hf)}
+.visit{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(18px,3vw,40px);align-items:center;padding:clamp(28px,4vw,60px) clamp(14px,4vw,60px);border-bottom:2px solid #000}
+.addr{display:grid;gap:14px}
+/* footer: newsletter on a rule, mono link columns */
+.foot{display:grid;grid-template-columns:minmax(0,1.2fr) auto auto;gap:clamp(20px,5vw,80px);align-items:start;padding:clamp(24px,3vw,40px) clamp(14px,1.4vw,20px);border-bottom:2px solid #000}
+.news{display:grid;grid-template-columns:1fr auto;align-items:end;max-width:420px}
+.news label{display:grid;gap:10px;font:400 18px/1.2 var(--bf)}
+.news input{border:0;border-bottom:2px solid #000;border-radius:0;background:transparent;font:500 13px/1 var(--mf);text-transform:uppercase;padding:8px 0}
+.news button{border:0;border-bottom:2px solid #000;background:transparent;font:400 22px/1 var(--bf);padding:6px 4px;cursor:pointer}
+.news .done{grid-column:1/-1}
+.foot nav{display:grid;gap:9px}.foot nav a{font:500 12px/1 var(--mf);text-transform:uppercase;color:#000;text-decoration:none}
+@media (max-width:900px){.taps-grid{grid-template-columns:1fr 1fr}.tap:nth-child(3n){border-right:2px solid #000}.tap:nth-child(2n){border-right:0}
+  .flight-band,.party-grid,.visit{grid-template-columns:1fr}.now{position:static;width:auto;border-radius:0;border:0;border-top:2px solid #000}.media{background:#ffe845}}
+@media (max-width:640px){.hero h1{font-size:18.6vw}.nav{grid-template-columns:1fr auto}.nav nav:first-child{display:none}.nav nav.r a:not(.cta){display:none}
+  .taps-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}.tap{flex:0 0 78%;scroll-snap-align:start;border-bottom:0;border-right:2px solid #000!important;min-height:330px}.foot{grid-template-columns:1fr 1fr}.news{grid-column:1/-1}
+  .hero .sticker{top:auto;bottom:clamp(70px,22vw,120px);right:8px;width:100px}.sticker.small{position:static;display:block;margin:0 auto 18px;transform:rotate(-6deg)}
+  .quote{padding-inline:36px}.qa{top:auto;bottom:16px}}
+@media (prefers-reduced-motion:reduce){.tick span,.marquee span{animation:none}}
