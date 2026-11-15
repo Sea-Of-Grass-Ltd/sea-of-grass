@@ -124,3 +124,9 @@ h2{text-transform:none;letter-spacing:-.015em;font-size:clamp(30px,3.6vw,52px)}
 @media (prefers-reduced-motion:reduce){.bundle li,.pkg.wrapped{animation:none}.p-gifts,.p-box,.p-paper,.p-flap,.p-rib,.p-bow,.p-tag{transition:opacity .2s}}
 .hero .finder p{max-width:none;opacity:1;font-size:inherit}.hero .finder .b-note{font-size:14px}.hero .finder .f-step,.hero .finder .sw-name{font-size:inherit}
 .f-back{white-space:nowrap}@media (max-width:560px){.p-tag .card{left:6px;top:30px;min-width:0;max-width:94px;font-size:17px;padding:6px 8px 7px 16px}}
+/* photos (2026-11-15): the hero and the six product tiles */
+.hero .art{position:relative;min-height:100%}
+.hero .art picture,.hero .art img{display:block;width:100%;height:100%;object-fit:cover;object-position:40% 60%}
+.ob picture,.ob img{display:block;width:100%;height:100%;object-fit:cover}
+.ob{overflow:hidden}
+@media (max-width:860px){.hero .art{aspect-ratio:4/4.2}}
