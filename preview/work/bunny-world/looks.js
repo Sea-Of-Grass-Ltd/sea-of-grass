@@ -6,14 +6,14 @@
   const root = document.documentElement, reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
   const mark = document.querySelector('.lh-mark');
-  const nEl = document.querySelector('[data-look-n]'), nameEl = document.querySelector('[data-look-name]');
+  const nameEl = document.querySelector('[data-look-name]');
   const hint = document.querySelector('.lh-hint'), meta = document.querySelector('meta[name="theme-color"]');
   if (!mark) return;
   let i = Math.max(0, LOOKS.findIndex(l => l[0] === (root.dataset.look || 'disco')));
 
   const paint = () => {
     const [key, name, theme] = LOOKS[i];
-    root.dataset.look = key; nEl.textContent = i + 1; nameEl.textContent = name;
+    root.dataset.look = key; nameEl.textContent = name;
     if (meta) meta.content = theme;
   };
   paint();
@@ -22,15 +22,12 @@
   if (reduce) mark.classList.remove('intro');
   else mark.addEventListener('animationend', e => { if (e.animationName === 'lhIn') mark.classList.remove('intro'); });
 
-  /* a one-time hint */
-  if (!store.get('bw-look-hint')) {
-    setTimeout(() => hint.classList.add('on'), reduce ? 0 : 1600);
-    setTimeout(() => hint.classList.remove('on'), 6000);
-    store.set('bw-look-hint', '1');
-  }
+  /* a callout pointing at the ears, until the first tap; after that it never comes back */
+  const hinted = store.get('bw-look-hint');
+  if (!hinted) setTimeout(() => hint.classList.add('on'), reduce ? 0 : 900);
 
   mark.addEventListener('click', () => {
-    hint.classList.remove('on');
+    hint.classList.remove('on'); store.set('bw-look-hint', '1');
     i = (i + 1) % LOOKS.length; store.set('bw-look', LOOKS[i][0]);
     if (reduce || !document.startViewTransition) paint(); else document.startViewTransition(paint);
     if (!reduce) { mark.classList.remove('pop'); void mark.offsetWidth; mark.classList.add('pop'); }
