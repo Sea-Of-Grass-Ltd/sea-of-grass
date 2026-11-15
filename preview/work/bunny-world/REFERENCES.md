@@ -27,3 +27,14 @@ Tristan: "a bunch of cards stacked on top of each other" and "made by totally di
   - [Contra theme picker](https://refero.design/pages/345b0cc5-4176-483d-bb8d-1937d8012fb0): a big live preview beside a stacked list of choices.
   - [Pedestal](https://refero.design/pages/2161b3ff-d665-4a7c-96b7-c64745e3cfbc): small labelled callouts pinned to the product view.
 - **Switching FAQ**, from [Mercury FAQ](https://refero.design/pages/d2c507ad-2415-4f12-95ed-37cc8369dae6): a narrow column of hairline accordion rows with a plus/minus icon.
+
+## Landing redesign 2 (2026-11-15): the mark leads, tap it to change the look
+Tristan: "you tap the Bunny Ears logo and it changes the style of the page". The big mark is the hero and a button; each tap pops the ears, sweeps one glint and crossfades the page to the next look. Looks only re-set CSS variables, so prices, chips and buttons never move. Under the headline, one question ("What kind of shop do you run?") with chips; a pick shows "Try <shop>" and puts that shop on Main Street (the live showcase).
+- Hero composition: Refero styles Mammoth Brands (the identity at monumental scale) and Dirt (one shiny object on a quiet stage); type and pills after IFTTT; calm prices after Square.
+- The five looks, each from Refero palettes:
+  - **Disco** (default): Pitch plum stage + Atlas mirror silver + Vivid+Co warm white + one Leonardo hot-pink spark (light only)
+  - **Clean**: Peloton cool off-white + Postevand black + a16z violet focus
+  - **Bold**: SAP Good Energy black and energy orange, condensed caps (Big Shoulders)
+  - **Warm**: OLIPOP vanilla cream, bottle green, candy pink, Young Serif
+  - **Sunny**: Yellowbird sunshine yellow and black, Fraunces
+Sheets: notes/bunny-world/landing-logo/ (Refero sheet, palette sheet); screens: notes/bunny-world/landing-redesign/.
