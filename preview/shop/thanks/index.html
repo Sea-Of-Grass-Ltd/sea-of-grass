@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en" data-theme="glass">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>You're in · Sea of Grass</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0A0C11">
+<link rel="icon" href="/preview/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="/preview/assets/shop/page.css">
+</head>
+<body>
+<div class="sp-wrap">
+  <header class="sp-top">
+    <a class="sp-home" href="/"><img src="/preview/assets/logo.svg" alt="" width="30" height="22"><span>Sea of Grass</span></a>
+    <a class="sp-back" href="/">Home</a>
+  </header>
+  <div class="sp-demo" role="note" id="demo" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.2v.3"/></svg>
+    <p style="margin:0"><b>Demo order.</b> No payment was taken and nobody has been told. This is what a buyer sees after paying.</p></div>
+  <main class="sp-thx">
+    <div>
+      <p class="sp-k">Order received</p>
+      <h1>You&rsquo;re in. <em>We&rsquo;ll call within one business day.</em></h1>
+      <p class="sp-lead">A receipt is on its way to your email. We call from 303.775.1333, so it&rsquo;s worth saving the number.</p>
+    </div>
+    <div class="sp-order sp-glass" id="order" hidden><p class="sp-k" style="margin:0">What you bought</p><ul></ul></div>
+    <ol class="sp-next" aria-label="What happens next">
+      <li class="sp-glass"><b>We call you</b><p>Within one business day, to hear what you need and agree what &ldquo;done&rdquo; looks like.</p></li>
+      <li class="sp-glass"><b>A date, in writing</b><p>You get what we&rsquo;ll do and when, by email, before any work starts.</p></li>
+      <li class="sp-glass"><b>We get to work</b><p>Drafts you can open on your phone, changed until they&rsquo;re right.</p></li>
+    </ol>
+    <div>
+      <p style="margin:0 0 14px;color:#C7C7C8">Rather pick the time yourself?</p>
+      <div class="sp-acts"><a class="sp-btn" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a time &rarr;</a><a class="sp-btn q" href="mailto:hello@seaofgrass.studio">hello@seaofgrass.studio</a></div>
+    </div>
+  </main>
+</div>
+<script src="/preview/assets/shop/checkout-links.js"></script>
+<script>
+(function(){
+var S=window.SOG_SHOP||{products:{}},P=S.products,c={};
+if(/[?&]demo=1\b/.test(location.search))document.getElementById('demo').hidden=false;
+try{c=JSON.parse(localStorage.getItem('sog-cart')||'{}');}catch(e){}
+var ids=Object.keys(c).filter(function(k){return P[k]&&c[k]>0;});
+if(ids.length){var box=document.getElementById('order');box.hidden=false;
+  box.querySelector('ul').innerHTML=ids.map(function(id){return '<li>'+P[id].name+(c[id]>1?' &times; '+c[id]:'')+'</li>';}).join('');}
+try{localStorage.removeItem('sog-cart');}catch(e){}   // the order is placed: empty the cart
+})();
+</script>
+</body>
+</html>

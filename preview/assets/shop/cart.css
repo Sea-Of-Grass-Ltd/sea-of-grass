@@ -1,0 +1,85 @@
+/* Sea of Grass shop, in Dew: near-black ground, frosted glass cards, the Dew blue. */
+:root{--shop-bg:#0A0C11;--shop-panel:#0E1219;--shop-fg:#EEF1EA;--shop-soft:#C7C7C8;--shop-mute:#9A9EA6;--shop-rule:rgba(238,241,234,.1);
+  --shop-blue:#509DFC;--shop-blue2:#6DA7FF;--shop-ring:#A7CAFF;--shop-r:18px;
+  --shop-glass:linear-gradient(rgba(255,255,255,.13),rgba(255,255,255,.08) 42%,rgba(255,255,255,.035))}
+
+/* ---- product cards ---- */
+.shop-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px;margin:0 0 clamp(28px,4vw,44px)}
+.shop-card{display:grid;grid-template-rows:auto auto auto auto 1fr auto;gap:10px;padding:22px 22px 20px;color:var(--shop-fg);
+  background:var(--shop-glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.11);border-radius:var(--shop-r);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 18px 52px rgba(0,0,0,.3)}
+.shop-card h3{font:600 19px/1.2 Inter,system-ui,sans-serif;margin:0;letter-spacing:-.01em}
+.shop-pr{font:500 clamp(30px,2.6vw,38px)/1 Manrope,Inter,sans-serif;letter-spacing:-.03em}
+.shop-pr small{font:500 14px/1 Inter,sans-serif;letter-spacing:0;color:var(--shop-soft);margin-left:2px}
+.shop-pr small:first-child{margin:0 2px 0 0}
+.shop-sub{margin:0;font:500 11.5px/1.2 "IBM Plex Mono",Menlo,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--shop-blue2)}
+.shop-blurb{margin:2px 0 0;color:var(--shop-soft);font-size:15.5px;line-height:1.45}
+.shop-card ul{list-style:none;margin:0;padding:12px 0 6px;border-top:1px solid var(--shop-rule);display:grid;gap:8px;align-content:start;font-size:15px;line-height:1.4;color:var(--shop-fg)}
+.shop-card li{padding-left:24px;position:relative}
+.shop-card li::before{content:"";position:absolute;left:2px;top:.36em;width:11px;height:6px;border-left:2px solid var(--shop-blue2);border-bottom:2px solid var(--shop-blue2);transform:rotate(-45deg)}
+
+/* buttons */
+.shop-add,.shop-go{font:600 15px/1 Inter,system-ui,sans-serif;color:#0A0C11;background:var(--shop-blue);border:0;border-radius:16px;padding:14px 18px;min-height:46px;cursor:pointer;
+  box-shadow:inset 0 0 0 1px var(--shop-ring);transition:background .15s,transform .15s}
+.shop-add:hover,.shop-go:hover{background:var(--shop-blue2)}
+.shop-add:active,.shop-go:active{transform:translateY(1px)}
+.shop-add.in{background:transparent;color:var(--shop-fg);box-shadow:inset 0 0 0 1px rgba(238,241,234,.28)}
+.shop-add.in:hover{background:rgba(255,255,255,.06)}
+.shop-add:disabled{cursor:default;opacity:.8}
+.shop-add:focus-visible,.shop-go:focus-visible,.shop-cartbtn:focus-visible,.shop-drawer button:focus-visible,.shop-drawer a:focus-visible{outline:2px solid var(--shop-blue2);outline-offset:3px}
+
+/* ---- the cart button in the header ---- */
+.shop-cartbtn{display:inline-flex;align-items:center;gap:7px;font:500 15px/1 Inter,system-ui,sans-serif;color:inherit;background:transparent;border:1px solid var(--shop-rule);border-radius:999px;padding:8px 12px 8px 10px;cursor:pointer;position:relative}
+.shop-cartbtn:hover{background:rgba(255,255,255,.06)}
+.shop-cartbtn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linejoin:round;stroke-linecap:round}
+.shop-n:empty{display:none}
+.shop-n{min-width:20px;height:20px;padding:0 6px;border-radius:99px;background:var(--shop-blue);color:#0A0C11;font:700 12px/20px Inter,sans-serif;text-align:center}
+.shop-cartbtn.bump .shop-n{animation:shop-bump .4s}
+@keyframes shop-bump{40%{transform:scale(1.25)}}
+.shop-float{position:fixed;z-index:60;right:16px;bottom:max(16px,env(safe-area-inset-bottom,0px));background:var(--shop-panel);color:var(--shop-fg)}
+@media (max-width:700px){.shop-cartlbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.shop-cartbtn{padding:8px 10px}}
+
+/* ---- drawer ---- */
+.shop-veil{position:fixed;inset:0;z-index:90;background:rgba(3,6,12,.55);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);opacity:0;transition:opacity .25s}
+.shop-veil.on{opacity:1}
+.shop-drawer{position:fixed;z-index:91;top:0;right:0;bottom:0;width:min(440px,100vw);display:grid;grid-template-rows:auto 1fr auto;color:var(--shop-fg);
+  background:linear-gradient(180deg,#10151E,#0A0C11 60%);border-left:1px solid #1D2738;box-shadow:-30px 0 80px rgba(0,0,0,.45);
+  transform:translateX(102%);transition:transform .28s cubic-bezier(.2,.8,.2,1);font-family:Inter,system-ui,sans-serif}
+.shop-drawer.on{transform:none}
+html.shop-open{overflow:hidden}
+.shop-head{display:flex;align-items:center;justify-content:space-between;padding:max(18px,env(safe-area-inset-top,0px)) 22px 16px;border-bottom:1px solid var(--shop-rule)}
+.shop-head h2{font:500 22px/1.1 Manrope,Inter,sans-serif;letter-spacing:-.02em;margin:0}
+.shop-x{width:40px;height:40px;border-radius:12px;border:1px solid var(--shop-rule);background:transparent;color:var(--shop-fg);font-size:24px;line-height:1;cursor:pointer}
+.shop-x:hover{background:rgba(255,255,255,.06)}
+.shop-body{overflow:auto;padding:8px 22px;overscroll-behavior:contain}
+.shop-items{list-style:none;margin:0;padding:0}
+.shop-items li{display:grid;grid-template-columns:1fr auto;grid-template-areas:"it line" "ctl ctl";gap:10px 12px;padding:18px 0;border-bottom:1px solid var(--shop-rule)}
+.shop-it{grid-area:it;display:grid;gap:4px}.shop-it b{font-weight:600;font-size:16px}
+.shop-line{grid-area:line;font:600 16px/1.3 Inter,sans-serif;white-space:nowrap}.shop-line small{font-weight:500;color:var(--shop-soft)}
+.shop-ctl{grid-area:ctl;display:flex;align-items:center;gap:14px}
+.shop-qty{display:inline-flex;align-items:center;border:1px solid rgba(238,241,234,.18);border-radius:12px;overflow:hidden}
+.shop-qty button{width:38px;height:36px;background:transparent;border:0;color:var(--shop-fg);font-size:18px;cursor:pointer}
+.shop-qty button:hover:not(:disabled){background:rgba(255,255,255,.07)}
+.shop-qty button:disabled{opacity:.35;cursor:default}
+.shop-qty output{min-width:28px;text-align:center;font-weight:600;font-variant-numeric:tabular-nums}
+.shop-rm{background:none;border:0;padding:6px 2px;color:var(--shop-soft);font:500 14px/1 Inter,sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.shop-rm:hover{color:var(--shop-fg)}
+.shop-muted{color:var(--shop-mute);font-size:13.5px;line-height:1.45;margin:0}
+.shop-foot{padding:16px 22px max(20px,env(safe-area-inset-bottom,0px));border-top:1px solid var(--shop-rule);display:grid;gap:10px;background:rgba(10,12,17,.6)}
+.shop-foot:empty{display:none}
+.shop-sum{margin:0;display:grid;gap:6px}
+.shop-sum div{display:flex;justify-content:space-between;gap:12px;font-size:15px;color:var(--shop-soft)}
+.shop-sum dd{margin:0;font-variant-numeric:tabular-nums}.shop-sum small{font-size:.85em}
+.shop-sum .shop-total{color:var(--shop-fg);font:600 18px/1.3 Inter,sans-serif;padding-top:8px;margin-top:4px;border-top:1px solid var(--shop-rule)}
+.shop-go{width:100%;margin-top:4px;font-size:16px;min-height:52px}
+.shop-demo{text-align:center}
+.shop-empty{padding:40px 0;display:grid;gap:10px;justify-items:start}
+.shop-empty p:first-child{font:500 20px/1.2 Manrope,Inter,sans-serif;margin:0}
+.shop-link{color:var(--shop-blue2);font-weight:600;text-decoration:none}.shop-link:hover{text-decoration:underline}
+.shop-live{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (prefers-reduced-motion:reduce){.shop-drawer,.shop-veil{transition:none}.shop-cartbtn.bump .shop-n{animation:none}}
+
+/* ---- the "buy outright" block on a services page ---- */
+.shop-intro{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px 32px;margin:0 0 20px}
+.shop-intro h3{font:500 clamp(22px,2vw,28px)/1.15 Manrope,Inter,sans-serif;letter-spacing:-.02em;margin:0}
+.shop-intro p{margin:0;max-width:52ch;color:var(--soft,var(--shop-soft))}
