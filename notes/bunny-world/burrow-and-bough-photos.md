@@ -1,4 +1,4 @@
-# Burrow & Bough: shot list and prompts (waiting on Tristan's "go")
+# Burrow & Bough: shot list and prompts (generated 2026-11-15 on Tristan's "Do the Burrows images", 11.75 credits)
 
 Why this shop next: its hero is a flat cartoon bunny in an armchair, and all six product tiles are drawn icons. It has the most drawings of the four shops left.
 
