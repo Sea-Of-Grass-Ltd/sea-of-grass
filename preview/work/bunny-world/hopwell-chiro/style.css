@@ -131,3 +131,16 @@ cite{font:500 12px/1 var(--mf);letter-spacing:.06em;text-transform:uppercase;fon
  .ph.sq{aspect-ratio:4/3}
 }
 [hidden]{display:none!important}
+
+/* Tristan, 2026-11-15: "Lose the boxes." Ruled sections on the paper, not floating cards (as on the Websites page).
+   A hairline on top, a mono label, the heading, then the content. Only the dark answer card stays a card. */
+.box{background:none;border:0;border-top:1px solid var(--ink);border-radius:0;padding:18px 0 0}
+.q{background:none;border:0;border-top:1px solid var(--line);border-radius:0;padding:16px 0 4px}
+.panel{gap:6px}.panel .q:first-child{border-top-color:var(--ink);padding-top:0;border-top:0}
+.ans{margin-top:10px}
+.pair{gap:48px}
+.ok{border-radius:0;background:none;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0}
+.ok.no{background:none;color:#9A4A26}
+.pre{border-radius:0;background:none;border-left:2px solid var(--apricot);padding:4px 0 4px 12px}
+.hrs .box{padding-top:18px}
+@media (max-width:900px){.pair{gap:40px}}
