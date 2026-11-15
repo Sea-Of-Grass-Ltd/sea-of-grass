@@ -84,9 +84,11 @@ function drawAns(){const s=SPOTS[st.spot],flag=st.flags.size>0,o=nextOpen();
 /* ---- hand-off: pick the slot in the booking strip and fill in the intake ---- */
 $('[data-a-book]').addEventListener('click',()=>{const o=nextOpen(),s=SPOTS[st.spot],about=`${s.name}, ${LONG[st.long][0]}, ${WORSE[st.worse][0]}`;
   const vis=$('[data-visit]');vis.selectedIndex=0;$('[data-about]').value=about;
-  if(o){const strip=$$('.days button',box),grid=()=>$$('.slots button',box);const db=strip[o.k];if(db&&!db.disabled){db.click();const tb=grid().find(b=>b.textContent===fmt(o.t));if(tb)tb.click();}}
+  const bf=vis.closest('[data-steps]');if(bf&&bf.bwSteps){bf.bwSteps.done(0);bf.bwSteps.done(1);}
+  if(o){const strip=$$('.days button',box),grid=()=>$$('.slots button',box);const db=strip[o.k];if(db&&!db.disabled){db.click();const tb=grid().find(b=>b.textContent===fmt(o.t));if(tb){tb.click();if(bf&&bf.bwSteps)bf.bwSteps.done(2);}}}
   const r=$('[data-reason]');r.value={neck:'neck',head:'head',shoulder:'shoulder',mid:'mid',low:'low',hip:'hip'}[st.spot];
   $('[data-for]').value=st.long;$('[data-worse]').value=WORSE[st.worse][0].replace(/^worse /,'');
+  const inf=r.closest('[data-steps]');if(inf&&inf.bwSteps)[0,1,2].forEach(k=>inf.bwSteps.done(k));
   const pre=$('[data-pre]');pre.hidden=false;pre.textContent=`Started for you from “Where it hurts”: ${about}.`;
   $('#book').scrollIntoView({behavior:'smooth',block:'start'});if(window.bwToast)window.bwToast(o?`Picked ${WDL[o.wd]} ${fmt(o.t)} for you`:'Pick a time that suits you');});
 

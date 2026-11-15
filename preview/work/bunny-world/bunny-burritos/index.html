@@ -15,7 +15,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
 <link rel="icon" href="favicon.svg?v=1" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&family=Gabarito:wght@900&family=Inter:wght@400;600&display=swap">
-<link rel="stylesheet" href="../shop.css?v=10">
+<link rel="stylesheet" href="../shop.css?v=11">
 <link rel="stylesheet" href="style.css?v=15">
 </head>
 <body>
@@ -45,28 +45,23 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
 <aside class="cart " id="bb-cart" data-cart data-tax="0.0705" data-empty="Nothing yet. Add something from the menu." aria-label="Your order">
   <h3>Your order <span class="count">(<span data-count>0</span>)</span></h3>
   <ul></ul><div class="sum"></div>
-  <form class="form" data-demo="BB" data-ok="Order in. See you soon.">
-    <label>When<select data-sum="When"><option>As soon as it is ready (about 20 min)</option><option>In 45 minutes</option><option>In an hour</option><option>At 6:00 pm</option><option>At 7:00 pm</option></select></label>
+  <form class="form" data-demo="BB" data-ok="Order in. See you soon." data-steps><div data-q="When do you want it?"><label>When<select data-sum="When"><option>As soon as it is ready (about 20 min)</option><option>In 45 minutes</option><option>In an hour</option><option>At 6:00 pm</option><option>At 7:00 pm</option></select></label></div><div data-q="Who is it for?">
     <label>Name<input name="name" autocomplete="name" required data-sum="Name"></label>
     <label>Phone, for a text when it's ready<input name="tel" type="tel" autocomplete="tel" required></label>
     <button class="btn" type="submit" data-checkout disabled>Place order</button>
     <div class="done" role="status"></div>
-  </form>
+  </div></form>
 </aside></div></section>
 <section class="tables" id="book"><div class="wrap split"><div><p class="rule">Reservations</p><h2>Save a table</h2><p class="lead">Pick a party size, a night and a time that's still open. Taken times are crossed out.</p>
 <div class="poster-note"><b>Back room</b> seats 24. Taco-bar catering for up to 150, with warmers.</div><figure class="room"><picture><source type="image/webp" srcset="/preview/assets/work/bunny-world/burritos-back-room-640.webp 640w, /preview/assets/work/bunny-world/burritos-back-room-960.webp 960w, /preview/assets/work/bunny-world/burritos-back-room-1280.webp 1280w" sizes="(max-width: 860px) calc(100vw - 32px), 680px"><img src="/preview/assets/work/bunny-world/burritos-back-room-900.jpg" width="900" height="672" alt="The back room at dusk: a long wooden table laid for six under string lights, marigolds in the middle" loading="lazy" decoding="async"></picture></figure></div>
-<div class="panel"><form class="form" data-demo="BBR" data-ok="Table booked.">
-  <div class="row"><label>Party size<select data-sum="Party"><option>2 bunnies</option><option>3 bunnies</option><option>4 bunnies</option><option>5 bunnies</option><option>6 bunnies</option><option>7 or more: we will call</option></select></label><label>Seating<select data-sum="Seating"><option>Anywhere</option><option>Patio</option><option>Booth</option></select></label></div>
-  <div data-slots data-days="2,3,4,5,6" data-times="17:00,17:30,18:00,18:30,19:00,19:30,20:00" data-seed="bb"></div>
-  <input type="hidden" name="date" data-sum="Day"><input type="hidden" name="time" required data-sum="Time" data-msg="Pick a day and a time first.">
-  <div class="row"><label>Name<input autocomplete="name" required data-sum="Name"></label><label>Phone or email<input required autocomplete="email"></label></div>
-  <p class="err" role="alert"></p>
+<div class="panel"><form class="form" data-demo="BBR" data-ok="Table booked." data-steps><div data-q="How many bunnies?"><label>Party size<select data-sum="Party"><option>2 bunnies</option><option>3 bunnies</option><option>4 bunnies</option><option>5 bunnies</option><option>6 bunnies</option><option>7 or more: we will call</option></select></label></div><div data-q="Where would you like to sit?"><label>Seating<select data-sum="Seating"><option>Anywhere</option><option>Patio</option><option>Booth</option></select></label></div><div data-q="Pick a time" data-q-auto=".slots button" data-q-sum="input[name=date],input[name=time]"><div data-slots data-days="2,3,4,5,6" data-times="17:00,17:30,18:00,18:30,19:00,19:30,20:00" data-seed="bb"></div>
+  <input type="hidden" name="date" data-sum="Day"><input type="hidden" name="time" required data-sum="Time" data-msg="Pick a day and a time first."></div><div data-q="Who is the table for?"><div class="row"><label>Name<input autocomplete="name" required data-sum="Name"></label><label>Phone or email<input required autocomplete="email"></label></div><p class="err" role="alert"></p>
   <button class="btn" type="submit">Reserve</button>
   <div class="done" role="status"></div>
-</form></div></div></section>
+</div></form></div></div></section>
 <section class="visit wrap" id="visit"><div><p class="rule">Find us</p><h2>412 Carrot Ave</h2><p class="lead">Made-up address, real map of downtown Berthoud. <a href="tel:9705550142">(970) 555-0142</a></p><div class="hours" data-hours='{"0": null, "1": null, "2": ["11:00", "21:00"], "3": ["11:00", "21:00"], "4": ["11:00", "21:00"], "5": ["11:00", "22:00"], "6": ["10:00", "22:00"]}'></div></div><iframe class="map" loading="lazy" title="Map of downtown Berthoud" src="https://www.openstreetmap.org/export/embed.html?bbox=-105.0880%2C40.3045%2C-105.0745%2C40.3120&amp;layer=mapnik"></iframe></section>
 </main>
 <section class="want"><div><h2>Run a restaurant? Your site can do all of this.</h2><p>Built in your own look, hooked to the tools you already use, kept running. Fixed price, in writing.</p></div><div style="display:flex;flex-wrap:wrap;gap:10px"><a href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a free 20-minute look</a><a class="back" href="../">Back to Bunny World</a></div></section>
-<script src="../bw.js?v=8" defer></script>
+<script src="../bw.js?v=9" defer></script>
 </body>
 </html>

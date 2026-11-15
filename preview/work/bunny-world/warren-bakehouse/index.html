@@ -15,7 +15,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
 <link rel="icon" href="../brand/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Inclusive+Sans:wght@400;500&family=DM+Mono:wght@400;500&family=IBM+Plex+Mono:wght@500&family=Gabarito:wght@900&family=Inter:wght@400;600&display=swap">
-<link rel="stylesheet" href="../shop.css?v=10">
+<link rel="stylesheet" href="../shop.css?v=11">
 <link rel="stylesheet" href="style.css?v=19">
 </head>
 <body>
@@ -29,24 +29,16 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
 <div class="side-col"><figure class="case-photo"><picture><source type="image/webp" srcset="/preview/assets/work/bunny-world/warren-case-640.webp 640w, /preview/assets/work/bunny-world/warren-case-960.webp 960w, /preview/assets/work/bunny-world/warren-case-1280.webp 1280w" sizes="(max-width: 760px) calc(100vw - 32px), 460px"><img src="/preview/assets/work/bunny-world/warren-case-900.jpg" width="900" height="1125" alt="This morning's case: croissants, cardamom knots, carrot-cake muffins and scones" loading="lazy" decoding="async"></picture></figure><aside class="cart " id="wb-cart" data-cart data-tax="0" data-empty="Nothing held yet." aria-label="Your hold">
   <h3>Your hold <span class="count">(<span data-count>0</span>)</span></h3>
   <ul></ul><div class="sum"></div>
-  <form class="form" data-demo="WB" data-ok="Held. Pay when you pick up.">
-    <label>When<select data-sum="When"><option>At the 6:30 bell</option><option>Within 30 minutes</option><option>Before 10 am</option><option>Before noon</option></select></label>
+  <form class="form" data-demo="WB" data-ok="Held. Pay when you pick up." data-steps><div data-q="When will you pick up?"><label>When<select data-sum="When"><option>At the 6:30 bell</option><option>Within 30 minutes</option><option>Before 10 am</option><option>Before noon</option></select></label></div><div data-q="Who is it for?">
     <label>Name<input name="name" autocomplete="name" required data-sum="Name"></label>
     <label>Phone, for a text when it's ready<input name="tel" type="tel" autocomplete="tel" required></label>
     <button class="btn" type="submit" data-checkout disabled>Place order</button>
     <div class="done" role="status"></div>
-  </form>
+  </div></form>
 </aside></div></div></section>
 <section class="cake" id="cake"><div class="wrap split"><div class="paper"><h2>Order a cake</h2><p class="mono">Two days' notice &middot; price updates as you go</p>
-<form class="form" data-demo="WBC" data-ok="Cake ordered." data-calc>
-<div class="row"><label>Size<select data-sum="Size"><option data-price="38">6 inch, serves 8 ($38)</option><option data-price="52" selected>8 inch, serves 14 ($52)</option><option data-price="74">10 inch, serves 24 ($74)</option><option data-price="120">Half sheet, serves 40 ($120)</option></select></label>
-<label>Flavor<select data-sum="Flavor"><option>Sunday Best (carrot, of course)</option><option>The Mood (dark chocolate)</option><option>Sharp Tongue (lemon)</option><option>Plain Jane (vanilla bean, not plain)</option></select></label></div>
-<label class="check"><input type="checkbox" data-price="12" data-sum="Extra" value="Gluten-free"> Gluten-free (+$12)</label>
-<label class="check"><input type="checkbox" data-price="8" data-sum="Extra" value="Fresh flowers"> Fresh flowers on top (+$8)</label>
-<label>Writing on the cake<input maxlength="40" data-bind="msg" data-sum="Message" placeholder="Happy birthday, Bun"></label>
-<div class="row"><label>Pickup day<input type="date" id="cake-day" required data-sum="Pickup"></label><label>Name<input required autocomplete="name" data-sum="Name"></label></div>
-<p class="total">Total <b class="price" data-out="total" data-label="Total">$0</b></p>
-<button class="btn" type="submit">Order the cake</button><div class="done" role="status"></div></form></div>
+<form class="form" data-demo="WBC" data-ok="Cake ordered." data-calc data-steps><div data-q="How big?"><label>Size<select data-sum="Size"><option data-price="38">6 inch, serves 8 ($38)</option><option data-price="52" selected>8 inch, serves 14 ($52)</option><option data-price="74">10 inch, serves 24 ($74)</option><option data-price="120">Half sheet, serves 40 ($120)</option></select></label></div><div data-q="Which flavor?"><label>Flavor<select data-sum="Flavor"><option>Sunday Best (carrot, of course)</option><option>The Mood (dark chocolate)</option><option>Sharp Tongue (lemon)</option><option>Plain Jane (vanilla bean, not plain)</option></select></label></div><div data-q="Anything extra?"><label class="check"><input type="checkbox" data-price="12" data-sum="Extra" value="Gluten-free"> Gluten-free (+$12)</label><label class="check"><input type="checkbox" data-price="8" data-sum="Extra" value="Fresh flowers"> Fresh flowers on top (+$8)</label><label>Writing on the cake<input maxlength="40" data-bind="msg" data-sum="Message" placeholder="Happy birthday, Bun"></label></div><div data-q="Which day?"><label>Pickup day<input type="date" id="cake-day" required data-sum="Pickup"></label></div><div data-q="Your name"><label>Name<input required autocomplete="name" data-sum="Name"></label><p class="total">Total <b class="price" data-out="total" data-label="Total">$0</b></p>
+<button class="btn" type="submit">Order the cake</button><div class="done" role="status"></div></div></form></div>
 <div class="cake-pre"><picture><source type="image/webp" srcset="/preview/assets/work/bunny-world/warren-cake-640.webp 640w, /preview/assets/work/bunny-world/warren-cake-960.webp 960w, /preview/assets/work/bunny-world/warren-cake-1280.webp 1280w" sizes="(max-width: 760px) calc(100vw - 32px), 480px"><img src="/preview/assets/work/bunny-world/warren-cake-900.jpg" width="900" height="900" alt="A plain round cake with smooth cream frosting on a stoneware stand, ready for your message" loading="lazy" decoding="async"></picture><span data-show="msg" data-empty="Your words here"></span></div></div></section>
 <section class="coffee wrap" id="coffee"><h2>Coffee</h2><ul class="list dots"><li data-tags=""><b>Drip, house roast<span class="tags"></span></b><span class="price">$3.00</span><small>Free refills while you sit.</small></li><li data-tags=""><b>Latte<span class="tags"></span></b><span class="price">$5.00</span><small>Oat, almond or whole.</small></li><li data-tags=""><b>Carrot cake latte<span class="tags"></span></b><span class="price">$6.00</span><small>Seasonal. Tastes like the cake.</small></li><li data-tags=""><b>Pour-over, single origin<span class="tags"></span></b><span class="price">$5.50</span><small>Ask what came in this week.</small></li></ul></section>
 <section class="visit wrap" id="visit"><figure class="visit-photo"><picture><source type="image/webp" srcset="/preview/assets/work/bunny-world/warren-visit-640.webp 640w, /preview/assets/work/bunny-world/warren-visit-960.webp 960w, /preview/assets/work/bunny-world/warren-visit-1280.webp 1280w" sizes="(max-width: 1240px) calc(100vw - 32px), 1200px"><img src="/preview/assets/work/bunny-world/warren-visit-1000.jpg" width="1000" height="664" alt="A window bench with two coffees and a slice of carrot cake, sourdough loaves cooling on a rack behind" loading="lazy" decoding="async"></picture></figure><div class="card"><div class="hours" data-hours='{"0": ["6:30", "13:00"], "1": null, "2": ["6:30", "14:00"], "3": ["6:30", "14:00"], "4": ["6:30", "14:00"], "5": ["6:30", "14:00"], "6": ["6:30", "14:00"]}'></div></div>
@@ -55,6 +47,6 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
 </main>
 <script src="bell.js?v=2" defer></script>
 <section class="want"><div><h2>Run a bakery or café? Your site can do all of this.</h2><p>Built in your own look, hooked to the tools you already use, kept running. Fixed price, in writing.</p></div><div style="display:flex;flex-wrap:wrap;gap:10px"><a href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a free 20-minute look</a><a class="back" href="../">Back to Bunny World</a></div></section>
-<script src="../bw.js?v=8" defer></script>
+<script src="../bw.js?v=9" defer></script>
 </body>
 </html>
