@@ -224,10 +224,16 @@ html[data-look="warm"]{--cream:#FFE4C8;--ink:#0A3128;--soft:#3F5E54;--hair:rgba(
   --mark:#14433D;color-scheme:light}
 /* Warm, 2026-11-15 (Tristan: "two dull colours stacked"): peach field, green ink, tomato on the button and arrow, marigold on Main Street; the globe stays cut out of the bunny like every look */
 html[data-look="warm"] .lh-go{background:var(--carrot);color:var(--on-accent)}
-html[data-look="sunny"]{--cream:#FFE845;--ink:#000000;--soft:#2B2B2B;--hair:rgba(0,0,0,.2);--card:#FFFBE9;--carrot:#000000;--on-accent:#FFE845;
-  --stage:#000000;--on-stage:#FFE845;--stage-accent:#FFE845;--clover:#1D7A3E;--spark:#FFFFFF;--hf:Fraunces,Georgia,serif;--hk:.88;--hls:-.04em;--htt:none;
-  --hero-bg:#FFE845;
+html[data-look="sunny"]{--cream:#FBF6EA;--ink:#000000;--soft:#3A3A3A;--hair:rgba(0,0,0,.18);--card:#FFFFFF;--carrot:#FFE845;--on-accent:#000000;
+  --stage:#000000;--on-stage:#FBF6EA;--stage-accent:#FFE845;--clover:#1D7A3E;--spark:#FFE845;--hf:Fraunces,Georgia,serif;--hk:.88;--hls:-.04em;--htt:none;
+  --hero-bg:#FBF6EA;--sun:#FFE845;
   --mark:#000000;color-scheme:light}
+/* Sunny, calmer (Tristan, 2026-11-15: "one of the versions is still stark yellow"): warm off-white, black type and structure,
+   yellow only as accent: the main button, the callout arrow, a rule on the hero, the selected shop on Main Street */
+html[data-look="sunny"] .hero{box-shadow:inset 0 8px 0 var(--sun)}
+html[data-look="sunny"] .lh-go{background:var(--sun);color:#000;box-shadow:inset 0 0 0 2px #000}
+html[data-look="sunny"] .nav .cta{box-shadow:inset 0 0 0 2px #000}
+html[data-look="sunny"] .lh-hint svg{color:var(--sun);filter:drop-shadow(1.5px 1.5px 0 #000)}
 /* the light changing: a quick crossfade (View Transitions where supported; otherwise an instant swap) */
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.32s}
 
@@ -252,7 +258,6 @@ html[data-look="sunny"]{--cream:#FFE845;--ink:#000000;--soft:#2B2B2B;--hair:rgba
 .lh-hint{position:absolute;left:-12%;top:4%;display:flex;align-items:flex-start;gap:2px;margin:0;color:var(--ink);font:600 26px/1 Caveat,"Comic Sans MS",cursive;letter-spacing:0;text-transform:none;pointer-events:none;opacity:0;transform:translateY(6px) rotate(-4deg);transition:opacity .4s,transform .4s}
 .lh-hint span{white-space:nowrap}
 .lh-hint svg{width:70px;height:auto;margin:20px 0 0 2px;color:var(--spark)}
-html[data-look="sunny"] .lh-hint svg{color:var(--ink)}
 .lh-hint.on{opacity:1;transform:rotate(-4deg)}
 @media (prefers-reduced-motion:no-preference){
   .lh-mark.pop{animation:lhPop .55s cubic-bezier(.3,1.6,.5,1)}
