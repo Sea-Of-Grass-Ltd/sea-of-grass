@@ -58,9 +58,12 @@ for (const w of WIDTHS) {
       // 2 tap where it hurts
       await page.locator('.spot[data-spot="mid"]').click();
       assert.equal(await page.locator('.spot[data-spot="mid"]').getAttribute('aria-pressed'), 'true', 'step 2: spot shows chosen');
-      assert.equal(await page.locator('.chip[data-spot="mid"]').getAttribute('aria-pressed'), 'true', 'step 2: Mid-back chip shows chosen');
-      // 3 answer the other two questions
+      assert.match(await page.locator('[data-picked]').textContent(), /between the shoulder blades/i, 'step 2: the chosen place is named');
+      // 3 the other two questions come one at a time
+      assert.ok(await page.locator('[data-group="long"]').isVisible(), 'step 3: question 2 appears after the tap');
+      assert.ok(!(await page.locator('[data-group="worse"]').isVisible()), 'step 3: question 3 waits for question 2');
       await page.locator('[data-group="long"] .chip[data-v="months"]').click();
+      assert.ok(!(await page.locator('.ans').isVisible()), 'step 3: no answer card until the third answer');
       await page.locator('[data-group="worse"] .chip[data-v="mornings"]').click();
       const kicker = (await page.locator('[data-a-k]').textContent()).toLowerCase();
       assert.match(kicker, /mid-back.*months.*mornings/, 'step 3: answer card reflects all three answers');
@@ -74,7 +77,6 @@ for (const w of WIDTHS) {
       assert.match((await book.textContent()).toLowerCase(), /mid-back, months, worse in the mornings/, 'step 5: booking block shows the answers');
       // 6 book once
       await book.locator('.q-opt', { hasText: 'New patient exam' }).click();
-      await book.locator('.q-opt', { hasText: 'First available' }).click();
       const slot = book.locator('.slots button:not(:disabled)').first();
       await slot.waitFor({ state: 'visible' });
       await slot.click();
@@ -150,7 +152,7 @@ for (const w of WIDTHS) {
   test(`${w}px · every question title is a full sentence ending in "?"`, async () => {
     const { ctx, page } = await open(w);
     try {
-      const titles = await page.evaluate(() => [...document.querySelectorAll('.q .t, .q-h')].map(e => e.textContent.replace(/^\s*\d+\s*/, '').replace(/\s+/g, ' ').trim()));
+      const titles = await page.evaluate(() => [...document.querySelectorAll('[data-qn] .t, .q-h')].map(e => e.textContent.replace(/^\s*\d+\s*/, '').replace(/\s+/g, ' ').trim()));
       assert.ok(titles.length >= 3, 'found the question titles');
       const bad = titles.filter(t => !t.endsWith('?') || t.split(' ').length < 3);
       assert.deepEqual(bad, [], `titles that aren't full questions: ${JSON.stringify(bad)}`);
@@ -162,7 +164,7 @@ for (const w of WIDTHS) {
     try {
       const r = await page.evaluate(() => {
         const N = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6 };
-        const asked = document.querySelectorAll('.hook .q').length;
+        const asked = document.querySelectorAll('.hook [data-qn]').length;
         const claims = [];
         for (const e of document.querySelectorAll('main p, main h1, main h2, main li, main figcaption')) {
           const t = e.textContent.toLowerCase();
@@ -180,10 +182,9 @@ for (const w of WIDTHS) {
     const { ctx, page } = await open(w);
     try {
       // walk the journey a little so chosen and filled states are included
-      // answer all three (the result card, with its warning chips, shows only then)
       await page.locator('.spot[data-spot="low"]').click();
-      await page.locator('[data-group="long"] .chip[data-v="weeks"]').click();
-      await page.locator('[data-group="worse"] .chip[data-v="sitting"]').click();
+      await page.locator('[data-group="long"] .chip').first().click();
+      await page.locator('[data-group="worse"] .chip').first().click();
       await page.locator('[data-group="flags"] .chip').first().click();
       await page.locator('[data-group="flags"] .chip').first().click();
       const r = await page.evaluate((SHOP) => {
@@ -216,6 +217,8 @@ for (const w of WIDTHS) {
     const { ctx, page } = await open(w);
     try {
       await page.locator('.spot[data-spot="mid"]').click();
+      await page.locator('[data-group="long"] .chip').first().click();
+      await page.locator('[data-group="worse"] .chip').first().click();
       const r = await page.evaluate((SHOP) => {
         const probe = document.createElement('i'); probe.style.display = 'block'; document.body.appendChild(probe);
         const tok = v => { probe.style.boxShadow = ''; probe.style.boxShadow = `var(${v})`; return getComputedStyle(probe).boxShadow; };
@@ -277,19 +280,88 @@ for (const w of WIDTHS) {
     } finally { await ctx.close(); }
   });
 
-  // Tristan, intake step 5: "a second box is cut off at the right edge" (the date of birth had become a 14-day picker)
-  test(`${w}px · intake step 5: date of birth is a normal date field, name field and checkbox fit`, async () => {
+  // Critic A1, fixed in #188: date of birth is the styled date field (not next week's strip), and everything fits
+  test(`${w}px · intake: date of birth is a real birthday field, and everything fits`, async () => {
+    const { ctx, page } = await open(w);
+    try {
+      const f = page.locator('#intake form');
+      await f.scrollIntoViewIfNeeded();
+      await f.locator('.q-next').first().click();
+      await page.waitForFunction(() => { const i = document.querySelector('#intake input[autocomplete="name"]'); return i && !i.closest('[inert]'); });
+      const r = await page.evaluate(() => {
+        const f = document.querySelector('#intake form'), fr = f.getBoundingClientRect();
+        const dob = f.querySelector('input[autocomplete=bday]');
+        const c = f.querySelector('input[type=checkbox]'), cr = c.getBoundingClientRect();
+        const out = [...f.querySelectorAll('input, select, label, button')].filter(e => e.getBoundingClientRect().width && !e.closest('[inert]')).filter(e => e.getBoundingClientRect().right > fr.right + 1).map(e => e.tagName + ' ' + (e.textContent || e.name || '').trim().slice(0, 20));
+        return { strip: !!f.querySelector('.q-days, .days'), type: dob && dob.type, label: dob && !dob.closest('label.sr') && /date of birth/i.test(dob.closest('label').textContent),
+          cb: { w: cr.width, h: cr.height, app: getComputedStyle(c).appearance }, out };
+      });
+      assert.equal(r.strip, false, 'no day strip in the intake form');
+      assert.equal(r.type, 'date', 'date of birth is a date field with birthday autofill');
+      assert.ok(r.label, 'labelled "Date of birth", visibly');
+      assert.equal(r.cb.app, 'none', 'the policy checkbox is styled, not the browser default');
+      assert.ok(r.cb.w >= 24 && r.cb.h >= 24, `the policy checkbox is at least 24px (got ${r.cb.w}×${r.cb.h})`);
+      assert.deepEqual(r.out, [], 'nothing pokes past the right edge of the form');
+    } finally { await ctx.close(); }
+  });
+
+  // Critic A8 + G: arrive to an empty question, one idea on the first screen, fewer steps, nothing asked twice
+  test(`${w}px · arrives empty: nothing chosen, no answer card, nothing carried`, async () => {
+    const { ctx, page } = await open(w);
+    try {
+      const r = await page.evaluate(() => ({
+        pressed: [...document.querySelectorAll('.hook [aria-pressed="true"]')].map(e => e.getAttribute('aria-label') || e.textContent.trim()),
+        ans: (() => { const a = document.querySelector('.ans'); return !!a && a.getBoundingClientRect().height > 0; })(),
+        q2: (() => { const q = document.querySelector('[data-group="long"]'); return !!q && q.getBoundingClientRect().height > 0; })(),
+        from: (() => { const f = document.querySelector('[data-from]'); return f && !f.hidden ? f.textContent : ''; })(),
+        about: (document.querySelector('[data-about]') || {}).value || '',
+        talk: /your answers are already|already started|already half done/i.test(document.body.innerText),
+      }));
+      assert.deepEqual(r.pressed, [], 'nothing chosen on arrival');
+      assert.equal(r.ans, false, 'no answer card on arrival');
+      assert.equal(r.q2, false, 'question 2 waits for a tap');
+      assert.equal(r.from, '', 'booking shows no answers on arrival');
+      assert.equal(r.about, '', 'no answers carried on arrival');
+      assert.equal(r.talk, false, 'no copy claiming answers are already filled in');
+    } finally { await ctx.close(); }
+  });
+
+  test(`${w}px · first screen: the headline and the photo, nothing to read or fill in`, async () => {
     const { ctx, page } = await open(w);
     try {
       const r = await page.evaluate(() => {
-        const f = document.querySelector('#intake form'), dob = f.querySelector('input[type=date]');
-        const step = dob.closest('.q-step'), fr = f.getBoundingClientRect();
-        return { strip: !!step.querySelector('.days'), dobType: dob.type, srLabel: !!dob.closest('label.sr'), cb: (() => { const c = f.querySelector('input[type=checkbox]'), r = c.getBoundingClientRect(); return { w: r.width, h: r.height, app: getComputedStyle(c).appearance }; })() };
+        const H = innerHeight, inView = e => { const b = e.getBoundingClientRect(); return b.width > 1 && b.height > 1 && b.top < H && b.bottom > 0 && !e.closest('[hidden]'); };
+        const main = document.querySelector('main'), h1 = main.querySelector('h1');
+        return { h1: h1 ? parseFloat(getComputedStyle(h1).fontSize) : 0, h1Top: h1 ? h1.getBoundingClientRect().top : 9999, stage: inView(document.querySelector('.stage')),
+          chips: [...main.querySelectorAll('.chip, .q-opt')].filter(inView).length, fields: [...main.querySelectorAll('input:not([type=hidden]), select, textarea')].filter(inView).length,
+          paras: [...main.querySelectorAll('p')].filter(p => inView(p) && p.textContent.trim().split(/\s+/).length > 12).map(p => p.textContent.trim().slice(0, 40)) };
       });
-      assert.equal(r.strip, false, 'no day strip in the date-of-birth step');
-      assert.equal(r.srLabel, false, 'the date of birth label stays visible');
-      assert.equal(r.cb.app, 'none', 'the policy checkbox is styled, not the browser default');
-      assert.ok(r.cb.w >= 24 && r.cb.h >= 24, `the policy checkbox is at least 24px (got ${r.cb.w}×${r.cb.h})`);
+      assert.ok(r.h1 >= (w < 900 ? 44 : 72), `headline is huge (${r.h1}px)`);
+      assert.ok(r.h1Top < 300, 'headline near the top');
+      assert.ok(r.stage, 'the back photo is on the first screen');
+      assert.equal(r.chips, 0, 'no chips on the first screen');
+      assert.equal(r.fields, 0, 'no form fields on the first screen');
+      assert.deepEqual(r.paras, [], 'no paragraphs of instructions on the first screen');
+    } finally { await ctx.close(); }
+  });
+
+  test(`${w}px · fewer steps, nothing asked twice, one block per job`, async () => {
+    const { ctx, page } = await open(w);
+    try {
+      const r = await page.evaluate(() => {
+        const steps = sel => [...document.querySelectorAll(sel + ' [data-steps] .q-h')].map(h => h.textContent.replace(/^\d+/, '').trim());
+        return { book: steps('#book'), intake: steps('#intake'), live: /live insurance/i.test(document.body.innerText), member: !!document.querySelector('[data-member]'),
+          both: !!document.querySelector('#visits') && !!document.querySelector('.first .steps') };
+      });
+      assert.ok(r.book.length <= 3, `booking takes three steps or fewer: ${JSON.stringify(r.book)}`);
+      assert.ok(r.intake.length <= 2, `intake takes two steps or fewer: ${JSON.stringify(r.intake)}`);
+      assert.deepEqual(r.intake.filter(t => /where|how long|worse|brings you/i.test(t)), [], 'intake does not ask the hook questions again');
+      assert.equal(r.live, false, 'no "Live insurance check"');
+      assert.equal(r.member, false, 'no member-ID checker');
+      assert.equal(r.both, false, 'one of "Visits and prices" or the first-visit steps, not both');
+      // from the earlier simplify draft (claude/simplify-hopwell): reviews talk about the visit, not the website (critic C3)
+      const reviews = await page.evaluate(() => [...document.querySelectorAll('.reviews blockquote p')].map(p => p.textContent).join(' '));
+      assert.doesNotMatch(reviews, /tapped|the form was|booked the .* slot|website/i, 'reviews describe the visit');
     } finally { await ctx.close(); }
   });
 
