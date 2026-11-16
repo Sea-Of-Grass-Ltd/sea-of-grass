@@ -30,6 +30,7 @@ export async function startSite() {
       const ctx = await browser.newContext({ viewport: { width: w, height: mobile ? 844 : 900 }, isMobile: mobile, hasTouch: mobile, reducedMotion: opts.reducedMotion || 'no-preference', colorScheme: opts.colorScheme || 'light', deviceScaleFactor: opts.scale || (mobile ? 3 : 1), ...(opts.timezoneId ? { timezoneId: opts.timezoneId } : {}) });
       // third-party (fonts, analytics, maps, booking embeds) is not part of the page under test
       await ctx.route(u => !u.href.startsWith(base), r => r.abort());
+      if (opts.initScript) await ctx.addInitScript(opts.initScript); // e.g. a pretend clock
       const page = await ctx.newPage();
       // opts.time pins the page's clock (Date only; timers still run), e.g. '2026-11-15T21:45:00-07:00'
       if (opts.time) await page.clock.setFixedTime(new Date(opts.time));
