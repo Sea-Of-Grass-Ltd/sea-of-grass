@@ -21,13 +21,12 @@ h1,h2,h3{letter-spacing:-.02em}
 .call{display:none;min-height:44px;align-items:center;padding:0 16px;border-radius:999px;border:1px solid var(--ink);text-decoration:none;font-weight:600;font-size:15px}
 .mast .btn{min-height:46px;padding:10px 18px;font-size:15px}
 
-/* hook head */
-.head{display:flex;justify-content:space-between;align-items:end;gap:32px;padding-block:20px 28px}
-h1{font-size:clamp(44px,5.6vw,80px);line-height:1}h1 i{color:#3E5560}
-.head .sub{font-size:18px;color:var(--muted);max-width:36ch;margin:0}
+/* the one idea: "Point to where it hurts." beside the photo, nothing else until you tap */
+h1{font-size:clamp(56px,6.6vw,104px);line-height:.98}h1 i{color:#3E5560}
 
 /* hook: photo with tap spots beside the three questions and the answer */
-.hook{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:32px;align-items:start}
+.hook{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);grid-template-areas:"fig h" "fig panel";grid-template-rows:auto 1fr;column-gap:56px;row-gap:28px;align-items:start;padding-block:24px 56px}
+.hook-h{grid-area:h;padding-top:24px}.fig{grid-area:fig}.panel{grid-area:panel}
 .fig{margin:0}
 .ph{position:relative;overflow:hidden;border-radius:var(--r);background:var(--stone)}
 .ph picture,.ph img{display:block;width:100%;height:100%;object-fit:cover}
@@ -41,8 +40,10 @@ h1{font-size:clamp(44px,5.6vw,80px);line-height:1}h1 i{color:#3E5560}
 .spot:hover{background:var(--sage)}
 .spot[aria-pressed="true"]{width:20px;height:20px;background:var(--ink);border:3px solid var(--on-accent)}
 .spot:focus-visible{outline:2px solid var(--on-accent);outline-offset:3px}
-figcaption{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:14px;padding:10px 2px 0}
-figcaption .mono{margin:0;letter-spacing:.04em}
+figcaption{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:4px 16px;padding:14px 2px 0}
+figcaption .t{display:flex;align-items:center;font-weight:500;margin:0;font-size:17px}
+figcaption .n{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--sage2);font:500 12px/1 var(--mf);margin-right:10px}
+.picked{margin:0;color:var(--muted);font-size:15px}
 
 .panel{display:grid;gap:6px;min-width:0}
 .q{border-top:1px solid var(--line);padding:16px 0 6px;display:grid;gap:12px}
@@ -76,11 +77,6 @@ figcaption .mono{margin:0;letter-spacing:.04em}
 .box .kick{margin:0}
 .from{margin:0;border-left:2px solid var(--sage);padding:2px 0 2px 12px;font-size:15px;color:var(--muted)}
 .from b{color:var(--ink);font-weight:600}
-.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.ok{display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0;min-height:52px;font-size:15px}
-.ok b{font:500 18px/1 var(--mf);white-space:nowrap}
-.ok.no{color:#8A4A2E}
-.ok.wait span{color:var(--muted)}
 .box .note{margin:0;color:var(--muted);font-size:14px}
 .plans{display:grid;gap:10px;padding-top:6px}
 .plans h3{font-size:20px}
@@ -93,28 +89,22 @@ figcaption .mono{margin:0;letter-spacing:.04em}
 .done b{font-size:24px}
 .q-n{background:var(--sage);color:var(--ink)}
 
-/* visits: the one price list */
-.visits{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;border-top:1px solid var(--line);padding-block:32px 56px}
-.v{display:grid;gap:8px;align-content:start}
-.v h3{font-size:24px}.v p{margin:0;font-size:15px;color:var(--muted)}
-.v span{font:500 13px/1 var(--mf);border:1px solid var(--line);border-radius:999px;padding:7px 11px;justify-self:start}
-.visits .note{grid-column:1/-1;margin:0;color:var(--muted);font-size:14px}
+/* visits: the one price list, beside booking */
+.vlist{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.vlist li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 16px;padding:14px 0;border-bottom:1px solid var(--line)}
+.vlist b{font:400 22px/1.15 var(--hf);letter-spacing:-.01em}
+.vlist span{font:500 13px/1 var(--mf);border:1px solid var(--line);border-radius:999px;padding:7px 11px;align-self:start;white-space:nowrap}
+.vlist p{grid-column:1/-1;margin:0;font-size:15px;color:var(--muted)}
 
-/* first visit */
-.first{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;padding-block:24px 56px}
-.ph.wide{grid-column:1/-1;aspect-ratio:21/8}
-.first-h{grid-column:1/-1}.first-h h2,.ih h2{font-size:clamp(34px,4vw,52px)}
-.steps{grid-column:1/-1;list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;counter-reset:s}
-.steps li{display:grid;gap:10px;align-content:start;counter-increment:s}
-.steps h3{font-size:24px}.steps h3::before{content:counter(s);font:500 14px/1 var(--mf);color:var(--muted);vertical-align:middle;margin-right:10px}
-.steps p{margin:0;color:var(--muted);font-size:15px}
-.ph.sq{aspect-ratio:1/1}
-.faq{grid-column:1/-1;max-width:760px;border-top:1px solid var(--line)}
+/* the room and the questions people ask */
+.room{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(20px,4vw,48px);align-items:center;padding-block:8px 56px}
+.ph.wide{aspect-ratio:16/10}
+.faq{border-top:1px solid var(--line)}
 summary{font-family:var(--hf);font-size:20px}
 
 /* intake */
 .intake{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.4fr);gap:clamp(16px,4vw,48px);padding-block:24px 56px;align-items:start}
-.ih h2{margin-bottom:14px}.ih p{color:var(--muted);max-width:44ch}
+.ih h2{font-size:clamp(34px,4vw,52px);margin-bottom:14px}.ih p{color:var(--muted);max-width:44ch}
 .pre{margin:0;border-left:2px solid var(--sage);padding:4px 0 4px 12px;font-size:15px}
 
 /* reviews + hours */
@@ -134,22 +124,19 @@ cite{font:500 12px/1 var(--mf);letter-spacing:.06em;text-transform:uppercase;fon
 }
 @media (max-width:900px){
  .mast nav{display:none}.call{display:inline-flex}
- .head{flex-direction:column;align-items:start;gap:12px;padding-block:8px 16px}
- h1{font-size:40px}.head .sub{font-size:15px}
+ h1{font-size:clamp(46px,13vw,60px)}
+ .hook{grid-template-columns:minmax(0,1fr);grid-template-areas:"h" "fig" "panel";grid-template-rows:auto;row-gap:16px;padding-block:8px 40px}
+ .hook-h{padding-top:0}
+ .room{grid-template-columns:minmax(0,1fr)}
  .hook,.pair,.intake,.hrs,.reviews{grid-template-columns:minmax(0,1fr)}
  .hook{gap:20px}
  .stage{aspect-ratio:auto;height:min(88vw,44svh)}
  .shot{width:min(100cqw,80cqh);height:min(100cqh,125cqw)}
- .visits{grid-template-columns:repeat(2,minmax(0,1fr))}
- .first,.steps{grid-template-columns:minmax(0,1fr)}.ph.wide{aspect-ratio:16/9}
  .pair{gap:40px;padding-top:32px}
 }
 @media (max-width:520px){
  .mast .btn{padding:10px 14px}.logo{font-size:28px}
- .fields{grid-template-columns:minmax(0,1fr)}
  .ans .rows b{font-size:15px}
- .visits{grid-template-columns:minmax(0,1fr)}
- .ph.sq{aspect-ratio:4/3}
 }
 
 /* the shared open/closed dot, flat like the rest of the page */
@@ -180,3 +167,10 @@ cite{font:500 12px/1 var(--mf);letter-spacing:.06em;text-transform:uppercase;fon
 .logo{min-height:44px;display:inline-flex;align-items:center}
 .chips.sm .chip{min-height:40px}
 .stage .blur{display:none}
+
+/* ---- 2026-11-15 simplify: date of birth as month, day, year ---- */
+.dob{border:0;margin:0;padding:0;min-width:0;display:grid;gap:6px}
+.dob legend{padding:0;margin-bottom:6px;font-weight:500;font-size:15px}
+.dob-row{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,1.2fr);gap:8px}
+.dob-row label{min-width:0}.dob-row select{width:100%;min-width:0}
+.ans .next a{color:var(--on-accent);text-underline-offset:3px;white-space:nowrap}
