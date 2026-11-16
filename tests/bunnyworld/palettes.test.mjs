@@ -2,7 +2,7 @@
 // Run:  cd tests && npm install && node --test bunnyworld/palettes.test.mjs
 //
 // 1. No two shops share a hero ground or a main accent: CIE76 ΔE in Lab must be 15 or more.
-// 2. No shop uses the banned schemes: dark brown + cream + gold (orange-gold counts), or near-black + yellow.
+// 2. No shop uses the banned schemes: dark brown + cream + gold (orange-gold counts), or near-black + yellow (Bunny Auto excepted, by Tristan's choice).
 // 3. On the five shops this branch rebuilt, every text/background pair passes WCAG AA, at 390 and 1440.
 //
 // The other four shops (Warren, Hopwell, Hop Along, Burrow & Bough) get their schemes on another branch.
@@ -16,6 +16,9 @@ const MINE = ['bunny-burritos', 'bunny-auto', 'hare-today', 'cottontail-farm', '
 const OTHERS = ['warren-bakehouse', 'hopwell-chiro', 'hop-along', 'burrow-and-bough'];
 const ALL = [...MINE, ...OTHERS];
 const MIN_DE = 15;
+// Tristan, 2026-11-16: Bunny Auto keeps black + yellow and Hare Today keeps black and white + red (the barbershop he's pitching uses them).
+// Auto is the one shop allowed black + yellow; Hop Along moved to green, so it no longer repeats.
+const BLACK_YELLOW_OK = ['bunny-auto'];
 // the other branch's target grounds (NOTES.md); a shop counts as converted once its hero ground is within ΔE 6 of its target
 const TARGET = { 'warren-bakehouse': [0xff, 0x9e, 0xc8], 'hopwell-chiro': [0xd7, 0xd7, 0xcb], 'hop-along': [0xac, 0xd0, 0x84], 'burrow-and-bough': [0xdb, 0xcb, 0xfd] };
 
@@ -78,9 +81,12 @@ for (const [a, b] of pairs) {
     const A = colours[a], B = colours[b];
     const waiting = [a, b].filter(x => TARGET[x] && dE(colours[x].hero, TARGET[x]) > 6);
     if (mine && waiting.length) { t.todo(`${waiting.join(', ')} not on its new scheme yet (other branch)`); }
+    // Two near-black heroes (Auto's black, Hare Today's black) are told apart by their accents (yellow vs red), which must still be ΔE 15 apart.
+    const bothBlack = nearBlack(A.hero) && nearBlack(B.hero);
     const g = dE(A.hero, B.hero);
-    assert.ok(g >= MIN_DE, `hero grounds ${hex(A.hero)} and ${hex(B.hero)} are only ΔE ${g.toFixed(1)} apart`);
+    if (!bothBlack) assert.ok(g >= MIN_DE, `hero grounds ${hex(A.hero)} and ${hex(B.hero)} are only ΔE ${g.toFixed(1)} apart`);
     const [x, y] = [accentOf(A), accentOf(B)];
+    if (bothBlack) assert.ok(x && y && !neutral(x) && !neutral(y), `two near-black heroes need colourful accents to tell them apart: ${hex(x)} and ${hex(y)}`);
     if (x && y) { const k = dE(x, y); assert.ok(k >= MIN_DE, `main accents ${hex(x)} (${a}) and ${hex(y)} (${b}) are only ΔE ${k.toFixed(1)} apart`); }
   });
 }
@@ -89,7 +95,7 @@ for (const s of ALL) {
     const c = colours[s], set = [c.hero, c.page, c.type, c.accent].filter(Boolean);
     const show = set.map(hex).join(' ');
     assert.ok(!(set.some(darkBrown) && set.some(cream) && set.some(gold)), `brown + cream + gold: ${show}`);
-    assert.ok(!(nearBlack(c.hero) && [c.type, c.accent].filter(Boolean).some(yellow)), `black + yellow: ${show}`);
+    if (!BLACK_YELLOW_OK.includes(s)) assert.ok(!(nearBlack(c.hero) && [c.type, c.accent].filter(Boolean).some(yellow)), `black + yellow: ${show}`);
   });
 }
 
