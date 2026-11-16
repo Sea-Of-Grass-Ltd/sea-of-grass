@@ -1,9 +1,10 @@
 /* Cottontail Farm: a seasonal farm and festival. The page re-colours itself by season (sun yellow, pumpkin orange,
-   resting olive). Refero references:
-   Volkshotel agenda (a bold poster-like hero over clear programme / activity tabs: the season tabs),
-   Airbnb Experiences "Select a time" (a date list with spots left and sold-out slots: the timed-entry picker),
-   Tripadvisor's map (numbered pins that open a small card: the farm map),
-   Tripadvisor tour checkout (a calm summary and one clear next step before payment). */
+   resting olive) and opens on what's on: one headline, one line, one button, one photo.
+   Refero references (2026-11-16 pass, notes in REFERENCES.md):
+   PlayStation The Concert (a one-line claim over one big photo, a single "Get tickets"; dates and details below),
+   SeatGeek event page (the event name, when and where, then one ticket action; off sale is said plainly with one sign-up),
+   Volkshotel agenda event (a poster-like hero for one event, details further down),
+   Cake Equity event page (a flat colour field holding the title, the date line and one button). */
 :root{--bg:#f6f1e3;--ink:#1f2509;--muted:#5d6145;--line:rgba(31,37,9,.18);--accent:#1f2509;--on-accent:#f6f1e3;--field:#fffdf6;--r:10px;--btn-r:999px;--ctl-r:10px;
   --hf:Gabarito,"Hanken Grotesk",sans-serif;--hw:900;--bf:"Hanken Grotesk",sans-serif;--mf:"IBM Plex Mono",monospace;
   --s1:#c8d68a;--s2:#e9efc8;--sbg:#1f2509;--sink:#f6f1e3}
@@ -19,44 +20,17 @@ body[data-season="fall"] .kick.dark{color:#b4470e}
 .btn:hover{filter:brightness(1.06)}
 .btn:disabled{background:#d7d4c6;color:#77735f;filter:none;cursor:not-allowed}
 .form .btn,.tix .btn{background:var(--ink);color:var(--bg)}
-/* weather / closure banner */
-.wx{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px 16px;padding:9px 16px;background:var(--s2);color:#1f2509;font-size:14px;text-align:center;transition:background .3s}
-.wx[data-state="shut"]{background:#b4230f;color:#fff}
-.wx-demo{background:none;border:1px solid currentColor;border-radius:999px;padding:4px 10px;font:500 12px/1 var(--mf);color:inherit;cursor:pointer;opacity:.8}
 .mast{display:flex;align-items:center;gap:20px;padding-block:14px;background:var(--sbg);color:var(--sink);transition:background .4s}
 .logo{display:flex;align-items:baseline;gap:6px;font:900 26px/1 var(--hf);text-decoration:none;letter-spacing:-.02em}.logo span{font:400 15px/1 var(--mf);letter-spacing:.1em;text-transform:uppercase;color:var(--s1)}
 .mast nav{display:flex;gap:22px;margin-left:auto;font:500 15px/1 var(--bf)}.mast nav a{text-decoration:none;opacity:.85}.mast nav a:hover{opacity:1}
-.mast .btn{min-height:42px;padding:10px 18px}
 /* the season hook */
 .season{background:var(--sbg);color:var(--sink);padding-block:clamp(22px,3vw,36px) clamp(36px,5vw,64px);transition:background .4s}
-.seas-tabs{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:clamp(24px,4vw,48px)}
-.seas-tabs [role=tab]{min-height:44px;padding:10px 16px;border-radius:999px;border:1px solid rgba(255,255,255,.3);background:transparent;color:inherit;font:600 15px/1 var(--bf);cursor:pointer}
-.seas-tabs [role=tab][aria-selected="true"]{background:var(--s1);border-color:var(--s1);color:var(--sbg)}
-.seas-tabs [role=tab]:focus-visible{outline:3px solid var(--s2);outline-offset:2px}
-.now-note{margin-left:auto;font:500 12px/1.3 var(--mf);letter-spacing:.06em;text-transform:uppercase;opacity:.7}
 .seas-main{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(24px,5vw,72px);align-items:center}
 .season h1{font-size:clamp(60px,8.6vw,138px);margin:0;color:var(--sink)}
 .season .lede{max-width:44ch;font-size:19px;line-height:1.5;opacity:.85;margin:20px 0 26px}
 .acts{display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px}
-.count{font:500 14px/1.2 var(--mf);text-transform:uppercase;letter-spacing:.06em;opacity:.85}.count b{font:900 34px/1 var(--hf);color:var(--s1);margin-right:6px;letter-spacing:-.02em;font-variant-numeric:lining-nums tabular-nums}
-.open-now{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:18px 20px}
-.on-top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 12px;margin-bottom:6px}
-.open-now h2{font-size:26px;letter-spacing:-.01em;margin:0}.on-date{font:500 12px/1 var(--mf);letter-spacing:.06em;text-transform:uppercase;opacity:.7}
-.on-list{list-style:none;margin:0;padding:0}
-.on-list li{display:grid;grid-template-columns:12px 1fr auto;align-items:center;gap:12px;padding:11px 0;border-top:1px solid rgba(255,255,255,.12);font-size:16px}
-.on-list b{font-weight:600}.on-list li>span:last-child{font:500 13px/1.2 var(--mf);opacity:.85;text-align:right}
-.dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.3)}
-.st-open .dot{background:#7bd36b;box-shadow:0 0 0 4px rgba(123,211,107,.18)}.st-soon .dot{background:var(--s1)}.st-shut .dot{background:#ff5b3d}
-.st-no{opacity:.55}
-.year{margin-top:clamp(28px,4vw,48px)}
-.yr-track{position:relative;height:12px;border-radius:999px;background:rgba(255,255,255,.12)}
-.band{position:absolute;top:0;bottom:0;border-radius:999px;opacity:.55}.band.summer{background:#f2b705}.band.fall{background:#ec6a1e}
-body[data-season="summer"] .band.summer,body[data-season="fall"] .band.fall{opacity:1}
-.today{position:absolute;top:-6px;width:3px;height:24px;margin-left:-1px;background:var(--sink);border-radius:2px}
-.today::after{content:"Today";position:absolute;top:-20px;left:50%;transform:translateX(-50%);font:500 11px/1 var(--mf);text-transform:uppercase;letter-spacing:.08em;white-space:nowrap}
-.yr-m{display:grid;grid-template-columns:repeat(12,1fr);margin-top:8px;font:500 11px/1 var(--mf);text-transform:uppercase;opacity:.6}
 /* tickets */
-.tickets,.groups,.news,.visit{padding-block:clamp(48px,7vw,96px);border-bottom:1px solid var(--line)}
+.tickets,.groups,.visit{padding-block:clamp(48px,7vw,96px);border-bottom:1px solid var(--line)}
 .tix{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:clamp(20px,4vw,48px);margin-top:28px}
 .step-l{font:500 12px/1 var(--mf);letter-spacing:.1em;text-transform:uppercase;margin:0 0 10px;color:var(--muted)}
 .tdays{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:22px}
@@ -113,26 +87,24 @@ body[data-season="summer"] .m-field.sun{fill:#f2b705}body[data-season="fall"] .m
 .a-item[aria-pressed="true"] b{color:var(--s1)}
 /* groups, jobs, news, visit */
 .grp{max-width:760px;margin-top:24px}
-.jobs{background:#1f2509;color:#f6f1e3;padding-block:clamp(48px,7vw,96px)}
+
 .jobs-in{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:clamp(24px,5vw,72px);align-items:start}
-.jobs h2{color:#f6f1e3}.jobs .kick{color:#c8d68a}
-.roles{list-style:none;margin:24px 0 0;padding:0}
-.roles li{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:12px 0;border-top:1px solid rgba(255,255,255,.14)}
-.roles b{font:900 22px/1 var(--hf)}.roles .pay{font:500 14px/1 var(--mf);color:#c8d68a}.roles small{grid-column:1/-1;opacity:.7;font-size:14px}
-.jobs-form{background:#f6f1e3;color:#1f2509;border-radius:18px;padding:22px}.jobs-form h3{font-size:28px;margin:0 0 10px}
+.roles{list-style:none;margin:0;padding:0}
+.roles li{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:12px 0;border-top:1px solid var(--line)}
+.roles b{font:900 22px/1 var(--hf)}.roles .pay{font:500 14px/1 var(--mf);color:var(--muted)}.roles small{grid-column:1/-1;opacity:.7;font-size:14px}
+.jobs-form{background:#fffdf6;border:1px solid var(--line);border-radius:18px;padding:22px}
 .jobs-form fieldset{border:0;padding:0;margin:4px 0}.jobs-form legend{font-size:15px;margin-bottom:4px}
-.news{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.8fr);gap:24px;align-items:end}
 .vhours{list-style:none;margin:20px 0 0;padding:0;max-width:760px}
 .vhours li{display:grid;grid-template-columns:200px 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line)}.vhours b{font-weight:700}
 @media (max-width:980px){.tix{grid-template-columns:1fr}}
-@media (max-width:860px){.seas-main,.map-grid,.jobs-in,.news{grid-template-columns:1fr}.mast nav{display:none}.now-note{margin-left:0;width:100%}}
-@media (max-width:560px){.season h1{font-size:clamp(52px,15vw,80px)}.seas-tabs [role=tab]{padding:10px 12px;font-size:14px}.vhours li{grid-template-columns:1fr}.yr-m span:nth-child(even){visibility:hidden}.pin{width:32px;height:32px;font-size:13px}.m-card{width:78%}}
+@media (max-width:860px){.seas-main,.map-grid,.jobs-in{grid-template-columns:1fr}.mast nav{display:none}}
+@media (max-width:560px){.season h1{font-size:clamp(52px,15vw,80px)}.vhours li{grid-template-columns:1fr}.pin{width:32px;height:32px;font-size:13px}.m-card{width:78%}}
 @media (prefers-reduced-motion:reduce){.season,.mast,.farmmap,.btn,.pin{transition:none}}
 [data-tix][hidden],.tix-off[hidden],.m-card[hidden]{display:none}
 @media (max-width:980px){.tix{grid-template-columns:minmax(0,1fr)}}.tix-l,.tix-r{min-width:0}@media (max-width:560px){.m-card{left:50%!important;width:86%}}
 
 /* photos: the season strip follows the season tab; the maze from above; the hayride */
-.seas-photo{position:relative;aspect-ratio:21/8;border-radius:18px;overflow:hidden;margin:18px 0 28px;background:rgba(0,0,0,.08)}
+.seas-photo{position:relative;aspect-ratio:4/3;border-radius:18px;overflow:hidden;background:rgba(0,0,0,.08)}
 .seas-photo .sp{position:absolute;inset:0;opacity:0;transition:opacity .5s}
 .seas-photo img,.maze-pic img,.hay-pic img{display:block;width:100%;height:100%;object-fit:cover}
 body[data-season="summer"] .sp.summer,body[data-season="fall"] .sp.fall,body[data-season="off"] .sp.off{opacity:1}
@@ -141,7 +113,7 @@ body[data-season="summer"] .sp.summer,body[data-season="fall"] .sp.fall,body[dat
 .grp-wrap{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr);gap:clamp(24px,4vw,56px);align-items:start}
 .grp-wrap .grp{max-width:none}
 .hay-pic{margin:24px 0 0}.hay-pic picture{display:block;aspect-ratio:3/2;border-radius:18px;overflow:hidden}
-@media (max-width:860px){.seas-photo{aspect-ratio:16/9}.grp-wrap{grid-template-columns:minmax(0,1fr)}.hay-pic{margin:0}.maze-pic picture{aspect-ratio:4/3}}
+@media (max-width:860px){.seas-photo{aspect-ratio:16/9;order:-1}.grp-wrap{grid-template-columns:minmax(0,1fr)}.hay-pic{margin:0}.maze-pic picture{aspect-ratio:4/3}}
 @media (prefers-reduced-motion:reduce){.seas-photo .sp{transition:none}}
 
 /* form skin (2026-11-15): numbers and picks wear the season colour (Volkshotel agenda). Shared step engine lives in shop.css; this only changes the look. */
@@ -158,6 +130,27 @@ body[data-season="summer"] .sp.summer,body[data-season="fall"] .sp.fall,body[dat
 .pin[aria-pressed="true"]{box-shadow:0 0 0 4px rgba(255,255,255,.55)}
 .m-card{box-shadow:none;border:2px solid #1f2509}
 .pin::after{content:"";position:absolute;left:50%;top:50%;width:44px;height:44px;transform:translate(-50%,-50%);border-radius:50%}
-.wx-demo{min-height:40px}
 .mast .logo{min-height:44px;display:inline-flex;align-items:center}
 .pin{box-shadow:none}
+
+/* ---- one idea up top (2026-11-16): the season that's on, in huge type, one button; the other seasons are one line near the bottom ---- */
+.season{padding-block:clamp(28px,5vw,72px)}
+.seas-main{gap:clamp(20px,4vw,56px)}
+.season .lede{margin:18px 0 26px}
+@media (max-width:860px){.seas-main{gap:20px}.season{padding-top:8px}}
+.seasons{padding-block:28px;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px}
+.seasons p{margin:0;flex:1 1 320px;color:var(--muted);font-size:16px;line-height:1.45}
+.seas-btns{display:flex;flex-wrap:wrap;gap:8px}
+.seas-btn{min-height:44px;padding:10px 16px;border-radius:999px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);font:600 15px/1 var(--bf);cursor:pointer}
+.seas-btn:hover{background:var(--ink);color:var(--bg)}
+.seas-btn:focus-visible{outline:3px solid #8a5a12;outline-offset:2px}
+.jobs{padding-block:24px;border-bottom:1px solid var(--line)}
+body[data-season="off"] .jobs{display:none}
+.jobs-line summary{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:48px;cursor:pointer;list-style:none;font:700 19px/1.35 var(--bf)}
+.jobs-line summary::-webkit-details-marker{display:none}
+.jobs-line summary::after{content:"+";flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--s1);color:var(--sbg);font:700 22px/1 var(--bf)}
+.jobs-line[open] summary::after{content:"−"}
+.jobs-line summary:focus-visible{outline:3px solid #8a5a12;outline-offset:4px}
+.jobs-in{margin-top:18px}
+.jobs-note{margin:16px 0 0;color:var(--muted);font-size:15px}
+.jobs-line{border-bottom:0;padding:0}
