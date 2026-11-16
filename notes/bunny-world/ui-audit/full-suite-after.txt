@@ -20,3 +20,112 @@
 ▶ hare-today @ 1440
   ✔ no checklist failures (0.177959ms)
 ✔ hare-today @ 1440 (10188.807333ms)
+▶ hop-along @ 360
+  ✔ no checklist failures (0.24525ms)
+✔ hop-along @ 360 (16004.726834ms)
+▶ hop-along @ 390
+  ✔ no checklist failures (0.332959ms)
+✔ hop-along @ 390 (16052.830417ms)
+▶ hop-along @ 1440
+  ✔ no checklist failures (0.327542ms)
+✔ hop-along @ 1440 (15848.979042ms)
+▶ hopwell-chiro @ 360
+  ✔ no checklist failures (0.22075ms)
+✔ hopwell-chiro @ 360 (18866.006292ms)
+▶ hopwell-chiro @ 390
+  ✔ no checklist failures (0.353625ms)
+✔ hopwell-chiro @ 390 (18611.496167ms)
+▶ hopwell-chiro @ 1440
+  ✔ no checklist failures (0.463208ms)
+✔ hopwell-chiro @ 1440 (15873.4745ms)
+▶ cottontail-farm @ 360
+  ✔ no checklist failures (0.445666ms)
+✔ cottontail-farm @ 360 (15235.117125ms)
+▶ cottontail-farm @ 390
+  ✔ no checklist failures (0.130583ms)
+✔ cottontail-farm @ 390 (15098.649666ms)
+▶ cottontail-farm @ 1440
+  ✔ no checklist failures (0.26875ms)
+✔ cottontail-farm @ 1440 (14416.723375ms)
+▶ burrow-and-bough @ 360
+  ✔ no checklist failures (0.17675ms)
+✔ burrow-and-bough @ 360 (9628.592125ms)
+▶ burrow-and-bough @ 390
+  ✔ no checklist failures (0.287ms)
+✔ burrow-and-bough @ 390 (9687.733333ms)
+▶ burrow-and-bough @ 1440
+  ✔ no checklist failures (0.20775ms)
+✔ burrow-and-bough @ 1440 (6609.030667ms)
+▶ bunny-burritos @ 360
+  ✔ no checklist failures (0.103083ms)
+✔ bunny-burritos @ 360 (14259.402375ms)
+▶ bunny-burritos @ 390
+  ✔ no checklist failures (0.176833ms)
+✔ bunny-burritos @ 390 (14162.093417ms)
+▶ bunny-burritos @ 1440
+  ✔ no checklist failures (0.279334ms)
+✔ bunny-burritos @ 1440 (14201.393166ms)
+▶ bunny-auto @ 360
+  ✔ no checklist failures (0.363917ms)
+✔ bunny-auto @ 360 (12313.6425ms)
+▶ bunny-auto @ 390
+  ✔ no checklist failures (0.350709ms)
+✔ bunny-auto @ 390 (12276.263ms)
+▶ bunny-auto @ 1440
+  ✔ no checklist failures (0.141541ms)
+✔ bunny-auto @ 1440 (11875.488958ms)
+▶ warren-bakehouse @ 360
+  ✔ no checklist failures (0.729333ms)
+✔ warren-bakehouse @ 360 (17027.519ms)
+▶ warren-bakehouse @ 390
+  ✔ no checklist failures (0.245917ms)
+✔ warren-bakehouse @ 390 (17018.208584ms)
+▶ warren-bakehouse @ 1440
+  ✔ no checklist failures (0.733667ms)
+✔ warren-bakehouse @ 1440 (14676.546167ms)
+▶ long-ears @ 360
+  ✔ no checklist failures (0.692834ms)
+✔ long-ears @ 360 (14696.850375ms)
+▶ long-ears @ 390
+  ✔ no checklist failures (0.716333ms)
+✔ long-ears @ 390 (14616.916125ms)
+▶ long-ears @ 1440
+  ✔ no checklist failures (0.731959ms)
+✔ long-ears @ 1440 (13048.261125ms)
+✔ 360px · journey: land → tap → answer → first visit → answers in booking → book once (1246.037167ms)
+✔ 360px · one scheduling block, no repeated actions (511.817875ms)
+✔ 360px · tap spots: apart, no halos, labels clear (711.898209ms)
+✔ 360px · every question title is a full sentence ending in "?" (488.100667ms)
+✔ 360px · copy that counts the questions matches the questions (510.764042ms)
+✔ 360px · buttons, chips and spots use only palette tokens, no shadows (646.616333ms)
+✔ 360px · no sideways scroll, no console errors (691.638125ms)
+✔ 390px · journey: land → tap → answer → first visit → answers in booking → book once (865.540666ms)
+✔ 390px · one scheduling block, no repeated actions (518.240791ms)
+✔ 390px · tap spots: apart, no halos, labels clear (694.124875ms)
+✔ 390px · every question title is a full sentence ending in "?" (510.960583ms)
+✔ 390px · copy that counts the questions matches the questions (500.180542ms)
+✔ 390px · buttons, chips and spots use only palette tokens, no shadows (640.855458ms)
+✔ 390px · no sideways scroll, no console errors (699.87875ms)
+✔ 1440px · journey: land → tap → answer → first visit → answers in booking → book once (806.443541ms)
+✔ 1440px · one scheduling block, no repeated actions (489.915541ms)
+✔ 1440px · tap spots: apart, no halos, labels clear (728.395834ms)
+✔ 1440px · every question title is a full sentence ending in "?" (485.401ms)
+✔ 1440px · copy that counts the questions matches the questions (505.51125ms)
+✔ 1440px · buttons, chips and spots use only palette tokens, no shadows (668.200125ms)
+✔ 1440px · no sideways scroll, no console errors (694.527333ms)
+✔ steps reveal one at a time, in order (1043.587708ms)
+✔ going back through a summary chip keeps the later answers (809.804667ms)
+✔ a required field blocks Next until it is filled (695.820458ms)
+✔ spaces only count as empty (657.144416ms)
+✔ submitting without a time shows the message and does not book (724.823333ms)
+✔ answers handed in from code show in the summaries and the confirmation (730.636542ms)
+✔ very long input stays inside the form (638.958625ms)
+✔ double-tapping does not skip a step or book twice (939.142625ms)
+ℹ tests 89
+ℹ suites 0
+ℹ pass 89
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 426411.986792
