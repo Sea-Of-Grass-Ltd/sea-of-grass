@@ -26,10 +26,10 @@ const Q=[
 const BUD={lo:[0,50],mid:[50,90],hi:[90,999]};
 const LABEL={friend:'a friend',family:'family',self:'you',host:'a host',cozy:'cozy nights',crafty:'handmade things',tasty:'something tasty',fancy:'a little fancy'};
 
-const PAPERS=[['check','Tomato check'],['stripe','Mustard stripe'],['pin','Indigo pinstripe'],['kraft','Plain kraft']];
-const RIBBONS=[['#f4f1e0','Cream'],['#c42121','Tomato'],['#5a6a92','Indigo'],['#d9a531','Mustard']];
+const PAPERS=[['check','Orchid check'],['stripe','Lavender stripe'],['pin','Aubergine pinstripe'],['kraft','Plain pink']];
+const RIBBONS=[['#F7F7F8','White'],['#9E39E5','Orchid'],['#220A33','Aubergine'],['#DBCBFD','Lavender']];
 
-let pick={},bundles=[],bi=0,wrap={paper:'check',ribbon:'#f4f1e0',msg:''},step=0;
+let pick={},bundles=[],bi=0,wrap={paper:'check',ribbon:'#F7F7F8',msg:''},step=0;
 
 function combos(){const [lo,hi]=BUD[pick.budget],out=[];
   const n=ITEMS.length;

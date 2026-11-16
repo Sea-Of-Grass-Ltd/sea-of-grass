@@ -1,0 +1,12 @@
+  AssertionError [ERR_ASSERTION]: spec roles
+ℹ fail 8
+ℹ pass 0
+✖ burrow-and-bough @ 1440: hero roles, palette, no gradients, AA contrast (673.023125ms)
+✖ burrow-and-bough @ 390: hero roles, palette, no gradients, AA contrast (780.6175ms)
+✖ failing tests:
+✖ hop-along @ 1440: hero roles, palette, no gradients, AA contrast (1254.294833ms)
+✖ hop-along @ 390: hero roles, palette, no gradients, AA contrast (822.809334ms)
+✖ hopwell-chiro @ 1440: hero roles, palette, no gradients, AA contrast (983.147834ms)
+✖ hopwell-chiro @ 390: hero roles, palette, no gradients, AA contrast (831.286708ms)
+✖ warren-bakehouse @ 1440: hero roles, palette, no gradients, AA contrast (602.140834ms)
+✖ warren-bakehouse @ 390: hero roles, palette, no gradients, AA contrast (1051.714708ms)

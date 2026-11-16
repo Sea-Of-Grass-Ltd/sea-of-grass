@@ -1,25 +1,27 @@
 /* The Warren Bakehouse. Lead: Little Amps Coffee (Refero) – cream paper, roasted brown, ochre, rust, faded-blue announcement bar, soft narrow serif over a framed scene, mono labels, little line drawings.
    Borrowed: Alison Roman (Refero) – the printed-menu feeling.
+   2026-11-16 palette: OLIPOP (Refero style 1bfb0316-3a14-4742-a75f-503c6a25d32d): candy pink #FF9EC8 hero, berry #5A0C3C type and buttons,
+   cream #FFF6EA page, deep green #14433D bands, green #008168 labels.
    2026-11-15 simplify: one warm idea (bread out of the oven at 6:30), then one list. Structure from ARKET Café, ARKET Stores & cafés, Douze, The Dinner Ladies (see REFERENCES.md). */
-:root{--bg:#fff9f2;--ink:#522c25;--muted:#8a5a4e;--line:rgba(82,44,37,.22);--accent:#c03001;--on-accent:#fff9f2;--field:#fffdf9;--r:4px;--btn-r:4px;--ctl-r:4px;
+:root{--bg:#FFF6EA;--ink:#5A0C3C;--muted:#5A0C3C;--line:rgba(90,12,60,.22);--accent:#5A0C3C;--on-accent:#FFF6EA;--field:#FFF6EA;--r:4px;--btn-r:4px;--ctl-r:4px;
   --hf:"Young Serif",Georgia,serif;--hw:400;--bf:"Inclusive Sans",sans-serif;--mf:"DM Mono",monospace}
 .nav{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:14px;border-bottom:1px solid var(--line)}
 .logo{font:400 22px/.95 var(--hf);text-decoration:none;letter-spacing:-.01em}
 .nav nav{display:flex;flex-wrap:wrap;align-items:center;gap:4px 20px;font:500 13px/1 var(--mf);text-transform:uppercase;letter-spacing:.06em}.nav nav a{text-decoration:none}
-.nav .hold{display:inline-flex;align-items:center;min-height:44px;background:#522c25;color:#fff9f2;padding:0 14px;border-radius:4px}
+.nav .hold{display:inline-flex;align-items:center;min-height:44px;background:#5A0C3C;color:#FFF6EA;padding:0 14px;border-radius:4px}
 h2{font-size:clamp(36px,5vw,72px);line-height:.95;letter-spacing:-.02em}
-.btn.ghost{border:1px solid #522c25;color:#522c25;background:transparent}
-.chip{border-color:#522c25;font:500 12px/1 var(--mf);text-transform:uppercase;letter-spacing:.06em}
-.chip[aria-pressed="true"]{background:#522c25;color:#fff9f2}
-.tag{border-color:#c46500;color:#c46500}
+.btn.ghost{border:1px solid #5A0C3C;color:#5A0C3C;background:transparent}
+.chip{border-color:#5A0C3C;font:500 12px/1 var(--mf);text-transform:uppercase;letter-spacing:.06em}
+.chip[aria-pressed="true"]{background:#5A0C3C;color:#FFF6EA}
+.tag{border-color:#008168;color:#008168}
 
 /* the one idea */
-.hero{background:#3b201b;color:#fff9f2;padding-block:clamp(28px,5vw,80px)}
+.hero{background:#FF9EC8;color:#5A0C3C;padding-block:clamp(28px,5vw,80px)}
 .hero-in{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:clamp(24px,4vw,64px);align-items:center}
-.hero h1{font:400 clamp(52px,9vw,140px)/.92 var(--hf);letter-spacing:-.03em;color:#fff9f2;margin:0}
-.hero .lead{max-width:40ch;font-size:clamp(18px,1.5vw,21px);line-height:1.45;color:#f3e3cf;margin:22px 0 8px}
-.hero .next{font:500 13px/1.4 var(--mf);letter-spacing:.06em;text-transform:uppercase;color:#f3c26b;margin:0 0 24px;max-width:46ch}
-.btn.on-dark{background:#f3c26b;color:#3b201b}.btn.on-dark:hover{background:#ffd486}
+.hero h1{font:400 clamp(52px,9vw,140px)/.92 var(--hf);letter-spacing:-.03em;color:#5A0C3C;margin:0}
+.hero .lead{max-width:40ch;font-size:clamp(18px,1.5vw,21px);line-height:1.45;color:#5A0C3C;margin:22px 0 8px}
+.hero .next{font:500 13px/1.4 var(--mf);letter-spacing:.06em;text-transform:uppercase;color:#5A0C3C;margin:0 0 24px;max-width:46ch}
+.btn.on-dark{background:#5A0C3C;color:#FFF6EA}.btn.on-dark:hover{background:#14433D}
 .hero-photo{margin:0}
 .hero-photo img{display:block;width:100%;height:auto;aspect-ratio:4/3.4;object-fit:cover;object-position:60% 55%;border-radius:6px}
 @media (max-width:860px){.hero-in{grid-template-columns:1fr}.hero-photo img{aspect-ratio:3/2}}
@@ -27,25 +29,26 @@ h2{font-size:clamp(36px,5vw,72px);line-height:.95;letter-spacing:-.02em}
 /* the case: one list */
 .bread,.visit{padding-block:clamp(40px,6vw,88px)}
 .bread .head{display:grid;gap:12px;margin-bottom:24px;max-width:760px}.bread .head p{margin:0;font-size:18px;line-height:1.45;color:var(--muted)}
-.list li{border-bottom:1px dotted rgba(82,44,37,.4)}
+.list li{border-bottom:1px dotted rgba(90,12,60,.4)}
 .list b{font:400 24px/1.15 var(--hf)}
-.list b em{display:block;font:500 12px/1.4 var(--mf);letter-spacing:.08em;text-transform:uppercase;font-style:normal;color:var(--muted);margin-top:4px}
-.list small{font-size:16px;line-height:1.45;color:#6b4136}
-.cart{position:sticky;top:16px;background:#fff3cc;border:1px solid var(--line);border-radius:6px;padding:22px}
+.list b em{display:block;font:500 12px/1.4 var(--mf);letter-spacing:.08em;text-transform:uppercase;font-style:normal;color:#008168;margin-top:4px}
+.list small{font-size:16px;line-height:1.45;color:#5A0C3C}
+.cart{position:sticky;top:16px;background:#FFF6EA;border:1px solid var(--line);border-radius:6px;padding:22px}
 .cart h3{font:400 28px/1 var(--hf);margin-bottom:8px}
 @media (max-width:860px){.cart{position:static}}
 
 /* cakes */
-.cake{background:#c46500;padding-block:clamp(40px,6vw,88px)}
-.paper{background:#fff9f2;padding:clamp(18px,3vw,36px);border-radius:6px}
+.cake{background:#14433D;padding-block:clamp(40px,6vw,88px)}
+.paper{background:#FFF6EA;padding:clamp(18px,3vw,36px);border-radius:6px}
 .paper h2{margin-bottom:10px}.paper .sub{margin:0 0 20px;font-size:17px;line-height:1.45;color:var(--muted)}
 .total{display:flex;justify-content:space-between;align-items:baseline;font:400 22px/1 var(--hf);margin:6px 0}.total b{font-size:28px}
 .cake-pre{position:relative;align-self:center}
 .cake-pre picture,.cake-pre img{display:block;width:100%;height:auto;border-radius:6px}
-.cake-pre span{position:absolute;left:0;right:0;top:21%;text-align:center;font:400 clamp(18px,2.4vw,28px)/1.1 var(--hf);color:#c03001;padding:0 30%;transform:rotate(-2deg)}
+.cake-pre span{position:absolute;left:0;right:0;top:21%;text-align:center;font:400 clamp(18px,2.4vw,28px)/1.1 var(--hf);color:#5A0C3C;padding:0 30%;transform:rotate(-2deg)}
 
 /* visit */
 .visit{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,56px);border-top:1px solid var(--line)}
 .visit h2{margin-bottom:14px}.visit p{font-size:18px;line-height:1.5;max-width:52ch;margin:0 0 20px}
 .faq h3{font:400 28px/1 var(--hf);margin-bottom:10px}
 @media (max-width:760px){.nav nav a:not(.hold){display:none}.visit{grid-template-columns:1fr}}
+.toast{background:#5A0C3C;color:#FFF6EA}
