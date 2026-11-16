@@ -35,6 +35,7 @@
     tabs.forEach(x => { const on = x === t; x.setAttribute('aria-selected', on); x.tabIndex = on ? 0 : -1; });
     stage.setAttribute('aria-labelledby', t.id);
     openShop.href = t.dataset.shop + '/'; openShop.querySelector('b').textContent = t.dataset.name; say.textContent = t.dataset.say;
+    pcSync(t);
     stage.classList.remove('swap'); void stage.offsetWidth; if (!reduce) stage.classList.add('swap');
     cur = t; if (seen) load(t);
     if (focus) t.focus();
@@ -87,4 +88,25 @@
     if (q && q.classList.contains('q')) setFaq(true, () => { setQ(q, true); q.scrollIntoView({ block: 'center' }); q.focus({ preventScroll: true }); });
   };
   addEventListener('hashchange', deep); deep();
+
+  /* ---- the price cells: open like the switching FAQ, one at a time (Tristan, 2026-11-16). Each panel's Add to cart
+     goes through the shared cart (/preview/assets/shop/cart.js adds anything with data-add and opens the drawer). ---- */
+  const cells = [...document.querySelectorAll('#prices .pc')], adds = [...document.querySelectorAll('#prices .pc-add')];
+  const panelOf = b => document.getElementById(b.getAttribute('aria-controls'));
+  const setCell = (b, on) => { b.setAttribute('aria-expanded', on); panelOf(b).classList.toggle('on', on); };
+  cells.forEach(b => b.addEventListener('click', () => { const on = b.getAttribute('aria-expanded') !== 'true'; cells.forEach(x => setCell(x, x === b && on)); }));
+  document.getElementById('prices').addEventListener('keydown', ev => {
+    if (ev.key !== 'Escape') return; const o = cells.find(x => x.getAttribute('aria-expanded') === 'true');
+    if (o) { ev.preventDefault(); setCell(o, false); o.focus(); }
+  });
+  /* buttons say what is already in the cart, like the Buy menu */
+  function pcStates() { const c = window.sogCart ? window.sogCart.get() : {};
+    adds.forEach(a => { const q = c[a.dataset.add] || 0, more = a.dataset.add === 'fix';
+      a.classList.toggle('in', q > 0); a.textContent = q ? (more ? 'Add another' : 'In your cart ✓') : a.dataset.label; a.disabled = q > 0 && !more; }); }
+  adds.forEach(a => a.addEventListener('click', () => setTimeout(pcStates, 0)));
+  addEventListener('storage', e => { if (e.key === 'sog-cart') pcStates(); });
+  addEventListener('load', pcStates);
+  /* the small business site is built in the look of the shop chosen on Main Street */
+  function pcSync(t) { const a = document.querySelector('[data-pc-site]'), n = document.querySelector('[data-pc-look]'); if (!a) return;
+    a.dataset.add = 'bw-site-' + t.dataset.shop; n.textContent = t.dataset.name; pcStates(); }
 })();
