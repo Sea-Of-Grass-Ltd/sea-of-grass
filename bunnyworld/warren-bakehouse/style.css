@@ -65,3 +65,21 @@ h2{font-size:clamp(36px,5vw,72px);line-height:.95;letter-spacing:-.02em}
 .clock .sec[hidden]{display:none}
 .hero .lead{margin-top:18px}
 .hero .btn.on-dark{margin-top:4px}
+/* ---- the hero photo fills its space (Tristan, 2026-11-16: "doesn't fill its space"). Desktop: the right half of the
+   pink band, full-bleed top to bottom and out to the edge, cover-cropped on the cake with the loaf beside it; the text
+   column sets the height, the photo follows it (absolutely placed, so it never pushes the layout). Phone: edge to edge
+   under the text at 4:3. No rounded card. ---- */
+.hero-photo img{border-radius:0}
+@media (min-width:861px){
+ .hero{padding-block:0}
+ .hero-in{grid-template-columns:minmax(0,1fr) 50vw;padding-right:0;align-items:stretch;column-gap:clamp(24px,4vw,64px)}
+ .hero-copy{padding-block:clamp(36px,5.5vw,88px)}
+ .hero-photo{position:relative;align-self:stretch;margin:0}
+ .hero-photo picture{position:absolute;inset:0}
+ .hero-photo img{width:100%;height:100%;aspect-ratio:auto;object-fit:cover;object-position:88% 60%}
+}
+@media (max-width:860px){
+ .hero{padding-bottom:0}
+ .hero-photo{margin:4px calc(-1 * var(--side)) 0}
+ .hero-photo img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;object-position:58% 55%}
+}

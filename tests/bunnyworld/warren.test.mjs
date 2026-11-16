@@ -240,3 +240,40 @@ for (const w of WIDTHS) {
     } finally { await ctx.close(); }
   });
 }
+
+// Tristan, 2026-11-16: "the hero photo doesn't fill its space" (a landscape card floating mid-right, pink gaps above and below).
+// Desktop: the photo is the whole right half, full-bleed, top to bottom of the pink band and out to the right edge.
+// Phone: full width at a fixed ratio, not an inset card. No layout shift; countdown and text unchanged.
+for (const w of [1280, 1440]) {
+  test(`${w}px · the hero photo fills the right half, edge to edge`, async () => {
+    const { ctx, page } = await openAt(null, w);
+    try {
+      const r = await page.evaluate(() => { const h = document.querySelector('.hero').getBoundingClientRect(), img = document.querySelector('.hero img'), i = img.getBoundingClientRect(), c = getComputedStyle(img);
+        return { h: [h.top, h.bottom], i: [i.top, i.bottom, i.left, i.right], vw: document.documentElement.clientWidth, fit: c.objectFit, rad: parseFloat(c.borderTopLeftRadius) + parseFloat(c.borderBottomLeftRadius) }; });
+      assert.ok(Math.abs(r.i[0] - r.h[0]) <= 1 && Math.abs(r.i[1] - r.h[1]) <= 1, `photo top/bottom ${r.i.slice(0, 2).map(Math.round)} vs hero ${r.h.map(Math.round)}`);
+      assert.ok(Math.abs(r.i[3] - r.vw) <= 1, `photo meets the right edge (${Math.round(r.i[3])} of ${r.vw})`);
+      assert.ok(r.i[2] >= r.vw * 0.45 && r.i[2] <= r.vw * 0.55, `photo starts near the middle (${Math.round(r.i[2])})`);
+      assert.equal(r.fit, 'cover'); assert.equal(r.rad, 0, 'no rounded card');
+    } finally { await ctx.close(); }
+  });
+}
+for (const w of [360, 390]) {
+  test(`${w}px · the hero photo runs full width at a fixed ratio`, async () => {
+    const { ctx, page } = await openAt(null, w);
+    try {
+      const r = await page.evaluate(() => { const img = document.querySelector('.hero img'), i = img.getBoundingClientRect(), c = getComputedStyle(img); return { l: i.left, r: i.right, ratio: i.height / i.width, vw: document.documentElement.clientWidth, rad: parseFloat(c.borderTopLeftRadius) }; });
+      assert.ok(Math.abs(r.l) <= 1 && Math.abs(r.r - r.vw) <= 1, `edge to edge (${Math.round(r.l)}–${Math.round(r.r)} of ${r.vw})`);
+      assert.ok(Math.abs(r.ratio - 0.75) <= 0.02, `fixed 4:3 ratio (${r.ratio.toFixed(3)})`);
+      assert.equal(r.rad, 0, 'no rounded card');
+    } finally { await ctx.close(); }
+  });
+}
+for (const w of WIDTHS) {
+  test(`${w}px · the hero loads without layout shift`, async () => {
+    const { ctx, page } = await openAt(null, w);
+    try {
+      const cls = await page.evaluate(() => new Promise(res => { let s = 0; new PerformanceObserver(l => { for (const e of l.getEntries()) if (!e.hadRecentInput) s += e.value; }).observe({ type: 'layout-shift', buffered: true }); setTimeout(() => res(s), 300); }));
+      assert.ok(cls < 0.01, `CLS ${cls.toFixed(4)}`);
+    } finally { await ctx.close(); }
+  });
+}
