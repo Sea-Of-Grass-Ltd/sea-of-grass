@@ -1,92 +1,93 @@
-/* Bunny Burritos. Lead: Hungry Tiger (Refero) – burnt-orange ground, gold poster capitals, hot-pink flashes, tiny caps notes, dotted gold rules.
-   Borrowed: Roberta's (Refero) – halftone texture and irreverent little drawings. */
-:root{--bg:#823513;--ink:#fff4e2;--muted:#f7d9b0;--line:rgba(250,174,51,.45);--accent:#faae33;--on-accent:#402011;--field:#6e2c10;--r:0;--btn-r:999px;--ctl-r:14px;
+/* Bunny Burritos. Colours (2026-11-16, notes/bunny-world/critic/palettes): Impossible Foods (Refero style db742ba9-fb00-417c-bd19-13794b6eb5d4):
+   wine ground #4F0423, red poster capitals and buttons #E10600, pink small text and labels #FFC7C6, deep-wine panels #260212, white body text.
+   Layout and type are unchanged from the Hungry Tiger / Roberta's build: huge poster capitals, dotted rules. */
+:root{--bg:#4f0423;--ink:#ffffff;--muted:#ffc7c6;--line:rgba(255,199,198,.45);--accent:#e10600;--on-accent:#ffffff;--field:#260212;--r:0;--btn-r:999px;--ctl-r:14px;
   --hf:Anton,Impact,sans-serif;--hw:400;--bf:"Work Sans",sans-serif;--mf:"Work Sans",sans-serif}
-/* regional background (2026-11-14, Tristan: "the source material has a multiply effect on it"): the Front Range plants as pale greys on white, doubled to fill the frame
-   (corners rolled into the centre), multiplied onto the #823513 ground so they come out about 8-12% darker (his rule: too faint beats too bold) (Hungry Tiger's way), fixed behind the sections, fine film grain on top. */
-body{background:#823513}
-body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;background:#823513 url(/preview/assets/work/bunny-world/burritos-bg-multiply-1920.jpg) center/cover no-repeat;background-blend-mode:multiply;background-image:image-set(url(/preview/assets/work/bunny-world/burritos-bg-multiply-1920.webp) type("image/webp"),url(/preview/assets/work/bunny-world/burritos-bg-multiply-1920.jpg) type("image/jpeg"))}
+/* regional background (2026-11-14; recoloured 2026-11-16): the Front Range plants, doubled to fill the frame (corners rolled into the centre), fixed behind
+   the sections, fine film grain on top. Recoloured into the wine palette as a flat duotone (paper = #4F0423, darkest marks = #260212), so no blend mode. */
+body{background:#4f0423}
+body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;background:#4f0423 url(/preview/assets/work/bunny-world/burritos-bg-wine-1920.jpg) center/cover no-repeat;background-image:image-set(url(/preview/assets/work/bunny-world/burritos-bg-wine-1920.webp) type("image/webp"),url(/preview/assets/work/bunny-world/burritos-bg-wine-1920.jpg) type("image/jpeg"))}
 body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:url(/preview/assets/work/bunny-world/burritos-grain.png) 0 0/256px 256px;background-image:image-set(url(/preview/assets/work/bunny-world/burritos-grain.webp) type("image/webp"),url(/preview/assets/work/bunny-world/burritos-grain.png) type("image/png"));opacity:.32;mix-blend-mode:overlay}
-@media (min-width:1700px),(min-width:1000px) and (min-resolution:2dppx){body::before{background-image:image-set(url(/preview/assets/work/bunny-world/burritos-bg-multiply-2688.webp) type("image/webp"),url(/preview/assets/work/bunny-world/burritos-bg-multiply-1920.jpg) type("image/jpeg"))}}
-@media (max-width:900px){body::before{background-image:image-set(url(/preview/assets/work/bunny-world/burritos-bg-multiply-1280.webp) type("image/webp"),url(/preview/assets/work/bunny-world/burritos-bg-multiply-1920.jpg) type("image/jpeg"))}}
+@media (min-width:1700px),(min-width:1000px) and (min-resolution:2dppx){body::before{background-image:image-set(url(/preview/assets/work/bunny-world/burritos-bg-wine-2688.webp) type("image/webp"),url(/preview/assets/work/bunny-world/burritos-bg-wine-1920.jpg) type("image/jpeg"))}}
+@media (max-width:900px){body::before{background-image:image-set(url(/preview/assets/work/bunny-world/burritos-bg-wine-1280.webp) type("image/webp"),url(/preview/assets/work/bunny-world/burritos-bg-wine-1920.jpg) type("image/jpeg"))}}
 @media (max-aspect-ratio:1/1){body::before{background-size:auto 100%;background-position:30% 50%}}
 .nav{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;padding-block:16px}
 .pills{display:flex;gap:6px;flex-wrap:wrap}.pills.r{justify-content:flex-end}
-.pills a{font:600 12px/1 var(--bf);letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:#402011;background:#faae33;border-radius:999px;padding:10px 14px}
-.pills a.hot{background:#d1255c;color:#fff4e2}
-.logo{display:flex;align-items:center;gap:10px;text-decoration:none;font:400 34px/.9 var(--hf);text-transform:uppercase;color:#faae33;letter-spacing:.02em}
+.pills a{font:600 12px/1 var(--bf);letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:#ffffff;background:#e10600;border-radius:999px;padding:10px 14px}
+.pills a.hot{background:#ffc7c6;color:#260212}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;font:400 34px/.9 var(--hf);text-transform:uppercase;color:#e10600;letter-spacing:.02em}
 .logo img{display:block;width:auto;height:78px}
 @media (max-width:760px){.logo img{height:60px}.logo{font-size:24px}}  /* the calavera B & B mark (Tristan approved, 2026-11-14) */
-.rule{display:flex;align-items:center;gap:14px;font:600 11px/1.3 var(--bf);letter-spacing:.16em;text-transform:uppercase;color:#faae33;margin:0 0 14px}
-.rule::before,.rule::after{content:"";flex:1;border-top:2px dotted #faae33}
+.rule{display:flex;align-items:center;gap:14px;font:600 11px/1.3 var(--bf);letter-spacing:.16em;text-transform:uppercase;color:#ffc7c6;margin:0 0 14px}
+.rule::before,.rule::after{content:"";flex:1;border-top:2px dotted #e10600}
 .hero{text-align:center;padding-top:clamp(16px,3vw,40px)}
-.hero h1{font-size:clamp(76px,17vw,250px);line-height:.86;text-transform:uppercase;color:#faae33;letter-spacing:-.005em}
-.hero .sub{font:400 clamp(26px,4vw,56px)/1 var(--hf);text-transform:uppercase;color:#fff4e2;margin:4px 0 0}
+.hero h1{font-size:clamp(76px,17vw,250px);line-height:.86;text-transform:uppercase;color:#e10600;letter-spacing:-.005em}
+.hero .sub{font:400 clamp(26px,4vw,56px)/1 var(--hf);text-transform:uppercase;color:#ffffff;margin:4px 0 0}
 .hero .sub{margin-bottom:clamp(16px,2vw,28px)}
-.hero .art{max-width:860px;margin:0 auto;border-radius:50% 50% 0 0/38% 38% 0 0;overflow:hidden;border:3px solid #faae33}
-.hero-row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;text-align:left;padding:22px 0 clamp(36px,5vw,72px);border-bottom:2px dotted #faae33}
+.hero .art{max-width:860px;margin:0 auto;border-radius:50% 50% 0 0/38% 38% 0 0;overflow:hidden;border:3px solid #e10600}
+.hero-row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;text-align:left;padding:22px 0 clamp(36px,5vw,72px);border-bottom:2px dotted #e10600}
 .hero-row p{max-width:44ch;margin:0;font-size:18px}
 .btn{text-transform:uppercase;letter-spacing:.06em;font-size:14px}
-.btn.ghost{border-color:#faae33;color:#faae33}
-h2{font-size:clamp(46px,7vw,104px);line-height:.9;text-transform:uppercase;color:#faae33;margin-bottom:22px}
+.btn.ghost{border-color:#ffc7c6;color:#ffc7c6}
+h2{font-size:clamp(46px,7vw,104px);line-height:.9;text-transform:uppercase;color:#e10600;margin-bottom:22px}
 .menu,.visit{padding-block:clamp(40px,6vw,88px)}
-.list li{border-bottom:2px dotted rgba(250,174,51,.55);padding:16px 0}
+.list li{border-bottom:2px dotted rgba(255,199,198,.55);padding:16px 0}
 .list b{font:400 clamp(22px,2.2vw,30px)/1 var(--hf);text-transform:uppercase;letter-spacing:.01em}
-.list small{color:#f7d9b0}
-.tag{border-color:#faae33;color:#faae33;border-radius:999px}.tag.hot{background:#d1255c;border-color:#d1255c;color:#fff}
-.chip{border-color:#faae33;color:#faae33;text-transform:uppercase;font-size:12px;letter-spacing:.08em;font-weight:600}
-.chip[aria-pressed="true"]{background:#faae33;color:#402011;border-color:#faae33}
+.list small{color:#ffc7c6}
+.tag{border-color:#ffc7c6;color:#ffc7c6;border-radius:999px}.tag.hot{background:#ffc7c6;border-color:#ffc7c6;color:#260212}
+.chip{border-color:#ffc7c6;color:#ffc7c6;text-transform:uppercase;font-size:12px;letter-spacing:.08em;font-weight:600}
+.chip[aria-pressed="true"]{background:#ffc7c6;color:#260212;border-color:#ffc7c6}
 .deliver{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:22px;font:600 12px/1 var(--bf);letter-spacing:.12em;text-transform:uppercase}
-.cart{background:#402011;border-radius:28px;padding:24px;color:#fff4e2;top:16px}
-.cart h3{font:400 34px/1 var(--hf);text-transform:uppercase;color:#faae33;margin-bottom:8px}
-.cart li{border-color:rgba(250,174,51,.3)}
-.tables{background:#402011;padding-block:clamp(40px,6vw,88px)}
+.cart{background:#260212;border-radius:28px;padding:24px;color:#ffffff;top:16px}
+.cart h3{font:400 34px/1 var(--hf);text-transform:uppercase;color:#e10600;margin-bottom:8px}
+.cart li{border-color:rgba(255,199,198,.3)}
+.tables{background:#260212;padding-block:clamp(40px,6vw,88px)}
 .tables .lead,.visit .lead{font-size:18px;max-width:40ch}
-.poster-note{display:inline-block;margin-top:18px;background:#d1255c;color:#fff4e2;padding:14px 18px;border-radius:18px;transform:rotate(-2deg);max-width:32ch}
-.panel{background:#823513;border:2px dotted #faae33;border-radius:28px;padding:clamp(18px,2.4vw,28px)}
-.days button[aria-pressed="true"]{background:#d1255c;color:#fff;border-color:#d1255c}
-.slots button[aria-pressed="true"]{background:#faae33;color:#402011}
+.poster-note{display:inline-block;margin-top:18px;background:#ffc7c6;color:#260212;padding:14px 18px;border-radius:18px;transform:rotate(-2deg);max-width:32ch}
+.panel{background:#4f0423;border:2px dotted #e10600;border-radius:28px;padding:clamp(18px,2.4vw,28px)}
+.days button[aria-pressed="true"]{background:#ffc7c6;color:#260212;border-color:#ffc7c6}
+.slots button[aria-pressed="true"]{background:#e10600;color:#ffffff}
 .visit{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:clamp(20px,4vw,56px);align-items:start}
 .visit h2{font-size:clamp(40px,5vw,76px)}
-.map{border:3px solid #faae33;border-radius:24px}
-.hours td{border-color:rgba(250,174,51,.3)}
+.map{border:3px solid #e10600;border-radius:24px}
+.hours td{border-color:rgba(255,199,198,.3)}
 @media (max-width:760px){.nav{grid-template-columns:auto 1fr}.nav .pills:first-child{display:none}.visit{grid-template-columns:1fr}}
 
-/* hero photo test (2026-11-14): the photo fills the arched frame; the burrito and the rabbit sit in the lower middle, away from the corners the arch cuts off */
-.hero .art.photo{aspect-ratio:4/3;background:#823513}
+/* hero photo (2026-11-14; 2026-11-16 the orange backdrop recoloured to the pink #FFC7C6, food untouched): the photo fills the arched frame; the burrito and the rabbit sit in the lower middle, away from the corners the arch cuts off */
+.hero .art.photo{aspect-ratio:4/3;background:#4f0423}
 .hero .art.photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 62%}
 
 /* photo set (2026-11-14): two menu photos under the heading, the back room under the back-room note. 4:3, gold frame, 24px corners */
 .shots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:0 0 28px}
 .shots figure,.room{margin:0}
-.shots img,.room img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:24px;border:3px solid #faae33;background:#6e2c10}
-.shots figcaption{font:400 clamp(16px,1.6vw,22px)/1 var(--hf);text-transform:uppercase;color:#faae33;margin-top:10px;letter-spacing:.01em}
+.shots img,.room img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:24px;border:3px solid #e10600;background:#260212}
+.shots figcaption{font:400 clamp(16px,1.6vw,22px)/1 var(--hf);text-transform:uppercase;color:#ffc7c6;margin-top:10px;letter-spacing:.01em}
 .room{margin-top:24px}
 @media (max-width:600px){.shots{gap:10px}.shots img,.room img{border-radius:16px}}
 
 /* delivery (2026-11-14, Tristan): the delivery apps up top, by the hero and the order button. Names only, no app logos */
 .hero-row{border-bottom:0;padding-bottom:22px}
-.getit{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:clamp(18px,3vw,40px);text-align:left;background:#402011;border:3px solid #faae33;border-radius:28px;padding:clamp(20px,3vw,34px);margin-bottom:clamp(36px,5vw,72px)}
+.getit{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:clamp(18px,3vw,40px);text-align:left;background:#260212;border:3px solid #e10600;border-radius:28px;padding:clamp(20px,3vw,34px);margin-bottom:clamp(36px,5vw,72px)}
 .getit-h .rule{justify-content:flex-start;margin-bottom:8px}.getit-h .rule::before{display:none}.getit-h .rule::after{min-width:40px}
 .getit h2{font-size:clamp(40px,5.4vw,78px);margin:0;white-space:nowrap}
 .apps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .app{border:0;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;min-height:68px;padding:12px 18px;border-radius:999px;text-decoration:none;font:400 clamp(22px,2.2vw,30px)/1 var(--hf);text-transform:uppercase;letter-spacing:.02em;transition:transform .15s}
 .app span{font:600 18px/1 var(--bf)}
 .app:hover,.app:focus-visible{transform:translateY(-2px) rotate(-1deg)}
-.app.dd{background:#d1255c;color:#fff4e2}.app.gh{background:#faae33;color:#402011}.app.ue{background:#fff4e2;color:#402011}
-.getit-note{grid-column:1/-1;margin:0;color:#f7d9b0;font-size:15px;border-top:2px dotted rgba(250,174,51,.55);padding-top:14px}
+.app.dd{background:#e10600;color:#ffffff}.app.gh{background:#ffc7c6;color:#260212}.app.ue{background:#ffffff;color:#260212}
+.getit-note{grid-column:1/-1;margin:0;color:#ffc7c6;font-size:15px;border-top:2px dotted rgba(255,199,198,.55);padding-top:14px}
 @media (max-width:860px){.getit{grid-template-columns:1fr}.getit h2{white-space:normal}}
 @media (max-width:520px){.apps{grid-template-columns:1fr}.app{min-height:58px}}
 
-/* form skin (2026-11-15): poster capitals, dotted gold rules, hot-pink numbers (Hungry Tiger / Roberta's). Shared step engine lives in shop.css; this only changes the look. */
+/* form skin (2026-11-15; colours 2026-11-16): poster capitals, dotted rules, pink numbers (Hungry Tiger / Roberta's). Shared step engine lives in shop.css; this only changes the look. */
 .q-ready{counter-reset:q}
 .q-step{counter-increment:q}
 .q-h{font:400 26px/1 var(--hf);text-transform:uppercase;letter-spacing:.02em}
-.q-n{background:#d1255c;color:#fff4e2;font-family:var(--hf);font-weight:400;width:30px;height:30px}
+.q-n{background:#ffc7c6;color:#260212;font-family:var(--hf);font-weight:400;width:30px;height:30px}
 .q-sum{border:2px dotted var(--accent);background:transparent}
-.q-sum u{color:var(--accent)}
-.q-opt{border:2px solid var(--accent);background:transparent;color:var(--accent);font:400 18px/1.1 var(--hf);text-transform:uppercase;letter-spacing:.03em}
-.q-opt:hover{border-color:#fff4e2;color:#fff4e2}
+.q-sum u{color:var(--muted)}
+.q-opt{border:2px solid var(--muted);background:transparent;color:var(--muted);font:400 18px/1.1 var(--hf);text-transform:uppercase;letter-spacing:.03em}
+.q-opt:hover{border-color:#ffffff;color:#ffffff}
 .q-opt[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
 .file-pick{border:2px dotted var(--accent);background:transparent}
 

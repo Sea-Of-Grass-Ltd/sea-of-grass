@@ -1,16 +1,17 @@
-/* Hare Today Barbers. Black and white with one signal red. One idea up top: the headline, whether you can walk in, one button.
+/* Hare Today Barbers. Black and white with one signal red (2026-11-16: deepened from #e2321b to #bf1b17 so white button text passes AA
+   and it stays clear of Bunny Burritos' red and Cottontail's orange; the logo mark keeps its approved red). One idea up top: the headline, whether you can walk in, one button.
    Refero references (2026-11-16 pass, notes in REFERENCES.md):
    GlossGenius barber software (one big headline and one main action on the first screen),
    Fresha venue page (open status as one quiet line under the name; the team shown as faces you book with),
    Fresha venue page for a closed studio ("Closed · opens on Friday": closed said once, then the next way in). */
-:root{--bg:#f4f3f0;--ink:#0d0d0d;--muted:#5d5d5a;--line:rgba(13,13,13,.18);--accent:#e2321b;--on-accent:#fff;--field:#fff;--r:0;--btn-r:0;--ctl-r:0;
+:root{--bg:#f4f3f0;--ink:#0d0d0d;--muted:#5d5d5a;--line:rgba(13,13,13,.18);--accent:#bf1b17;--on-accent:#fff;--field:#fff;--r:0;--btn-r:0;--ctl-r:0;
   --hf:"Big Shoulders Display",Impact,sans-serif;--hw:800;--bf:Inter,system-ui,sans-serif;--mf:"IBM Plex Mono",ui-monospace,monospace}
 body{font-size:16px;background:var(--bg)}
 h1,h2,h3{font-family:var(--hf);font-weight:800;text-transform:uppercase;letter-spacing:.005em;line-height:.92}
 h2{font-size:clamp(40px,5.4vw,76px)}
 .sub{max-width:52ch;color:var(--muted);font-size:17px;line-height:1.5;margin:14px 0 0}
 .btn{background:var(--accent);color:#fff;text-transform:uppercase;letter-spacing:.08em;font:600 14px/1 var(--bf);min-height:48px;padding:14px 22px;box-shadow:none}
-.btn:hover{background:#c22712}
+.btn:hover{background:#a01410}
 .btn:disabled{background:#cfcfca;color:#6f6f6b;cursor:not-allowed}
 
 /* header: the mark and four links, nothing to press twice */
