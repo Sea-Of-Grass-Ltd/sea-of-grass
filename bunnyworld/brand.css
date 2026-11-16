@@ -370,7 +370,7 @@ html[data-look="sunny"] .lh-hint svg{color:var(--sun);filter:drop-shadow(1.5px 1
    u is 24px on wide screens (1440). Measured with the real fonts, the widest loop line ("Hop with style." in Clean)
    is 41.5u, so above 820px u = min(24px, width / 42) keeps it on one line (the spec's 1000px break let it spill at
    1000-1050px). On phones the headline breaks onto two lines (both loop lines break the same way) and u follows the
-   screen: the spec divides the width by 25 (14px at 390); --u-fit 29.2 gives 12px at 390 so all four prices still
+   screen: the spec divides the width by 25 (14px at 390); --u-fit 30.4 gives about 11.5px at 390 so all four prices (and their open marks) still
    fit on a phone's first screen, as the brief asks. */
 .hero[data-logo="centre"]{
   --u-fit:42;                            /* the widest loop line, "Hop with style." in Clean, is 41.5u: one line always fits */
@@ -387,7 +387,7 @@ html[data-look="sunny"] .lh-hint svg{color:var(--sun);filter:drop-shadow(1.5px 1
   --u-btn-font:max(16px, calc(var(--u) * .667));
   --u-btn-pad:0 max(24px, var(--u));
   padding-top:var(--u-pad-top)}
-@media (max-width:820px){.hero[data-logo="centre"]{--u-fit:29.2;--u:min(18px, calc((100vw - 40px) / var(--u-fit)));--u-head-lh:calc(var(--u) * 5.5);--u-gap-logo:calc(var(--u) * .936);--u-gap-head:calc(var(--u) * 1.279);--u-gap-line:calc(var(--u) * .986)}}
+@media (max-width:820px){.hero[data-logo="centre"]{--u-fit:30.4;--u:min(18px, calc((100vw - 40px) / var(--u-fit)));--u-head-lh:calc(var(--u) * 5.5);--u-gap-logo:calc(var(--u) * .936);--u-gap-head:calc(var(--u) * 1.279);--u-gap-line:calc(var(--u) * .986)}}
 .hero[data-logo="centre"] .lh-grid{display:flex;flex-direction:column;align-items:center;gap:0;text-align:center}
 .hero[data-logo="centre"] .lh-copy{display:flex;flex-direction:column;align-items:center;order:2;width:100%}
 .hero[data-logo="centre"] .lh-stage{order:1;align-self:center;display:grid;justify-items:center;padding:0;margin:0}
@@ -437,3 +437,41 @@ html:not([data-look]) .hero[data-logo="centre"] h1,html[data-look="clean"] .hero
   .pc-ch{position:relative;top:auto;right:auto;align-self:center}
   .pc-in{padding:4px 0 20px;border-top:0}
   .pc-buy{flex-direction:column}.pc-add{width:100%}}
+
+/* ===== The price strip on the hero's unit (critic's spec, 2026-11-16, notes/bunny-world/critic/hero-ratio/NOTES.md,
+   "The price strip"). Three styles for the whole strip, panel included: name Inter 600 16px ink; price 2u Inter 800
+   at -0.03em (at 800 its stems are u/3, the globe's line weight); small Inter 400 16px muted for "from", "/mo", the
+   terms line and the panel text. "from" and "/mo" sit inline on the price's line; every cell has one terms line.
+   Desktop: centred cells, u-based padding, a plain plus, a 4px (u/6) ink bar under the open cell, the panel a centred
+   28u column with hero-sized buttons. Phone: four rows, name and terms left, price right. Ink, grey and hairlines only.
+   Refero: Apple "Which Mac" edbef47f-2bf4-43ee-9005-c05977e769ee, Square plans fa3189a6-0ad9-42f0-8e3b-8bfc6c69c066,
+   Linear pricing 5d709fa1-5b61-416b-996f-f049cae07791. */
+.hero .prices{--ps-u:var(--u, 24px);--ps-price:max(32px, calc(var(--ps-u) * 2));margin-top:calc(var(--ps-u) * 1.5)}
+.hero .prices .pc{display:flex;flex-direction:column;align-items:center;gap:0;text-align:center;padding:calc(var(--ps-u) * .908) var(--ps-u)}
+.hero .prices .pc~.pc{padding-left:var(--ps-u)}
+.hero .prices .pc-name{font:600 16px/1 var(--bf);letter-spacing:0;color:var(--ink)}
+.hero .prices .pc-price{display:flex;align-items:baseline;justify-content:center;gap:calc(var(--ps-price) * .18);margin-top:calc(var(--ps-u) * .304)}
+.hero .prices .pc .pc-price b{font:800 var(--ps-price)/1 var(--hf);letter-spacing:-.03em;white-space:nowrap;text-align:inherit}
+.hero .prices .pc-price small,.hero .prices .pc-terms{font:400 16px/1 var(--bf);letter-spacing:0;color:var(--soft);opacity:1}
+.hero .prices .pc-terms{margin-top:calc(var(--ps-u) * .304)}
+.hero .prices .pc-ch{position:absolute;top:16px;right:16px;width:12px;height:12px;border:0;border-radius:0;background:none;color:var(--ink)}
+.hero .prices .pc-ch::before,.hero .prices .pc-ch::after{width:12px;height:2px}
+.hero .prices .pc[aria-expanded="true"] .pc-ch{background:none;border:0;color:var(--ink)}
+.hero .prices .pc::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:4px;background:var(--ink);opacity:0}
+.hero .prices .pc[aria-expanded="true"]::after{opacity:1}
+.hero .prices .pc-in{width:min(100%, calc(var(--ps-u) * 28));margin:0 auto;padding:var(--ps-u) 0 calc(var(--ps-u) * 1.5);border-top:0;gap:calc(var(--ps-u) * 2 / 3)}
+.hero .prices .pc-in p{max-width:none;font:400 16px/1.5 var(--bf);color:var(--soft)}
+.hero .prices .pc-in .pc-note{font-size:16px}
+.hero .prices .pc-buy{gap:calc(var(--ps-u) * 2 / 3);margin-top:0}
+.hero .prices .pc-add{height:48px;min-height:0;padding:0 24px;border-radius:999px;font:600 16px/1 var(--bf)}
+@media (max-width:760px){
+  .hero .prices .pc{display:grid;grid-template-columns:1fr auto 16px;grid-template-areas:"name price ch" "terms price ch";gap:8px 12px;align-items:center;text-align:left;padding:15px 0}
+  .hero .prices .pc~.pc{padding-left:0}
+  .hero .prices .pc-name{grid-area:name;align-self:end}
+  .hero .prices .pc-terms{grid-area:terms;align-self:start;margin-top:0}
+  .hero .prices .pc-price{grid-area:price;justify-content:flex-end;margin-top:0}
+  .hero .prices .pc-ch{grid-area:ch;position:relative;top:auto;right:auto;justify-self:end;width:12px;height:12px}
+  .hero .prices .pc::after{content:none}
+  .hero .prices .pc-in{width:100%;padding:0 0 24px}
+  .hero .prices .pc-buy{gap:12px}
+  .hero .prices{margin-top:var(--ps-u)}}

@@ -126,3 +126,54 @@ test('prices match everywhere they appear: strip, panels, Buy menu and the shop'
     assert.ok(r.buy.some(t => /\$250/.test(t)) && r.buy.some(t => /\$1,200/.test(t)) && r.buy.some(t => /\$100/.test(t)) && r.buy.some(t => /\$2,000/.test(t)) && r.buy.some(t => /\$50/.test(t)), 'the Buy menu agrees');
   } finally { await ctx.close(); }
 });
+
+// The strip on the hero's unit (critic's spec, 2026-11-16, notes/bunny-world/critic/hero-ratio/NOTES.md "The price strip"):
+// three styles only (name Inter 600 16px; price Inter 800 2u; small Inter 400 16px muted), "from" and "/mo" inline on the
+// price's line, one terms line in every cell, centred cells on desktop, a plain plus (no circle, no purple), the open cell
+// marked by a 4px ink bar, the panel a centred 28u column with hero-sized buttons.
+const CELLS = [['Fix one broken thing', 'from', '$250', '', 'paid after it’s done'], ['A starter site', '', '$100', '/mo', '12 months, $1,200 total'],
+  ['A small business site', 'from', '$2,000', '', '30% at first draft'], ['Care plan', '', '$50', '/mo', 'cancel any month']];
+const strip = page => page.evaluate(() => {
+  const u = document.querySelector('.lh-mark').getBoundingClientRect().height / 12.75;
+  const st = e => { const c = getComputedStyle(e); return { fam: c.fontFamily, size: parseFloat(c.fontSize), weight: c.fontWeight, tt: c.textTransform, color: c.color, r: e.getBoundingClientRect() }; };
+  return { u, soft: getComputedStyle(document.querySelector('.hero .lede')).color, ink: getComputedStyle(document.querySelector('.hero h1')).color,
+    cells: [...document.querySelectorAll('#prices .pc')].map(b => ({ r: b.getBoundingClientRect(), name: st(b.querySelector('.pc-name')), nameT: b.querySelector('.pc-name').innerText.trim(),
+      price: st(b.querySelector('.pc-price b')), line: b.querySelector('.pc-price').getBoundingClientRect(), priceT: b.querySelector('.pc-price b').innerText.trim(),
+      pre: b.querySelector('.pc-pre') && { ...st(b.querySelector('.pc-pre')), t: b.querySelector('.pc-pre').innerText.trim() }, post: b.querySelector('.pc-post') && { ...st(b.querySelector('.pc-post')), t: b.querySelector('.pc-post').innerText.trim() },
+      terms: st(b.querySelector('.pc-terms')), termsT: b.querySelector('.pc-terms').innerText.trim(),
+      mark: (() => { const m = b.querySelector('.pc-ch'), c = getComputedStyle(m); return { w: m.getBoundingClientRect().width, border: c.borderTopWidth, bg: c.backgroundColor }; })(),
+      bar: parseFloat(getComputedStyle(b, '::after').height) || 0, barShown: getComputedStyle(b, '::after').content !== 'none' && getComputedStyle(b, '::after').opacity !== '0' })) };
+});
+for (const w of [390, 1440]) test(`price strip @ ${w}: three styles on the hero's unit, "from" and "/mo" inline, one terms line per cell`, async () => {
+  const { ctx, page } = await site.open(URL, w, { reducedMotion: 'reduce' });
+  try {
+    const s = await strip(page), near = (a, b, t = 1) => Math.abs(a - b) <= t;
+    s.cells.forEach((c, i) => {
+      const [name, pre, price, post, terms] = CELLS[i];
+      assert.equal(c.nameT, name); assert.equal(c.priceT, price); assert.equal(c.termsT, terms);
+      assert.equal(c.pre ? c.pre.t : '', pre); assert.equal(c.post ? c.post.t : '', post);
+      assert.ok(/Inter/.test(c.name.fam) && !/Mono/.test(c.name.fam) && c.name.tt === 'none', `${name}: name in the lockup's sans, sentence case`);
+      assert.ok(near(c.name.size, 16) && c.name.weight === '600', `${name}: name 16px 600 (${c.name.size} ${c.name.weight})`);
+      assert.ok(near(c.price.size, Math.max(32, 2 * s.u)) && c.price.weight === '800', `${name}: price 2u, 800 (${c.price.size} ${c.price.weight})`);
+      for (const sm of [c.terms, c.pre, c.post].filter(Boolean)) assert.ok(near(sm.size, 16) && sm.weight === '400' && sm.color === s.soft, `${name}: small style 16px 400 muted`);
+      for (const sm of [c.pre, c.post].filter(Boolean)) assert.ok(sm.r.top >= c.price.r.top - 2 && sm.r.bottom <= c.price.r.bottom + 2, `${name}: "${sm.t}" sits on the price's line`);
+      assert.ok(c.mark.w <= 16 && c.mark.border === '0px' && /rgba\(0, 0, 0, 0\)|transparent/.test(c.mark.bg), `${name}: a plain plus, no circle`);
+      if (w >= 900) { const mid = (c.r.left + c.r.right) / 2; for (const r of [c.name.r, c.line, c.terms.r]) assert.ok(near((r.left + r.right) / 2, mid, 2), `${name}: centred in its cell`); /* the price line ("from $250") is centred as one unit */ }
+      else { assert.ok(c.name.r.left < c.price.r.left && c.r.height <= 96, `${name}: a row, name left and price right (${Math.round(c.r.height)}px tall)`); }
+    });
+  } finally { await ctx.close(); }
+});
+for (const w of [390, 1440]) test(`price strip @ ${w}: the open cell is marked by an ink bar or a minus, the panel is hero-sized`, async () => {
+  const { ctx, page } = await site.open(URL, w, { reducedMotion: 'reduce' });
+  try {
+    await page.locator('#pc-starter').click(); await page.waitForTimeout(200);
+    const s = await strip(page);
+    if (w >= 900) { assert.ok(s.cells[1].barShown && Math.abs(s.cells[1].bar - 4) <= 0.5, 'a 4px bar under the open cell'); assert.ok(!s.cells[0].barShown || s.cells[0].bar === 0, 'no bar under closed cells'); }
+    const r = await page.evaluate(() => { const p = document.querySelector('#pc-starter-a .pc-in'), b = p.getBoundingClientRect(), s = document.querySelector('#prices').getBoundingClientRect();
+      const btn = [...p.querySelectorAll('.pc-add')].map(x => ({ h: x.getBoundingClientRect().height, f: parseFloat(getComputedStyle(x).fontSize) }));
+      const para = getComputedStyle(p.querySelector('p')); return { w: b.width, mid: (b.left + b.right) / 2, smid: (s.left + s.right) / 2, btn, pf: parseFloat(para.fontSize), pw: para.fontWeight }; });
+    if (w >= 900) { assert.ok(r.w <= 28 * s.u + 2, `panel column 28u wide (${r.w})`); assert.ok(Math.abs(r.mid - r.smid) <= 2, 'centred under the strip'); }
+    assert.ok(r.btn.every(b => Math.abs(b.h - 48) <= 1 && b.f === 16), `buttons match the hero button: ${JSON.stringify(r.btn)}`);
+    assert.ok(r.pf === 16 && r.pw === '400', 'panel text in the small style');
+  } finally { await ctx.close(); }
+});
