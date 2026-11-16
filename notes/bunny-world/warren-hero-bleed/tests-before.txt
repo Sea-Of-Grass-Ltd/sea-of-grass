@@ -1,0 +1,7 @@
+ℹ fail 4
+ℹ pass 33
+✖ 1280px · the hero photo fills the right half, edge to edge (494.507417ms)
+✖ 1440px · the hero photo fills the right half, edge to edge (502.970583ms)
+✖ 360px · the hero photo runs full width at a fixed ratio (485.273167ms)
+✖ 390px · the hero photo runs full width at a fixed ratio (501.735292ms)
+✖ failing tests:
