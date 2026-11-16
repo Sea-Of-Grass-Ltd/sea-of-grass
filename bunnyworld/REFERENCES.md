@@ -32,7 +32,7 @@ Tristan: "a bunch of cards stacked on top of each other" and "made by totally di
 Tristan: "you tap the Bunny Ears logo and it changes the style of the page". The big mark is the hero and a button; each tap pops the ears, sweeps one glint and crossfades the page to the next look. Looks only re-set CSS variables, so prices, chips and buttons never move. Under the headline, one question ("What kind of shop do you run?") with chips; a pick shows "Try <shop>" and puts that shop on Main Street (the live showcase).
 - Hero composition: Refero styles Mammoth Brands (the identity at monumental scale) and Dirt (one shiny object on a quiet stage); type and pills after IFTTT; calm prices after Square.
 - The five looks, each from Refero palettes:
-  - **Disco** (default): Pitch plum stage + Atlas mirror silver + Vivid+Co warm white + one Leonardo hot-pink spark (light only)
+  - **Disco**: Pitch plum stage + Atlas mirror silver + Vivid+Co warm white + one Leonardo hot-pink spark (light only)
   - **Clean**: Peloton cool off-white + Postevand black + a16z violet focus
   - **Bold**: SAP Good Energy black and energy orange, condensed caps (Big Shoulders)
   - **Warm**: OLIPOP vanilla cream, bottle green, candy pink, Young Serif
