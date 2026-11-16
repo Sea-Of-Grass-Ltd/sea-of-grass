@@ -70,6 +70,7 @@ test('landing share card: the Clean look and current prices', async () => {
   const src = fs.readFileSync(path.join(ROOT, 'notes/bunny-world/og-card/card.html'), 'utf8');
   assert.ok(!/1,200/.test(src), 'no $1,200 starter on the card');
   for (const p of ['$250', '$100', '$2,000', '$50']) assert.ok(src.includes(p), `card shows ${p}`);
+  for (const t of ['Bunny World.', 'Hop with style.', 'Imaginary shops, real websites.']) assert.ok(src.includes(t), `card carries the hero's words: ${t}`);
   assert.ok(/#F5F7F9/i.test(src) && /#181A1D/i.test(src) && !/#1B0F2A/i.test(src), 'card uses the Clean ground and ink, not Disco');
 
   // and the published picture is that Clean card: mostly the Clean off-white, almost no Disco purple
