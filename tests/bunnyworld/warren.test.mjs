@@ -16,7 +16,7 @@ const open = w => site.open(PAGE, w, { reducedMotion: 'reduce' });
 const ready = (page, sel) => page.waitForFunction(s => { const e = document.querySelector(s); return e && !e.closest('[inert]'); }, sel);
 
 for (const w of WIDTHS) {
-  test(`${w}px · first screen is one idea: a huge headline, one photo, one button, nothing to operate`, async () => {
+  test(`${w}px · first screen is one idea: the headline and the countdown, one photo, one button, nothing to operate`, async () => {
     const { ctx, page, errors } = await open(w);
     try {
       const s = await page.evaluate(() => {
@@ -31,28 +31,21 @@ for (const w of WIDTHS) {
           acts: acts.map(a => a.innerText.trim()), ctrls: ctrls.length, imgs: imgs.length };
       });
       assert.equal(s.h1s, 1, 'one h1');
-      assert.ok(s.h1Size >= (w < 900 ? 48 : 96), `headline is huge (${s.h1Size}px)`);
+      assert.ok(s.h1Size >= (w < 900 ? 40 : 64), `headline is big (${s.h1Size}px)`);
       assert.ok(s.h1Top < 400, `headline starts high on the first screen (top ${Math.round(s.h1Top)}px)`);
       assert.ok(!/\d/.test(s.h1Text.replace(/6:30/g, '')), `headline is words, not a countdown: "${s.h1Text}"`);
       assert.ok(s.acts.length <= 1, `at most one button in the first screen of the shop, got ${JSON.stringify(s.acts)}`);
       assert.equal(s.ctrls, 0, 'no form fields in the first screen');
       assert.ok(s.imgs <= 1, `one photo in the first screen, got ${s.imgs}`);
-      // nothing ticks: the first screen reads the same a second later
-      const a = await page.evaluate(() => document.querySelector('main').innerText.slice(0, 600));
-      await page.waitForTimeout(1300);
-      const b = await page.evaluate(() => document.querySelector('main').innerText.slice(0, 600));
-      assert.equal(b, a, 'nothing on the first screen changes by itself');
       assert.deepEqual(errors, []);
     } finally { await ctx.close(); }
   });
 
-  test(`${w}px · the competing features are gone`, async () => {
+  test(`${w}px · the competing features are gone (the countdown came back on Tristan's word, 2026-11-16)`, async () => {
     const { ctx, page } = await open(w);
     try {
       const s = await page.evaluate(() => ({
-        clock: !!document.querySelector('[data-clock], .clock'),
         fast: !!document.querySelector('[data-fast]') || /60\s*×/.test(document.body.innerText),
-        countdown: /\b\d+h \d+m\b/.test(document.body.innerText),
         dots: document.querySelectorAll('.pips, .pips i').length,
         stamps: document.querySelectorAll('.stampd, .lbl').length,
         ann: !!document.querySelector('.ann'),
@@ -61,9 +54,7 @@ for (const w of WIDTHS) {
         sticker: !!document.querySelector('.tagline'),
         live: /update live|live as people/i.test(document.body.innerText),
       }));
-      assert.equal(s.clock, false, 'no countdown clock');
       assert.equal(s.fast, false, 'no "watch a morning at 60×" simulator');
-      assert.equal(s.countdown, false, 'no "00h 00m" text anywhere');
       assert.equal(s.dots, 0, 'no loaf dot rows');
       assert.equal(s.stamps, 0, 'no wrapper labels or sold-out stamps');
       assert.equal(s.ann, false, 'no announcement bar above the header');
@@ -149,3 +140,87 @@ for (const w of WIDTHS) {
     } finally { await ctx.close(); }
   });
 }
+
+// Tristan, 2026-11-16: "he misses the countdown to the next bake". It comes back as the hero's hook, numerals in a face
+// built for figures (lining, tabular), the honest next bake when closed, no layout shift, reduced motion respected.
+const parseClock = t => { const m = t.replace(/\s+/g, ' ').match(/(\d+)\s*h\s*(\d+)\s*m(?:\s*(\d+)\s*s)?/); return m ? { h: +m[1], m: +m[2], s: m[3] === undefined ? null : +m[3] } : null; };
+async function openAt(time, w = 390, reducedMotion = 'no-preference') {
+  const mobile = w < 900;
+  const ctx = await site.browser.newContext({ viewport: { width: w, height: mobile ? 844 : 900 }, isMobile: mobile, hasTouch: mobile, reducedMotion, timezoneId: 'America/Denver' });
+  await ctx.route(u => !u.href.startsWith(site.base), r => r.abort());
+  if (time) await ctx.clock.install({ time: new Date(time) });
+  const page = await ctx.newPage();
+  await page.goto(site.base + PAGE, { waitUntil: 'load' }); await page.waitForTimeout(300);
+  return { ctx, page };
+}
+for (const w of WIDTHS) {
+  test(`${w}px · the countdown is the hook: big, in the hero, lining tabular figures in its own face`, async () => {
+    const { ctx, page } = await openAt(null, w);
+    try {
+      const r = await page.evaluate(() => { const c = document.querySelector('.hero [data-countdown]'), h1 = document.querySelector('h1'); if (!c) return null;
+        const cs = getComputedStyle(c), b = c.getBoundingClientRect();
+        const img = document.querySelector('.hero img').getBoundingClientRect(), u = [...c.children].map(x => x.getBoundingClientRect()), right = Math.max(...u.map(x => x.right));
+        return { over: c.scrollWidth - c.clientWidth, right, imgLeft: img.left, imgTop: img.top, imgBottom: img.bottom, cTop: b.top, size: parseFloat(cs.fontSize), num: cs.fontVariantNumeric, feat: cs.fontFeatureSettings, fam: cs.fontFamily, h1fam: getComputedStyle(h1).fontFamily, top: b.top, bottom: b.bottom, h: innerHeight, role: c.getAttribute('role'), text: c.textContent }; });
+      assert.ok(r, 'a countdown in the hero');
+      assert.ok(r.size >= (w < 900 ? 60 : 110), `the countdown is the biggest thing (${r.size}px)`);
+      assert.ok(r.over <= 1, `the digits fit their box (${r.over}px over)`);
+      if (r.imgTop < r.bottom && r.imgBottom > r.cTop) assert.ok(r.right <= r.imgLeft, `the digits stop before the photo (${Math.round(r.right)} vs ${Math.round(r.imgLeft)})`);
+      assert.match(r.num, /tabular-nums/, 'tabular figures'); assert.match(r.num, /lining-nums/, 'lining figures');
+      assert.notEqual(r.fam, r.h1fam, 'numerals use their own face, the serif stays for words');
+      assert.ok(r.bottom <= r.h, `the countdown is on the first screen (bottom ${Math.round(r.bottom)} of ${r.h})`);
+      assert.equal(r.role, 'timer');
+      assert.ok(parseClock(r.text), `reads as hours, minutes, seconds: "${r.text}"`);
+    } finally { await ctx.close(); }
+  });
+
+  test(`${w}px · it ticks without moving anything`, async () => {
+    const { ctx, page } = await openAt(null, w);
+    try {
+      await page.evaluate(() => { window.__cls = 0; new PerformanceObserver(l => { for (const e of l.getEntries()) window.__cls += e.value; }).observe({ type: 'layout-shift', buffered: false }); });
+      const snap = () => page.evaluate(() => { const c = document.querySelector('[data-countdown]'), r = c.getBoundingClientRect(), hero = document.querySelector('.hero').getBoundingClientRect(), btn = document.querySelector('.hero .btn').getBoundingClientRect();
+        return { t: c.textContent, w: r.width, x: r.left, hh: hero.height, by: btn.top, digits: [...c.querySelectorAll('[data-d]')].map(d => d.getBoundingClientRect().width) }; });
+      const seen = [await snap()];
+      for (let i = 0; i < 4; i++) { await page.waitForTimeout(700); seen.push(await snap()); }
+      assert.ok(new Set(seen.map(s => s.t)).size >= 2, `it ticks: ${seen.map(s => s.t).join(' | ')}`);
+      for (const s of seen) {
+        assert.ok(Math.abs(s.w - seen[0].w) <= 0.5 && Math.abs(s.x - seen[0].x) <= 0.5, `width holds (${s.w} vs ${seen[0].w})`);
+        assert.ok(Math.abs(s.hh - seen[0].hh) <= 0.5 && Math.abs(s.by - seen[0].by) <= 0.5, 'nothing around it moves');
+        assert.deepEqual(s.digits.map(Math.round), seen[0].digits.map(Math.round), 'each digit pair keeps its width');
+      }
+      assert.equal(await page.evaluate(() => window.__cls), 0, 'no layout shift');
+    } finally { await ctx.close(); }
+  });
+}
+
+// Colorado wall-clock times (November = MST, UTC-7). Hours: Sun 6:30-1, Mon closed, Tue-Sat 6:30-2.
+const CASES = [
+  ['Monday 10 am (closed all day)', '2026-11-16T10:00:00-07:00', /closed/i, /tomorrow at 6:30/i, [20, 30, 0]],
+  ['Sunday 3 pm (closed, Monday off)', '2026-11-15T15:00:00-07:00', /closed/i, /Tuesday at 6:30/i, [39, 30, 0]],
+  ['Saturday 3 pm (closed, Sunday bakes)', '2026-11-14T15:00:00-07:00', /closed/i, /tomorrow at 6:30/i, [15, 30, 0]],
+  ['Tuesday 5 am (before the bake)', '2026-11-17T05:00:00-07:00', /this morning/i, /6:30/, [1, 30, 0]],
+  ['Tuesday 9 am (open, bread is out)', '2026-11-17T09:00:00-07:00', /out/i, /tomorrow at 6:30/i, [21, 30, 0]],
+];
+for (const [name, time, state, when, [h, m, sec]] of CASES) {
+  test(`next bake, ${name}: honest label and the right count`, async () => {
+    const { ctx, page } = await openAt(time, 390);
+    try {
+      const label = await page.locator('[data-next]').innerText();
+      assert.match(label, state, `label says the state: "${label}"`);
+      assert.match(label, when, `label names the next bake: "${label}"`);
+      const c = parseClock(await page.locator('[data-countdown]').textContent());
+      assert.deepEqual([c.h, c.m], [h, m], `counts down to it (${JSON.stringify(c)})`);
+      assert.ok(Math.abs(c.s - sec) <= 1 || Math.abs(c.s - 59) <= 1, `seconds near ${sec}`);
+    } finally { await ctx.close(); }
+  });
+}
+
+test('reduced motion: hours and minutes only, no per-second ticking', async () => {
+  const { ctx, page } = await openAt(null, 390, 'reduce');
+  try {
+    const a = await page.locator('[data-countdown]').textContent();
+    const c = parseClock(a);
+    assert.ok(c && c.s === null, `no seconds shown: "${a}"`);
+    await page.waitForTimeout(1500);
+    assert.equal(await page.locator('[data-countdown]').textContent(), a, 'nothing ticks each second');
+  } finally { await ctx.close(); }
+});

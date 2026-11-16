@@ -1,14 +1,31 @@
-/* The Warren Bakehouse: one quiet line under the headline saying when the next bread comes out.
-   Worked out once from Colorado time when the page loads. It doesn't tick: the bakery's hours are the news, not a countdown. */
+/* The Warren Bakehouse: the countdown to the next bake (Tristan, 2026-11-16: "he misses the countdown").
+   Colorado time, whatever the visitor's clock says. Closed days are honest: the label names the next real bake.
+   Digits sit in fixed-width pairs (lining, tabular figures), so nothing moves as they tick.
+   Reduced motion: hours and minutes only, updated once a minute. */
 (function(){
-const el=document.querySelector('[data-next]');if(!el)return;
-const BELL=6*60+30;                                   // 6:30 am, in minutes
-const CLOSE={0:13*60,2:14*60,3:14*60,4:14*60,5:14*60,6:14*60};   // closed Monday (1)
+const el=document.querySelector('[data-countdown]'),lab=document.querySelector('[data-next]');if(!el||!lab)return;
+const BELL=6*3600+30*60;
+const CLOSE={0:13*3600,2:14*3600,3:14*3600,4:14*3600,5:14*3600,6:14*3600};   // closed Monday (1)
 const DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-const p=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:'America/Denver',weekday:'short',hour:'numeric',minute:'numeric',hourCycle:'h23'}).formatToParts(new Date()).map(x=>[x.type,x.value]));
-const day=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(p.weekday),min=(+p.hour%24)*60+(+p.minute);
-const shut=m=>{const h=Math.floor(m/60);return(h>12?h-12:h)+' pm';};
-if(day in CLOSE&&min<BELL){el.textContent='This morning’s bread comes out at 6:30.';return;}
-if(day in CLOSE&&min<CLOSE[day]){el.textContent=`The bread came out at 6:30 this morning, and we’re open until ${shut(CLOSE[day])}.`;return;}
-for(let k=1;k<8;k++){const d=(day+k)%7;if(d in CLOSE){el.textContent=`We’re closed now. The next bread comes out ${k===1?'tomorrow':'on '+DAYS[d]} at 6:30 am.`;return;}}
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const sec=el.querySelector(".sec");if(reduce&&sec)sec.remove();const [dh,dm,ds]=el.querySelectorAll("[data-d]");
+const fmt=new Intl.DateTimeFormat('en-US',{timeZone:'America/Denver',weekday:'short',hour:'numeric',minute:'numeric',second:'numeric',hourCycle:'h23'});
+function now(){const p=Object.fromEntries(fmt.formatToParts(new Date()).map(x=>[x.type,x.value]));
+  return{day:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(p.weekday),s:(+p.hour%24)*3600+(+p.minute)*60+(+p.second)};}
+function next(n){for(let k=0;k<8;k++){const d=(n.day+k)%7;if(!(d in CLOSE))continue;const at=k*86400+BELL;if(at>n.s)return{left:at-n.s,k,d};}return{left:0,k:0,d:n.day};}
+const shut=t=>{const h=Math.floor(t/3600);return(h>12?h-12:h)+' pm';};
+const pad=v=>String(v).padStart(2,'0');
+let lastLabel='',lastMin=-1;
+function draw(){const n=now(),x=next(n);
+  const open=n.day in CLOSE&&n.s>=BELL&&n.s<CLOSE[n.day];
+  const when=x.k===0?'this morning':x.k===1?'tomorrow':'on '+DAYS[x.d];
+  const label=x.k===0&&!open?'This morning’s bread comes out at 6:30. That’s in':
+    open?`Today’s bread is out until ${shut(CLOSE[n.day])}. The next bake is ${when} at 6:30, in`:
+    `We’re closed right now. The next bake is ${when} at 6:30, in`;
+  if(label!==lastLabel){lab.textContent=label;lastLabel=label;}
+  let t=Math.max(0,x.left);if(reduce)t=Math.ceil(t/60)*60;
+  const h=Math.floor(t/3600),m=Math.floor(t%3600/60),s=t%60;
+  dh.textContent=pad(h);dm.textContent=pad(m);if(ds)ds.textContent=pad(s);
+  if(m!==lastMin){lastMin=m;el.setAttribute('aria-label',`${h} hours and ${m} minutes until the next bake`);}}
+draw();setInterval(draw,reduce?30000:1000);
 })();
