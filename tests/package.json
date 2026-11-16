@@ -1,0 +1,13 @@
+{
+  "name": "sog-site-tests",
+  "private": true,
+  "type": "module",
+  "description": "Browser tests for the shop pages: user journey first, then the build. Uses the system Chrome.",
+  "scripts": {
+    "test": "node --test --test-concurrency=1 bunnyworld/",
+    "test:hopwell": "node --test bunnyworld/hopwell.test.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "1.48.2"
+  }
+}
