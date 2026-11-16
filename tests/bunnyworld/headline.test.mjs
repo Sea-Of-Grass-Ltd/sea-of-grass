@@ -22,7 +22,7 @@ const visibleHeadline = () => {
   while ((n = w.nextNode())) { if (n.nodeType === 1) { if (n.tagName === 'BR' && painted(n.parentElement)) s += ' '; continue; } if (painted(n.parentElement)) s += n.textContent; }
   return s.replace(/\s+/g, ' ').trim();
 };
-const box = () => { const r = document.querySelector('.hero h1').getBoundingClientRect(), l = document.querySelector('.hero .lede').getBoundingClientRect(); return [r.x, r.y, r.width, r.height, l.y].map(v => Math.round(v * 10) / 10).join(','); };
+const box = () => { const r = document.querySelector('.hero h1').getBoundingClientRect(), l = document.querySelector('.hero .lede').getBoundingClientRect(); return [r.x, r.y + scrollY, r.width, r.height, l.y + scrollY].map(v => Math.round(v * 10) / 10).join(','); };
 
 for (const w of [360, 390, 1440]) {
   test(`headline sweeps "Hop with style." into "${FINAL}" without moving @ ${w}`, async () => {

@@ -38,14 +38,15 @@ for (const w of [390, 1440]) test(`hero @ ${w}: logo over a one-line headline as
     assert.ok(r.pricesBottom <= r.vh, `all four prices on the first screen (they end at ${Math.round(r.pricesBottom)}px of ${r.vh})`);
     // the critic's Refero pick (2026-11-16): the logo centred directly above a one-line headline, one big unit;
     // the line and the button centred and smaller below
-    assert.equal(r.h1Lines, 1, `the headline is one line (${Math.round(r.h1.height)}px tall at ${r.h1Font}px)`);
-    const big = w >= 900 ? [250, 320] : [200, 240];
+    // one line from 1000px up; below that both loop lines break onto two (proportion spec)
+    assert.equal(r.h1Lines, w >= 1000 ? 1 : 2, `headline lines (${Math.round(r.h1.height)}px tall at ${r.h1Font}px)`);
+    const big = w >= 1000 ? [300, 310] : [140, 190];
     assert.ok(r.mark.h >= big[0] && r.mark.h <= big[1], `the logo is big (${Math.round(r.mark.h)}px tall, want ${big})`);
     if (w >= 900) assert.ok(r.h1Font >= 120, `the headline is big (${r.h1Font}px)`);
     const midMark = r.mark.left + r.mark.w / 2, midH1 = r.h1.left + r.h1.width / 2;
     assert.ok(Math.abs(midMark - midH1) <= 2, `logo centred over the headline (${Math.round(midMark)} vs ${Math.round(midH1)})`);
     const gapUnit = r.h1.top - r.mark.bottom, gapBelow = r.ledeTop - r.h1.bottom;
-    assert.ok(gapUnit >= -2 && gapUnit <= 16, `logo sits right on the headline (${Math.round(gapUnit)}px)`);
+    assert.ok(gapUnit >= -2 && gapUnit <= r.mark.h * 0.1, `logo sits right on the headline (${Math.round(gapUnit)}px)`);
     assert.ok(gapBelow > gapUnit, `the line below sits further off than the logo (${Math.round(gapBelow)} vs ${Math.round(gapUnit)}px)`);
     assert.ok(r.ledeFont * 2.5 <= r.h1Font, `the line is much smaller than the headline (${r.ledeFont} vs ${r.h1Font}px)`);
     assert.ok(Math.abs(r.ledeMid - midH1) <= 2 && Math.abs(r.goMid - midH1) <= 2, 'the line and the button are centred under it');
@@ -135,5 +136,26 @@ for (const w of [390, 1440]) test(`hero @ ${w}: "Hop with style." sits centred u
     });
     assert.equal(r.shown, 'visible', 'opens on "Hop with style."');
     assert.ok(Math.abs(r.from - r.mark) <= 3 && Math.abs(r.to - r.mark) <= 3, `both lines centred under the logo: ${JSON.stringify(r)}`);
+  } finally { await ctx.close(); }
+});
+
+for (const w of [390, 1440]) test(`hero @ ${w}: sizes follow the logo (u = its stroke): headline 6u in Inter 800, line 1u, button 2u`, async () => {
+  const { ctx, page } = await site.open(URL, w, { reducedMotion: 'reduce' });
+  try {
+    const r = await page.evaluate(() => {
+      const h = document.querySelector('.hero h1'), c = getComputedStyle(h), m = document.querySelector('.lh-mark').getBoundingClientRect();
+      const go = document.querySelector('.lh-go'), lede = document.querySelector('.hero .lede');
+      return { u: m.height / 12.75, ratio: m.width / m.height, font: parseFloat(c.fontSize), weight: c.fontWeight, ls: parseFloat(c.letterSpacing) / parseFloat(c.fontSize),
+        line: parseFloat(getComputedStyle(lede).fontSize), btnH: go.getBoundingClientRect().height, btnFont: parseFloat(getComputedStyle(go).fontSize) };
+    });
+    const near = (a, b, tol = 1) => Math.abs(a - b) <= tol;
+    assert.ok(near(r.ratio, 2 / 3, 0.01), `logo is 2:3 (${r.ratio})`);
+    if (w >= 1000) assert.ok(near(r.u, 24, 0.5), `u is 24px on desktop (${r.u})`);
+    assert.ok(near(r.font, 6 * r.u), `headline is 6u (${r.font} vs u ${r.u})`);
+    assert.equal(r.weight, '800');
+    assert.ok(near(r.ls, -0.035, 0.002), `letter-spacing -0.035em (${r.ls})`);
+    assert.ok(near(r.line, Math.max(16, r.u)), `the line is 1u, 16px floor (${r.line})`);
+    assert.ok(near(r.btnH, Math.max(48, 2 * r.u)), `button is 2u tall, 48px floor (${r.btnH})`);
+    assert.ok(near(r.btnFont, Math.max(16, r.u * 2 / 3)), `button text 2/3u, 16px floor (${r.btnFont})`);
   } finally { await ctx.close(); }
 });
