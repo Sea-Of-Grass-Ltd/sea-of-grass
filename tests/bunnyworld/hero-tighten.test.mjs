@@ -123,7 +123,7 @@ for (const w of [360, 390]) test(`Main Street @ ${w}: the trades are pills you c
   } finally { await ctx.close(); }
 });
 
-for (const w of [390, 1440]) test(`hero @ ${w}: "Hop in." sits centred under the logo, so the swap opens no hole`, async () => {
+for (const w of [390, 1440]) test(`hero @ ${w}: "Hop with style." sits centred under the logo, so the swap opens no hole`, async () => {
   const { ctx, page } = await site.open(URL, w);
   try {
     await page.reload({ waitUntil: 'domcontentloaded' });
@@ -133,7 +133,7 @@ for (const w of [390, 1440]) test(`hero @ ${w}: "Hop in." sits centred under the
       const span = s => { const b = letters(s); return (Math.min(...b.map(x => x.left)) + Math.max(...b.map(x => x.right))) / 2; };
       return { from: span('.lh-from'), to: span('.lh-to'), mark: mid(document.querySelector('.lh-mark')), shown: getComputedStyle(document.querySelector('.lh-from')).visibility };
     });
-    assert.equal(r.shown, 'visible', 'opens on "Hop in."');
+    assert.equal(r.shown, 'visible', 'opens on "Hop with style."');
     assert.ok(Math.abs(r.from - r.mark) <= 3 && Math.abs(r.to - r.mark) <= 3, `both lines centred under the logo: ${JSON.stringify(r)}`);
   } finally { await ctx.close(); }
 });

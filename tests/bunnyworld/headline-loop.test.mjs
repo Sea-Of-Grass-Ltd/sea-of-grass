@@ -1,12 +1,13 @@
+// 2026-11-16: the loop now swaps "Hop with style." ⇄ "Bunny World." (Tristan: close in length, so the centred unit stays steady).
 // Bunny World landing headline, Refero's rhythm (Tristan, 2026-11-16: "it happens too fast, on Refero it's like every 5–6 seconds").
-// The headline loops "Hop in." ⇄ "Find your style." while the hero is on screen: each line holds 5–6s in flat ink, each change
+// The headline loops "Hop with style." ⇄ "Bunny World." while the hero is on screen: each line holds 5–6s in flat ink, each change
 // is a 1.2–1.6s letter-by-letter sweep through the five looks' accents. It pauses off screen or in a hidden tab and restarts
-// cleanly (a full hold before the next change). Reduced motion: no loop, "Find your style." still.
+// cleanly (a full hold before the next change). Reduced motion: no loop, "Bunny World." still.
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { startSite } from '../lib/site.mjs';
 
-const URL = '/bunnyworld/', FROM = 'Hop in.', TO = 'Find your style.';
+const URL = '/bunnyworld/', FROM = 'Hop with style.', TO = 'Bunny World.';
 let site;
 before(async () => { site = await startSite(); });
 after(async () => { await site?.close(); });
@@ -54,7 +55,7 @@ for (const w of [390, 1440]) test(`loops ${FROM} ⇄ ${TO}: each line holds ≥5
     }
     const rs = runs(samples);
     const seq = rs.map(r => `${r.state} ${Math.round(r.end - r.start)}ms`).join(' → ');
-    // it opens on "Hop in." and changes at least three times in 17s (opening, then back, then again)
+    // it opens on "Hop with style." and changes at least three times in 17s (opening, then back, then again)
     assert.equal(rs[0].state, 'from', `opens on "${FROM}": ${seq}`);
     const settled = rs.filter(r => r.state !== 'mid');
     assert.ok(settled.length >= 3, `alternates: ${seq}`);
@@ -93,7 +94,7 @@ for (const how of ['scrolled off screen', 'in a hidden tab']) test(`pauses when 
     else await page.evaluate(() => { delete document.visibilityState; delete document.hidden; Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => 'visible' }); Object.defineProperty(document, 'hidden', { configurable: true, get: () => false }); document.dispatchEvent(new Event('visibilitychange')); });
     const back = Date.now();
     assert.equal((await page.evaluate(read)).text, TO, 'back on screen it shows the same settled line');
-    await page.waitForFunction(r => (0, eval)(`(${r})`)().text !== 'Find your style.', read.toString(), { timeout: 9000, polling: 50 });
+    await page.waitForFunction(r => (0, eval)(`(${r})`)().text !== 'Bunny World.', read.toString(), { timeout: 9000, polling: 50 });
     const waited = Date.now() - back;
     assert.ok(waited >= 5000 && waited <= 7000, `the loop resumes after a full hold (waited ${waited}ms)`);
     await settleOn(page, FROM, 4000);
@@ -101,7 +102,7 @@ for (const how of ['scrolled off screen', 'in a hidden tab']) test(`pauses when 
   } finally { await ctx.close(); }
 });
 
-test('reduced motion: no loop, "Find your style." still the whole time', async () => {
+test('reduced motion: no loop, "Bunny World." still the whole time', async () => {
   const { ctx, page } = await site.open(URL, 1440, { reducedMotion: 'reduce' });
   try {
     await page.evaluate(() => { window.__hl = 0; new MutationObserver(() => window.__hl++).observe(document.querySelector('.hero h1'), { subtree: true, attributes: true, childList: true }); });
