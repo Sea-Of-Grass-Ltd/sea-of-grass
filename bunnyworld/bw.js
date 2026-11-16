@@ -18,6 +18,10 @@ function now(){const p=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZ
 const toMin=s=>{const[h,m]=s.split(':').map(Number);return h*60+(m||0);};
 const fmt=s=>{let m=typeof s==='number'?s:toMin(s),h=Math.floor(m/60)%24,mm=m%60;const ap=h>=12?'pm':'am';h=h%12||12;return h+(mm?':'+String(mm).padStart(2,'0'):'')+' '+ap;};
 
+/* ---- the shop's hours, from the hours table already on the page (data-hours on any element). Day rows and pickup
+   times read this, so nothing can be booked for a day or a time the shop is shut. ---- */
+const hoursOf=el=>{const src=(el&&el.closest('[data-hours]'))||$('[data-hours]');try{return src?JSON.parse(src.dataset.hours):null;}catch(e){return null;}};
+
 /* ---- hours: a live open / closed sign and the week, today marked ---- */
 $$('[data-hours]').forEach(box=>{
   const H=JSON.parse(box.dataset.hours);   // {"0":null,"1":["11:00","21:00"],...} with 0 = Sunday
@@ -49,8 +53,13 @@ $$('[data-calc]').forEach(c=>{const out=$$('[data-out]',c);
       if(e.type==='checkbox'||e.type==='radio'){if(e.checked)t+=p;}else if(e.type==='number'||e.type==='range'){t+=p*(+e.value||0);}else t+=p;});
     $$('select',c).forEach(s=>{const o=s.selectedOptions[0];if(o&&o.dataset.price)t+=+o.dataset.price;if(o&&o.dataset.mult)m*=+o.dataset.mult;});
     $$('[data-mult]',c).forEach(e=>{if(e.tagName==='OPTION')return;if(e.type==='checkbox'||e.type==='radio'){if(e.checked)m*=+e.dataset.mult;}else m*=+e.value||0;});
-    const total=t*m,lo=c.dataset.range?total*(1-+c.dataset.range):null;
-    out.forEach(o=>{const k=o.dataset.out;o.textContent=k==='range'&&lo!==null?`$${Math.round(lo)} – $${Math.round(total*(1+ +c.dataset.range))}`:k==='weekly'&&c.dataset.weeks?money(total/ +c.dataset.weeks):money(total);});};
+    const total=t*m;
+    /* a range estimate (Bunny Auto): every line is a "from" price, so the low end is the sum of the lines shown,
+       each scaled by the vehicle, and the range only reaches upward. Nothing ticked says so instead of "$0 – $0". */
+    let lo=null;
+    if(c.dataset.range){lo=0;$$('input[data-price]',c).forEach(e=>{const p=Math.round(+e.dataset.price*m),l=e.closest('label'),pr=l&&$('.price',l);
+      if(pr)pr.textContent='$'+p;if(e.checked)lo+=p;});}
+    out.forEach(o=>{const k=o.dataset.out;o.textContent=k==='range'&&lo!==null?(lo?`$${lo} – $${Math.round(lo*(1+ +c.dataset.range))}`:(o.dataset.empty||'Tick what it needs')):k==='weekly'&&c.dataset.weeks?money(total/ +c.dataset.weeks):money(total);});};
   c.addEventListener('input',run);c.addEventListener('change',run);run();});
 
 /* ---- booking: a date strip of the next two weeks, then the times still free that day ---- */
@@ -123,12 +132,33 @@ $$('.ba input').forEach(r=>{const set=()=>r.closest('.ba').style.setProperty('--
 $$('[data-zips]').forEach(f=>f.addEventListener('submit',e=>{e.preventDefault();const z=$('input',f).value.trim(),o=$('.zip-out',f),Z=JSON.parse(f.dataset.zips);
   o.textContent=!/^\d{5}$/.test(z)?'Enter a five-digit zip code.':Z[z]?`Yes, we come to ${Z[z]}. ${f.dataset.yes||''}`:(f.dataset.no||'That one is outside our usual area, but ask anyway: we sometimes travel for bigger jobs.');}));
 
+/* ---- pickup times (select[data-pickup="minutes to make it"]): only times the kitchen is open.
+   Open: "As soon as it is ready", then later times before closing. Closed (or about to close): a line saying so,
+   and times on the next day it opens. ---- */
+$$('select[data-pickup]').forEach(sel=>{const H=hoursOf(sel);if(!H)return;
+  const lead=+sel.dataset.pickup||20,n=now(),opts=[];let note='';
+  const today=H[n.day],close=today?toMin(today[1]):0;
+  if(today&&n.min>=toMin(today[0])&&n.min+lead<=close-15){
+    opts.push(`As soon as it is ready (about ${lead} min)`);
+    [45,60].forEach(k=>{if(n.min+k<=close-15)opts.push(k===60?'In an hour':`In ${k} minutes`);});
+    for(let m=Math.ceil((n.min+90)/30)*30;m<=close-30&&opts.length<4;m+=30)opts.push('At '+fmt(m));}
+  else{for(let k=0;k<8;k++){const d=(n.day+k)%7,h=H[d];if(!h)continue;let start=toMin(h[0]);const end=toMin(h[1]);
+      if(k===0){if(n.min+lead>end-30)continue;start=Math.max(start,Math.ceil((n.min+lead)/30)*30);}
+      const when=k===0?'later today':k===1?'tomorrow, '+DAYS[d]:DAYS[d];
+      note=`We’re closed right now. Order ahead for ${when}, from ${fmt(start)}.`;
+      const label=k===0?'Today':k===1?'Tomorrow, '+DAYS[d]:DAYS[d];
+      for(let m=start;m<=end-30&&opts.length<4;m+=30)opts.push(`${label} at ${fmt(m)}`);break;}}
+  if(!opts.length)return;
+  sel.innerHTML=opts.map(o=>`<option>${o}</option>`).join('');
+  if(note){const p=document.createElement('p');p.className='note pickup-note';p.textContent=note;(sel.closest('label')||sel).before(p);}});
+
 /* ---- day chips: a "which day" date field becomes a row of tappable day cards (2026-11-15: no raw mm/dd/yyyy anywhere).
    Two weeks from min (or tomorrow), capped by max; re-drawn if a shop script sets min/max later (Cottontail's season window).
    The real input stays as the value, hidden. Birthdays (autocomplete=bday) keep the styled date field. */
 $$('[data-q] input[type=date]:not([autocomplete=bday])').forEach(inp=>{
   const step=inp.closest('[data-q]'),solo=$$('input:not([type=hidden]),select,textarea',step).length===1;
   const row=document.createElement('div');row.className='q-days';row.setAttribute('role','group');row.setAttribute('aria-label',step.dataset.q);
+  const H=hoursOf(inp),openDays=inp.dataset.days?inp.dataset.days.split(',').map(Number):H?Object.keys(H).filter(k=>H[k]).map(Number):null;
   const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   const draw=()=>{row.textContent='';const t=new Date();t.setHours(12,0,0,0);t.setDate(t.getDate()+1);
     let d=inp.min?new Date(inp.min+'T12:00'):t;if(d<t)d=t;const end=inp.max?new Date(inp.max+'T12:00'):null;
@@ -136,6 +166,7 @@ $$('[data-q] input[type=date]:not([autocomplete=bday])').forEach(inp=>{
       b.dataset.sumText=d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});b.setAttribute('aria-pressed',String(inp.value===v));
       b.innerHTML=`<small>${d.toLocaleDateString('en-US',{weekday:'short'})}</small><b>${d.getDate()}</b><small>${d.toLocaleDateString('en-US',{month:'short'})}</small>`;
       b.setAttribute('aria-label',d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'}));
+      if(openDays&&!openDays.includes(d.getDay())){b.disabled=true;b.title='Closed';b.setAttribute('aria-label',b.getAttribute('aria-label')+', closed');if(inp.value===v)inp.value='';}
       b.addEventListener('click',()=>{inp.value=v;inp.dispatchEvent(new Event('input',{bubbles:true}));inp.dispatchEvent(new Event('change',{bubbles:true}));
         $$('.q-day',row).forEach(x=>x.setAttribute('aria-pressed',String(x===b)));});row.appendChild(b);}};
   draw();new MutationObserver(draw).observe(inp,{attributes:true,attributeFilter:['min','max']});

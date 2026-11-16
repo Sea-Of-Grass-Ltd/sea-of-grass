@@ -6,7 +6,7 @@
     'long-ear-hazy': { style: 'Hazy IPA', abv: '6.5%', ibu: 35, notes: 'Mango, orange juice, soft and pillowy.', grain: 'Citra, Mosaic and El Dorado on oats and wheat.', food: 'Spicy wings, Thai takeout, anything with lime.', local: 'The tufts round the bunny are blue grama, Colorado’s state grass: look for the eyelash seed heads.', tap: 'On tap now · on nitro Fridays · 4-pack to go $16', inks: 'black, haze lilac and juicy orange' },
     'clover-field-pils': { style: 'Pilsner', abv: '4.9%', ibu: 32, notes: 'Crackers, honeysuckle, crisp and clean.', grain: 'Saaz hops on pilsner malt, lagered six weeks.', food: 'Pretzels, fish tacos, a long afternoon.', local: 'That white tower on the horizon is a grain elevator, the tallest thing in most prairie towns.', tap: 'On tap now · 16oz $7 · 4-pack to go $16', inks: 'black, clover green and butter yellow' },
     'carrot-top-kolsch': { style: 'Kölsch', abv: '5.0%', ibu: 22, notes: 'Honey, ripe pear, a clean dry finish.', grain: 'Hallertau hops on pilsner malt, with honey from a Berthoud hive.', food: 'Farm salads, soft cheese, a picnic on the patio.', local: 'The striped field behind the bunnies is sugar beets, Northern Colorado’s old cash crop.', tap: 'On tap now · 16oz $7 · 4-pack to go $16', inks: 'black, carrot orange and leaf green' },
-    'burrow-stout': { style: 'Stout', abv: '7.2%', ibu: 38, notes: 'Cold-brew coffee, dark chocolate, toasted bread.', grain: 'Roast barley and chocolate malt, East Kent Goldings, coffee from the Warren Bakehouse next door.', food: 'Carrot cake from the Warren, or slow-smoked brisket.', local: 'The ridge under the moon is the Hogback again, this time at night from inside the burrow.', tap: 'Fresh Friday: back on tap · 4-pack to go $16', inks: 'black, night navy and cream' },
+    'burrow-stout': { style: 'Stout', abv: '7.2%', ibu: 38, notes: 'Cold-brew coffee, dark chocolate, toasted bread.', grain: 'Roast barley and chocolate malt, East Kent Goldings, coffee from the Warren Bakehouse next door.', food: 'Carrot cake from the Warren, or slow-smoked brisket.', local: 'The ridge under the moon is the Hogback again, this time at night from inside the burrow.', tap: 'Back on tap this week · 4-pack to go $16', inks: 'black, night navy and cream' },
     'thistle-sour': { style: 'Sour', abv: '5.5%', ibu: 8, notes: 'Raspberry, lime zest, bright and tart.', grain: 'Kettle-soured wheat beer with raspberry and lime.', food: 'Goat cheese, ceviche, a hot afternoon.', local: 'The yellow sprig among the thistles is rabbitbrush, or chamisa, which blooms along every ditch in fall.', tap: 'Kicked: back Thursday · 4-packs sold out', inks: 'black, raspberry and lime green' },
   };
   const grid = document.querySelector('.cans'); if (!grid) return;
@@ -26,7 +26,7 @@
         <div><dt>Hops &amp; malt</dt><dd>${f.grain}</dd></div>
         <div><dt>Goes with</dt><dd>${f.food}</dd></div>
         <div class="find"><dt>Find the Berthoud detail</dt><dd>${f.local}</dd></div>
-        <div><dt>Tonight</dt><dd>${f.tap}</dd></div>
+        <div><dt>On tap</dt><dd>${f.tap}</dd></div>
       </dl>
       <p class="ink">Label printed in three inks: ${f.inks}.</p>
     </div>`;
