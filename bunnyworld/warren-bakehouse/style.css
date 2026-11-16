@@ -52,3 +52,16 @@ h2{font-size:clamp(36px,5vw,72px);line-height:.95;letter-spacing:-.02em}
 .faq h3{font:400 28px/1 var(--hf);margin-bottom:10px}
 @media (max-width:760px){.nav nav a:not(.hold){display:none}.visit{grid-template-columns:1fr}}
 .toast{background:#5A0C3C;color:#FFF6EA}
+/* ---- the countdown, back as the hook (2026-11-16). Numerals in Barlow Condensed, lining and tabular, so the digits
+   never jump; each pair sits in a fixed 2ch box. Words stay in Young Serif. Refero: Impossible Foods (db742ba9) and
+   Foudre (67366a36), condensed poster figures on a bright ground. ---- */
+.hero h1{font-size:clamp(42px,6vw,92px)}
+.count{margin:20px 0 6px;min-width:0}
+.hero .count .next{font:400 clamp(17px,1.5vw,21px)/1.35 var(--hf);letter-spacing:0;text-transform:none;margin:0 0 6px;max-width:34ch;color:#5A0C3C}
+.clock{display:flex;align-items:baseline;flex-wrap:nowrap;gap:.04em;margin:0;color:#5A0C3C;font:600 clamp(60px,8.6vw,124px)/.9 "Barlow Condensed","Arial Narrow",Arial,sans-serif;font-variant-numeric:lining-nums tabular-nums;font-feature-settings:"lnum" 1,"tnum" 1;letter-spacing:0;white-space:nowrap}
+.clock [data-d]{display:inline-block;width:2ch;text-align:center}
+.clock .u{font:400 .3em/1 var(--hf);margin:0 .32em 0 .06em;align-self:baseline}
+.clock .sec{display:inline-flex;align-items:baseline}
+.clock .sec[hidden]{display:none}
+.hero .lead{margin-top:18px}
+.hero .btn.on-dark{margin-top:4px}
