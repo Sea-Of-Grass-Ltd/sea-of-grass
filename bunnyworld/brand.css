@@ -296,14 +296,17 @@ html[data-look="sunny"] .lh-hint svg{color:var(--sun);filter:drop-shadow(1.5px 1
 /* ===== The headline sweep (2026-11-15, pattern after refero.design's home headline; their look is not borrowed).
    "Hop in." is rewritten letter by letter into "Find your style." by a wave of the five looks' accent colours, in tap order
    (Clean violet, Bold orange, Warm tomato, Sunny yellow, Disco pink), then every letter settles in the look's flat ink.
+   Since 2026-11-16 it loops (see below); the sweep itself runs in headline.js with the Web Animations API.
    Each letter is one flat colour at any moment, so nothing gradient is ever painted, and nothing is left animated at rest.
    No layout shift: the final words always hold their place (only their opacity and colour animate); "Hop in." is an
    overlay on the first line. Screen readers read the .sr line only. Reduced motion: the base state is the final line. */
 :root{--acc-clean:#A772F9;--acc-bold:#FF4C00;--acc-warm:#D2381F;--acc-sunny:#FFE845;--acc-disco:#FF3386}
 .hero h1.lh-h{position:relative}
 .lh-from{position:absolute;left:0;top:0;visibility:hidden;pointer-events:none}
-@media (prefers-reduced-motion:no-preference){
-  .lh-to>span{animation:lhLetterIn .8s calc(.8s + var(--i) * 60ms) linear backwards}
-  .lh-from>span{animation:lhLetterOut .2s calc(.66s + var(--i) * 60ms) ease-in backwards}}
-@keyframes lhLetterIn{0%{opacity:0;color:var(--acc-clean)}8%{opacity:1;color:var(--acc-clean)}26%{color:var(--acc-bold)}44%{color:var(--acc-warm)}62%{color:var(--acc-sunny)}80%{color:var(--acc-disco)}100%{opacity:1;color:var(--ink)}}
-@keyframes lhLetterOut{0%{visibility:visible;opacity:1;color:var(--ink)}40%{visibility:visible;opacity:1;color:var(--acc-clean)}100%{visibility:visible;opacity:0;color:var(--acc-clean)}}
+/* The loop, in Refero's rhythm (Tristan, 2026-11-16: "on Refero it's like every 5–6 seconds"): headline.js holds each line
+   5.5s in flat ink, then sweeps to the other in 1.3–1.6s, while the hero is on screen and the tab is visible.
+   html.hl-loop is set in <head> only when motion is allowed, so the first paint is "Hop in."; without it (reduced motion, or
+   scripts off) the base state is "Find your style." still. data-show="both" only while a sweep runs. */
+.hl-loop .lh-h:not([data-show="to"]) .lh-to{visibility:hidden}
+.hl-loop .lh-h:not([data-show="to"]) .lh-from{visibility:visible}
+.hl-loop .lh-h[data-show="both"] .lh-to,.hl-loop .lh-h[data-show="both"] .lh-from{visibility:visible}

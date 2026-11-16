@@ -70,7 +70,8 @@ for (const w of [360, 390, 1440]) {
 test('the sweep colours are the five looks\' accent colours', async () => {
   const { ctx, page } = await site.open(URL, 1440);
   try {
-    // read the colours each letter passes through from its running animation's keyframes
+    // read the colours each letter passes through from the sweep's keyframes, once it has started
+    await page.waitForFunction(() => document.querySelector('.hero h1').getAnimations({ subtree: true }).length > 0, null, { timeout: 4000, polling: 50 });
     const cols = await page.evaluate(() => {
       const out = new Set();
       for (const a of document.querySelector('.hero h1').getAnimations({ subtree: true })) for (const k of a.effect.getKeyframes()) if (k.color) out.add(k.color);
