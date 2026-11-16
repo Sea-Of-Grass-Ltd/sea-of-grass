@@ -17,62 +17,59 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Albert+Sans:ital,wght@0,400;0,500;1,400&family=Figtree:wght@400;500;600&family=Geist+Mono:wght@400;500&family=IBM+Plex+Mono:wght@500&family=Gabarito:wght@900&display=swap">
 <link rel="stylesheet" href="../shop.css?v=15">
-<link rel="stylesheet" href="style.css?v=21">
+<link rel="stylesheet" href="style.css?v=22">
 </head>
 <body>
 <div class="demo"><span class="crumbs"><a class="sog-back" href="https://seaofgrass.studio/">&larr; Sea of Grass</a><span class="sep" aria-hidden="true">/</span><a class="bw-wm" href="../" aria-label="Back to Bunny World"><img src="../brand/mark-small-cream.svg?v=2" alt="" width="13" height="20"><span>Bunny World</span></a></span><span>Made-up shop. Everything works; nothing is sent.</span></div>
-<p class="bar" data-sameday>Same-day openings: checking the schedule&hellip;</p>
 <header class="mast wrap"><a class="logo" href="#top">hopwell</a>
- <nav aria-label="Hopwell"><a href="#where">Where it hurts</a><a href="#visits">Visits</a><a href="#insurance">Insurance</a><a href="#intake">Intake</a></nav>
- <span class="acts"><a class="call" href="tel:9705550190">Call</a><a class="btn" href="#book">Book a first visit</a></span></header>
+ <nav aria-label="Hopwell"><a href="#where">Where it hurts</a><a href="#insurance">Insurance</a><a href="#visits">Visits</a><a href="#intake">Intake</a></nav>
+ <span class="acts"><a class="call" href="tel:9705550190">Call</a><a class="btn" href="#book">Book</a></span></header>
 <main id="top">
 <section class="head wrap" id="where" aria-labelledby="where-h"><div><p class="kick">Family chiropractic &middot; Berthoud</p><h1 id="where-h">Point to where <i>it hurts.</i></h1></div>
- <p class="sub">Tap the spot, answer two quick questions, and see what a first visit looks like and when we can see you.</p></section>
+ <p class="sub">Tap the spot and answer two quick questions. We&rsquo;ll say what a first visit looks at, and your answers carry into booking.</p></section>
 
 <section class="hook wrap" data-hook aria-label="Point to where it hurts">
  <figure class="fig"><div class="stage"><img class="blur" src="/preview/assets/work/bunny-world/hopwell-back-640.webp" alt="" aria-hidden="true"><div class="shot"><picture><source type="image/webp" srcset="/preview/assets/work/bunny-world/hopwell-back-640.webp 640w, /preview/assets/work/bunny-world/hopwell-back-960.webp 960w, /preview/assets/work/bunny-world/hopwell-back-1280.webp 1280w" sizes="(max-width: 900px) 100vw, 45vw"><img src="/preview/assets/work/bunny-world/hopwell-back-900.jpg" width="900" height="1125" alt="A patient seen from behind, sitting on a treatment table in a sage tank top, with a little ceramic rabbit on the shelf"></picture>
-  <button type="button" class="spot" data-spot="neck" style="left:50%;top:30%"><span class="sr">Neck</span></button>
-  <button type="button" class="spot" data-spot="head" style="left:50%;top:14%"><span class="sr">Headaches at the base of the skull</span></button>
-  <button type="button" class="spot" data-spot="shoulder" style="left:71%;top:39%"><span class="sr">Shoulder</span></button>
-  <button type="button" class="spot" data-spot="mid" style="left:50%;top:47%"><span class="sr">Between the shoulder blades</span></button>
-  <button type="button" class="spot" data-spot="low" style="left:50%;top:73%"><span class="sr">Low back</span></button>
-  <button type="button" class="spot" data-spot="hip" style="left:34%;top:86%"><span class="sr">Hip or down the leg</span></button>
-  <span class="tag" data-tag aria-hidden="true"></span>
+  <button type="button" class="spot" data-spot="neck" aria-label="Neck" style="left:50%;top:30%"></button>
+  <button type="button" class="spot" data-spot="shoulder" aria-label="Shoulder" style="left:71%;top:39%"></button>
+  <button type="button" class="spot" data-spot="mid" aria-label="Between the shoulder blades" style="left:50%;top:47%"></button>
+  <button type="button" class="spot" data-spot="low" aria-label="Low back" style="left:50%;top:73%"></button>
+  <button type="button" class="spot" data-spot="hip" aria-label="Hip or down the leg" style="left:34%;top:86%"></button>
  </div></div><figcaption><span>Tap where it hurts</span><span class="mono">Not a diagnosis</span></figcaption></figure>
 
  <div class="panel">
-  <div class="q"><div class="t"><span><span class="n">1</span>Where</span><span class="done1" data-where>Tap a spot on the photo</span></div>
-   <div class="chips" role="group" aria-label="Or pick from a list"><button type="button" class="chip" data-spot="neck">Neck</button><button type="button" class="chip" data-spot="head">Headaches</button><button type="button" class="chip" data-spot="shoulder">Shoulder</button><button type="button" class="chip" data-spot="mid">Mid-back</button><button type="button" class="chip" data-spot="low">Low back</button><button type="button" class="chip" data-spot="hip">Hip or leg</button></div></div>
-  <div class="q"><div class="t"><span><span class="n">2</span>How long has it hurt?</span></div>
-   <div class="chips" role="group" aria-label="How long" data-group="long"><button type="button" class="chip" data-v="days">A few days</button><button type="button" class="chip" data-v="weeks" aria-pressed="true">2&ndash;6 weeks</button><button type="button" class="chip" data-v="months">Months</button></div></div>
-  <div class="q"><div class="t"><span><span class="n">3</span>What makes it worse?</span></div>
-   <div class="chips" role="group" aria-label="What makes it worse" data-group="worse"><button type="button" class="chip" data-v="sitting" aria-pressed="true">Sitting</button><button type="button" class="chip" data-v="mornings">Mornings</button><button type="button" class="chip" data-v="lifting">Lifting</button><button type="button" class="chip" data-v="sleeping">Sleeping</button></div></div>
+  <div class="q"><p class="t" id="q1"><span class="n">1</span>Where does it hurt?</p>
+   <div class="chips" role="group" aria-labelledby="q1"><button type="button" class="chip" data-spot="neck">Neck</button><button type="button" class="chip" data-spot="head">Headaches</button><button type="button" class="chip" data-spot="shoulder">Shoulder</button><button type="button" class="chip" data-spot="mid">Mid-back</button><button type="button" class="chip" data-spot="low">Low back</button><button type="button" class="chip" data-spot="hip">Hip or leg</button></div></div>
+  <div class="q"><p class="t" id="q2"><span class="n">2</span>How long has it hurt?</p>
+   <div class="chips" role="group" aria-labelledby="q2" data-group="long"><button type="button" class="chip" data-v="days">A few days</button><button type="button" class="chip" data-v="weeks" aria-pressed="true">2&ndash;6 weeks</button><button type="button" class="chip" data-v="months">Months</button></div></div>
+  <div class="q"><p class="t" id="q3"><span class="n">3</span>What makes it worse?</p>
+   <div class="chips" role="group" aria-labelledby="q3" data-group="worse"><button type="button" class="chip" data-v="sitting" aria-pressed="true">Sitting</button><button type="button" class="chip" data-v="mornings">Mornings</button><button type="button" class="chip" data-v="lifting">Lifting</button><button type="button" class="chip" data-v="sleeping">Sleeping</button></div></div>
   <div class="ans" data-ans aria-live="polite">
    <div data-ok><span class="mono k" data-a-k>Your first visit</span><h2 data-a-h>New patient exam</h2>
     <p data-a-p>Tap where it hurts and we&rsquo;ll tell you what we&rsquo;d look at.</p>
-    <div class="rows"><div><span>Length</span><b>60 min</b></div><div><span>Next open</span><b data-a-next>&hellip;</b></div><div><span data-a-copl>Self-pay</span><b data-a-cop>$65</b></div></div>
+    <div class="rows"><div><span>Length</span><b>60 min</b></div><div><span data-a-copl>Self-pay</span><b data-a-cop>$65</b></div></div>
     <p class="tip" data-a-tip hidden></p>
-    <button type="button" class="btn lt" data-a-book>Book a first visit</button></div>
-   <div data-flag hidden><span class="mono k">Please call first</span><h2>See a doctor before you book</h2><p>Numbness, weakness, a fall or a crash, or a fever with back pain can need checks we can&rsquo;t do here. Call your doctor, or go to urgent care if it&rsquo;s sudden or severe. We&rsquo;re happy to see you after.</p><a class="btn lt" href="tel:9705550190">Call us with questions</a></div>
+    <p class="next">Your answers are already in the booking form below.</p></div>
+   <div data-flag hidden><span class="mono k">Please call first</span><h2>See a doctor before you book</h2><p>Numbness, weakness, a fall or a crash, or a fever with back pain can need checks we can&rsquo;t do here. Call your doctor, or go to urgent care if it&rsquo;s sudden or severe. We&rsquo;re happy to see you after, and you can call us with questions on <a href="tel:9705550190">(970) 555-0190</a>.</p></div>
    <div class="flags"><span>Not a diagnosis. Any of these?</span><div class="chips sm" role="group" aria-label="Warning signs" data-group="flags" data-multi><button type="button" class="chip" data-v="numb">Numbness</button><button type="button" class="chip" data-v="weak">Weakness</button><button type="button" class="chip" data-v="fall">After a fall or crash</button><button type="button" class="chip" data-v="fever">Fever</button></div></div>
   </div>
  </div>
 </section>
 
 <section class="pair wrap">
+ <div class="box" id="book"><p class="kick">Book</p><h2>Book a first visit</h2>
+  <p class="from" data-from hidden></p>
+  <form class="form" data-demo="HW" data-ok="Booked. Your intake link is on its way." data-steps><div data-q="Which visit?"><label>Visit<select data-sum="Visit" data-visit><option>New patient exam (60 min)</option><option>Adjustment (20 min)</option><option>Massage (60 min)</option><option>Kids and pregnancy care (30 min)</option></select></label></div><div data-q="With whom?"><label>With<select data-sum="With"><option>First available</option><option>Dr. Wren Hopwell</option><option>Dr. Ash Hopwell</option></select></label></div><div data-q="Pick a time" data-q-auto=".slots button" data-q-sum="input[name=date],input[name=time]" data-q-keep><div data-slots data-days="1,2,3,4,5" data-times="8:40,9:20,10:20,11:00,13:00,14:20,15:20,16:40" data-seed="hw"></div>
+   <input type="hidden" name="date" data-sum="Day"><input type="hidden" name="time" required data-sum="Time" data-msg="Pick a day and a time first."><input type="hidden" data-sum="About" data-about></div><div data-q="Where do we send the reminder?"><div class="row"><label>Name<input autocomplete="name" required data-sum="Name"></label><label>Phone or email<input required autocomplete="email"></label></div><p class="sync">On a real site this books straight into your scheduler (Zocdoc, Jane and others).</p><p class="err" role="alert"></p>
+   <button class="btn" type="submit">Book my visit</button>
+   <div class="done" role="status"></div>
+  </div></form></div>
  <div class="box" id="insurance"><p class="kick">Live insurance check</p><h2>Are we in network?</h2>
   <div class="fields"><label>Your plan<select data-plan><option value="">Choose your plan</option><option value="acorn">Acorn Mutual PPO</option><option value="clover">Clover Care</option><option value="burrow">United Burrow Health</option><option value="bluebell">Bluebell Cross</option><option value="meadow">Meadowcare (65+)</option><option value="thicket">Thicket Permanente</option><option value="none">No insurance</option></select></label>
    <label>Or type your member ID<input data-member placeholder="e.g. ACM 4471 2208" autocomplete="off" spellcheck="false"></label></div>
   <div class="ok" data-ins role="status"><span>Pick a plan or type your member ID.</span><b></b></div>
-  <p class="note">Demo: checked on this page only. Nothing is sent. Try a member ID starting ACM, CLV, UBH or BBX.</p>
-  <div class="plans"><h3>We bill these plans directly</h3><ul class="pills"><li>Acorn Mutual</li><li>Clover Care</li><li>United Burrow Health</li><li>Bluebell Cross</li><li>Meadowcare (65+)</li></ul></div>
-  <div class="plans"><h3>Without insurance</h3><dl class="self"><div><dt>New patient exam</dt><dd>$65</dd></div><div><dt>Adjustment</dt><dd>$45</dd></div><div><dt>Massage, 60 min</dt><dd>$85</dd></div></dl><p class="note">Pay at the visit. HSA and FSA cards welcome, and we email a receipt you can submit.</p></div></div>
- <div class="box" id="book"><p class="kick">Book</p><h2>Pick a time</h2>
-  <form class="form" data-demo="HW" data-ok="Booked. Your intake link is on its way." data-steps><div data-q="Which visit?"><label>Visit<select data-sum="Visit" data-visit><option>New patient exam (60 min)</option><option>Adjustment (20 min)</option><option>Massage (60 min)</option><option>Kids and pregnancy care (30 min)</option></select></label></div><div data-q="With whom?"><label>With<select data-sum="With"><option>First available</option><option>Dr. Wren Hopwell</option><option>Dr. Ash Hopwell</option></select></label></div><div data-q="Pick a time" data-q-auto=".slots button" data-q-sum="input[name=date],input[name=time]" data-q-keep><div data-slots data-days="1,2,3,4,5" data-times="8:40,9:20,10:20,11:00,13:00,14:20,15:20,16:40" data-seed="hw"></div>
-   <input type="hidden" name="date" data-sum="Day"><input type="hidden" name="time" required data-sum="Time" data-msg="Pick a day and a time first."><input type="hidden" data-sum="About" data-about></div><div data-q="Where do we send the reminder?"><div class="row"><label>Name<input autocomplete="name" required data-sum="Name"></label><label>Phone or email<input required autocomplete="email"></label></div><p class="sync"><i aria-hidden="true"></i>Syncs with your scheduler (Zocdoc, Jane and others) &middot; <span data-synced>updated just now</span></p><p class="err" role="alert"></p>
-   <button class="btn" type="submit">Book my visit</button>
-   <div class="done" role="status"></div>
-  </div></form></div>
+  <p class="note">Demo: checked on this page only, nothing is sent. Try a member ID starting ACM, CLV, UBH or BBX.</p>
+  <div class="plans"><h3>We bill these plans directly</h3><ul class="pills"><li>Acorn Mutual</li><li>Clover Care</li><li>United Burrow Health</li><li>Bluebell Cross</li><li>Meadowcare (65+)</li></ul></div></div>
 </section>
 
 <section class="visits wrap" id="visits" aria-labelledby="visits-h"><h2 id="visits-h" class="sr">Visits and prices</h2>
@@ -80,6 +77,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
  <div class="v"><h3>Adjustment</h3><p>For returning patients. In and out on a lunch break.</p><span>20 min &middot; $45</span></div>
  <div class="v"><h3>Massage</h3><p>Deep tissue or relaxation, by a licensed therapist.</p><span>60 min &middot; $85</span></div>
  <div class="v"><h3>Kids &amp; pregnancy</h3><p>Gentle techniques for growing bodies, from age 2.</p><span>30 min &middot; $50</span></div>
+ <p class="note">Self-pay prices. Pay at the visit; we email a receipt you can submit to your HSA or FSA.</p>
 </section>
 
 <section class="first wrap" aria-labelledby="first-h">
@@ -107,6 +105,6 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
 </main>
 <section class="want"><div><h2>Run a clinic or health practice? Your site can do all of this.</h2><p>Built in your own look, hooked to the tools you already use, kept running. Fixed price, in writing.</p></div><div style="display:flex;flex-wrap:wrap;gap:10px"><a href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a free 20-minute look</a><a class="back" href="../">Back to Bunny World</a></div></section>
 <script src="../bw.js?v=11" defer></script>
-<script src="clinic.js?v=4" defer></script>
+<script src="clinic.js?v=5" defer></script>
 </body>
 </html>

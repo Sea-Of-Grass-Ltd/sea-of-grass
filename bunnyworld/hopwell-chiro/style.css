@@ -2,25 +2,23 @@
    Lead: Luffu (Refero) for stone and sage surfaces, blue-black ink and a quiet editorial feel.
    Headings: Albert Sans regular (Radial and Biograph on Refero: calm health brands set big regular-weight sans).
    Layout of the hook: Fresha's first-visit check (question beside a summary card) and Hers' one-question steps.
-   Photos are labelled slots until the photo run; no drawn art. */
-:root{--bg:#F4F2EB;--ink:#192830;--muted:#55646B;--line:#DAD7CC;--accent:#192830;--on-accent:#F4F2EB;--field:#fff;
-  --card:#FBFAF6;--stone:#E6E3D8;--sage:#CDD3BB;--sage2:#E4E7DA;--apricot:#E8875B;
+   2026-11-15, Tristan's phone review: flat throughout. No soft shadows or halos; hairline borders only.
+   One accent (the blue-black ink), with sage as the quiet second colour. Sections are ruled, not boxed;
+   only the dark answer card is a card. */
+:root{--bg:#EEEBE3;--ink:#192830;--muted:#55646B;--line:#D3CFC3;--accent:#192830;--on-accent:#F4F2EB;--field:#F7F5EF;
+  --stone:#E2DED3;--sage:#CDD3BB;--sage2:#E1E5D6;
   --r:22px;--btn-r:999px;--ctl-r:12px;--hf:"Albert Sans",system-ui,sans-serif;--hw:400;--bf:Figtree,system-ui,sans-serif;--mf:"Geist Mono",ui-monospace,monospace}
 h1,h2,h3{letter-spacing:-.02em}
 .mono,.kick{font:500 12px/1.3 var(--mf);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
 .btn{font-weight:600}
-.btn.lt{background:var(--bg);color:var(--ink);width:100%}
+[hidden]{display:none!important}
 
-/* same-day bar */
-.bar{margin:0;padding:10px var(--side);background:var(--sage);color:var(--ink);font:500 13px/1.4 var(--mf);text-align:center}
-.bar b{font-weight:500;background:var(--bg);border-radius:999px;padding:2px 8px}
-
-/* header */
+/* header: Call + one Book button, nothing else repeats them */
 .mast{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:18px}
 .logo{font:400 32px/1 var(--hf);letter-spacing:-.03em;text-decoration:none}
 .mast nav{display:flex;gap:26px;font-weight:500;font-size:15px}.mast nav a{text-decoration:none}.mast nav a:hover{text-decoration:underline}
 .acts{display:flex;gap:10px;align-items:center}
-.call{display:none;min-height:44px;align-items:center;padding:0 16px;border-radius:999px;border:1px solid var(--line);text-decoration:none;font-weight:600;font-size:15px}
+.call{display:none;min-height:44px;align-items:center;padding:0 16px;border-radius:999px;border:1px solid var(--ink);text-decoration:none;font-weight:600;font-size:15px}
 .mast .btn{min-height:46px;padding:10px 18px;font-size:15px}
 
 /* hook head */
@@ -28,66 +26,80 @@ h1,h2,h3{letter-spacing:-.02em}
 h1{font-size:clamp(44px,5.6vw,80px);line-height:1}h1 i{color:#3E5560}
 .head .sub{font-size:18px;color:var(--muted);max-width:36ch;margin:0}
 
-/* hook */
-.hook{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:24px;align-items:start}
-.fig{margin:0;position:sticky;top:16px}
-.ph{position:relative;border-radius:28px;background:linear-gradient(160deg,#D9D3C4,#BFB8A6 60%,#A9A190)}
-.ph[data-ph]:not(.stage)::after{content:attr(data-ph);position:absolute;left:18px;bottom:16px;right:18px;font:500 11px/1.4 var(--mf);letter-spacing:.06em;text-transform:uppercase;color:#4c473c}
-.stage{aspect-ratio:4/5}
-.spot{position:absolute;transform:translate(-50%,-50%);width:30px;height:30px;padding:0;border-radius:50%;cursor:pointer;background:rgba(244,242,235,.92);border:2px solid var(--bg);box-shadow:0 0 0 7px rgba(244,242,235,.22);transition:box-shadow .2s,background .2s}
-.spot::before{content:"";position:absolute;inset:-10px;border-radius:50%}
-.spot:hover{box-shadow:0 0 0 10px rgba(244,242,235,.35)}
-.spot[aria-pressed="true"]{background:var(--apricot);box-shadow:0 0 0 10px rgba(232,135,91,.32)}
-.tag{position:absolute;transform:translate(22px,-50%);background:var(--bg);color:var(--ink);border:0;border-radius:999px;padding:6px 11px;font:600 13px/1.2 var(--bf);letter-spacing:0;text-transform:none;white-space:nowrap;pointer-events:none}
-.tag:empty{display:none}
-.tag.left{transform:translate(calc(-100% - 22px),-50%)}
-figcaption{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:14px;padding:10px 4px 0}
+/* hook: photo with tap spots beside the three questions and the answer */
+.hook{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:32px;align-items:start}
+.fig{margin:0}
+.ph{position:relative;overflow:hidden;border-radius:var(--r);background:var(--stone)}
+.ph picture,.ph img{display:block;width:100%;height:100%;object-fit:cover}
+.stage{position:relative;overflow:hidden;container-type:size;display:grid;place-items:center;background:#CDBFA8;aspect-ratio:4/5}
+.stage .blur{position:absolute;inset:-30px;width:calc(100% + 60px);height:calc(100% + 60px);object-fit:cover;filter:blur(22px) saturate(.9);opacity:.85}
+.shot{position:relative;flex:none;width:max(100cqw,80cqh);height:max(100cqh,125cqw)}
+.shot picture,.shot img{display:block;width:100%;height:100%;object-fit:cover}
+/* tap spots: a small flat dot, a 40px invisible hit area around it; the chosen one is ink with a paper ring */
+.spot{position:absolute;transform:translate(-50%,-50%);width:16px;height:16px;padding:0;border-radius:50%;cursor:pointer;background:var(--on-accent);border:1.5px solid var(--ink)}
+.spot::before{content:"";position:absolute;left:50%;top:50%;width:40px;height:40px;transform:translate(-50%,-50%);border-radius:50%}
+.spot:hover{background:var(--sage)}
+.spot[aria-pressed="true"]{width:20px;height:20px;background:var(--ink);border:3px solid var(--on-accent)}
+.spot:focus-visible{outline:2px solid var(--on-accent);outline-offset:3px}
+figcaption{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:14px;padding:10px 2px 0}
 figcaption .mono{margin:0;letter-spacing:.04em}
-.panel{display:grid;gap:14px;min-width:0}
-.q{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;display:grid;gap:12px}
-.q .t{display:flex;justify-content:space-between;align-items:center;gap:12px;font-weight:500}
-.q .n{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--sage2);font:500 12px/1 var(--mf);margin-right:8px}
-.done1{color:var(--muted);font-size:14px;font-weight:400;text-align:right}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{min-height:40px;background:var(--sage2);border:1px solid var(--sage);border-radius:999px;padding:8px 14px;font-weight:500;font-size:14px;cursor:pointer}
-.chip:hover{border-color:var(--ink)}
-.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.ans{background:var(--ink);color:var(--bg);border-radius:var(--r);padding:22px;display:grid;gap:14px}
-.ans>div{display:grid;gap:12px}
-.ans .k{color:#F2B193;margin:0}.ans h2{font-size:34px;line-height:1.05;margin:0}
-.ans p{margin:0;color:#C9D1D4;font-size:15px}
-.ans .rows{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;border-top:1px solid #34444C;padding-top:12px}
-.ans .rows span{display:block;color:#9FAAAF;font-size:13px}.ans .rows b{font:500 17px/1.3 var(--mf)}
-.ans .tip{background:#22343D;border-radius:14px;padding:12px 14px;color:#DDE3E5}
-.ans .tip b{color:var(--bg);font-weight:600}
-.ans [data-flag] h2{color:#F2B193}
-.flags{border-top:1px solid #34444C;padding-top:12px;display:grid!important;gap:8px;font-size:13px;color:#C9D1D4}
-.chips.sm .chip{min-height:34px;padding:5px 11px;font-size:13px;background:transparent;color:#DDE3E5;border-color:#3E5059}
-.chips.sm .chip[aria-pressed="true"]{background:var(--apricot);color:var(--ink);border-color:var(--apricot)}
 
-/* insurance + booking */
-.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;padding-block:28px 56px;align-items:start}
-.box{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:clamp(18px,2.4vw,26px);display:grid;gap:14px;align-content:start;min-width:0}
+.panel{display:grid;gap:6px;min-width:0}
+.q{border-top:1px solid var(--line);padding:16px 0 6px;display:grid;gap:12px}
+.panel .q:first-child{border-top:0;padding-top:0}
+.q .t{display:flex;align-items:center;font-weight:500;margin:0;font-size:17px}
+.q .n{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--sage2);font:500 12px/1 var(--mf);margin-right:10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{min-height:42px;background:var(--field);border:1px solid var(--line);border-radius:999px;padding:8px 15px;font-weight:500;font-size:15px;cursor:pointer;color:var(--ink)}
+.chip:hover{border-color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--on-accent);border-color:var(--ink)}
+
+.ans{background:var(--ink);color:var(--on-accent);border-radius:var(--r);padding:22px;display:grid;gap:14px;margin-top:10px}
+.ans>div{display:grid;gap:12px}
+.ans .k{color:var(--sage);margin:0}.ans h2{font-size:34px;line-height:1.05;margin:0}
+.ans p{margin:0;color:#C9D1D4;font-size:15px}
+.ans .rows{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;border-top:1px solid #34444C;padding-top:12px}
+.ans .rows span{display:block;color:#9FAAAF;font-size:13px}.ans .rows b{font:500 17px/1.3 var(--mf)}
+.ans .tip{border-left:2px solid var(--sage);padding:2px 0 2px 12px;color:#DDE3E5}
+.ans .tip b{color:var(--on-accent);font-weight:600}
+.ans .next{color:var(--on-accent);font-weight:600}
+.ans .btn.lt{background:var(--on-accent);color:var(--ink);justify-self:start}
+.ans [data-flag] h2{color:var(--on-accent)}
+.flags{border-top:1px solid #34444C;padding-top:12px;display:grid!important;gap:8px;font-size:13px;color:#C9D1D4}
+.chips.sm .chip{min-height:36px;padding:6px 12px;font-size:13px;background:transparent;color:#DDE3E5;border-color:#4A5B63}
+.chips.sm .chip:hover{border-color:#DDE3E5}
+.chips.sm .chip[aria-pressed="true"]{background:var(--on-accent);color:var(--ink);border-color:var(--on-accent)}
+
+/* booking + insurance: ruled sections on the paper */
+.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:48px;padding-block:40px 56px;align-items:start}
+.box{border-top:1px solid var(--ink);padding:18px 0 0;display:grid;gap:14px;align-content:start;min-width:0}
 .box h2{font-size:clamp(28px,3vw,36px);line-height:1.1}
 .box .kick{margin:0}
+.from{margin:0;border-left:2px solid var(--sage);padding:2px 0 2px 12px;font-size:15px;color:var(--muted)}
+.from b{color:var(--ink);font-weight:600}
 .fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.ok{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--sage2);border-radius:14px;padding:12px 14px;min-height:52px;font-size:15px}
+.ok{display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0;min-height:52px;font-size:15px}
 .ok b{font:500 18px/1 var(--mf);white-space:nowrap}
-.ok.no{background:#F6E3D8}
+.ok.no{color:#8A4A2E}
 .ok.wait span{color:var(--muted)}
-.box .note{margin:0}
+.box .note{margin:0;color:var(--muted);font-size:14px}
+.plans{display:grid;gap:10px;padding-top:6px}
+.plans h3{font-size:20px}
+.pills{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.pills li{border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:500}
 .days button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink)}
 .days button b{font-family:var(--mf);font-weight:500;font-size:18px}
 .slots button{font-family:var(--mf);font-size:14px}
 .sync{font-size:14px;color:var(--muted);margin:0}
-.sync i{display:inline-block;vertical-align:middle;margin:0 8px 2px 4px;width:8px;height:8px;border-radius:50%;background:#6FA26B;box-shadow:0 0 0 4px rgba(111,162,107,.2)}
 .done b{font-size:24px}
+.q-n{background:var(--sage);color:var(--ink)}
 
-/* visits */
-.visits{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;padding-block:8px 56px;border-top:1px solid var(--line);padding-top:32px}
+/* visits: the one price list */
+.visits{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;border-top:1px solid var(--line);padding-block:32px 56px}
 .v{display:grid;gap:8px;align-content:start}
 .v h3{font-size:24px}.v p{margin:0;font-size:15px;color:var(--muted)}
-.v span{font:500 13px/1 var(--mf);background:var(--sage2);border-radius:999px;padding:8px 11px;justify-self:start}
+.v span{font:500 13px/1 var(--mf);border:1px solid var(--line);border-radius:999px;padding:7px 11px;justify-self:start}
+.visits .note{grid-column:1/-1;margin:0;color:var(--muted);font-size:14px}
 
 /* first visit */
 .first{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;padding-block:24px 56px}
@@ -95,33 +107,43 @@ figcaption .mono{margin:0;letter-spacing:.04em}
 .first-h{grid-column:1/-1}.first-h h2,.ih h2{font-size:clamp(34px,4vw,52px)}
 .steps{grid-column:1/-1;list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;counter-reset:s}
 .steps li{display:grid;gap:10px;align-content:start;counter-increment:s}
-.steps h3{font-size:24px}.steps h3::before{content:counter(s) "  ";font:500 14px/1 var(--mf);color:var(--muted);vertical-align:middle;margin-right:6px}
+.steps h3{font-size:24px}.steps h3::before{content:counter(s);font:500 14px/1 var(--mf);color:var(--muted);vertical-align:middle;margin-right:10px}
 .steps p{margin:0;color:var(--muted);font-size:15px}
-.ph.sq{aspect-ratio:1/1;border-radius:var(--r)}
-.faq{grid-column:1/-1;max-width:760px}
+.ph.sq{aspect-ratio:1/1}
+.faq{grid-column:1/-1;max-width:760px;border-top:1px solid var(--line)}
 summary{font-family:var(--hf);font-size:20px}
 
 /* intake */
 .intake{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.4fr);gap:clamp(16px,4vw,48px);padding-block:24px 56px;align-items:start}
 .ih h2{margin-bottom:14px}.ih p{color:var(--muted);max-width:44ch}
-.pre{margin:0;background:var(--sage2);border-radius:14px;padding:12px 14px;font-size:15px}
+.pre{margin:0;border-left:2px solid var(--sage);padding:4px 0 4px 12px;font-size:15px}
 
 /* reviews + hours */
-.reviews{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;padding-block:24px 48px;border-top:1px solid var(--line);padding-top:40px}
+.reviews{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;border-top:1px solid var(--line);padding-block:40px 48px}
 blockquote{margin:0}blockquote p{font:400 clamp(22px,2.2vw,28px)/1.25 var(--hf);letter-spacing:-.01em;margin:0 0 10px}
 cite{font:500 12px/1 var(--mf);letter-spacing:.06em;text-transform:uppercase;font-style:normal;color:var(--muted)}
 .hrs{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:24px;padding-block:0 64px}
 .hrs .box p{margin:0}
-.map{border-radius:var(--r);height:100%;min-height:300px}
+.hours tr.today td{background:var(--stone)}
+.map{border:0;border-radius:var(--r);height:100%;min-height:300px;background:var(--stone)}
 
+/* desktop: the photo stretches to the height of the questions + answer, so both columns end together */
+@media (min-width:901px){
+ .hook{align-items:stretch}
+ .fig{display:flex;flex-direction:column}
+ .stage{aspect-ratio:auto;flex:1;min-height:520px}
+}
 @media (max-width:900px){
  .mast nav{display:none}.call{display:inline-flex}
- .head{flex-direction:column;align-items:start;gap:12px;padding-block:12px 20px}
+ .head{flex-direction:column;align-items:start;gap:12px;padding-block:8px 16px}
+ h1{font-size:40px}.head .sub{font-size:15px}
  .hook,.pair,.intake,.hrs,.reviews{grid-template-columns:minmax(0,1fr)}
- .fig{position:static}.stage{aspect-ratio:5/6}
+ .hook{gap:20px}
+ .stage{aspect-ratio:auto;height:min(88vw,44svh)}
+ .shot{width:min(100cqw,80cqh);height:min(100cqh,125cqw)}
  .visits{grid-template-columns:repeat(2,minmax(0,1fr))}
  .first,.steps{grid-template-columns:minmax(0,1fr)}.ph.wide{aspect-ratio:16/9}
- .pair{gap:16px}
+ .pair{gap:40px;padding-top:32px}
 }
 @media (max-width:520px){
  .mast .btn{padding:10px 14px}.logo{font-size:28px}
@@ -130,134 +152,6 @@ cite{font:500 12px/1 var(--mf);letter-spacing:.06em;text-transform:uppercase;fon
  .visits{grid-template-columns:minmax(0,1fr)}
  .ph.sq{aspect-ratio:4/3}
 }
-[hidden]{display:none!important}
 
-/* Tristan, 2026-11-15: "Lose the boxes." Ruled sections on the paper, not floating cards (as on the Websites page).
-   A hairline on top, a mono label, the heading, then the content. Only the dark answer card stays a card. */
-.box{background:none;border:0;border-top:1px solid var(--ink);border-radius:0;padding:18px 0 0}
-.q{background:none;border:0;border-top:1px solid var(--line);border-radius:0;padding:16px 0 4px}
-.panel{gap:6px}.panel .q:first-child{border-top-color:var(--ink);padding-top:0;border-top:0}
-.ans{margin-top:10px}
-.pair{gap:48px}
-.ok{border-radius:0;background:none;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0}
-.ok.no{background:none;color:#9A4A26}
-.pre{border-radius:0;background:none;border-left:2px solid var(--apricot);padding:4px 0 4px 12px}
-.hrs .box{padding-top:18px}
-@media (max-width:900px){.pair{gap:40px}}
-
-/* ---- Neumorphism trial, hook only (Tristan, 2026-11-15: "a neumorphism look would actually work really well here").
-   Soft extrusion in the paper colour, lit from the top left: a white highlight and a warm stone shadow. No outlines.
-   Contrast kept by ink text, a ✓ on chosen chips and apricot only for the chosen spot. */
-:root{--bg:#EEEBE3;--hi:rgba(255,255,255,.95);--lo:rgba(163,152,128,.42);--lo2:rgba(163,152,128,.55)}
-.hook .fig{background:var(--bg);border-radius:34px;padding:12px;box-shadow:-8px -8px 18px var(--hi),9px 9px 20px var(--lo)}
-.hook .stage{border-radius:24px;box-shadow:inset 3px 3px 8px rgba(80,70,50,.25),inset -2px -2px 6px rgba(255,255,255,.35)}
-.hook figcaption{padding:12px 8px 2px}
-.hook .spot{background:var(--bg);border:0;width:34px;height:34px;box-shadow:-4px -4px 8px rgba(255,255,255,.7),4px 4px 9px rgba(70,60,40,.4)}
-.hook .spot:hover{box-shadow:-5px -5px 10px rgba(255,255,255,.8),5px 5px 11px rgba(70,60,40,.45)}
-.hook .spot[aria-pressed="true"]{background:var(--bg);box-shadow:inset 3px 3px 6px rgba(70,60,40,.4),inset -3px -3px 6px rgba(255,255,255,.8)}
-.hook .spot[aria-pressed="true"]::after{content:"";position:absolute;inset:9px;border-radius:50%;background:var(--apricot);box-shadow:0 0 0 3px rgba(232,135,91,.25)}
-.hook .tag{box-shadow:-3px -3px 7px rgba(255,255,255,.6),3px 3px 8px rgba(70,60,40,.3)}
-.hook .q{border:0;padding:14px 0 6px}
-.panel .q:first-child{padding-top:0}
-.hook .q .n{background:var(--bg);box-shadow:inset 2px 2px 4px var(--lo2),inset -2px -2px 4px var(--hi)}
-.hook .chip{background:var(--bg);border:0;color:#3C4B52;min-height:42px;padding:9px 16px;box-shadow:-4px -4px 9px var(--hi),4px 4px 10px var(--lo);transition:box-shadow .15s}
-.hook .chip:hover{color:var(--ink)}
-.hook .chip[aria-pressed="true"]{background:#E4E0D6;color:var(--ink);font-weight:600;box-shadow:inset 3px 3px 7px var(--lo2),inset -3px -3px 7px var(--hi)}
-.hook .chip[aria-pressed="true"]::before{content:"✓ ";}
-.hook .ans{box-shadow:-8px -8px 18px var(--hi),10px 12px 24px rgba(25,40,48,.35)}
-.hook .ans .btn.lt{background:#F4F2EB;box-shadow:inset 0 -2px 0 rgba(25,40,48,.15)}
-.hook .chips.sm .chip{background:transparent;color:#DDE3E5;box-shadow:inset 0 0 0 1px #3E5059}
-.hook .chips.sm .chip::before{content:none}
-.hook .chips.sm .chip[aria-pressed="true"]{background:var(--apricot);color:var(--ink);box-shadow:none}
-@media (max-width:900px){
- .hook{gap:18px}.head{padding-block:8px 16px}.head .sub{font-size:16px}h1{font-size:40px}
- .hook .stage{aspect-ratio:auto;height:min(76vw,38svh)}
- .hook .fig{padding:10px;border-radius:30px}
-.hook figcaption{padding:8px 6px 0}
-}
-
-/* ---- Neumorphism sitewide (Tristan: "I meant for Hopwell in general"). Same light, same rules as the hook:
-   raised = idle, pressed = chosen or a field to type in. No outlines anywhere. */
-:root{--up:-6px -6px 14px var(--hi),7px 7px 16px var(--lo);--up-s:-4px -4px 9px var(--hi),4px 4px 10px var(--lo);
-  --in:inset 3px 3px 7px var(--lo2),inset -3px -3px 7px var(--hi)}
-/* header and buttons */
-.call{border:0;background:var(--bg);box-shadow:var(--up-s)}
-.btn{box-shadow:-4px -4px 10px var(--hi),6px 6px 14px rgba(25,40,48,.32);transition:box-shadow .15s,transform .15s}
-.btn:hover{box-shadow:-5px -5px 12px var(--hi),8px 8px 18px rgba(25,40,48,.36)}
-.btn:active{box-shadow:inset 3px 3px 7px rgba(0,0,0,.45),inset -2px -2px 5px rgba(255,255,255,.12)}
-.bar{background:var(--bg);box-shadow:inset 0 -1px 0 rgba(163,152,128,.25),inset 0 4px 8px -4px var(--lo)}
-.bar b{background:var(--bg);box-shadow:var(--in);padding:3px 10px}
-/* sections become soft raised surfaces (no borders) */
-.box{background:var(--bg);border:0;border-radius:28px;padding:clamp(20px,2.6vw,30px);box-shadow:var(--up)}
-.pair{gap:32px}
-input,select,textarea{border:0;background:var(--bg);box-shadow:var(--in);border-radius:14px}
-input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
-input[type=checkbox]{box-shadow:none}
-input[type=range]{box-shadow:none;background:transparent}
-.ok{background:var(--bg);border:0;border-radius:16px;padding:14px 16px;box-shadow:var(--in)}
-.ok.no{background:var(--bg);color:#9A4A26}
-.days button,.slots button{border:0;background:var(--bg);box-shadow:var(--up-s);color:var(--ink)}
-.days button[aria-pressed="true"],.slots button[aria-pressed="true"]{background:#E4E0D6;color:var(--ink);font-weight:600;box-shadow:var(--in)}
-.days button[aria-pressed="true"] b{text-decoration:underline;text-decoration-color:var(--ink);text-underline-offset:4px}
-.slots button[aria-pressed="true"]::before{content:"✓ "}
-.days button:disabled,.slots button:disabled{box-shadow:none;background:transparent;opacity:.45}
-.days{padding:8px 6px 14px;margin-inline:-6px}
-.slots{padding:4px 2px 6px}
-.done{border:0;background:var(--bg);box-shadow:var(--in);border-radius:16px}
-.pre{border:0;background:var(--bg);box-shadow:var(--in);border-radius:14px;padding:12px 14px}
-/* visits */
-.visits{border-top:0;padding-top:8px;gap:20px}
-.v{background:var(--bg);border-radius:24px;padding:22px;box-shadow:var(--up)}
-.v span{background:var(--bg);box-shadow:var(--in)}
-/* first visit: photo slots sit in raised frames */
-.ph.wide,.ph.sq{box-shadow:inset 3px 3px 8px rgba(80,70,50,.25),inset -2px -2px 6px rgba(255,255,255,.35)}
-.first .ph.wide{box-shadow:inset 3px 3px 8px rgba(80,70,50,.25),0 0 0 12px var(--bg),-8px -8px 18px 12px var(--hi),9px 9px 20px 12px var(--lo);margin:12px}
-.steps li{background:var(--bg);border-radius:28px;padding:12px 12px 20px;box-shadow:var(--up)}
-.steps li h3,.steps li p{padding-inline:8px}
-.faq{display:grid;gap:14px}
-details{border:0;background:var(--bg);border-radius:20px;padding:16px 20px;box-shadow:var(--up-s)}
-details[open]{box-shadow:var(--in)}
-/* reviews, hours, map */
-.reviews{border-top:0;padding-top:16px}
-blockquote{background:var(--bg);border-radius:28px;padding:26px 28px;box-shadow:var(--up)}
-.hrs .box{padding:26px}
-.hours td{border-bottom:0;box-shadow:0 1px 0 rgba(163,152,128,.25)}
-.hours tr.today td{background:#E4E0D6}
-.map{border-radius:28px;box-shadow:var(--up);border:12px solid var(--bg)}
-@media (max-width:900px){.pair{gap:28px}.first .ph.wide{margin:12px}}
-
-/* Desktop: the photo frame stretches to the full height of the steps + answer column, so both columns end together. */
-@media (min-width:901px){
- .hook{align-items:stretch}
- .hook .fig{position:static;display:flex;flex-direction:column}
- .hook .stage{aspect-ratio:auto;flex:1;min-height:520px}
-}
-
-/* insurance and booking end together; the insurance side carries the plan list and self-pay prices */
-.pair{align-items:stretch}
-.plans{display:grid;gap:10px;padding-top:6px}
-.plans h3{font-size:20px}
-.pills{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
-.pills li{background:var(--bg);box-shadow:var(--in);border-radius:999px;padding:7px 13px;font-size:14px;font-weight:500}
-.self{margin:0;display:grid;gap:2px;background:var(--bg);box-shadow:var(--in);border-radius:16px;padding:6px 16px}
-.self div{display:flex;justify-content:space-between;padding:9px 0;box-shadow:0 1px 0 rgba(163,152,128,.25)}
-.self div:last-child{box-shadow:none}
-.self dt{font-size:15px}.self dd{margin:0;font:500 15px/1.4 var(--mf)}
-@media (min-width:901px){#book{display:flex;flex-direction:column}#book form{flex:1;display:flex;flex-direction:column}#book form>[type=submit]{margin-top:auto}}
-
-/* photos in: the back photo keeps its own 4:5 shape inside the frame (dots are placed on the photo, not the frame);
-   any spare room in the frame shows a soft blurred copy of the same photo */
-.ph{overflow:hidden}.ph picture,.ph img{display:block;width:100%;height:100%;object-fit:cover}
-.ph.sq img{aspect-ratio:1/1}
-.stage{position:relative;overflow:hidden;container-type:size;display:grid;place-items:center;background:#CDBFA8}
-.stage .blur{position:absolute;inset:-30px;width:calc(100% + 60px);height:calc(100% + 60px);object-fit:cover;filter:blur(22px) saturate(.9);opacity:.85}
-.shot{position:relative;flex:none;width:max(100cqw,80cqh);height:max(100cqh,125cqw)}
-.shot picture,.shot img{display:block;width:100%;height:100%;object-fit:cover}
-@media (max-width:900px){.hook .stage{height:min(88vw,41svh)}.head .sub{font-size:15px}.shot{width:min(100cqw,80cqh);height:min(100cqh,125cqw)}}
-
-/* form skin (2026-11-15): soft raised shells that press in when chosen (Ease Health / Radial). Shared step engine lives in shop.css; this only changes the look. */
-.q-n{background:var(--sage);color:var(--ink)}
-.q-opt,.q-sum,.file-pick{border:0;background:var(--bg);box-shadow:-4px -4px 10px var(--hi),4px 4px 12px var(--lo)}
-.q-opt[aria-pressed="true"]{background:var(--bg);color:var(--ink);box-shadow:inset 3px 3px 8px var(--lo2),inset -3px -3px 8px var(--hi);font-weight:600}
-.q-opt:hover,.q-sum:hover{box-shadow:-5px -5px 12px var(--hi),5px 5px 14px var(--lo2)}
-.file-pick b{background:var(--ink);color:var(--on-accent)}
+/* the shared open/closed dot, flat like the rest of the page */
+.status.open::before{box-shadow:none}
