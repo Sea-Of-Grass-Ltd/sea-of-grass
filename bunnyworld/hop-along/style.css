@@ -256,3 +256,5 @@ body.sheet-lock{overflow:hidden}
 .h-title .label{background:#2B3D73;color:#FEF7E6}
 .card.dark{--muted:#FEF7E6}.card.dark .note{color:#FEF7E6}
 .toast{background:#2B3D73;color:#FEF7E6}
+/* numerals in the plain face, not the serif display (critic C, 2026-11-16) */
+.poster .date,.q-day b,.est b,.card-gc b{font-family:var(--bf);font-weight:700;font-variation-settings:normal;font-variant-numeric:lining-nums tabular-nums}

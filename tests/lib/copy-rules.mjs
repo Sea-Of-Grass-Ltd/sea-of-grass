@@ -1,11 +1,13 @@
 // Copy rules shared by the copy tests. Both functions run inside the page (page.evaluate), so they must stay self-contained.
 
 // Sales copy voice (Tristan, 2026-11-16): sentences under 6 words (telegraphic fragments) and em-dash asides, in visible body copy.
+// [data-voice="tagline"]: a short brand line Tristan chose word for word (the Bunny World hero's "Imaginary shops, real websites."),
+// not body copy, so it is not held to the full-sentence rule.
 // under 6, not 5: the example fragment "Twenty minutes on a call." is exactly five words
 export function copyFindings() {
   const MIN_WORDS = 6, out = [];
   // body copy: paragraphs, list items, definitions, quotes and captions, set in a reading face
-  const skip = 'nav, button, label, select, option, .demo, .credit, .sr, .sr-only, [aria-hidden="true"], [hidden], script, style, [data-voice="quote"], .tag, .chip, .kick, .mono, .eyebrow, cite, code';
+  const skip = 'nav, button, label, select, option, .demo, .credit, .sr, .sr-only, [aria-hidden="true"], [hidden], script, style, [data-voice="quote"], [data-voice="tagline"], .tag, .chip, .kick, .mono, .eyebrow, cite, code';
   const prose = [...document.querySelectorAll('p, li, dd, blockquote, figcaption, summary + *')].filter(e => {
     if (e.closest(skip)) return false;
     if ([...e.children].some(c => /^(P|LI|UL|OL|DD)$/.test(c.tagName))) return false; // the leaf block holds the sentence
