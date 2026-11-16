@@ -101,12 +101,14 @@ for (const w of [390, 1440]) {
     const base = await rects(plain.page); await plain.ctx.close();
     const { ctx, page, errors } = await site.open(URL, w);
     try {
-      await page.evaluate(() => { window.__cls = 0; new PerformanceObserver(l => l.getEntries().forEach(e => { if (!e.hadRecentInput) window.__cls += e.value; })).observe({ type: 'layout-shift', buffered: true }); });
+      // shifts of anything in the hero, since load (buffered, so mounting is covered); the header's Cart button arriving
+      // from cart.js during load is the page's own and not the smoke's
+      await page.evaluate(() => { window.__cls = 0; const hero = document.querySelector('.hero'); new PerformanceObserver(l => l.getEntries().forEach(e => { if (!e.hadRecentInput && (e.sources || []).some(x => x.node && hero.contains(x.node))) window.__cls += e.value; })).observe({ type: 'layout-shift', buffered: true }); });
       assert.deepEqual(await rects(page), base, 'same layout as the plain page');
       await drag(page, { release: false });
       assert.deepEqual(await rects(page), base, 'same layout mid-drag');
       await page.mouse.up(); await page.waitForTimeout(300);
-      assert.equal(await page.evaluate(() => window.__cls), 0, 'no layout shift');
+      assert.equal(await page.evaluate(() => window.__cls), 0, 'no layout shift in the hero');
       assert.deepEqual(errors, []);
     } finally { await ctx.close(); }
   });
