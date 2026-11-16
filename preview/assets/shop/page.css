@@ -52,3 +52,6 @@ h1,h2{font-family:Manrope,Inter,sans-serif;font-weight:500;letter-spacing:-.03em
 .sp-order{padding:18px 22px}
 .sp-order ul{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:4px;color:#C7C7C8}
 @media (max-width:780px){.sp-co,.sp-next{grid-template-columns:1fr}}
+
+/* when each thing is paid for (2026-11-15 terms) */
+.sp-when{list-style:none;margin:14px 0;padding:0;display:grid;gap:10px;font-size:15px;line-height:1.5}
