@@ -63,11 +63,10 @@ figcaption .mono{margin:0;letter-spacing:.04em}
 .ans .tip{border-left:2px solid var(--sage);padding:2px 0 2px 12px;color:#DDE3E5}
 .ans .tip b{color:var(--on-accent);font-weight:600}
 .ans .next{color:var(--on-accent);font-weight:600}
-.ans .btn.lt{background:var(--on-accent);color:var(--ink);justify-self:start}
 .ans [data-flag] h2{color:var(--on-accent)}
 .flags{border-top:1px solid #34444C;padding-top:12px;display:grid!important;gap:8px;font-size:13px;color:#C9D1D4}
-.chips.sm .chip{min-height:36px;padding:6px 12px;font-size:13px;background:transparent;color:#DDE3E5;border-color:#4A5B63}
-.chips.sm .chip:hover{border-color:#DDE3E5}
+.chips.sm .chip{min-height:36px;padding:6px 12px;font-size:13px;background:transparent;color:var(--on-accent);border-color:var(--muted)}
+.chips.sm .chip:hover{border-color:var(--on-accent)}
 .chips.sm .chip[aria-pressed="true"]{background:var(--on-accent);color:var(--ink);border-color:var(--on-accent)}
 
 /* booking + insurance: ruled sections on the paper */

@@ -1,0 +1,26 @@
+✔ 360px · journey: land → tap → answer → first visit → answers in booking → book once (1220.706792ms)
+✔ 360px · one scheduling block, no repeated actions (518.686667ms)
+✔ 360px · tap spots: apart, no halos, labels clear (711.130041ms)
+✔ 360px · every question title is a full sentence ending in "?" (499.957625ms)
+✔ 360px · buttons, chips and spots use only palette tokens, no shadows (654.168584ms)
+✔ 360px · no sideways scroll, no console errors (709.14475ms)
+✔ 390px · journey: land → tap → answer → first visit → answers in booking → book once (822.543917ms)
+✔ 390px · one scheduling block, no repeated actions (525.65725ms)
+✔ 390px · tap spots: apart, no halos, labels clear (728.814166ms)
+✔ 390px · every question title is a full sentence ending in "?" (502.082041ms)
+✔ 390px · buttons, chips and spots use only palette tokens, no shadows (662.766334ms)
+✔ 390px · no sideways scroll, no console errors (712.42425ms)
+✔ 1440px · journey: land → tap → answer → first visit → answers in booking → book once (780.741833ms)
+✔ 1440px · one scheduling block, no repeated actions (516.92425ms)
+✔ 1440px · tap spots: apart, no halos, labels clear (704.765834ms)
+✔ 1440px · every question title is a full sentence ending in "?" (501.559ms)
+✔ 1440px · buttons, chips and spots use only palette tokens, no shadows (639.530708ms)
+✔ 1440px · no sideways scroll, no console errors (717.99475ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12674.990875

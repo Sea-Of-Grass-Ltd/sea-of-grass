@@ -1,0 +1,546 @@
+✖ 360px · journey: land → tap → answer → first visit → answers in booking → book once (975.310875ms)
+✖ 360px · one scheduling block, no repeated actions (511.0465ms)
+✖ 360px · tap spots: apart, no halos, labels clear (539.179ms)
+✖ 360px · every question title is a full sentence ending in "?" (512.123ms)
+✖ 360px · buttons, chips and spots use only palette tokens, no shadows (652.3985ms)
+✔ 360px · no sideways scroll, no console errors (721.716041ms)
+✖ 390px · journey: land → tap → answer → first visit → answers in booking → book once (638.813833ms)
+✖ 390px · one scheduling block, no repeated actions (526.952917ms)
+✖ 390px · tap spots: apart, no halos, labels clear (511.658584ms)
+✖ 390px · every question title is a full sentence ending in "?" (525.797417ms)
+✖ 390px · buttons, chips and spots use only palette tokens, no shadows (665.610208ms)
+✔ 390px · no sideways scroll, no console errors (701.003959ms)
+✖ 1440px · journey: land → tap → answer → first visit → answers in booking → book once (655.646ms)
+✖ 1440px · one scheduling block, no repeated actions (519.637125ms)
+✖ 1440px · tap spots: apart, no halos, labels clear (525.734542ms)
+✖ 1440px · every question title is a full sentence ending in "?" (518.53475ms)
+✖ 1440px · buttons, chips and spots use only palette tokens, no shadows (648.102375ms)
+✔ 1440px · no sideways scroll, no console errors (728.0695ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 3
+ℹ fail 15
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11563.835666
+
+✖ failing tests:
+
+test at bunnyworld/hopwell.test.mjs:52:3
+✖ 360px · journey: land → tap → answer → first visit → answers in booking → book once (975.310875ms)
+  AssertionError [ERR_ASSERTION]: step 5: booking block shows the answers
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:74:14)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'bookpick a time\n  1which visit?✓changevisitnew patient exam (60 min)adjustment (20 min)massage (60 min)kids and pregnancy care (30 min)new patient exam (60 min)adjustment (20 min)massage (60 min)kids and pregnancy care (30 min)2with whom?✓changewithfirst availabledr. wren hopwelldr. ash hopwellfirst availabledr. wren hopwelldr. ash hopwell3pick a time✓changesun15novmon16novtue17novwed18novthu19novfri20novsat21novsun22novmon23novtue24novwed25novthu26novfri27novsat28nov8:40 am9:20 am10:20 am11 am1 pm2:20 pm3:20 pm4:40 pm\n   4where do we send the reminder?✓changenamephone or emailsyncs with your scheduler (zocdoc, jane and others) · updated just now\n   book my visit\n   \n  ',
+    expected: /mid-back, months, worse in the mornings/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at bunnyworld/hopwell.test.mjs:93:3
+✖ 360px · one scheduling block, no repeated actions (511.0465ms)
+  AssertionError [ERR_ASSERTION]: no open times shown outside the booking block
+  + actual - expected
+  
+  + [
+  +   'Next open'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:117:14)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'Next open' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/hopwell.test.mjs:124:3
+✖ 360px · tap spots: apart, no halos, labels clear (539.179ms)
+  AssertionError [ERR_ASSERTION]: 3 to 5 tap spots (got 6)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:129:14)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at bunnyworld/hopwell.test.mjs:150:3
+✖ 360px · every question title is a full sentence ending in "?" (512.123ms)
+  AssertionError [ERR_ASSERTION]: titles that aren't full questions: ["WhereLow back ✓","Which visit?","With whom?","Pick a time","About you"]
+  + actual - expected
+  
+  + [
+  +   'WhereLow back ✓',
+  +   'Which visit?',
+  +   'With whom?',
+  +   'Pick a time',
+  +   'About you'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:156:14)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'WhereLow back ✓', 'Which visit?', 'With whom?', 'Pick a time', 'About you' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/hopwell.test.mjs:160:3
+✖ 360px · buttons, chips and spots use only palette tokens, no shadows (652.3985ms)
+  AssertionError [ERR_ASSERTION]: off-palette colours or shadows
+  + actual - expected
+  
+  + [
+  +   'call "Call" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'btn "Book a first visit" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(25, 40, 48, 0.32) 6px 6px 14px 0px',
+  +   'spot "Neck" has box-shadow rgba(255, 255, 255, 0.7) -4px -4px 8px 0px, rgba(70, 60, 40, 0.4) 4px 4px 9px 0px',
+  +   'spot "Headaches at the bas" has box-shadow rgba(255, 255, 255, 0.7) -4px -4px 8px 0px, rgba(70, 60, 40, 0.4) 4px 4px 9px 0px',
+  +   'spot "Shoulder" has box-shadow rgba(255, 255, 255, 0.7) -4px -4px 8px 0px, rgba(70, 60, 40, 0.4) 4px 4px 9px 0px',
+  +   'spot "Between the shoulder" has box-shadow rgba(255, 255, 255, 0.7) -4px -4px 8px 0px, rgba(70, 60, 40, 0.4) 4px 4px 9px 0px',
+  +   'spot "Low back" has box-shadow rgba(70, 60, 40, 0.4) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.8) -3px -3px 6px 0px inset',
+  +   'spot "Hip or down the leg" has box-shadow rgba(255, 255, 255, 0.7) -4px -4px 8px 0px, rgba(70, 60, 40, 0.4) 4px 4px 9px 0px',
+  +   'chip "Neck" color rgb(60, 75, 82)',
+  +   'chip "Neck" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'chip "Headaches" color rgb(60, 75, 82)',
+  +   'chip "Headaches" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'chip "Shoulder" color rgb(60, 75, 82)',
+  +   'chip "Shoulder" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'chip "Mid-back" color rgb(60, 75, 82)',
+  +   'chip "Mid-back" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'chip "Low back" background rgb(228, 224, 214)',
+  +   'chip "Low back" has box-shadow rgba(163, 152, 128, 0.55) 3px 3px 7px 0px inset, rgba(255, 255, 255, 0.95) -3px -3px 7px 0px inset',
+  +   'chip "Hip or leg" color rgb(60, 75, 82)',
+  +   'chip "Hip or leg" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'chip "A few days" color rgb(60, 75, 82)',
+  +   'chip "A few days" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'chip "2–6 weeks" background rgb(228, 224, 214)',
+  +   'chip "2–6 weeks" has box-shadow rgba(163, 152, 128, 0.55) 3px 3px 7px 0px inset, rgba(255, 255, 255, 0.95) -3px -3px 7px 0px inset',
+  +   'chip "Months" color rgb(60, 75, 82)',
+  +   'chip "Months" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'chip "Sitting" background rgb(228, 224, 214)',
+  +   'chip "Sitting" has box-shadow rgba(163, 152, 128, 0.55) 3px 3px 7px 0px inset, rgba(255, 255, 255, 0.95) -3px -3px 7px 0px inset',
+  +   'chip "Mornings" color rgb(60, 75, 82)',
+  +   'chip "Mornings" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'chip "Lifting" color rgb(60, 75, 82)',
+  +   'chip "Lifting" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'chip "Sleeping" color rgb(60, 75, 82)',
+  +   'chip "Sleeping" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'btn lt "Book tomorrow 9:20 a" has box-shadow rgba(25, 40, 48, 0.15) 0px -2px 0px 0px inset',
+  +   'chip "Numbness" color rgb(221, 227, 229)',
+  +   'chip "Numbness" has box-shadow rgb(62, 80, 89) 0px 0px 0px 1px inset',
+  +   'chip "Weakness" color rgb(221, 227, 229)',
+  +   'chip "Weakness" has box-shadow rgb(62, 80, 89) 0px 0px 0px 1px inset',
+  +   'chip "After a fall or cras" color rgb(221, 227, 229)',
+  +   'chip "After a fall or cras" has box-shadow rgb(62, 80, 89) 0px 0px 0px 1px inset',
+  +   'chip "Fever" color rgb(221, 227, 229)',
+  +   'chip "Fever" has box-shadow rgb(62, 80, 89) 0px 0px 0px 1px inset',
+  +   'q-opt "New patient exam (60" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Adjustment (20 min)" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Massage (60 min)" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Kids and pregnancy c" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "First available" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Dr. Wren Hopwell" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Dr. Ash Hopwell" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'BUTTON "Mon16Nov" background rgb(228, 224, 214)',
+  +   'BUTTON "Mon16Nov" has box-shadow rgba(163, 152, 128, 0.55) 3px 3px 7px 0px inset, rgba(255, 255, 255, 0.95) -3px -3px 7px 0px inset',
+  +   'BUTTON "Tue17Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "Wed18Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "Thu19Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "Fri20Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "Mon23Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "Tue24Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "Wed25Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "Thu26Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "Fri27Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "9:20 am" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "10:20 am" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "11 am" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "1 pm" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "2:20 pm" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'btn "Book my visit" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(25, 40, 48, 0.32) 6px 6px 14px 0px',
+  +   'q-opt "Low back pain" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Neck pain" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Headaches" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Shoulder pain" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Pain between the sho" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Hip or leg pain" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "General wellness" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "A few days" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "2 to 6 weeks" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Months" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'btn q-next "Next" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(25, 40, 48, 0.32) 6px 6px 14px 0px',
+  +   'btn "Submit the form" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(25, 40, 48, 0.32) 6px 6px 14px 0px'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:188:14)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'call "Call" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'btn "Book a first visit" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(25, 40, 48, 0.32) 6px 6px 14px 0px', 'spot "Neck" has box-shadow rgba(255, 255, 255, 0.7) -4px -4px 8px 0px, rgba(70, 60, 40, 0.4) 4px 4px 9px 0px', 'spot "Headaches at the bas" has box-shadow rgba(255, 255, 255, 0.7) -4px -4px 8px 0px, rgba(70, 60, 40, 0.4) 4px 4px 9px 0px', 'spot "Shoulder" has box-shadow rgba(255, 255, 255, 0.7) -4px -4px 8px 0px, rgba(70, 60, 40, 0.4) 4px 4px 9px 0px', 'spot "Between the shoulder" has box-shadow rgba(255, 255, 255, 0.7) -4px -4px 8px 0px, rgba(70, 60, 40, 0.4) 4px 4px 9px 0px', 'spot "Low back" has box-shadow rgba(70, 60, 40, 0.4) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.8) -3px -3px 6px 0px inset', 'spot "Hip or down the leg" has box-shadow rgba(255, 255, 255, 0.7) -4px -4px 8px 0px, rgba(70, 60, 40, 0.4) 4px 4px 9px 0px', 'chip "Neck" color rgb(60, 75, 82)', 'chip "Neck" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'chip "Headaches" color rgb(60, 75, 82)', 'chip "Headaches" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'chip "Shoulder" color rgb(60, 75, 82)', 'chip "Shoulder" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'chip "Mid-back" color rgb(60, 75, 82)', 'chip "Mid-back" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'chip "Low back" background rgb(228, 224, 214)', 'chip "Low back" has box-shadow rgba(163, 152, 128, 0.55) 3px 3px 7px 0px inset, rgba(255, 255, 255, 0.95) -3px -3px 7px 0px inset', 'chip "Hip or leg" color rgb(60, 75, 82)', 'chip "Hip or leg" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'chip "A few days" color rgb(60, 75, 82)', 'chip "A few days" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'chip "2–6 weeks" background rgb(228, 224, 214)', 'chip "2–6 weeks" has box-shadow rgba(163, 152, 128, 0.55) 3px 3px 7px 0px inset, rgba(255, 255, 255, 0.95) -3px -3px 7px 0px inset', 'chip "Months" color rgb(60, 75, 82)', 'chip "Months" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'chip "Sitting" background rgb(228, 224, 214)', 'chip "Sitting" has box-shadow rgba(163, 152, 128, 0.55) 3px 3px 7px 0px inset, rgba(255, 255, 255, 0.95) -3px -3px 7px 0px inset', 'chip "Mornings" color rgb(60, 75, 82)', 'chip "Mornings" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'chip "Lifting" color rgb(60, 75, 82)', 'chip "Lifting" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'chip "Sleeping" color rgb(60, 75, 82)', 'chip "Sleeping" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'btn lt "Book tomorrow 9:20 a" has box-shadow rgba(25, 40, 48, 0.15) 0px -2px 0px 0px inset', 'chip "Numbness" color rgb(221, 227, 229)', 'chip "Numbness" has box-shadow rgb(62, 80, 89) 0px 0px 0px 1px inset', 'chip "Weakness" color rgb(221, 227, 229)', 'chip "Weakness" has box-shadow rgb(62, 80, 89) 0px 0px 0px 1px inset', 'chip "After a fall or cras" color rgb(221, 227, 229)', 'chip "After a fall or cras" has box-shadow rgb(62, 80, 89) 0px 0px 0px 1px inset', 'chip "Fever" color rgb(221, 227, 229)', 'chip "Fever" has box-shadow rgb(62, 80, 89) 0px 0px 0px 1px inset', 'q-opt "New patient exam (60" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Adjustment (20 min)" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Massage (60 min)" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Kids and pregnancy c" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "First available" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Dr. Wren Hopwell" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Dr. Ash Hopwell" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'BUTTON "Mon16Nov" background rgb(228, 224, 214)', 'BUTTON "Mon16Nov" has box-shadow rgba(163, 152, 128, 0.55) 3px 3px 7px 0px inset, rgba(255, 255, 255, 0.95) -3px -3px 7px 0px inset', 'BUTTON "Tue17Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "Wed18Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "Thu19Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "Fri20Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "Mon23Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "Tue24Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "Wed25Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "Thu26Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "Fri27Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "9:20 am" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "10:20 am" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "11 am" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "1 pm" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "2:20 pm" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'btn "Book my visit" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(25, 40, 48, 0.32) 6px 6px 14px 0px', 'q-opt "Low back pain" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Neck pain" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Headaches" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Shoulder pain" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Pain between the sho" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Hip or leg pain" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "General wellness" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "A few days" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "2 to 6 weeks" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Months" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'btn q-next "Next" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(25, 40, 48, 0.32) 6px 6px 14px 0px', 'btn "Submit the form" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(25, 40, 48, 0.32) 6px 6px 14px 0px' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/hopwell.test.mjs:52:3
+✖ 390px · journey: land → tap → answer → first visit → answers in booking → book once (638.813833ms)
+  AssertionError [ERR_ASSERTION]: step 5: booking block shows the answers
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:74:14)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'bookpick a time\n  1which visit?✓changevisitnew patient exam (60 min)adjustment (20 min)massage (60 min)kids and pregnancy care (30 min)new patient exam (60 min)adjustment (20 min)massage (60 min)kids and pregnancy care (30 min)2with whom?✓changewithfirst availabledr. wren hopwelldr. ash hopwellfirst availabledr. wren hopwelldr. ash hopwell3pick a time✓changesun15novmon16novtue17novwed18novthu19novfri20novsat21novsun22novmon23novtue24novwed25novthu26novfri27novsat28nov8:40 am9:20 am10:20 am11 am1 pm2:20 pm3:20 pm4:40 pm\n   4where do we send the reminder?✓changenamephone or emailsyncs with your scheduler (zocdoc, jane and others) · updated just now\n   book my visit\n   \n  ',
+    expected: /mid-back, months, worse in the mornings/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at bunnyworld/hopwell.test.mjs:93:3
+✖ 390px · one scheduling block, no repeated actions (526.952917ms)
+  AssertionError [ERR_ASSERTION]: no open times shown outside the booking block
+  + actual - expected
+  
+  + [
+  +   'Next open'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:117:14)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'Next open' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/hopwell.test.mjs:124:3
+✖ 390px · tap spots: apart, no halos, labels clear (511.658584ms)
+  AssertionError [ERR_ASSERTION]: 3 to 5 tap spots (got 6)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:129:14)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at bunnyworld/hopwell.test.mjs:150:3
+✖ 390px · every question title is a full sentence ending in "?" (525.797417ms)
+  AssertionError [ERR_ASSERTION]: titles that aren't full questions: ["WhereLow back ✓","Which visit?","With whom?","Pick a time","About you"]
+  + actual - expected
+  
+  + [
+  +   'WhereLow back ✓',
+  +   'Which visit?',
+  +   'With whom?',
+  +   'Pick a time',
+  +   'About you'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:156:14)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'WhereLow back ✓', 'Which visit?', 'With whom?', 'Pick a time', 'About you' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/hopwell.test.mjs:160:3
+✖ 390px · buttons, chips and spots use only palette tokens, no shadows (665.610208ms)
+  AssertionError [ERR_ASSERTION]: off-palette colours or shadows
+  + actual - expected
+  
+  + [
+  +   'call "Call" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'btn "Book a first visit" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(25, 40, 48, 0.32) 6px 6px 14px 0px',
+  +   'spot "Neck" has box-shadow rgba(255, 255, 255, 0.7) -4px -4px 8px 0px, rgba(70, 60, 40, 0.4) 4px 4px 9px 0px',
+  +   'spot "Headaches at the bas" has box-shadow rgba(255, 255, 255, 0.7) -4px -4px 8px 0px, rgba(70, 60, 40, 0.4) 4px 4px 9px 0px',
+  +   'spot "Shoulder" has box-shadow rgba(255, 255, 255, 0.7) -4px -4px 8px 0px, rgba(70, 60, 40, 0.4) 4px 4px 9px 0px',
+  +   'spot "Between the shoulder" has box-shadow rgba(255, 255, 255, 0.7) -4px -4px 8px 0px, rgba(70, 60, 40, 0.4) 4px 4px 9px 0px',
+  +   'spot "Low back" has box-shadow rgba(70, 60, 40, 0.4) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.8) -3px -3px 6px 0px inset',
+  +   'spot "Hip or down the leg" has box-shadow rgba(255, 255, 255, 0.7) -4px -4px 8px 0px, rgba(70, 60, 40, 0.4) 4px 4px 9px 0px',
+  +   'chip "Neck" color rgb(60, 75, 82)',
+  +   'chip "Neck" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'chip "Headaches" color rgb(60, 75, 82)',
+  +   'chip "Headaches" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'chip "Shoulder" color rgb(60, 75, 82)',
+  +   'chip "Shoulder" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'chip "Mid-back" color rgb(60, 75, 82)',
+  +   'chip "Mid-back" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'chip "Low back" background rgb(228, 224, 214)',
+  +   'chip "Low back" has box-shadow rgba(163, 152, 128, 0.55) 3px 3px 7px 0px inset, rgba(255, 255, 255, 0.95) -3px -3px 7px 0px inset',
+  +   'chip "Hip or leg" color rgb(60, 75, 82)',
+  +   'chip "Hip or leg" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'chip "A few days" color rgb(60, 75, 82)',
+  +   'chip "A few days" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'chip "2–6 weeks" background rgb(228, 224, 214)',
+  +   'chip "2–6 weeks" has box-shadow rgba(163, 152, 128, 0.55) 3px 3px 7px 0px inset, rgba(255, 255, 255, 0.95) -3px -3px 7px 0px inset',
+  +   'chip "Months" color rgb(60, 75, 82)',
+  +   'chip "Months" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'chip "Sitting" background rgb(228, 224, 214)',
+  +   'chip "Sitting" has box-shadow rgba(163, 152, 128, 0.55) 3px 3px 7px 0px inset, rgba(255, 255, 255, 0.95) -3px -3px 7px 0px inset',
+  +   'chip "Mornings" color rgb(60, 75, 82)',
+  +   'chip "Mornings" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'chip "Lifting" color rgb(60, 75, 82)',
+  +   'chip "Lifting" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'chip "Sleeping" color rgb(60, 75, 82)',
+  +   'chip "Sleeping" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'btn lt "Book tomorrow 9:20 a" has box-shadow rgba(25, 40, 48, 0.15) 0px -2px 0px 0px inset',
+  +   'chip "Numbness" color rgb(221, 227, 229)',
+  +   'chip "Numbness" has box-shadow rgb(62, 80, 89) 0px 0px 0px 1px inset',
+  +   'chip "Weakness" color rgb(221, 227, 229)',
+  +   'chip "Weakness" has box-shadow rgb(62, 80, 89) 0px 0px 0px 1px inset',
+  +   'chip "After a fall or cras" color rgb(221, 227, 229)',
+  +   'chip "After a fall or cras" has box-shadow rgb(62, 80, 89) 0px 0px 0px 1px inset',
+  +   'chip "Fever" color rgb(221, 227, 229)',
+  +   'chip "Fever" has box-shadow rgb(62, 80, 89) 0px 0px 0px 1px inset',
+  +   'q-opt "New patient exam (60" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Adjustment (20 min)" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Massage (60 min)" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Kids and pregnancy c" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "First available" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Dr. Wren Hopwell" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Dr. Ash Hopwell" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'BUTTON "Mon16Nov" background rgb(228, 224, 214)',
+  +   'BUTTON "Mon16Nov" has box-shadow rgba(163, 152, 128, 0.55) 3px 3px 7px 0px inset, rgba(255, 255, 255, 0.95) -3px -3px 7px 0px inset',
+  +   'BUTTON "Tue17Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "Wed18Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "Thu19Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "Fri20Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "Mon23Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "Tue24Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "Wed25Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "Thu26Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "Fri27Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "9:20 am" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "10:20 am" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "11 am" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "1 pm" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "2:20 pm" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'btn "Book my visit" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(25, 40, 48, 0.32) 6px 6px 14px 0px',
+  +   'q-opt "Low back pain" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Neck pain" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Headaches" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Shoulder pain" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Pain between the sho" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Hip or leg pain" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "General wellness" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "A few days" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "2 to 6 weeks" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Months" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'btn q-next "Next" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(25, 40, 48, 0.32) 6px 6px 14px 0px',
+  +   'btn "Submit the form" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(25, 40, 48, 0.32) 6px 6px 14px 0px'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:188:14)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'call "Call" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'btn "Book a first visit" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(25, 40, 48, 0.32) 6px 6px 14px 0px', 'spot "Neck" has box-shadow rgba(255, 255, 255, 0.7) -4px -4px 8px 0px, rgba(70, 60, 40, 0.4) 4px 4px 9px 0px', 'spot "Headaches at the bas" has box-shadow rgba(255, 255, 255, 0.7) -4px -4px 8px 0px, rgba(70, 60, 40, 0.4) 4px 4px 9px 0px', 'spot "Shoulder" has box-shadow rgba(255, 255, 255, 0.7) -4px -4px 8px 0px, rgba(70, 60, 40, 0.4) 4px 4px 9px 0px', 'spot "Between the shoulder" has box-shadow rgba(255, 255, 255, 0.7) -4px -4px 8px 0px, rgba(70, 60, 40, 0.4) 4px 4px 9px 0px', 'spot "Low back" has box-shadow rgba(70, 60, 40, 0.4) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.8) -3px -3px 6px 0px inset', 'spot "Hip or down the leg" has box-shadow rgba(255, 255, 255, 0.7) -4px -4px 8px 0px, rgba(70, 60, 40, 0.4) 4px 4px 9px 0px', 'chip "Neck" color rgb(60, 75, 82)', 'chip "Neck" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'chip "Headaches" color rgb(60, 75, 82)', 'chip "Headaches" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'chip "Shoulder" color rgb(60, 75, 82)', 'chip "Shoulder" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'chip "Mid-back" color rgb(60, 75, 82)', 'chip "Mid-back" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'chip "Low back" background rgb(228, 224, 214)', 'chip "Low back" has box-shadow rgba(163, 152, 128, 0.55) 3px 3px 7px 0px inset, rgba(255, 255, 255, 0.95) -3px -3px 7px 0px inset', 'chip "Hip or leg" color rgb(60, 75, 82)', 'chip "Hip or leg" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'chip "A few days" color rgb(60, 75, 82)', 'chip "A few days" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'chip "2–6 weeks" background rgb(228, 224, 214)', 'chip "2–6 weeks" has box-shadow rgba(163, 152, 128, 0.55) 3px 3px 7px 0px inset, rgba(255, 255, 255, 0.95) -3px -3px 7px 0px inset', 'chip "Months" color rgb(60, 75, 82)', 'chip "Months" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'chip "Sitting" background rgb(228, 224, 214)', 'chip "Sitting" has box-shadow rgba(163, 152, 128, 0.55) 3px 3px 7px 0px inset, rgba(255, 255, 255, 0.95) -3px -3px 7px 0px inset', 'chip "Mornings" color rgb(60, 75, 82)', 'chip "Mornings" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'chip "Lifting" color rgb(60, 75, 82)', 'chip "Lifting" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'chip "Sleeping" color rgb(60, 75, 82)', 'chip "Sleeping" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'btn lt "Book tomorrow 9:20 a" has box-shadow rgba(25, 40, 48, 0.15) 0px -2px 0px 0px inset', 'chip "Numbness" color rgb(221, 227, 229)', 'chip "Numbness" has box-shadow rgb(62, 80, 89) 0px 0px 0px 1px inset', 'chip "Weakness" color rgb(221, 227, 229)', 'chip "Weakness" has box-shadow rgb(62, 80, 89) 0px 0px 0px 1px inset', 'chip "After a fall or cras" color rgb(221, 227, 229)', 'chip "After a fall or cras" has box-shadow rgb(62, 80, 89) 0px 0px 0px 1px inset', 'chip "Fever" color rgb(221, 227, 229)', 'chip "Fever" has box-shadow rgb(62, 80, 89) 0px 0px 0px 1px inset', 'q-opt "New patient exam (60" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Adjustment (20 min)" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Massage (60 min)" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Kids and pregnancy c" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "First available" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Dr. Wren Hopwell" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Dr. Ash Hopwell" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'BUTTON "Mon16Nov" background rgb(228, 224, 214)', 'BUTTON "Mon16Nov" has box-shadow rgba(163, 152, 128, 0.55) 3px 3px 7px 0px inset, rgba(255, 255, 255, 0.95) -3px -3px 7px 0px inset', 'BUTTON "Tue17Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "Wed18Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "Thu19Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "Fri20Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "Mon23Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "Tue24Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "Wed25Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "Thu26Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "Fri27Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "9:20 am" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "10:20 am" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "11 am" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "1 pm" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "2:20 pm" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'btn "Book my visit" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(25, 40, 48, 0.32) 6px 6px 14px 0px', 'q-opt "Low back pain" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Neck pain" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Headaches" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Shoulder pain" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Pain between the sho" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Hip or leg pain" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "General wellness" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "A few days" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "2 to 6 weeks" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Months" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'btn q-next "Next" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(25, 40, 48, 0.32) 6px 6px 14px 0px', 'btn "Submit the form" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(25, 40, 48, 0.32) 6px 6px 14px 0px' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/hopwell.test.mjs:52:3
+✖ 1440px · journey: land → tap → answer → first visit → answers in booking → book once (655.646ms)
+  AssertionError [ERR_ASSERTION]: step 5: booking block shows the answers
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:74:14)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'bookpick a time\n  1which visit?✓changevisitnew patient exam (60 min)adjustment (20 min)massage (60 min)kids and pregnancy care (30 min)new patient exam (60 min)adjustment (20 min)massage (60 min)kids and pregnancy care (30 min)2with whom?✓changewithfirst availabledr. wren hopwelldr. ash hopwellfirst availabledr. wren hopwelldr. ash hopwell3pick a time✓changesun15novmon16novtue17novwed18novthu19novfri20novsat21novsun22novmon23novtue24novwed25novthu26novfri27novsat28nov8:40 am9:20 am10:20 am11 am1 pm2:20 pm3:20 pm4:40 pm\n   4where do we send the reminder?✓changenamephone or emailsyncs with your scheduler (zocdoc, jane and others) · updated just now\n   book my visit\n   \n  ',
+    expected: /mid-back, months, worse in the mornings/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at bunnyworld/hopwell.test.mjs:93:3
+✖ 1440px · one scheduling block, no repeated actions (519.637125ms)
+  AssertionError [ERR_ASSERTION]: no open times shown outside the booking block
+  + actual - expected
+  
+  + [
+  +   'Next open'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:117:14)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'Next open' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/hopwell.test.mjs:124:3
+✖ 1440px · tap spots: apart, no halos, labels clear (525.734542ms)
+  AssertionError [ERR_ASSERTION]: 3 to 5 tap spots (got 6)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:129:14)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at bunnyworld/hopwell.test.mjs:150:3
+✖ 1440px · every question title is a full sentence ending in "?" (518.53475ms)
+  AssertionError [ERR_ASSERTION]: titles that aren't full questions: ["WhereLow back ✓","Which visit?","With whom?","Pick a time","About you"]
+  + actual - expected
+  
+  + [
+  +   'WhereLow back ✓',
+  +   'Which visit?',
+  +   'With whom?',
+  +   'Pick a time',
+  +   'About you'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:156:14)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'WhereLow back ✓', 'Which visit?', 'With whom?', 'Pick a time', 'About you' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/hopwell.test.mjs:160:3
+✖ 1440px · buttons, chips and spots use only palette tokens, no shadows (648.102375ms)
+  AssertionError [ERR_ASSERTION]: off-palette colours or shadows
+  + actual - expected
+  
+  + [
+  +   'btn "Book a first visit" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(25, 40, 48, 0.32) 6px 6px 14px 0px',
+  +   'spot "Neck" has box-shadow rgba(255, 255, 255, 0.7) -4px -4px 8px 0px, rgba(70, 60, 40, 0.4) 4px 4px 9px 0px',
+  +   'spot "Headaches at the bas" has box-shadow rgba(255, 255, 255, 0.7) -4px -4px 8px 0px, rgba(70, 60, 40, 0.4) 4px 4px 9px 0px',
+  +   'spot "Shoulder" has box-shadow rgba(255, 255, 255, 0.7) -4px -4px 8px 0px, rgba(70, 60, 40, 0.4) 4px 4px 9px 0px',
+  +   'spot "Between the shoulder" has box-shadow rgba(255, 255, 255, 0.7) -4px -4px 8px 0px, rgba(70, 60, 40, 0.4) 4px 4px 9px 0px',
+  +   'spot "Low back" has box-shadow rgba(70, 60, 40, 0.4) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.8) -3px -3px 6px 0px inset',
+  +   'spot "Hip or down the leg" has box-shadow rgba(255, 255, 255, 0.7) -4px -4px 8px 0px, rgba(70, 60, 40, 0.4) 4px 4px 9px 0px',
+  +   'chip "Neck" color rgb(60, 75, 82)',
+  +   'chip "Neck" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'chip "Headaches" color rgb(60, 75, 82)',
+  +   'chip "Headaches" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'chip "Shoulder" color rgb(60, 75, 82)',
+  +   'chip "Shoulder" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'chip "Mid-back" color rgb(60, 75, 82)',
+  +   'chip "Mid-back" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'chip "Low back" background rgb(228, 224, 214)',
+  +   'chip "Low back" has box-shadow rgba(163, 152, 128, 0.55) 3px 3px 7px 0px inset, rgba(255, 255, 255, 0.95) -3px -3px 7px 0px inset',
+  +   'chip "Hip or leg" color rgb(60, 75, 82)',
+  +   'chip "Hip or leg" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'chip "A few days" color rgb(60, 75, 82)',
+  +   'chip "A few days" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'chip "2–6 weeks" background rgb(228, 224, 214)',
+  +   'chip "2–6 weeks" has box-shadow rgba(163, 152, 128, 0.55) 3px 3px 7px 0px inset, rgba(255, 255, 255, 0.95) -3px -3px 7px 0px inset',
+  +   'chip "Months" color rgb(60, 75, 82)',
+  +   'chip "Months" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'chip "Sitting" background rgb(228, 224, 214)',
+  +   'chip "Sitting" has box-shadow rgba(163, 152, 128, 0.55) 3px 3px 7px 0px inset, rgba(255, 255, 255, 0.95) -3px -3px 7px 0px inset',
+  +   'chip "Mornings" color rgb(60, 75, 82)',
+  +   'chip "Mornings" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'chip "Lifting" color rgb(60, 75, 82)',
+  +   'chip "Lifting" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'chip "Sleeping" color rgb(60, 75, 82)',
+  +   'chip "Sleeping" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'btn lt "Book tomorrow 9:20 a" has box-shadow rgba(25, 40, 48, 0.15) 0px -2px 0px 0px inset',
+  +   'chip "Numbness" color rgb(221, 227, 229)',
+  +   'chip "Numbness" has box-shadow rgb(62, 80, 89) 0px 0px 0px 1px inset',
+  +   'chip "Weakness" color rgb(221, 227, 229)',
+  +   'chip "Weakness" has box-shadow rgb(62, 80, 89) 0px 0px 0px 1px inset',
+  +   'chip "After a fall or cras" color rgb(221, 227, 229)',
+  +   'chip "After a fall or cras" has box-shadow rgb(62, 80, 89) 0px 0px 0px 1px inset',
+  +   'chip "Fever" color rgb(221, 227, 229)',
+  +   'chip "Fever" has box-shadow rgb(62, 80, 89) 0px 0px 0px 1px inset',
+  +   'q-opt "New patient exam (60" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Adjustment (20 min)" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Massage (60 min)" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Kids and pregnancy c" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "First available" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Dr. Wren Hopwell" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Dr. Ash Hopwell" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'BUTTON "Mon16Nov" background rgb(228, 224, 214)',
+  +   'BUTTON "Mon16Nov" has box-shadow rgba(163, 152, 128, 0.55) 3px 3px 7px 0px inset, rgba(255, 255, 255, 0.95) -3px -3px 7px 0px inset',
+  +   'BUTTON "Tue17Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "Wed18Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "Thu19Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "Fri20Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "Mon23Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "Tue24Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "Wed25Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "Thu26Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "Fri27Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "9:20 am" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "10:20 am" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "11 am" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "1 pm" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'BUTTON "2:20 pm" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px',
+  +   'btn "Book my visit" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(25, 40, 48, 0.32) 6px 6px 14px 0px',
+  +   'q-opt "Low back pain" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Neck pain" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Headaches" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Shoulder pain" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Pain between the sho" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Hip or leg pain" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "General wellness" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "A few days" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "2 to 6 weeks" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'q-opt "Months" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px',
+  +   'btn q-next "Next" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(25, 40, 48, 0.32) 6px 6px 14px 0px',
+  +   'btn "Submit the form" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(25, 40, 48, 0.32) 6px 6px 14px 0px'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:188:14)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'btn "Book a first visit" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(25, 40, 48, 0.32) 6px 6px 14px 0px', 'spot "Neck" has box-shadow rgba(255, 255, 255, 0.7) -4px -4px 8px 0px, rgba(70, 60, 40, 0.4) 4px 4px 9px 0px', 'spot "Headaches at the bas" has box-shadow rgba(255, 255, 255, 0.7) -4px -4px 8px 0px, rgba(70, 60, 40, 0.4) 4px 4px 9px 0px', 'spot "Shoulder" has box-shadow rgba(255, 255, 255, 0.7) -4px -4px 8px 0px, rgba(70, 60, 40, 0.4) 4px 4px 9px 0px', 'spot "Between the shoulder" has box-shadow rgba(255, 255, 255, 0.7) -4px -4px 8px 0px, rgba(70, 60, 40, 0.4) 4px 4px 9px 0px', 'spot "Low back" has box-shadow rgba(70, 60, 40, 0.4) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.8) -3px -3px 6px 0px inset', 'spot "Hip or down the leg" has box-shadow rgba(255, 255, 255, 0.7) -4px -4px 8px 0px, rgba(70, 60, 40, 0.4) 4px 4px 9px 0px', 'chip "Neck" color rgb(60, 75, 82)', 'chip "Neck" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'chip "Headaches" color rgb(60, 75, 82)', 'chip "Headaches" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'chip "Shoulder" color rgb(60, 75, 82)', 'chip "Shoulder" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'chip "Mid-back" color rgb(60, 75, 82)', 'chip "Mid-back" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'chip "Low back" background rgb(228, 224, 214)', 'chip "Low back" has box-shadow rgba(163, 152, 128, 0.55) 3px 3px 7px 0px inset, rgba(255, 255, 255, 0.95) -3px -3px 7px 0px inset', 'chip "Hip or leg" color rgb(60, 75, 82)', 'chip "Hip or leg" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'chip "A few days" color rgb(60, 75, 82)', 'chip "A few days" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'chip "2–6 weeks" background rgb(228, 224, 214)', 'chip "2–6 weeks" has box-shadow rgba(163, 152, 128, 0.55) 3px 3px 7px 0px inset, rgba(255, 255, 255, 0.95) -3px -3px 7px 0px inset', 'chip "Months" color rgb(60, 75, 82)', 'chip "Months" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'chip "Sitting" background rgb(228, 224, 214)', 'chip "Sitting" has box-shadow rgba(163, 152, 128, 0.55) 3px 3px 7px 0px inset, rgba(255, 255, 255, 0.95) -3px -3px 7px 0px inset', 'chip "Mornings" color rgb(60, 75, 82)', 'chip "Mornings" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'chip "Lifting" color rgb(60, 75, 82)', 'chip "Lifting" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'chip "Sleeping" color rgb(60, 75, 82)', 'chip "Sleeping" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'btn lt "Book tomorrow 9:20 a" has box-shadow rgba(25, 40, 48, 0.15) 0px -2px 0px 0px inset', 'chip "Numbness" color rgb(221, 227, 229)', 'chip "Numbness" has box-shadow rgb(62, 80, 89) 0px 0px 0px 1px inset', 'chip "Weakness" color rgb(221, 227, 229)', 'chip "Weakness" has box-shadow rgb(62, 80, 89) 0px 0px 0px 1px inset', 'chip "After a fall or cras" color rgb(221, 227, 229)', 'chip "After a fall or cras" has box-shadow rgb(62, 80, 89) 0px 0px 0px 1px inset', 'chip "Fever" color rgb(221, 227, 229)', 'chip "Fever" has box-shadow rgb(62, 80, 89) 0px 0px 0px 1px inset', 'q-opt "New patient exam (60" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Adjustment (20 min)" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Massage (60 min)" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Kids and pregnancy c" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "First available" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Dr. Wren Hopwell" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Dr. Ash Hopwell" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'BUTTON "Mon16Nov" background rgb(228, 224, 214)', 'BUTTON "Mon16Nov" has box-shadow rgba(163, 152, 128, 0.55) 3px 3px 7px 0px inset, rgba(255, 255, 255, 0.95) -3px -3px 7px 0px inset', 'BUTTON "Tue17Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "Wed18Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "Thu19Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "Fri20Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "Mon23Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "Tue24Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "Wed25Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "Thu26Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "Fri27Nov" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "9:20 am" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "10:20 am" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "11 am" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "1 pm" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'BUTTON "2:20 pm" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 9px 0px, rgba(163, 152, 128, 0.42) 4px 4px 10px 0px', 'btn "Book my visit" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(25, 40, 48, 0.32) 6px 6px 14px 0px', 'q-opt "Low back pain" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Neck pain" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Headaches" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Shoulder pain" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Pain between the sho" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Hip or leg pain" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "General wellness" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "A few days" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "2 to 6 weeks" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'q-opt "Months" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(163, 152, 128, 0.42) 4px 4px 12px 0px', 'btn q-next "Next" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(25, 40, 48, 0.32) 6px 6px 14px 0px', 'btn "Submit the form" has box-shadow rgba(255, 255, 255, 0.95) -4px -4px 10px 0px, rgba(25, 40, 48, 0.32) 6px 6px 14px 0px' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
