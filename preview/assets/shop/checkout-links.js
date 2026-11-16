@@ -20,7 +20,7 @@ window.SOG_SHOP = {
       name: 'Fix one broken thing',
       price: 250, from: true, interval: null, maxQty: 5,          // PLACEHOLDER price
       blurb: 'One thing on your site that is broken, wrong or out of date.',
-      lines: ['One broken thing, fixed', 'Done in a few days', 'Flat fee, agreed before we start', 'Bigger than one fix? We say so before any work'] // PLACEHOLDER inclusions
+      lines: ['One broken thing, fixed', 'Done in a few days', 'Flat fee, agreed before we start', 'If it’s bigger than one fix, we say so before any work'] // PLACEHOLDER inclusions
     },
     care: {
       name: 'Care plan',
