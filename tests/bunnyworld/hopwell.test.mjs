@@ -274,6 +274,22 @@ for (const w of WIDTHS) {
     } finally { await ctx.close(); }
   });
 
+  // Tristan, intake step 5: "a second box is cut off at the right edge" (the date of birth had become a 14-day picker)
+  test(`${w}px · intake step 5: date of birth is a normal date field, name field and checkbox fit`, async () => {
+    const { ctx, page } = await open(w);
+    try {
+      const r = await page.evaluate(() => {
+        const f = document.querySelector('#intake form'), dob = f.querySelector('input[type=date]');
+        const step = dob.closest('.q-step'), fr = f.getBoundingClientRect();
+        return { strip: !!step.querySelector('.days'), dobType: dob.type, srLabel: !!dob.closest('label.sr'), cb: (() => { const c = f.querySelector('input[type=checkbox]'), r = c.getBoundingClientRect(); return { w: r.width, h: r.height, app: getComputedStyle(c).appearance }; })() };
+      });
+      assert.equal(r.strip, false, 'no day strip in the date-of-birth step');
+      assert.equal(r.srLabel, false, 'the date of birth label stays visible');
+      assert.equal(r.cb.app, 'none', 'the policy checkbox is styled, not the browser default');
+      assert.ok(r.cb.w >= 24 && r.cb.h >= 24, `the policy checkbox is at least 24px (got ${r.cb.w}×${r.cb.h})`);
+    } finally { await ctx.close(); }
+  });
+
   test(`${w}px · no sideways scroll, no console errors`, async () => {
     const { ctx, page, errors } = await open(w);
     try {

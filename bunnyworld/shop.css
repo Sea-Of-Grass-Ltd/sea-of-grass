@@ -28,7 +28,11 @@ p{margin:0 0 12px}
 label{display:grid;gap:6px;font-size:15px;font-weight:500}
 input,select,textarea{width:100%;min-height:48px;padding:10px 12px;border-radius:var(--ctl-r);border:1px solid var(--line);background:var(--field);font-size:16px}
 textarea{min-height:96px;resize:vertical}
-input[type=checkbox],input[type=radio]{width:auto;min-height:0;accent-color:var(--accent)}
+input:is([type=checkbox],[type=radio]){appearance:none;-webkit-appearance:none;flex:none;width:24px;height:24px;min-height:0;margin:0;padding:0;border:1.5px solid var(--ink);border-radius:7px;background:var(--field);display:inline-grid;place-content:center;vertical-align:middle;cursor:pointer}
+input[type=radio]{border-radius:50%}
+input[type=checkbox]:checked{background:var(--accent);border-color:var(--accent)}
+input[type=checkbox]:checked::after{content:"";width:6px;height:11px;border:solid var(--on-accent);border-width:0 2.5px 2.5px 0;transform:translateY(-1px) rotate(45deg)}
+input[type=radio]:checked::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--accent)}
 input[type=range]{accent-color:var(--accent);padding:0;border:0;background:transparent;min-height:30px}
 .form{display:grid;gap:14px;min-width:0}
 .form>*,[data-slots],.split>*,.grid2>*,.grid3>*{min-width:0}
@@ -188,3 +192,15 @@ input[type=file]::-webkit-file-upload-button{margin-right:14px;padding:10px 16px
 
 /* ---- AI-UI checklist pass (2026-11-15): flat surfaces (no blurred shadows, gradients or blur), 40px tap targets on phones ---- */
 @media (max-width:899px){summary{min-height:44px;align-items:center}}
+
+/* form fields (Tristan, Hopwell step 5): one clean ring when focused that follows the corners, no outline floating
+   outside the border; range sliders stay inside their row */
+input:not([type=checkbox]):not([type=radio]):not([type=range]):focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid transparent;border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+input:is([type=checkbox],[type=radio]):focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+input[type=range]{margin:0;width:100%}
+/* a date field must shrink to its column (on 3x phones Chrome sizes it wider than the cell and it got clipped) */
+.row>*{min-width:0}
+input[type=date]{min-width:0;max-width:100%}
+input[type=date]::-webkit-datetime-edit{overflow:hidden;min-width:0}
+/* stacked checkbox rows keep 8px between their tap areas */
+.check+.check{margin-top:8px}

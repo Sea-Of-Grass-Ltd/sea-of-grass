@@ -48,6 +48,10 @@ Run this on every page before it's shown. Each item is a yes/no check, at 360, 3
 - [ ] Wordmark logos and "Bag (0)"/"Hold (0)" pills drawn at 22 to 32px tall. They look fine but are hard to tap.
 - [ ] Map pins whose tap areas run into each other at 360 wide.
 - [ ] Floating buttons (fixed "Book now" bubbles) covering the content on phones.
+- [ ] Focus rings drawn as an outline a few px outside the field's border: reads as a doubled, lopsided ring. Use one ring that follows the corners.
+- [ ] Browser-default checkboxes on a styled page, or boxes under 24px.
+- [ ] A date of birth turned into a "next 14 days" picker. Birthdays need a plain date field.
+- [ ] Fields that fit at 1x but not on a real 3x phone. Date inputs size wider at 3x and get clipped. Test phones at 3x.
 
 ## What the test suite checks automatically
 `cd tests && npm install && npm test` runs `tests/bunnyworld/audit.test.mjs` (every page × 360/390/1440) and the per-shop journey tests.
@@ -55,6 +59,6 @@ Run this on every page before it's shown. Each item is a yes/no check, at 360, 3
   - Duplicate actions in one view; two schedulers; the same link in the header and footer.
   - Counts in copy (questions, shops, steps); mixed title forms; placeholder text and fake tickers; vague button labels.
   - Blurred shadows (box and text, pseudo-elements included); soft gradients (hard-stop bands are allowed); blur filters; elements left at opacity 0.
-  - Overlapping tap targets; sideways scroll; targets under 40px or closer than 8px on phones (WCAG-style: spacing only matters for small targets); floating fixed elements over content on phones; inputs under 16px on phones.
+  - Overlapping tap targets; sideways scroll; targets under 40px or closer than 8px on phones (WCAG-style: spacing only matters for small targets); floating fixed elements over content on phones; inputs under 16px on phones; form fields and labels running past their box (phones at 3x, every step opened); stacked focus rings; default or under-24px checkboxes.
   - Links to # or to missing anchors and pages; toggles, tabs and chips that change nothing; console errors and failed local loads; a missing og:image file.
 - **Still by eye:** descenders hitting the next line, stranded items or empty blocks, accent colours used once, meaningless status lights, stale "live" data, prices matching across pages, and whether a preview card shows the current page.

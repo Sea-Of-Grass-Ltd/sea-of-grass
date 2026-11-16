@@ -1,0 +1,143 @@
+
+> test
+> node --test --test-concurrency=1 "unit/*.test.mjs" "bunnyworld/*.test.mjs" "copy/*.test.mjs"
+
+▶ bunnyworld @ 360
+  ✔ no checklist failures (1.173333ms)
+✔ bunnyworld @ 360 (11234.957834ms)
+▶ bunnyworld @ 390
+  ✔ no checklist failures (0.228041ms)
+✔ bunnyworld @ 390 (10893.974208ms)
+▶ bunnyworld @ 1440
+  ✔ no checklist failures (0.222208ms)
+✔ bunnyworld @ 1440 (10515.343709ms)
+▶ hare-today @ 360
+  ✔ no checklist failures (0.195833ms)
+✔ hare-today @ 360 (12383.528625ms)
+▶ hare-today @ 390
+  ✔ no checklist failures (0.278375ms)
+✔ hare-today @ 390 (12191.443291ms)
+▶ hare-today @ 1440
+  ✔ no checklist failures (0.1575ms)
+✔ hare-today @ 1440 (10969.684917ms)
+▶ hop-along @ 360
+  ✔ no checklist failures (0.652334ms)
+✔ hop-along @ 360 (16774.115625ms)
+▶ hop-along @ 390
+  ✔ no checklist failures (0.742208ms)
+✔ hop-along @ 390 (16838.904958ms)
+▶ hop-along @ 1440
+  ✔ no checklist failures (0.308041ms)
+✔ hop-along @ 1440 (16603.22875ms)
+▶ hopwell-chiro @ 360
+  ✔ no checklist failures (0.32ms)
+✔ hopwell-chiro @ 360 (19697.002417ms)
+▶ hopwell-chiro @ 390
+  ✔ no checklist failures (0.503625ms)
+✔ hopwell-chiro @ 390 (19615.63875ms)
+▶ hopwell-chiro @ 1440
+  ✔ no checklist failures (0.157791ms)
+✔ hopwell-chiro @ 1440 (16583.410291ms)
+▶ cottontail-farm @ 360
+  ✔ no checklist failures (0.535167ms)
+✔ cottontail-farm @ 360 (16172.237417ms)
+▶ cottontail-farm @ 390
+  ✔ no checklist failures (0.138ms)
+✔ cottontail-farm @ 390 (15897.778208ms)
+▶ cottontail-farm @ 1440
+  ✔ no checklist failures (0.217167ms)
+✔ cottontail-farm @ 1440 (15249.845958ms)
+▶ burrow-and-bough @ 360
+  ✔ no checklist failures (0.20325ms)
+✔ burrow-and-bough @ 360 (10375.391292ms)
+▶ burrow-and-bough @ 390
+  ✔ no checklist failures (0.219791ms)
+✔ burrow-and-bough @ 390 (10487.48525ms)
+▶ burrow-and-bough @ 1440
+  ✔ no checklist failures (0.247ms)
+✔ burrow-and-bough @ 1440 (7377.144459ms)
+▶ bunny-burritos @ 360
+  ✔ no checklist failures (0.162792ms)
+✔ bunny-burritos @ 360 (15167.144ms)
+▶ bunny-burritos @ 390
+  ✔ no checklist failures (0.167458ms)
+✔ bunny-burritos @ 390 (15163.105625ms)
+▶ bunny-burritos @ 1440
+  ✔ no checklist failures (0.156542ms)
+✔ bunny-burritos @ 1440 (15027.591292ms)
+▶ bunny-auto @ 360
+  ✔ no checklist failures (0.1605ms)
+✔ bunny-auto @ 360 (12949.208292ms)
+▶ bunny-auto @ 390
+  ✔ no checklist failures (0.225333ms)
+✔ bunny-auto @ 390 (12884.494333ms)
+▶ bunny-auto @ 1440
+  ✔ no checklist failures (0.119625ms)
+✔ bunny-auto @ 1440 (12606.7465ms)
+▶ warren-bakehouse @ 360
+  ✔ no checklist failures (0.164167ms)
+✔ warren-bakehouse @ 360 (17538.195833ms)
+▶ warren-bakehouse @ 390
+  ✔ no checklist failures (0.13175ms)
+✔ warren-bakehouse @ 390 (17527.305583ms)
+▶ warren-bakehouse @ 1440
+  ✔ no checklist failures (0.258083ms)
+✔ warren-bakehouse @ 1440 (15297.854333ms)
+▶ long-ears @ 360
+  ✔ no checklist failures (0.187041ms)
+✔ long-ears @ 360 (15157.0295ms)
+▶ long-ears @ 390
+  ✔ no checklist failures (0.177792ms)
+✔ long-ears @ 390 (15256.692ms)
+▶ long-ears @ 1440
+  ✔ no checklist failures (0.1765ms)
+✔ long-ears @ 1440 (13764.284958ms)
+✔ 360px · journey: land → tap → answer → first visit → answers in booking → book once (1134.670375ms)
+✔ 360px · one scheduling block, no repeated actions (505.443ms)
+✔ 360px · tap spots: apart, no halos, labels clear (702.985667ms)
+✔ 360px · every question title is a full sentence ending in "?" (498.497166ms)
+✔ 360px · copy that counts the questions matches the questions (508.975542ms)
+✔ 360px · buttons, chips and spots use only palette tokens, no shadows (631.434125ms)
+✔ 360px · neumorphism: one light, two tokens, shadows follow the radius (543.619375ms)
+✔ 360px · the back photo holds still while you tap, and chips keep their size (2346.035125ms)
+✔ 360px · intake step 5: date of birth is a normal date field, name field and checkbox fit (616.226583ms)
+✔ 360px · no sideways scroll, no console errors (972.347834ms)
+✔ 390px · journey: land → tap → answer → first visit → answers in booking → book once (1004.470209ms)
+✔ 390px · one scheduling block, no repeated actions (535.122458ms)
+✔ 390px · tap spots: apart, no halos, labels clear (730.349584ms)
+✔ 390px · every question title is a full sentence ending in "?" (517.20925ms)
+✔ 390px · copy that counts the questions matches the questions (516.153459ms)
+✔ 390px · buttons, chips and spots use only palette tokens, no shadows (619.476708ms)
+✔ 390px · neumorphism: one light, two tokens, shadows follow the radius (548.803708ms)
+✔ 390px · the back photo holds still while you tap, and chips keep their size (2278.408791ms)
+✔ 390px · intake step 5: date of birth is a normal date field, name field and checkbox fit (494.52775ms)
+✔ 390px · no sideways scroll, no console errors (731.986542ms)
+✔ 1440px · journey: land → tap → answer → first visit → answers in booking → book once (830.811292ms)
+✔ 1440px · one scheduling block, no repeated actions (521.110667ms)
+✔ 1440px · tap spots: apart, no halos, labels clear (691.514166ms)
+✔ 1440px · every question title is a full sentence ending in "?" (511.668917ms)
+✔ 1440px · copy that counts the questions matches the questions (523.159166ms)
+✔ 1440px · buttons, chips and spots use only palette tokens, no shadows (646.2185ms)
+✔ 1440px · neumorphism: one light, two tokens, shadows follow the radius (540.467958ms)
+✔ 1440px · the back photo holds still while you tap, and chips keep their size (2031.409958ms)
+✔ 1440px · intake step 5: date of birth is a normal date field, name field and checkbox fit (520.442417ms)
+✔ 1440px · no sideways scroll, no console errors (731.409875ms)
+✔ copy voice · /bunnyworld/ (874.262417ms)
+✔ copy voice · / (768.836791ms)
+✔ copy voice · /preview/services/websites/ (612.70775ms)
+✔ steps reveal one at a time, in order (1056.219167ms)
+✔ going back through a summary chip keeps the later answers (883.087209ms)
+✔ a required field blocks Next until it is filled (775.426458ms)
+✔ spaces only count as empty (698.413ms)
+✔ submitting without a time shows the message and does not book (695.2545ms)
+✔ answers handed in from code show in the summaries and the confirmation (743.079084ms)
+✔ very long input stays inside the form (663.523584ms)
+✔ double-tapping does not skip a step or book twice (1086.986542ms)
+ℹ tests 101
+ℹ suites 0
+ℹ pass 101
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 479952.294583
