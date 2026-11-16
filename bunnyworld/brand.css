@@ -279,3 +279,15 @@ html[data-look="sunny"] .lh-hint svg{color:var(--sun);filter:drop-shadow(1.5px 1
 @media (max-width:760px){.nav .sog-back{display:none}
   .credit-sog{display:inline-flex;align-items:center;gap:4px;margin:0 2px;padding:3px 10px;border:1.5px solid currentColor;border-radius:999px;text-decoration:none;font:600 13px/1.2 var(--bf);letter-spacing:0}
   .credit-sog::before{content:"\2190"}}
+
+/* ---- AI-UI checklist pass (2026-11-15): flat surfaces, nothing overlapping, 40px tap targets ---- */
+.nav{backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--cream)}
+.worry,.phone,.open-dev,.co span,.buy-in{box-shadow:none}
+.phone{border-color:rgba(255,246,233,.35)}
+.buy-in{border:1.5px solid var(--ink)}
+.tab-open{margin-top:0}
+.buy{margin-right:4px}
+.nav .logo{min-height:40px}
+.lh-call{display:inline-flex;align-items:center;min-height:40px}
+.credit-sog,.sog-back{position:relative}
+.credit-sog::after,.sog-back::after{content:"";position:absolute;left:0;right:0;top:50%;height:44px;transform:translateY(-50%)}

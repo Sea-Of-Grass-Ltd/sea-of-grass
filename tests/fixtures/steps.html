@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>bw.js step engine fixture</title>
+<!-- Test fixture only: the smallest page that exercises the shared form engine (bunnyworld/bw.js). -->
+<link rel="stylesheet" href="/bunnyworld/shop.css">
+<style>:root{--bg:#fff;--ink:#111;--muted:#555;--line:#ccc;--accent:#111;--on-accent:#fff;--field:#fff;--r:12px;--btn-r:999px;--ctl-r:10px;--hf:system-ui;--hw:600;--bf:system-ui;--mf:monospace;--side:16px}</style>
+</head>
+<body>
+<main class="wrap">
+<form class="form" id="book" data-demo="T" data-ok="Booked." data-steps>
+ <div data-q="Which visit do you need?"><label>Visit<select data-sum="Visit" id="visit"><option value="exam">Exam</option><option value="adjust">Adjustment</option><option value="massage">Massage</option></select></label></div>
+ <div data-q="What should we know?"><label>Note<input id="note" required data-sum="Note"></label></div>
+ <div data-q="When suits you?" data-q-auto=".slots button" data-q-sum="input[name=date],input[name=time]" data-q-keep>
+  <div data-slots data-days="0,1,2,3,4,5,6" data-times="8:00,9:00,10:00,11:00,12:00,13:00,14:00,15:00,16:00,17:00,18:00,19:00,20:00,21:00,22:00,23:00" data-seed="t"></div>
+  <input type="hidden" name="date" data-sum="Day"><input type="hidden" name="time" required data-sum="Time" data-msg="Pick a day and a time first."><input type="hidden" id="about" data-sum="About">
+ </div>
+ <div data-q="Who is it for?"><label>Name<input id="name" required data-sum="Name"></label>
+  <p class="err" role="alert"></p>
+  <button class="btn" type="submit">Book it</button>
+  <div class="done" role="status"></div>
+ </div>
+</form>
+</main>
+<script src="/bunnyworld/bw.js"></script>
+</body>
+</html>

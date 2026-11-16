@@ -89,3 +89,6 @@ h2{font-size:clamp(46px,7vw,104px);line-height:.9;text-transform:uppercase;color
 .q-opt:hover{border-color:#fff4e2;color:#fff4e2}
 .q-opt[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
 .file-pick{border:2px dotted var(--accent);background:transparent}
+
+/* ---- AI-UI checklist pass (2026-11-15): flat surfaces (no blurred shadows, gradients or blur), 40px tap targets on phones ---- */
+.nav .hot{min-height:40px;display:inline-flex;align-items:center}

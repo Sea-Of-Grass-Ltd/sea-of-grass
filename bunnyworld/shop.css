@@ -181,3 +181,10 @@ input[type=file]::-webkit-file-upload-button{margin-right:14px;padding:10px 16px
 .demo .sog-back{padding:5px 12px;border:1.5px solid #FFF6E9;border-radius:999px;font:600 13px/1 Inter,system-ui,sans-serif;letter-spacing:0;color:#FFF6E9}
 .demo .sog-back:hover{background:#FFF6E9;color:#1E1A3A;text-decoration:none}
 .demo .sep{opacity:.5}
+
+/* demo strip links: small to look at, 44px tall to tap (the ring is invisible) */
+.demo .crumbs a{position:relative}
+.demo .crumbs a::after{content:"";position:absolute;left:0;right:0;top:50%;height:44px;transform:translateY(-50%)}
+
+/* ---- AI-UI checklist pass (2026-11-15): flat surfaces (no blurred shadows, gradients or blur), 40px tap targets on phones ---- */
+@media (max-width:899px){summary{min-height:44px;align-items:center}}

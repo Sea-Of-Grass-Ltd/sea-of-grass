@@ -153,3 +153,11 @@ body[data-season="summer"] .sp.summer,body[data-season="fall"] .sp.fall,body[dat
 .q-sum{border-left:4px solid var(--s1)}
 .q-opt[aria-pressed="true"]{background:var(--s1);border-color:var(--s1);color:var(--sbg)}
 .file-pick b{background:var(--s1);color:var(--sbg)}
+
+/* ---- AI-UI checklist pass (2026-11-15): flat surfaces (no blurred shadows, gradients or blur), 40px tap targets on phones ---- */
+.pin[aria-pressed="true"]{box-shadow:0 0 0 4px rgba(255,255,255,.55)}
+.m-card{box-shadow:none;border:2px solid #1f2509}
+.pin::after{content:"";position:absolute;left:50%;top:50%;width:44px;height:44px;transform:translate(-50%,-50%);border-radius:50%}
+.wx-demo{min-height:40px}
+.mast .logo{min-height:44px;display:inline-flex;align-items:center}
+.pin{box-shadow:none}

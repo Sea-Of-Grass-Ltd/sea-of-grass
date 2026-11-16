@@ -240,3 +240,11 @@ body.sheet-lock{overflow:hidden}
 .taps-head h2{box-shadow:inset 0 -10px 0 transparent}
 .taps-head>:first-child{box-shadow:inset 8px 0 0 var(--sun)}
 .chip:hover{background:var(--sun)}
+
+/* ---- AI-UI checklist pass (2026-11-15): flat surfaces (no blurred shadows, gradients or blur), 40px tap targets on phones ---- */
+.nav .cta{min-height:40px;display:inline-flex;align-items:center}
+.nm .more,.nm summary{min-height:40px}
+.posters a,.merchs a{min-height:40px;display:inline-flex;align-items:center}
+.news input{font-size:16px}
+.news button{min-width:44px;min-height:44px}
+.foot nav a{min-height:40px;display:inline-flex;align-items:center}

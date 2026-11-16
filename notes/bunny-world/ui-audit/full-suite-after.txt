@@ -1,0 +1,22 @@
+
+> test
+> node --test --test-concurrency=1 "unit/*.test.mjs" "bunnyworld/*.test.mjs"
+
+▶ bunnyworld @ 360
+  ✔ no checklist failures (2.156625ms)
+✔ bunnyworld @ 360 (10362.048333ms)
+▶ bunnyworld @ 390
+  ✔ no checklist failures (0.364125ms)
+✔ bunnyworld @ 390 (9919.05225ms)
+▶ bunnyworld @ 1440
+  ✔ no checklist failures (0.193959ms)
+✔ bunnyworld @ 1440 (9689.934958ms)
+▶ hare-today @ 360
+  ✔ no checklist failures (0.2045ms)
+✔ hare-today @ 360 (11538.533291ms)
+▶ hare-today @ 390
+  ✔ no checklist failures (0.276875ms)
+✔ hare-today @ 390 (11212.611833ms)
+▶ hare-today @ 1440
+  ✔ no checklist failures (0.177959ms)
+✔ hare-today @ 1440 (10188.807333ms)
