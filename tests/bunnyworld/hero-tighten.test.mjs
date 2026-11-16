@@ -159,3 +159,24 @@ for (const w of [390, 1440]) test(`hero @ ${w}: sizes follow the logo (u = its s
     assert.ok(near(r.btnFont, Math.max(16, r.u * 2 / 3)), `button text 2/3u, 16px floor (${r.btnFont})`);
   } finally { await ctx.close(); }
 });
+
+// HQ's condition (2026-11-16): on every phone width both loop lines break into exactly two lines ("Bunny / World.",
+// "Hop with / style.") with the same block height, so the swap never shifts anything below it
+test('phones: both loop lines are exactly two lines, same height, at every width from 320 to 820', async () => {
+  const bad = [];
+  for (const w of [320, 340, 360, 375, 390, 414, 430, 480, 600, 768, 820]) {
+    const { ctx, page } = await site.open(URL, w);
+    try {
+      const r = await page.evaluate(() => {
+        const layer = s => { const b = [...document.querySelectorAll(`.hero h1 ${s} > span`)].map(e => e.getBoundingClientRect()).filter(x => x.width);
+          const tops = [...new Set(b.map(x => Math.round(x.top)))]; return { lines: tops.length, h: Math.round(Math.max(...b.map(x => x.bottom)) - Math.min(...b.map(x => x.top))), right: Math.max(...b.map(x => x.right)), left: Math.min(...b.map(x => x.left)) }; };
+        const h = document.querySelector('.hero h1').getBoundingClientRect();
+        return { from: layer('.lh-from'), to: layer('.lh-to'), box: { l: h.left, r: h.right, h: h.height } };
+      });
+      if (r.from.lines !== 2 || r.to.lines !== 2) bad.push(`${w}: lines from ${r.from.lines}, to ${r.to.lines}`);
+      if (Math.abs(r.from.h - r.to.h) > 2) bad.push(`${w}: heights differ (${r.from.h} vs ${r.to.h})`);
+      for (const k of ['from', 'to']) if (r[k].left < r.box.l - 1 || r[k].right > r.box.r + 1) bad.push(`${w}: ${k} spills the box`);
+    } finally { await ctx.close(); }
+  }
+  assert.deepEqual(bad, []);
+});
