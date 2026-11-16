@@ -359,16 +359,28 @@ html[data-look="sunny"] .lh-hint svg{color:var(--sun);filter:drop-shadow(1.5px 1
    looping headline, read as one big unit; the line and the button smaller and centred below. A centred line grows and
    shrinks from the middle as "Hop with style." swaps with "Bunny World." (and earlier lines), so the swap opens no hole beside the logo.
    Refero: Duolingo welcome a6439332-6945-4ca3-ad43-f4cedabd80a2, Partiful 106f92c2-da1a-4a11-90d0-b82c84437429. */
-.hero[data-logo="centre"]{padding-top:clamp(24px,2.5vw,36px)}
+/* The unit's sizes and gaps, in one place, so the proportion spec (derived from the logo's own geometry) drops in here.
+   Each clamp runs from the phone value (390) to the desktop value (1440). */
+.hero[data-logo="centre"]{
+  --u-pad-top:clamp(24px,2.5vw,36px);     /* nav to logo */
+  --u-logo-h:clamp(225px,20.8vw,300px);   /* logo height (its width follows its 170:255 shape) */
+  --u-gap-logo:clamp(8px,.7vw,10px);      /* logo to headline */
+  --u-head:clamp(40px,9.45vw,136px);      /* headline line box (and font size, in the Clean look) */
+  --u-gap-head:clamp(16px,1.5vw,22px);    /* headline to the line */
+  --u-line:clamp(16px,1.25vw,18px);       /* "Imaginary shops, real websites." */
+  --u-gap-line:clamp(14px,1.1vw,16px);    /* the line to the button */
+  --u-btn-font:15px;                      /* "Pick your shop" */
+  --u-btn-pad:12px 20px;
+  padding-top:var(--u-pad-top)}
 .hero[data-logo="centre"] .lh-grid{display:flex;flex-direction:column;align-items:center;gap:0;text-align:center}
 .hero[data-logo="centre"] .lh-copy{display:flex;flex-direction:column;align-items:center;order:2;width:100%}
-.hero[data-logo="centre"] .lh-stage{order:1;align-self:center;display:grid;justify-items:center;padding:0;margin:0 0 clamp(8px,.7vw,10px)}
-.hero[data-logo="centre"] .lh-mark{height:clamp(225px,20.8vw,300px);max-height:none}
-.hero[data-logo="centre"] h1{--hs:clamp(40px,9.45vw,136px);font-size:calc(var(--hs) * var(--hk) / .92);line-height:var(--hs);height:var(--hs);width:100%;text-align:center}
+.hero[data-logo="centre"] .lh-stage{order:1;align-self:center;display:grid;justify-items:center;padding:0;margin:0 0 var(--u-gap-logo)}
+.hero[data-logo="centre"] .lh-mark{height:var(--u-logo-h);max-height:none}
+.hero[data-logo="centre"] h1{--hs:var(--u-head);font-size:calc(var(--hs) * var(--hk) / .92);line-height:var(--hs);height:var(--hs);width:100%;text-align:center}
 .hero[data-logo="centre"] .hl-br{display:none}
 .hero[data-logo="centre"] .lh-from{left:0;right:0;text-align:center}
-.hero[data-logo="centre"] .lede{margin:clamp(16px,1.5vw,22px) 0 0;font-size:clamp(16px,1.25vw,18px);line-height:1.35;color:var(--soft)}
-.hero[data-logo="centre"] .lh-go{width:auto;margin:clamp(14px,1.1vw,16px) 0 0;padding:12px 20px;min-height:44px;font-size:15px}
+.hero[data-logo="centre"] .lede{margin:var(--u-gap-head) 0 0;font-size:var(--u-line);line-height:1.35;color:var(--soft)}
+.hero[data-logo="centre"] .lh-go{width:auto;margin:var(--u-gap-line) 0 0;padding:var(--u-btn-pad);min-height:44px;font-size:var(--u-btn-font)}
 .hero[data-logo="centre"] .lh-hint{left:auto;right:calc(100% + 6px);top:6%;flex-direction:row;align-items:flex-start;font-size:clamp(17px,1.6vw,24px);line-height:1}
 .hero[data-logo="centre"] .lh-hint svg{width:clamp(36px,4vw,60px);margin:14px 0 0 2px;transform:none}
 @media (max-width:820px){
