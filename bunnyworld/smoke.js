@@ -71,28 +71,27 @@ void main(){
   const SHOW = COMMON + `
 uniform sampler2D uSim,uMask;uniform vec2 uRes;uniform float uTime,uDpr,uEnc,uStep,uFlow;
 uniform vec3 uAcc[5];uniform vec3 uInk,uLite,uRootC,uLeafC;
-uniform vec4 uG[${NG}];                                          // a glint: target x,y (carrot units, y up), delay (s), size (+10 on the leaves)
-uniform vec4 uCar[${NC}];uniform float uCarA[${NC}];uniform int uNC;   // a sparkle carrot: x,y (css px, y up), born (s), scale; its angle (tip along the drag)
+uniform vec4 uG[${NG}];                                          // a glint's place in the carrot: x,y (carrot units, y up), gather delay (s), size (+10 on the leaves)
+uniform vec3 uFrom[${NC * NG}];                                   // where each glint first sparkled on the drag's trail: x,y (css px, y up), when (s)
+uniform vec4 uCar[${NC}];uniform float uCarA[${NC}];uniform vec4 uBox[${NC}];uniform int uNC;   // a carrot: centre x,y, when it gathers (s), scale; angle (tip along the drag); bounds
 // a four-point glint (astroid), radius r
 float glint(vec2 p,float r){vec2 a=abs(p)/max(r,1e-3);return (pow(a.x,.6667)+pow(a.y,.6667)-1.)*r*.5;}
 // the sparkles that gather into a carrot, twinkle, and go out: x = core, y = ink rim, z = on a leaf, w = white-hot centre
 vec4 sparkles(vec2 pc,float px1){
   vec4 cv=vec4(0.);
-  for(int k=0;k<${NC};k++){if(k>=uNC)break;vec4 C=uCar[k];
-    vec2 d=pc-C.xy;if(dot(d,d)>pow(140.*C.w,2.))continue;
-    float age=uTime-C.z,ca=cos(uCarA[k]),sa=sin(uCarA[k]);mat2 Rc=mat2(ca,sa,-sa,ca);
-    for(int i=0;i<${NG};i++){vec4 G=uG[i];
-      float t=age-G.z;if(t<0.||t>1.6)continue;
-      float hs=h1(vec2(float(i),float(k)*7.3+C.z));
-      float g=clamp(t/.32,0.,1.);g=1.-pow(1.-g,3.);                 // gathering in fast, easing to a stop
-      float ang=hs*6.2832;vec2 from=G.xy+vec2(cos(ang),sin(ang))*(26.+34.*fract(hs*13.));
-      vec2 at=Rc*(mix(from,G.xy,g)*C.w);
-      float gone=1.-smoothstep(.8+hs*.3,1.1+hs*.4,t);              // going out, each on its own beat
-      float tw=.72+.38*sin(t*16.+hs*40.);                            // twinkling
+  for(int k=0;k<${NC};k++){if(k>=uNC)break;vec4 C=uCar[k],B=uBox[k];
+    if(pc.x<B.x||pc.y<B.y||pc.x>B.z||pc.y>B.w)continue;
+    float ca=cos(uCarA[k]),sa=sin(uCarA[k]);mat2 Rc=mat2(ca,sa,-sa,ca);
+    for(int i=0;i<${NG};i++){vec4 G=uG[i];vec3 F=uFrom[k*${NG}+i];
+      float ta=uTime-F.z;if(ta<0.)continue;                            // not dropped on the trail yet
+      float hs=h1(vec2(float(i),float(k)*7.3+F.z));
+      float g=clamp((uTime-C.z-G.z)/.45,0.,1.);g=1.-pow(1.-g,3.);       // from its spot on the trail into its place in the carrot
+      vec2 at=mix(F.xy,C.xy+Rc*(G.xy*C.w),g);
+      float tw=.72+.38*sin(ta*16.+hs*40.);                             // twinkling; no fade of their own: the smoke swallows them
       float leaf=step(5.,G.w),sz=G.w-leaf*10.;
-      float r=(1.3+2.3*sz)*C.w*smoothstep(0.,.25,t)*gone*mix(1.,tw,smoothstep(.25,.45,t));
-      if(r<.3)continue;
-      vec2 q=d-at;float gd=glint(q,r);
+      float r=(1.1+1.9*sz)*C.w*smoothstep(0.,.16,ta)*tw;
+      if(r<.35)continue;                                                // (a near-zero glint would spread its distance field wide)
+      vec2 q=pc-at;float gd=glint(q,r);
       float core=1.-smoothstep(-px1,px1,gd),rim=1.-smoothstep(-px1,px1,gd-1.);
       if(rim>cv.y||core>cv.x)cv=vec4(max(cv.x,core),max(cv.y,rim),leaf,1.-smoothstep(r*.12,r*.32,length(q)));}}
   return cv;}
@@ -221,45 +220,53 @@ void main(){
     const segs = []; let ptr = null, down = false, last = 0, touched = 0, openUntil = 0, peak = 0, sparkUntil = 0;   // peak: the most parted any cell can be (nothing in the sim can raise it)
     const toUV = e => { const r = host.getBoundingClientRect(); return [(e.clientX - r.left) / r.width, 1 - (e.clientY - r.top) / r.height, e.timeStamp]; };
     const ui = e => e.target.closest && e.target.closest('a,button,input,select,textarea,label,[role=button],[contenteditable]');
-    // ---- sparkle carrots: at the end of a drag (and midway along a long one), tiny glints gather into a carrot and go out
-    const GL = new Float32Array(NG * 4), cars = [], cf = new Float32Array(NC * 4), ca = new Float32Array(NC); let path = [];
+    // ---- sparkle carrots: as the drag moves, glints drop onto its path right behind the leading edge (inside the gap it has
+    // just opened), a trail of them; once there are enough they gather into a carrot there, tip along the drag. One or two per
+    // drag. They have no fade of their own: they stay in the gap until the smoke closes over them, like the gradient.
+    const GL = new Float32Array(NG * 4), FROM = new Float32Array(NC * NG * 3), cf = new Float32Array(NC * 4), ca = new Float32Array(NC), cb = new Float32Array(NC * 4);
+    const cars = []; let path = [], rec = null;
     (() => {   // the carrot as glints (units ~ px at scale 1, y up): the root's two edges tapering to the tip, its top, a few inside, three leafy fronds
       const g = [], add = (x, y, sz, leaf) => g.push([x, y, 0, sz + (leaf ? 10 : 0)]);
       for (let k = 0; k < 7; k++) { const y = 20 - k * 12, w = 14 * (1 - k / 6.6); add(-w, y, k ? .8 : 1); add(w, y, k ? .8 : 1); }
       add(0, -64, 1.1); add(0, 21, .8); add(-3, 2, .55); add(3, -20, .55); add(0, -40, .5);
       for (const [x, y] of [[-17, 50], [0, 60], [17, 50]]) for (const t of [.33, .66, 1]) add(x * t, 22 + (y - 22) * t, t === 1 ? 1 : .7, true);
-      g.forEach((v, i) => { const up = (20 - Math.min(20, v[1] < 22 ? v[1] : 22)) / 84; v[2] = .14 * (1 - up) + .14 * ((i * 0.618) % 1); GL.set(v, i * 4); });   // the leaves land first, then down the root
+      g.sort((a, b) => b[1] - a[1]);   // leaves first, tip last: the oldest glints on the trail become the leaves, the newest the tip
+      g.forEach((v, i) => { v[2] = .012 * i; GL.set(v, i * 4); });
     })();
     const maskAt = (x, y) => { if (!mk.width) return 0; try { return mctx.getImageData(Math.floor(x / MS), Math.floor(y / MS), 1, 1).data[0] / 255; } catch (e) { return 0; } };
-    // a carrot forms in the gap the drag has just opened: once the drag has gone far enough, at a spot a little behind the
-    // pointer (already fully open), tip pointing the way the drag went; a second after more travel; if a short drag made none,
-    // one where it ended. Only where the whole carrot sits clear of the copy and the edges.
     let travelled = 0, sinceCar = 0, made = 0;
-    const SC = () => Math.min(1.2, Math.max(.8, Math.min(W, H) / 640));
-    const fits = (x, y, ang, sc) => { const ux = -Math.sin(ang), uy = -Math.cos(ang);   // carrot axis on screen (y down), tip end
+    const STEP = 6, now_s = () => (performance.now() - T0) / 1000;
+    const SC = () => Math.min(1.3, Math.max(.85, Math.min(W, H) / 600));
+    const fits = (x, y, ang, sc) => { const ux = -Math.sin(ang), uy = -Math.cos(ang);   // carrot axis on screen (y down)
       for (let k = -2; k <= 2; k++) for (let j = -1; j <= 1; j++) { const px = x + ux * k * 30 * sc - uy * j * 16 * sc, py = y + uy * k * 30 * sc + ux * j * 16 * sc;
         if (px < 8 || px > W - 8 || py < 8 || py > H - 8 || maskAt(px, py) > .05) return false; } return true; };
-    function place(i) {   // try path point i and a few before it
-      const sc = SC();
-      for (let n = i; n >= Math.max(1, i - 6); n--) {
-        const [x, y] = path[n], [x0, y0] = path[Math.max(0, n - 3)], dx = x - x0, dy = y - y0;
-        if (Math.hypot(dx, dy) < 4) continue;
-        const ang = Math.atan2(dx, dy);          // turns the carrot's tip (-y, up-is-positive) onto the drag direction (screen y down)
-        if (!fits(x, y, ang, sc)) continue;
-        cars.push([x, H - y, (performance.now() - T0) / 1000, sc, ang]); while (cars.length > NC) cars.shift();
-        made++; sinceCar = 0; sparkUntil = performance.now() + 1800; wake(); return true;
-      }
-      return false;
+    const bounds = c => { let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9; const P = 16 * c.sc;
+      for (let i = 0; i < c.n; i++) { const x = c.from[i * 3], y = c.from[i * 3 + 1]; x0 = Math.min(x0, x); y0 = Math.min(y0, y); x1 = Math.max(x1, x); y1 = Math.max(y1, y); }
+      if (c.gather < 1e4) { const e = 75 * c.sc; x0 = Math.min(x0, c.cx - e); y0 = Math.min(y0, c.cy - e); x1 = Math.max(x1, c.cx + e); y1 = Math.max(y1, c.cy + e); }
+      c.box = [x0 - P, y0 - P, x1 + P, y1 + P]; };
+    function newCar(sc) { const c = { from: new Float32Array(NG * 3), n: 0, cx: 0, cy: 0, gather: 1e5, sc, ang: 0, acc: STEP, box: [0, 0, 0, 0] };
+      for (let i = 0; i < NG; i++) c.from[i * 3 + 2] = 1e5; cars.push(c); while (cars.length > NC) cars.shift(); return c; }
+    function drop(c, x, y) { if (c.n >= NG) return; c.from.set([x, H - y, now_s()], c.n * 3); c.n++; bounds(c); sparkUntil = performance.now() + 1800; wake(); }
+    function gather(c) {   // the trail so far gathers into a carrot on it, where the whole carrot fits in the clear
+      const n = c.n; if (n < 6) { rec = null; return; }
+      const xs = i => c.from[i * 3], ys = i => H - c.from[i * 3 + 1];
+      const ang = Math.atan2(-.55, .83);   // always the same classic tilt: leaves up and right, tip down and left
+      for (const off of [0, 2, -2, 4, -4, 6, -6]) { const i = Math.max(0, Math.min(n - 1, Math.floor(n * .72) + off));   // nearer the head, where the gap is freshest if (!fits(xs(i), ys(i), ang, c.sc)) continue;
+        c.cx = xs(i); c.cy = H - ys(i); c.ang = ang; break; }
+      if (!c.cx && !c.cy) { rec = null; made++; sinceCar = 0; return; }   // nowhere clear: they stay a loose trail
+      const t = now_s(); for (let i = n; i < NG; i++) c.from.set([xs(n - 1), H - ys(n - 1), t], i * 3); c.n = NG;   // the rest spark up at the head and join in
+      c.gather = t; bounds(c); rec = null; made++; sinceCar = 0; sparkUntil = performance.now() + 1800; wake();
     }
-    function grow(seg) {   // called as the path grows
+    function grow(seg) {   // the path grew by seg px; its newest point is the leading edge
       travelled += seg; sinceCar += seg;
-      const back = Math.max(1, path.length - 4);
-      if (made === 0 && travelled > 200) place(back);
-      else if (made === 1 && sinceCar > 420) place(back);
+      if (!rec && made < 2 && ((made === 0 && travelled > 40) || (made === 1 && sinceCar > 160))) rec = newCar(SC());
+      if (!rec) return;
+      rec.acc += seg; if (rec.acc >= STEP) { rec.acc = 0; const [x, y] = path[path.length - 1]; drop(rec, x, y); }
+      if (rec.n >= NG) gather(rec);
     }
-    function spawn() {   // the drag ended
-      if (!made && path.length > 1) place(path.length - 1);
-      path = []; travelled = sinceCar = made = 0;
+    function spawn() {   // the drag ended: a trail still being laid gathers now
+      if (rec) gather(rec);
+      path = []; travelled = sinceCar = made = 0; rec = null;
     }
     function stamp(a, b) {
       const dt = Math.max(8, b[2] - a[2]) / 1000, rad = (opts.radius || 60) / H;
@@ -271,7 +278,7 @@ void main(){
     host.addEventListener('pointerdown', e => {
       if (e.button > 0 || ui(e)) return;
       if (e.pointerType === 'mouse') e.preventDefault();   // a drag parts the smoke, it doesn't select the copy
-      down = true; ptr = toUV(e); path = [[ptr[0] * W, (1 - ptr[1]) * H]]; travelled = sinceCar = made = 0; stamp(ptr, [ptr[0], ptr[1], ptr[2] + 16]); stats.parts++;
+      down = true; ptr = toUV(e); path = [[ptr[0] * W, (1 - ptr[1]) * H]]; travelled = sinceCar = made = 0; rec = null; stamp(ptr, [ptr[0], ptr[1], ptr[2] + 16]); stats.parts++;
     });
     host.addEventListener('pointermove', e => {
       if (!down) return; const p = toUV(e);
@@ -280,11 +287,11 @@ void main(){
     }, { passive: true });
     const up = () => { if (down) spawn(); down = false; ptr = null; };
     addEventListener('pointerup', up, { passive: true });
-    addEventListener('pointercancel', () => { down = false; ptr = null; path = []; travelled = sinceCar = made = 0; }, { passive: true });   // a scroll took the touch: stop parting, no sparkles
+    addEventListener('pointercancel', () => { down = false; ptr = null; path = []; travelled = sinceCar = made = 0; rec = null; }, { passive: true });   // a scroll took the touch: stop parting, no sparkles
 
     // ---- the loop: runs only while something is open, the section is on screen and the tab is visible
     const T0 = performance.now(); let running = false, visible = false, prev = 0;
-    const stats = { frames: 0, parts: 0, get running() { return running; }, get sheet() { return [SW, SH]; }, get dpr() { return dpr; }, get peak() { return peak; }, get cars() { return cars.map(c => c.map(v => +v.toFixed(1))); } };
+    const stats = { frames: 0, parts: 0, get running() { return running; }, get sheet() { return [SW, SH]; }, get dpr() { return dpr; }, get peak() { return peak; }, get cars() { return cars.map(c => ({ glints: c.n, gathered: c.gather < 1e4 })); } };
     const sg = new Float32Array(N * 4), sd = new Float32Array(N * 4);
     function draw(showOnly) {
       const now = performance.now(), t = (now - T0) / 1000, dt = Math.min(1 / 20, Math.max(1 / 240, (now - (prev || now - 16)) / 1000)); prev = now;
@@ -304,9 +311,9 @@ void main(){
       gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, mtex); gl.uniform1i(SHOWP.u.uMask, 1); gl.activeTexture(gl.TEXTURE0);
       gl.uniform1f(SHOWP.u.uStep, opts.step || 170); gl.uniform1f(SHOWP.u.uFlow, opts.flow || .3);   // one accent every 170px, drifting right at about 50px/s
       gl.uniform3fv(SHOWP.u['uAcc[0]'], ACC); gl.uniform3fv(SHOWP.u.uInk, INK); gl.uniform3fv(SHOWP.u.uLite, LITE); gl.uniform3fv(SHOWP.u.uRootC, ROOTC); gl.uniform3fv(SHOWP.u.uLeafC, LEAFC);
-      const tnow = (now - T0) / 1000; while (cars.length && tnow - cars[0][2] > 2) cars.shift();
-      cf.fill(0); ca.fill(0); cars.forEach((k, i) => { cf.set(k.slice(0, 4), i * 4); ca[i] = k[4]; });
-      gl.uniform4fv(SHOWP.u['uG[0]'], GL); gl.uniform4fv(SHOWP.u['uCar[0]'], cf); gl.uniform1fv(SHOWP.u['uCarA[0]'], ca); gl.uniform1i(SHOWP.u.uNC, cars.length);
+      FROM.fill(0); cf.fill(0); ca.fill(0); cb.fill(0);
+      cars.forEach((c, i) => { FROM.set(c.from, i * NG * 3); cf.set([c.cx, c.cy, c.gather, c.sc], i * 4); ca[i] = c.ang; cb.set(c.box, i * 4); });
+      gl.uniform4fv(SHOWP.u['uG[0]'], GL); gl.uniform4fv(SHOWP.u['uCar[0]'], cf); gl.uniform1fv(SHOWP.u['uCarA[0]'], ca); gl.uniform4fv(SHOWP.u['uBox[0]'], cb); gl.uniform3fv(SHOWP.u['uFrom[0]'], FROM); gl.uniform1i(SHOWP.u.uNC, cars.length);
       gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT); gl.drawArrays(gl.TRIANGLES, 0, 3);
       return dt;
     }
@@ -318,7 +325,7 @@ void main(){
       peak = Math.max(0, peak * Math.pow(.5, dt * FADE) - dt * (.04 + 1.6 * sw));   // the same fade as SIM; flowing smoke can only lower it
       if (down || (peak > .12 && now < openUntil) || performance.now() < sparkUntil) requestAnimationFrame(frame);   // below .12 nothing shows (see SHOW)
       else {   // closed over: back to exactly the section's own background, and rest
-        running = false; prev = 0;
+        running = false; prev = 0; cars.length = 0; rec = null;   // the smoke has swallowed any sparkles too
         for (const s of sheets) { gl.bindFramebuffer(gl.FRAMEBUFFER, s.f); gl.clearColor(0, half ? 0 : .5, half ? 0 : .5, 1); gl.clear(gl.COLOR_BUFFER_BIT); }
         gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
       }
@@ -333,7 +340,7 @@ void main(){
     still.addEventListener && still.addEventListener('change', onMotion);
     const api = {
       canvas: cv, stats,
-      _sparkAt(x, y, ang = 0) { cars.push([x, H - y, (performance.now() - T0) / 1000, SC(), ang]); while (cars.length > NC) cars.shift(); sparkUntil = performance.now() + 1800; wake(); },   // tests: a carrot at (x, y) css px in the hero
+      _sparkAt(x, y, ang = 0) { const c = newCar(SC()), t = now_s(); for (let i = 0; i < NG; i++) c.from.set([x, H - y, t], i * 3); c.n = NG; c.cx = x; c.cy = H - y; c.ang = ang; c.gather = t; bounds(c); sparkUntil = performance.now() + 1800; wake(); },   // tests: a carrot at (x, y) css px in the hero
       destroy() { io.disconnect(); ro.disconnect(); document.removeEventListener('visibilitychange', onVis); visible = false; cv.remove(); host.classList.remove('bw-smoke-host'); delete host.__bwSmoke; },
     };
     host.__bwSmoke = api;
