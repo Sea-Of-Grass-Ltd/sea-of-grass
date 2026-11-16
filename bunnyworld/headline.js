@@ -21,7 +21,7 @@
     const out = layers[show], next = show === 'from' ? 'to' : 'from', inc = layers[next], ink = getComputedStyle(h).color;
     // one front crosses the whole block left to right (both lines at once, like a wipe); each letter changes as the front
     // reaches its spot, so an old letter leaves just before the new one lands there. Measured each time: the looks' fonts differ.
-    const x0 = h.getBoundingClientRect().left, W = Math.max(...[...out, ...inc].map(l => l.getBoundingClientRect().right - x0)) || 1;
+    const rs = [...out, ...inc].map(l => l.getBoundingClientRect()).filter(b => b.width), x0 = Math.min(...rs.map(b => b.left)), W = (Math.max(...rs.map(b => b.right)) - x0) || 1; // the span the letters cover, so a centred line sweeps edge to edge
     const at = l => Math.max(0, Math.min(1, (l.getBoundingClientRect().left - x0) / W)) * FRONT;
     h.dataset.show = 'both';
     const anims = [

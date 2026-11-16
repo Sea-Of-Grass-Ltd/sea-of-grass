@@ -11,7 +11,7 @@ before(async () => { site = await startSite(); });
 after(async () => { await site?.close(); });
 const txt = s => (s || '').replace(/\s+/g, ' ').trim();
 
-for (const w of [390, 1440]) test(`hero @ ${w}: one line, one tagline, one button, all four prices on the first screen`, async () => {
+for (const w of [390, 1440]) test(`hero @ ${w}: logo over a one-line headline as one unit, the line and button smaller, all four prices on the first screen`, async () => {
   const { ctx, page } = await site.open(URL, w, { reducedMotion: 'reduce' });
   try {
     const r = await page.evaluate(() => {
@@ -24,6 +24,8 @@ for (const w of [390, 1440]) test(`hero @ ${w}: one line, one tagline, one butto
         question: /what kind of shop/i.test(hero.innerText),
         calls: [...hero.querySelectorAll('a[href]')].filter(a => /cal\.com/.test(a.href)).map(a => a.innerText.trim()),
         pricesBottom: Math.max(...prices.map(p => p.bottom)), priceCount: prices.length, vh: innerHeight,
+        ledeTop: lede.getBoundingClientRect().top, ledeFont: parseFloat(getComputedStyle(lede).fontSize), ledeMid: (lede.getBoundingClientRect().left + lede.getBoundingClientRect().right) / 2,
+        goMid: (go.getBoundingClientRect().left + go.getBoundingClientRect().right) / 2, goW: go.getBoundingClientRect().width, vw: innerWidth,
         h1Lines: Math.round(hr.height / (lh * 1.02)), h1Font: lh, h1: hr, mark: { left: mark.left, top: mark.top, bottom: mark.bottom, w: mark.width, h: mark.height },
       };
     });
@@ -34,15 +36,20 @@ for (const w of [390, 1440]) test(`hero @ ${w}: one line, one tagline, one butto
     assert.deepEqual(r.calls, [], 'no call link in the hero: the call is in the header');
     assert.equal(r.priceCount, 4);
     assert.ok(r.pricesBottom <= r.vh, `all four prices on the first screen (they end at ${Math.round(r.pricesBottom)}px of ${r.vh})`);
-    if (w >= 900) {
-      assert.equal(r.h1Lines, 1, `the headline is one line (${Math.round(r.h1.height)}px tall at ${r.h1Font}px)`);
-      assert.ok(r.h1Font >= 120, `the headline is bigger (${r.h1Font}px)`);
-      assert.ok(r.mark.h <= 420, `the logo is smaller (${Math.round(r.mark.h)}px tall)`);
-    } else {
-      // phone: the logo sits beside the headline, not above it
-      assert.ok(r.mark.left >= r.h1.left + 150 && r.mark.top < r.h1.bottom && r.mark.bottom > r.h1.top, `logo beside the headline: ${JSON.stringify({ mark: r.mark, h1: r.h1 })}`);
-      assert.ok(r.mark.h <= 160, `the logo is small on phone (${Math.round(r.mark.h)}px)`);
-    }
+    // the critic's Refero pick (2026-11-16): the logo centred directly above a one-line headline, one big unit;
+    // the line and the button centred and smaller below
+    assert.equal(r.h1Lines, 1, `the headline is one line (${Math.round(r.h1.height)}px tall at ${r.h1Font}px)`);
+    const big = w >= 900 ? [250, 320] : [200, 240];
+    assert.ok(r.mark.h >= big[0] && r.mark.h <= big[1], `the logo is big (${Math.round(r.mark.h)}px tall, want ${big})`);
+    if (w >= 900) assert.ok(r.h1Font >= 120, `the headline is big (${r.h1Font}px)`);
+    const midMark = r.mark.left + r.mark.w / 2, midH1 = r.h1.left + r.h1.width / 2;
+    assert.ok(Math.abs(midMark - midH1) <= 2, `logo centred over the headline (${Math.round(midMark)} vs ${Math.round(midH1)})`);
+    const gapUnit = r.h1.top - r.mark.bottom, gapBelow = r.ledeTop - r.h1.bottom;
+    assert.ok(gapUnit >= -2 && gapUnit <= 16, `logo sits right on the headline (${Math.round(gapUnit)}px)`);
+    assert.ok(gapBelow > gapUnit, `the line below sits further off than the logo (${Math.round(gapBelow)} vs ${Math.round(gapUnit)}px)`);
+    assert.ok(r.ledeFont * 2.5 <= r.h1Font, `the line is much smaller than the headline (${r.ledeFont} vs ${r.h1Font}px)`);
+    assert.ok(Math.abs(r.ledeMid - midH1) <= 2 && Math.abs(r.goMid - midH1) <= 2, 'the line and the button are centred under it');
+    assert.ok(r.goW < r.vw * 0.7, `the button is small, not full width (${Math.round(r.goW)}px)`);
   } finally { await ctx.close(); }
 });
 
@@ -113,5 +120,20 @@ for (const w of [360, 390]) test(`Main Street @ ${w}: the trades are pills you c
     assert.ok(r.rows <= 4, `pills wrap into a few rows (${r.rows})`);
     assert.deepEqual(r.labels, ['Restaurant', 'Auto shop', 'Bakery', 'Barber', 'Bar', 'Farm', 'Gift shop', 'Landscaping', 'Clinic']);
     assert.ok(r.h <= r.room, `the section fits one screen under the sticky bar (${r.h}px of ${r.room})`);
+  } finally { await ctx.close(); }
+});
+
+for (const w of [390, 1440]) test(`hero @ ${w}: "Hop in." sits centred under the logo, so the swap opens no hole`, async () => {
+  const { ctx, page } = await site.open(URL, w);
+  try {
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    const r = await page.evaluate(() => {
+      const mid = e => { const b = e.getBoundingClientRect(); return (b.left + b.right) / 2; };
+      const letters = s => [...document.querySelectorAll(s + ' > span')].map(e => e.getBoundingClientRect()).filter(b => b.width);
+      const span = s => { const b = letters(s); return (Math.min(...b.map(x => x.left)) + Math.max(...b.map(x => x.right))) / 2; };
+      return { from: span('.lh-from'), to: span('.lh-to'), mark: mid(document.querySelector('.lh-mark')), shown: getComputedStyle(document.querySelector('.lh-from')).visibility };
+    });
+    assert.equal(r.shown, 'visible', 'opens on "Hop in."');
+    assert.ok(Math.abs(r.from - r.mark) <= 3 && Math.abs(r.to - r.mark) <= 3, `both lines centred under the logo: ${JSON.stringify(r)}`);
   } finally { await ctx.close(); }
 });
