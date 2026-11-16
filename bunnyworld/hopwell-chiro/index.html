@@ -17,7 +17,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Albert+Sans:ital,wght@0,400;0,500;1,400&family=Figtree:wght@400;500;600&family=Geist+Mono:wght@400;500&family=IBM+Plex+Mono:wght@500&family=Gabarito:wght@900&display=swap">
 <link rel="stylesheet" href="../shop.css?v=16">
-<link rel="stylesheet" href="style.css?v=25">
+<link rel="stylesheet" href="style.css?v=26">
 </head>
 <body>
 <div class="demo"><span class="crumbs"><a class="sog-back" href="https://seaofgrass.studio/">&larr; Sea of Grass</a><span class="sep" aria-hidden="true">/</span><a class="bw-wm" href="../" aria-label="Back to Bunny World"><img src="../brand/mark-small-cream.svg?v=2" alt="" width="13" height="20"><span>Bunny World</span></a></span><span>Made-up shop. Everything works; nothing is sent.</span></div>
@@ -27,29 +27,31 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
 <main id="top">
 <section class="hook wrap" id="where" data-hook aria-labelledby="where-h">
  <div class="hook-h"><p class="kick">Family chiropractic &middot; Berthoud</p><h1 id="where-h">Point to where <i>it hurts.</i></h1></div>
- <figure class="fig" data-qn="1"><div class="stage"><div class="shot"><picture><source type="image/webp" srcset="/preview/assets/work/bunny-world/hopwell-back-640.webp 640w, /preview/assets/work/bunny-world/hopwell-back-960.webp 960w, /preview/assets/work/bunny-world/hopwell-back-1280.webp 1280w" sizes="(max-width: 900px) 100vw, 45vw"><img src="/preview/assets/work/bunny-world/hopwell-back-900.jpg" width="900" height="1125" alt="A patient seen from behind, sitting on a treatment table in a sage tank top, with a little ceramic rabbit on the shelf"></picture>
+ <figure class="fig"><div class="stage"><div class="shot"><picture><source type="image/webp" srcset="/preview/assets/work/bunny-world/hopwell-back-640.webp 640w, /preview/assets/work/bunny-world/hopwell-back-960.webp 960w, /preview/assets/work/bunny-world/hopwell-back-1280.webp 1280w" sizes="(max-width: 900px) 100vw, 45vw"><img src="/preview/assets/work/bunny-world/hopwell-back-900.jpg" width="900" height="1125" alt="A patient seen from behind, sitting on a treatment table in a sage tank top, with a little ceramic rabbit on the shelf"></picture>
   <button type="button" class="spot" data-spot="neck" aria-label="Neck" aria-pressed="false" style="left:50%;top:30%"></button>
   <button type="button" class="spot" data-spot="shoulder" aria-label="Shoulder" aria-pressed="false" style="left:71%;top:39%"></button>
   <button type="button" class="spot" data-spot="mid" aria-label="Between the shoulder blades" aria-pressed="false" style="left:50%;top:47%"></button>
   <button type="button" class="spot" data-spot="low" aria-label="Low back" aria-pressed="false" style="left:50%;top:73%"></button>
   <button type="button" class="spot" data-spot="hip" aria-label="Hip or down the leg" aria-pressed="false" style="left:34%;top:86%"></button>
- </div></div><figcaption><p class="t" id="q1"><span class="n">1</span>Where does it hurt?</p><p class="picked" data-picked>Tap a dot on the photo.</p></figcaption></figure>
+  <span class="tag" data-tag aria-hidden="true" hidden></span>
+ </div></div></figure>
 
  <div class="panel" aria-live="polite">
+  <div class="q q1" data-qn="1"><p class="t" id="q1"><span class="n">1</span>Where does it hurt?</p><p class="picked" data-picked>Tap a dot on the photo.</p></div>
   <div class="q" data-qn="2" hidden><p class="t" id="q2"><span class="n">2</span>How long has it hurt?</p>
    <div class="chips" role="group" aria-labelledby="q2" data-group="long"><button type="button" class="chip" data-v="days">A few days</button><button type="button" class="chip" data-v="weeks">2&ndash;6 weeks</button><button type="button" class="chip" data-v="months">Months</button></div></div>
   <div class="q" data-qn="3" hidden><p class="t" id="q3"><span class="n">3</span>What makes it worse?</p>
    <div class="chips" role="group" aria-labelledby="q3" data-group="worse"><button type="button" class="chip" data-v="sitting">Sitting</button><button type="button" class="chip" data-v="mornings">Mornings</button><button type="button" class="chip" data-v="lifting">Lifting</button><button type="button" class="chip" data-v="sleeping">Sleeping</button></div></div>
-  <div class="ans" data-ans hidden>
-   <div data-ok><span class="mono k" data-a-k></span><h2>Your first visit</h2>
-    <p data-a-p></p>
+ </div>
+ <div class="ans" data-ans hidden>
+   <div data-ok><div class="a-main"><span class="mono k" data-a-k></span><h2>Your first visit</h2>
+    <p data-a-p></p></div><div class="a-side">
     <div class="rows"><div><span>Length</span><b>60 min</b></div><div><span>Self-pay</span><b>$65</b></div></div>
     <p class="tip" data-a-tip></p>
-    <p class="next">Your answers go with your booking, so you won&rsquo;t have to explain it twice. <a href="#book">Pick a time</a></p></div>
+    <p class="next">Your answers go with your booking, so you won&rsquo;t have to explain it twice. <a href="#book">Pick a time</a></p></div></div>
    <div data-flag hidden><span class="mono k">Please call first</span><h2>See a doctor before you book</h2><p>Numbness, weakness, a fall or a crash, or a fever with back pain can need checks we can&rsquo;t do here. Call your doctor, or go to urgent care if it&rsquo;s sudden or severe. We&rsquo;re happy to see you after, and you can call us with questions on <a href="tel:9705550190">(970) 555-0190</a>.</p></div>
    <div class="flags"><span>This isn&rsquo;t a diagnosis. Do you have any of these?</span><div class="chips sm" role="group" aria-label="Warning signs" data-group="flags" data-multi><button type="button" class="chip" data-v="numb">Numbness</button><button type="button" class="chip" data-v="weak">Weakness</button><button type="button" class="chip" data-v="fall">After a fall or crash</button><button type="button" class="chip" data-v="fever">Fever</button></div></div>
   </div>
- </div>
 </section>
 
 <section class="pair wrap">
@@ -91,6 +93,6 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
 </main>
 <section class="want"><div><h2>Run a clinic or health practice? Your site can do all of this.</h2><p>We build it in your own look, connect it to the tools you already use and keep it running for you. You get a fixed price in writing before we start, and you talk to Tristan or Bryce the whole way.</p></div><div style="display:flex;flex-wrap:wrap;gap:10px"><a href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a free 20-minute look</a></div></section>
 <script src="../bw.js?v=14" defer></script>
-<script src="clinic.js?v=7" defer></script>
+<script src="clinic.js?v=8" defer></script>
 </body>
 </html>

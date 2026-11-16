@@ -1,0 +1,8 @@
+ℹ fail 5
+ℹ pass 39
+✖ 1280px · desktop after answering: the two columns end together, no dead zone (1367.604041ms)
+✖ 1280px · desktop: the chosen dot stays on screen and is labelled when the card shows (1754.407209ms)
+✖ 1440px · desktop after answering: the two columns end together, no dead zone (1385.014625ms)
+✖ 1440px · desktop: the chosen dot stays on screen and is labelled when the card shows (1758.588417ms)
+✖ failing tests:
+✖ the "Tonight" tip is about the place you chose, for every place and trigger (2595.511458ms)

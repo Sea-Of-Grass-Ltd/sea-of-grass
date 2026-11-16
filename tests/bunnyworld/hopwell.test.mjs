@@ -149,6 +149,15 @@ for (const w of WIDTHS) {
     } finally { await ctx.close(); }
   });
 
+  test(`${w}px · every tap spot sits inside the photo frame`, async () => {
+    const { ctx, page } = await open(w);
+    try {
+      const out = await page.evaluate(() => { const f = document.querySelector('.stage').getBoundingClientRect();
+        return [...document.querySelectorAll('.spot')].filter(s => { const r = s.getBoundingClientRect(); return r.top < f.top || r.bottom > f.bottom || r.left < f.left || r.right > f.right; }).map(s => s.dataset.spot); });
+      assert.deepEqual(out, [], 'spots cut off by the photo frame');
+    } finally { await ctx.close(); }
+  });
+
   test(`${w}px · every question title is a full sentence ending in "?"`, async () => {
     const { ctx, page } = await open(w);
     try {
@@ -376,3 +385,65 @@ for (const w of WIDTHS) {
     } finally { await ctx.close(); }
   });
 }
+
+// Tristan on desktop, 2026-11-16: "This loads awkwardly on desktop." After answering, the photo column stopped early and
+// the questions and tall answer card ran on alone; the Neck answer got a low-back tip; the chosen dot could scroll away.
+const AREA = { neck: /\bneck/i, shoulder: /\bshoulder/i, mid: /mid-back/i, low: /low back/i, hip: /\bhip/i };
+async function answer(page, spot, long = 'days', worse = 'sitting') {
+  await page.locator(`.spot[data-spot="${spot}"]`).click();
+  await page.locator(`[data-group="long"] .chip[data-v="${long}"]`).click();
+  await page.locator(`[data-group="worse"] .chip[data-v="${worse}"]`).click();
+  await page.waitForTimeout(700);
+}
+for (const w of [1280, 1440]) {
+  test(`${w}px · desktop after answering: the two columns end together, no dead zone`, async () => {
+    const { ctx, page } = await open(w);
+    try {
+      await answer(page, 'neck');
+      const r = await page.evaluate(() => {
+        const hook = document.querySelector('.hook'), hr = hook.getBoundingClientRect(), mid = document.querySelector('.fig').getBoundingClientRect().right + 1;
+        const parts = [...hook.querySelectorAll(':scope > *, :scope > .panel > *')].filter(e => !e.hidden && e.getBoundingClientRect().height > 0 && !e.matches('.panel'));
+        const side = parts.filter(e => { const r = e.getBoundingClientRect(); return r.width < hr.width * 0.9; });
+        const left = side.filter(e => e.getBoundingClientRect().right <= mid), right = side.filter(e => e.getBoundingClientRect().left >= mid);
+        const bottom = es => Math.max(...es.map(e => e.getBoundingClientRect().bottom));
+        return { left: Math.round(bottom(left)), right: Math.round(bottom(right)), n: [left.length, right.length] };
+      });
+      assert.ok(r.n[0] > 0 && r.n[1] > 0, `found both columns ${JSON.stringify(r.n)}`);
+      assert.ok(Math.abs(r.left - r.right) <= 120, `columns end ${Math.abs(r.left - r.right)}px apart (left ${r.left}, right ${r.right})`);
+    } finally { await ctx.close(); }
+  });
+
+  test(`${w}px · desktop: the chosen dot stays on screen and is labelled when the card shows`, async () => {
+    const { ctx, page } = await open(w);
+    try {
+      for (const spot of ['neck', 'hip']) {
+        await page.goto(page.url()); await page.waitForTimeout(300);
+        await answer(page, spot);
+        const r = await page.evaluate(spot => {
+          const s = document.querySelector(`.spot[data-spot="${spot}"]`).getBoundingClientRect(), a = document.querySelector('.ans').getBoundingClientRect();
+          const tag = document.querySelector('.stage [data-tag]');
+          return { spot: [Math.round(s.top), Math.round(s.bottom)], card: [Math.round(a.top), Math.round(a.bottom)], h: innerHeight, tag: tag && !tag.hidden ? tag.textContent.trim() : '' };
+        }, spot);
+        assert.ok(r.spot[0] >= 0 && r.spot[1] <= r.h, `${spot}: chosen dot on screen (${r.spot}) of ${r.h}`);
+        assert.ok(r.card[0] < r.h, `${spot}: the answer card has started on screen (${r.card})`);
+        assert.match(r.tag, AREA[spot], `${spot}: the dot is labelled`);
+      }
+    } finally { await ctx.close(); }
+  });
+}
+
+test('the "Tonight" tip is about the place you chose, for every place and trigger', async () => {
+  const { ctx, page } = await open(1440);
+  try {
+    const bad = [];
+    for (const spot of Object.keys(AREA)) for (const worse of ['sitting', 'mornings', 'lifting', 'sleeping']) {
+      await page.locator(`.spot[data-spot="${spot}"]`).click();
+      await page.locator('[data-group="long"] .chip[data-v="weeks"]').click();
+      await page.locator(`[data-group="worse"] .chip[data-v="${worse}"]`).click();
+      const tip = (await page.locator('[data-a-tip]').textContent()).trim();
+      if (!AREA[spot].test(tip)) bad.push(`${spot}/${worse}: doesn't name the ${spot}: "${tip}"`);
+      for (const [other, re] of Object.entries(AREA)) if (other !== spot && re.test(tip)) bad.push(`${spot}/${worse}: mentions ${other}: "${tip}"`);
+    }
+    assert.deepEqual(bad, []);
+  } finally { await ctx.close(); }
+});
