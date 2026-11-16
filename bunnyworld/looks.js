@@ -1,15 +1,15 @@
 /* Bunny World landing: tap the bunny to change the look of the page (Tristan, 2026-11-15), The shop question is answered once, by the trade tabs on Main Street.
    Each tap: the ears pop, one glint sweeps, the page crossfades to the next look. Looks only re-set CSS variables (brand.css),
-   so nothing moves. Reduced motion: instant swap, no pop. The choice is remembered (localStorage, which can be missing). */
+   so nothing moves. Clean is the default (Tristan, 2026-11-15); taps go Clean, Bold, Warm, Sunny, Disco. Reduced motion: instant swap, no pop. The choice is remembered (localStorage, which can be missing). */
 (() => {
-  const LOOKS = [['disco', 'Disco', '#1B0F2A'], ['clean', 'Clean', '#F5F7F9'], ['bold', 'Bold', '#0B0B0B'], ['warm', 'Warm', '#FFF6EA'], ['sunny', 'Sunny', '#FBF6EA']];
+  const LOOKS = [['clean', 'Clean', '#F5F7F9'], ['bold', 'Bold', '#0B0B0B'], ['warm', 'Warm', '#FFF6EA'], ['sunny', 'Sunny', '#FBF6EA'], ['disco', 'Disco', '#1B0F2A']];
   const root = document.documentElement, reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
   const mark = document.querySelector('.lh-mark');
   const nameEl = document.querySelector('[data-look-name]');
   const hint = document.querySelector('.lh-hint'), meta = document.querySelector('meta[name="theme-color"]');
   if (!mark) return;
-  let i = Math.max(0, LOOKS.findIndex(l => l[0] === (root.dataset.look || 'disco')));
+  let i = Math.max(0, LOOKS.findIndex(l => l[0] === (root.dataset.look || 'clean')));
 
   const paint = () => {
     const [key, name, theme] = LOOKS[i];
