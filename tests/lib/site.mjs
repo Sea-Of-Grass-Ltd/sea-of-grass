@@ -8,7 +8,8 @@ import { chromium } from 'playwright-core';
 export const ROOT = process.env.SITE_ROOT || path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const TYPES = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.mjs': 'text/javascript', '.svg': 'image/svg+xml', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.png': 'image/png', '.json': 'application/json', '.mp4': 'video/mp4', '.woff2': 'font/woff2' };
 
-export async function startSite() {
+// opts.webgl: WebGL for pages with a live GPU effect (headless Chrome has none by default): the Mac's GPU, else SwiftShader
+export async function startSite(opts = {}) {
   const server = http.createServer((req, res) => {
     const p = decodeURIComponent(new URL(req.url, 'http://x').pathname);
     let f = path.join(ROOT, p);
@@ -21,7 +22,7 @@ export async function startSite() {
   });
   await new Promise(r => server.listen(0, '127.0.0.1', r));
   const base = `http://127.0.0.1:${server.address().port}`;
-  const browser = await chromium.launch({ channel: 'chrome' });
+  const browser = await chromium.launch({ channel: 'chrome', ...(opts.webgl ? { args: process.platform === 'darwin' ? ['--use-angle=metal', '--enable-gpu', '--ignore-gpu-blocklist'] : ['--enable-unsafe-swiftshader', '--use-angle=swiftshader', '--ignore-gpu-blocklist'] } : {}) });
   return {
     base, browser,
     async close() { await browser.close(); server.close(); },
