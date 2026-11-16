@@ -1,45 +1,46 @@
-/* Bunny Auto. Lead: Lamborghini (Refero) – black stages, image-led reveal, towering condensed caps, yellow kept to small action signals.
-   Borrowed: SpaceX (Refero) – narrow industrial capitals over stark imagery, mono spec labels, low reading density. */
-:root{--bg:#000;--ink:#fff;--muted:#a7a9ae;--line:rgba(255,255,255,.16);--accent:#ffc000;--on-accent:#000;--field:#111214;--r:0;--btn-r:0;--ctl-r:0;
+/* Bunny Auto. Colours (2026-11-16, notes/bunny-world/critic/palettes): Kikin (Refero style eaa4ac11-2397-428e-aa32-fdcf76867190):
+   racing-forest ground #122315, cream headline #F3EEDD, electric-green buttons #55DD4A, light-green labels #77E46E, sky-blue tiny marks #73D3EB.
+   Layout and type unchanged from the Lamborghini / SpaceX build: image-led hero, towering condensed caps, mono spec labels. */
+:root{--bg:#122315;--ink:#f3eedd;--muted:#b4bdb0;--line:rgba(243,238,221,.18);--accent:#55dd4a;--on-accent:#122315;--field:#0c190f;--r:0;--btn-r:0;--ctl-r:0;
   --hf:"Barlow Condensed",sans-serif;--hw:600;--bf:Barlow,sans-serif;--mf:"Roboto Mono",monospace}
 .nav{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:20px;padding-block:14px;background:rgba(0,0,0,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.logo{font:500 22px/1 var(--hf);letter-spacing:.24em;text-decoration:none}.logo b{font-weight:700;color:#ffc000}
-.nav nav{display:flex;gap:26px;font:500 14px/1 var(--hf);letter-spacing:.16em;text-transform:uppercase}.nav nav a{text-decoration:none;color:#c9cbd0}.nav nav a:hover{color:#fff}
-.cta{display:inline-flex;align-items:center;gap:14px;min-height:46px;padding:0 20px;background:#ffc000;color:#000;font:600 14px/1 var(--hf);letter-spacing:.14em;text-transform:uppercase;text-decoration:none;white-space:nowrap}
-.cta.alt{background:#fff}
+.logo{font:500 22px/1 var(--hf);letter-spacing:.24em;text-decoration:none}.logo b{font-weight:700;color:#77e46e}
+.nav nav{display:flex;gap:26px;font:500 14px/1 var(--hf);letter-spacing:.16em;text-transform:uppercase}.nav nav a{text-decoration:none;color:#d6d9cc}.nav nav a:hover{color:#f3eedd}
+.cta{display:inline-flex;align-items:center;gap:14px;min-height:46px;padding:0 20px;background:#55dd4a;color:#122315;font:600 14px/1 var(--hf);letter-spacing:.14em;text-transform:uppercase;text-decoration:none;white-space:nowrap}
+.cta.alt{background:#f3eedd}
 .hero{position:relative;min-height:min(84vh,780px);display:grid;align-items:end;overflow:hidden}
 .hero .art{position:absolute;inset:0}.hero .art svg{width:100%;height:100%;object-fit:cover}
 .hero .art svg{preserveAspectRatio:xMidYMid slice}
 .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 40%,rgba(0,0,0,.92))}
 .over{position:relative;z-index:1;padding-bottom:clamp(28px,4vw,56px)}
-.crumb{font:400 12px/1 var(--mf);letter-spacing:.12em;text-transform:uppercase;color:#c9cbd0}
-.hero h1{font-size:clamp(64px,11vw,176px);line-height:.86;text-transform:uppercase;font-weight:700;letter-spacing:-.005em}
+.crumb{font:400 12px/1 var(--mf);letter-spacing:.12em;text-transform:uppercase;color:#77e46e}
+.hero h1{color:#f3eedd;font-size:clamp(64px,11vw,176px);line-height:.86;text-transform:uppercase;font-weight:700;letter-spacing:-.005em}
 .hero-row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:18px;margin-top:20px}
-.hero-row p{max-width:42ch;margin:0;font-size:18px;color:#d7d8dc}.acts{display:flex;flex-wrap:wrap;gap:10px}
+.hero-row p{max-width:42ch;margin:0;font-size:18px;color:#e4e2d4}.acts{display:flex;flex-wrap:wrap;gap:10px}
 .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .stats div{padding:24px 18px;border-left:1px solid var(--line);display:grid;gap:6px}.stats div:first-child{border-left:0;padding-left:0}
 .stats b{font:600 clamp(32px,4vw,52px)/1 var(--hf)}.stats span{font:400 12px/1.3 var(--mf);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 h2{font-size:clamp(44px,6.4vw,96px);line-height:.9;text-transform:uppercase;font-weight:700;margin-bottom:24px}
 h2 span{font:400 13px/1 var(--mf);letter-spacing:.12em;color:var(--muted);vertical-align:middle;margin-left:10px}
 .svc,.book,.rev,.visit{padding-block:clamp(48px,7vw,104px)}
-.specs{list-style:none;margin:0;padding:0;border-top:1px solid #fff}
+.specs{list-style:none;margin:0;padding:0;border-top:1px solid #f3eedd}
 .specs li{display:grid;grid-template-columns:48px minmax(0,1.1fr) minmax(0,1.6fr) 80px 110px;gap:16px;align-items:baseline;padding:20px 0;border-bottom:1px solid var(--line)}
 .specs .n,.specs .dur{font:400 13px/1 var(--mf);color:var(--muted)}
 .specs b{font:600 clamp(22px,2.2vw,30px)/1.05 var(--hf);text-transform:uppercase;letter-spacing:.02em}
-.specs .t{color:#c9cbd0;font-size:15px}.specs .price{color:#ffc000;text-align:right}
-.est{background:#fff;color:#000;padding-block:clamp(48px,7vw,104px);--line:rgba(0,0,0,.14);--field:#fff;--muted:#555}
+.specs .t{color:#d6d9cc;font-size:15px}.specs .price{color:#77e46e;text-align:right}
+.est{background:#f3eedd;color:#122315;padding-block:clamp(48px,7vw,104px);--line:rgba(18,35,21,.18);--field:#fffdf6;--muted:#4a5a4c}
 .est .lead,.book .lead,.visit .lead{font-size:18px;max-width:42ch;color:inherit;opacity:.8}
-.est .panel{border:1px solid #000;padding:clamp(18px,2.4vw,28px)}
-.opts{display:grid;margin-top:14px;border-top:1px solid #000}
-.opt{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(0,0,0,.14);font-weight:500;cursor:pointer}
-.opt input{width:20px;height:20px;accent-color:#000}
+.est .panel{border:1px solid #122315;padding:clamp(18px,2.4vw,28px)}
+.opts{display:grid;margin-top:14px;border-top:1px solid #122315}
+.opt{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(18,35,21,.18);font-weight:500;cursor:pointer}
+.opt input{width:20px;height:20px;accent-color:#122315}
 .total{display:flex;justify-content:space-between;align-items:baseline;margin:18px 0 0}.total span{font:400 12px/1 var(--mf);letter-spacing:.12em;text-transform:uppercase}
 .total b{font:700 clamp(30px,3.6vw,48px)/1 var(--hf)}
-.book .panel{border:1px solid var(--line);padding:clamp(18px,2.4vw,28px);background:#0b0b0c}
-.btn{background:#ffc000;color:#000;font:600 15px/1 var(--hf);letter-spacing:.14em;text-transform:uppercase}
-.days button[aria-pressed="true"]{background:#ffc000;color:#000;border-color:#ffc000}
-.slots button[aria-pressed="true"]{background:#fff;color:#000}
-.review{margin:0;border-top:2px solid #ffc000;padding-top:16px}.review p{font-size:18px}
+.book .panel{border:1px solid var(--line);padding:clamp(18px,2.4vw,28px);background:#0c190f}
+.btn{background:#55dd4a;color:#122315;font:600 15px/1 var(--hf);letter-spacing:.14em;text-transform:uppercase}
+.days button[aria-pressed="true"]{background:#55dd4a;color:#122315;border-color:#55dd4a}
+.slots button[aria-pressed="true"]{background:#f3eedd;color:#122315}
+.review{margin:0;border-top:2px solid #55dd4a;padding-top:16px}.review p{font-size:18px}
 .visit{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:clamp(20px,4vw,56px)}
 .map{filter:grayscale(1) invert(.92) contrast(.9);border-radius:0}
 @media (max-width:600px){.hero{min-height:0;display:block}.hero .art{position:relative;aspect-ratio:16/10}.hero::after{display:none}.over{padding-top:18px}}
@@ -57,19 +58,19 @@ h2 span{font:400 13px/1 var(--mf);letter-spacing:.12em;color:var(--muted);vertic
 @media (max-width:900px){.book-grid{grid-template-columns:1fr}.book-grid .side img{aspect-ratio:4/3;object-fit:cover;object-position:50% 70%}}
 @media (max-width:600px){.hero .art.photo{aspect-ratio:16/10}.hero::before{display:none}.band img{aspect-ratio:16/9}}
 
-/* form skin (2026-11-15): spec-sheet numbering, mono readouts, yellow kept for actions (Lamborghini / SpaceX). Shared step engine lives in shop.css; this only changes the look. */
+/* form skin (2026-11-15; colours 2026-11-16): spec-sheet numbering, mono readouts, green kept for actions (Lamborghini / SpaceX). Shared step engine lives in shop.css; this only changes the look. */
 .q-ready{counter-reset:q}
 .q-step{counter-increment:q}
 .q-n{font-size:0!important}
 .q-n::before{content:counter(q,decimal-leading-zero);font-size:11px}
-.q-n{border-radius:0;width:auto;height:auto;padding:5px 6px;background:none;color:var(--accent);border:1px solid var(--accent);font-family:var(--mf)}
+.q-n{border-radius:0;width:auto;height:auto;padding:5px 6px;background:none;color:#73d3eb;border:1px solid #73d3eb;font-family:var(--mf)}
 .q-h{font:600 23px/1.05 var(--hf);text-transform:uppercase;letter-spacing:.05em}
 .q-sum{border:0;border-left:3px solid var(--accent);background:var(--field)}
 .q-sum b{font:500 14px/1.2 var(--mf);text-transform:uppercase;letter-spacing:.05em}
 .q-opt{font:600 16px/1 var(--hf);text-transform:uppercase;letter-spacing:.07em}
-.file-pick{border:1px dashed rgba(255,255,255,.3)}
+.file-pick{border:1px dashed rgba(243,238,221,.3)}
 
 /* ---- AI-UI checklist pass (2026-11-15): flat surfaces (no blurred shadows, gradients or blur), 40px tap targets on phones ---- */
-.nav{backdrop-filter:none;-webkit-backdrop-filter:none;background:#000}
-.hero::after{background:rgba(0,0,0,.45)}
+.nav{backdrop-filter:none;-webkit-backdrop-filter:none;background:#122315}
+.hero{background:#122315}.hero::after{background:rgba(18,35,21,.5)}
 .hero::before{background:none}
