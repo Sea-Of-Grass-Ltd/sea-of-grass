@@ -38,7 +38,7 @@ const WORSE={sitting:['worse when you sit','Tonight: get up and walk for two min
   mornings:['worse in the mornings','Tonight: a warm shower before bed, and a pillow between your knees.'],
   lifting:['worse when you lift','Until we see you: bend at the hips and knees, keep loads close, and skip heavy lifts.'],
   sleeping:['worse at night','Tonight: try your back with a pillow under your knees, or your side with one between them.']};
-const st={spot:'low',long:'weeks',worse:'sitting',flags:new Set()};
+const st={spot:null,long:null,worse:null,flags:new Set()}; // starts empty: the visitor answers (critic A8)
 let touched=false;
 function drawSpot(){$$('[data-spot]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.spot===st.spot)));}
 function hook(){touched=true;drawAns();}
@@ -48,7 +48,8 @@ $$('[data-group]').forEach(g=>{const bs=$$('button',g),multi=g.hasAttribute('dat
     b.addEventListener('click',()=>{if(multi){const on=b.getAttribute('aria-pressed')!=='true';b.setAttribute('aria-pressed',String(on));on?st.flags.add(b.dataset.v):st.flags.delete(b.dataset.v);}
       else{bs.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));st[k]=b.dataset.v;}hook();});});});
 
-function drawAns(){const s=SPOTS[st.spot],flag=st.flags.size>0;
+const complete=()=>st.spot&&st.long&&st.worse;
+function drawAns(){if(!complete()){$('[data-ans]').hidden=true;return;}$('[data-ans]').hidden=false;const s=SPOTS[st.spot],flag=st.flags.size>0;
   $('[data-ok]').hidden=flag;$('[data-flag]').hidden=!flag;
   $('[data-a-k]').textContent=`${s.name} · ${LONG[st.long][0]} · ${WORSE[st.worse][0]}`;
   $('[data-a-p]').innerHTML=`${s.pain} that&rsquo;s ${WORSE[st.worse][0]} is one of the most common things we see. We&rsquo;ll check ${s.look}, then talk through a plan. ${LONG[st.long][1]}`;

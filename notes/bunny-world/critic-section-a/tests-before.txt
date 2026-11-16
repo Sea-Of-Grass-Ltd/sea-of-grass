@@ -1,0 +1,43 @@
+✖ A2 Hop Along: "This week" dates are real upcoming dates that match their weekdays (960.580167ms)
+✖ A3 Hop Along: "+ Calendar" downloads a real .ics for that event (635.561ms)
+✖ A3 no dead links on the landing and these five shops (1301.660042ms)
+✖ A3 Hop Along: one "tonight's taps" button, not three (654.562084ms)
+✖ A4 Buy flow: the cart tells the real terms, not "$1,200 due today" (729.111459ms)
+✖ A4 Buy flow: checkout ends in an honest confirmation, not a note for developers (1154.522958ms)
+✖ A5 Bunny Auto: the estimate starts at the sum of the "from" prices and follows the vehicle (641.350541ms)
+✖ A7 a "which date" day row greys out the days the shop is closed (Hop Along: Mondays) (635.396209ms)
+✖ A9 Burritos pickup: closed means order for the next opening, open means real times before close (642.907334ms)
+✖ A10 Hop Along: tap count, timestamp, 4-pack price and the text/email sign-up agree with the page (635.227709ms)
+✖ A10 Bunny Auto: "we text you" asks for a phone number (656.443209ms)
+✖ A10 Burrow & Bough: the $40 print is described the same in the gift finder and the shop (630.214708ms)
+✖ A10 no two shops share a phone number (Bunny Auto and Long Ears) (614.766958ms)
+ℹ tests 13
+ℹ pass 0
+ℹ fail 13
+✖ failing tests:
+✖ A2 Hop Along: "This week" dates are real upcoming dates that match their weekdays (960.580167ms)
+  AssertionError [ERR_ASSERTION]: Trivia night: Thu 14 is not in the coming week (2026-11-15T21:45:00-07:00)
+✖ A3 Hop Along: "+ Calendar" downloads a real .ics for that event (635.561ms)
+  AssertionError [ERR_ASSERTION]: Thu: + Calendar is #, not a calendar file
+✖ A3 no dead links on the landing and these five shops (1301.660042ms)
+  AssertionError [ERR_ASSERTION]: /bunnyworld/hop-along/: links that go nowhere
+✖ A3 Hop Along: one "tonight's taps" button, not three (654.562084ms)
+  AssertionError [ERR_ASSERTION]: 3 "tonight's taps" buttons at 390
+✖ A4 Buy flow: the cart tells the real terms, not "$1,200 due today" (729.111459ms)
+  AssertionError [ERR_ASSERTION]: shows the 30% deposit ($360)
+✖ A4 Buy flow: checkout ends in an honest confirmation, not a note for developers (1154.522958ms)
+  AssertionError [ERR_ASSERTION]: checkout talks to developers
+✖ A5 Bunny Auto: the estimate starts at the sum of the "from" prices and follows the vehicle (641.350541ms)
+  AssertionError [ERR_ASSERTION]: shows $0 – $0 before anything is ticked
+✖ A7 a "which date" day row greys out the days the shop is closed (Hop Along: Mondays) (635.396209ms)
+  AssertionError [ERR_ASSERTION]: a Monday can be picked although the taproom is closed Mondays
+✖ A9 Burritos pickup: closed means order for the next opening, open means real times before close (642.907334ms)
+  AssertionError [ERR_ASSERTION]: offers "As soon as it is ready (about 20 min)" while closed
+✖ A10 Hop Along: tap count, timestamp, 4-pack price and the text/email sign-up agree with the page (635.227709ms)
+  AssertionError [ERR_ASSERTION]: an invented "updated at" time
+✖ A10 Bunny Auto: "we text you" asks for a phone number (656.443209ms)
+  AssertionError [ERR_ASSERTION]: texting needs a phone box, got [{"type":"text","ac":"email","label":"Phone or email"}]
+✖ A10 Burrow & Bough: the $40 print is described the same in the gift finder and the shop (630.214708ms)
+  AssertionError [ERR_ASSERTION]: risograph in one place, screen-printed in the other
+✖ A10 no two shops share a phone number (Bunny Auto and Long Ears) (614.766958ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
