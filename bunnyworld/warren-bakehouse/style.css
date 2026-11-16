@@ -83,3 +83,5 @@ h2{font-size:clamp(36px,5vw,72px);line-height:.95;letter-spacing:-.02em}
  .hero-photo{margin:4px calc(-1 * var(--side)) 0}
  .hero-photo img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;object-position:58% 55%}
 }
+/* numerals in the plain face, not the serif display (critic C, 2026-11-16): day picker and the hold count */
+.q-day b,.cart h3 .count{font-family:var(--bf);font-weight:500;font-variant-numeric:lining-nums tabular-nums}

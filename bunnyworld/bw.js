@@ -145,7 +145,7 @@ $$('select[data-pickup]').forEach(sel=>{const H=hoursOf(sel);if(!H)return;
   else{for(let k=0;k<8;k++){const d=(n.day+k)%7,h=H[d];if(!h)continue;let start=toMin(h[0]);const end=toMin(h[1]);
       if(k===0){if(n.min+lead>end-30)continue;start=Math.max(start,Math.ceil((n.min+lead)/30)*30);}
       const when=k===0?'later today':k===1?'tomorrow, '+DAYS[d]:DAYS[d];
-      note=`We’re closed right now. Order ahead for ${when}, from ${fmt(start)}.`;
+      note=`We’re closed right now, but you can order ahead for ${when}, from ${fmt(start)}.`;
       const label=k===0?'Today':k===1?'Tomorrow, '+DAYS[d]:DAYS[d];
       for(let m=start;m<=end-30&&opts.length<4;m+=30)opts.push(`${label} at ${fmt(m)}`);break;}}
   if(!opts.length)return;

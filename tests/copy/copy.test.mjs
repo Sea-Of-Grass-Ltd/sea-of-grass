@@ -4,48 +4,15 @@
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { startSite } from '../lib/site.mjs';
+import { copyFindings } from '../lib/copy-rules.mjs';
 
 const PAGES = process.env.COPY_PAGES ? process.env.COPY_PAGES.split(',') : ['/bunnyworld/', '/', '/preview/services/websites/'];
 let site;
 before(async () => { site = await startSite(); });
 after(async () => { await site?.close(); });
 
-// [data-voice="tagline"]: a short brand line Tristan chose word for word (the Bunny World hero's "Imaginary shops, real websites."),
-// not body copy, so it is not held to the full-sentence rule.
-// under 6, not 5: the example fragment "Twenty minutes on a call." is exactly five words
-export function copyFindings() {
-  const MIN_WORDS = 6, out = [];
-  // body copy: paragraphs, list items, definitions, quotes and captions, set in a reading face
-  const skip = 'nav, button, label, select, option, .demo, .credit, .sr, .sr-only, [aria-hidden="true"], [hidden], script, style, [data-voice="quote"], [data-voice="tagline"], .tag, .chip, .kick, .mono, .eyebrow, cite, code';
-  const prose = [...document.querySelectorAll('p, li, dd, blockquote, figcaption, summary + *')].filter(e => {
-    if (e.closest(skip)) return false;
-    if ([...e.children].some(c => /^(P|LI|UL|OL|DD)$/.test(c.tagName))) return false; // the leaf block holds the sentence
-    const c = getComputedStyle(e), r = e.getBoundingClientRect();
-    if (!r.width || c.visibility === 'hidden') return false;
-    if (c.textTransform === 'uppercase' || /mono/i.test(c.fontFamily)) return false; // labels, not prose
-    return true;
-  });
-  // a block whose children are laid out as separate boxes (a bold head beside its line, grid or flex items) is read box by box,
-  // so "Talk" + "Twenty minutes on a call." is two pieces, not one five-word sentence
-  const pieces = e => {
-    const d = getComputedStyle(e).display, laid = /flex|grid/.test(d);
-    const kids = [...e.childNodes];
-    if (!laid && !kids.some(k => k.nodeType === 1 && /block|flex|grid|list-item|table/.test(getComputedStyle(k).display))) return [e.innerText || ''];
-    return kids.flatMap(k => k.nodeType === 3 ? [k.textContent] : k.nodeType === 1 && !k.closest(skip) ? pieces(k) : []);
-  };
-  for (const t of prose.flatMap(pieces).map(x => x.replace(/\s+/g, ' ').trim())) {
-    if (!t) continue;
-    if (/—|\s–\s/.test(t)) out.push({ rule: 'em-dash', text: t.slice(0, 140) });
-    // a block that is one short label (a price, a name, "Cancel any month") is checked as a sentence only when it ends like one
-    const sentences = t.split(/(?<=[.!?])\s+(?=[A-Z“"$0-9])/).map(s => s.trim()).filter(Boolean);
-    for (const s of sentences) {
-      if (!/[.!?]["”’)]?$/.test(s)) continue; // not a sentence (a label or list item without a full stop)
-      const words = s.replace(/[“”"()]/g, '').split(/\s+/).filter(w => /[A-Za-z0-9$]/.test(w));
-      if (words.length < MIN_WORDS) out.push({ rule: 'short-sentence', text: s, in: t.slice(0, 90) });
-    }
-  }
-  return out;
-}
+// the rules live in ../lib/copy-rules.mjs so the shop copy test (shops.test.mjs) reads by the same ones
+export { copyFindings };
 
 for (const url of PAGES) {
   test(`copy voice · ${url}`, async () => {

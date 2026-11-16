@@ -103,6 +103,6 @@ function drawWins(){winsEl.innerHTML='';const a=+areaSel.value;WINS.forEach(([t]
   const b=document.createElement('button');b.type='button';b.textContent=full?`${t} · full`:t;b.disabled=full;b.setAttribute('aria-pressed','false');if(full)b.classList.add('full');
   b.onclick=()=>{$$('button',winsEl).forEach(x=>x.setAttribute('aria-pressed',String(x===b)));bk.win=t;sum();};winsEl.appendChild(b);});}
 function sum(){if(bk.day&&bk.win){const p=PRICE_B-(bk.day.crew?OFF:0);const s=`${S.name[0].toUpperCase()+S.name.slice(1)}, ${DAYN[bk.day.d.getDay()]} ${MON[bk.day.d.getMonth()]} ${bk.day.d.getDate()}, ${bk.win}, $${p}${bk.day.crew?' (crew day)':''}`;
-    sumEl.innerHTML=`<b>${s}</b>`;pick.value=s;}else{sumEl.textContent=bk.day?'Now pick a window.':'Pick a day and a window.';pick.value='';}}
+    sumEl.innerHTML=`<b>${s}</b>`;pick.value=s;}else{sumEl.textContent=bk.day?'Now pick a time window for that day.':'Pick a day and a window.';pick.value='';}}
 areaSel.addEventListener('change',drawDays);drawDays();
 })();
