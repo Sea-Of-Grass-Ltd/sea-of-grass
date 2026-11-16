@@ -123,6 +123,32 @@ function inPageChecks(phone) {
   return { out, internal: [...new Set([...document.querySelectorAll('a[href]')].map(a => new URL(a.href, location.href)).filter(u => u.origin === location.origin).map(u => u.pathname))], og: og && og.content };
 }
 
+// Form fields (Tristan, Hopwell step 5): nothing runs past its form, checkboxes are styled and at least 24px.
+function formChecks() {
+  const out = [];
+  const rectOf = e => { const r = e.getBoundingClientRect(); return { x: r.x + scrollX, y: r.y + scrollY, w: r.width, h: r.height }; };
+  const name = e => `${e.tagName.toLowerCase()}${e.className && typeof e.className === 'string' ? '.' + e.className.trim().split(/\s+/)[0] : ''}${e.type ? '[' + e.type + ']' : ''}${e.autocomplete ? '[' + e.autocomplete + ']' : ''}`;
+  for (const form of document.querySelectorAll('form')) {
+    const fr = form.getBoundingClientRect(); if (!fr.width) continue;
+    for (const e of form.querySelectorAll('input:not([type=hidden]), select, textarea, label, .row, .days, .slots, .q-opts, button')) {
+      const r = e.getBoundingClientRect(); if (r.width < 1 || r.height < 1) continue;
+      // inside a sideways-scrolling strip, the strip is what must fit
+      if (e.parentElement && e.parentElement.closest('form') === form && [...ancestors(e.parentElement, form)].some(a => /auto|scroll/.test(getComputedStyle(a).overflowX))) continue;
+      if (r.right > fr.right + 1.5 || r.left < fr.left - 1.5) out.push({ item: 'form-overflow', detail: `${name(e)} runs ${Math.round(Math.max(r.right - fr.right, fr.left - r.left))}px past its form`, rect: rectOf(e) });
+      // a field or label must also fit inside the box that holds it (a date input that won't shrink pushes its column past the row and gets clipped)
+      const par = e.parentElement;
+      if (par && par !== form && e.matches('input, select, textarea, label')) { const pr = par.getBoundingClientRect(); if (pr.width > 1 && (r.right > pr.right + 1.5 || r.left < pr.left - 1.5)) out.push({ item: 'form-overflow', detail: `${name(e)} runs ${Math.round(Math.max(r.right - pr.right, pr.left - r.left))}px past its ${name(par)}`, rect: rectOf(e) }); }
+    }
+    for (const e of form.querySelectorAll('input[type=checkbox], input[type=radio]')) {
+      const r = e.getBoundingClientRect(), c = getComputedStyle(e); if (r.width < 1 || c.visibility === 'hidden' || +c.opacity < .05) continue;
+      if (c.appearance !== 'none' && c.webkitAppearance !== 'none') out.push({ item: 'form-native-checkbox', detail: `${name(e)} is the browser's default box`, rect: rectOf(e) });
+      else if (r.width < 23.5 || r.height < 23.5) out.push({ item: 'form-native-checkbox', detail: `${name(e)} is ${Math.round(r.width)}px, under 24px`, rect: rectOf(e) });
+    }
+  }
+  function* ancestors(e, stop) { for (let a = e; a && a !== stop; a = a.parentElement) yield a; }
+  return out;
+}
+
 async function shoot(page, f, file) {
   if (!OUT || !f.rect) return;
   await page.evaluate(r => { const d = document.createElement('div'); d.id = '__audit_box'; Object.assign(d.style, { position: 'absolute', left: r.x - 4 + 'px', top: r.y - 4 + 'px', width: r.w + 8 + 'px', height: r.h + 8 + 'px', outline: '3px solid #e00', zIndex: 99999, pointerEvents: 'none' }); document.body.appendChild(d); }, f.rect);
@@ -145,10 +171,41 @@ for (const url of PAGES.filter(u => !ONLY || u.includes(ONLY))) {
         // internal links and og image must resolve
         for (const p of internal) { const r = await page.request.get(site.base + p).catch(() => null); if (!r || r.status() >= 400) out.push({ item: 'link-nowhere', detail: `link to ${p} is ${r ? r.status() : 'unreachable'}` }); }
         if (og) { const local = og.replace(/^https:\/\/seaofgrass\.studio/, ''); if (!fs.existsSync(path.join(ROOT, local))) out.push({ item: 'og-missing', detail: `og:image file not found: ${local}` }); }
+        const shots = {};
+        // forms, on a fresh copy of the page with every step opened (step-by-step forms hide later steps)
+        {
+          const fp = await site.open(url, w);
+          try {
+            // open them the way the engine does (its own .on class), so open steps get their real padding
+            await fp.page.addStyleTag({ content: '.reveal{transition:none!important}' });
+            await fp.page.evaluate(() => { document.querySelectorAll('.reveal').forEach(e => e.classList.add('on')); document.querySelectorAll('[inert]').forEach(e => e.removeAttribute('inert')); });
+            await fp.page.waitForTimeout(100);
+            const ff = await fp.page.evaluate(formChecks);
+            // focus each text field the way a keyboard user would and check its ring
+            const fields = await fp.page.$$('form input:not([type=hidden]):not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]), form select, form textarea');
+            for (const el of fields) {
+              if (!(await el.isVisible())) continue;
+              await el.focus();
+              const bad = await el.evaluate(e => {
+                const c = getComputedStyle(e), id = `${e.tagName.toLowerCase()}${e.name ? '[name=' + e.name + ']' : ''}${e.autocomplete ? '[' + e.autocomplete + ']' : ''}`;
+                const layers = c.boxShadow === 'none' ? [] : c.boxShadow.split(/,(?![^(]*\))/);
+                const blurred = layers.some(l => { const n = l.replace(/rgba?\([^)]*\)|inset/g, '').trim().split(/\s+/).map(parseFloat); return (n[2] || 0) > 0; });
+                const outline = c.outlineStyle !== 'none' && parseFloat(c.outlineWidth) > 0 && c.outlineColor !== 'rgba(0, 0, 0, 0)';
+                const border = parseFloat(c.borderTopWidth) > 0;
+                const probs = [];
+                if (layers.length > 1) probs.push(`${layers.length} stacked shadows`);
+                if (blurred && !layers.every(l => /inset/.test(l))) probs.push('a blurred glow');
+                if (outline && (layers.length || (border && parseFloat(c.outlineOffset) > 0))) probs.push(`an outline${parseFloat(c.outlineOffset) > 0 ? ' offset ' + c.outlineOffset : ''} on top of its ${layers.length ? 'shadow' : 'border'}`);
+                return probs.length ? `${id} when focused has ${probs.join(' and ')}` : null;
+              });
+              if (bad) ff.push({ item: 'form-focus-ring', detail: bad, rect: await el.evaluate(e => { const r = e.getBoundingClientRect(); return { x: r.x + scrollX, y: r.y + scrollY, w: r.width, h: r.height }; }) });
+            }
+            for (const f of ff) { out.push(f); if (f.rect && !shots[f.item]) { shots[f.item] = `${slug}-${w}-${f.item}.png`; await shoot(fp.page, f, shots[f.item]); } }
+          } finally { await fp.ctx.close(); }
+        }
         for (const e of errors) out.push({ item: 'console-error', detail: e });
         for (const f of failed) out.push({ item: 'failed-load', detail: f });
         // screenshot the first offender of each item now, before any clicking moves the layout
-        const shots = {};
         for (const f of out) if (f.rect && !shots[f.item]) { shots[f.item] = `${slug}-${w}-${f.item}.png`; await shoot(page, f, shots[f.item]); }
         // toggles, tabs and chips must change something besides themselves
         const toggles = await page.$$('[role=tab], button[aria-pressed]:not(:disabled), button[aria-expanded]');

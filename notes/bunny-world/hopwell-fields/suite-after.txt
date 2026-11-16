@@ -1,0 +1,211 @@
+
+> test
+> node --test --test-concurrency=1 "unit/*.test.mjs" "bunnyworld/*.test.mjs" "copy/*.test.mjs"
+
+▶ bunnyworld @ 360
+  ✔ no checklist failures (2.551375ms)
+✔ bunnyworld @ 360 (11261.649ms)
+▶ bunnyworld @ 390
+  ✔ no checklist failures (0.644083ms)
+✔ bunnyworld @ 390 (10948.617ms)
+▶ bunnyworld @ 1440
+  ✔ no checklist failures (0.274583ms)
+✔ bunnyworld @ 1440 (10556.432209ms)
+▶ hare-today @ 360
+  ✔ no checklist failures (0.249292ms)
+✔ hare-today @ 360 (12193.071584ms)
+▶ hare-today @ 390
+  ✔ no checklist failures (0.284ms)
+✔ hare-today @ 390 (12327.159666ms)
+▶ hare-today @ 1440
+  ✔ no checklist failures (0.206ms)
+✔ hare-today @ 1440 (11048.526917ms)
+▶ hop-along @ 360
+  ✔ no checklist failures (0.41475ms)
+✔ hop-along @ 360 (16868.805417ms)
+▶ hop-along @ 390
+  ✔ no checklist failures (0.832708ms)
+✔ hop-along @ 390 (17020.008584ms)
+▶ hop-along @ 1440
+  ✔ no checklist failures (0.851583ms)
+✔ hop-along @ 1440 (16676.979875ms)
+▶ hopwell-chiro @ 360
+  ✔ no checklist failures (0.459875ms)
+✔ hopwell-chiro @ 360 (19842.810542ms)
+▶ hopwell-chiro @ 390
+  ✔ no checklist failures (0.324208ms)
+✔ hopwell-chiro @ 390 (19757.952459ms)
+▶ hopwell-chiro @ 1440
+  ✔ no checklist failures (0.427541ms)
+✔ hopwell-chiro @ 1440 (16753.35ms)
+▶ cottontail-farm @ 360
+  ✖ no checklist failures (5.062042ms)
+✖ cottontail-farm @ 360 (16299.092417ms)
+▶ cottontail-farm @ 390
+  ✖ no checklist failures (1.553708ms)
+✖ cottontail-farm @ 390 (16150.511791ms)
+▶ cottontail-farm @ 1440
+  ✔ no checklist failures (0.818625ms)
+✔ cottontail-farm @ 1440 (15318.942417ms)
+▶ burrow-and-bough @ 360
+  ✔ no checklist failures (0.419375ms)
+✔ burrow-and-bough @ 360 (10553.255209ms)
+▶ burrow-and-bough @ 390
+  ✔ no checklist failures (0.4895ms)
+✔ burrow-and-bough @ 390 (10613.381125ms)
+▶ burrow-and-bough @ 1440
+  ✔ no checklist failures (0.302917ms)
+✔ burrow-and-bough @ 1440 (7350.974833ms)
+▶ bunny-burritos @ 360
+  ✔ no checklist failures (0.292166ms)
+✔ bunny-burritos @ 360 (15255.907375ms)
+▶ bunny-burritos @ 390
+  ✔ no checklist failures (0.315333ms)
+✔ bunny-burritos @ 390 (15134.63725ms)
+▶ bunny-burritos @ 1440
+  ✔ no checklist failures (0.312584ms)
+✔ bunny-burritos @ 1440 (14966.299958ms)
+▶ bunny-auto @ 360
+  ✔ no checklist failures (0.274875ms)
+✔ bunny-auto @ 360 (13203.590625ms)
+▶ bunny-auto @ 390
+  ✔ no checklist failures (0.357458ms)
+✔ bunny-auto @ 390 (13140.334667ms)
+▶ bunny-auto @ 1440
+  ✔ no checklist failures (0.255042ms)
+✔ bunny-auto @ 1440 (12700.9385ms)
+▶ warren-bakehouse @ 360
+  ✔ no checklist failures (0.805917ms)
+✔ warren-bakehouse @ 360 (17852.26325ms)
+▶ warren-bakehouse @ 390
+  ✔ no checklist failures (0.317625ms)
+✔ warren-bakehouse @ 390 (17810.575166ms)
+▶ warren-bakehouse @ 1440
+  ✔ no checklist failures (0.158125ms)
+✔ warren-bakehouse @ 1440 (15353.670208ms)
+▶ long-ears @ 360
+  ✔ no checklist failures (0.390959ms)
+✔ long-ears @ 360 (15266.08ms)
+▶ long-ears @ 390
+  ✔ no checklist failures (0.360041ms)
+✔ long-ears @ 390 (15285.881875ms)
+▶ long-ears @ 1440
+  ✔ no checklist failures (0.656375ms)
+✔ long-ears @ 1440 (13753.119ms)
+✔ 360px · journey: land → tap → answer → first visit → answers in booking → book once (1122.940625ms)
+✔ 360px · one scheduling block, no repeated actions (503.178875ms)
+✔ 360px · tap spots: apart, no halos, labels clear (683.651459ms)
+✔ 360px · every question title is a full sentence ending in "?" (479.797917ms)
+✔ 360px · copy that counts the questions matches the questions (507.653792ms)
+✔ 360px · buttons, chips and spots use only palette tokens, no shadows (627.62575ms)
+✔ 360px · neumorphism: one light, two tokens, shadows follow the radius (538.499291ms)
+✔ 360px · the back photo holds still while you tap, and chips keep their size (2261.520958ms)
+✔ 360px · intake step 5: date of birth is a normal date field, name field and checkbox fit (513.877334ms)
+✔ 360px · no sideways scroll, no console errors (708.048709ms)
+✔ 390px · journey: land → tap → answer → first visit → answers in booking → book once (823.823667ms)
+✔ 390px · one scheduling block, no repeated actions (494.365958ms)
+✔ 390px · tap spots: apart, no halos, labels clear (716.705417ms)
+✔ 390px · every question title is a full sentence ending in "?" (484.388542ms)
+✔ 390px · copy that counts the questions matches the questions (501.499792ms)
+✔ 390px · buttons, chips and spots use only palette tokens, no shadows (631.888375ms)
+✔ 390px · neumorphism: one light, two tokens, shadows follow the radius (548.828333ms)
+✔ 390px · the back photo holds still while you tap, and chips keep their size (2228.395792ms)
+✔ 390px · intake step 5: date of birth is a normal date field, name field and checkbox fit (487.078041ms)
+✔ 390px · no sideways scroll, no console errors (731.162167ms)
+✔ 1440px · journey: land → tap → answer → first visit → answers in booking → book once (805.660541ms)
+✔ 1440px · one scheduling block, no repeated actions (506.287042ms)
+✔ 1440px · tap spots: apart, no halos, labels clear (708.388417ms)
+✔ 1440px · every question title is a full sentence ending in "?" (490.739792ms)
+✔ 1440px · copy that counts the questions matches the questions (499.541917ms)
+✔ 1440px · buttons, chips and spots use only palette tokens, no shadows (607.014959ms)
+✔ 1440px · neumorphism: one light, two tokens, shadows follow the radius (536.4175ms)
+✔ 1440px · the back photo holds still while you tap, and chips keep their size (2032.583375ms)
+✔ 1440px · intake step 5: date of birth is a normal date field, name field and checkbox fit (506.715208ms)
+✔ 1440px · no sideways scroll, no console errors (696.820333ms)
+✔ copy voice · /bunnyworld/ (898.96675ms)
+✔ copy voice · / (761.86575ms)
+✔ copy voice · /preview/services/websites/ (619.441583ms)
+✔ steps reveal one at a time, in order (1056.1375ms)
+✔ going back through a summary chip keeps the later answers (818.608833ms)
+✔ a required field blocks Next until it is filled (772.306083ms)
+✔ spaces only count as empty (723.903541ms)
+✔ submitting without a time shows the message and does not book (676.640625ms)
+✔ answers handed in from code show in the summaries and the confirmation (766.686416ms)
+✔ very long input stays inside the form (663.399291ms)
+✖ double-tapping does not skip a step or book twice (30724.338792ms)
+ℹ tests 101
+ℹ suites 0
+ℹ pass 96
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 622947.864916
+
+✖ failing tests:
+
+test at bunnyworld/audit.test.mjs:226:17
+✖ no checklist failures (5.062042ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   'layout-close-targets': [
+  +     '"INPUT" and "INPUT" 0px apart'
+  +   ]
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { 'layout-close-targets': [ '"INPUT" and "INPUT" 0px apart' ] },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/audit.test.mjs:226:17
+✖ no checklist failures (1.553708ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   'layout-close-targets': [
+  +     '"INPUT" and "INPUT" 0px apart'
+  +   ]
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { 'layout-close-targets': [ '"INPUT" and "INPUT" 0px apart' ] },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at unit/form-engine.test.mjs:143:1
+✖ double-tapping does not skip a step or book twice (30724.338792ms)
+  locator.click: Timeout 30000ms exceeded.
+  Call log:
+    - waiting for locator('#book .slots button:not(:disabled)').first()
+  
+      at TestContext.<anonymous> (/Users/tristanbrewer/Desktop/Claude Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/unit/form-engine.test.mjs:155:70) {
+    name: 'TimeoutError'
+  }

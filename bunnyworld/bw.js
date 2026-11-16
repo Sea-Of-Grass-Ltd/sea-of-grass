@@ -197,7 +197,13 @@ $$('[data-steps]').forEach(root=>{
       if(reach&&!done[i]&&first<0)first=i;});
     if(move&&first>=0){const t=steps[first];setTimeout(()=>{const r=t.getBoundingClientRect();if(r.bottom>innerHeight-24||r.top<0)t.scrollIntoView({behavior:reduce?'auto':'smooth',block:'nearest'});
       const f=$('.q-opt,[aria-pressed]:not(:disabled),input:not([type=hidden]),select,textarea',t._body);f&&f.focus({preventScroll:true});},reduce?0:340);}}
-  function answer(i){done[i]=true;reopened=-1;flow(true);}
+  /* a double-tap must not answer the step that opens under the finger: for a moment after a step opens, a second tap
+     on the same spot is ignored (a deliberate tap somewhere else still works) */
+  let quietUntil=0,lastPt=null,answerPt=null;
+  root.addEventListener('click',e=>{if(!e.isTrusted)return;
+    if(Date.now()<quietUntil&&answerPt&&Math.hypot(e.clientX-answerPt[0],e.clientY-answerPt[1])<40&&!e.target.closest('[type=submit]')){e.preventDefault();e.stopPropagation();return;}
+    lastPt=[e.clientX,e.clientY];},true);
+  function answer(i){done[i]=true;reopened=-1;quietUntil=Date.now()+400;answerPt=lastPt;flow(true);}
   root.bwSteps={done(i){done[i]=true;reopened=-1;flow(false);},refresh(){flow(false);}};
   root.classList.add('q-ready');flow(false);});
 

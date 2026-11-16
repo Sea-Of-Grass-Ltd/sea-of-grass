@@ -1,0 +1,1198 @@
+
+> test
+> node --test --test-concurrency=1 "unit/*.test.mjs" "bunnyworld/*.test.mjs" "copy/*.test.mjs"
+
+▶ bunnyworld @ 360
+  ✖ no checklist failures (4.337ms)
+✖ bunnyworld @ 360 (11354.994666ms)
+▶ bunnyworld @ 390
+  ✖ no checklist failures (1.421125ms)
+✖ bunnyworld @ 390 (10999.5185ms)
+▶ bunnyworld @ 1440
+  ✖ no checklist failures (0.464542ms)
+✖ bunnyworld @ 1440 (10525.215333ms)
+▶ hare-today @ 360
+  ✖ no checklist failures (0.4085ms)
+✖ hare-today @ 360 (12607.287083ms)
+▶ hare-today @ 390
+  ✖ no checklist failures (0.444833ms)
+✖ hare-today @ 390 (12283.118084ms)
+▶ hare-today @ 1440
+  ✖ no checklist failures (0.315542ms)
+✖ hare-today @ 1440 (11097.374041ms)
+▶ hop-along @ 360
+  ✖ no checklist failures (1.182208ms)
+✖ hop-along @ 360 (16989.632292ms)
+▶ hop-along @ 390
+  ✖ no checklist failures (0.585917ms)
+✖ hop-along @ 390 (17101.093209ms)
+▶ hop-along @ 1440
+  ✖ no checklist failures (0.93ms)
+✖ hop-along @ 1440 (16779.663125ms)
+▶ hopwell-chiro @ 360
+  ✖ no checklist failures (1.200666ms)
+✖ hopwell-chiro @ 360 (20155.880459ms)
+▶ hopwell-chiro @ 390
+  ✖ no checklist failures (0.402458ms)
+✖ hopwell-chiro @ 390 (19948.718542ms)
+▶ hopwell-chiro @ 1440
+  ✖ no checklist failures (1.054166ms)
+✖ hopwell-chiro @ 1440 (16980.341375ms)
+▶ cottontail-farm @ 360
+  ✖ no checklist failures (1.150208ms)
+✖ cottontail-farm @ 360 (16485.980875ms)
+▶ cottontail-farm @ 390
+  ✖ no checklist failures (0.446083ms)
+✖ cottontail-farm @ 390 (16226.6195ms)
+▶ cottontail-farm @ 1440
+  ✖ no checklist failures (0.716166ms)
+✖ cottontail-farm @ 1440 (15423.803458ms)
+▶ burrow-and-bough @ 360
+  ✖ no checklist failures (1.346583ms)
+✖ burrow-and-bough @ 360 (10679.228875ms)
+▶ burrow-and-bough @ 390
+  ✖ no checklist failures (0.451875ms)
+✖ burrow-and-bough @ 390 (10788.887833ms)
+▶ burrow-and-bough @ 1440
+  ✖ no checklist failures (0.563541ms)
+✖ burrow-and-bough @ 1440 (7436.894375ms)
+▶ bunny-burritos @ 360
+  ✖ no checklist failures (0.52825ms)
+✖ bunny-burritos @ 360 (15246.218958ms)
+▶ bunny-burritos @ 390
+  ✖ no checklist failures (0.271084ms)
+✖ bunny-burritos @ 390 (15118.277333ms)
+▶ bunny-burritos @ 1440
+  ✖ no checklist failures (0.521041ms)
+✖ bunny-burritos @ 1440 (14991.824875ms)
+▶ bunny-auto @ 360
+  ✖ no checklist failures (0.420084ms)
+✖ bunny-auto @ 360 (13236.2345ms)
+▶ bunny-auto @ 390
+  ✖ no checklist failures (0.512042ms)
+✖ bunny-auto @ 390 (13186.861167ms)
+▶ bunny-auto @ 1440
+  ✖ no checklist failures (0.314875ms)
+✖ bunny-auto @ 1440 (12788.509958ms)
+▶ warren-bakehouse @ 360
+  ✖ no checklist failures (0.95725ms)
+✖ warren-bakehouse @ 360 (17949.734083ms)
+▶ warren-bakehouse @ 390
+  ✖ no checklist failures (0.582875ms)
+✖ warren-bakehouse @ 390 (17963.917583ms)
+▶ warren-bakehouse @ 1440
+  ✖ no checklist failures (1.373125ms)
+✖ warren-bakehouse @ 1440 (15526.074958ms)
+▶ long-ears @ 360
+  ✖ no checklist failures (1.00225ms)
+✖ long-ears @ 360 (15552.4375ms)
+▶ long-ears @ 390
+  ✖ no checklist failures (1.354375ms)
+✖ long-ears @ 390 (15529.963083ms)
+▶ long-ears @ 1440
+  ✖ no checklist failures (1.064583ms)
+✖ long-ears @ 1440 (13880.918ms)
+✔ 360px · journey: land → tap → answer → first visit → answers in booking → book once (1211.003959ms)
+✔ 360px · one scheduling block, no repeated actions (498.777917ms)
+✔ 360px · tap spots: apart, no halos, labels clear (699.966125ms)
+✔ 360px · every question title is a full sentence ending in "?" (475.332792ms)
+✔ 360px · copy that counts the questions matches the questions (510.419833ms)
+✔ 360px · buttons, chips and spots use only palette tokens, no shadows (640.793125ms)
+✔ 360px · neumorphism: one light, two tokens, shadows follow the radius (534.077ms)
+✔ 360px · the back photo holds still while you tap, and chips keep their size (2288.630167ms)
+✖ 360px · intake step 5: date of birth is a normal date field, name field and checkbox fit (493.237291ms)
+✔ 360px · no sideways scroll, no console errors (732.972ms)
+✔ 390px · journey: land → tap → answer → first visit → answers in booking → book once (838.929417ms)
+✔ 390px · one scheduling block, no repeated actions (499.528ms)
+✔ 390px · tap spots: apart, no halos, labels clear (719.570375ms)
+✔ 390px · every question title is a full sentence ending in "?" (489.750541ms)
+✔ 390px · copy that counts the questions matches the questions (508.6415ms)
+✔ 390px · buttons, chips and spots use only palette tokens, no shadows (621.387291ms)
+✔ 390px · neumorphism: one light, two tokens, shadows follow the radius (558.052459ms)
+✔ 390px · the back photo holds still while you tap, and chips keep their size (2249.390875ms)
+✖ 390px · intake step 5: date of birth is a normal date field, name field and checkbox fit (508.285042ms)
+✔ 390px · no sideways scroll, no console errors (721.297375ms)
+✔ 1440px · journey: land → tap → answer → first visit → answers in booking → book once (824.15225ms)
+✔ 1440px · one scheduling block, no repeated actions (502.951041ms)
+✔ 1440px · tap spots: apart, no halos, labels clear (719.138542ms)
+✔ 1440px · every question title is a full sentence ending in "?" (492.924666ms)
+✔ 1440px · copy that counts the questions matches the questions (510.473416ms)
+✔ 1440px · buttons, chips and spots use only palette tokens, no shadows (623.930875ms)
+✔ 1440px · neumorphism: one light, two tokens, shadows follow the radius (554.398708ms)
+✔ 1440px · the back photo holds still while you tap, and chips keep their size (2102.2655ms)
+✖ 1440px · intake step 5: date of birth is a normal date field, name field and checkbox fit (525.9695ms)
+✔ 1440px · no sideways scroll, no console errors (715.90575ms)
+✔ copy voice · /bunnyworld/ (859.979541ms)
+✖ copy voice · / (125.555625ms)
+✔ copy voice · /preview/services/websites/ (604.54275ms)
+✔ steps reveal one at a time, in order (1016.648083ms)
+✔ going back through a summary chip keeps the later answers (827.669791ms)
+✔ a required field blocks Next until it is filled (687.246792ms)
+✔ spaces only count as empty (677.806083ms)
+✔ submitting without a time shows the message and does not book (707.96225ms)
+✔ answers handed in from code show in the summaries and the confirmation (740.724625ms)
+✔ very long input stays inside the form (666.804042ms)
+✖ double-tapping does not skip a step or book twice (30690.768625ms)
+ℹ tests 101
+ℹ suites 0
+ℹ pass 36
+ℹ fail 65
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 529075.752958
+
+✖ failing tests:
+
+test at bunnyworld/audit.test.mjs:226:17
+✖ no checklist failures (4.337ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   'link-nowhere': [
+  +     'link to / is 404'
+  +   ]
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { 'link-nowhere': [ 'link to / is 404' ] },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/audit.test.mjs:226:17
+✖ no checklist failures (1.421125ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   'link-nowhere': [
+  +     'link to / is 404'
+  +   ]
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { 'link-nowhere': [ 'link to / is 404' ] },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/audit.test.mjs:226:17
+✖ no checklist failures (0.464542ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   'link-nowhere': [
+  +     'link to / is 404'
+  +   ]
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { 'link-nowhere': [ 'link to / is 404' ] },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/audit.test.mjs:226:17
+✖ no checklist failures (0.4085ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   'form-focus-ring': [
+  +     'input[name] when focused has an outline offset 2px on top of its border',
+  +     'input[tel] when focused has an outline offset 2px on top of its border',
+  +     'select when focused has an outline offset 2px on top of its border',
+  +     'input when focused has an outline offset 2px on top of its border'
+  +   ]
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { 'form-focus-ring': [ 'input[name] when focused has an outline offset 2px on top of its border', 'input[tel] when focused has an outline offset 2px on top of its border', 'select when focused has an outline offset 2px on top of its border', 'input when focused has an outline offset 2px on top of its border' ] },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/audit.test.mjs:226:17
+✖ no checklist failures (0.444833ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   'form-focus-ring': [
+  +     'input[name] when focused has an outline offset 2px on top of its border',
+  +     'input[tel] when focused has an outline offset 2px on top of its border',
+  +     'select when focused has an outline offset 2px on top of its border',
+  +     'input when focused has an outline offset 2px on top of its border'
+  +   ]
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { 'form-focus-ring': [ 'input[name] when focused has an outline offset 2px on top of its border', 'input[tel] when focused has an outline offset 2px on top of its border', 'select when focused has an outline offset 2px on top of its border', 'input when focused has an outline offset 2px on top of its border' ] },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/audit.test.mjs:226:17
+✖ no checklist failures (0.315542ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   'form-focus-ring': [
+  +     'input[name] when focused has an outline offset 2px on top of its border',
+  +     'input[tel] when focused has an outline offset 2px on top of its border',
+  +     'select when focused has an outline offset 2px on top of its border',
+  +     'input when focused has an outline offset 2px on top of its border'
+  +   ]
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { 'form-focus-ring': [ 'input[name] when focused has an outline offset 2px on top of its border', 'input[tel] when focused has an outline offset 2px on top of its border', 'select when focused has an outline offset 2px on top of its border', 'input when focused has an outline offset 2px on top of its border' ] },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/audit.test.mjs:226:17
+✖ no checklist failures (1.182208ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   'form-focus-ring': [
+  +     'input when focused has an outline offset 2px on top of its border',
+  +     'select when focused has an outline offset 2px on top of its border',
+  +     'input[name] when focused has an outline offset 2px on top of its border',
+  +     'input[email] when focused has an outline offset 2px on top of its border'
+  +   ]
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { 'form-focus-ring': [ 'input when focused has an outline offset 2px on top of its border', 'select when focused has an outline offset 2px on top of its border', 'input[name] when focused has an outline offset 2px on top of its border', 'input[email] when focused has an outline offset 2px on top of its border' ] },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/audit.test.mjs:226:17
+✖ no checklist failures (0.585917ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   'form-focus-ring': [
+  +     'input when focused has an outline offset 2px on top of its border',
+  +     'select when focused has an outline offset 2px on top of its border',
+  +     'input[name] when focused has an outline offset 2px on top of its border',
+  +     'input[email] when focused has an outline offset 2px on top of its border'
+  +   ]
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { 'form-focus-ring': [ 'input when focused has an outline offset 2px on top of its border', 'select when focused has an outline offset 2px on top of its border', 'input[name] when focused has an outline offset 2px on top of its border', 'input[email] when focused has an outline offset 2px on top of its border' ] },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/audit.test.mjs:226:17
+✖ no checklist failures (0.93ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   'form-focus-ring': [
+  +     'input when focused has an outline offset 2px on top of its border',
+  +     'select when focused has an outline offset 2px on top of its border',
+  +     'input[name] when focused has an outline offset 2px on top of its border',
+  +     'input[email] when focused has an outline offset 2px on top of its border'
+  +   ]
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { 'form-focus-ring': [ 'input when focused has an outline offset 2px on top of its border', 'select when focused has an outline offset 2px on top of its border', 'input[name] when focused has an outline offset 2px on top of its border', 'input[email] when focused has an outline offset 2px on top of its border' ] },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/audit.test.mjs:226:17
+✖ no checklist failures (1.200666ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   'form-focus-ring': [
+  +     'select when focused has an outline offset 2px on top of its border',
+  +     'input[name] when focused has an outline offset 2px on top of its border',
+  +     'input[email] when focused has an outline offset 2px on top of its border',
+  +     'input when focused has an outline offset 2px on top of its border'
+  +   ],
+  +   'form-native-checkbox': [
+  +     "input[checkbox] is the browser's default box"
+  +   ],
+  +   'form-overflow': [
+  +     'input[range] runs 2px past its label'
+  +   ]
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { 'form-overflow': [ 'input[range] runs 2px past its label' ], 'form-native-checkbox': [ "input[checkbox] is the browser's default box" ], 'form-focus-ring': [ 'select when focused has an outline offset 2px on top of its border', 'input[name] when focused has an outline offset 2px on top of its border', 'input[email] when focused has an outline offset 2px on top of its border', 'input when focused has an outline offset 2px on top of its border' ] },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/audit.test.mjs:226:17
+✖ no checklist failures (0.402458ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   'form-focus-ring': [
+  +     'select when focused has an outline offset 2px on top of its border',
+  +     'input[name] when focused has an outline offset 2px on top of its border',
+  +     'input[email] when focused has an outline offset 2px on top of its border',
+  +     'input when focused has an outline offset 2px on top of its border'
+  +   ],
+  +   'form-native-checkbox': [
+  +     "input[checkbox] is the browser's default box"
+  +   ],
+  +   'form-overflow': [
+  +     'input[range] runs 2px past its label'
+  +   ]
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { 'form-overflow': [ 'input[range] runs 2px past its label' ], 'form-native-checkbox': [ "input[checkbox] is the browser's default box" ], 'form-focus-ring': [ 'select when focused has an outline offset 2px on top of its border', 'input[name] when focused has an outline offset 2px on top of its border', 'input[email] when focused has an outline offset 2px on top of its border', 'input when focused has an outline offset 2px on top of its border' ] },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/audit.test.mjs:226:17
+✖ no checklist failures (1.054166ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   'form-focus-ring': [
+  +     'select when focused has an outline offset 2px on top of its border',
+  +     'input[name] when focused has an outline offset 2px on top of its border',
+  +     'input[email] when focused has an outline offset 2px on top of its border',
+  +     'input when focused has an outline offset 2px on top of its border'
+  +   ],
+  +   'form-native-checkbox': [
+  +     "input[checkbox] is the browser's default box"
+  +   ],
+  +   'form-overflow': [
+  +     'input[range] runs 2px past its label'
+  +   ]
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { 'form-overflow': [ 'input[range] runs 2px past its label' ], 'form-native-checkbox': [ "input[checkbox] is the browser's default box" ], 'form-focus-ring': [ 'select when focused has an outline offset 2px on top of its border', 'input[name] when focused has an outline offset 2px on top of its border', 'input[email] when focused has an outline offset 2px on top of its border', 'input when focused has an outline offset 2px on top of its border' ] },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/audit.test.mjs:226:17
+✖ no checklist failures (1.150208ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   'form-focus-ring': [
+  +     'input[email] when focused has an outline offset 2px on top of its border',
+  +     'select when focused has an outline offset 2px on top of its border',
+  +     'input when focused has an outline offset 2px on top of its border',
+  +     'input[name] when focused has an outline offset 2px on top of its border',
+  +     'input[tel] when focused has an outline offset 2px on top of its border'
+  +   ],
+  +   'form-native-checkbox': [
+  +     "input[checkbox] is the browser's default box"
+  +   ]
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { 'form-native-checkbox': [ "input[checkbox] is the browser's default box" ], 'form-focus-ring': [ 'input[email] when focused has an outline offset 2px on top of its border', 'select when focused has an outline offset 2px on top of its border', 'input when focused has an outline offset 2px on top of its border', 'input[name] when focused has an outline offset 2px on top of its border', 'input[tel] when focused has an outline offset 2px on top of its border' ] },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/audit.test.mjs:226:17
+✖ no checklist failures (0.446083ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   'form-focus-ring': [
+  +     'input[email] when focused has an outline offset 2px on top of its border',
+  +     'select when focused has an outline offset 2px on top of its border',
+  +     'input when focused has an outline offset 2px on top of its border',
+  +     'input[name] when focused has an outline offset 2px on top of its border',
+  +     'input[tel] when focused has an outline offset 2px on top of its border'
+  +   ],
+  +   'form-native-checkbox': [
+  +     "input[checkbox] is the browser's default box"
+  +   ]
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { 'form-native-checkbox': [ "input[checkbox] is the browser's default box" ], 'form-focus-ring': [ 'input[email] when focused has an outline offset 2px on top of its border', 'select when focused has an outline offset 2px on top of its border', 'input when focused has an outline offset 2px on top of its border', 'input[name] when focused has an outline offset 2px on top of its border', 'input[tel] when focused has an outline offset 2px on top of its border' ] },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/audit.test.mjs:226:17
+✖ no checklist failures (0.716166ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   'form-focus-ring': [
+  +     'input[email] when focused has an outline offset 2px on top of its border',
+  +     'select when focused has an outline offset 2px on top of its border',
+  +     'input when focused has an outline offset 2px on top of its border',
+  +     'input[name] when focused has an outline offset 2px on top of its border',
+  +     'input[tel] when focused has an outline offset 2px on top of its border'
+  +   ],
+  +   'form-native-checkbox': [
+  +     "input[checkbox] is the browser's default box"
+  +   ]
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { 'form-native-checkbox': [ "input[checkbox] is the browser's default box" ], 'form-focus-ring': [ 'input[email] when focused has an outline offset 2px on top of its border', 'select when focused has an outline offset 2px on top of its border', 'input when focused has an outline offset 2px on top of its border', 'input[name] when focused has an outline offset 2px on top of its border', 'input[tel] when focused has an outline offset 2px on top of its border' ] },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/audit.test.mjs:226:17
+✖ no checklist failures (1.346583ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   'form-focus-ring': [
+  +     'select when focused has an outline offset 2px on top of its border',
+  +     'input[name=name][name] when focused has an outline offset 2px on top of its border',
+  +     'input[name=tel][tel] when focused has an outline offset 2px on top of its border',
+  +     'input[email] when focused has an outline offset 2px on top of its border'
+  +   ],
+  +   'form-native-checkbox': [
+  +     "input[checkbox] is the browser's default box"
+  +   ]
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { 'form-native-checkbox': [ "input[checkbox] is the browser's default box" ], 'form-focus-ring': [ 'select when focused has an outline offset 2px on top of its border', 'input[name=name][name] when focused has an outline offset 2px on top of its border', 'input[name=tel][tel] when focused has an outline offset 2px on top of its border', 'input[email] when focused has an outline offset 2px on top of its border' ] },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/audit.test.mjs:226:17
+✖ no checklist failures (0.451875ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   'form-focus-ring': [
+  +     'select when focused has an outline offset 2px on top of its border',
+  +     'input[name=name][name] when focused has an outline offset 2px on top of its border',
+  +     'input[name=tel][tel] when focused has an outline offset 2px on top of its border',
+  +     'input[email] when focused has an outline offset 2px on top of its border'
+  +   ],
+  +   'form-native-checkbox': [
+  +     "input[checkbox] is the browser's default box"
+  +   ]
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { 'form-native-checkbox': [ "input[checkbox] is the browser's default box" ], 'form-focus-ring': [ 'select when focused has an outline offset 2px on top of its border', 'input[name=name][name] when focused has an outline offset 2px on top of its border', 'input[name=tel][tel] when focused has an outline offset 2px on top of its border', 'input[email] when focused has an outline offset 2px on top of its border' ] },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/audit.test.mjs:226:17
+✖ no checklist failures (0.563541ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   'form-focus-ring': [
+  +     'select when focused has an outline offset 2px on top of its border',
+  +     'input[name=name][name] when focused has an outline offset 2px on top of its border',
+  +     'input[name=tel][tel] when focused has an outline offset 2px on top of its border',
+  +     'input[email] when focused has an outline offset 2px on top of its border'
+  +   ],
+  +   'form-native-checkbox': [
+  +     "input[checkbox] is the browser's default box"
+  +   ]
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { 'form-native-checkbox': [ "input[checkbox] is the browser's default box" ], 'form-focus-ring': [ 'select when focused has an outline offset 2px on top of its border', 'input[name=name][name] when focused has an outline offset 2px on top of its border', 'input[name=tel][tel] when focused has an outline offset 2px on top of its border', 'input[email] when focused has an outline offset 2px on top of its border' ] },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/audit.test.mjs:226:17
+✖ no checklist failures (0.52825ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   'form-focus-ring': [
+  +     'select when focused has an outline offset 2px on top of its border',
+  +     'input[name=name][name] when focused has an outline offset 2px on top of its border',
+  +     'input[name=tel][tel] when focused has an outline offset 2px on top of its border',
+  +     'input[name] when focused has an outline offset 2px on top of its border',
+  +     'input[email] when focused has an outline offset 2px on top of its border'
+  +   ]
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { 'form-focus-ring': [ 'select when focused has an outline offset 2px on top of its border', 'input[name=name][name] when focused has an outline offset 2px on top of its border', 'input[name=tel][tel] when focused has an outline offset 2px on top of its border', 'input[name] when focused has an outline offset 2px on top of its border', 'input[email] when focused has an outline offset 2px on top of its border' ] },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/audit.test.mjs:226:17
+✖ no checklist failures (0.271084ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   'form-focus-ring': [
+  +     'select when focused has an outline offset 2px on top of its border',
+  +     'input[name=name][name] when focused has an outline offset 2px on top of its border',
+  +     'input[name=tel][tel] when focused has an outline offset 2px on top of its border',
+  +     'input[name] when focused has an outline offset 2px on top of its border',
+  +     'input[email] when focused has an outline offset 2px on top of its border'
+  +   ]
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { 'form-focus-ring': [ 'select when focused has an outline offset 2px on top of its border', 'input[name=name][name] when focused has an outline offset 2px on top of its border', 'input[name=tel][tel] when focused has an outline offset 2px on top of its border', 'input[name] when focused has an outline offset 2px on top of its border', 'input[email] when focused has an outline offset 2px on top of its border' ] },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/audit.test.mjs:226:17
+✖ no checklist failures (0.521041ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   'form-focus-ring': [
+  +     'select when focused has an outline offset 2px on top of its border',
+  +     'input[name=name][name] when focused has an outline offset 2px on top of its border',
+  +     'input[name=tel][tel] when focused has an outline offset 2px on top of its border',
+  +     'input[name] when focused has an outline offset 2px on top of its border',
+  +     'input[email] when focused has an outline offset 2px on top of its border'
+  +   ]
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { 'form-focus-ring': [ 'select when focused has an outline offset 2px on top of its border', 'input[name=name][name] when focused has an outline offset 2px on top of its border', 'input[name=tel][tel] when focused has an outline offset 2px on top of its border', 'input[name] when focused has an outline offset 2px on top of its border', 'input[email] when focused has an outline offset 2px on top of its border' ] },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/audit.test.mjs:226:17
+✖ no checklist failures (0.420084ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   'form-focus-ring': [
+  +     'select when focused has an outline offset 2px on top of its border',
+  +     'input when focused has an outline offset 2px on top of its border',
+  +     'input[name] when focused has an outline offset 2px on top of its border',
+  +     'input[email] when focused has an outline offset 2px on top of its border'
+  +   ]
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { 'form-focus-ring': [ 'select when focused has an outline offset 2px on top of its border', 'input when focused has an outline offset 2px on top of its border', 'input[name] when focused has an outline offset 2px on top of its border', 'input[email] when focused has an outline offset 2px on top of its border' ] },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/audit.test.mjs:226:17
+✖ no checklist failures (0.512042ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   'form-focus-ring': [
+  +     'select when focused has an outline offset 2px on top of its border',
+  +     'input when focused has an outline offset 2px on top of its border',
+  +     'input[name] when focused has an outline offset 2px on top of its border',
+  +     'input[email] when focused has an outline offset 2px on top of its border'
+  +   ]
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { 'form-focus-ring': [ 'select when focused has an outline offset 2px on top of its border', 'input when focused has an outline offset 2px on top of its border', 'input[name] when focused has an outline offset 2px on top of its border', 'input[email] when focused has an outline offset 2px on top of its border' ] },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/audit.test.mjs:226:17
+✖ no checklist failures (0.314875ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   'form-focus-ring': [
+  +     'select when focused has an outline offset 2px on top of its border',
+  +     'input when focused has an outline offset 2px on top of its border',
+  +     'input[name] when focused has an outline offset 2px on top of its border',
+  +     'input[email] when focused has an outline offset 2px on top of its border'
+  +   ]
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { 'form-focus-ring': [ 'select when focused has an outline offset 2px on top of its border', 'input when focused has an outline offset 2px on top of its border', 'input[name] when focused has an outline offset 2px on top of its border', 'input[email] when focused has an outline offset 2px on top of its border' ] },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/audit.test.mjs:226:17
+✖ no checklist failures (0.95725ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   'form-focus-ring': [
+  +     'select when focused has an outline offset 2px on top of its border',
+  +     'input[name=name][name] when focused has an outline offset 2px on top of its border',
+  +     'input[name=tel][tel] when focused has an outline offset 2px on top of its border',
+  +     'input when focused has an outline offset 2px on top of its border',
+  +     'input[name] when focused has an outline offset 2px on top of its border'
+  +   ],
+  +   'form-native-checkbox': [
+  +     "input[checkbox] is the browser's default box"
+  +   ]
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { 'form-native-checkbox': [ "input[checkbox] is the browser's default box" ], 'form-focus-ring': [ 'select when focused has an outline offset 2px on top of its border', 'input[name=name][name] when focused has an outline offset 2px on top of its border', 'input[name=tel][tel] when focused has an outline offset 2px on top of its border', 'input when focused has an outline offset 2px on top of its border', 'input[name] when focused has an outline offset 2px on top of its border' ] },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/audit.test.mjs:226:17
+✖ no checklist failures (0.582875ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   'form-focus-ring': [
+  +     'select when focused has an outline offset 2px on top of its border',
+  +     'input[name=name][name] when focused has an outline offset 2px on top of its border',
+  +     'input[name=tel][tel] when focused has an outline offset 2px on top of its border',
+  +     'input when focused has an outline offset 2px on top of its border',
+  +     'input[name] when focused has an outline offset 2px on top of its border'
+  +   ],
+  +   'form-native-checkbox': [
+  +     "input[checkbox] is the browser's default box"
+  +   ]
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { 'form-native-checkbox': [ "input[checkbox] is the browser's default box" ], 'form-focus-ring': [ 'select when focused has an outline offset 2px on top of its border', 'input[name=name][name] when focused has an outline offset 2px on top of its border', 'input[name=tel][tel] when focused has an outline offset 2px on top of its border', 'input when focused has an outline offset 2px on top of its border', 'input[name] when focused has an outline offset 2px on top of its border' ] },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/audit.test.mjs:226:17
+✖ no checklist failures (1.373125ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   'form-focus-ring': [
+  +     'select when focused has an outline offset 2px on top of its border',
+  +     'input[name=name][name] when focused has an outline offset 2px on top of its border',
+  +     'input[name=tel][tel] when focused has an outline offset 2px on top of its border',
+  +     'input when focused has an outline offset 2px on top of its border',
+  +     'input[name] when focused has an outline offset 2px on top of its border'
+  +   ],
+  +   'form-native-checkbox': [
+  +     "input[checkbox] is the browser's default box"
+  +   ]
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { 'form-native-checkbox': [ "input[checkbox] is the browser's default box" ], 'form-focus-ring': [ 'select when focused has an outline offset 2px on top of its border', 'input[name=name][name] when focused has an outline offset 2px on top of its border', 'input[name=tel][tel] when focused has an outline offset 2px on top of its border', 'input when focused has an outline offset 2px on top of its border', 'input[name] when focused has an outline offset 2px on top of its border' ] },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/audit.test.mjs:226:17
+✖ no checklist failures (1.00225ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   'form-focus-ring': [
+  +     'input[postal-code] when focused has an outline offset 2px on top of its border',
+  +     'input[street-address] when focused has an outline offset 2px on top of its border',
+  +     'input[name] when focused has an outline offset 2px on top of its border',
+  +     'input[tel] when focused has an outline offset 2px on top of its border',
+  +     'input when focused has an outline offset 2px on top of its border',
+  +     'select when focused has an outline offset 2px on top of its border'
+  +   ]
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { 'form-focus-ring': [ 'input[postal-code] when focused has an outline offset 2px on top of its border', 'input[street-address] when focused has an outline offset 2px on top of its border', 'input[name] when focused has an outline offset 2px on top of its border', 'input[tel] when focused has an outline offset 2px on top of its border', 'input when focused has an outline offset 2px on top of its border', 'select when focused has an outline offset 2px on top of its border' ] },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/audit.test.mjs:226:17
+✖ no checklist failures (1.354375ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   'form-focus-ring': [
+  +     'input[postal-code] when focused has an outline offset 2px on top of its border',
+  +     'input[street-address] when focused has an outline offset 2px on top of its border',
+  +     'input[name] when focused has an outline offset 2px on top of its border',
+  +     'input[tel] when focused has an outline offset 2px on top of its border',
+  +     'input when focused has an outline offset 2px on top of its border',
+  +     'select when focused has an outline offset 2px on top of its border'
+  +   ]
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { 'form-focus-ring': [ 'input[postal-code] when focused has an outline offset 2px on top of its border', 'input[street-address] when focused has an outline offset 2px on top of its border', 'input[name] when focused has an outline offset 2px on top of its border', 'input[tel] when focused has an outline offset 2px on top of its border', 'input when focused has an outline offset 2px on top of its border', 'select when focused has an outline offset 2px on top of its border' ] },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/audit.test.mjs:226:17
+✖ no checklist failures (1.064583ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {
+  +   'form-focus-ring': [
+  +     'input[postal-code] when focused has an outline offset 2px on top of its border',
+  +     'input[street-address] when focused has an outline offset 2px on top of its border',
+  +     'input[name] when focused has an outline offset 2px on top of its border',
+  +     'input[tel] when focused has an outline offset 2px on top of its border',
+  +     'input when focused has an outline offset 2px on top of its border',
+  +     'select when focused has an outline offset 2px on top of its border'
+  +   ]
+  + }
+  - {}
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/audit.test.mjs:226:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { 'form-focus-ring': [ 'input[postal-code] when focused has an outline offset 2px on top of its border', 'input[street-address] when focused has an outline offset 2px on top of its border', 'input[name] when focused has an outline offset 2px on top of its border', 'input[tel] when focused has an outline offset 2px on top of its border', 'input when focused has an outline offset 2px on top of its border', 'select when focused has an outline offset 2px on top of its border' ] },
+    expected: {},
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/hopwell.test.mjs:278:3
+✖ 360px · intake step 5: date of birth is a normal date field, name field and checkbox fit (493.237291ms)
+  AssertionError [ERR_ASSERTION]: the date of birth label stays visible
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:287:14)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/hopwell.test.mjs:278:3
+✖ 390px · intake step 5: date of birth is a normal date field, name field and checkbox fit (508.285042ms)
+  AssertionError [ERR_ASSERTION]: the date of birth label stays visible
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:287:14)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/hopwell.test.mjs:278:3
+✖ 1440px · intake step 5: date of birth is a normal date field, name field and checkbox fit (525.9695ms)
+  AssertionError [ERR_ASSERTION]: the date of birth label stays visible
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:287:14)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at copy/copy.test.mjs:49:3
+✖ copy voice · / (125.555625ms)
+  page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at http://127.0.0.1:55761/
+  Call log:
+    - navigating to "http://127.0.0.1:55761/", waiting until "load"
+  
+      at Object.open (/Users/tristanbrewer/Desktop/Claude Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/lib/site.mjs:38:18)
+      at async TestContext.<anonymous> (/Users/tristanbrewer/Desktop/Claude Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/copy/copy.test.mjs:50:27) {
+    name: 'Error'
+  }
+
+test at unit/form-engine.test.mjs:143:1
+✖ double-tapping does not skip a step or book twice (30690.768625ms)
+  locator.click: Timeout 30000ms exceeded.
+  Call log:
+    - waiting for locator('#book .slots button:not(:disabled)').first()
+  
+      at TestContext.<anonymous> (/Users/tristanbrewer/Desktop/Claude Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/unit/form-engine.test.mjs:155:70) {
+    name: 'TimeoutError'
+  }

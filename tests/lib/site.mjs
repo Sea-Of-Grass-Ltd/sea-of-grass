@@ -27,7 +27,7 @@ export async function startSite() {
     async close() { await browser.close(); server.close(); },
     async open(url, w, opts = {}) {
       const mobile = w < 900;
-      const ctx = await browser.newContext({ viewport: { width: w, height: mobile ? 844 : 900 }, isMobile: mobile, hasTouch: mobile, reducedMotion: opts.reducedMotion || 'no-preference', colorScheme: opts.colorScheme || 'light', deviceScaleFactor: opts.scale || 1 });
+      const ctx = await browser.newContext({ viewport: { width: w, height: mobile ? 844 : 900 }, isMobile: mobile, hasTouch: mobile, reducedMotion: opts.reducedMotion || 'no-preference', colorScheme: opts.colorScheme || 'light', deviceScaleFactor: opts.scale || (mobile ? 3 : 1) });
       // third-party (fonts, analytics, maps, booking embeds) is not part of the page under test
       await ctx.route(u => !u.href.startsWith(base), r => r.abort());
       const page = await ctx.newPage();
