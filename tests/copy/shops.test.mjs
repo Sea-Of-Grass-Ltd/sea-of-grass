@@ -1,5 +1,5 @@
 // Shop copy test (critic's sections C and B9, notes/bunny-world/critic/REVIEW.md; Tristan, 2026-11-16: copy that reads like the owner wrote it).
-// On the eight shops in scope (Warren Bakehouse is being edited elsewhere and joins later), every visible line is read for:
+// On every shop (all nine, Warren included), every visible line is read for:
 // telegraphic fragments (sentences under 6 words) and em-dashes, three-beat lists ("Flags, smiles, sunscreen."), "not X, but Y",
 // reviews that describe the website, invented review counts and stats, numerals in a serif display face, and title or label sets in mixed forms.
 // Questions are allowed to be short ("Which day?" is how a person asks), and live status lines are state, not copy.
@@ -8,7 +8,9 @@ import assert from 'node:assert/strict';
 import { startSite } from '../lib/site.mjs';
 import { copyFindings, shopCopyFindings } from '../lib/copy-rules.mjs';
 
-const SHOPS = ['bunny-burritos', 'bunny-auto', 'hare-today', 'cottontail-farm', 'long-ears', 'hop-along', 'burrow-and-bough', 'hopwell-chiro'];
+const SHOPS = ['warren-bakehouse', 'bunny-burritos', 'bunny-auto', 'hare-today', 'cottontail-farm', 'long-ears', 'hop-along', 'burrow-and-bough', 'hopwell-chiro'];
+// lines Tristan approved as they are (2026-11-16): Warren's countdown label, set by bell.js
+const APPROVED = [/^We’re closed right now\.$/];
 let site;
 before(async () => { site = await startSite(); });
 after(async () => { await site?.close(); });
@@ -20,7 +22,7 @@ for (const shop of SHOPS) {
       await page.evaluate(() => document.querySelectorAll('details').forEach(d => d.open = true));
       const status = await page.evaluate(() => [...document.querySelectorAll('[role=status], [aria-live]')].map(e => e.innerText.replace(/\s+/g, ' ').trim()).filter(Boolean));
       const f = [...await page.evaluate(copyFindings), ...await page.evaluate(shopCopyFindings)]
-        .filter(x => !(x.rule === 'short-sentence' && (/\?["”’)]?$/.test(x.text) || status.some(s => s.includes(x.text)))));
+        .filter(x => !(x.rule === 'short-sentence' && (/\?["”’)]?$/.test(x.text) || status.some(s => s.includes(x.text)) || (shop === 'warren-bakehouse' && APPROVED.some(r => r.test(x.text))))));
       assert.deepEqual(f.map(x => `${x.rule}: "${x.text}"`), [], `machine-sounding copy on ${shop}`);
     } finally { await ctx.close(); }
   });
