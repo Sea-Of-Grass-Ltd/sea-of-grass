@@ -180,7 +180,10 @@ for (const w of WIDTHS) {
     const { ctx, page } = await open(w);
     try {
       // walk the journey a little so chosen and filled states are included
+      // answer all three (the result card, with its warning chips, shows only then)
       await page.locator('.spot[data-spot="low"]').click();
+      await page.locator('[data-group="long"] .chip[data-v="weeks"]').click();
+      await page.locator('[data-group="worse"] .chip[data-v="sitting"]').click();
       await page.locator('[data-group="flags"] .chip').first().click();
       await page.locator('[data-group="flags"] .chip').first().click();
       const r = await page.evaluate((SHOP) => {

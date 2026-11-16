@@ -14,7 +14,7 @@ const ITEMS=[
  {k:'Hand-thrown carrot mug',short:'Carrot mug',price:28,who:['friend','family','self','host'],vibe:['cozy','crafty'],note:'Thrown by Rosa at her Loveland kiln. The carrot is pressed in with a thumb.'},
  {k:'Prairie candle',short:'Prairie candle',price:22,who:['host','friend','family'],vibe:['cozy','fancy'],note:'Poured in small batches two blocks from us. Sage and sweetgrass, forty hours.'},
  {k:'Bunny-ear beanie',short:'Bunny-ear beanie',price:34,who:['friend','family','self'],vibe:['cozy','crafty'],note:'Knit by Mae, who has made four hundred of these and still laughs at the ears.'},
- {k:'Front Range print, 11x14',short:'Prairie print',price:40,who:['self','friend','host'],vibe:['crafty','fancy'],note:'Screen-printed in three inks by Hollis, sketched from a county road at dusk.'},
+ {k:'Front Range print, 11x14',short:'Front Range print',price:40,who:['self','friend','host'],vibe:['crafty','fancy'],note:'Screen-printed in three inks by Hollis, sketched from a county road at dusk.'},
  {k:'Silver hare earrings',short:'Silver hare earrings',price:48,who:['friend','self','family'],vibe:['fancy'],note:'Sawn and filed by hand at a bench in Masonville. Each hare leaps a little differently.'},
  {k:'Local honey, 12 oz',short:'Local honey',price:14,who:['host','family','friend'],vibe:['tasty','cozy'],note:"From Tomás's hives in the next county over. The bees did most of the work."}];
 ITEMS.forEach(it=>{const b=$(`.prod [data-add="${it.k}"]`);it.btn=b;it.tile=b&&b.closest('.prod').querySelector('.ob');});

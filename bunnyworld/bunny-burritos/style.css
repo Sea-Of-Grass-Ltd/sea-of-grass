@@ -70,7 +70,7 @@ h2{font-size:clamp(46px,7vw,104px);line-height:.9;text-transform:uppercase;color
 .getit-h .rule{justify-content:flex-start;margin-bottom:8px}.getit-h .rule::before{display:none}.getit-h .rule::after{min-width:40px}
 .getit h2{font-size:clamp(40px,5.4vw,78px);margin:0;white-space:nowrap}
 .apps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.app{display:flex;align-items:center;justify-content:center;gap:10px;min-height:68px;padding:12px 18px;border-radius:999px;text-decoration:none;font:400 clamp(22px,2.2vw,30px)/1 var(--hf);text-transform:uppercase;letter-spacing:.02em;transition:transform .15s}
+.app{border:0;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;min-height:68px;padding:12px 18px;border-radius:999px;text-decoration:none;font:400 clamp(22px,2.2vw,30px)/1 var(--hf);text-transform:uppercase;letter-spacing:.02em;transition:transform .15s}
 .app span{font:600 18px/1 var(--bf)}
 .app:hover,.app:focus-visible{transform:translateY(-2px) rotate(-1deg)}
 .app.dd{background:#d1255c;color:#fff4e2}.app.gh{background:#faae33;color:#402011}.app.ue{background:#fff4e2;color:#402011}
