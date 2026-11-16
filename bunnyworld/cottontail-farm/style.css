@@ -1,20 +1,22 @@
-/* Cottontail Farm: a seasonal farm and festival. The page re-colours itself by season (sun yellow, pumpkin orange,
-   resting olive) and opens on what's on: one headline, one line, one button, one photo.
+/* Cottontail Farm: a seasonal farm and festival. Opens on what's on: one headline, one line, one button, one photo.
+   Colours (2026-11-16, notes/bunny-world/critic/palettes): Eventbrite (Refero style db258094-0014-42da-84f9-1ead4e31b6c3) for the festival,
+   which is what the page leads with: pumpkin-orange ground #F05537, near-black #161719 headline and buttons, off-white page #F5F5F0,
+   hot-orange season band #FF5010, pink ticket stubs #FFBAE9. Summer and the off-season keep their own grounds on the same page.
    Refero references (2026-11-16 pass, notes in REFERENCES.md):
    PlayStation The Concert (a one-line claim over one big photo, a single "Get tickets"; dates and details below),
    SeatGeek event page (the event name, when and where, then one ticket action; off sale is said plainly with one sign-up),
    Volkshotel agenda event (a poster-like hero for one event, details further down),
    Cake Equity event page (a flat colour field holding the title, the date line and one button). */
-:root{--bg:#f6f1e3;--ink:#1f2509;--muted:#5d6145;--line:rgba(31,37,9,.18);--accent:#1f2509;--on-accent:#f6f1e3;--field:#fffdf6;--r:10px;--btn-r:999px;--ctl-r:10px;
+:root{--bg:#f5f5f0;--ink:#161719;--muted:#55575c;--line:rgba(22,23,25,.18);--accent:#161719;--on-accent:#f5f5f0;--field:#ffffff;--r:10px;--btn-r:999px;--ctl-r:10px;
   --hf:Gabarito,"Hanken Grotesk",sans-serif;--hw:900;--bf:"Hanken Grotesk",sans-serif;--mf:"IBM Plex Mono",monospace;
   --s1:#c8d68a;--s2:#e9efc8;--sbg:#1f2509;--sink:#f6f1e3}
 body[data-season="summer"]{--s1:#f2b705;--s2:#ffe58a;--sbg:#22300e;--sink:#fff7dd}
-body[data-season="fall"]{--s1:#ec6a1e;--s2:#ffc08a;--sbg:#2a180c;--sink:#fff1e3}
+body[data-season="fall"]{--s1:#161719;--s2:#ffbae9;--sbg:#f05537;--sink:#161719}
 body{font-size:17px;background:var(--bg)}
 h1,h2,h3{font-family:var(--hf);font-weight:900;letter-spacing:-.02em;line-height:.95}
 h2{font-size:clamp(38px,5vw,68px)}
 .kick{margin:0 0 12px;font:500 12px/1.3 var(--mf);letter-spacing:.12em;text-transform:uppercase;color:var(--s1)}.kick.dark{color:#8a5a12}
-body[data-season="fall"] .kick.dark{color:#b4470e}
+body[data-season="fall"] .kick.dark{color:#161719}
 .sub{max-width:52ch;color:var(--muted);font-size:17px;line-height:1.5}.sub.light{color:rgba(255,255,255,.75)}
 .btn{background:var(--s1);color:var(--sbg);font:700 16px/1 var(--bf);min-height:50px;padding:14px 24px;border-radius:999px;transition:background .3s,color .3s}
 .btn:hover{filter:brightness(1.06)}
@@ -34,18 +36,18 @@ body[data-season="fall"] .kick.dark{color:#b4470e}
 .tix{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:clamp(20px,4vw,48px);margin-top:28px}
 .step-l{font:500 12px/1 var(--mf);letter-spacing:.1em;text-transform:uppercase;margin:0 0 10px;color:var(--muted)}
 .tdays{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:22px}
-.tdays button{flex:0 0 78px;display:grid;justify-items:center;gap:2px;padding:10px 0 8px;border:1px solid var(--line);border-radius:12px;background:#fffdf6;cursor:pointer;font:500 12px/1.1 var(--mf);text-transform:uppercase}
+.tdays button{flex:0 0 78px;display:grid;justify-items:center;gap:2px;padding:10px 0 8px;border:1px solid var(--line);border-radius:12px;background:#ffffff;cursor:pointer;font:500 12px/1.1 var(--mf);text-transform:uppercase}
 .tdays b{font:900 28px/1 var(--hf);font-variant-numeric:lining-nums}.tdays i{font-style:normal;font-size:10px;letter-spacing:.04em;color:#3b7a2a;margin-top:2px}
 .tdays button.sold{opacity:.45;cursor:not-allowed}.tdays button.sold i{color:#b4230f}
-.tdays button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}.tdays button[aria-pressed="true"] i{color:var(--s1)}
+.tdays button[aria-pressed="true"]{background:#ffbae9;color:#161719;border-color:#161719}.tdays button[aria-pressed="true"] i{color:#161719}
 .tslots{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px}
-.tslots button{display:grid;gap:3px;padding:10px;border:1px solid var(--line);border-radius:12px;background:#fffdf6;text-align:left;cursor:pointer}
+.tslots button{display:grid;gap:3px;padding:10px;border:1px solid var(--line);border-radius:12px;background:#ffffff;text-align:left;cursor:pointer}
 .tslots b{font:700 16px/1 var(--bf);font-variant-numeric:lining-nums tabular-nums}.tslots span{font:500 11px/1 var(--mf);text-transform:uppercase;color:#3b7a2a}
 .tslots button.few span{color:#a5590a}.tslots button.sold{opacity:.4;text-decoration:line-through;cursor:not-allowed}.tslots button.sold span{color:#b4230f}
 .tslots button:disabled{cursor:not-allowed}
-.tslots button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}.tslots button[aria-pressed="true"] span{color:var(--s1)}
-.tdays button:focus-visible,.tslots button:focus-visible,.step button:focus-visible,.pin:focus-visible,.a-item:focus-visible{outline:3px solid #8a5a12;outline-offset:2px}
-.tix-r{background:#fffdf6;border:1px solid var(--line);border-radius:18px;padding:20px;align-self:start}
+.tslots button[aria-pressed="true"]{background:#ffbae9;color:#161719;border-color:#161719}.tslots button[aria-pressed="true"] span{color:#161719}
+.tdays button:focus-visible,.tslots button:focus-visible,.step button:focus-visible,.pin:focus-visible,.a-item:focus-visible{outline:3px solid #161719;outline-offset:2px}
+.tix-r{background:#ffffff;border:1px solid var(--line);border-radius:18px;padding:20px;align-self:start}
 .hrow{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
 .hrow b{display:block;font-weight:700}.hrow small{color:var(--muted);font-size:13px}.hp{font:500 14px/1 var(--mf)}
 .step{display:flex;align-items:center;gap:6px}.step button{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:#fff;font-size:20px;cursor:pointer}
@@ -55,8 +57,8 @@ body[data-season="fall"] .kick.dark{color:#b4470e}
 .note{font-size:13px;color:var(--muted);line-height:1.45}
 .tix-off{max-width:560px;margin-top:24px}
 /* map */
-.farmmap{background:var(--sbg);color:var(--sink);padding-block:clamp(48px,7vw,96px);transition:background .4s}
-.farmmap h2{color:var(--sink)}
+.farmmap{background:#161719;color:#f5f5f0;padding-block:clamp(48px,7vw,96px);transition:background .4s}
+.farmmap h2{color:#f5f5f0}
 .map-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:clamp(18px,3vw,36px);margin-top:28px;align-items:start}
 .map{position:relative;aspect-ratio:10/7;border-radius:18px;overflow:hidden;background:#5d6b2e}
 .map svg{position:absolute;inset:0;width:100%;height:100%}
@@ -67,12 +69,12 @@ body[data-season="summer"] .m-field.sun{fill:#f2b705}body[data-season="fall"] .m
 .m-loop{fill:none;stroke:#f6f1e3;stroke-width:4;stroke-dasharray:10 9;opacity:.7}
 .m-rows path{stroke:rgba(80,60,0,.35);stroke-width:4}
 .m-maze path{fill:none;stroke:rgba(70,50,10,.55);stroke-width:7}
-.m-pumpkins circle{fill:#5f6a28}body[data-season="fall"] .m-pumpkins circle{fill:#ec6a1e}
+.m-pumpkins circle{fill:#5f6a28}body[data-season="fall"] .m-pumpkins circle{fill:#f05537}
 .pin{position:absolute;transform:translate(-50%,-50%);width:38px;height:38px;border-radius:50%;border:3px solid #fff;background:var(--sbg);color:#fff;font:700 15px/1 var(--bf);cursor:pointer;box-shadow:0 6px 16px rgba(0,0,0,.35);transition:transform .2s,background .3s;z-index:2}
 .pin:hover{transform:translate(-50%,-50%) scale(1.1)}
-.pin[data-st="open"]{background:#2f7d22}.pin[data-st="soon"]{background:var(--s1);color:var(--sbg)}.pin[data-st="shut"]{background:#b4230f}.pin[data-st="no"]{background:#6b6b5c;opacity:.75}
+.pin[data-st="open"]{background:#2f7d22}.pin[data-st="soon"]{background:#f05537;color:#161719}.pin[data-st="shut"]{background:#b4230f}.pin[data-st="no"]{background:#6b6b5c;opacity:.75}
 .pin[aria-pressed="true"]{transform:translate(-50%,-50%) scale(1.18);box-shadow:0 0 0 6px rgba(255,255,255,.35),0 6px 16px rgba(0,0,0,.35)}
-.m-card{position:absolute;z-index:3;width:min(260px,70%);transform:translateX(-50%);background:#fffdf6;color:#1f2509;border-radius:14px;padding:14px 16px;box-shadow:0 18px 40px rgba(0,0,0,.35)}
+.m-card{position:absolute;z-index:3;width:min(260px,70%);transform:translateX(-50%);background:#ffffff;color:#161719;border-radius:14px;padding:14px 16px;box-shadow:0 18px 40px rgba(0,0,0,.35)}
 .m-card.up{transform:translate(-50%,-100%)}
 .m-card b{font:900 22px/1 var(--hf);display:block;margin-bottom:6px;padding-right:26px}.m-card p{margin:0 0 10px;font-size:14px;line-height:1.4}
 .mc-x{position:absolute;right:8px;top:8px;width:32px;height:32px;border:0;border-radius:50%;background:#efe9d6;font-size:18px;cursor:pointer}
@@ -83,8 +85,8 @@ body[data-season="summer"] .m-field.sun{fill:#f2b705}body[data-season="fall"] .m
 .a-no{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.12);font:700 13px/1 var(--bf)}
 .a-txt b{display:block;font-weight:700}.a-txt small{display:block;font-size:13px;opacity:.7;line-height:1.35}
 .a-stat{font:500 11px/1.2 var(--mf);text-transform:uppercase;letter-spacing:.04em;opacity:.85;text-align:right;max-width:110px}
-.a-list li[data-st="open"] .a-no{background:#2f7d22}.a-list li[data-st="soon"] .a-no{background:var(--s1);color:var(--sbg)}.a-list li[data-st="no"]{opacity:.55}
-.a-item[aria-pressed="true"] b{color:var(--s1)}
+.a-list li[data-st="open"] .a-no{background:#2f7d22}.a-list li[data-st="soon"] .a-no{background:#f05537;color:#161719}.a-list li[data-st="no"]{opacity:.55}
+.a-item[aria-pressed="true"] b{color:#ffbae9}
 /* groups, jobs, news, visit */
 .grp{max-width:760px;margin-top:24px}
 
@@ -92,7 +94,7 @@ body[data-season="summer"] .m-field.sun{fill:#f2b705}body[data-season="fall"] .m
 .roles{list-style:none;margin:0;padding:0}
 .roles li{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:12px 0;border-top:1px solid var(--line)}
 .roles b{font:900 22px/1 var(--hf)}.roles .pay{font:500 14px/1 var(--mf);color:var(--muted)}.roles small{grid-column:1/-1;opacity:.7;font-size:14px}
-.jobs-form{background:#fffdf6;border:1px solid var(--line);border-radius:18px;padding:22px}
+.jobs-form{background:#ffffff;border:1px solid var(--line);border-radius:18px;padding:22px}
 .jobs-form fieldset{border:0;padding:0;margin:4px 0}.jobs-form legend{font-size:15px;margin-bottom:4px}
 .vhours{list-style:none;margin:20px 0 0;padding:0;max-width:760px}
 .vhours li{display:grid;grid-template-columns:200px 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line)}.vhours b{font-weight:700}
@@ -128,7 +130,7 @@ body[data-season="summer"] .sp.summer,body[data-season="fall"] .sp.fall,body[dat
 
 /* ---- AI-UI checklist pass (2026-11-15): flat surfaces (no blurred shadows, gradients or blur), 40px tap targets on phones ---- */
 .pin[aria-pressed="true"]{box-shadow:0 0 0 4px rgba(255,255,255,.55)}
-.m-card{box-shadow:none;border:2px solid #1f2509}
+.m-card{box-shadow:none;border:2px solid #161719}
 .pin::after{content:"";position:absolute;left:50%;top:50%;width:44px;height:44px;transform:translate(-50%,-50%);border-radius:50%}
 .mast .logo{min-height:44px;display:inline-flex;align-items:center}
 .pin{box-shadow:none}
@@ -138,19 +140,19 @@ body[data-season="summer"] .sp.summer,body[data-season="fall"] .sp.fall,body[dat
 .seas-main{gap:clamp(20px,4vw,56px)}
 .season .lede{margin:18px 0 26px}
 @media (max-width:860px){.seas-main{gap:20px}.season{padding-top:8px}}
-.seasons{padding-block:28px;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px}
-.seasons p{margin:0;flex:1 1 320px;color:var(--muted);font-size:16px;line-height:1.45}
+.seasons{background:#ff5010;color:#161719;padding:24px clamp(18px,3vw,32px);margin-block:28px;border-radius:18px;border-bottom:0;display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px}
+.seasons p{margin:0;flex:1 1 320px;color:#161719;font-size:16px;line-height:1.45}
 .seas-btns{display:flex;flex-wrap:wrap;gap:8px}
 .seas-btn{min-height:44px;padding:10px 16px;border-radius:999px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);font:600 15px/1 var(--bf);cursor:pointer}
-.seas-btn:hover{background:var(--ink);color:var(--bg)}
-.seas-btn:focus-visible{outline:3px solid #8a5a12;outline-offset:2px}
+.seas-btn:hover{background:var(--ink);color:#ff5010}
+.seas-btn:focus-visible{outline:3px solid #161719;outline-offset:2px}
 .jobs{padding-block:24px;border-bottom:1px solid var(--line)}
 body[data-season="off"] .jobs{display:none}
 .jobs-line summary{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:48px;cursor:pointer;list-style:none;font:700 19px/1.35 var(--bf)}
 .jobs-line summary::-webkit-details-marker{display:none}
 .jobs-line summary::after{content:"+";flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--s1);color:var(--sbg);font:700 22px/1 var(--bf)}
 .jobs-line[open] summary::after{content:"−"}
-.jobs-line summary:focus-visible{outline:3px solid #8a5a12;outline-offset:4px}
+.jobs-line summary:focus-visible{outline:3px solid #161719;outline-offset:4px}
 .jobs-in{margin-top:18px}
 .jobs-note{margin:16px 0 0;color:var(--muted);font-size:15px}
 .jobs-line{border-bottom:0;padding:0}
