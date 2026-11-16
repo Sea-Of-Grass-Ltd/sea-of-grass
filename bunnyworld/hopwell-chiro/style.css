@@ -25,8 +25,8 @@ h1,h2,h3{letter-spacing:-.02em}
 h1{font-size:clamp(56px,6.6vw,104px);line-height:.98}h1 i{color:#3E5560}
 
 /* hook: photo with tap spots beside the three questions and the answer */
-.hook{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);grid-template-areas:"fig h" "fig panel";grid-template-rows:auto 1fr;column-gap:56px;row-gap:28px;align-items:start;padding-block:24px 56px}
-.hook-h{grid-area:h;padding-top:24px}.fig{grid-area:fig}.panel{grid-area:panel}
+.hook{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);grid-template-areas:"fig h" "fig panel" "ans ans";grid-template-rows:auto 1fr auto;column-gap:56px;row-gap:28px;align-items:start;padding-block:24px 56px}
+.hook-h{grid-area:h;padding-top:24px}.fig{grid-area:fig}.panel{grid-area:panel}.ans{grid-area:ans}
 .fig{margin:0}
 .ph{position:relative;overflow:hidden;border-radius:var(--r);background:var(--stone)}
 .ph picture,.ph img{display:block;width:100%;height:100%;object-fit:cover}
@@ -40,10 +40,10 @@ h1{font-size:clamp(56px,6.6vw,104px);line-height:.98}h1 i{color:#3E5560}
 .spot:hover{background:var(--sage)}
 .spot[aria-pressed="true"]{width:20px;height:20px;background:var(--ink);border:3px solid var(--on-accent)}
 .spot:focus-visible{outline:2px solid var(--on-accent);outline-offset:3px}
-figcaption{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:4px 16px;padding:14px 2px 0}
-figcaption .t{display:flex;align-items:center;font-weight:500;margin:0;font-size:17px}
-figcaption .n{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--sage2);font:500 12px/1 var(--mf);margin-right:10px}
-.picked{margin:0;color:var(--muted);font-size:15px}
+.q1{gap:4px}.picked{margin:0 0 0 34px;color:var(--muted);font-size:15px}
+/* the chosen dot carries its name, above it, so it reads at a glance */
+.tag{position:absolute;transform:translate(-50%,calc(-100% - 16px));background:var(--ink);color:var(--on-accent);font:500 13px/1 var(--bf);padding:6px 10px;border-radius:999px;white-space:nowrap;pointer-events:none}
+.tag[data-side="left"]{transform:translate(calc(-100% - 16px),-50%)}.tag[data-side="right"]{transform:translate(16px,-50%)}
 
 .panel{display:grid;gap:6px;min-width:0}
 .q{border-top:1px solid var(--line);padding:16px 0 6px;display:grid;gap:12px}
@@ -55,7 +55,8 @@ figcaption .n{display:inline-grid;place-items:center;width:24px;height:24px;bord
 .chip:hover{border-color:var(--ink)}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--on-accent);border-color:var(--ink)}
 
-.ans{background:var(--ink);color:var(--on-accent);border-radius:var(--r);padding:22px;display:grid;gap:14px;margin-top:10px}
+.ans{background:var(--ink);color:var(--on-accent);border-radius:var(--r);padding:22px;display:grid;gap:14px}
+.a-main,.a-side{display:grid;gap:12px;align-content:start}
 .ans>div{display:grid;gap:12px}
 .ans .k{color:var(--sage);margin:0}.ans h2{font-size:34px;line-height:1.05;margin:0}
 .ans p{margin:0;color:#C9D1D4;font-size:15px}
@@ -125,7 +126,7 @@ cite{font:500 12px/1 var(--mf);letter-spacing:.06em;text-transform:uppercase;fon
 @media (max-width:900px){
  .mast nav{display:none}.call{display:inline-flex}
  h1{font-size:clamp(46px,13vw,60px)}
- .hook{grid-template-columns:minmax(0,1fr);grid-template-areas:"h" "fig" "panel";grid-template-rows:auto;row-gap:16px;padding-block:8px 40px}
+ .hook{grid-template-columns:minmax(0,1fr);grid-template-areas:"h" "fig" "panel" "ans";grid-template-rows:auto;row-gap:16px;padding-block:8px 40px}
  .hook-h{padding-top:0}
  .room{grid-template-columns:minmax(0,1fr)}
  .hook,.pair,.intake,.hrs,.reviews{grid-template-columns:minmax(0,1fr)}
@@ -170,3 +171,12 @@ cite{font:500 12px/1 var(--mf);letter-spacing:.06em;text-transform:uppercase;fon
 
 /* ---- 2026-11-15 simplify ---- */
 .ans .next a{color:var(--on-accent);text-underline-offset:3px;white-space:nowrap}
+
+/* ---- desktop, 2026-11-16 ("loads awkwardly on desktop"): the whole photo (4:5, every dot in frame) sits in a narrower column beside the headline and the
+   three questions, so both columns end together; the answer card runs full width under both, in two columns. ---- */
+@media (min-width:901px){
+ .hook{grid-template-columns:minmax(0,4fr) minmax(0,6fr)}
+ .ans{padding:clamp(22px,2.4vw,32px)}
+ .ans [data-ok]{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);column-gap:clamp(24px,4vw,56px)}
+ .ans [data-ok] .a-side{padding-top:4px}
+}
