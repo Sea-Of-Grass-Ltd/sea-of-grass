@@ -53,5 +53,5 @@ Before: 60 of 60 page/width runs failed. After: 60 of 60 pass (`full-suite-after
 ## Also changed
 - `bw.js`: a required field with only spaces now counts as empty, and a double-tap on submit books once. Both were found by `tests/unit/form-engine.test.mjs` (`form-engine-before.txt`, then `form-engine-after.txt`).
 
-## Left for a decision
-- Hare Today: on phones the floating "Book now" button sits over the board headline ("Closed"). It also repeats "Book" and "Book a chair" from the same screen. Remove it, or keep it and give it room?
+## Hare Today floating Book button
+- Removed at every width (Tristan, 2026-11-16: "Remove the floating Book button"), along with its CSS and the script that hid it near forms. New check `layout-floating-cover`: no fixed, non-full-width element may sit over content at 360 or 390.

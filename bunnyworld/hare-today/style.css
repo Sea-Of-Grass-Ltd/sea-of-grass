@@ -113,7 +113,7 @@ h2{font-size:clamp(40px,5.4vw,76px)}
 .dr-lead{color:#4b5563;line-height:1.5}
 .dr-note{margin:0;padding:14px 18px;border-top:1px solid #e6e6e6;font-size:12.5px;line-height:1.45;color:#6b7280;background:#fafafa}
 body.dr-on{overflow:hidden}
-.fab{display:none}
+
 @media (max-width:980px){.barbs{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:860px){.hook-in,.crew-in{grid-template-columns:1fr}.mast nav{display:none}}
 @media (max-width:760px){
@@ -123,8 +123,6 @@ body.dr-on{overflow:hidden}
   .b-row{grid-template-columns:40px minmax(0,1fr) auto;padding:12px 14px}.b-time{grid-column:2/-1;text-align:left;min-width:0}
   .b-top,.b-wait,.b-foot{padding-inline:14px}
   .barbs{grid-template-columns:1fr 1fr}.barb.any{grid-column:1/-1}
-  .fab{display:inline-flex;position:fixed;right:16px;bottom:16px;z-index:40;border-radius:999px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
-  body.dr-on .fab{display:none}
   .sum-bar{bottom:0}
 }
 @media (prefers-reduced-motion:reduce){.b-live i{animation:none}.dr-panel,.dr-scrim{transition:none}}
@@ -169,7 +167,6 @@ section.menu>.h{grid-column:1/-1}
 @media (max-width:760px){.cf-fields{grid-template-columns:minmax(0,1fr)}.step-sum b{font-size:19px}}
 @media (prefers-reduced-motion:reduce){.reveal{transition:none}}
 .step-sum[hidden],.sum-bar [hidden]{display:none!important}
-@media (max-width:760px){body.book-in .fab{display:none}}
 
 /* form skin (2026-11-15): departure-board mono on black, signal red only on the tick (GlossGenius / Fresha). Shared step engine lives in shop.css; this only changes the look. */
 .q-ready{counter-reset:q}
@@ -194,7 +191,7 @@ section.menu>.h{grid-column:1/-1}
 @media (max-width:760px){.logo img{height:32px}}
 
 /* ---- AI-UI checklist pass (2026-11-15): flat surfaces (no blurred shadows, gradients or blur), 40px tap targets on phones ---- */
-.board,.fab,.dr-panel{box-shadow:none}
+.board,.dr-panel{box-shadow:none}
 .btn{box-shadow:none}
 .hook-bg::after{background:rgba(13,13,13,.8)}
 .quick a{min-height:40px;display:inline-flex;align-items:center}

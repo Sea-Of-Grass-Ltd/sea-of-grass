@@ -107,6 +107,12 @@ function inPageChecks(phone) {
       else if (phone && !inlineText(a.e) && !inlineText(b.e) && ((ix > 0 && iy > -8 && iy <= 2 && Math.min(a.r.height, b.r.height) < 44) || (iy > 0 && ix > -8 && ix <= 2 && Math.min(a.r.width, b.r.width) < 44))) add('layout-close-targets', `"${text(a.e).slice(0, 24) || a.e.tagName}" and "${text(b.e).slice(0, 24) || b.e.tagName}" ${Math.round(-Math.max(ix, iy) < 0 ? Math.max(-ix, -iy) : 0)}px apart`, a.e);
     }
   }
+  // Layout: floating buttons and badges (position: fixed, not a full-width bar) sit over the page content on phones
+  if (phone) for (const e of document.querySelectorAll('body *')) {
+    const c = getComputedStyle(e); if (c.position !== 'fixed' || !vis(e) || e.closest('[hidden]')) continue;
+    const r = e.getBoundingClientRect(); if (r.width >= innerWidth * 0.95 || r.width * r.height < 100) continue;
+    add('layout-floating-cover', `${e.tagName.toLowerCase()}.${(e.className || '').toString().split(' ')[0]} "${text(e).slice(0, 24)}" floats over the content`, e);
+  }
   // Layout: inputs under 16px on phones (iOS zooms)
   if (phone) for (const e of targets.filter(e => e.matches('input,select,textarea'))) { const fs = parseFloat(getComputedStyle(e).fontSize); if (fs < 16 && !e.matches('[type=checkbox],[type=radio],[type=range]')) add('layout-input-font', `${fs}px ${e.tagName.toLowerCase()}`, e); }
 
