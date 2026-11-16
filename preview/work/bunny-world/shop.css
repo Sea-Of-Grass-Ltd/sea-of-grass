@@ -175,3 +175,9 @@ input[type=file]::-webkit-file-upload-button{margin-right:14px;padding:10px 16px
 .q-day:hover{border-color:var(--ink)}
 .q-day[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
 .q-day[aria-pressed="true"] small{color:inherit;opacity:.85}
+
+/* a clear way back to Sea of Grass (Tristan, 2026-11-15): a pill before Bunny World in the demo strip */
+.demo .crumbs{display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap}
+.demo .sog-back{padding:5px 12px;border:1.5px solid #FFF6E9;border-radius:999px;font:600 13px/1 Inter,system-ui,sans-serif;letter-spacing:0;color:#FFF6E9}
+.demo .sog-back:hover{background:#FFF6E9;color:#1E1A3A;text-decoration:none}
+.demo .sep{opacity:.5}
