@@ -97,7 +97,7 @@ vec4 sparkles(vec2 pc,float px1){
   return cv;}
 void main(){
   vec4 sm=texture(uSim,uv);float c=sm.r*(1.+uEnc);sm.gb=mix(sm.gb,(sm.gb*2.-1.)*4.,uEnc);
-  float m=smoothstep(.0,.6,texture(uMask,uv).r);c*=1.-m;      // the mask arrives blurred (see mask()), so the smoke thickens toward the copy
+  float m=smoothstep(.02,.55,texture(uMask,uv).r);c*=1.-m;      // the mask arrives blurred (see mask()), so the smoke thickens toward the copy
   vec2 pc=gl_FragCoord.xy/uDpr;                                   // css px, y up
   float T=uTime,px1=.6/uDpr+.5;
   vec4 sp=uNC>0?sparkles(pc,px1):vec4(0.);
@@ -203,12 +203,19 @@ void main(){
       const tw = document.createTreeWalker(host, NodeFilter.SHOW_TEXT, { acceptNode: n => n.nodeValue.trim() && !n.parentElement.closest('.sr,canvas') ? 1 : 2 });
       const rg = document.createRange();
       for (let n; (n = tw.nextNode());) { rg.selectNodeContents(n); for (const r of rg.getClientRects()) box(r); }
-      host.querySelectorAll('a,button,input,select,textarea,img,svg,video,[role=button]').forEach(e => { if (!e.closest('.sr')) box(e.getBoundingClientRect()); });
-      // two box blurs each way (about a 24px gaussian), done here once rather than in every pixel of every frame
-      const id = mctx.getImageData(0, 0, w, h), d = id.data, a = new Float32Array(w * h), b = new Float32Array(w * h), K = 2;
+      // whole boxes only for things that paint their own fill or are pictures (a filled button, an icon, a photo). A big see-through
+      // button, like a price cell, gives only its words: boxing it would cut the smoke along its edges in a flat panel.
+      host.querySelectorAll('a,button,input,select,textarea,img,svg,video,[role=button]').forEach(e => {
+        if (e.closest('.sr') || e.closest('svg') !== e && e.closest('svg')) return;
+        const bg = (getComputedStyle(e).backgroundColor.match(/[\d.]+/g) || []).map(Number);
+        const solid = /^(img|svg|video|input|select|textarea)$/i.test(e.tagName) || bg.length === 3 || bg[3] > 0;
+        if (solid) box(e.getBoundingClientRect()); });
+      // three box blurs each way (about a 40px gaussian), done here once rather than in every pixel of every frame: the smoke
+      // thickens back to white over a long soft falloff around the words, so no edge of it ever reads as a shape
+      const id = mctx.getImageData(0, 0, w, h), d = id.data, a = new Float32Array(w * h), b = new Float32Array(w * h), K = 3;
       for (let i = 0; i < w * h; i++) a[i] = d[i * 4 + 3] / 255;
       const pass = (src, dst, dx, dy, n, len) => { for (let o = 0; o < n; o++) for (let i = 0; i < len; i++) { let sum = 0, cnt = 0; for (let k = -K; k <= K; k++) { const j = i + k; if (j < 0 || j >= len) continue; sum += src[dx ? o * w + j : j * w + o]; cnt++; } dst[dx ? o * w + i : i * w + o] = sum / cnt; } };
-      for (let r = 0; r < 2; r++) { pass(a, b, 1, 0, h, w); pass(b, a, 0, 1, w, h); }
+      for (let r = 0; r < 3; r++) { pass(a, b, 1, 0, h, w); pass(b, a, 0, 1, w, h); }
       for (let i = 0; i < w * h; i++) { const v = Math.round(a[i] * 255); d[i * 4] = d[i * 4 + 1] = d[i * 4 + 2] = v; d[i * 4 + 3] = 255; }   // opaque, so the upload is not un-premultiplied
       mctx.putImageData(id, 0, 0);
       gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, mtex);
@@ -259,7 +266,7 @@ void main(){
     }
     function grow(seg) {   // the path grew by seg px; its newest point is the leading edge
       travelled += seg; sinceCar += seg;
-      if (!rec && made < 2 && ((made === 0 && travelled > 40) || (made === 1 && sinceCar > 160))) rec = newCar(SC());
+      if (!rec && opts.sparkles !== false && made < 2 && ((made === 0 && travelled > 40) || (made === 1 && sinceCar > 160))) rec = newCar(SC());
       if (!rec) return;
       rec.acc += seg; if (rec.acc >= STEP) { rec.acc = 0; const [x, y] = path[path.length - 1]; drop(rec, x, y); }
       if (rec.n >= NG) gather(rec);

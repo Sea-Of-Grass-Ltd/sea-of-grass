@@ -187,3 +187,47 @@ test('phone: a vertical swipe on the hero scrolls the page; a sideways drag part
     assert.deepEqual(errors, []);
   } finally { await ctx.close(); }
 });
+
+// the price strip has no panel of its own: colour revealed just above it carries on into it with no hard edge (Tristan 11-16:
+// the strip's box cut the colour off in a flat rectangle). Sample 8-16px inside its top border and left end against 24-32px outside, away from the words.
+test('colour runs across the price strip\'s edges with no hard step', async () => {
+  const { ctx, page, errors } = await site.open(URL, 1440);
+  try {
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await page.addStyleTag({ content: HIDE });
+    // without the sparkle carrots: their glints are crisp by design, and this measures only the smoke and its colour
+    await page.evaluate(() => { const h = document.querySelector('.hero'); h.__bwSmoke.destroy(); BWSmoke.mount(h, { sparkles: false }); });
+    await page.waitForTimeout(700);
+    const s = await page.evaluate(() => { const r = document.querySelector('.hero .prices').getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, h: r.height }; });
+    const line = async (x0, y0, x1, y1, n = 26) => { await page.mouse.move(x0, y0); await page.mouse.down();
+      for (let i = 1; i <= n; i++) { await page.mouse.move(x0 + (x1 - x0) * i / n, y0 + (y1 - y0) * i / n + Math.sin(i / 2) * 3); await page.waitForTimeout(22); } await page.mouse.up(); };
+    await line(s.x + 20, s.y - 4, s.x + s.w - 20, s.y - 4);          // along the top border
+    await line(s.x - 80, s.y + s.h * .5, s.x + 50, s.y + s.h * .5, 12); // across the left end
+    await page.waitForTimeout(60);
+    const png = await page.screenshot({ scale: 'css' });
+    const r = await page.evaluate(async ([b64, s]) => {
+      const img = await createImageBitmap(await (await fetch('data:image/png;base64,' + b64)).blob());
+      const c = new OffscreenCanvas(img.width, img.height), x = c.getContext('2d'); x.drawImage(img, 0, 0);
+      const W = img.width, d = x.getImageData(0, 0, W, img.height).data;
+      const px = (X, Y) => { const i = (Math.round(Y) * W + Math.round(X)) * 4; return [d[i], d[i + 1], d[i + 2]]; };
+      const chroma = (X, Y) => { const p = px(X, Y); return Math.max(0, Math.max(...p) - Math.min(...p) - 16); };   // above the hero colour's own faint tint
+      // keep 48px clear of the strip's words, where the smoke is meant to thicken back to white
+      const words = [], rg = document.createRange(), tw = document.createTreeWalker(document.querySelector('.hero .prices'), NodeFilter.SHOW_TEXT, { acceptNode: n => n.nodeValue.trim() ? 1 : 2 });
+      for (let n; (n = tw.nextNode());) { rg.selectNodeContents(n); words.push(...rg.getClientRects()); }
+      const clear = (X, Y) => !words.some(b => X > b.left - 48 && X < b.right + 48 && Y > b.top - 48 && Y < b.bottom + 48);
+      let outT = 0, inT = 0, outL = 0, inL = 0, step = 0, at = null;
+      for (let X = s.x + 10; X < s.x + s.w - 10; X++) { if (!clear(X, s.y + 12)) continue;
+        for (let k = 8; k <= 16; k++) { outT += chroma(X, s.y - k - 16); inT += chroma(X, s.y + k); }
+        for (let Y = s.y - 24; Y < s.y + 24; Y++) { const a = px(X, Y), b = px(X, Y + 1); { const v = Math.max(...a.map((v, i) => Math.abs(v - b[i]))); if (v > step) { step = v; at = [X, Y, a, b]; } } } }
+      for (let Y = s.y + 10; Y < s.y + s.h - 10; Y++) { if (!clear(s.x + 12, Y)) continue;
+        for (let k = 8; k <= 16; k++) { outL += chroma(s.x - k - 16, Y); inL += chroma(s.x + k, Y); }
+        for (let X = s.x - 24; X < s.x + 24; X++) { const a = px(X, Y), b = px(X + 1, Y); { const v = Math.max(...a.map((v, i) => Math.abs(v - b[i]))); if (v > step) { step = v; at = [X, Y, a, b]; } } } }
+      return { outT, inT, outL, inL, step, at: JSON.stringify(at) };
+    }, [png.toString('base64'), s]);
+    assert.ok(r.outT > 2000 && r.outL > 500, `colour is revealed beside the strip (top ${r.outT}, left ${r.outL})`);
+    assert.ok(r.inT >= r.outT * .4, `colour carries on inside the strip's top edge (inside ${r.inT} vs outside ${r.outT})`);
+    assert.ok(r.inL >= r.outL * .4, `colour carries on inside the strip's left end (inside ${r.inL} vs outside ${r.outL})`);
+    assert.ok(r.step <= 48, `no hard step across the strip's edges (largest 1px change ${r.step} at ${r.at})`);
+    assert.deepEqual(errors, []);
+  } finally { await ctx.close(); }
+});
