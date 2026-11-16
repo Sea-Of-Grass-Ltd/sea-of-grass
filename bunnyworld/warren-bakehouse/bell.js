@@ -13,15 +13,16 @@ const fmt=new Intl.DateTimeFormat('en-US',{timeZone:'America/Denver',weekday:'sh
 function now(){const p=Object.fromEntries(fmt.formatToParts(new Date()).map(x=>[x.type,x.value]));
   return{day:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(p.weekday),s:(+p.hour%24)*3600+(+p.minute)*60+(+p.second)};}
 function next(n){for(let k=0;k<8;k++){const d=(n.day+k)%7;if(!(d in CLOSE))continue;const at=k*86400+BELL;if(at>n.s)return{left:at-n.s,k,d};}return{left:0,k:0,d:n.day};}
-const shut=t=>{const h=Math.floor(t/3600);return(h>12?h-12:h)+' pm';};
+const WORD=['twelve','one','two','three','four','five','six','seven','eight','nine','ten','eleven'];
+const shut=t=>WORD[Math.floor(t/3600)%12]; // words, not digits: the serif's figures are oldstyle (Tristan, 2026-11-16)
 const pad=v=>String(v).padStart(2,'0');
 let lastLabel='',lastMin=-1;
 function draw(){const n=now(),x=next(n);
   const open=n.day in CLOSE&&n.s>=BELL&&n.s<CLOSE[n.day];
-  const when=x.k===0?'this morning':x.k===1?'tomorrow':'on '+DAYS[x.d];
-  const label=x.k===0&&!open?'This morning’s bread comes out at 6:30. That’s in':
-    open?`Today’s bread is out until ${shut(CLOSE[n.day])}. The next bake is ${when} at 6:30, in`:
-    `We’re closed right now. The next bake is ${when} at 6:30, in`;
+  const when=x.k===1?'tomorrow morning':'on '+DAYS[x.d]+' morning';
+  const label=x.k===0&&!open?'This morning’s bread comes out in':
+    open?`Today’s bread is out, and we’re open until ${shut(CLOSE[n.day])}. The next bake is ${when}, in`:
+    `We’re closed right now. The next bake is ${when}, in`;
   if(label!==lastLabel){lab.textContent=label;lastLabel=label;}
   let t=Math.max(0,x.left);if(reduce)t=Math.ceil(t/60)*60;
   const h=Math.floor(t/3600),m=Math.floor(t%3600/60),s=t%60;

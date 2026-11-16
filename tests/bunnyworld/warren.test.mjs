@@ -194,17 +194,18 @@ for (const w of WIDTHS) {
 
 // Colorado wall-clock times (November = MST, UTC-7). Hours: Sun 6:30-1, Mon closed, Tue-Sat 6:30-2.
 const CASES = [
-  ['Monday 10 am (closed all day)', '2026-11-16T10:00:00-07:00', /closed/i, /tomorrow at 6:30/i, [20, 30, 0]],
-  ['Sunday 3 pm (closed, Monday off)', '2026-11-15T15:00:00-07:00', /closed/i, /Tuesday at 6:30/i, [39, 30, 0]],
-  ['Saturday 3 pm (closed, Sunday bakes)', '2026-11-14T15:00:00-07:00', /closed/i, /tomorrow at 6:30/i, [15, 30, 0]],
-  ['Tuesday 5 am (before the bake)', '2026-11-17T05:00:00-07:00', /this morning/i, /6:30/, [1, 30, 0]],
-  ['Tuesday 9 am (open, bread is out)', '2026-11-17T09:00:00-07:00', /out/i, /tomorrow at 6:30/i, [21, 30, 0]],
+  ['Monday 10 am (closed all day)', '2026-11-16T10:00:00-07:00', /closed/i, /tomorrow morning/i, [20, 30, 0]],
+  ['Sunday 3 pm (closed, Monday off)', '2026-11-15T15:00:00-07:00', /closed/i, /Tuesday morning/i, [39, 30, 0]],
+  ['Saturday 3 pm (closed, Sunday bakes)', '2026-11-14T15:00:00-07:00', /closed/i, /tomorrow morning/i, [15, 30, 0]],
+  ['Tuesday 5 am (before the bake)', '2026-11-17T05:00:00-07:00', /this morning/i, /comes out/i, [1, 30, 0]],
+  ['Tuesday 9 am (open, bread is out)', '2026-11-17T09:00:00-07:00', /out/i, /tomorrow morning/i, [21, 30, 0]],
 ];
 for (const [name, time, state, when, [h, m, sec]] of CASES) {
   test(`next bake, ${name}: honest label and the right count`, async () => {
     const { ctx, page } = await openAt(time, 390);
     try {
       const label = await page.locator('[data-next]').innerText();
+      assert.doesNotMatch(label, /\d/, `the label has no serif digits: "${label}"`);
       assert.match(label, state, `label says the state: "${label}"`);
       assert.match(label, when, `label names the next bake: "${label}"`);
       const c = parseClock(await page.locator('[data-countdown]').textContent());
@@ -224,3 +225,18 @@ test('reduced motion: hours and minutes only, no per-second ticking', async () =
     assert.equal(await page.locator('[data-countdown]').textContent(), a, 'nothing ticks each second');
   } finally { await ctx.close(); }
 });
+
+// Tristan, 2026-11-16: he likes the serif but not its numerals ("oven at 6:30." looked wrong, oldstyle figures).
+// No element in the hero that is set in the serif may contain a digit; the figures belong to the clock's face.
+for (const w of WIDTHS) {
+  test(`${w}px · no digits set in the serif anywhere in the hero`, async () => {
+    const { ctx, page } = await openAt(null, w);
+    try {
+      const bad = await page.evaluate(() => [...document.querySelectorAll('.hero, .hero *')].filter(e => {
+        const own = [...e.childNodes].filter(n => n.nodeType === 3).map(n => n.textContent).join('');
+        return /\d/.test(own) && /Young Serif|Georgia|serif/i.test(getComputedStyle(e).fontFamily.split(',')[0] + ',' + getComputedStyle(e).fontFamily) && !/Barlow/i.test(getComputedStyle(e).fontFamily.split(',')[0]);
+      }).map(e => `${e.tagName.toLowerCase()}.${e.className}: "${e.textContent.trim().slice(0, 40)}"`));
+      assert.deepEqual(bad, []);
+    } finally { await ctx.close(); }
+  });
+}
