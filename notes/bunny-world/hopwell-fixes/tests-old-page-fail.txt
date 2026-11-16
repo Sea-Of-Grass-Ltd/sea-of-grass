@@ -1,34 +1,37 @@
-✖ 360px · journey: land → tap → answer → first visit → answers in booking → book once (975.310875ms)
-✖ 360px · one scheduling block, no repeated actions (511.0465ms)
-✖ 360px · tap spots: apart, no halos, labels clear (539.179ms)
-✖ 360px · every question title is a full sentence ending in "?" (512.123ms)
-✖ 360px · buttons, chips and spots use only palette tokens, no shadows (652.3985ms)
-✔ 360px · no sideways scroll, no console errors (721.716041ms)
-✖ 390px · journey: land → tap → answer → first visit → answers in booking → book once (638.813833ms)
-✖ 390px · one scheduling block, no repeated actions (526.952917ms)
-✖ 390px · tap spots: apart, no halos, labels clear (511.658584ms)
-✖ 390px · every question title is a full sentence ending in "?" (525.797417ms)
-✖ 390px · buttons, chips and spots use only palette tokens, no shadows (665.610208ms)
-✔ 390px · no sideways scroll, no console errors (701.003959ms)
-✖ 1440px · journey: land → tap → answer → first visit → answers in booking → book once (655.646ms)
-✖ 1440px · one scheduling block, no repeated actions (519.637125ms)
-✖ 1440px · tap spots: apart, no halos, labels clear (525.734542ms)
-✖ 1440px · every question title is a full sentence ending in "?" (518.53475ms)
-✖ 1440px · buttons, chips and spots use only palette tokens, no shadows (648.102375ms)
-✔ 1440px · no sideways scroll, no console errors (728.0695ms)
-ℹ tests 18
+✖ 360px · journey: land → tap → answer → first visit → answers in booking → book once (955.363209ms)
+✖ 360px · one scheduling block, no repeated actions (514.267041ms)
+✖ 360px · tap spots: apart, no halos, labels clear (530.427791ms)
+✖ 360px · every question title is a full sentence ending in "?" (510.882041ms)
+✖ 360px · copy that counts the questions matches the questions (522.922417ms)
+✖ 360px · buttons, chips and spots use only palette tokens, no shadows (637.437667ms)
+✔ 360px · no sideways scroll, no console errors (716.248708ms)
+✖ 390px · journey: land → tap → answer → first visit → answers in booking → book once (618.363292ms)
+✖ 390px · one scheduling block, no repeated actions (620.52375ms)
+✖ 390px · tap spots: apart, no halos, labels clear (530.94125ms)
+✖ 390px · every question title is a full sentence ending in "?" (527.732167ms)
+✖ 390px · copy that counts the questions matches the questions (502.4715ms)
+✖ 390px · buttons, chips and spots use only palette tokens, no shadows (621.655625ms)
+✔ 390px · no sideways scroll, no console errors (715.559709ms)
+✖ 1440px · journey: land → tap → answer → first visit → answers in booking → book once (635.097375ms)
+✖ 1440px · one scheduling block, no repeated actions (514.065458ms)
+✖ 1440px · tap spots: apart, no halos, labels clear (510.859375ms)
+✖ 1440px · every question title is a full sentence ending in "?" (516.15275ms)
+✖ 1440px · copy that counts the questions matches the questions (529.108375ms)
+✖ 1440px · buttons, chips and spots use only palette tokens, no shadows (676.859958ms)
+✔ 1440px · no sideways scroll, no console errors (715.461916ms)
+ℹ tests 21
 ℹ suites 0
 ℹ pass 3
-ℹ fail 15
+ℹ fail 18
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 11563.835666
+ℹ duration_ms 13143.530542
 
 ✖ failing tests:
 
 test at bunnyworld/hopwell.test.mjs:52:3
-✖ 360px · journey: land → tap → answer → first visit → answers in booking → book once (975.310875ms)
+✖ 360px · journey: land → tap → answer → first visit → answers in booking → book once (955.363209ms)
   AssertionError [ERR_ASSERTION]: step 5: booking block shows the answers
       at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:74:14)
       at async Test.run (node:internal/test_runner/test:1389:7)
@@ -42,7 +45,7 @@ test at bunnyworld/hopwell.test.mjs:52:3
   }
 
 test at bunnyworld/hopwell.test.mjs:93:3
-✖ 360px · one scheduling block, no repeated actions (511.0465ms)
+✖ 360px · one scheduling block, no repeated actions (514.267041ms)
   AssertionError [ERR_ASSERTION]: no open times shown outside the booking block
   + actual - expected
   
@@ -63,7 +66,7 @@ test at bunnyworld/hopwell.test.mjs:93:3
   }
 
 test at bunnyworld/hopwell.test.mjs:124:3
-✖ 360px · tap spots: apart, no halos, labels clear (539.179ms)
+✖ 360px · tap spots: apart, no halos, labels clear (530.427791ms)
   AssertionError [ERR_ASSERTION]: 3 to 5 tap spots (got 6)
       at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:129:14)
       at async Test.run (node:internal/test_runner/test:1389:7)
@@ -77,7 +80,7 @@ test at bunnyworld/hopwell.test.mjs:124:3
   }
 
 test at bunnyworld/hopwell.test.mjs:150:3
-✖ 360px · every question title is a full sentence ending in "?" (512.123ms)
+✖ 360px · every question title is a full sentence ending in "?" (510.882041ms)
   AssertionError [ERR_ASSERTION]: titles that aren't full questions: ["WhereLow back ✓","Which visit?","With whom?","Pick a time","About you"]
   + actual - expected
   
@@ -102,7 +105,31 @@ test at bunnyworld/hopwell.test.mjs:150:3
   }
 
 test at bunnyworld/hopwell.test.mjs:160:3
-✖ 360px · buttons, chips and spots use only palette tokens, no shadows (652.3985ms)
+✖ 360px · copy that counts the questions matches the questions (522.922417ms)
+  AssertionError [ERR_ASSERTION]: copy says a different number of questions than the 3 asked
+  + actual - expected
+  
+  + [
+  +   {
+  +     n: 2,
+  +     text: 'two quick questions'
+  +   }
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:175:14)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ { text: 'two quick questions', n: 2 } ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/hopwell.test.mjs:179:3
+✖ 360px · buttons, chips and spots use only palette tokens, no shadows (637.437667ms)
   AssertionError [ERR_ASSERTION]: off-palette colours or shadows
   + actual - expected
   
@@ -189,7 +216,7 @@ test at bunnyworld/hopwell.test.mjs:160:3
   + ]
   - []
   
-      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:188:14)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:207:14)
       at async Test.run (node:internal/test_runner/test:1389:7)
       at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
     generatedMessage: false,
@@ -201,7 +228,7 @@ test at bunnyworld/hopwell.test.mjs:160:3
   }
 
 test at bunnyworld/hopwell.test.mjs:52:3
-✖ 390px · journey: land → tap → answer → first visit → answers in booking → book once (638.813833ms)
+✖ 390px · journey: land → tap → answer → first visit → answers in booking → book once (618.363292ms)
   AssertionError [ERR_ASSERTION]: step 5: booking block shows the answers
       at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:74:14)
       at async Test.run (node:internal/test_runner/test:1389:7)
@@ -215,7 +242,7 @@ test at bunnyworld/hopwell.test.mjs:52:3
   }
 
 test at bunnyworld/hopwell.test.mjs:93:3
-✖ 390px · one scheduling block, no repeated actions (526.952917ms)
+✖ 390px · one scheduling block, no repeated actions (620.52375ms)
   AssertionError [ERR_ASSERTION]: no open times shown outside the booking block
   + actual - expected
   
@@ -236,7 +263,7 @@ test at bunnyworld/hopwell.test.mjs:93:3
   }
 
 test at bunnyworld/hopwell.test.mjs:124:3
-✖ 390px · tap spots: apart, no halos, labels clear (511.658584ms)
+✖ 390px · tap spots: apart, no halos, labels clear (530.94125ms)
   AssertionError [ERR_ASSERTION]: 3 to 5 tap spots (got 6)
       at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:129:14)
       at async Test.run (node:internal/test_runner/test:1389:7)
@@ -250,7 +277,7 @@ test at bunnyworld/hopwell.test.mjs:124:3
   }
 
 test at bunnyworld/hopwell.test.mjs:150:3
-✖ 390px · every question title is a full sentence ending in "?" (525.797417ms)
+✖ 390px · every question title is a full sentence ending in "?" (527.732167ms)
   AssertionError [ERR_ASSERTION]: titles that aren't full questions: ["WhereLow back ✓","Which visit?","With whom?","Pick a time","About you"]
   + actual - expected
   
@@ -275,7 +302,31 @@ test at bunnyworld/hopwell.test.mjs:150:3
   }
 
 test at bunnyworld/hopwell.test.mjs:160:3
-✖ 390px · buttons, chips and spots use only palette tokens, no shadows (665.610208ms)
+✖ 390px · copy that counts the questions matches the questions (502.4715ms)
+  AssertionError [ERR_ASSERTION]: copy says a different number of questions than the 3 asked
+  + actual - expected
+  
+  + [
+  +   {
+  +     n: 2,
+  +     text: 'two quick questions'
+  +   }
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:175:14)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ { text: 'two quick questions', n: 2 } ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/hopwell.test.mjs:179:3
+✖ 390px · buttons, chips and spots use only palette tokens, no shadows (621.655625ms)
   AssertionError [ERR_ASSERTION]: off-palette colours or shadows
   + actual - expected
   
@@ -362,7 +413,7 @@ test at bunnyworld/hopwell.test.mjs:160:3
   + ]
   - []
   
-      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:188:14)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:207:14)
       at async Test.run (node:internal/test_runner/test:1389:7)
       at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
     generatedMessage: false,
@@ -374,7 +425,7 @@ test at bunnyworld/hopwell.test.mjs:160:3
   }
 
 test at bunnyworld/hopwell.test.mjs:52:3
-✖ 1440px · journey: land → tap → answer → first visit → answers in booking → book once (655.646ms)
+✖ 1440px · journey: land → tap → answer → first visit → answers in booking → book once (635.097375ms)
   AssertionError [ERR_ASSERTION]: step 5: booking block shows the answers
       at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:74:14)
       at async Test.run (node:internal/test_runner/test:1389:7)
@@ -388,7 +439,7 @@ test at bunnyworld/hopwell.test.mjs:52:3
   }
 
 test at bunnyworld/hopwell.test.mjs:93:3
-✖ 1440px · one scheduling block, no repeated actions (519.637125ms)
+✖ 1440px · one scheduling block, no repeated actions (514.065458ms)
   AssertionError [ERR_ASSERTION]: no open times shown outside the booking block
   + actual - expected
   
@@ -409,7 +460,7 @@ test at bunnyworld/hopwell.test.mjs:93:3
   }
 
 test at bunnyworld/hopwell.test.mjs:124:3
-✖ 1440px · tap spots: apart, no halos, labels clear (525.734542ms)
+✖ 1440px · tap spots: apart, no halos, labels clear (510.859375ms)
   AssertionError [ERR_ASSERTION]: 3 to 5 tap spots (got 6)
       at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:129:14)
       at async Test.run (node:internal/test_runner/test:1389:7)
@@ -423,7 +474,7 @@ test at bunnyworld/hopwell.test.mjs:124:3
   }
 
 test at bunnyworld/hopwell.test.mjs:150:3
-✖ 1440px · every question title is a full sentence ending in "?" (518.53475ms)
+✖ 1440px · every question title is a full sentence ending in "?" (516.15275ms)
   AssertionError [ERR_ASSERTION]: titles that aren't full questions: ["WhereLow back ✓","Which visit?","With whom?","Pick a time","About you"]
   + actual - expected
   
@@ -448,7 +499,31 @@ test at bunnyworld/hopwell.test.mjs:150:3
   }
 
 test at bunnyworld/hopwell.test.mjs:160:3
-✖ 1440px · buttons, chips and spots use only palette tokens, no shadows (648.102375ms)
+✖ 1440px · copy that counts the questions matches the questions (529.108375ms)
+  AssertionError [ERR_ASSERTION]: copy says a different number of questions than the 3 asked
+  + actual - expected
+  
+  + [
+  +   {
+  +     n: 2,
+  +     text: 'two quick questions'
+  +   }
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:175:14)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ { text: 'two quick questions', n: 2 } ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/hopwell.test.mjs:179:3
+✖ 1440px · buttons, chips and spots use only palette tokens, no shadows (676.859958ms)
   AssertionError [ERR_ASSERTION]: off-palette colours or shadows
   + actual - expected
   
@@ -534,7 +609,7 @@ test at bunnyworld/hopwell.test.mjs:160:3
   + ]
   - []
   
-      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:188:14)
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:207:14)
       at async Test.run (node:internal/test_runner/test:1389:7)
       at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
     generatedMessage: false,

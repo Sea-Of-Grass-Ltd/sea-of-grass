@@ -17,6 +17,7 @@ The rule (Tristan, 2026-11-15): write the steps and the tests first. Build the p
 - There is exactly one scheduling block. No other place on the page shows open times ("next open" or "same-day openings").
 - Booking appears once in the header and once in the page. No section repeats the same button text.
 - Tap spots sit at least 44 px apart, centre to centre. No label covers a spot. Spots have no halo.
+- Any copy that counts the questions ("three quick questions") matches the number asked.
 - Every question title is a full sentence (three words or more) ending in "?".
 - Buttons, chips and spots only use colours from the page's own palette tokens (`:root` custom properties). They have no box-shadows.
 - The page doesn't scroll sideways. The page itself logs no console errors.

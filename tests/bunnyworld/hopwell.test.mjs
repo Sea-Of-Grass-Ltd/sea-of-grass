@@ -157,6 +157,25 @@ for (const w of WIDTHS) {
     } finally { await ctx.close(); }
   });
 
+  test(`${w}px · copy that counts the questions matches the questions`, async () => {
+    const { ctx, page } = await open(w);
+    try {
+      const r = await page.evaluate(() => {
+        const N = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6 };
+        const asked = document.querySelectorAll('.hook .q').length;
+        const claims = [];
+        for (const e of document.querySelectorAll('main p, main h1, main h2, main li, main figcaption')) {
+          const t = e.textContent.toLowerCase();
+          for (const m of t.matchAll(/\b(one|two|three|four|five|six|\d+)\s+(?:\w+\s+){0,2}questions?\b/g)) claims.push({ text: m[0], n: N[m[1]] ?? +m[1] });
+        }
+        return { asked, claims };
+      });
+      assert.equal(r.asked, 3, 'the hook asks three questions');
+      const wrong = r.claims.filter(c => c.n !== r.asked);
+      assert.deepEqual(wrong, [], `copy says a different number of questions than the ${r.asked} asked`);
+    } finally { await ctx.close(); }
+  });
+
   test(`${w}px · buttons, chips and spots use only palette tokens, no shadows`, async () => {
     const { ctx, page } = await open(w);
     try {

@@ -1,26 +1,29 @@
-✔ 360px · journey: land → tap → answer → first visit → answers in booking → book once (1220.706792ms)
-✔ 360px · one scheduling block, no repeated actions (518.686667ms)
-✔ 360px · tap spots: apart, no halos, labels clear (711.130041ms)
-✔ 360px · every question title is a full sentence ending in "?" (499.957625ms)
-✔ 360px · buttons, chips and spots use only palette tokens, no shadows (654.168584ms)
-✔ 360px · no sideways scroll, no console errors (709.14475ms)
-✔ 390px · journey: land → tap → answer → first visit → answers in booking → book once (822.543917ms)
-✔ 390px · one scheduling block, no repeated actions (525.65725ms)
-✔ 390px · tap spots: apart, no halos, labels clear (728.814166ms)
-✔ 390px · every question title is a full sentence ending in "?" (502.082041ms)
-✔ 390px · buttons, chips and spots use only palette tokens, no shadows (662.766334ms)
-✔ 390px · no sideways scroll, no console errors (712.42425ms)
-✔ 1440px · journey: land → tap → answer → first visit → answers in booking → book once (780.741833ms)
-✔ 1440px · one scheduling block, no repeated actions (516.92425ms)
-✔ 1440px · tap spots: apart, no halos, labels clear (704.765834ms)
-✔ 1440px · every question title is a full sentence ending in "?" (501.559ms)
-✔ 1440px · buttons, chips and spots use only palette tokens, no shadows (639.530708ms)
-✔ 1440px · no sideways scroll, no console errors (717.99475ms)
-ℹ tests 18
+✔ 360px · journey: land → tap → answer → first visit → answers in booking → book once (1166.794125ms)
+✔ 360px · one scheduling block, no repeated actions (505.318834ms)
+✔ 360px · tap spots: apart, no halos, labels clear (682.289042ms)
+✔ 360px · every question title is a full sentence ending in "?" (501.550167ms)
+✔ 360px · copy that counts the questions matches the questions (527.338458ms)
+✔ 360px · buttons, chips and spots use only palette tokens, no shadows (658.89575ms)
+✔ 360px · no sideways scroll, no console errors (816.046375ms)
+✔ 390px · journey: land → tap → answer → first visit → answers in booking → book once (812.541584ms)
+✔ 390px · one scheduling block, no repeated actions (525.07675ms)
+✔ 390px · tap spots: apart, no halos, labels clear (780.402417ms)
+✔ 390px · every question title is a full sentence ending in "?" (523.859875ms)
+✔ 390px · copy that counts the questions matches the questions (509.705959ms)
+✔ 390px · buttons, chips and spots use only palette tokens, no shadows (618.713084ms)
+✔ 390px · no sideways scroll, no console errors (702.187375ms)
+✔ 1440px · journey: land → tap → answer → first visit → answers in booking → book once (786.9175ms)
+✔ 1440px · one scheduling block, no repeated actions (555.387041ms)
+✔ 1440px · tap spots: apart, no halos, labels clear (688.6755ms)
+✔ 1440px · every question title is a full sentence ending in "?" (490.54975ms)
+✔ 1440px · copy that counts the questions matches the questions (510.829042ms)
+✔ 1440px · buttons, chips and spots use only palette tokens, no shadows (637.206042ms)
+✔ 1440px · no sideways scroll, no console errors (709.785208ms)
+ℹ tests 21
 ℹ suites 0
-ℹ pass 18
+ℹ pass 21
 ℹ fail 0
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 12674.990875
+ℹ duration_ms 14169.956709
