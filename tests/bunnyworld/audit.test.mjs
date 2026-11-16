@@ -64,13 +64,20 @@ function inPageChecks(phone) {
   for (const re of [/lorem ipsum/i, /john doe|jane doe/i, /updated (just now|\d+ min(ute)?s? ago)/i, /\bTODO\b|\bTBD\b|\bFIXME\b/]) { const m = body.match(re); if (m) { const el = [...document.querySelectorAll('body *')].find(x => x.children.length === 0 && re.test(x.textContent)); add('copy-placeholder', `"${m[0]}"`, el); } }
   for (const a of actions) if (/^(submit|click here|ok|go)$/i.test(text(a))) add('copy-vague-button', `"${text(a)}"`, a);
 
-  // Effects: blurred shadows, gradients, blur filters (the design is flat)
+  // Effects: blurred shadows, gradients, blur filters (the design is flat).
+  // A page may opt into neumorphism with two tokens (--neu-up, --neu-in): those shadows pass when they sit on the
+  // rounded element itself (not a pseudo-element) and the glow (blur + spread + offset) fits inside its radius.
+  const probe = document.createElement('i'); probe.style.display = 'block'; document.body.appendChild(probe);
+  const tok = v => { probe.style.boxShadow = ''; probe.style.boxShadow = `var(${v})`; const s = getComputedStyle(probe).boxShadow; return s && s !== 'none' ? s : null; };
+  const NEU = [tok('--neu-up'), tok('--neu-in')].filter(Boolean); probe.remove();
+  const neuOk = (e, c) => { if (!NEU.includes(c.boxShadow)) return false; const r = e.getBoundingClientRect(); const rad = Math.min(parseFloat(c.borderTopLeftRadius), parseFloat(c.borderBottomRightRadius), r.height / 2, r.width / 2); if (!(rad > 0)) return false;
+    const reach = Math.max(0, ...c.boxShadow.split(/,(?![^(]*\))/).filter(l => !/inset/.test(l)).map(l => { const n = l.replace(/rgba?\([^)]*\)/, '').trim().split(/\s+/).map(parseFloat); return (n[2] || 0) + (n[3] || 0) + Math.max(Math.abs(n[0] || 0), Math.abs(n[1] || 0)); })); return reach <= rad + 0.5; };
   for (const e of document.querySelectorAll('body *')) {
     if (!e.getBoundingClientRect().width) continue;
     for (const pseudo of [null, '::before', '::after']) {
       const c = getComputedStyle(e, pseudo); if (pseudo && (c.content === 'none' || c.content === 'normal')) continue;
       const label = (e.className && typeof e.className === 'string' ? '.' + e.className.trim().split(/\s+/)[0] : e.tagName.toLowerCase()) + (pseudo || '');
-      if (c.boxShadow !== 'none') { const blurred = c.boxShadow.split(/,(?![^(]*\))/).some(s => { const n = s.replace(/rgba?\([^)]*\)/, '').trim().split(/\s+/).filter(x => x.endsWith('px')).map(parseFloat); return (n[2] || 0) > 0; }); if (blurred) add('fx-shadow', `${label}: ${c.boxShadow.slice(0, 80)}`, e); }
+      if (c.boxShadow !== 'none' && !(pseudo === null && neuOk(e, c))) { const blurred = c.boxShadow.split(/,(?![^(]*\))/).some(s => { const n = s.replace(/rgba?\([^)]*\)/, '').trim().split(/\s+/).filter(x => x.endsWith('px')).map(parseFloat); return (n[2] || 0) > 0; }); if (blurred) add('fx-shadow', `${label}: ${c.boxShadow.slice(0, 80)}`, e); }
       if (c.textShadow !== 'none' && c.textShadow.split(/,(?![^(]*\))/).some(s => (s.replace(/rgba?\([^)]*\)/, '').trim().split(/\s+/).map(parseFloat)[2] || 0) > 0)) add('fx-shadow', `${label}: text-shadow ${c.textShadow.slice(0, 60)}`, e);
       const hardStops = g => { const ps = g.match(/\d+(\.\d+)?%/g) || []; return ps.length >= 2 && ps.every(p => ps.filter(q => q === p).length >= 2); };
       if (/gradient\(/.test(c.backgroundImage) && !hardStops(c.backgroundImage)) add('fx-gradient', `${label}: ${c.backgroundImage.slice(0, 60)}`, e);
