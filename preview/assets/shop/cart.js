@@ -17,6 +17,7 @@ function save(){try{localStorage.setItem(KEY,JSON.stringify(cart));}catch(e){}re
 function count(){var n=0;for(var k in cart)n+=cart[k];return n;}
 function add(id){if(!P[id])return;cart[id]=Math.min(P[id].maxQty||1,(cart[id]||0)+1);save();btn.classList.remove('bump');void btn.offsetWidth;btn.classList.add('bump');}
 function setQty(id,q){if(q<=0)delete cart[id];else cart[id]=Math.min(P[id].maxQty||1,q);save();}
+function terms(){var s='',open=false;for(var k in cart){var p=P[k];if(p.interval!=='month')continue;if(p.term)s+=' '+p.name+': '+p.term+' payments of '+money(p.price)+' ('+money(p.price*p.term)+' total), then it ends.';else open=true;}return s+(open?' Care: cancel any month.':'');}
 function totals(){var once=0,month=0;for(var k in cart){var p=P[k],t=p.price*cart[k];if(p.interval==='month')month+=t;else once+=t;}return {today:once+month,once:once,month:month};}
 function linkKey(){return Object.keys(cart).sort().join('+');}
 addEventListener('storage',function(e){if(e.key===KEY){cart=read();render();}});
@@ -27,7 +28,7 @@ document.querySelectorAll('[data-shop-cards]').forEach(function(box){
   var pick=box.dataset.shopPick||'',badge=box.dataset.shopBadge||'Recommended';   // data-shop-pick="care" marks one card as the recommended one
   box.innerHTML=box.dataset.shopCards.split(',').map(function(id){id=id.trim();var p=P[id];if(!p)return '';
     return '<article class="shop-card'+(id===pick?' pick':'')+'" data-id="'+id+'">'+(id===pick?'<span class="shop-badge">'+esc(badge)+'</span>':'')+'<h3>'+esc(p.name)+'</h3>'+priceHTML(p)+
-      (p.interval?'<p class="shop-sub">Billed monthly</p>':'<p class="shop-sub">Paid once</p>')+
+      (p.interval?'<p class="shop-sub">Billed monthly'+(p.term?', '+p.term+'-month minimum ('+money(p.price*p.term)+' total)':'')+'</p>':'<p class="shop-sub">Paid once</p>')+
       '<p class="shop-blurb">'+esc(p.blurb)+'</p><ul>'+p.lines.map(function(l){return '<li>'+esc(l)+'</li>';}).join('')+'</ul>'+
       '<button type="button" class="shop-add" data-add="'+id+'">Add to cart</button></article>';}).join('');
 });
@@ -54,13 +55,13 @@ function render(){
   var body=$('.shop-body',dr),foot=$('.shop-foot',dr),ids=Object.keys(cart);
   if(!ids.length){body.innerHTML='<div class="shop-empty"><p>Nothing in here yet.</p><p class="shop-muted">Fixes, care plans and kickoffs can be bought outright, no call first.</p><a class="shop-link" href="/preview/services/websites/#buy">See what you can buy &rarr;</a></div>';foot.innerHTML='';return;}
   body.innerHTML='<ul class="shop-items">'+ids.map(function(id){var p=P[id],q=cart[id],max=p.maxQty||1;
-    return '<li data-id="'+id+'"><div class="shop-it"><b>'+esc(p.name)+'</b><span class="shop-muted">'+(p.from?'From ':'')+money(p.price)+(p.interval?' a month, billed monthly':(max>1?' each':'')+', paid once')+'</span></div>'+
+    return '<li data-id="'+id+'"><div class="shop-it"><b>'+esc(p.name)+'</b><span class="shop-muted">'+(p.from?'From ':'')+money(p.price)+(p.interval?' a month, billed monthly'+(p.term?', '+p.term+'-month minimum ('+money(p.price*p.term)+' total)':''):(max>1?' each':'')+', paid once')+'</span></div>'+
       '<div class="shop-ctl">'+(max>1?'<div class="shop-qty" role="group" aria-label="Quantity of '+esc(p.name)+'"><button type="button" data-q="-1" aria-label="One fewer">−</button><output aria-live="polite">'+q+'</output><button type="button" data-q="1" aria-label="One more"'+(q>=max?' disabled':'')+'>+</button></div>':'<span class="shop-muted">Qty 1</span>')+
       '<button type="button" class="shop-rm" data-rm aria-label="Remove '+esc(p.name)+'">Remove</button></div><span class="shop-line">'+money(p.price*q)+(p.interval?'<small>/mo</small>':'')+'</span></li>';}).join('')+'</ul>';
   var t=totals();
-  foot.innerHTML='<dl class="shop-sum">'+(t.once&&t.month?'<div><dt>Paid once</dt><dd>'+money(t.once)+'</dd></div>':'')+(t.month?'<div><dt>Care plan</dt><dd>'+money(t.month)+'<small>/mo</small></dd></div>':'')+
+  foot.innerHTML='<dl class="shop-sum">'+(t.once&&t.month?'<div><dt>Paid once</dt><dd>'+money(t.once)+'</dd></div>':'')+(t.month?'<div><dt>Monthly</dt><dd>'+money(t.month)+'<small>/mo</small></dd></div>':'')+
     '<div class="shop-total"><dt>Due today</dt><dd>'+money(t.today)+'</dd></div></dl>'+
-    (t.month?'<p class="shop-muted">Then '+money(t.month)+' billed monthly. Cancel any month.</p>':'')+
+    (t.month?'<p class="shop-muted">Then '+money(t.month)+' billed monthly.'+terms()+'</p>':'')+
     (cart.fix?'<p class="shop-muted">Fixes are priced from '+money(P.fix.price)+'; if yours is bigger, we tell you before any work.</p>':'')+
     '<button type="button" class="shop-go">Checkout &rarr;</button><p class="shop-muted shop-demo">'+(S.mode==='live'?'Secure checkout by Stripe.':'Demo: checkout is a stand-in page. No payment is taken.')+'</p>';
 }

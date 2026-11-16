@@ -34,6 +34,12 @@ window.SOG_SHOP = {
       blurb: 'One page in a ready Bunny World look, with your name, photos and colours.',
       lines: ['One page: hours, menu or services, photos, map, a call button', 'A link button to the booking or ordering tool you already use', 'One round of changes', 'The $1,200 counts toward a full site if you upgrade within 90 days'] // PLACEHOLDER inclusions
     },
+    'starter-monthly': {
+      name: 'Starter site, paid monthly',
+      price: 100, from: false, interval: 'month', term: 12, maxQty: 1, // PLACEHOLDER price; term = minimum months, then it ends
+      blurb: '$100 a month, billed monthly, 12-month minimum ($1,200 total). The same starter site; no interest.',
+      lines: ['Billed monthly, never annually up front', '12 payments of $100, then it ends: no auto-renewal', 'The site files are yours after payment 12, or whenever you pay the balance', 'Care ($50 a month) is separate and optional'] // PLACEHOLDER inclusions + terms
+    },
     kickoff: {
       name: 'Kickoff',
       price: 250, from: false, interval: null, maxQty: 1,            // PLACEHOLDER price
