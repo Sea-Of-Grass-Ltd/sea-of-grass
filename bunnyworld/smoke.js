@@ -67,72 +67,63 @@ void main(){
   w=clamp(w,-.4,.4);
   w=mix(w,(w*.25)*.5+.5,uEnc);
   o=vec4(v/(1.+uEnc),w,1.);}`;
+  const NG = 28, NC = 2;        // glints per sparkle carrot; sparkle carrots alive at once
   const SHOW = COMMON + `
-uniform sampler2D uSim,uMask;uniform vec2 uRes;uniform float uTime,uDpr,uCell,uEnc;
-uniform vec3 uAcc[5];uniform vec3 uInk,uLite,uRoot,uLeaf;
-float seg(vec2 p,vec2 a,vec2 b){vec2 pa=p-a,ba=b-a;return length(pa-ba*clamp(dot(pa,ba)/dot(ba,ba),0.,1.));}
-// uneven capsule: round end r1 at a, r2 at b
-float cone(vec2 p,vec2 a,vec2 b,float r1,float r2){vec2 ba=b-a;float l=length(ba);vec2 d=ba/l;vec2 q=vec2(dot(p-a,vec2(d.y,-d.x)),dot(p-a,d));
-  q.x=abs(q.x);float bb=(r1-r2)/l,aa=sqrt(1.-bb*bb),k=dot(q,vec2(-bb,aa));
-  if(k<0.)return length(q)-r1;if(k>aa*l)return length(q-vec2(0.,l))-r2;return dot(q,vec2(aa,bb))-r1;}
-// a carrot, about 64 units tall, top of the root at the origin, tip pointing down (y up): the root, and the leaves
-float root(vec2 p){
-  float b=cone(p,vec2(0.,-2.),vec2(0.,-40.),10.,1.8);
-  float notch=min(min(seg(p,vec2(-11.,-12.),vec2(-3.,-13.5)),seg(p,vec2(10.,-22.),vec2(3.,-23.5))),seg(p,vec2(-7.,-31.),vec2(-2.,-32.)));
-  return max(b,-(notch-1.1));}                                    // three drawn ridges cut into the root
-float leaves(vec2 p){
-  return min(min(cone(p,vec2(0.,4.),vec2(-9.,22.),3.4,1.6),cone(p,vec2(0.,4.),vec2(0.,26.),3.4,1.6)),cone(p,vec2(0.,4.),vec2(9.,22.),3.4,1.6));}
+uniform sampler2D uSim,uMask;uniform vec2 uRes;uniform float uTime,uDpr,uEnc,uStep,uFlow;
+uniform vec3 uAcc[5];uniform vec3 uInk,uLite,uRootC,uLeafC;
+uniform vec4 uG[${NG}];                                          // a glint: target x,y (carrot units, y up), delay (s), size (+10 on the leaves)
+uniform vec4 uCar[${NC}];uniform int uNC;                         // a sparkle carrot: x,y (css px, y up), born (s), scale
 // a four-point glint (astroid), radius r
 float glint(vec2 p,float r){vec2 a=abs(p)/max(r,1e-3);return (pow(a.x,.6667)+pow(a.y,.6667)-1.)*r*.5;}
-float parted(vec2 u){return texture(uSim,u).r*(1.+uEnc)*(1.-texture(uMask,u).r);}
+// the sparkles that gather into a carrot, twinkle, and go out: x = core, y = ink rim, z = on a leaf, w = white-hot centre
+vec4 sparkles(vec2 pc,float px1){
+  vec4 cv=vec4(0.);
+  for(int k=0;k<${NC};k++){if(k>=uNC)break;vec4 C=uCar[k];
+    vec2 d=pc-C.xy;if(dot(d,d)>pow(140.*C.w,2.))continue;
+    float age=uTime-C.z;
+    for(int i=0;i<${NG};i++){vec4 G=uG[i];
+      float t=age-G.z;if(t<0.||t>2.)continue;
+      float hs=h1(vec2(float(i),float(k)*7.3+C.z));
+      float g=clamp(t/.5,0.,1.);g=1.-pow(1.-g,3.);                  // gathering in, easing to a stop
+      float ang=hs*6.2832;vec2 from=G.xy+vec2(cos(ang),sin(ang))*(26.+34.*fract(hs*13.));
+      vec2 at=mix(from,G.xy,g)*C.w;
+      float gone=1.-smoothstep(1.15+hs*.35,1.5+hs*.4,t);              // going out, each on its own beat
+      float tw=.72+.38*sin(t*15.+hs*40.);                            // twinkling
+      float leaf=step(5.,G.w),sz=G.w-leaf*10.;
+      float r=(1.6+2.6*sz)*C.w*smoothstep(0.,.25,t)*gone*mix(1.,tw,smoothstep(.35,.6,t));
+      if(r<.3)continue;
+      vec2 q=d-at;float gd=glint(q,r);
+      float core=1.-smoothstep(-px1,px1,gd),rim=1.-smoothstep(-px1,px1,gd-1.);
+      if(rim>cv.y||core>cv.x)cv=vec4(max(cv.x,core),max(cv.y,rim),leaf,1.-smoothstep(r*.12,r*.32,length(q)));}}
+  return cv;}
 void main(){
   vec4 sm=texture(uSim,uv);float c=sm.r*(1.+uEnc);sm.gb=mix(sm.gb,(sm.gb*2.-1.)*4.,uEnc);
-  float m=smoothstep(.0,.6,texture(uMask,uv).r);c*=1.-m;      // the mask arrives blurred (see mask()), so the smoke thickens toward the copy                            // behind the copy, buttons and prices the smoke stays thick
+  float m=smoothstep(.0,.6,texture(uMask,uv).r);c*=1.-m;      // the mask arrives blurred (see mask()), so the smoke thickens toward the copy
   vec2 pc=gl_FragCoord.xy/uDpr;                                   // css px, y up
-  float T=uTime;
+  float T=uTime,px1=.6/uDpr+.5;
+  vec4 sp=uNC>0?sparkles(pc,px1):vec4(0.);
   // the smoke: billows at two sizes, carried along by the push, so the gap's edge curls rather than cuts
   vec2 sw=sm.gb*40.;
   float bill=fbm((pc+sw)/90.+vec2(T*.05,-T*.035))*.6+fbm((pc-sw*.5)/30.+vec2(-T*.09,T*.07))*.4;
   float x=c+(bill-.5)*.9;
   float open=smoothstep(.3,1.15,x);
-  // thin curling threads of smoke crossing the edges of the gap
   float r=1.-abs(fbm((pc+sw*1.5)/70.+vec2(T*.11,T*.04))*2.-1.);r=pow(r,3.);
   float edge=smoothstep(.15,.5,x)*(1.-smoothstep(.75,1.4,x));
   float dens=max(1.-open,r*edge*.5);
-  if(dens>=.999){o=vec4(0.);return;}
-  // what's under it: the five accents as soft light, drifting and blending into one another
-  float hh=fbm(pc/260.+vec2(T*.025,-T*.02))*7.+(pc.x+pc.y)/700.+T*.05;
+  float spa=max(sp.x,sp.y);
+  if(dens>=.999&&spa<=0.){o=vec4(0.);return;}
+  // under the smoke: the headline's sweep as one continuous gradient, the five accents in the same order
+  // (Clean, Bold, Warm, Sunny, Disco), flowing left to right as the sweep does, gently wavering
+  float hh=T*uFlow-pc.x/uStep+(fbm(vec2(pc.y/320.,T*.05))-.5)*.8;
   hh=mod(hh,5.);int i0=int(floor(hh));int i1=i0==4?0:i0+1;
-  vec3 col=mix(uAcc[i0],uAcc[i1],smoothstep(.15,.85,fract(hh)));
-  col=mix(uLite,col,.2+.65*smoothstep(.0,1.,open));             // paler where the smoke still hangs in the light
-  // carrots: a few, large, on a wide staggered grid; each shows whole once its spot is clear, and glints now and then
-  vec2 g=pc/uCell;g.x+=mod(floor(g.y),2.)*.5;
-  vec2 id=floor(g);vec2 ctr=(id+.5-vec2(mod(id.y,2.)*.5,0.))*uCell;
-  vec2 f=pc-ctr;
-  float side=mod(id.x+id.y,2.)*2.-1.,ang=side*.5;
-  mat2 R=mat2(cos(ang),-sin(ang),sin(ang),cos(ang));
-  float S=1.45;vec2 cp=(R*f+vec2(0.,10.))/S;
-  float vis=smoothstep(1.25,1.35,parted(ctr*uDpr/uRes));          // pops in whole, no ghost
-  if(vis>0.){
-    float rd0=root(cp)*S,ld=leaves(cp)*S,px1=.6/uDpr+.5;
-    float ol=1.6;                                                  // drawn outline, in the look's ink
-    float any=min(rd0,ld);
-    vec3 cc=col;
-    cc=mix(cc,uInk,1.-smoothstep(-px1,px1,any-ol));
-    cc=mix(cc,uLeaf,1.-smoothstep(-px1,px1,ld));
-    cc=mix(cc,uRoot,1.-smoothstep(-px1,px1,rd0));
-    float ph=h1(id*1.7+3.1)*6.2832;
-    float beat=pow(max(0.,sin(T*1.25+ph)),28.);                     // a quick glint, then quiet for a few seconds
-    vec2 gp=f-transpose(R)*vec2(side*-20.,30.);
-    float gd=glint(gp,4.+16.*beat);
-    float gin=1.-smoothstep(-px1,px1,gd),gout=1.-smoothstep(-px1,px1,gd-1.5);
-    float on=smoothstep(.02,.1,beat);
-    cc=mix(cc,uInk,gout*on);cc=mix(cc,vec3(1.),gin*on);
-    col=mix(col,cc,vis);
-    float cov=(1.-smoothstep(-px1,px1,any-ol))*vis;                 // the carrot shows whole, never half under a wisp
-    float a=max(1.-dens,cov);o=vec4(col*a,a);return;}
+  vec3 col=mix(uAcc[i0],uAcc[i1],fract(hh));
+  col=mix(uLite,col,.3+.7*smoothstep(.0,1.,open));               // paler where the smoke still hangs in the light
   float a=1.-dens;
-  o=vec4(col*a,a);}`;
+  vec3 pre=col*a;
+  vec3 tint=mix(mix(uRootC,uLeafC,sp.z),vec3(1.),sp.w*.85);       // orange glints on the root, green on the leaves, white-hot centres
+  pre=mix(pre,uInk,sp.y);a=max(a,sp.y);                           // the sparkles sit on top, with a fine ink rim
+  pre=mix(pre,tint,sp.x);
+  o=vec4(pre,a);}`;
 
 
   function parseColor(s, fb) {
@@ -188,7 +179,7 @@ void main(){
     }
 
     // ---- colours: the five accents (the headline's sweep), the look's ink, the light of the smoke itself
-    let ACC = new Float32Array(15), INK = [0.09, 0.1, 0.11], LITE = [1, 1, 1], ROOT = [1, .3, 0], LEAF = [.18, .62, .39];
+    let ACC = new Float32Array(15), INK = [0.09, 0.1, 0.11], LITE = [1, 1, 1], ROOTC = [1, .45, .1], LEAFC = [.18, .62, .39];
     function colours() {
       const cs = getComputedStyle(document.documentElement);
       const acc = opts.accents || ['clean', 'bold', 'warm', 'sunny', 'disco'].map(k => cs.getPropertyValue('--acc-' + k).trim());
@@ -196,8 +187,7 @@ void main(){
       acc.forEach((c, i) => ACC.set(parseColor(c, fb[i]), i * 3));
       INK = parseColor(opts.ink || cs.getPropertyValue('--ink'), INK);
       LITE = parseColor(getComputedStyle(host).backgroundColor, [1, 1, 1]);
-      ROOT = parseColor(cs.getPropertyValue('--acc-bold'), ROOT);   // carrot orange in every look
-      LEAF = parseColor(cs.getPropertyValue('--clover'), LEAF);
+      ROOTC = parseColor(cs.getPropertyValue('--acc-bold'), ROOTC); LEAFC = parseColor(cs.getPropertyValue('--clover'), LEAFC);   // carrot orange, the look's green
     }
     colours();
     new MutationObserver(() => { colours(); masked = 0; if (running) draw(true); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-look', 'class', 'style'] });
@@ -229,9 +219,33 @@ void main(){
     }
 
     // ---- pointer: segments since the last frame (press or touch, then drag)
-    const segs = []; let ptr = null, down = false, last = 0, touched = 0, openUntil = 0, peak = 0;   // peak: the most parted any cell can be (nothing in the sim can raise it)
+    const segs = []; let ptr = null, down = false, last = 0, touched = 0, openUntil = 0, peak = 0, sparkUntil = 0;   // peak: the most parted any cell can be (nothing in the sim can raise it)
     const toUV = e => { const r = host.getBoundingClientRect(); return [(e.clientX - r.left) / r.width, 1 - (e.clientY - r.top) / r.height, e.timeStamp]; };
     const ui = e => e.target.closest && e.target.closest('a,button,input,select,textarea,label,[role=button],[contenteditable]');
+    // ---- sparkle carrots: at the end of a drag (and midway along a long one), tiny glints gather into a carrot and go out
+    const GL = new Float32Array(NG * 4), cars = [], cf = new Float32Array(NC * 4); let path = [];
+    (() => {   // the carrot as glints (units ~ px at scale 1, y up): the root's two edges tapering to the tip, its top, a few inside, three leafy fronds
+      const g = [], add = (x, y, sz, leaf) => g.push([x, y, 0, sz + (leaf ? 10 : 0)]);
+      for (let k = 0; k < 7; k++) { const y = 20 - k * 12, w = 14 * (1 - k / 6.6); add(-w, y, k ? .8 : 1); add(w, y, k ? .8 : 1); }
+      add(0, -64, 1.1); add(0, 21, .8); add(-3, 2, .55); add(3, -20, .55); add(0, -40, .5);
+      for (const [x, y] of [[-17, 50], [0, 60], [17, 50]]) for (const t of [.33, .66, 1]) add(x * t, 22 + (y - 22) * t, t === 1 ? 1 : .7, true);
+      g.forEach((v, i) => { const up = (20 - Math.min(20, v[1] < 22 ? v[1] : 22)) / 84; v[2] = .45 * (1 - up) * .6 + .3 * ((i * 0.618) % 1); GL.set(v, i * 4); });   // the leaves land first, then down the root
+    })();
+    const maskAt = (x, y) => { if (!mk.width) return 0; try { return mctx.getImageData(Math.floor(x / MS), Math.floor(y / MS), 1, 1).data[0] / 255; } catch (e) { return 0; } };
+    function spawn() {
+      if (path.length < 2) { path = []; return; }
+      let len = 0; for (let i = 1; i < path.length; i++) len += Math.hypot(path[i][0] - path[i - 1][0], path[i][1] - path[i - 1][1]);
+      const sc = Math.min(1.5, Math.max(1, Math.min(W, H) / 380)), t = (performance.now() - T0) / 1000;
+      // a clear spot near the given point on the path: not behind the copy, far enough from the edges for the whole carrot
+      const fits = (x, y) => { if (x < 40 * sc || x > W - 40 * sc || y < 70 * sc || y > H - 80 * sc) return false;   // the whole carrot clear of the copy and the edges
+        for (let j = -2; j <= 2; j++) for (let i = -1; i <= 1; i++) if (maskAt(x + i * 24 * sc, y - j * 32 * sc) > .05) return false; return true; };
+      const pick = from => { for (let i = from; i >= 0; i--) { const [x, y] = path[i]; if (fits(x, y)) return [x, H - y]; } return null; };
+      const end = pick(path.length - 1);
+      if (end) cars.push([end[0], end[1], t, sc]);
+      if (len > 520) { const mid = pick(Math.floor(path.length / 2)); if (mid && (!end || Math.hypot(mid[0] - end[0], mid[1] - end[1]) > 240)) cars.push([mid[0], mid[1], t + .35, sc]); }
+      while (cars.length > NC) cars.shift();
+      path = []; if (cars.length) { sparkUntil = performance.now() + 2600; wake(); }
+    }
     function stamp(a, b) {
       const dt = Math.max(8, b[2] - a[2]) / 1000, rad = (opts.radius || 60) / H;
       const vx = (b[0] - a[0]) * (W / H) / dt, vy = (b[1] - a[1]) / dt, sp = Math.hypot(vx, vy), cap = Math.min(1, .5 / Math.max(sp, 1e-6));
@@ -242,19 +256,20 @@ void main(){
     host.addEventListener('pointerdown', e => {
       if (e.button > 0 || ui(e)) return;
       if (e.pointerType === 'mouse') e.preventDefault();   // a drag parts the smoke, it doesn't select the copy
-      down = true; ptr = toUV(e); stamp(ptr, [ptr[0], ptr[1], ptr[2] + 16]); stats.parts++;
+      down = true; ptr = toUV(e); path = [[ptr[0] * W, (1 - ptr[1]) * H]]; stamp(ptr, [ptr[0], ptr[1], ptr[2] + 16]); stats.parts++;
     });
     host.addEventListener('pointermove', e => {
       if (!down) return; const p = toUV(e);
       if (ptr && Math.hypot((p[0] - ptr[0]) * W, (p[1] - ptr[1]) * H) < 2) return;
-      if (ptr) stamp(ptr, p); ptr = p;
+      if (ptr) stamp(ptr, p); ptr = p; path.push([p[0] * W, (1 - p[1]) * H]);
     }, { passive: true });
-    const up = () => { down = false; ptr = null; };
-    addEventListener('pointerup', up, { passive: true }); addEventListener('pointercancel', up, { passive: true });   // a scroll takes the touch: stop parting
+    const up = () => { if (down) spawn(); down = false; ptr = null; };
+    addEventListener('pointerup', up, { passive: true });
+    addEventListener('pointercancel', () => { down = false; ptr = null; path = []; }, { passive: true });   // a scroll took the touch: stop parting, no sparkles
 
     // ---- the loop: runs only while something is open, the section is on screen and the tab is visible
     const T0 = performance.now(); let running = false, visible = false, prev = 0;
-    const stats = { frames: 0, parts: 0, get running() { return running; }, get sheet() { return [SW, SH]; }, get dpr() { return dpr; }, get peak() { return peak; } };
+    const stats = { frames: 0, parts: 0, get running() { return running; }, get sheet() { return [SW, SH]; }, get dpr() { return dpr; }, get peak() { return peak; }, get cars() { return cars.map(c => c.map(v => +v.toFixed(1))); } };
     const sg = new Float32Array(N * 4), sd = new Float32Array(N * 4);
     function draw(showOnly) {
       const now = performance.now(), t = (now - T0) / 1000, dt = Math.min(1 / 20, Math.max(1 / 240, (now - (prev || now - 16)) / 1000)); prev = now;
@@ -272,8 +287,11 @@ void main(){
       gl.uniform2f(SHOWP.u.uRes, cv.width, cv.height); gl.uniform1f(SHOWP.u.uTime, t); gl.uniform1f(SHOWP.u.uDpr, dpr); gl.uniform1f(SHOWP.u.uEnc, half ? 0 : 1);
       if (!masked || now - masked > 1000) mask();   // copy can reflow (fonts, the headline loop): refresh it each second while open
       gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, mtex); gl.uniform1i(SHOWP.u.uMask, 1); gl.activeTexture(gl.TEXTURE0);
-      gl.uniform1f(SHOWP.u.uCell, opts.cell || 260);
-      gl.uniform3fv(SHOWP.u['uAcc[0]'], ACC); gl.uniform3fv(SHOWP.u.uInk, INK); gl.uniform3fv(SHOWP.u.uLite, LITE); gl.uniform3fv(SHOWP.u.uRoot, ROOT); gl.uniform3fv(SHOWP.u.uLeaf, LEAF);
+      gl.uniform1f(SHOWP.u.uStep, opts.step || 170); gl.uniform1f(SHOWP.u.uFlow, opts.flow || .3);   // one accent every 170px, drifting right at about 50px/s
+      gl.uniform3fv(SHOWP.u['uAcc[0]'], ACC); gl.uniform3fv(SHOWP.u.uInk, INK); gl.uniform3fv(SHOWP.u.uLite, LITE); gl.uniform3fv(SHOWP.u.uRootC, ROOTC); gl.uniform3fv(SHOWP.u.uLeafC, LEAFC);
+      const tnow = (now - T0) / 1000; while (cars.length && tnow - cars[0][2] > 2.6) cars.shift();
+      cf.fill(0); cars.forEach((k, i) => cf.set(k, i * 4));
+      gl.uniform4fv(SHOWP.u['uG[0]'], GL); gl.uniform4fv(SHOWP.u['uCar[0]'], cf); gl.uniform1i(SHOWP.u.uNC, cars.length);
       gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT); gl.drawArrays(gl.TRIANGLES, 0, 3);
       return dt;
     }
@@ -283,7 +301,7 @@ void main(){
       const dt = draw(false); stats.frames++;
       const age = (now - touched) / 1000, ss = Math.min(1, Math.max(0, (age - SWEEP[0]) / (SWEEP[1] - SWEEP[0]))), sw = ss * ss * (3 - 2 * ss);
       peak = Math.max(0, peak * Math.pow(.5, dt * FADE) - dt * (.04 + 1.6 * sw));   // the same fade as SIM; flowing smoke can only lower it
-      if (down || (peak > .12 && now < openUntil)) requestAnimationFrame(frame);   // below .12 nothing shows (see SHOW)
+      if (down || (peak > .12 && now < openUntil) || performance.now() < sparkUntil) requestAnimationFrame(frame);   // below .12 nothing shows (see SHOW)
       else {   // closed over: back to exactly the section's own background, and rest
         running = false; prev = 0;
         for (const s of sheets) { gl.bindFramebuffer(gl.FRAMEBUFFER, s.f); gl.clearColor(0, half ? 0 : .5, half ? 0 : .5, 1); gl.clear(gl.COLOR_BUFFER_BIT); }

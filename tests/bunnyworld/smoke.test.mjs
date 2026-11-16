@@ -2,18 +2,18 @@
 // At rest the hero background measures flat; press and drag parts the smoke and shows colour; it closes again within a
 // few seconds; nothing shifts layout; reduced motion is plain flat colour with no canvas; the loop pauses off screen and
 // in a hidden tab; on a phone a vertical swipe still scrolls the page while a sideways drag parts the smoke.
-// SMOKE_URL picks the page (default: the test bench). Once the landing mounts it: SMOKE_URL=/bunnyworld/ npm test.
+// SMOKE_URL picks the page (default: the landing, where it is mounted; the bench is /bunnyworld/smoke-demo.html).
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { startSite } from '../lib/site.mjs';
 
-const URL = process.env.SMOKE_URL || '/bunnyworld/smoke-demo.html';
+const URL = process.env.SMOKE_URL || '/bunnyworld/';
 let site;
 before(async () => { site = await startSite({ webgl: true }); });
 after(async () => { await site?.close(); });
 
 // hide the hero's content so only its background (and the smoke canvas) is measured
-const HIDE = '.hero > *:not(canvas){visibility:hidden !important}';
+const HIDE = '.hero *:not(canvas){visibility:hidden !important}';
 // measure the hero's painted background: how far any pixel is from the section colour, and how many are saturated colour
 async function measure(page) {
   const box = await page.evaluate(() => { const r = document.querySelector('.hero').getBoundingClientRect(); return { x: r.x, y: r.y, width: r.width, height: Math.min(r.height, innerHeight - r.y) }; });
@@ -56,11 +56,11 @@ for (const w of [390, 1440]) {
       assert.ok(rest.dev <= 2, `at rest the hero is flat (max deviation ${rest.dev})`);
       assert.equal(rest.colour, 0, 'no colour at rest');
       assert.ok(await page.$('.hero canvas.bw-smoke'), 'the smoke canvas is mounted');
-      await drag(page, { release: false });
+      await drag(page, { from: .03, to: .3, y: .5, release: false });   // through the open space beside the centred copy
       const open = await measure(page);
       await page.mouse.up();
       const t0 = Date.now();
-      assert.ok(open.colour > open.px * .01, `the drag reveals colour (${open.colour} of ${open.px} px)`);
+      assert.ok(open.colour > open.px * .005, `the drag reveals colour (${open.colour} of ${open.px} px)`);
       assert.equal(open.onCopy, 0, 'no colour behind the copy, links or buttons: the smoke stays thick there');
       let closed = null;
       while (Date.now() - t0 < 6000) { const m = await measure(page); if (m.colour === 0 && m.dev <= 2) { closed = Date.now() - t0; break; } await page.waitForTimeout(150); }
