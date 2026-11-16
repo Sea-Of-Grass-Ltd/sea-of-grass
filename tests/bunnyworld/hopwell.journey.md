@@ -21,7 +21,7 @@ The rule (Tristan, 2026-11-15): write the steps and the tests first. Build the p
 - Every question title is a full sentence (three words or more) ending in "?".
 - Buttons, chips and spots only use colours from the page's own palette tokens (`:root` custom properties). Their only shadows are the neumorphic tokens.
 - Nothing is pre-chosen on arrival, and nothing is carried into booking until all three answers are in (2026-11-15 simplify).
-- Booking takes three steps or fewer; intake takes two and never asks the hook questions again. Date of birth is month, day and year selects.
+- Booking takes three steps or fewer; intake takes two and never asks the hook questions again.
 - No "Live insurance check" and no member-ID checker; one of "Visits and prices" or the first-visit steps, not both.
 - Buttons, chips, the answer card and the booking card carry the neumorphic shadows from two tokens only, and each shadow follows its element's radius.
 - The page doesn't scroll sideways. The page itself logs no console errors.

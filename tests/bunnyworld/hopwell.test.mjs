@@ -280,30 +280,25 @@ for (const w of WIDTHS) {
     } finally { await ctx.close(); }
   });
 
-  // Critic A1 + Tristan: date of birth is a real birthday field (month, day, year), never a strip of next week's dates
-  test(`${w}px · intake: date of birth is month, day and year, and everything fits`, async () => {
+  // Critic A1, fixed in #188: date of birth is the styled date field (not next week's strip), and everything fits
+  test(`${w}px · intake: date of birth is a real birthday field, and everything fits`, async () => {
     const { ctx, page } = await open(w);
     try {
       const f = page.locator('#intake form');
       await f.scrollIntoViewIfNeeded();
-      // reach the last step
       await f.locator('.q-next').first().click();
       await page.waitForFunction(() => { const i = document.querySelector('#intake input[autocomplete="name"]'); return i && !i.closest('[inert]'); });
       const r = await page.evaluate(() => {
         const f = document.querySelector('#intake form'), fr = f.getBoundingClientRect();
-        const dob = f.querySelector('[data-dob]');
-        const sel = dob ? [...dob.querySelectorAll('select')] : [];
+        const dob = f.querySelector('input[autocomplete=bday]');
         const c = f.querySelector('input[type=checkbox]'), cr = c.getBoundingClientRect();
         const out = [...f.querySelectorAll('input, select, label, button')].filter(e => e.getBoundingClientRect().width && !e.closest('[inert]')).filter(e => e.getBoundingClientRect().right > fr.right + 1).map(e => e.tagName + ' ' + (e.textContent || e.name || '').trim().slice(0, 20));
-        return { strip: !!f.querySelector('.q-days, .days'), date: f.querySelectorAll('input[type=date]').length, sel: sel.map(x => x.getAttribute('autocomplete')), legend: dob && dob.querySelector('legend') ? dob.querySelector('legend').textContent.trim() : '',
-          years: sel[2] ? [...sel[2].options].map(o => +o.value).filter(Boolean) : [], cb: { w: cr.width, h: cr.height, app: getComputedStyle(c).appearance }, out };
+        return { strip: !!f.querySelector('.q-days, .days'), type: dob && dob.type, label: dob && !dob.closest('label.sr') && /date of birth/i.test(dob.closest('label').textContent),
+          cb: { w: cr.width, h: cr.height, app: getComputedStyle(c).appearance }, out };
       });
       assert.equal(r.strip, false, 'no day strip in the intake form');
-      assert.equal(r.date, 0, 'no calendar date field for a birthday');
-      assert.deepEqual(r.sel, ['bday-month', 'bday-day', 'bday-year'], 'month, day and year selects with birthday autofill');
-      assert.match(r.legend, /date of birth/i, 'the three are labelled "Date of birth"');
-      const now = new Date().getFullYear();
-      assert.ok(r.years.length && Math.max(...r.years) <= now && Math.min(...r.years) <= now - 100, `years run back from this year (${Math.min(...r.years)}–${Math.max(...r.years)})`);
+      assert.equal(r.type, 'date', 'date of birth is a date field with birthday autofill');
+      assert.ok(r.label, 'labelled "Date of birth", visibly');
       assert.equal(r.cb.app, 'none', 'the policy checkbox is styled, not the browser default');
       assert.ok(r.cb.w >= 24 && r.cb.h >= 24, `the policy checkbox is at least 24px (got ${r.cb.w}×${r.cb.h})`);
       assert.deepEqual(r.out, [], 'nothing pokes past the right edge of the form');
@@ -364,6 +359,9 @@ for (const w of WIDTHS) {
       assert.equal(r.live, false, 'no "Live insurance check"');
       assert.equal(r.member, false, 'no member-ID checker');
       assert.equal(r.both, false, 'one of "Visits and prices" or the first-visit steps, not both');
+      // from the earlier simplify draft (claude/simplify-hopwell): reviews talk about the visit, not the website (critic C3)
+      const reviews = await page.evaluate(() => [...document.querySelectorAll('.reviews blockquote p')].map(p => p.textContent).join(' '));
+      assert.doesNotMatch(reviews, /tapped|the form was|booked the .* slot|website/i, 'reviews describe the visit');
     } finally { await ctx.close(); }
   });
 

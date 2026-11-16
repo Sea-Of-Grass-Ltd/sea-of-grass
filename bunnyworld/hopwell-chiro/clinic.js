@@ -43,8 +43,4 @@ function draw(){if(!(st.spot&&st.long&&st.worse))return;
   $('[data-about]').value=about;
   const from=$('[data-from]');from.hidden=false;from.innerHTML=`<b>Your answers:</b> ${about.toLowerCase()}. They go with your booking.`;}
 
-/* date of birth: day and year lists, years counting back from this one */
-const days=$('[data-dob-days]'),years=$('[data-dob-years]');
-if(days)for(let d=1;d<=31;d++)days.add(new Option(String(d),String(d)));
-if(years){const y=new Date().getFullYear();for(let k=y;k>=y-105;k--)years.add(new Option(String(k),String(k)));}
 })();

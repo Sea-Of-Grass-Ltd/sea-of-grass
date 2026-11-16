@@ -18,7 +18,6 @@ These come from the critic's notes in sections A1, A8, B2, B3, C3 and G:
 - The first-visit steps with three photos, which repeated "Visits and prices"
 - The second copy of the three questions in the intake form. Intake is now two steps: how much it hurts right now, and who the form is for.
 - "Who would you like to see?" in booking, which defaulted to the first available doctor anyway. Booking is now three steps.
-- The date-of-birth calendar, now three selects for month, day and year with birthday autofill
 - A review that described the website, rewritten to describe the visit
 
 ## What stayed

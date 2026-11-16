@@ -18,14 +18,15 @@
     <a class="sp-back" href="/">Home</a>
   </header>
   <div class="sp-demo" role="note" id="demo" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.2v.3"/></svg>
-    <p style="margin:0"><b>Demo order.</b> No payment was taken and nobody has been told. This is what a buyer sees after paying.</p></div>
+    <p style="margin:0"><b>Demo order.</b> No payment was taken and nobody has been told.</p></div>
   <main class="sp-thx">
     <div>
-      <p class="sp-k">Order received</p>
-      <h1>You&rsquo;re in. <em>We&rsquo;ll call within one business day.</em></h1>
-      <p class="sp-lead">A receipt is on its way to your email. We call from 303.775.1333, so it&rsquo;s worth saving the number.</p>
+      <p class="sp-k" data-demo-html="Demo order">Order received</p>
+      <h1 data-demo-html="That&rsquo;s how ordering works. <em>Nothing was charged.</em>">You&rsquo;re in. <em>We&rsquo;ll call within one business day.</em></h1>
+      <p class="sp-lead" data-demo-html="This was a demo, so nothing was sent and nobody will call. If you&rsquo;d like it for real, book a free 20-minute call and you&rsquo;ll talk to Tristan or Bryce.">A receipt is on its way to your email. We call from 303.775.1333, so it&rsquo;s worth saving the number.</p>
     </div>
-    <div class="sp-order sp-glass" id="order" hidden><p class="sp-k" style="margin:0">What you bought</p><ul></ul></div>
+    <div class="sp-order sp-glass" id="order" hidden><p class="sp-k" style="margin:0" data-demo-html="What you picked">What you bought</p><ul></ul></div>
+    <p class="sp-k" id="real-next" hidden>When you order for real</p>
     <ol class="sp-next" aria-label="What happens next">
       <li class="sp-glass"><b>We call you</b><p>Within one business day, to hear what you need and agree what &ldquo;done&rdquo; looks like.</p></li>
       <li class="sp-glass"><b>A date, in writing</b><p>You get what we&rsquo;ll do and when, by email, before any work starts.</p></li>
@@ -41,7 +42,8 @@
 <script>
 (function(){
 var S=window.SOG_SHOP||{products:{}},P=S.products,c={};
-if(/[?&]demo=1\b/.test(location.search))document.getElementById('demo').hidden=false;
+if(/[?&]demo=1\b/.test(location.search)){document.getElementById('demo').hidden=false;document.getElementById('real-next').hidden=false;
+  document.querySelectorAll('[data-demo-html]').forEach(function(e){e.innerHTML=e.getAttribute('data-demo-html');});}
 try{c=JSON.parse(localStorage.getItem('sog-cart')||'{}');}catch(e){}
 var ids=Object.keys(c).filter(function(k){return P[k]&&c[k]>0;});
 if(ids.length){var box=document.getElementById('order');box.hidden=false;
