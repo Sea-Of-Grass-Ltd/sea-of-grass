@@ -2,7 +2,7 @@
    Each tap: the ears pop, one glint sweeps, the page crossfades to the next look. Looks only re-set CSS variables (brand.css),
    so nothing moves. Reduced motion: instant swap, no pop. The choice is remembered (localStorage, which can be missing). */
 (() => {
-  const LOOKS = [['disco', 'Disco', '#1B0F2A'], ['clean', 'Clean', '#F5F7F9'], ['bold', 'Bold', '#0B0B0B'], ['warm', 'Warm', '#FFF6EA'], ['sunny', 'Sunny', '#FFE845']];
+  const LOOKS = [['disco', 'Disco', '#1B0F2A'], ['clean', 'Clean', '#F5F7F9'], ['bold', 'Bold', '#0B0B0B'], ['warm', 'Warm', '#FFF6EA'], ['sunny', 'Sunny', '#FBF6EA']];
   const root = document.documentElement, reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
   const mark = document.querySelector('.lh-mark');
