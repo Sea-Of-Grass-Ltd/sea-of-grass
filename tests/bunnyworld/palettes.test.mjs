@@ -149,3 +149,50 @@ for (const s of MINE) for (const w of [390, 1440]) {
     } finally { await ctx.close(); }
   });
 }
+
+// Bunny Burritos keeps its textured background (Tristan, 2026-11-16), recoloured into the wine palette as a flat image:
+// the image loads, it is wine itself (not grey multiplied onto wine), and no blend mode is involved.
+test('bunny-burritos: the textured background loads, flat and in the wine palette', async () => {
+  const { ctx, page } = await site.open('/bunnyworld/bunny-burritos/', 1440, { reducedMotion: 'reduce' });
+  try {
+    const bg = await page.evaluate(() => { const c = getComputedStyle(document.body, '::before'); const m = c.backgroundImage.match(/url\("?([^")]+)"?\)/); return { url: m && m[1], blend: c.backgroundBlendMode }; });
+    assert.ok(bg.url, 'there is a background image');
+    assert.ok(!/multiply/.test(bg.blend), `no blend mode (${bg.blend})`);
+    const avg = await page.evaluate(async url => { const img = new Image(); img.src = url; await img.decode(); const c = document.createElement('canvas'); c.width = 64; c.height = 36; const x = c.getContext('2d'); x.drawImage(img, 0, 0, 64, 36); const d = x.getImageData(0, 0, 64, 36).data; let r = 0, g = 0, b = 0; for (let i = 0; i < d.length; i += 4) { r += d[i]; g += d[i + 1]; b += d[i + 2]; } const n = d.length / 4; return [r / n, g / n, b / n].map(Math.round); }, bg.url);
+    const k = dE(avg, [0x4f, 0x04, 0x23]);
+    assert.ok(k < 10, `background image averages ${hex(avg)}, ΔE ${k.toFixed(1)} from the wine ground`);
+  } finally { await ctx.close(); }
+});
+
+// Long Ears' wordmark reads straight on the photo (Tristan, 2026-11-16): nothing behind it (no box, panel or label),
+// and the forest green passes contrast against the photo pixels right behind the letters.
+for (const w of [390, 1440]) {
+  test(`long-ears @ ${w}: the wordmark sits on the photo with no box behind it, and passes contrast`, async () => {
+    const { ctx, page } = await site.open('/bunnyworld/long-ears/', w, { reducedMotion: 'reduce' });
+    try {
+      const r = await page.evaluate(() => {
+        const h1 = document.querySelector('.hero h1'); const out = [];
+        for (let x = h1; x && !x.matches('.hero'); x = x.parentElement) {
+          const c = getComputedStyle(x);
+          if (!/rgba\(0, 0, 0, 0\)|transparent/.test(c.backgroundColor)) out.push(`${x.tagName.toLowerCase()}.${x.className} has background ${c.backgroundColor}`);
+          if (c.backgroundImage !== 'none') out.push(`${x.tagName.toLowerCase()} has a background image`);
+          if (c.boxShadow !== 'none') out.push(`${x.tagName.toLowerCase()} has a box shadow`);
+          for (const ps of ['::before', '::after']) { const p = getComputedStyle(x, ps); if (p.content !== 'none' && !/rgba\(0, 0, 0, 0\)/.test(p.backgroundColor)) out.push(`${x.tagName.toLowerCase()}${ps} paints a box`); }
+        }
+        const b = h1.getBoundingClientRect(); return { boxes: out, rect: { x: b.x, y: b.y + scrollY, w: b.width, h: b.height }, color: getComputedStyle(h1).color };
+      });
+      assert.deepEqual(r.boxes, [], 'nothing paints a box behind the wordmark');
+      // contrast: hide the wordmark, read the photo behind it, compare with the letter colour at the 10th-percentile (worst) spot
+      await page.evaluate(() => { document.querySelector('.hero h1').style.visibility = 'hidden'; scrollTo(0, 0); });
+      const shot = await page.screenshot({ clip: { x: r.rect.x, y: r.rect.y, width: r.rect.w, height: r.rect.h } });
+      const lum = await page.evaluate(async b64 => { const img = new Image(); img.src = 'data:image/png;base64,' + b64; await img.decode(); const c = document.createElement('canvas'); c.width = img.width; c.height = img.height; const x = c.getContext('2d'); x.drawImage(img, 0, 0); const d = x.getImageData(0, 0, c.width, c.height).data; const f = v => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }; const L = []; for (let i = 0; i < d.length; i += 16) L.push(0.2126 * f(d[i]) + 0.7152 * f(d[i + 1]) + 0.0722 * f(d[i + 2])); L.sort((a, b) => a - b); return L; }, shot.toString('base64'));
+      await page.evaluate(() => { document.querySelector('.hero h1').style.visibility = ''; });
+      const [rr, gg, bb] = r.color.match(/\d+/g).map(Number);
+      const f = v => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+      const ink = 0.2126 * f(rr) + 0.7152 * f(gg) + 0.0722 * f(bb);
+      const ground = lum[Math.floor(lum.length * 0.1)]; // a darker spot behind the letters (forest needs a light ground)
+      const ratio = (Math.max(ink, ground) + 0.05) / (Math.min(ink, ground) + 0.05);
+      assert.ok(ratio >= 3, `wordmark ${r.color} against the photo behind it: ${ratio.toFixed(2)}:1 (large text needs 3:1)`);
+    } finally { await ctx.close(); }
+  });
+}
