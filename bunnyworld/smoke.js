@@ -202,16 +202,14 @@ void main(){
       const hr = host.getBoundingClientRect(), w = Math.max(1, Math.ceil(W / MS)), h = Math.max(1, Math.ceil(H / MS)), pad = opts.pad ?? 16;
       mk.width = w; mk.height = h; mctx.clearRect(0, 0, w, h); mctx.fillStyle = '#fff'; 
       const box = r => { if (r.width && r.height) mctx.fillRect((r.left - hr.left - pad) / MS, (r.top - hr.top - pad) / MS, (r.width + pad * 2) / MS, (r.height + pad * 2) / MS); };
-      const tw = document.createTreeWalker(host, NodeFilter.SHOW_TEXT, { acceptNode: n => n.nodeValue.trim() && !n.parentElement.closest('.sr,canvas') ? 1 : 2 });
+      // only words get the soft falloff, and only words you can see that sit on the smoke itself. Solid things (the logo, the
+      // dark button, icons, the drawn arrow) are opaque on top, so the colour runs right up to them; words on a filled button
+      // sit on its fill; words in a closed panel aren't shown at all.
+      const shown = el => !el.checkVisibility || el.checkVisibility({ visibilityProperty: true });
+      const onFill = el => { for (let e = el; e && e !== host; e = e.parentElement) { const bg = (getComputedStyle(e).backgroundColor.match(/[\d.]+/g) || []).map(Number); if (bg.length === 3 || bg[3] > .5) return true; } return false; };
+      const tw = document.createTreeWalker(host, NodeFilter.SHOW_TEXT, { acceptNode: n => n.nodeValue.trim() && !n.parentElement.closest('.sr,canvas') && shown(n.parentElement) && !onFill(n.parentElement) ? 1 : 2 });
       const rg = document.createRange();
       for (let n; (n = tw.nextNode());) { rg.selectNodeContents(n); for (const r of rg.getClientRects()) box(r); }
-      // whole boxes only for things that paint their own fill or are pictures (a filled button, an icon, a photo). A big see-through
-      // button, like a price cell, gives only its words: boxing it would cut the smoke along its edges in a flat panel.
-      host.querySelectorAll('a,button,input,select,textarea,img,svg,video,[role=button]').forEach(e => {
-        if (e.closest('.sr') || e.closest('svg') !== e && e.closest('svg')) return;
-        const bg = (getComputedStyle(e).backgroundColor.match(/[\d.]+/g) || []).map(Number);
-        const solid = /^(img|svg|video|input|select|textarea)$/i.test(e.tagName) || bg.length === 3 || bg[3] > 0;
-        if (solid) box(e.getBoundingClientRect()); });
       // three box blurs each way (about a 40px gaussian), done here once rather than in every pixel of every frame: the smoke
       // thickens back to white over a long soft falloff around the words, so no edge of it ever reads as a shape
       const id = mctx.getImageData(0, 0, w, h), d = id.data, a = new Float32Array(w * h), b = new Float32Array(w * h), K = 3;

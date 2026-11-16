@@ -23,11 +23,11 @@ async function measure(page) {
     const c = new OffscreenCanvas(img.width, img.height), x = c.getContext('2d'); x.drawImage(img, 0, 0);
     const d = x.getImageData(0, 0, img.width, img.height).data;
     const bg = getComputedStyle(document.querySelector('.hero')).backgroundColor.match(/\d+/g).map(Number);
-    // the hero's content boxes (copy lines, links, buttons), in screenshot pixels: colour must never show inside them
+    // the hero's words, in screenshot pixels: colour must never show behind them (solid things on top, like the logo and the
+    // dark button, are opaque, so colour may run right up to them; words on the button's fill and in closed panels don't count)
     const hr = document.querySelector('.hero').getBoundingClientRect(), k = img.width / hr.width, boxes = [], rg = document.createRange();
-    const tw = document.createTreeWalker(document.querySelector('.hero'), NodeFilter.SHOW_TEXT, { acceptNode: n => n.nodeValue.trim() && !n.parentElement.closest('.sr') ? 1 : 2 });
+    const tw = document.createTreeWalker(document.querySelector('.hero'), NodeFilter.SHOW_TEXT, { acceptNode: n => n.nodeValue.trim() && !n.parentElement.closest('.sr,.lh-go') && n.parentElement.checkVisibility({ visibilityProperty: true }) ? 1 : 2 });
     for (let n; (n = tw.nextNode());) { rg.selectNodeContents(n); boxes.push(...rg.getClientRects()); }
-    document.querySelectorAll('.hero a, .hero button').forEach(e => boxes.push(e.getBoundingClientRect()));
     const inBox = (x, y) => boxes.some(b => x >= (b.left - hr.left) * k && x < (b.right - hr.left) * k && y >= (b.top - hr.top) * k && y < (b.bottom - hr.top) * k);
     let dev = 0, colour = 0, onCopy = 0, off = 0;
     for (let i = 0; i < d.length; i += 4) {
@@ -81,7 +81,7 @@ for (const w of [390, 1440]) {
       await page.mouse.up();
       const t0 = Date.now();
       assert.ok(open.off > open.px * .01 && open.colour > 0, `the drag opens the smoke onto colour (${open.off} px off the background, ${open.colour} strongly coloured, of ${open.px})`);
-      assert.equal(open.onCopy, 0, 'no colour behind the copy, links or buttons: the smoke stays thick there');
+      assert.equal(open.onCopy, 0, 'no colour behind the words: the smoke stays thick there');
       let closed = null;
       while (Date.now() - t0 < 6000) { const m = await measure(page); if (m.colour === 0 && m.dev <= 2) { closed = Date.now() - t0; break; } await page.waitForTimeout(150); }
       assert.ok(closed !== null && closed <= 4500, `closes again within 4.5s of letting go (closed after ${closed ?? '>6000'} ms)`);
@@ -292,6 +292,59 @@ test('colour runs across the price strip\'s edges with no hard step', async () =
     assert.ok(r.inT >= r.outT * .4, `colour carries on inside the strip's top edge (inside ${r.inT} vs outside ${r.outT})`);
     assert.ok(r.inL >= r.outL * .4, `colour carries on inside the strip's left end (inside ${r.inL} vs outside ${r.outL})`);
     assert.ok(r.step <= 48, `no hard step across the strip's edges (largest 1px change ${r.step} at ${r.at})`);
+    assert.deepEqual(errors, []);
+  } finally { await ctx.close(); }
+});
+
+// solid things on top (the logo, the dark button) need no mask: the colour runs right up to their outline, with no white
+// halo hugging it (Tristan 11-16: a white band along the ears). Find the real outline from the ink, drag down beside it,
+// and compare the colour just outside it with the colour 30px further out.
+for (const w of [390, 1440]) test(`colour runs right up to the logo and the button, no white halo @ ${w}`, async () => {
+  const { ctx, page, errors } = await site.open(URL, w);
+  try {
+    await page.setViewportSize({ width: w, height: w < 900 ? 844 : 1000 });
+    await page.evaluate(() => { const h = document.querySelector('.hero'); h.__bwSmoke.destroy(); BWSmoke.mount(h, { sparkles: false }); });
+    await page.waitForTimeout(700);
+    const shot = async () => (await page.screenshot({ scale: 'css' })).toString('base64');
+    // the outline: per row, the first and last ink pixel inside the logo's box (and the button's pill edges)
+    const geo = await page.evaluate(async b64 => {
+      const img = await createImageBitmap(await (await fetch('data:image/png;base64,' + b64)).blob());
+      const c = new OffscreenCanvas(img.width, img.height), x = c.getContext('2d'); x.drawImage(img, 0, 0);
+      const W = img.width, d = x.getImageData(0, 0, W, img.height).data, ink = (X, Y) => { const i = (Y * W + X) * 4; return d[i] + d[i + 1] + d[i + 2] < 200; };
+      const m = document.querySelector('.hero .lh-mark').getBoundingClientRect(), rows = [];
+      for (let Y = Math.ceil(m.top) + 4; Y < m.top + m.height * .45; Y += 3) { let l = -1, r = -1;   // the ears: the top of the mark
+        for (let X = Math.floor(m.left); X < m.right; X++) if (ink(X, Y)) { if (l < 0) l = X; r = X; }
+        if (l >= 0) rows.push([Y, l, r]); }
+      const b = document.querySelector('.hero .lh-go').getBoundingClientRect();
+      const words = [], rg = document.createRange(), tw = document.createTreeWalker(document.querySelector('.hero'), NodeFilter.SHOW_TEXT, { acceptNode: n => n.nodeValue.trim() && !n.parentElement.closest('.sr,.lh-go') ? 1 : 2 });
+      for (let n; (n = tw.nextNode());) { rg.selectNodeContents(n); for (const r of rg.getClientRects()) if (r.width) words.push([r.left, r.top, r.right, r.bottom]); }
+      return { rows, btn: [b.left, b.top, b.right, b.bottom], words, W, H: img.height };
+    }, await shot());
+    assert.ok(geo.rows.length > 10, `found the ears' outline (${geo.rows.length} rows)`);
+    // drag down along each ear's outline, 6px out (the gap then clearly covers it), and down the button's left end
+    const along = async pts => { await page.mouse.move(...pts[0]); await page.mouse.down();
+      for (const p of pts.slice(1)) { await page.mouse.move(...p); await page.waitForTimeout(16); } await page.mouse.up(); };
+    const r0 = geo.rows[0];
+    await along([[r0[1] - 6, r0[0] - 20], ...geo.rows.map(([Y, l]) => [l - 6, Y])]);
+    await along([[r0[2] + 6, r0[0] - 20], ...geo.rows.map(([Y, , r]) => [r + 6, Y])]);
+    await along(Array.from({ length: 12 }, (_, i) => [geo.btn[0] - 6, geo.btn[1] - 10 + (geo.btn[3] - geo.btn[1] + 20) * i / 11]));
+    await page.waitForTimeout(60);
+    const res = await page.evaluate(async ([b64, geo]) => {
+      const img = await createImageBitmap(await (await fetch('data:image/png;base64,' + b64)).blob());
+      const c = new OffscreenCanvas(img.width, img.height), x = c.getContext('2d'); x.drawImage(img, 0, 0);
+      const W = img.width, d = x.getImageData(0, 0, W, img.height).data;
+      const chroma = (X, Y) => { const i = (Math.round(Y) * W + Math.round(X)) * 4; return Math.max(d[i], d[i + 1], d[i + 2]) - Math.min(d[i], d[i + 1], d[i + 2]); };
+      const nearWords = (X, Y) => geo.words.some(b => X > b[0] - 30 && X < b[2] + 30 && Y > b[1] - 30 && Y < b[3] + 30);   // words keep their soft falloff
+      const out = { far: 0, halo: 0, where: [] };
+      const check = (X, Y, dir) => { const near = X + dir * 5, far = X + dir * 33; if (nearWords(near, Y) || nearWords(far, Y)) return;
+        if (chroma(far, Y) < 50) return; out.far++;
+        if (chroma(near, Y) < 15) { out.halo++; if (out.where.length < 4) out.where.push([Math.round(near), Y, chroma(near, Y), chroma(far, Y)]); } };
+      for (const [Y, l, r] of geo.rows) { check(l, Y, -1); check(r, Y, 1); }
+      for (let Y = geo.btn[1] + 8; Y < geo.btn[3] - 8; Y += 2) check(geo.btn[0], Y, -1);
+      return out;
+    }, [await shot(), geo]);
+    assert.ok(res.far >= 8, `colour is revealed beside the logo and the button (${res.far} rows)`);
+    assert.ok(res.halo <= res.far * .1, `no white halo just outside the logo or button: ${res.halo} of ${res.far} rows white next to colour ${JSON.stringify(res.where)}`);
     assert.deepEqual(errors, []);
   } finally { await ctx.close(); }
 });
