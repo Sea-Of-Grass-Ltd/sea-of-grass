@@ -14,8 +14,9 @@
   /* only the active shop loads: the frames get their src when the showcase is near the screen, and on each tab change */
   const tabs = [...document.querySelectorAll('.tab')];
   const stage = document.querySelector('.stage');
-    const openDevs = [...document.querySelectorAll('.open-dev')], tabOpen = document.querySelector('.tab-open'), cos = document.querySelector('.callouts');
-  let seen = false, cur = tabs[0]; cur.after(tabOpen);
+  /* under the preview: one sentence about the shop and one Open button (Main Street A, 2026-11-16) */
+  const openShop = document.querySelector('.show-open'), say = document.querySelector('.show-say');
+  let seen = false, cur = tabs[0];
   const phoneOnly = () => matchMedia('(max-width: 760px)').matches;
   const load = (t) => {
     const k = t.dataset.shop;
@@ -33,9 +34,7 @@
     if (t === cur && seen) return;
     tabs.forEach(x => { const on = x === t; x.setAttribute('aria-selected', on); x.tabIndex = on ? 0 : -1; });
     stage.setAttribute('aria-labelledby', t.id);
-    tabOpen.href = t.dataset.shop + '/'; openDevs.forEach(o => { o.href = t.dataset.shop + '/'; o.querySelector('b').textContent = t.dataset.name; });
-    t.after(tabOpen);
-    cos.innerHTML = t.dataset.feats.split('|').map((f, j) => `<li class="co co${j}"><span>${f}</span></li>`).join('');
+    openShop.href = t.dataset.shop + '/'; openShop.querySelector('b').textContent = t.dataset.name; say.textContent = t.dataset.say;
     stage.classList.remove('swap'); void stage.offsetWidth; if (!reduce) stage.classList.add('swap');
     cur = t; if (seen) load(t);
     if (focus) t.focus();
