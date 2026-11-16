@@ -1,0 +1,35 @@
+✔ 360px · journey: land → tap → answer → first visit → answers in booking → book once (1226.132583ms)
+✔ 360px · one scheduling block, no repeated actions (494.140375ms)
+✔ 360px · tap spots: apart, no halos, labels clear (675.823042ms)
+✔ 360px · every question title is a full sentence ending in "?" (485.757875ms)
+✔ 360px · copy that counts the questions matches the questions (504.511792ms)
+✔ 360px · buttons, chips and spots use only palette tokens, no shadows (652.528458ms)
+✔ 360px · neumorphism: one light, two tokens, shadows follow the radius (548.181792ms)
+✔ 360px · the back photo holds still while you tap, and chips keep their size (2264.80775ms)
+✔ 360px · no sideways scroll, no console errors (704.603875ms)
+✔ 390px · journey: land → tap → answer → first visit → answers in booking → book once (846.320042ms)
+✔ 390px · one scheduling block, no repeated actions (493.314875ms)
+✔ 390px · tap spots: apart, no halos, labels clear (719.203958ms)
+✔ 390px · every question title is a full sentence ending in "?" (487.043292ms)
+✔ 390px · copy that counts the questions matches the questions (497.499083ms)
+✔ 390px · buttons, chips and spots use only palette tokens, no shadows (633.906375ms)
+✔ 390px · neumorphism: one light, two tokens, shadows follow the radius (538.251416ms)
+✔ 390px · the back photo holds still while you tap, and chips keep their size (2223.079541ms)
+✔ 390px · no sideways scroll, no console errors (707.152833ms)
+✔ 1440px · journey: land → tap → answer → first visit → answers in booking → book once (821.647292ms)
+✔ 1440px · one scheduling block, no repeated actions (501.609709ms)
+✔ 1440px · tap spots: apart, no halos, labels clear (711.37775ms)
+✔ 1440px · every question title is a full sentence ending in "?" (489.9295ms)
+✔ 1440px · copy that counts the questions matches the questions (498.682375ms)
+✔ 1440px · buttons, chips and spots use only palette tokens, no shadows (652.60325ms)
+✔ 1440px · neumorphism: one light, two tokens, shadows follow the radius (550.065167ms)
+✔ 1440px · the back photo holds still while you tap, and chips keep their size (2030.62075ms)
+✔ 1440px · no sideways scroll, no console errors (721.541875ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 46699.149208

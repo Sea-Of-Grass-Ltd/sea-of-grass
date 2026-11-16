@@ -154,3 +154,24 @@ cite{font:500 12px/1 var(--mf);letter-spacing:.06em;text-transform:uppercase;fon
 
 /* the shared open/closed dot, flat like the rest of the page */
 .status.open::before{box-shadow:none}
+
+/* ---- Neumorphism, done right (Tristan, 2026-11-16: "I miss the Neumorphism on Hopwell").
+   One light from the top left. Two tokens, used as they are: --neu-up for raised parts, --neu-in for a chosen chip.
+   Each shadow sits on the rounded element itself, so it follows the pill; the blur plus offset (13px) stays inside
+   the smallest radius it sits on (chips 21px, cards 22px), so no glow ever reads as a square.
+   Only on: the question chips, the header Call and Book, the answer card and the booking card. ---- */
+:root{--neu-hi:rgba(255,255,255,.9);--neu-lo:rgba(150,140,115,.45);
+  --neu-up:-4px -4px 9px var(--neu-hi),4px 4px 9px var(--neu-lo);
+  --neu-in:inset 3px 3px 6px var(--neu-lo),inset -3px -3px 6px var(--neu-hi)}
+.panel .q .chip{background:var(--bg);border:0;color:var(--muted);box-shadow:var(--neu-up);transition:box-shadow .15s,color .15s}
+.panel .q .chip:hover{color:var(--ink)}
+.panel .q .chip[aria-pressed="true"]{background:var(--bg);color:var(--ink);box-shadow:var(--neu-in)}
+.panel .q .chip:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.mast .call{border:0;background:var(--bg);box-shadow:var(--neu-up)}
+.mast .btn{box-shadow:var(--neu-up)}
+.ans{box-shadow:var(--neu-up)}
+#book{border-top:0;background:var(--bg);border-radius:var(--r);padding:clamp(18px,2.4vw,26px);box-shadow:var(--neu-up)}
+
+/* the back photo keeps one size whatever is tapped (it used to stretch with the answer card on desktop) */
+@media (min-width:901px){.hook{align-items:start}.stage{flex:none;aspect-ratio:4/5;min-height:0}}
+@media (max-width:900px){.stage{height:min(88vw,400px)}}

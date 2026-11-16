@@ -1,0 +1,139 @@
+✔ 360px · journey: land → tap → answer → first visit → answers in booking → book once (1247.017958ms)
+✔ 360px · one scheduling block, no repeated actions (490.514041ms)
+✔ 360px · tap spots: apart, no halos, labels clear (698.118208ms)
+✔ 360px · every question title is a full sentence ending in "?" (486.264584ms)
+✔ 360px · copy that counts the questions matches the questions (503.269042ms)
+✔ 360px · buttons, chips and spots use only palette tokens, no shadows (653.588083ms)
+✖ 360px · neumorphism: one light, two tokens, shadows follow the radius (534.953542ms)
+✔ 360px · the back photo holds still while you tap, and chips keep their size (2273.755708ms)
+✔ 360px · no sideways scroll, no console errors (710.045042ms)
+✔ 390px · journey: land → tap → answer → first visit → answers in booking → book once (836.231917ms)
+✔ 390px · one scheduling block, no repeated actions (496.094792ms)
+✔ 390px · tap spots: apart, no halos, labels clear (705.528583ms)
+✔ 390px · every question title is a full sentence ending in "?" (501.069625ms)
+✔ 390px · copy that counts the questions matches the questions (504.737458ms)
+✔ 390px · buttons, chips and spots use only palette tokens, no shadows (644.345166ms)
+✖ 390px · neumorphism: one light, two tokens, shadows follow the radius (535.167625ms)
+✔ 390px · the back photo holds still while you tap, and chips keep their size (2258.738166ms)
+✔ 390px · no sideways scroll, no console errors (697.661125ms)
+✔ 1440px · journey: land → tap → answer → first visit → answers in booking → book once (812.168667ms)
+✔ 1440px · one scheduling block, no repeated actions (504.625167ms)
+✔ 1440px · tap spots: apart, no halos, labels clear (722.424125ms)
+✔ 1440px · every question title is a full sentence ending in "?" (503.76025ms)
+✔ 1440px · copy that counts the questions matches the questions (524.919333ms)
+✔ 1440px · buttons, chips and spots use only palette tokens, no shadows (631.93175ms)
+✖ 1440px · neumorphism: one light, two tokens, shadows follow the radius (563.49525ms)
+✖ 1440px · the back photo holds still while you tap, and chips keep their size (2345.5915ms)
+✔ 1440px · no sideways scroll, no console errors (751.512875ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 23
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 45956.080416
+
+✖ failing tests:
+
+test at bunnyworld/hopwell.test.mjs:212:3
+✖ 360px · neumorphism: one light, two tokens, shadows follow the radius (534.953542ms)
+  AssertionError [ERR_ASSERTION]: neumorphism rules
+  + actual - expected
+  
+  + [
+  +   'token --neu-up missing',
+  +   'token --neu-in missing'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:249:14)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'token --neu-up missing', 'token --neu-in missing' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/hopwell.test.mjs:212:3
+✖ 390px · neumorphism: one light, two tokens, shadows follow the radius (535.167625ms)
+  AssertionError [ERR_ASSERTION]: neumorphism rules
+  + actual - expected
+  
+  + [
+  +   'token --neu-up missing',
+  +   'token --neu-in missing'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:249:14)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'token --neu-up missing', 'token --neu-in missing' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/hopwell.test.mjs:212:3
+✖ 1440px · neumorphism: one light, two tokens, shadows follow the radius (563.49525ms)
+  AssertionError [ERR_ASSERTION]: neumorphism rules
+  + actual - expected
+  
+  + [
+  +   'token --neu-up missing',
+  +   'token --neu-in missing'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:249:14)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'token --neu-up missing', 'token --neu-in missing' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at bunnyworld/hopwell.test.mjs:254:3
+✖ 1440px · the back photo holds still while you tap, and chips keep their size (2345.5915ms)
+  AssertionError [ERR_ASSERTION]: the photo box stays put (within 1px)
+  + actual - expected
+  
+  + [
+  +   'after "Neck": {"x":120,"y":278.59375,"w":530.90625,"h":806.28125} vs {"x":120,"y":278.59375,"w":530.90625,"h":783.78125}',
+  +   'after "Shoulder": {"x":120,"y":278.59375,"w":530.90625,"h":806.28125} vs {"x":120,"y":278.59375,"w":530.90625,"h":783.78125}',
+  +   'after "Between the shoulder blades": {"x":120,"y":278.59375,"w":530.90625,"h":806.28125} vs {"x":120,"y":278.59375,"w":530.90625,"h":783.78125}',
+  +   'after "Hip or down the leg": {"x":120,"y":278.59375,"w":530.90625,"h":806.28125} vs {"x":120,"y":278.59375,"w":530.90625,"h":783.78125}',
+  +   'after "Neck": {"x":120,"y":278.59375,"w":530.90625,"h":806.28125} vs {"x":120,"y":278.59375,"w":530.90625,"h":783.78125}',
+  +   'after "Headaches": {"x":120,"y":278.59375,"w":530.90625,"h":806.28125} vs {"x":120,"y":278.59375,"w":530.90625,"h":783.78125}',
+  +   'after "Shoulder": {"x":120,"y":278.59375,"w":530.90625,"h":806.28125} vs {"x":120,"y":278.59375,"w":530.90625,"h":783.78125}',
+  +   'after "Mid-back": {"x":120,"y":278.59375,"w":530.90625,"h":806.28125} vs {"x":120,"y":278.59375,"w":530.90625,"h":783.78125}',
+  +   'after "Hip or leg": {"x":120,"y":278.59375,"w":530.90625,"h":806.28125} vs {"x":120,"y":278.59375,"w":530.90625,"h":783.78125}',
+  +   'after "A few days": {"x":120,"y":278.59375,"w":530.90625,"h":828.78125} vs {"x":120,"y":278.59375,"w":530.90625,"h":783.78125}',
+  +   'after "2–6 weeks": {"x":120,"y":278.59375,"w":530.90625,"h":806.28125} vs {"x":120,"y":278.59375,"w":530.90625,"h":783.78125}',
+  +   'after "Months": {"x":120,"y":278.59375,"w":530.90625,"h":828.78125} vs {"x":120,"y":278.59375,"w":530.90625,"h":783.78125}',
+  +   'after "Sitting": {"x":120,"y":278.59375,"w":530.90625,"h":828.78125} vs {"x":120,"y":278.59375,"w":530.90625,"h":783.78125}',
+  +   'after "Mornings": {"x":120,"y":278.59375,"w":530.90625,"h":806.28125} vs {"x":120,"y":278.59375,"w":530.90625,"h":783.78125}',
+  +   'after "Lifting": {"x":120,"y":278.59375,"w":530.90625,"h":806.28125} vs {"x":120,"y":278.59375,"w":530.90625,"h":783.78125}',
+  +   'after "Sleeping": {"x":120,"y":278.59375,"w":530.90625,"h":828.78125} vs {"x":120,"y":278.59375,"w":530.90625,"h":783.78125}'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/bunnyworld/hopwell.test.mjs:271:14)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'after "Neck": {"x":120,"y":278.59375,"w":530.90625,"h":806.28125} vs {"x":120,"y":278.59375,"w":530.90625,"h":783.78125}', 'after "Shoulder": {"x":120,"y":278.59375,"w":530.90625,"h":806.28125} vs {"x":120,"y":278.59375,"w":530.90625,"h":783.78125}', 'after "Between the shoulder blades": {"x":120,"y":278.59375,"w":530.90625,"h":806.28125} vs {"x":120,"y":278.59375,"w":530.90625,"h":783.78125}', 'after "Hip or down the leg": {"x":120,"y":278.59375,"w":530.90625,"h":806.28125} vs {"x":120,"y":278.59375,"w":530.90625,"h":783.78125}', 'after "Neck": {"x":120,"y":278.59375,"w":530.90625,"h":806.28125} vs {"x":120,"y":278.59375,"w":530.90625,"h":783.78125}', 'after "Headaches": {"x":120,"y":278.59375,"w":530.90625,"h":806.28125} vs {"x":120,"y":278.59375,"w":530.90625,"h":783.78125}', 'after "Shoulder": {"x":120,"y":278.59375,"w":530.90625,"h":806.28125} vs {"x":120,"y":278.59375,"w":530.90625,"h":783.78125}', 'after "Mid-back": {"x":120,"y":278.59375,"w":530.90625,"h":806.28125} vs {"x":120,"y":278.59375,"w":530.90625,"h":783.78125}', 'after "Hip or leg": {"x":120,"y":278.59375,"w":530.90625,"h":806.28125} vs {"x":120,"y":278.59375,"w":530.90625,"h":783.78125}', 'after "A few days": {"x":120,"y":278.59375,"w":530.90625,"h":828.78125} vs {"x":120,"y":278.59375,"w":530.90625,"h":783.78125}', 'after "2–6 weeks": {"x":120,"y":278.59375,"w":530.90625,"h":806.28125} vs {"x":120,"y":278.59375,"w":530.90625,"h":783.78125}', 'after "Months": {"x":120,"y":278.59375,"w":530.90625,"h":828.78125} vs {"x":120,"y":278.59375,"w":530.90625,"h":783.78125}', 'after "Sitting": {"x":120,"y":278.59375,"w":530.90625,"h":828.78125} vs {"x":120,"y":278.59375,"w":530.90625,"h":783.78125}', 'after "Mornings": {"x":120,"y":278.59375,"w":530.90625,"h":806.28125} vs {"x":120,"y":278.59375,"w":530.90625,"h":783.78125}', 'after "Lifting": {"x":120,"y":278.59375,"w":530.90625,"h":806.28125} vs {"x":120,"y":278.59375,"w":530.90625,"h":783.78125}', 'after "Sleeping": {"x":120,"y":278.59375,"w":530.90625,"h":828.78125} vs {"x":120,"y":278.59375,"w":530.90625,"h":783.78125}' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
