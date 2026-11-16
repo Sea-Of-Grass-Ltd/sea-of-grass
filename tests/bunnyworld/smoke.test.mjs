@@ -23,12 +23,18 @@ async function measure(page) {
     const c = new OffscreenCanvas(img.width, img.height), x = c.getContext('2d'); x.drawImage(img, 0, 0);
     const d = x.getImageData(0, 0, img.width, img.height).data;
     const bg = getComputedStyle(document.querySelector('.hero')).backgroundColor.match(/\d+/g).map(Number);
-    let dev = 0, colour = 0;
+    // the hero's content boxes (copy lines, links, buttons), in screenshot pixels: colour must never show inside them
+    const hr = document.querySelector('.hero').getBoundingClientRect(), k = img.width / hr.width, boxes = [], rg = document.createRange();
+    const tw = document.createTreeWalker(document.querySelector('.hero'), NodeFilter.SHOW_TEXT, { acceptNode: n => n.nodeValue.trim() && !n.parentElement.closest('.sr') ? 1 : 2 });
+    for (let n; (n = tw.nextNode());) { rg.selectNodeContents(n); boxes.push(...rg.getClientRects()); }
+    document.querySelectorAll('.hero a, .hero button').forEach(e => boxes.push(e.getBoundingClientRect()));
+    const inBox = (x, y) => boxes.some(b => x >= (b.left - hr.left) * k && x < (b.right - hr.left) * k && y >= (b.top - hr.top) * k && y < (b.bottom - hr.top) * k);
+    let dev = 0, colour = 0, onCopy = 0;
     for (let i = 0; i < d.length; i += 4) {
       dev = Math.max(dev, Math.abs(d[i] - bg[0]), Math.abs(d[i + 1] - bg[1]), Math.abs(d[i + 2] - bg[2]));
-      if (Math.max(d[i], d[i + 1], d[i + 2]) - Math.min(d[i], d[i + 1], d[i + 2]) > 60) colour++;
+      if (Math.max(d[i], d[i + 1], d[i + 2]) - Math.min(d[i], d[i + 1], d[i + 2]) > 60) { colour++; const p = i / 4; if (inBox(p % img.width, Math.floor(p / img.width))) onCopy++; }
     }
-    return { dev, colour, px: d.length / 4 };
+    return { dev, colour, onCopy, px: d.length / 4 };
   }, png.toString('base64'));
 }
 async function drag(page, { from = .15, to = .85, y = .55, steps = 24, ms = 700, release = true } = {}) {
@@ -54,7 +60,8 @@ for (const w of [390, 1440]) {
       const open = await measure(page);
       await page.mouse.up();
       const t0 = Date.now();
-      assert.ok(open.colour > open.px * .02, `the drag reveals colour (${open.colour} of ${open.px} px)`);
+      assert.ok(open.colour > open.px * .01, `the drag reveals colour (${open.colour} of ${open.px} px)`);
+      assert.equal(open.onCopy, 0, 'no colour behind the copy, links or buttons: the smoke stays thick there');
       let closed = null;
       while (Date.now() - t0 < 6000) { const m = await measure(page); if (m.colour === 0 && m.dev <= 2) { closed = Date.now() - t0; break; } await page.waitForTimeout(150); }
       assert.ok(closed !== null && closed <= 4500, `closes again within 4.5s of letting go (closed after ${closed ?? '>6000'} ms)`);
