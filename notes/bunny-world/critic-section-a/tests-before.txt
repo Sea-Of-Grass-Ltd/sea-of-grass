@@ -12,226 +12,32 @@
 ✖ A10 Burrow & Bough: the $40 print is described the same in the gift finder and the shop (630.214708ms)
 ✖ A10 no two shops share a phone number (Bunny Auto and Long Ears) (614.766958ms)
 ℹ tests 13
-ℹ suites 0
 ℹ pass 0
 ℹ fail 13
-ℹ cancelled 0
-ℹ skipped 0
-ℹ todo 0
-ℹ duration_ms 10411.856584
-
 ✖ failing tests:
-
-test at bunnyworld/section-a.test.mjs:20:1
 ✖ A2 Hop Along: "This week" dates are real upcoming dates that match their weekdays (960.580167ms)
   AssertionError [ERR_ASSERTION]: Trivia night: Thu 14 is not in the coming week (2026-11-15T21:45:00-07:00)
-      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bw-section-a-fixes-24829e/tests/bunnyworld/section-a.test.mjs:30:16)
-      at runNextTicks (node:internal/process/task_queues:65:5)
-      at process.processImmediate (node:internal/timers:502:9)
-      at async Test.run (node:internal/test_runner/test:1389:7)
-      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
-    generatedMessage: false,
-    code: 'ERR_ASSERTION',
-    actual: false,
-    expected: true,
-    operator: '==',
-    diff: 'simple'
-  }
-
-test at bunnyworld/section-a.test.mjs:46:1
 ✖ A3 Hop Along: "+ Calendar" downloads a real .ics for that event (635.561ms)
   AssertionError [ERR_ASSERTION]: Thu: + Calendar is #, not a calendar file
-      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bw-section-a-fixes-24829e/tests/bunnyworld/section-a.test.mjs:51:14)
-      at runNextTicks (node:internal/process/task_queues:65:5)
-      at process.processImmediate (node:internal/timers:502:9)
-      at async Test.run (node:internal/test_runner/test:1389:7)
-      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
-    generatedMessage: false,
-    code: 'ERR_ASSERTION',
-    actual: '#',
-    expected: /\.ics$/,
-    operator: 'match',
-    diff: 'simple'
-  }
-
-test at bunnyworld/section-a.test.mjs:62:1
 ✖ A3 no dead links on the landing and these five shops (1301.660042ms)
   AssertionError [ERR_ASSERTION]: /bunnyworld/hop-along/: links that go nowhere
-  + actual - expected
-  
-  + [
-  +   '"+ CALENDAR" → #',
-  +   '"+ CALENDAR" → #',
-  +   '"+ CALENDAR" → #',
-  +   '"+ CALENDAR" → #',
-  +   '"ORDER TO GO" → #',
-  +   '"SEND ONE" → #',
-  +   '"INSTAGRAM" → #',
-  +   '"UNTAPPD" → #',
-  +   '"FACEBOOK" → #'
-  + ]
-  - []
-  
-      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bw-section-a-fixes-24829e/tests/bunnyworld/section-a.test.mjs:72:14)
-      at async Test.run (node:internal/test_runner/test:1389:7)
-      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
-    generatedMessage: false,
-    code: 'ERR_ASSERTION',
-    actual: [ '"+ CALENDAR" → #', '"+ CALENDAR" → #', '"+ CALENDAR" → #', '"+ CALENDAR" → #', '"ORDER TO GO" → #', '"SEND ONE" → #', '"INSTAGRAM" → #', '"UNTAPPD" → #', '"FACEBOOK" → #' ],
-    expected: [],
-    operator: 'deepStrictEqual',
-    diff: 'simple'
-  }
-
-test at bunnyworld/section-a.test.mjs:81:1
 ✖ A3 Hop Along: one "tonight's taps" button, not three (654.562084ms)
   AssertionError [ERR_ASSERTION]: 3 "tonight's taps" buttons at 390
-      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bw-section-a-fixes-24829e/tests/bunnyworld/section-a.test.mjs:86:14)
-      at async Test.run (node:internal/test_runner/test:1389:7)
-      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
-    generatedMessage: false,
-    code: 'ERR_ASSERTION',
-    actual: false,
-    expected: true,
-    operator: '==',
-    diff: 'simple'
-  }
-
-test at bunnyworld/section-a.test.mjs:98:1
 ✖ A4 Buy flow: the cart tells the real terms, not "$1,200 due today" (729.111459ms)
   AssertionError [ERR_ASSERTION]: shows the 30% deposit ($360)
-      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bw-section-a-fixes-24829e/tests/bunnyworld/section-a.test.mjs:103:12)
-      at runNextTicks (node:internal/process/task_queues:65:5)
-      at process.processImmediate (node:internal/timers:502:9)
-      at async Test.run (node:internal/test_runner/test:1389:7)
-      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
-    generatedMessage: false,
-    code: 'ERR_ASSERTION',
-    actual: 'Your cart×Starter site$1,200, paid onceQty 1Remove$1,200Due today$1,200Checkout →Demo: checkout is a stand-in page. No payment is taken.',
-    expected: /\$360/,
-    operator: 'match',
-    diff: 'simple'
-  }
-
-test at bunnyworld/section-a.test.mjs:124:1
 ✖ A4 Buy flow: checkout ends in an honest confirmation, not a note for developers (1154.522958ms)
   AssertionError [ERR_ASSERTION]: checkout talks to developers
-      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bw-section-a-fixes-24829e/tests/bunnyworld/section-a.test.mjs:131:12)
-      at async Test.run (node:internal/test_runner/test:1389:7)
-      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
-    generatedMessage: false,
-    code: 'ERR_ASSERTION',
-    actual: ` Sea of Grass ← Back to cart Demo checkout. No payment is taken. This page stands in for Stripe’s checkout until the real payment links are set up. It asks for no card details and nothing is charged. Checkout · demoYour orderStarter sitePaid once$1,200Due today$1,200PaymentOn the live site this step is Stripe’s own secure page: card, Apple Pay or Google Pay. Here it is only a placeholder.Email (entered on Stripe)Card details (entered on Stripe)Finish demo order →Nothing is charged. You go straight to the thank-you page. (function(){ var S=window.SOG_SHOP,P=S.products,c={}; try{c=JSON.parse(localStorage.getItem('sog-cart')||'{}');}catch(e){} var ids=Object.keys(c).filter(function(k){return P[k]&&c[k]>0;}); var money=function(n){return '$'+n.toLocaleString('en-US');}; var main=document.getElementById('co'); if(!ids.length){main.innerHTML='<div class="sp-empty"><h1>Your cart is empty</h1><p class="sp-muted">Pick a fix, a care plan or a kickoff first.</p><a class="sp-btn" href="/preview/services/websites/#buy">See what you can buy &rarr;</a></div>';return;} var once=0,month=0; var rows=ids.map(function(id){var p=P[id],q=Math.min(p.maxQty||1,c[id]),t=p.price*q;if(p.interval)month+=t;else once+=t; return '<li><div><b>'+p.name+(q>1?' &times; '+q:'')+'</b><p class="sp-muted">'+(p.interval?'Billed monthly':'Paid once')+(p.from?' &middot; from '+money(p.price)+' each':'')+'</p></div><span>'+money(t)+(p.interval?'/mo':'')+'</span></li>';}).join(''); main.innerHTML='<div class="sp-co"><section aria-labelledby="h-sum"><p class="sp-k">Checkout &middot; demo</p><h1 id="h-sum">Your order</h1><ul class="sp-items">'+rows+'</ul>'+ '<dl class="sp-sum">'+(once&&month?'<div><dt>Paid once</dt><dd>'+money(once)+'</dd></div>':'')+(month?'<div><dt>Care plan, monthly</dt><dd>'+money(month)+'/mo</dd></div>':'')+ '<div class="t"><dt>Due today</dt><dd>'+money(once+month)+'</dd></div></dl>'+(month?'<p class="sp-muted" style="margin-top:10px">Then '+money(month)+' a month. Cancel any month.</p>':'')+'</section>'+ '<section class="sp-pay sp-glass" aria-labelledby="h-pay"><h2 id="h-pay">Payment</h2><p class="sp-muted">On the live site this step is Stripe&rsquo;s own secure page: card, Apple Pay or Google Pay. Here it is only a placeholder.</p>'+ '<div class="sp-stub" aria-hidden="true"><div>Email (entered on Stripe)</div><div>Card details (entered on Stripe)</div></div>'+ '<a class="sp-btn" href="'+S.thanks+'?demo=1">Finish demo order &rarr;</a><p class="sp-muted" style="text-align:center">Nothing is charged. You go straight to the thank-you page.</p></section></div>'; })(); `,
-    expected: /stands in for Stripe|payment links are set up|placeholder/i,
-    operator: 'doesNotMatch',
-    diff: 'simple'
-  }
-
-test at bunnyworld/section-a.test.mjs:148:1
 ✖ A5 Bunny Auto: the estimate starts at the sum of the "from" prices and follows the vehicle (641.350541ms)
   AssertionError [ERR_ASSERTION]: shows $0 – $0 before anything is ticked
-      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bw-section-a-fixes-24829e/tests/bunnyworld/section-a.test.mjs:152:12)
-      at async Test.run (node:internal/test_runner/test:1389:7)
-      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
-    generatedMessage: false,
-    code: 'ERR_ASSERTION',
-    actual: '$0 – $0',
-    expected: /\$0/,
-    operator: 'doesNotMatch',
-    diff: 'simple'
-  }
-
-test at bunnyworld/section-a.test.mjs:166:1
 ✖ A7 a "which date" day row greys out the days the shop is closed (Hop Along: Mondays) (635.396209ms)
   AssertionError [ERR_ASSERTION]: a Monday can be picked although the taproom is closed Mondays
-      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bw-section-a-fixes-24829e/tests/bunnyworld/section-a.test.mjs:173:12)
-      at runNextTicks (node:internal/process/task_queues:65:5)
-      at process.processImmediate (node:internal/timers:502:9)
-      at async Test.run (node:internal/test_runner/test:1389:7)
-      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
-    generatedMessage: false,
-    code: 'ERR_ASSERTION',
-    actual: false,
-    expected: true,
-    operator: '==',
-    diff: 'simple'
-  }
-
-test at bunnyworld/section-a.test.mjs:178:1
 ✖ A9 Burritos pickup: closed means order for the next opening, open means real times before close (642.907334ms)
   AssertionError [ERR_ASSERTION]: offers "As soon as it is ready (about 20 min)" while closed
-      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bw-section-a-fixes-24829e/tests/bunnyworld/section-a.test.mjs:182:12)
-      at async Test.run (node:internal/test_runner/test:1389:7)
-      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
-    generatedMessage: false,
-    code: 'ERR_ASSERTION',
-    actual: false,
-    expected: true,
-    operator: '==',
-    diff: 'simple'
-  }
-
-test at bunnyworld/section-a.test.mjs:195:1
 ✖ A10 Hop Along: tap count, timestamp, 4-pack price and the text/email sign-up agree with the page (635.227709ms)
   AssertionError [ERR_ASSERTION]: an invented "updated at" time
-      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bw-section-a-fixes-24829e/tests/bunnyworld/section-a.test.mjs:199:12)
-      at async Test.run (node:internal/test_runner/test:1389:7)
-      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
-    generatedMessage: false,
-    code: 'ERR_ASSERTION',
-    actual: ' ← Sea of Grass/Bunny WorldMade-up shop. Everything works; nothing is sent. Six on tap • dogs welcome • bunnies very welcome • trivia Thursday • Six on tap • dogs welcome • bunnies very welcome • trivia Thursday • Pouring nowThis weekThe cansHopAlongBack roomHoursTonight’s taps Closed tonight · see hours belowFresh Friday Burrow Stout is back on tap and in 4-packsSee tonight’s taps Small-batch beer · brewed out back in BerthoudHop AlongSix taps, six cans, a big patio and a back room for your whole crew.See tonight’s tapsBook the back room Bunny Hop IPALong Ear HazyClover Field PilsCarrot Top KölschBurrow StoutThistle Sour Pouring nowUpdated 6:03 pm by the bar6 on tap · pick a styleAllIPAsLightDarkSour IPAsBunny Hop IPAIPA · 6.8% ABVPine and grapefruit, bright and dry.More info +16oz$78oz$44-pack to go · $16Long Ear HazyHazy IPA · 6.5% ABVJuicy and soft. On nitro Fridays.More info +16oz$78oz$44-pack to go · $16Light & crispClover Field PilsPilsner · 4.9% ABVCrisp, bready, very drinkable.More info +16oz$78oz$44-pack to go · $16Carrot Top KölschKölsch · 5.0% ABVEasy, with a hint of local honey.More info +16oz$78oz$44-pack to go · $16DarkBurrow StoutStout · 7.2% ABVCoffee from the bakery next door.More info +16oz$78oz$44-pack to go · $16SoursThistle SourSour · 5.5% ABVRaspberry and lime. Back Thursday.More info +KickedKicked kegs are marked, so nobody drives over for one. This weekOn the patio, every night but MondayThu14Trivia night7 pm · teams of up to six+ CalendarFri15Food truck: Bunny Burritos5–9 pm on the patio+ CalendarSat16Live music: The Lop EarsBluegrass · 7 pm · no cover+ CalendarSun17Run club9 am · 5K · first pint half off+ Calendar The cansSix beers, six labels, printed in three inks. Every one has a Berthoud detail hiding in it.Bunny Hop IPAIPA · 6.8%Long Ear HazyHazy IPA · 6.5%Clover Field PilsPilsner · 4.9%Carrot Top KölschKölsch · 5.0%Burrow StoutStout · 7.2%Thistle SourSour · 5.5% Hop Along ★ Berthoud, Colorado ★ dogs welcome ★ bunnies very welcome ★ Hop Along ★ Berthoud, Colorado ★ dogs welcome ★ bunnies very welcome ★ Book the back room1How many guests?✓ChangeGuestsNext2Which package?✓ChangePackageDrinks tab ($10 a guest)Pints and tacos ($22 a guest)Full spread ($30 a guest)Drinks tab ($10 a guest)Pints and tacos ($22 a guest)Full spread ($30 a guest)3Which date?✓ChangeDateMon16NovTue17NovWed18NovThu19NovFri20NovSat21NovSun22NovMon23NovTue24NovWed25NovThu26NovFri27NovSat28NovSun29Nov4Who do we confirm with?✓ChangeNameEmailEstimate $200.00Send the request To goMix-a-fourAny four cans to go · $18Order to goTaster flightFour 5oz pours, your pick · $12Pick fourHOP ALONG$25gift cardGift cardsSent by text, any amountSend one HoursClosed · opens Tuesday at 3 pmOpening hoursMondayClosedTuesday3 pm – 10 pmWednesday3 pm – 10 pmThursday3 pm – 10 pmFriday12 pm – 11 pmSaturday12 pm – 11 pmSunday (today)12 pm – 8 pmKitchen: whichever truck is parked outside.Find us218 Mountain Ave, Berthoud. Park on the street; the patio gate is round the side.Made-up address Get the Friday drop by text→InstagramUntappdFacebook Run a brewery or bar? Your site can do all of this.We build it in your own look, connect it to the tools you already use and keep it running for you. You get a fixed price in writing before we start, and you talk to Tristan or Bryce the whole way.Book a free 20-minute look (function(){var e=document.querySelector("[data-tonight]");if(!e)return;var H=JSON.parse(e.dataset.tonight),d=new Date(),h=H[d.getDay()],m=d.getHours()*60+d.getMinutes(),t=function(x){var p=x.split(":");return +p[0]*60+ +p[1]},f=function(x){var p=x.split(":"),hh=+p[0],ap=hh>=12?"pm":"am";hh=hh%12||12;return hh+(p[1]!=="00"?":"+p[1]:"")+" "+ap};if(h&&m>=t(h[0])&&m<t(h[1])){e.textContent="Open now \\u00b7 until "+f(h[1]);e.classList.add("on")}else if(h&&m<t(h[0])){e.textContent="Opens today at "+f(h[0])}else{e.textContent="Closed tonight \\u00b7 see hours below"}})(); ',
-    expected: /Updated \d{1,2}:\d\d ?[ap]m/i,
-    operator: 'doesNotMatch',
-    diff: 'simple'
-  }
-
-test at bunnyworld/section-a.test.mjs:212:1
 ✖ A10 Bunny Auto: "we text you" asks for a phone number (656.443209ms)
   AssertionError [ERR_ASSERTION]: texting needs a phone box, got [{"type":"text","ac":"email","label":"Phone or email"}]
-      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bw-section-a-fixes-24829e/tests/bunnyworld/section-a.test.mjs:218:12)
-      at runNextTicks (node:internal/process/task_queues:65:5)
-      at process.processImmediate (node:internal/timers:502:9)
-      at async Test.run (node:internal/test_runner/test:1389:7)
-      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
-    generatedMessage: false,
-    code: 'ERR_ASSERTION',
-    actual: false,
-    expected: true,
-    operator: '==',
-    diff: 'simple'
-  }
-
-test at bunnyworld/section-a.test.mjs:222:1
 ✖ A10 Burrow & Bough: the $40 print is described the same in the gift finder and the shop (630.214708ms)
   AssertionError [ERR_ASSERTION]: risograph in one place, screen-printed in the other
-      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bw-section-a-fixes-24829e/tests/bunnyworld/section-a.test.mjs:228:12)
-      at async Test.run (node:internal/test_runner/test:1389:7)
-      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
-    generatedMessage: false,
-    code: 'ERR_ASSERTION',
-    actual: false,
-    expected: true,
-    operator: '==',
-    diff: 'simple'
-  }
-
-test at bunnyworld/section-a.test.mjs:233:1
 ✖ A10 no two shops share a phone number (Bunny Auto and Long Ears) (614.766958ms)
   AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
-  + actual - expected
-  
-  + [
-  +   '9705550177: bunny-auto and long-ears'
-  + ]
-  - []
-  
-      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bw-section-a-fixes-24829e/tests/bunnyworld/section-a.test.mjs:244:12)
-      at async Test.run (node:internal/test_runner/test:1389:7)
-      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
-    generatedMessage: true,
-    code: 'ERR_ASSERTION',
-    actual: [ '9705550177: bunny-auto and long-ears' ],
-    expected: [],
-    operator: 'deepStrictEqual',
-    diff: 'simple'
-  }
