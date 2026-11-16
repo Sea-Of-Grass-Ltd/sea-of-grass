@@ -17,6 +17,8 @@ Each shop has its own look, led by one Refero style and borrowing a trait from a
 | Long Ears Landscaping | arte*, "fieldwork meets pop" (full-bleed working photography, an oversized lowercase wordmark in one sunny accent, typewriter labels) | Raus (cream canvas, chunky friendly wordmark, rounded cards, sky-blue offer bar); Tesla and Mercury calculators for the August Test | Cream, deep pine and prairie gold; Bricolage Grotesque, Hanken Grotesk, IBM Plex Mono; the August Test and a blowout route booker |
 | Hopwell Family Chiropractic | Ease Health, "botanical systems in flow" | Radial, "sunlit ripples of reassurance" | Forest-green serif heads, a pale-leaf hero panel, a dusty-blue stage with floating interface cards, rounded shells |
 
+**Landing hero and Main Street, tightened (2026-11-16):** Typeform's splash screen (one bold mark, one short line under it) for the hero; Perplexity's product rows (the device beside the words, actions under it, nothing laid over the picture) for the laptop-and-phone stage; Reown WalletKit's row of plain pill tabs for the trades on phones.
+
 Art: every picture is drawn in code (SVG) in each shop's own style, so there are no stock photos and no licence questions. Real client sites would use their own photos in the same frames.
 
 ## Landing redesign (2026-11-14)

@@ -1,13 +1,13 @@
 // Bunny World landing headline (2026-11-15): a wave of the five looks' accent colours sweeps letter by letter,
-// turning "Hop in." into "Find your style.", then settles in flat solid ink. Clean is the default look.
-// Journey: open the page → see "Hop in." → watch the colour wave rewrite it → read "Find your style." in plain ink
+// turning "Hop with style." into "Bunny World.", then settles in flat solid ink. Clean is the default look.
+// Journey: open the page → see "Hop with style." → watch the colour wave rewrite it → read "Bunny World." in plain ink
 // → tap the bunny (the "style" it points at) → Clean, Bold, Warm, Sunny, Disco, and round again.
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { startSite } from '../lib/site.mjs';
 
 const URL = '/bunnyworld/';
-const FINAL = 'Find your style.';
+const FINAL = 'Bunny World.';
 const SETTLED_MS = 3200; // the sweep is over well before this
 let site;
 before(async () => { site = await startSite(); });
@@ -22,16 +22,16 @@ const visibleHeadline = () => {
   while ((n = w.nextNode())) { if (n.nodeType === 1) { if (n.tagName === 'BR' && painted(n.parentElement)) s += ' '; continue; } if (painted(n.parentElement)) s += n.textContent; }
   return s.replace(/\s+/g, ' ').trim();
 };
-const box = () => { const r = document.querySelector('.hero h1').getBoundingClientRect(), l = document.querySelector('.hero .lede').getBoundingClientRect(); return [r.x, r.y, r.width, r.height, l.y].map(v => Math.round(v * 10) / 10).join(','); };
+const box = () => { const r = document.querySelector('.hero h1').getBoundingClientRect(), l = document.querySelector('.hero .lede').getBoundingClientRect(); return [r.x, r.y + scrollY, r.width, r.height, l.y + scrollY].map(v => Math.round(v * 10) / 10).join(','); };
 
 for (const w of [360, 390, 1440]) {
-  test(`headline sweeps "Hop in." into "${FINAL}" without moving @ ${w}`, async () => {
+  test(`headline sweeps "Hop with style." into "${FINAL}" without moving @ ${w}`, async () => {
     const { ctx, page, errors } = await site.open(URL, w);
     try {
       // look at the very first paint: reload and read as soon as the document is parsed
       await page.reload({ waitUntil: 'domcontentloaded' });
       const first = await page.evaluate(visibleHeadline);
-      assert.equal(first, 'Hop in.', `opens on "Hop in."`);
+      assert.equal(first, 'Hop with style.', `opens on "Hop with style."`);
       const boxes = new Set(), seen = new Set([first]);
       const t0 = Date.now();
       while (Date.now() - t0 < SETTLED_MS) { boxes.add(await page.evaluate(box)); seen.add(await page.evaluate(visibleHeadline)); await page.waitForTimeout(40); }
