@@ -1,0 +1,54 @@
+✔ steps reveal one at a time, in order (1126.113958ms)
+✔ going back through a summary chip keeps the later answers (821.757625ms)
+✔ a required field blocks Next until it is filled (700.329041ms)
+✖ spaces only count as empty (642.770792ms)
+✔ submitting without a time shows the message and does not book (693.854916ms)
+✔ answers handed in from code show in the summaries and the confirmation (745.4725ms)
+✔ very long input stays inside the form (655.876834ms)
+✖ double-tapping does not skip a step or book twice (943.628041ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 6
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6777.53525
+
+✖ failing tests:
+
+test at tests/unit/form-engine.test.mjs:86:1
+✖ spaces only count as empty (642.770792ms)
+  AssertionError [ERR_ASSERTION]: a note of only spaces does not advance
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/unit/form-engine.test.mjs:93:12)
+      at runNextTicks (node:internal/process/task_queues:65:5)
+      at process.processImmediate (node:internal/timers:502:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/unit/form-engine.test.mjs:143:1
+✖ double-tapping does not skip a step or book twice (943.628041ms)
+  AssertionError [ERR_ASSERTION]: a double-tap books once (one reference)
+  
+  2 !== 1
+  
+      at TestContext.<anonymous> (file:///Users/tristanbrewer/Desktop/Claude%20Main/sea-of-grass/.claude/worktrees/bunny-world-334719/tests/unit/form-engine.test.mjs:162:12)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,140 @@
+
+> test
+> node --test --test-concurrency=1 "unit/*.test.mjs" "bunnyworld/*.test.mjs" "copy/*.test.mjs"
+
+▶ bunnyworld @ 360
+  ✔ no checklist failures (0.6935ms)
+✔ bunnyworld @ 360 (10591.309417ms)
+▶ bunnyworld @ 390
+  ✔ no checklist failures (0.227291ms)
+✔ bunnyworld @ 390 (10243.444041ms)
+▶ bunnyworld @ 1440
+  ✔ no checklist failures (0.208709ms)
+✔ bunnyworld @ 1440 (9766.638291ms)
+▶ hare-today @ 360
+  ✔ no checklist failures (0.270083ms)
+✔ hare-today @ 360 (11380.715292ms)
+▶ hare-today @ 390
+  ✔ no checklist failures (0.159916ms)
+✔ hare-today @ 390 (11340.681959ms)
+▶ hare-today @ 1440
+  ✔ no checklist failures (0.152042ms)
+✔ hare-today @ 1440 (10244.918417ms)
+▶ hop-along @ 360
+  ✔ no checklist failures (0.557959ms)
+✔ hop-along @ 360 (15970.09925ms)
+▶ hop-along @ 390
+  ✔ no checklist failures (0.481375ms)
+✔ hop-along @ 390 (16145.985959ms)
+▶ hop-along @ 1440
+  ✔ no checklist failures (0.605458ms)
+✔ hop-along @ 1440 (15848.262959ms)
+▶ hopwell-chiro @ 360
+  ✔ no checklist failures (0.425458ms)
+✔ hopwell-chiro @ 360 (18966.867334ms)
+▶ hopwell-chiro @ 390
+  ✔ no checklist failures (0.395416ms)
+✔ hopwell-chiro @ 390 (18910.741542ms)
+▶ hopwell-chiro @ 1440
+  ✔ no checklist failures (0.171875ms)
+✔ hopwell-chiro @ 1440 (15886.943292ms)
+▶ cottontail-farm @ 360
+  ✔ no checklist failures (0.7695ms)
+✔ cottontail-farm @ 360 (15336.240875ms)
+▶ cottontail-farm @ 390
+  ✔ no checklist failures (0.53175ms)
+✔ cottontail-farm @ 390 (15293.133166ms)
+▶ cottontail-farm @ 1440
+  ✔ no checklist failures (0.758917ms)
+✔ cottontail-farm @ 1440 (14535.222584ms)
+▶ burrow-and-bough @ 360
+  ✔ no checklist failures (0.590792ms)
+✔ burrow-and-bough @ 360 (9794.677917ms)
+▶ burrow-and-bough @ 390
+  ✔ no checklist failures (0.398292ms)
+✔ burrow-and-bough @ 390 (9908.061834ms)
+▶ burrow-and-bough @ 1440
+  ✔ no checklist failures (0.302875ms)
+✔ burrow-and-bough @ 1440 (6569.384334ms)
+▶ bunny-burritos @ 360
+  ✔ no checklist failures (0.215875ms)
+✔ bunny-burritos @ 360 (14470.327792ms)
+▶ bunny-burritos @ 390
+  ✔ no checklist failures (0.20275ms)
+✔ bunny-burritos @ 390 (14266.787541ms)
+▶ bunny-burritos @ 1440
+  ✔ no checklist failures (0.395125ms)
+✔ bunny-burritos @ 1440 (14171.362583ms)
+▶ bunny-auto @ 360
+  ✔ no checklist failures (0.131625ms)
+✔ bunny-auto @ 360 (12282.461334ms)
+▶ bunny-auto @ 390
+  ✔ no checklist failures (0.596792ms)
+✔ bunny-auto @ 390 (12250.4935ms)
+▶ bunny-auto @ 1440
+  ✔ no checklist failures (0.261167ms)
+✔ bunny-auto @ 1440 (11999.10475ms)
+▶ warren-bakehouse @ 360
+  ✔ no checklist failures (0.632041ms)
+✔ warren-bakehouse @ 360 (16972.943166ms)
+▶ warren-bakehouse @ 390
+  ✔ no checklist failures (0.186167ms)
+✔ warren-bakehouse @ 390 (16947.592916ms)
+▶ warren-bakehouse @ 1440
+  ✔ no checklist failures (0.666542ms)
+✔ warren-bakehouse @ 1440 (14612.414667ms)
+▶ long-ears @ 360
+  ✔ no checklist failures (0.372084ms)
+✔ long-ears @ 360 (14545.659625ms)
+▶ long-ears @ 390
+  ✔ no checklist failures (0.723166ms)
+✔ long-ears @ 390 (14568.638834ms)
+▶ long-ears @ 1440
+  ✔ no checklist failures (0.712458ms)
+✔ long-ears @ 1440 (12999.394042ms)
+✔ 360px · journey: land → tap → answer → first visit → answers in booking → book once (1281.182417ms)
+✔ 360px · one scheduling block, no repeated actions (502.409792ms)
+✔ 360px · tap spots: apart, no halos, labels clear (684.153666ms)
+✔ 360px · every question title is a full sentence ending in "?" (488.633667ms)
+✔ 360px · copy that counts the questions matches the questions (500.316292ms)
+✔ 360px · buttons, chips and spots use only palette tokens, no shadows (647.300292ms)
+✔ 360px · neumorphism: one light, two tokens, shadows follow the radius (522.884125ms)
+✔ 360px · the back photo holds still while you tap, and chips keep their size (2277.021083ms)
+✔ 360px · no sideways scroll, no console errors (707.077042ms)
+✔ 390px · journey: land → tap → answer → first visit → answers in booking → book once (834.847667ms)
+✔ 390px · one scheduling block, no repeated actions (495.366917ms)
+✔ 390px · tap spots: apart, no halos, labels clear (718.138958ms)
+✔ 390px · every question title is a full sentence ending in "?" (496.678541ms)
+✔ 390px · copy that counts the questions matches the questions (500.234833ms)
+✔ 390px · buttons, chips and spots use only palette tokens, no shadows (660.871584ms)
+✔ 390px · neumorphism: one light, two tokens, shadows follow the radius (535.794208ms)
+✔ 390px · the back photo holds still while you tap, and chips keep their size (2239.082459ms)
+✔ 390px · no sideways scroll, no console errors (701.748666ms)
+✔ 1440px · journey: land → tap → answer → first visit → answers in booking → book once (826.465208ms)
+✔ 1440px · one scheduling block, no repeated actions (504.262333ms)
+✔ 1440px · tap spots: apart, no halos, labels clear (720.339791ms)
+✔ 1440px · every question title is a full sentence ending in "?" (504.236916ms)
+✔ 1440px · copy that counts the questions matches the questions (511.288166ms)
+✔ 1440px · buttons, chips and spots use only palette tokens, no shadows (663.301208ms)
+✔ 1440px · neumorphism: one light, two tokens, shadows follow the radius (555.688334ms)
+✔ 1440px · the back photo holds still while you tap, and chips keep their size (2111.223708ms)
+✔ 1440px · no sideways scroll, no console errors (723.792542ms)
+✔ copy voice · /bunnyworld/ (891.66ms)
+✔ copy voice · / (790.67225ms)
+✔ copy voice · /preview/services/websites/ (595.962792ms)
+✔ steps reveal one at a time, in order (1024.412292ms)
+✔ going back through a summary chip keeps the later answers (812.818875ms)
+✔ a required field blocks Next until it is filled (725.498458ms)
+✔ spaces only count as empty (715.746167ms)
+✔ submitting without a time shows the message and does not book (741.110917ms)
+✔ answers handed in from code show in the summaries and the confirmation (738.482792ms)
+✔ very long input stays inside the form (655.549083ms)
+✔ double-tapping does not skip a step or book twice (948.150083ms)
+ℹ tests 98
+ℹ suites 0
+ℹ pass 98
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 465178.878708

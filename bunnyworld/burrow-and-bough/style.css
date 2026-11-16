@@ -138,3 +138,12 @@ h2{text-transform:none;letter-spacing:-.015em;font-size:clamp(30px,3.6vw,52px)}
 .q-sum{border-color:var(--ink)}
 .q-sum b{font-family:var(--hf);font-weight:500;font-size:17px}
 .file-pick{border:1px dashed var(--ink)}
+
+/* ---- AI-UI checklist pass (2026-11-15): flat surfaces (no blurred shadows, gradients or blur), 40px tap targets on phones ---- */
+.finder{box-shadow:none;border:2px solid #321e1e}
+.stage{background:#ebe3c6}
+.stage::after{background:rgba(50,30,30,.18);border-radius:50%}
+.p-box{background:#b0844f}
+.p-ob{box-shadow:none}
+.nav .logo{min-height:44px;display:inline-flex;align-items:center}
+.nav .bag{min-height:40px;display:inline-flex;align-items:center}

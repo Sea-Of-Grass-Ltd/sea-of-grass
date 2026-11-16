@@ -175,3 +175,8 @@ cite{font:500 12px/1 var(--mf);letter-spacing:.06em;text-transform:uppercase;fon
 /* the back photo keeps one size whatever is tapped (it used to stretch with the answer card on desktop) */
 @media (min-width:901px){.hook{align-items:start}.stage{flex:none;aspect-ratio:4/5;min-height:0}}
 @media (max-width:900px){.stage{height:min(88vw,400px)}}
+
+/* ---- AI-UI checklist pass (2026-11-15): no blur, 40px tap targets on phones ---- */
+.logo{min-height:44px;display:inline-flex;align-items:center}
+.chips.sm .chip{min-height:40px}
+.stage .blur{display:none}

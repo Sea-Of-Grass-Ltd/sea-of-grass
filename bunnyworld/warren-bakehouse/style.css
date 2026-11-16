@@ -132,3 +132,8 @@ h2{font-size:clamp(40px,5.4vw,78px);line-height:.95;letter-spacing:-.02em}
 .q-sum b{font-family:var(--hf);font-weight:400;font-size:17px}
 .q-opt{font:400 16px/1.25 var(--hf);background:var(--field)}
 .file-pick{border-style:dotted;border-width:2px}
+
+/* ---- AI-UI checklist pass (2026-11-15): flat surfaces (no blurred shadows, gradients or blur), 40px tap targets on phones ---- */
+.paper{box-shadow:none;border:1.5px solid rgba(82,44,37,.35)}
+.nav .hold{min-height:40px;display:inline-flex;align-items:center}
+@media (max-width:760px){.frame{background:#b9987a}}

@@ -68,3 +68,8 @@ h2 span{font:400 13px/1 var(--mf);letter-spacing:.12em;color:var(--muted);vertic
 .q-sum b{font:500 14px/1.2 var(--mf);text-transform:uppercase;letter-spacing:.05em}
 .q-opt{font:600 16px/1 var(--hf);text-transform:uppercase;letter-spacing:.07em}
 .file-pick{border:1px dashed rgba(255,255,255,.3)}
+
+/* ---- AI-UI checklist pass (2026-11-15): flat surfaces (no blurred shadows, gradients or blur), 40px tap targets on phones ---- */
+.nav{backdrop-filter:none;-webkit-backdrop-filter:none;background:#000}
+.hero::after{background:rgba(0,0,0,.45)}
+.hero::before{background:none}

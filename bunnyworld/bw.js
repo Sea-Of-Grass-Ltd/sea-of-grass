@@ -93,7 +93,11 @@ $$('[data-cart]').forEach(cart=>{
   cart.bwClear=()=>{items.clear();draw();};draw();});
 
 /* ---- demo forms: check, then confirm on the page with a reference number ---- */
-$$('form[data-demo]').forEach(f=>f.addEventListener('submit',e=>{e.preventDefault();const err=$('.err',f);if(err)err.textContent='';
+/* a required field with only spaces in it counts as empty */
+const blankToEmpty=r=>$$('input[required]:not([type=hidden]):not([type=checkbox]):not([type=radio]):not([type=file]),textarea[required]',r).forEach(i=>{if(i.value&&!i.value.trim())i.value='';});
+$$('form[data-demo]').forEach(f=>f.addEventListener('submit',e=>{e.preventDefault();
+  if(f._sentAt&&Date.now()-f._sentAt<2000)return; /* a double-tap books once */
+  const err=$('.err',f);if(err)err.textContent='';blankToEmpty(f);
   const need=$$('input[type=hidden][required]',f).find(i=>!i.value);
   if(need){if(err)err.textContent=need.dataset.msg||'Pick a time first.';return;}
   if(!f.reportValidity())return;
@@ -103,7 +107,7 @@ $$('form[data-demo]').forEach(f=>f.addEventListener('submit',e=>{e.preventDefaul
   if(cart)lines.unshift('Total: '+cart.dataset.total);
   $$('[data-out]',f).forEach(o=>lines.push((o.dataset.label||'Total')+': '+o.textContent));
   done.innerHTML=`<b>${f.dataset.ok||'Sent.'}</b>${lines.map(l=>`<span style="display:block">${l.replace(/</g,'&lt;')}</span>`).join('')}<span class="note" style="display:block;margin-top:8px">Reference ${ref}. Demo only: nothing was sent. On your site this goes to your inbox, phone or booking calendar.</span>`;
-  done.classList.add('on');done.setAttribute('tabindex','-1');done.focus({preventScroll:true});done.scrollIntoView({block:'nearest',behavior:'smooth'});
+  f._sentAt=Date.now();done.classList.add('on');done.setAttribute('tabindex','-1');done.focus({preventScroll:true});done.scrollIntoView({block:'nearest',behavior:'smooth'});
   if(cart&&cart.bwClear)cart.bwClear();}));
 
 /* ---- uploads: list the photos picked ---- */
@@ -164,7 +168,7 @@ $$('[data-steps]').forEach(root=>{
           $$('.q-opt',row).forEach(x=>x.setAttribute('aria-pressed',String(x===b)));answer(i);});row.appendChild(b);});
       const lab=se.closest('label');(lab||se).classList.add('sr');lab?lab.after(row):se.after(row);s._sel=se;}
     if(!final&&!chips&&!s.dataset.qAuto){const nx=document.createElement('button');nx.type='button';nx.className='btn q-next';nx.textContent='Next';
-      nx.addEventListener('click',()=>{const bad=$$('input:not([type=hidden]),select,textarea',body).find(f=>!f.checkValidity());if(bad){bad.reportValidity();return;}answer(i);});
+      nx.addEventListener('click',()=>{blankToEmpty(body);const bad=$$('input:not([type=hidden]),select,textarea',body).find(f=>!f.checkValidity());if(bad){bad.reportValidity();return;}answer(i);});
       body.appendChild(nx);}
     if(s.dataset.qAuto)body.addEventListener('click',e=>{if(!e.isTrusted)return;const b=e.target.closest(s.dataset.qAuto);if(b&&!b.disabled)setTimeout(()=>answer(i),0);}); // scripts pre-picking a day don't count
     const head=document.createElement('p');head.className='q-h';head.innerHTML=`<span class="q-n">${i+1}</span>`;head.appendChild(document.createTextNode(s.dataset.q));

@@ -1,0 +1,16 @@
+✔ steps reveal one at a time, in order (1062.717875ms)
+✔ going back through a summary chip keeps the later answers (781.239459ms)
+✔ a required field blocks Next until it is filled (698.767416ms)
+✔ spaces only count as empty (700.561042ms)
+✔ submitting without a time shows the message and does not book (716.358584ms)
+✔ answers handed in from code show in the summaries and the confirmation (747.488791ms)
+✔ very long input stays inside the form (671.765542ms)
+✔ double-tapping does not skip a step or book twice (943.361084ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6764.593917
