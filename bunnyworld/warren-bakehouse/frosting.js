@@ -16,7 +16,7 @@
       W:0,dpr:1,col:getComputedStyle(el).backgroundColor,drips:[],stretch:0,
       next:performance.now()+5000+hash(opts.seed)*8000,creep:null,on:false});
   }
-  function lip(b,x){return 9+2.6*Math.sin(x/21+b.seed)+1.6*Math.sin(x/8.3+b.seed*2)}
+  function lip(b,x){return 6+1.6*Math.sin(x/21+b.seed)+1*Math.sin(x/8.3+b.seed*2)}
   function layout(b){
     var r=b.el.getBoundingClientRect(),reg=b.region?b.region(r):{x:0,w:r.width};
     b.box.style.display=reg?'':'none'; if(!reg) return;
@@ -25,9 +25,9 @@
     [b.cv,b.m,b.s].forEach(function(k){k.width=Math.round(b.W*b.dpr);k.height=Math.round(H*b.dpr)});
     b.drips=[];var x=14+hash(b.seed)*30,j=0;
     while(x<b.W-8){var r1=hash(b.seed*31+j+1),r2=hash(b.seed*17+j+31);
-      var hr=5.5+r2*7, len=r1<.3? hr*1.4+3 : hr*3.4+r1*30;
+      var hr=5+r2*4, len=r1<.5? hr*1.2+2 : hr*2.6+r1*12;
       b.drips.push({x:x,hr:hr,len:len,r:r1});
-      x+=hr*2.6+10+hash(b.seed*7+j+57)*62;j++}
+      x+=hr*3+22+hash(b.seed*7+j+57)*70;j++}
   }
   // one drip, like ganache: wide where it leaves the lip, pinching to a neck, then a fat round bulb
   function drip(c,x,top,len,hr){
@@ -50,9 +50,9 @@
     if(!b.creep&&now>b.next&&b.drips.length){d=b.drips[Math.floor(hash(b.seed+now)*b.drips.length)];
       if(d.r>=.3)b.creep={d:d,start:now};b.next=now+12000+hash(now*.001+b.seed)*10000}
     for(i=0;i<b.drips.length;i++){d=b.drips[i];
-      var L=d.len+(.5+.5*Math.sin(t*(.18+.12*d.r)+i*1.7))*3*d.r+b.stretch*(3+d.r*7);
+      var L=d.len+(.5+.5*Math.sin(t*(.18+.12*d.r)+i*1.7))*1.5*d.r+b.stretch*(2+d.r*4);
       if(b.creep&&b.creep.d===d){var e=(now-b.creep.start)/1000,k=e<6?e/6:e<10?1:e<18?1-(e-10)/8:0;
-        k=k*k*(3-2*k);L+=k*16;if(e>=18)b.creep=null}
+        k=k*k*(3-2*k);L+=k*7;if(e>=18)b.creep=null}
       lens.push(L)}
     // 1. the frosting shape, in the panel's own colour
     var m=b.m.getContext('2d');m.setTransform(b.dpr,0,0,b.dpr,0,0);m.clearRect(0,0,b.W,H);m.fillStyle=b.col;
@@ -61,17 +61,17 @@
     m.fill();
     // 2. onto the page with a soft shadow underneath
     var c=b.ctx;c.setTransform(1,0,0,1,0,0);c.clearRect(0,0,b.cv.width,b.cv.height);
-    c.save();c.shadowColor='rgba(40,0,20,.22)';c.shadowBlur=7*b.dpr;c.shadowOffsetY=3*b.dpr;c.drawImage(b.m,0,0);c.restore();
+    c.save();c.shadowColor='rgba(40,0,20,.1)';c.shadowBlur=4*b.dpr;c.shadowOffsetY=2*b.dpr;c.drawImage(b.m,0,0);c.restore();
     // 3. the darker rim where the frosting rounds under (the shape minus itself lifted a few px)
     var s=b.s.getContext('2d');s.setTransform(1,0,0,1,0,0);s.globalCompositeOperation='source-over';s.clearRect(0,0,b.s.width,b.s.height);
-    s.drawImage(b.m,0,0);s.globalCompositeOperation='destination-out';s.drawImage(b.m,0,-5*b.dpr);
-    s.globalCompositeOperation='source-in';s.fillStyle='rgba(60,0,30,.16)';s.fillRect(0,0,b.s.width,b.s.height);
+    s.drawImage(b.m,0,0);s.globalCompositeOperation='destination-out';s.drawImage(b.m,0,-3*b.dpr);
+    s.globalCompositeOperation='source-in';s.fillStyle='rgba(60,0,30,.08)';s.fillRect(0,0,b.s.width,b.s.height);
     c.drawImage(b.s,0,0);
     // 4. the gloss: a streak down each drip and broken streaks along the lip
-    c.setTransform(b.dpr,0,0,b.dpr,0,0);c.lineCap='round';c.strokeStyle='rgba(255,255,255,.42)';
+    c.setTransform(b.dpr,0,0,b.dpr,0,0);c.lineCap='round';c.strokeStyle='rgba(255,255,255,.22)';
     for(i=0;i<b.drips.length;i++){d=b.drips[i];var tp=lip(b,d.x),L2=Math.min(H-14-tp+3,lens[i]);if(L2<d.hr*1.6)continue;
-      c.lineWidth=d.hr*.32;c.beginPath();c.moveTo(d.x-d.hr*.7,tp+2);c.lineTo(d.x-d.hr*.3,tp-3+L2-d.hr*1.1);c.stroke()}
-    c.lineWidth=2;c.strokeStyle='rgba(255,255,255,.3)';c.beginPath();
+      c.lineWidth=d.hr*.22;c.beginPath();c.moveTo(d.x-d.hr*.7,tp+2);c.lineTo(d.x-d.hr*.3,tp-3+L2-d.hr*1.1);c.stroke()}
+    c.lineWidth=1.5;c.strokeStyle='rgba(255,255,255,.16)';c.beginPath();
     for(x=8;x<b.W;x+=6){var on=hash(b.seed*3+Math.floor(x/60))>.35&&(x%60)<40;var y=lip(b,x)*.45;if(on){if((x%60)<6)c.moveTo(x,y);else c.lineTo(x,y)}}
     c.stroke()}
   function frame(now){
