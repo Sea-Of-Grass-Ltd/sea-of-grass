@@ -551,3 +551,33 @@ html:not([data-look]) .hero[data-logo="centre"] h1,html[data-look="clean"] .hero
   .plans-kick{display:block;margin:0 0 4px}
   .plans .prices{margin-top:0}
   .hero[data-logo="centre"] .lh-fix{display:inline-flex;align-items:center;gap:6px;min-height:40px;margin-top:10px;color:var(--soft);font:500 15px/1 var(--bf);text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px}}
+
+/* ===== Phones, round 3 (HQ for Tristan, 2026-11-16): a bigger hero logo; no nav on the hero page, then a slim sticky
+   bar once the hero has gone (landing.js sets html.past-hero; focus inside the nav always shows it); and a swipeable
+   row of phone previews in place of the trade pills (built by landing.js; the slide in the middle is the chosen shop,
+   its site live, the others as posters; touches pass through to the row so a swipe never gets stuck in a shop). */
+@media (max-width:760px){
+  .hero[data-logo="centre"]{--u-logo-h:clamp(240px, 37svh, 330px)}   /* HQ review: the bunny leads its page, about 37% of the screen */
+  .nav{position:fixed;left:0;right:0;top:0;padding:4px 16px;transform:translateY(-100%);transition:transform .25s var(--ease)}
+  html.past-hero .nav,.nav:focus-within{transform:none}
+  .nav .logo{min-height:40px}.nav .logo .mk{width:22px;height:33px}
+  .rail{display:flex;align-self:stretch;min-width:0;max-width:100vw;gap:14px;margin:0 calc(-1 * var(--side));padding:2px calc(50vw - 115px) 4px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .rail::-webkit-scrollbar{display:none}
+  .rail:focus-visible{outline:3px solid var(--stage-accent);outline-offset:-3px}
+  .rail-s{flex:0 0 230px;margin:0;display:grid;gap:8px;justify-items:stretch;scroll-snap-align:center;opacity:.5;transition:opacity .2s}
+  .rail-s.on{opacity:1}
+  .rail-ph{padding:7px;background:#0d0b1c;border:1px solid rgba(255,246,233,.35);border-radius:28px}
+  .rail-ph .screen{aspect-ratio:390/560;border-radius:22px}
+  .rail-s iframe{pointer-events:none}
+  .rail-s figcaption{font:400 14px/1.2 var(--bf);color:var(--on-stage);text-align:center}
+  .rail-s figcaption b{font-weight:700}
+  .show .tabs,.stage>.phone{display:none}}
+@media (min-width:761px){.rail{display:none}}
+@media (max-width:760px){
+  /* only the centred shop is labelled (peeking labels collided), and dots under it show where you are in the row */
+  .rail-s figcaption{visibility:hidden;opacity:0;transition:opacity .2s}
+  .rail-s.on figcaption{visibility:visible;opacity:1}
+  .rail-dots{display:flex;justify-content:center;gap:7px;margin-top:-4px}
+  .rail-dots i{width:6px;height:6px;border-radius:50%;background:color-mix(in srgb,var(--on-stage) 30%,transparent);transition:background .2s,transform .2s}
+  .rail-dots i.on{background:var(--on-stage);transform:scale(1.25)}}
+@media (min-width:761px){.rail-dots{display:none}}

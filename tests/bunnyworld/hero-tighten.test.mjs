@@ -41,7 +41,7 @@ for (const w of [390, 1440]) test(`hero @ ${w}: logo over a one-line headline as
     // the line and the button centred and smaller below
     // one line from 1000px up; below that both loop lines break onto two (proportion spec)
     assert.equal(r.h1Lines, 1, `headline lines (${Math.round(r.h1.height)}px tall at ${r.h1Font}px)`);
-    const big = w >= 1000 ? [300, 310] : [80, 130]; // phones: a compact unit (Tristan, 2026-11-16: the logo was oversized)
+    const big = w >= 1000 ? [300, 310] : [265, 340]; // phones: the logo leads its own hero page (HQ, 2026-11-16, round 3: bigger) // phones: a compact unit (Tristan, 2026-11-16: the logo was oversized)
     assert.ok(r.mark.h >= big[0] && r.mark.h <= big[1], `the logo is big (${Math.round(r.mark.h)}px tall, want ${big})`);
     if (w >= 900) assert.ok(r.h1Font >= 120, `the headline is big (${r.h1Font}px)`);
     const midMark = r.mark.left + r.mark.w / 2, midH1 = r.h1.left + r.h1.width / 2;
@@ -72,14 +72,14 @@ for (const w of [390, 1440]) test(`Main Street @ ${w}: the question, nine plain 
       };
     });
     assert.equal(txt(r.h2), 'What kind of shop do you run?');
-    assert.match(txt(r.sub), w < 900 ? /^Tap your trade and its site opens right here\.$/ : /^Pick your trade and its site opens right here for you to try\.$/);
+    assert.match(txt(r.sub), w < 900 ? /^Swipe to see each shop’s site\.$/ : /^Pick your trade and its site opens right here for you to try\.$/);
     assert.deepEqual(r.numbers, [], 'no 01–09 numbers');
     assert.equal(r.fullSite, 0, 'no second "Open the full site" link');
     assert.equal(r.floating, 0, 'no pills or buttons laid over the preview');
     assert.deepEqual(r.opens.map(txt), ['Open Bunny Burritos ↗']);
     assert.match(txt(r.say), /^Bunny Burritos has .+\.$/, 'one sentence about the shop');
     // the sentence and the button follow the trade
-    await page.locator('#shops [role=tab]', { hasText: /clinic/i }).click();
+    if (w < 900) await railTo(page, 8); else await page.locator('#shops [role=tab]', { hasText: /clinic/i }).click();
     await page.waitForTimeout(200);
     const after = await page.evaluate(() => ({ say: document.querySelector('#shops .show-say').innerText, open: [...document.querySelectorAll('#shops a')].filter(a => /^open\s/i.test(a.innerText.trim()) && a.getBoundingClientRect().width).map(a => [a.innerText.trim(), a.getAttribute('href')]) }));
     assert.match(txt(after.say), /^Hopwell .+\.$/);
@@ -106,22 +106,41 @@ test('Main Street @ 1440: the phone stands beside the laptop, never over it, and
   } finally { await ctx.close(); }
 });
 
-for (const w of [360, 390]) test(`Main Street @ ${w}: the trades are pills you can all see, and the section fits one screen`, async () => {
+// HQ 2026-11-16 (Tristan): on phones a swipeable row of phone previews replaces the trade pills; the slide in the middle
+// is the chosen shop (its site live, the rest as posters), and the Open button and sentence follow it.
+export const railTo = (page, i) => page.evaluate(async i => { const r = document.querySelector('#shops .rail'), s = r.querySelectorAll('.rail-s')[i];
+  r.scrollTo({ left: s.offsetLeft - (r.clientWidth - s.offsetWidth) / 2, behavior: 'instant' }); await new Promise(z => setTimeout(z, 500)); }, i);
+for (const w of [360, 390]) test(`Main Street @ ${w}: a swipeable row of phone previews in place of the pills, and the section fits one screen`, async () => {
   const { ctx, page } = await site.open(URL, w, { reducedMotion: 'reduce' });
   try {
     const r = await page.evaluate(() => {
-      const s = document.querySelector('#shops'), list = s.querySelector('[role=tablist]');
-      const tabs = [...s.querySelectorAll('[role=tab]')].map(t => t.getBoundingClientRect());
-      const nav = document.querySelector('.nav').getBoundingClientRect().height;
-      return { n: tabs.length, offRight: tabs.filter(t => t.right > innerWidth || t.left < 0).length, scrolls: list.scrollWidth - list.clientWidth, rows: new Set(tabs.map(t => Math.round(t.top))).size,
-        labels: [...s.querySelectorAll('[role=tab]')].map(t => t.innerText.trim()), h: s.offsetHeight, room: innerHeight - nav };
+      const s = document.querySelector('#shops'), rail = s.querySelector('.rail'), nav = document.querySelector('.nav').getBoundingClientRect().height;
+      const vis = e => { const b = e.getBoundingClientRect(); return b.width > 1 && b.height > 1 && getComputedStyle(e).visibility !== 'hidden'; };
+      return { pills: [...s.querySelectorAll('[role=tab]')].filter(vis).length, rail: !!rail && vis(rail), slides: rail ? rail.querySelectorAll('.rail-s').length : 0,
+        snap: rail && getComputedStyle(rail).scrollSnapType, labels: rail ? [...rail.querySelectorAll('.rail-s figcaption b')].map(b => b.textContent.trim()) : [],
+        h: s.offsetHeight, room: innerHeight - nav, over: document.documentElement.scrollWidth - innerWidth };
     });
-    assert.equal(r.n, 9);
-    assert.equal(r.offRight, 0, 'every trade on screen, no sideways row');
-    assert.ok(r.scrolls <= 0, 'the trade list does not scroll sideways');
-    assert.ok(r.rows <= 4, `pills wrap into a few rows (${r.rows})`);
+    assert.equal(r.pills, 0, 'no trade pills on phones');
+    assert.ok(r.rail && r.slides === 9, `a row of nine phone previews (${r.slides})`);
+    assert.match(r.snap || '', /x mandatory/, 'each swipe lands on one shop');
     assert.deepEqual(r.labels, ['Restaurant', 'Auto shop', 'Bakery', 'Barber', 'Bar', 'Farm', 'Gift shop', 'Landscaping', 'Clinic']);
-    assert.ok(r.h <= r.room, `the section fits one screen under the sticky bar (${r.h}px of ${r.room})`);
+    assert.ok(r.h <= r.room, `the section fits one screen under the bar (${r.h}px of ${r.room})`);
+    assert.ok(r.over <= 0, 'the row scrolls inside itself, not the page');
+    // swipe to the barber: it becomes the chosen shop
+    await railTo(page, 3);
+    const t = await page.evaluate(() => ({ open: document.querySelector('#shops .show-open').innerText.replace(/\s+/g, ' ').trim(), href: document.querySelector('#shops .show-open').getAttribute('href'),
+      say: document.querySelector('#shops .show-say').innerText, live: [...document.querySelectorAll('#shops .rail-s')].map(x => !!x.querySelector('iframe')?.getAttribute('src')),
+      through: getComputedStyle(document.querySelector('#shops .rail-s iframe')).pointerEvents }));
+    assert.equal(t.open, 'Open Hare Today ↗'); assert.equal(t.href, 'hare-today/'); assert.match(t.say, /^Hare Today /);
+    assert.deepEqual(t.live.map((x, k) => x && k === 3 ? 'live' : x ? 'extra' : '-').filter(x => x !== '-'), ['live'], 'only the chosen slide runs its site live');
+    assert.equal(t.through, 'none', 'a thumb on the preview swipes the row, it never gets stuck inside the shop');
+    // only the centred shop is labelled (peeking labels would collide), and position dots show where you are
+    const lab = await page.evaluate(() => { const shown = e => { const c = getComputedStyle(e); return c.visibility !== 'hidden' && +c.opacity > 0.1 && e.getBoundingClientRect().width > 0; };
+      const dots = [...document.querySelectorAll('#shops .rail-dots i')];
+      return { caps: [...document.querySelectorAll('#shops .rail-s figcaption')].filter(shown).map(f => f.innerText.replace(/\s+/g, ' ').trim()), dots: dots.length, on: dots.findIndex(d => d.classList.contains('on')),
+        dotsBelow: dots.length ? dots[0].getBoundingClientRect().top > document.querySelector('#shops .rail-s.on figcaption').getBoundingClientRect().bottom - 1 : false }; });
+    assert.deepEqual(lab.caps, ['Barber Hare Today'], 'only the centred shop is labelled');
+    assert.equal(lab.dots, 9); assert.equal(lab.on, 3, 'the fourth dot is lit'); assert.ok(lab.dotsBelow, 'the dots sit under the label');
   } finally { await ctx.close(); }
 });
 
@@ -150,6 +169,7 @@ for (const w of [390, 1440]) test(`hero @ ${w}: sizes follow the logo (u = its s
         line: parseFloat(getComputedStyle(lede).fontSize), btnH: go.getBoundingClientRect().height, btnFont: parseFloat(getComputedStyle(go).fontSize) };
     });
     const near = (a, b, tol = 1) => Math.abs(a - b) <= tol;
+    if (w < 1000) r.u = Math.min(24, (w - 40) / 42); // phones: the logo is sized from the screen's height (bigger); u still sets the type
     assert.ok(near(r.ratio, 2 / 3, 0.01), `logo is 2:3 (${r.ratio})`);
     if (w >= 1000) assert.ok(near(r.u, 24, 0.5), `u is 24px on desktop (${r.u})`);
     assert.ok(near(r.font, 6 * r.u), `headline is 6u (${r.font} vs u ${r.u})`);

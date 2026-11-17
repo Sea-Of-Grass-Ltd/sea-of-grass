@@ -45,9 +45,9 @@ for (const w of [360, 390]) test(`phone @ ${w}: one short demo bar, the name onc
     assert.match(r.barText, /Sea of Grass/); assert.match(r.barText, /nothing is sent/i); assert.ok(r.link, 'the Sea of Grass link stays');
     assert.deepEqual(r.names, ['h1'], `"Bunny World" shows once, in the hero (saw ${r.names.join(', ')})`);
     assert.equal(r.linesTo, 1, '"Bunny World." is one line'); assert.equal(r.linesFrom, 1, '"Hop with style." is one line'); assert.ok(!r.spill, 'and it fits the screen');
-    assert.ok(r.logoH <= 130, `the logo is not oversized (${Math.round(r.logoH)}px)`);
+    assert.ok(r.logoH >= 0.35 * 844 - 30 && r.logoH <= 0.40 * 844, `the bunny leads the hero page, about 35-40% of the screen (${Math.round(r.logoH)}px)`); // HQ review 2026-11-16
     assert.ok(r.goH <= 44, `"Pick your shop" is not oversized (${Math.round(r.goH)}px)`);
-    assert.ok(r.unit <= 300, `logo, headline, line and button are one compact unit (${Math.round(r.unit)}px)`);
+    assert.ok(r.unit <= 640, `logo, headline, line and button are one unit (${Math.round(r.unit)}px)`);
   } finally { await ctx.close(); }
 });
 
@@ -105,6 +105,24 @@ test('phone: a price card opens inside its page without the snap pulling it away
   } finally { await ctx.close(); }
 });
 
+for (const w of [360, 390]) test(`phone @ ${w}: no nav on the hero page; after it, a slim sticky bar`, async () => {
+  const { ctx, page } = await site.open(URL, w, { reducedMotion: 'reduce' });
+  try {
+    const nav = () => page.evaluate(() => { const r = document.querySelector('.nav').getBoundingClientRect(); return { top: r.top, bottom: r.bottom, h: r.height }; });
+    const atTop = await nav();
+    assert.ok(atTop.bottom <= 0, `the nav is out of sight on the hero (${JSON.stringify(atTop)})`);
+    await page.evaluate(() => { document.documentElement.style.scrollSnapType = 'none'; scrollTo(0, document.querySelector('#shops').getBoundingClientRect().top + scrollY); });
+    await page.waitForTimeout(600);
+    const after = await nav();
+    assert.ok(Math.abs(after.top) <= 1 && after.h <= 52, `then a slim bar at the top (${JSON.stringify(after)})`);
+    await page.evaluate(() => scrollTo(0, 0)); await page.waitForTimeout(600);
+    assert.ok((await nav()).bottom <= 0, 'and it hides again back on the hero');
+    // a keyboard user who tabs into it still sees it
+    await page.evaluate(() => document.querySelector('.nav .buy-btn').focus()); await page.waitForTimeout(400);
+    assert.ok((await nav()).top >= -1, 'focus inside the nav shows it');
+  } finally { await ctx.close(); }
+});
+
 test('desktop 1440 stays as approved: full demo bar, the nav wordmark, the big unit', async () => {
   const { ctx, page } = await site.open(URL, 1440, { reducedMotion: 'reduce' });
   try {
@@ -114,6 +132,8 @@ test('desktop 1440 stays as approved: full demo bar, the nav wordmark, the big u
     assert.ok(r.word > 40, 'the nav wordmark shows on desktop');
     assert.ok(Math.abs(r.logo - 306) <= 1 && Math.abs(r.font - 144) <= 1, `logo 306px, headline 144px (${r.logo}, ${r.font})`);
     const o = await page.evaluate(() => ({ plans: document.querySelector('#plans').getBoundingClientRect().top, shops: document.querySelector('#shops').getBoundingClientRect().top, fix: document.querySelector('.hero a[href="#plans"]')?.getBoundingClientRect().width || 0, snap: getComputedStyle(document.documentElement).scrollSnapType }));
-    assert.ok(o.plans < o.shops, 'desktop order: prices before shops'); assert.equal(o.fix, 0, 'no extra prices link on desktop'); assert.equal(o.snap, 'none', 'no snapping on desktop');
+    assert.ok(o.plans < o.shops, 'desktop order: prices before shops');
+    const n = await page.evaluate(() => { const r = document.querySelector('.nav').getBoundingClientRect(); return { top: r.top, h: r.height, pos: getComputedStyle(document.querySelector('.nav')).position }; });
+    assert.ok(n.top >= 30 && n.h > 60 && n.pos === 'sticky', `the desktop nav is unchanged (${JSON.stringify(n)})`); assert.equal(o.fix, 0, 'no extra prices link on desktop'); assert.equal(o.snap, 'none', 'no snapping on desktop');
   } finally { await ctx.close(); }
 });
