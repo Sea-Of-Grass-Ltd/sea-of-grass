@@ -8,7 +8,7 @@
 (() => {
   const svg = document.querySelector('svg.bw-card');
   if (!svg || !('IntersectionObserver' in window)) return;
-  const DATA = {"globe":["M-39.4 -25H39.4","M-46.67 0H46.67","M-39.4 25H39.4","M0 -46.67V46.67","M0 -46.67A70 70 0 0 0 0 46.67","M0 -46.67A70 70 0 0 1 0 46.67"],"taproom":["M0 26.91C-35.88 10.53 -35.88 -19.89 0 -33.34","M0 26.91C35.88 10.53 35.88 -19.89 0 -33.34","M-26.75 -7.02C-15.05 -7.02 -7.02 7.02 0 -7.02C7.02 7.02 15.05 -7.02 26.75 -7.02","M0 -33.34V-46.67"],"giftshop":["M-26.91 -7.02H26.91V18.72H-26.91Z","M0 -7.02V18.72","M-8.19 -7.02C-10.53 -26.91 -30.42 -29.25 -25.74 -7.02","M8.19 -7.02C10.53 -26.91 30.42 -29.25 25.74 -7.02"],"clinic":["M-9.36 -26.91H9.36V-9.36H26.91V9.36H9.36V26.91H-9.36V9.36H-26.91V-9.36H-9.36Z"],"farm":["M-26.91 23.4V-4.68L-17.55 -21.06L0 -30.42L17.55 -21.06L26.91 -4.68V23.4","M-26.91 23.4H26.91","M-10.53 23.4V7.02H10.53V23.4","M-7.02 -9.36H7.02","M-40.38 23.4H40.38"],"landscaping":["M-26.91 9.36L-14.04 -4.68H-19.89L-7.02 -18.72H-12.87L0 -32.76L12.87 -18.72H7.02L19.89 -4.68H14.04L26.91 9.36","M-26.91 9.36H26.91","M0 9.36V23.4","M-40.38 23.4H40.38"],"bakery":["M-33.26 2.34A33.34 33.34 0 0 1 33.26 2.34","M33.26 2.34A8.32 8.32 0 0 0 16.63 2.34A8.32 8.32 0 0 0 0 2.34A8.32 8.32 0 0 0 -16.63 2.34A8.32 8.32 0 0 0 -33.26 2.34","M-22.23 15.79L-16.38 26.91H16.38L22.23 15.79","M0 15.79V26.91"],"auto":["M33.34 0A33.34 33.34 0 1 1 -33.34 0A33.34 33.34 0 1 1 33.34 0Z","M8.19 0A8.19 8.19 0 1 1 -8.19 0A8.19 8.19 0 1 1 8.19 0Z","M0 -12.29L0 -28.08","M11.69 -3.79L26.71 -8.68","M7.22 9.93L16.51 22.72","M-7.22 9.93L-16.51 22.72","M-11.69 -3.79L-26.71 -8.68"],"barber":["M30 -35.76L-4.04 -3.38L-10.16 12.1","M30 -35.76L-10.16 12.1","M-7.23 18.37A8.19 8.19 0 1 1 -23.61 18.37A8.19 8.19 0 1 1 -7.23 18.37Z","M-30 -35.76L4.04 -3.38L10.16 12.1","M-30 -35.76L10.16 12.1","M23.61 18.37A8.19 8.19 0 1 1 7.23 18.37A8.19 8.19 0 1 1 23.61 18.37Z"],"restaurant":["M17.85 -43.13L9.17 -32.77A14.04 14.04 0 0 0 30.69 -14.73L39.37 -25.07","M30 -35.76L-30 35.76","M-21.43 -25.54A7.31 9.65 -40 1 1 -9.02 -10.75A7.31 9.65 -40 1 1 -21.43 -25.54Z","M-9.02 -10.75L30 35.76"]}, CHOREO = {
+  const DATA = {"globe":["M-39.4 -25H39.4","M-46.67 0H46.67","M-39.4 25H39.4","M0 -46.67V46.67","M0 -46.67A70 70 0 0 0 0 46.67","M0 -46.67A70 70 0 0 1 0 46.67"],"taproom":["M0 26.91C-35.88 10.53 -35.88 -19.89 0 -33.34","M0 26.91C35.88 10.53 35.88 -19.89 0 -33.34","M-26.75 -7.02C-15.05 -7.02 -7.02 7.02 0 -7.02C7.02 7.02 15.05 -7.02 26.75 -7.02","M0 -33.34V-46.67"],"giftshop":["M-26.91 -7.02H26.91V18.72H-26.91Z","M0 -7.02V18.72","M-8.19 -7.02C-10.53 -26.91 -30.42 -29.25 -25.74 -7.02","M8.19 -7.02C10.53 -26.91 30.42 -29.25 25.74 -7.02"],"clinic":["M-9.36 -26.91H9.36V-9.36H26.91V9.36H9.36V26.91H-9.36V9.36H-26.91V-9.36H-9.36Z"],"farm":["M-26.91 23.4V-4.68L-17.55 -21.06L0 -30.42L17.55 -21.06L26.91 -4.68V23.4","M-26.91 23.4H26.91","M-10.53 23.4V7.02H10.53V23.4","M-7.02 -9.36H7.02","M-40.38 23.4H40.38"],"landscaping":["M-26.91 9.36L-14.04 -4.68H-19.89L-7.02 -18.72H-12.87L0 -32.76L12.87 -18.72H7.02L19.89 -4.68H14.04L26.91 9.36","M-26.91 9.36H26.91","M0 9.36V23.4","M-40.38 23.4H40.38"],"bakery":["M-23.4 4.68C-33.93 2.34 -33.93 -12.87 -22.23 -15.21C-19.89 -25.74 -9.36 -28.08 -3.51 -29.25C-1.17 -29.83 0 -31.59 0 -33.34C0 -31.59 1.17 -29.83 3.51 -29.25C9.36 -28.08 19.89 -25.74 22.23 -15.21C33.93 -12.87 33.93 2.34 23.4 4.68","M-22.23 -15.21C-9.36 -10.53 9.36 -10.53 22.23 -15.21","M-23.4 4.68H23.4L16.38 26.91H-16.38Z","M0 4.68V26.91"],"auto":["M33.34 0A33.34 33.34 0 1 1 -33.34 0A33.34 33.34 0 1 1 33.34 0Z","M8.19 0A8.19 8.19 0 1 1 -8.19 0A8.19 8.19 0 1 1 8.19 0Z","M0 -12.29L0 -28.08","M11.69 -3.79L26.71 -8.68","M7.22 9.93L16.51 22.72","M-7.22 9.93L-16.51 22.72","M-11.69 -3.79L-26.71 -8.68"],"barber":["M30 -35.76L-4.04 -3.38L-10.16 12.1","M30 -35.76L-10.16 12.1","M-7.23 18.37A8.19 8.19 0 1 1 -23.61 18.37A8.19 8.19 0 1 1 -7.23 18.37Z","M-30 -35.76L4.04 -3.38L10.16 12.1","M-30 -35.76L10.16 12.1","M23.61 18.37A8.19 8.19 0 1 1 7.23 18.37A8.19 8.19 0 1 1 23.61 18.37Z"],"restaurant":["M17.85 -43.13L9.17 -32.77A14.04 14.04 0 0 0 30.69 -14.73L39.37 -25.07","M30 -35.76L-30 35.76","M-21.43 -25.54A7.31 9.65 -40 1 1 -9.02 -10.75A7.31 9.65 -40 1 1 -21.43 -25.54Z","M-9.02 -10.75L30 35.76"]}, CHOREO = {
 // Hand choreography per step. Indices are stroke order in build.py.
 // m: [from, to, t0, t1, ease]   g: [to, x, y, t0, t1, ease]   s: [from, x, y, t0, t1, ease]
 // off: [stroke, t0, t1, anchorIndex?, ease]   on: [stroke, t0, t1, anchorIndex?, ease]
@@ -60,10 +60,10 @@
   on: [[2, 0.75, 1]],
 },
 
-// bakery: 0 dome, 1 scalloped edge, 2 cup, 3 pleat
-// The tiers round up into the dome; the tree's base drops and folds up into the cup while
+// bakery (card size): 0 frosting with its peak, 1 swirl line, 2 cup, 3 pleat
+// The tiers round up into the frosting; the tree's base drops and folds up into the cup while
 // the trunk slides down into the pleat and the ground slides away into the ring; once the
-// dome is in place the scalloped edge draws along its foot.
+// frosting is in place the swirl line draws across it.
 "landscaping>bakery": {
   m: [[0, 0, 0.05, 0.7], [1, 2, 0.1, 0.75], [2, 3, 0.15, 0.8]],
   off: [[3, 0, 0.25, undefined, "lin"]],
@@ -71,11 +71,11 @@
 },
 
 // auto: 0 tyre, 1 hub, 2 spoke up, 3 upper right, 4 lower right, 5 lower left, 6 upper left
-// The dome is already the top of the tyre's circle: it runs on round into the full tyre.
-// The pleat and scalloped edge slide back into the cup and dome, the cup curls up into the
-// hub, and the spokes shoot out of the hub one after another.
+// The pleat and swirl slide back into the cup and frosting; the cup curls up into the hub,
+// then the frosting runs on round into the tyre, and the spokes shoot out of the hub one
+// after another.
 "bakery>auto": {
-  m: [[0, 0, 0.1, 0.8], [2, 1, 0.18, 0.66]],
+  m: [[0, 0, 0.25, 0.85], [2, 1, 0.08, 0.55]],
   off: [[3, 0, 0.2], [1, 0, 0.2, undefined, "lin"]],
   on: [[2, 0.66, 0.88], [3, 0.69, 0.91], [4, 0.72, 0.94], [5, 0.75, 0.97], [6, 0.78, 1]],
 },
@@ -116,7 +116,7 @@
 },
 };
   const ORDER = ['globe', 'taproom', 'giftshop', 'clinic', 'farm', 'landscaping', 'bakery', 'auto', 'barber', 'restaurant'];
-  const GROUND = '#1E1A3A', COLOR = {"globe": "#1E1A3A", "restaurant": "#E10600", "auto": "#FFC000", "bakery": "#5A0C3C", "barber": "#BF1B17", "taproom": "#2B3D73", "farm": "#F2B705", "giftshop": "#9E39E5", "landscaping": "#07503F", "clinic": "#55646B"};   // each shop's accent; the globe's lines are the ground, like the live logo's cut
+  const GROUND = '#1E1A3A', COLOR = {"globe": "#1E1A3A", "restaurant": "#E10600", "auto": "#FFC000", "bakery": "#E0408A", "barber": "#BF1B17", "taproom": "#2B3D73", "farm": "#F2B705", "giftshop": "#9E39E5", "landscaping": "#07503F", "clinic": "#55646B"};   // each shop's accent; the globe's lines are the ground, like the live logo's cut
   const TR = 0.56, HOLD = 0.84, STEP = TR + HOLD, N = 96, CYCLE = ORDER.length * STEP, W = 20 / 3, RING = 46.67;
   const NS = 'http://www.w3.org/2000/svg';
   const lines = svg.querySelector('[data-lines]'), body = svg.querySelector('[data-body]'), ears = svg.querySelector('[data-ears]');
