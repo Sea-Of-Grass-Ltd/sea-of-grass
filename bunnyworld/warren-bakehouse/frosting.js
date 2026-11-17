@@ -79,10 +79,10 @@
     var any=false;for(var i=0;i<bands.length;i++){if(bands[i].on){draw(bands[i],now);any=true}}
     raf=any?requestAnimationFrame(frame):0}
   var raf=0;function kick(){if(!raf&&!still)raf=requestAnimationFrame(frame)}
-  // the hero drips only under its pink half (not on phones, where the photo comes last); the cake panel drips full width
+  // the hero drips only under its pink half (not on phones, where the photo comes last)
   add('.hero',{seed:3,region:function(r){var p=document.querySelector('.hero-photo'),pr=p&&p.getBoundingClientRect();
     return pr&&pr.left>r.left+r.width*.3?{x:0,w:pr.left-r.left}:null}});
-  add('.cake',{seed:11});
+  // no drips on the green cake panel: dark green reads as slime, not icing (Tristan, 11-17: "green is even worse")
   function relayout(){bands.forEach(function(b){layout(b);if(b.W)draw(b,performance.now())})}
   relayout();addEventListener('resize',relayout);document.fonts&&document.fonts.ready.then(relayout);
   if(still)return;
