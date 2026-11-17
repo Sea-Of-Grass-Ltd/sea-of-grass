@@ -97,12 +97,13 @@ h2{font-size:clamp(36px,5vw,72px);line-height:.95;letter-spacing:-.02em}
 /* ---- deluxe pass (Tristan, 2026-11-17): gold foil on the logo and prices, engraved frames on the two paper cards,
    one flourish rule under the bread heading, a foil drop cap in "Come by". Foil uses dark golds so the type stays
    readable on cream; foil.js moves the glint (--fx) with scroll and phone tilt. ---- */
-.foil{background:linear-gradient(100deg,#5E3F08 0%,#7A5612 35%,#A57A22 45%,#E2BE6A 50%,#A57A22 55%,#7A5612 65%,#5E3F08 100%);
+.foil{background:linear-gradient(100deg,#5E3F08 0%,#6E4A0C 40%,#9A7020 48%,#B88A2C 50%,#9A7020 52%,#6E4A0C 60%,#5E3F08 100%);
  background-size:300% 100%;background-position:var(--fx,30%) 0;-webkit-background-clip:text;background-clip:text;color:#7A5612;-webkit-text-fill-color:transparent}
-.btn.ghost:hover .foil{background-image:linear-gradient(100deg,#C9A045 0%,#E9C66E 40%,#FFF1C4 48%,#E9C66E 56%,#C9A045 100%)}
-.cart .price{background:linear-gradient(100deg,#5E3F08 0%,#7A5612 35%,#A57A22 45%,#E2BE6A 50%,#A57A22 55%,#7A5612 65%,#5E3F08 100%);
+.btn .foil{background-image:linear-gradient(100deg,#5A0C3C 0%,#5A0C3C 44%,#8C6418 48%,#B88A2C 50%,#8C6418 52%,#5A0C3C 56%,#5A0C3C 100%)}
+.btn.ghost:hover .foil{background:none;-webkit-text-fill-color:currentColor}
+.cart .price{background:linear-gradient(100deg,#5A0C3C 0%,#5A0C3C 44%,#8C6418 48%,#B88A2C 50%,#8C6418 52%,#5A0C3C 56%,#5A0C3C 100%);
  background-size:300% 100%;background-position:var(--fx,30%) 0;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.total b{background:linear-gradient(100deg,#5E3F08 0%,#7A5612 35%,#A57A22 45%,#E2BE6A 50%,#A57A22 55%,#7A5612 65%,#5E3F08 100%);
+.total b{background:linear-gradient(100deg,#5A0C3C 0%,#5A0C3C 44%,#8C6418 48%,#B88A2C 50%,#8C6418 52%,#5A0C3C 56%,#5A0C3C 100%);
  background-size:300% 100%;background-position:var(--fx,30%) 0;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .paper,.cart{position:relative}
 .paper::before,.cart::before{content:"";position:absolute;inset:6px;border:40px solid transparent;border-image:url(frame.svg?v=3) 40 stretch;pointer-events:none}
