@@ -85,3 +85,13 @@ h2{font-size:clamp(36px,5vw,72px);line-height:.95;letter-spacing:-.02em}
 }
 /* numerals in the plain face, not the serif display (critic C, 2026-11-16): day picker and the hold count */
 .q-day b,.cart h3 .count{font-family:var(--bf);font-weight:500;font-variant-numeric:lining-nums tabular-nums}
+/* Tristan's EYESY synth (Glitter Bomb, halftone dots) on the pink panel, faded out around the text (hero-viz.js) */
+.hero{position:relative;overflow:hidden}
+.hero-viz{position:absolute;left:0;top:0;bottom:0;width:var(--vw,100%);pointer-events:none;z-index:0;
+ -webkit-mask-image:var(--vm);mask-image:var(--vm)}
+.hero-viz canvas{display:block;width:100%;height:100%;opacity:.14}
+.hero-in{position:relative;z-index:1}
+/* icing drips off the pink panel: Grasset's "Drops" band, hung upside down (hero-drips.js) */
+.drips{position:relative;height:0;z-index:2;pointer-events:none}
+.drips canvas{position:absolute;left:0;top:-1px;height:60px;width:var(--dw,50%)}
+@media (max-width:860px){.drips{display:none}}
