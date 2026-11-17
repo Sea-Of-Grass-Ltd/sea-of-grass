@@ -1,7 +1,8 @@
 // Home page Work section: the Bunny World card's tile is a live title card (Tristan, 2026-11-16), not a video.
-// The bunny mark does the dance (bounce + choreographed icon morphs, the globe at hold exactly as the live logo) and
-// "Bunny World." under it gets a colour sweep through the five looks that lands on the beat. It starts only when the
-// card is near the screen, pauses off screen and in a hidden tab, is static under reduced motion, and never shifts layout.
+// Revised after two critic reviews: no wordmark (the card title says it); the bunny, centred at about 72-75% of the tile's
+// height, does the dance (bounce + choreographed icon morphs, beat about 1.4 s, the icon swapping at the top of the hop);
+// each icon lands in its shop's accent colour; the globe at hold is exactly the live logo. It starts only when the card is
+// near the screen, pauses off screen and in a hidden tab, is static under reduced motion, and never shifts layout.
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { startSite } from '../lib/site.mjs';
@@ -16,7 +17,7 @@ const info = card => {
   const r = tile?.getBoundingClientRect();
   return {
     video: !!tile?.querySelector('video'), svg: !!svg, state: svg?.dataset.state, frames: +(svg?.dataset.frames || 0),
-    word: [...(svg?.querySelectorAll('.bw-word tspan') || [])].map(t => t.textContent).join(''),
+    word: svg?.querySelector('text')?.textContent || '', bunny: svg ? Math.round(svg.querySelector('[data-body]').getBoundingClientRect().height / r.height * 100) : 0,
     lines: svg?.querySelectorAll('[data-lines] path').length || 0,
     box: r ? [r.width, r.height].map(Math.round).join('x') : '', top: r ? Math.round(r.top + scrollY) : 0,
     title: a?.querySelector('b')?.textContent.replace(/\s+/g, ' ').trim(), type: a?.querySelector('.cb-type')?.textContent,
@@ -31,7 +32,8 @@ for (const w of [390, 1440]) test(`the tile is a live title card (no video), laz
     const top = await page.evaluate(info, CARD);
     assert.equal(top.video, false, 'no video in the tile');
     assert.ok(top.svg, 'an SVG title card sits in the tile');
-    assert.equal(top.word, 'Bunny World.', 'the wordmark reads "Bunny World."');
+    assert.equal(top.word, '', 'no wordmark in the tile (the card title below says it)');
+    assert.ok(top.bunny >= 70 && top.bunny <= 77, `the bunny fills about 72-75% of the tile's height (${top.bunny}%)`);
     assert.equal(top.frames, 0, `nothing animates before the card is near (frames ${top.frames}, state ${top.state})`);
     assert.equal(top.href, '/bunnyworld/'); assert.equal(top.title, 'Bunny World 01'); assert.equal(top.type, 'Web demos');
     assert.equal(top.line, 'Nine bunny-run shops, each a working site in its own style.');
@@ -54,20 +56,29 @@ test('the globe at hold is the live logo, and the dance changes icons on the bea
     const at = t => page.evaluate(t => { const s = document.querySelector('svg.bw-card'); s.__bw.renderAt(t); return [...s.querySelectorAll('[data-lines] path')].map(p => p.getAttribute('d')).join('|'); }, t);
     const globe = await at(0.1);
     assert.equal(globe, ['M-39.4 -25H39.4', 'M-46.67 0H46.67', 'M-39.4 25H39.4', 'M0 -46.67V46.67', 'M0 -46.67A70 70 0 0 0 0 46.67', 'M0 -46.67A70 70 0 0 1 0 46.67'].join('|'), 'globe hold = the live logo lines');
-    assert.notEqual(await at(2.0), globe, 'the next beat holds a different icon');
-    assert.equal(await at(19.1), globe, 'the cycle comes back to the globe');
+    assert.notEqual(await at(1.4 + 0.3), globe, 'the next beat (1.4 s on) holds a different icon');
+    assert.equal(await at(14 + 0.1), globe, 'the 14 s cycle comes back to the globe');
   } finally { await ctx.close(); }
 });
 
-test('the word sweep lands on the beat: flat ink at hold, the five looks while the bunny is in the air', async () => {
+test('each icon lands in its shop colour on the off-white bunny; the globe stays the live logo; the hop is high', async () => {
   const { ctx, page } = await site.open('/', 1440);
   try {
     await toCard(page);
-    const fills = t => page.evaluate(t => { const s = document.querySelector('svg.bw-card'); s.__bw.renderAt(t); return [...s.querySelectorAll('.bw-word tspan')].map(e => getComputedStyle(e).fill); }, t);
-    const hold = await fills(0.6), air = await fills(1.45), landed = await fills(1.9 + 0.3);
-    assert.equal(new Set(hold).size, 1, `one flat ink at hold: ${[...new Set(hold)]}`);
-    assert.ok(new Set(air).size >= 3, `mid-hop the letters run through the looks' colours: ${[...new Set(air)]}`);
-    assert.deepEqual(new Set(landed), new Set(hold), 'back to flat ink after landing');
+    const at = t => page.evaluate(t => {
+      const s = document.querySelector('svg.bw-card'); s.__bw.renderAt(t);
+      const tile = s.getBoundingClientRect(), disc = s.querySelector('circle[r="50"]').getBoundingClientRect();
+      return { stroke: getComputedStyle(s.querySelector('[data-lines]')).stroke, ground: getComputedStyle(s.querySelector(':scope > rect')).fill,
+        bunny: getComputedStyle(s.querySelector('[data-sil]')).fill, top: disc.top, h: tile.height };
+    }, t);
+    const globe = await at(0.3), auto = await at(7 * 1.4 + 0.3), clinic = await at(3 * 1.4 + 0.3);
+    assert.equal(globe.stroke, globe.ground, 'the globe lines are the ground colour, exactly like the live logo cut');
+    assert.equal(auto.stroke, 'rgb(255, 192, 0)', 'Bunny Auto icon in its accent');
+    assert.notEqual(clinic.stroke, auto.stroke, 'each shop its own colour');
+    assert.equal(auto.bunny, 'rgb(244, 241, 232)', 'the bunny stays off-white');
+    const rest = await at(0.5), apex = await at(0.84 + 0.28);
+    const hop = (rest.top - apex.top) / rest.h;
+    assert.ok(hop >= 0.08 && hop <= 0.11, `hop is 8-10% of the tile's height (${(hop * 100).toFixed(1)}%)`);
   } finally { await ctx.close(); }
 });
 
@@ -89,15 +100,13 @@ test('pauses off screen and in a hidden tab, resumes on return', async () => {
   } finally { await ctx.close(); }
 });
 
-test('reduced motion: a still mark (the live logo globe) and a still wordmark', async () => {
+test('reduced motion: a still mark (the live logo globe)', async () => {
   const { ctx, page } = await site.open('/', 1440, { reducedMotion: 'reduce' });
   try {
     await toCard(page);
     const a = await page.evaluate(info, CARD); await page.waitForTimeout(1000); const b = await page.evaluate(info, CARD);
     assert.equal(b.state, 'static'); assert.equal(b.frames, a.frames, 'nothing animates');
     assert.equal(b.lines, 6, 'the globe (six lines) shows');
-    const fills = await page.evaluate(() => [...document.querySelectorAll('svg.bw-card .bw-word tspan')].map(e => getComputedStyle(e).fill));
-    assert.equal(new Set(fills).size, 1, 'the wordmark is one flat ink');
   } finally { await ctx.close(); }
 });
 
