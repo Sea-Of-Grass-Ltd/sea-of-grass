@@ -40,7 +40,7 @@ $('notMemberOut').addEventListener('click', async () => { if (sb) await sb.auth.
 
 let started = false;
 async function onSession(session) {
-  if (!session) { started = false; teardown(); $('notMember').hidden = true; $('gateForms').hidden = false; showGate(); return; }
+  if (!session) { started = false; wipe(); $('notMember').hidden = true; $('gateForms').hidden = false; showGate(); return; }
   if (started) return;
   started = true;
   const { data: member, error } = await sb.rpc('is_sog_member');
@@ -276,6 +276,13 @@ async function loadVisits() {
 }
 let channel = null;
 function teardown() { if (channel && sb) { sb.removeChannel(channel); channel = null; } }
+// On sign-out, drop every stop and visit from memory and the page, not just hide them.
+function wipe() {
+  teardown();
+  setStops([]); rows = []; loaded = false;
+  ['stopList', 'list', 'strip', 'regionChips', 'personChips'].forEach(id => { $(id).innerHTML = ''; });
+  biz.innerHTML = ''; $('stopsLede').textContent = ''; $('whoami').textContent = ''; statusEl.textContent = '';
+}
 let booted = false;
 async function boot() {
   if (!booted) {
