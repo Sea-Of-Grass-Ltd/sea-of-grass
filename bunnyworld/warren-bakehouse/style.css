@@ -94,3 +94,19 @@ h2{font-size:clamp(36px,5vw,72px);line-height:.95;letter-spacing:-.02em}
 /* frosting dripping off the flat colour panels (frosting.js) */
 .drips{position:relative;height:0;z-index:2;pointer-events:none}
 .drips canvas{position:absolute;left:var(--dl,0);top:-1px;height:96px;width:var(--dw,100%)}
+/* ---- deluxe pass (Tristan, 2026-11-17): gold foil on the logo and prices, engraved frames on the two paper cards,
+   one flourish rule under the bread heading, a foil drop cap in "Come by". Foil uses dark golds so the type stays
+   readable on cream; foil.js moves the glint (--fx) with scroll and phone tilt. ---- */
+.foil{background:linear-gradient(100deg,#5E3F08 0%,#7A5612 35%,#A57A22 45%,#E2BE6A 50%,#A57A22 55%,#7A5612 65%,#5E3F08 100%);
+ background-size:300% 100%;background-position:var(--fx,30%) 0;-webkit-background-clip:text;background-clip:text;color:#7A5612;-webkit-text-fill-color:transparent}
+.btn.ghost:hover .foil{background-image:linear-gradient(100deg,#C9A045 0%,#E9C66E 40%,#FFF1C4 48%,#E9C66E 56%,#C9A045 100%)}
+.cart .price{background:linear-gradient(100deg,#5E3F08 0%,#7A5612 35%,#A57A22 45%,#E2BE6A 50%,#A57A22 55%,#7A5612 65%,#5E3F08 100%);
+ background-size:300% 100%;background-position:var(--fx,30%) 0;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.total b{background:linear-gradient(100deg,#5E3F08 0%,#7A5612 35%,#A57A22 45%,#E2BE6A 50%,#A57A22 55%,#7A5612 65%,#5E3F08 100%);
+ background-size:300% 100%;background-position:var(--fx,30%) 0;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.paper,.cart{position:relative}
+.paper::before,.cart::before{content:"";position:absolute;inset:6px;border:40px solid transparent;border-image:url(frame.svg?v=3) 40 stretch;pointer-events:none}
+.paper{padding:clamp(46px,4.6vw,60px)}
+.cart{padding:46px;border:0}
+.bread .head h2::after{content:"";display:block;width:200px;height:18px;margin-top:14px;background:url(rule.svg) no-repeat left center/contain}
+.visit > div > p:first-of-type::first-letter{float:left;font:400 4.2em/.8 var(--hf);margin:.06em .1em 0 0;color:#8C6418}
