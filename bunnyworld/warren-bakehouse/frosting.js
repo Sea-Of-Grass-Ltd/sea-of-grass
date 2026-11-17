@@ -1,8 +1,8 @@
 /* Frosting on the bottom edge of Warren's flat colour panels (Tristan, 2026-11-16; reworked 11-17 after
    "it just looks like running paint"). Frosting, not paint: a thick lumpy lip, short fat rounded drips,
    a soft shadow underneath, a darker rim where the frosting curls under, and a glossy highlight streak.
-   It moves like something stiff: drips breathe a little, give slightly when you scroll fast, and now and
-   then one creeps a little longer, holds, and pulls back. Nothing falls off. */
+   It moves like icing setting: drips run, slow down and set; now and
+   then one runs a little further and stays. It runs down when the panel first comes into view. */
 (function(){
   var still=matchMedia('(prefers-reduced-motion: reduce)').matches, H=96;
   var bands=[], vel=0, lastY=scrollY, lastT=performance.now();
@@ -46,13 +46,16 @@
     c.quadraticCurveTo(x+w,top-1,x+w+hr,top-2);c.closePath()}
   function draw(b,now){
     var t=now/1000,d,i,lens=[];
-    b.stretch+=(Math.min(1,Math.abs(vel)/2.5)-b.stretch)*.06;
+    // the run: the first time the panel shows, each drip runs down from the lip at its own pace and slows as it sets
+    if(b.t0==null&&(still||b.on&&b.box.getBoundingClientRect().top<innerHeight*.85))b.t0=still?-1e9:now;
+    // after that, now and then one drip runs a little further and stays there (icing never climbs back up)
     if(!b.creep&&now>b.next&&b.drips.length){d=b.drips[Math.floor(hash(b.seed+now)*b.drips.length)];
-      if(d.r>=.3)b.creep={d:d,start:now};b.next=now+12000+hash(now*.001+b.seed)*10000}
+      if(d.r>=.5&&(d.extra||0)<12)b.creep={d:d,start:now,from:d.extra||0};b.next=now+8000+hash(now*.001+b.seed)*8000}
     for(i=0;i<b.drips.length;i++){d=b.drips[i];
-      var L=d.len+(.5+.5*Math.sin(t*(.18+.12*d.r)+i*1.7))*1.5*d.r+b.stretch*(2+d.r*4);
-      if(b.creep&&b.creep.d===d){var e=(now-b.creep.start)/1000,k=e<6?e/6:e<10?1:e<18?1-(e-10)/8:0;
-        k=k*k*(3-2*k);L+=k*7;if(e>=18)b.creep=null}
+      var dl=hash(b.seed*13+i)*2.5,du=3+d.len/12,p=Math.max(0,Math.min(1,(b.t0==null?0:(now-b.t0)/1000-dl)/du));p=1-Math.pow(1-p,3);
+      var base=d.hr*.7,L=base+(d.len-base)*p+(.5+.5*Math.sin(t*(.18+.12*d.r)+i*1.7))*.8*d.r*p;
+      if(b.creep&&b.creep.d===d){var k=Math.min(1,(now-b.creep.start)/4500);k=1-Math.pow(1-k,3);d.extra=b.creep.from+4*k;if(k>=1)b.creep=null}
+      L+=(d.extra||0);
       lens.push(L)}
     // 1. the frosting shape, in the panel's own colour
     var m=b.m.getContext('2d');m.setTransform(b.dpr,0,0,b.dpr,0,0);m.clearRect(0,0,b.W,H);m.fillStyle=b.col;
