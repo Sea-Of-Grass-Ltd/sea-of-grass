@@ -486,7 +486,8 @@ html:not([data-look]) .hero[data-logo="centre"] h1,html[data-look="clean"] .hero
 @media (max-width:760px){
   .credit{padding:7px 12px;letter-spacing:0;white-space:nowrap}
   .credit .cr-wide{display:none}.credit .cr-phone{display:inline}
-  .nav .logo span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}}
+  .nav .logo span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .nav .logo{min-width:44px;justify-content:center}}   /* the mark alone is still a 44px tap target */
 
 /* ===== Price cards read as a quick graphic card (Tristan, 2026-11-16, phone review: "it should be quickly readable as a
    graphic card, that's what people like"). "What you get": 3-6 short bullets with a check icon, one line each on a
@@ -549,4 +550,4 @@ html:not([data-look]) .hero[data-logo="centre"] h1,html[data-look="clean"] .hero
   #plans>.in{width:100%}
   .plans-kick{display:block;margin:0 0 4px}
   .plans .prices{margin-top:0}
-  .hero[data-logo="centre"] .lh-fix{display:inline-flex;align-items:center;gap:6px;min-height:40px;margin-top:4px;color:var(--soft);font:500 15px/1 var(--bf);text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px}}
+  .hero[data-logo="centre"] .lh-fix{display:inline-flex;align-items:center;gap:6px;min-height:40px;margin-top:10px;color:var(--soft);font:500 15px/1 var(--bf);text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px}}
