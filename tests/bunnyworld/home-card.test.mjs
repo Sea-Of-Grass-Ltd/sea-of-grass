@@ -1,8 +1,8 @@
 // Home page Work section: the Bunny World card's tile is a live title card (Tristan, 2026-11-16), not a video.
-// Revised after two critic reviews: no wordmark (the card title says it); the bunny, centred at about 72-75% of the tile's
-// height, does the dance (bounce + choreographed icon morphs, beat about 1.4 s, the icon swapping at the top of the hop);
-// each icon lands in its shop's accent colour; the globe at hold is exactly the live logo. It starts only when the card is
-// near the screen, pauses off screen and in a hidden tab, is static under reduced motion, and never shifts layout.
+// The bunny mark does the approved dance (bounce + choreographed icon morphs, the globe at hold exactly as the live logo)
+// in the logo's own colours: navy bunny, cream ground, icon lines cut through to the cream. No wordmark (the card title
+// says it); the bunny fills about 72% of the tile's height. It starts only when the card is near the screen, pauses off
+// screen and in a hidden tab, is static under reduced motion, and never shifts layout.
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { startSite } from '../lib/site.mjs';
@@ -33,7 +33,7 @@ for (const w of [390, 1440]) test(`the tile is a live title card (no video), laz
     assert.equal(top.video, false, 'no video in the tile');
     assert.ok(top.svg, 'an SVG title card sits in the tile');
     assert.equal(top.word, '', 'no wordmark in the tile (the card title below says it)');
-    assert.ok(top.bunny >= 70 && top.bunny <= 77, `the bunny fills about 72-75% of the tile's height (${top.bunny}%)`);
+    assert.ok(top.bunny >= 70 && top.bunny <= 77, `the bunny fills about 72% of the tile's height (${top.bunny}%)`);
     assert.equal(top.frames, 0, `nothing animates before the card is near (frames ${top.frames}, state ${top.state})`);
     assert.equal(top.href, '/bunnyworld/'); assert.equal(top.title, 'Bunny World 01'); assert.equal(top.type, 'Web demos');
     assert.equal(top.line, 'Nine bunny-run shops, each a working site in its own style.');
@@ -56,29 +56,21 @@ test('the globe at hold is the live logo, and the dance changes icons on the bea
     const at = t => page.evaluate(t => { const s = document.querySelector('svg.bw-card'); s.__bw.renderAt(t); return [...s.querySelectorAll('[data-lines] path')].map(p => p.getAttribute('d')).join('|'); }, t);
     const globe = await at(0.1);
     assert.equal(globe, ['M-39.4 -25H39.4', 'M-46.67 0H46.67', 'M-39.4 25H39.4', 'M0 -46.67V46.67', 'M0 -46.67A70 70 0 0 0 0 46.67', 'M0 -46.67A70 70 0 0 1 0 46.67'].join('|'), 'globe hold = the live logo lines');
-    assert.notEqual(await at(1.4 + 0.3), globe, 'the next beat (1.4 s on) holds a different icon');
-    assert.equal(await at(14 + 0.1), globe, 'the 14 s cycle comes back to the globe');
+    assert.notEqual(await at(2.0), globe, 'the next beat holds a different icon');
+    assert.equal(await at(19.1), globe, 'the cycle comes back to the globe');
   } finally { await ctx.close(); }
 });
 
-test('each icon lands in its shop colour on the off-white bunny; the globe stays the live logo; the hop is high', async () => {
+test("the logo's own colours: navy bunny, cream ground, icon lines cut through to the cream", async () => {
   const { ctx, page } = await site.open('/', 1440);
   try {
     await toCard(page);
-    const at = t => page.evaluate(t => {
-      const s = document.querySelector('svg.bw-card'); s.__bw.renderAt(t);
-      const tile = s.getBoundingClientRect(), disc = s.querySelector('circle[r="50"]').getBoundingClientRect();
-      return { stroke: getComputedStyle(s.querySelector('[data-lines]')).stroke, ground: getComputedStyle(s.querySelector(':scope > rect')).fill,
-        bunny: getComputedStyle(s.querySelector('[data-sil]')).fill, top: disc.top, h: tile.height };
-    }, t);
-    const globe = await at(0.3), auto = await at(7 * 1.4 + 0.3), clinic = await at(3 * 1.4 + 0.3);
-    assert.equal(globe.stroke, globe.ground, 'the globe lines are the ground colour, exactly like the live logo cut');
-    assert.equal(auto.stroke, 'rgb(255, 192, 0)', 'Bunny Auto icon in its accent');
-    assert.notEqual(clinic.stroke, auto.stroke, 'each shop its own colour');
-    assert.equal(auto.bunny, 'rgb(244, 241, 232)', 'the bunny stays off-white');
-    const rest = await at(0.5), apex = await at(0.84 + 0.28);
-    const hop = (rest.top - apex.top) / rest.h;
-    assert.ok(hop >= 0.08 && hop <= 0.11, `hop is 8-10% of the tile's height (${(hop * 100).toFixed(1)}%)`);
+    const c = await page.evaluate(() => { const s = document.querySelector('svg.bw-card'); s.__bw.renderAt(7 * 1.9 + 0.3);
+      return { ink: getComputedStyle(s.querySelector('[data-sil]')).fill, ground: getComputedStyle(s).backgroundColor,
+        cut: !!s.querySelector('mask [data-lines] path'), drawnOutside: s.querySelectorAll('[data-lines]').length }; });
+    assert.equal(c.ink, 'rgb(30, 26, 58)', 'navy bunny');
+    assert.equal(c.ground, 'rgb(251, 246, 236)', 'cream ground');
+    assert.ok(c.cut && c.drawnOutside === 1, 'the icon lines are cut out of the bunny (a mask), not painted on');
   } finally { await ctx.close(); }
 });
 
