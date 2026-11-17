@@ -93,3 +93,17 @@ h2{font-size:clamp(46px,7vw,104px);line-height:.9;text-transform:uppercase;color
 
 /* ---- AI-UI checklist pass (2026-11-15): flat surfaces (no blurred shadows, gradients or blur), 40px tap targets on phones ---- */
 .nav .hot{min-height:40px;display:inline-flex;align-items:center}
+/* calavera UI icons (Tristan, 2026-11-16): big badges at section heads, icons replace the step numbers */
+#getit-h,.visit h2,.cart h3{display:flex;align-items:center;gap:.25em}
+#getit-h::before,.visit h2::before,.cart h3::before,.q-h::before{content:"";flex:none;background:#F6EEE4 center/74% no-repeat;border-radius:50%;box-shadow:0 0 0 3px #120208}
+#getit-h::before{width:60px;height:60px;background-image:url(icons/scooter.svg)}
+.visit h2::before{width:60px;height:60px;background-image:url(icons/pin.svg)}
+.cart h3::before{width:46px;height:46px;background:url(icons/add.svg) center/contain no-repeat;box-shadow:none}
+.q-h .q-n{display:none}
+.q-h::before{width:42px;height:42px;margin-right:.45em}
+[data-q="When do you want it?"] .q-h::before{background-image:url(icons/clock.svg)}
+[data-q="Who is it for?"] .q-h::before,[data-q="Who is the table for?"] .q-h::before{background-image:url(mark.svg);background-size:56%}
+[data-q="How many bunnies?"] .q-h::before{background-image:url(icons/party.svg)}
+[data-q="Where would you like to sit?"] .q-h::before{background-image:url(icons/patio.svg)}
+[data-q="What time suits you?"] .q-h::before{background-image:url(icons/calendar.svg)}
+@media (max-width:760px){#getit-h::before,.visit h2::before{width:48px;height:48px}.q-h::before{width:36px;height:36px}}
