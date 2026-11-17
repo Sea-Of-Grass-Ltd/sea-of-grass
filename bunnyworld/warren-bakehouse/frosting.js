@@ -1,11 +1,11 @@
 /* Frosting on the bottom edge of Warren's flat colour panels (Tristan, 2026-11-16; reworked 11-17 after
    "it just looks like running paint"). Frosting, not paint: a thick lumpy lip, short fat rounded drips,
    a soft shadow underneath, a darker rim where the frosting curls under, and a glossy highlight streak.
-   It moves like icing setting: drips run, slow down and set; now and
-   then one runs a little further and stays. It runs down when the panel first comes into view. */
+   The icing runs only while you scroll (Tristan, 11-17): scrolling lets it run further, each drip at its own
+   pace, slowing as it sets; when you stop, it stops. Nothing moves on its own. */
 (function(){
   var still=matchMedia('(prefers-reduced-motion: reduce)').matches, H=96;
-  var bands=[], vel=0, lastY=scrollY, lastT=performance.now();
+  var bands=[], lastY=scrollY;
   function hash(a){var n=Math.sin(a*127.1)*43758.5453;return n-Math.floor(n)}
   function cnv(){return document.createElement('canvas')}
   function add(sel,opts){
@@ -13,8 +13,7 @@
     var box=document.createElement('div'); box.className='drips'; box.setAttribute('aria-hidden','true');
     var cv=cnv(); box.appendChild(cv); el.parentNode.insertBefore(box,el.nextSibling);
     bands.push({el:el,box:box,cv:cv,ctx:cv.getContext('2d'),m:cnv(),s:cnv(),seed:opts.seed,region:opts.region,
-      W:0,dpr:1,col:getComputedStyle(el).backgroundColor,drips:[],stretch:0,
-      next:performance.now()+5000+hash(opts.seed)*8000,creep:null,on:false});
+      W:0,dpr:1,col:getComputedStyle(el).backgroundColor,drips:[],prog:0,shown:0});
   }
   function lip(b,x){return 6+1.6*Math.sin(x/21+b.seed)+1*Math.sin(x/8.3+b.seed*2)}
   function layout(b){
@@ -44,19 +43,13 @@
     c.bezierCurveTo(x+cr,by-cr*.45,x+n,ny+cr*.25,x+n,ny);
     c.bezierCurveTo(x+n,ny-(ny-sh)*.35,x+w,sh+(ny-sh)*.55,x+w,sh);
     c.quadraticCurveTo(x+w,top-1,x+w+hr,top-2);c.closePath()}
-  function draw(b,now){
-    var t=now/1000,d,i,lens=[];
-    // the run: the first time the panel shows, each drip runs down from the lip at its own pace and slows as it sets
-    if(b.t0==null&&(still||b.on&&b.box.getBoundingClientRect().top<innerHeight*.85))b.t0=still?-1e9:now;
-    // after that, now and then one drip runs a little further and stays there (icing never climbs back up)
-    if(!b.creep&&now>b.next&&b.drips.length){d=b.drips[Math.floor(hash(b.seed+now)*b.drips.length)];
-      if(d.r>=.5&&(d.extra||0)<12)b.creep={d:d,start:now,from:d.extra||0};b.next=now+8000+hash(now*.001+b.seed)*8000}
+  function draw(b){
+    var d,i,lens=[],P=still?1e9:b.shown||0;
+    // the run is driven by scrolling only: every pixel scrolled while the panel is on screen lets the icing run a
+    // little further; stop scrolling and it stops. It never climbs back up (scrolling up runs it on too).
     for(i=0;i<b.drips.length;i++){d=b.drips[i];
-      var dl=hash(b.seed*13+i)*2.5,du=3+d.len/12,p=Math.max(0,Math.min(1,(b.t0==null?0:(now-b.t0)/1000-dl)/du));p=1-Math.pow(1-p,3);
-      var base=d.hr*.7,L=base+(d.len-base)*p+(.5+.5*Math.sin(t*(.18+.12*d.r)+i*1.7))*.8*d.r*p;
-      if(b.creep&&b.creep.d===d){var k=Math.min(1,(now-b.creep.start)/4500);k=1-Math.pow(1-k,3);d.extra=b.creep.from+4*k;if(k>=1)b.creep=null}
-      L+=(d.extra||0);
-      lens.push(L)}
+      var dl=hash(b.seed*13+i)*260,du=280+d.len*9,p=Math.max(0,Math.min(1,(P-dl)/du));p=1-Math.pow(1-p,2);
+      var base=d.hr*.7;lens.push(base+(d.len-base)*p)}
     // 1. the frosting shape, in the panel's own colour
     var m=b.m.getContext('2d');m.setTransform(b.dpr,0,0,b.dpr,0,0);m.clearRect(0,0,b.W,H);m.fillStyle=b.col;
     m.beginPath();m.moveTo(-2,-2);for(var x=-2;x<=b.W+4;x+=4)m.lineTo(x,lip(b,x));m.lineTo(b.W+4,-2);m.closePath();
@@ -77,18 +70,22 @@
     c.lineWidth=1.5;c.strokeStyle='rgba(255,255,255,.16)';c.beginPath();
     for(x=8;x<b.W;x+=6){var on=hash(b.seed*3+Math.floor(x/60))>.35&&(x%60)<40;var y=lip(b,x)*.45;if(on){if((x%60)<6)c.moveTo(x,y);else c.lineTo(x,y)}}
     c.stroke()}
-  function frame(now){
-    var dt=Math.max(1,now-lastT);vel=vel*.85+((scrollY-lastY)/dt*16)*.15;lastY=scrollY;lastT=now;
-    var any=false;for(var i=0;i<bands.length;i++){if(bands[i].on){draw(bands[i],now);any=true}}
-    raf=any?requestAnimationFrame(frame):0}
+  function vis(b){var r=b.box.getBoundingClientRect();return b.W&&r.top>-H&&r.top<innerHeight}
+  // scrolling feeds the run (counted right in the scroll event, so no scroll is ever lost)
+  function onScroll(){var y=scrollY,dy=Math.abs(y-lastY);lastY=y;
+    for(var i=0;i<bands.length;i++)if(vis(bands[i]))bands[i].prog+=dy;kick()}
+  // each frame the drawn icing eases toward how far the scrolling has let it run, then the loop stops
+  function frame(){raf=0;var more=false;
+    for(var i=0;i<bands.length;i++){var b=bands[i];if(!vis(b)||b.shown===b.prog)continue;
+      b.shown+=(b.prog-b.shown)*.12;if(Math.abs(b.prog-b.shown)<.5)b.shown=b.prog;else more=true;draw(b)}
+    if(more)raf=requestAnimationFrame(frame)}
   var raf=0;function kick(){if(!raf&&!still)raf=requestAnimationFrame(frame)}
   // the hero drips only under its pink half (not on phones, where the photo comes last)
   add('.hero',{seed:3,region:function(r){var p=document.querySelector('.hero-photo'),pr=p&&p.getBoundingClientRect();
     return pr&&pr.left>r.left+r.width*.3?{x:0,w:pr.left-r.left}:null}});
   // no drips on the green cake panel: dark green reads as slime, not icing (Tristan, 11-17: "green is even worse")
-  function relayout(){bands.forEach(function(b){layout(b);if(b.W)draw(b,performance.now())})}
+  function relayout(){bands.forEach(function(b){layout(b);if(b.W)draw(b)})}
   relayout();addEventListener('resize',relayout);document.fonts&&document.fonts.ready.then(relayout);
   if(still)return;
-  var io=new IntersectionObserver(function(es){es.forEach(function(e){bands.forEach(function(b){if(b.box===e.target)b.on=e.isIntersecting})});kick()},{rootMargin:'100px'});
-  bands.forEach(function(b){io.observe(b.box)});
+  addEventListener('scroll',onScroll,{passive:true});
 })();
