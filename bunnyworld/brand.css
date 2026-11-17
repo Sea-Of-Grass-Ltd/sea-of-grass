@@ -353,7 +353,7 @@ html[data-look="sunny"] .lh-hint svg{color:var(--sun);filter:drop-shadow(1.5px 1
   .show-open{display:block;text-align:center}
   .show-say{font-size:14px;text-align:center;max-width:none}}
 /* Bold's caps run widest: on one line they would reach the logo, so its headline steps down on wide screens */
-@media (min-width:821px){html[data-look="bold"] .hero h1{--hk:.98}}
+html[data-look="bold"] .hero h1{--hk:.98}
 
 /* ===== Logo placement: one switch, <section class="hero" data-logo="centre"> or data-logo="right".
    "right" is the layout above (logo flush right, beside the headline on phones). "centre" is the critic's Refero pick and
@@ -387,15 +387,17 @@ html[data-look="sunny"] .lh-hint svg{color:var(--sun);filter:drop-shadow(1.5px 1
   --u-btn-font:max(16px, calc(var(--u) * .667));
   --u-btn-pad:0 max(24px, var(--u));
   padding-top:var(--u-pad-top)}
-@media (max-width:820px){.hero[data-logo="centre"]{--u-fit:30.4;--u:min(18px, calc((100vw - 40px) / var(--u-fit)));--u-head-lh:calc(var(--u) * 5.5);--u-gap-logo:calc(var(--u) * .936);--u-gap-head:calc(var(--u) * 1.279);--u-gap-line:calc(var(--u) * .986)}}
+/* Phones (Tristan, 2026-11-16, phone review: "awful"): one line at every width, so u follows the same width/42 rule as
+   desktop (about 8.3px at 390): the logo, the one-line headline, the line and a smaller button make one compact unit,
+   and the price strip sits on the first screen. (Was: two lines, u = width/30.4.) */
+@media (max-width:820px){.hero[data-logo="centre"]{--u-btn-h:42px;--u-btn-font:15px;--u-btn-pad:0 20px}}
 .hero[data-logo="centre"] .lh-grid{display:flex;flex-direction:column;align-items:center;gap:0;text-align:center}
 .hero[data-logo="centre"] .lh-copy{display:flex;flex-direction:column;align-items:center;order:2;width:100%}
 .hero[data-logo="centre"] .lh-stage{order:1;align-self:center;display:grid;justify-items:center;padding:0;margin:0}
 .hero[data-logo="centre"] .lh-mark{height:var(--u-logo-h);max-height:none}
 .hero[data-logo="centre"] h1{--hs:var(--u-head-lh);font-size:calc(var(--u-head) * var(--hk) / .92);line-height:var(--u-head-lh);height:var(--u-head-lh);margin-top:var(--u-gap-logo);width:100%;text-align:center}
 html:not([data-look]) .hero[data-logo="centre"] h1,html[data-look="clean"] .hero[data-logo="centre"] h1{font-weight:800;letter-spacing:-.035em}
-@media (max-width:820px){.hero[data-logo="centre"] h1{height:calc(var(--u-head-lh) * 2)}.hero[data-logo="centre"] .hl-br{display:inline}}
-@media (min-width:821px){.hero[data-logo="centre"] .hl-br{display:none}}
+.hero[data-logo="centre"] .hl-br{display:none}
 .hero[data-logo="centre"] .lh-from{left:0;right:0;text-align:center}
 .hero[data-logo="centre"] .lede{margin:var(--u-gap-head) 0 0;font-size:var(--u-line);line-height:1;color:var(--soft)}
 .hero[data-logo="centre"] .lh-go{width:auto;height:var(--u-btn-h);margin:var(--u-gap-line) 0 0;padding:var(--u-btn-pad);font-size:var(--u-btn-font);font-weight:600;border-radius:999px}
@@ -405,7 +407,7 @@ html:not([data-look]) .hero[data-logo="centre"] h1,html[data-look="clean"] .hero
   .hero[data-logo="centre"] .lh-hint{right:calc(100% + 2px);top:10%;flex-direction:column;align-items:flex-end;font-size:15px}
   .hero[data-logo="centre"] .lh-hint svg{width:30px;margin:2px 4px 0 0}}
 /* the price strip sits 4 globe-lines (4 x u/3) under the button, so all four prices stay on a 900px screen */
-.hero[data-logo="centre"] .prices{margin-top:max(24px, calc(var(--u) * 4 / 3))}
+.plans .prices{margin-top:max(24px, calc(var(--u) * 4 / 3))}
 
 /* ===== The price cells open like the switching FAQ (Tristan, 2026-11-16): one at a time, the panel shows that package
    in full with an Add to cart that uses the shared cart. Same motion as the FAQ (rows 0fr to 1fr) and the same +/-
@@ -446,32 +448,136 @@ html:not([data-look]) .hero[data-logo="centre"] h1,html[data-look="clean"] .hero
    28u column with hero-sized buttons. Phone: four rows, name and terms left, price right. Ink, grey and hairlines only.
    Refero: Apple "Which Mac" edbef47f-2bf4-43ee-9005-c05977e769ee, Square plans fa3189a6-0ad9-42f0-8e3b-8bfc6c69c066,
    Linear pricing 5d709fa1-5b61-416b-996f-f049cae07791. */
-.hero .prices{--ps-u:var(--u, 24px);--ps-price:max(32px, calc(var(--ps-u) * 2));margin-top:calc(var(--ps-u) * 1.5)}
-.hero .prices .pc{display:flex;flex-direction:column;align-items:center;gap:0;text-align:center;padding:calc(var(--ps-u) * .908) var(--ps-u)}
-.hero .prices .pc~.pc{padding-left:var(--ps-u)}
-.hero .prices .pc-name{font:600 16px/1 var(--bf);letter-spacing:0;color:var(--ink)}
-.hero .prices .pc-price{display:flex;align-items:baseline;justify-content:center;gap:calc(var(--ps-price) * .18);margin-top:calc(var(--ps-u) * .304)}
-.hero .prices .pc .pc-price b{font:800 var(--ps-price)/1 var(--hf);letter-spacing:-.03em;white-space:nowrap;text-align:inherit}
-.hero .prices .pc-price small,.hero .prices .pc-terms{font:400 16px/1 var(--bf);letter-spacing:0;color:var(--soft);opacity:1}
-.hero .prices .pc-terms{margin-top:calc(var(--ps-u) * .304)}
-.hero .prices .pc-ch{position:absolute;top:16px;right:16px;width:12px;height:12px;border:0;border-radius:0;background:none;color:var(--ink)}
-.hero .prices .pc-ch::before,.hero .prices .pc-ch::after{width:12px;height:2px}
-.hero .prices .pc[aria-expanded="true"] .pc-ch{background:none;border:0;color:var(--ink)}
-.hero .prices .pc::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:4px;background:var(--ink);opacity:0}
-.hero .prices .pc[aria-expanded="true"]::after{opacity:1}
-.hero .prices .pc-in{width:min(100%, calc(var(--ps-u) * 28));margin:0 auto;padding:var(--ps-u) 0 calc(var(--ps-u) * 1.5);border-top:0;gap:calc(var(--ps-u) * 2 / 3)}
-.hero .prices .pc-in p{max-width:none;font:400 16px/1.5 var(--bf);color:var(--soft)}
-.hero .prices .pc-in .pc-note{font-size:16px}
-.hero .prices .pc-buy{gap:calc(var(--ps-u) * 2 / 3);margin-top:0}
-.hero .prices .pc-add{height:48px;min-height:0;padding:0 24px;border-radius:999px;font:600 16px/1 var(--bf)}
+.plans .prices{--ps-u:var(--u, 24px);--ps-price:max(32px, calc(var(--ps-u) * 2));margin-top:max(24px, calc(var(--ps-u) * 4 / 3))}   /* 4u/3: what desktop shipped with (the 1.5u rule never won before) */
+.plans .prices .pc{display:flex;flex-direction:column;align-items:center;gap:0;text-align:center;padding:calc(var(--ps-u) * .908) var(--ps-u)}
+.plans .prices .pc~.pc{padding-left:var(--ps-u)}
+.plans .prices .pc-name{font:600 16px/1 var(--bf);letter-spacing:0;color:var(--ink)}
+.plans .prices .pc-price{display:flex;align-items:baseline;justify-content:center;gap:calc(var(--ps-price) * .18);margin-top:calc(var(--ps-u) * .304)}
+.plans .prices .pc .pc-price b{font:800 var(--ps-price)/1 var(--hf);letter-spacing:-.03em;white-space:nowrap;text-align:inherit}
+.plans .prices .pc-price small,.plans .prices .pc-terms{font:400 16px/1 var(--bf);letter-spacing:0;color:var(--soft);opacity:1}
+.plans .prices .pc-terms{margin-top:calc(var(--ps-u) * .304)}
+.plans .prices .pc-ch{position:absolute;top:16px;right:16px;width:12px;height:12px;border:0;border-radius:0;background:none;color:var(--ink)}
+.plans .prices .pc-ch::before,.plans .prices .pc-ch::after{width:12px;height:2px}
+.plans .prices .pc[aria-expanded="true"] .pc-ch{background:none;border:0;color:var(--ink)}
+.plans .prices .pc::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:4px;background:var(--ink);opacity:0}
+.plans .prices .pc[aria-expanded="true"]::after{opacity:1}
+.plans .prices .pc-in{width:min(100%, calc(var(--ps-u) * 28));margin:0 auto;padding:var(--ps-u) 0 calc(var(--ps-u) * 1.5);border-top:0;gap:calc(var(--ps-u) * 2 / 3)}
+.plans .prices .pc-in p{max-width:none;font:400 16px/1.5 var(--bf);color:var(--soft)}
+.plans .prices .pc-in .pc-note{font-size:16px}
+.plans .prices .pc-buy{gap:calc(var(--ps-u) * 2 / 3);margin-top:0}
+.plans .prices .pc-add{height:48px;min-height:0;padding:0 24px;border-radius:999px;font:600 16px/1 var(--bf)}
 @media (max-width:760px){
-  .hero .prices .pc{display:grid;grid-template-columns:1fr auto 16px;grid-template-areas:"name price ch" "terms price ch";gap:8px 12px;align-items:center;text-align:left;padding:15px 0}
-  .hero .prices .pc~.pc{padding-left:0}
-  .hero .prices .pc-name{grid-area:name;align-self:end}
-  .hero .prices .pc-terms{grid-area:terms;align-self:start;margin-top:0}
-  .hero .prices .pc-price{grid-area:price;justify-content:flex-end;margin-top:0}
-  .hero .prices .pc-ch{grid-area:ch;position:relative;top:auto;right:auto;justify-self:end;width:12px;height:12px}
-  .hero .prices .pc::after{content:none}
-  .hero .prices .pc-in{width:100%;padding:0 0 24px}
-  .hero .prices .pc-buy{gap:12px}
-  .hero .prices{margin-top:var(--ps-u)}}
+  .plans .prices .pc{display:grid;grid-template-columns:1fr auto 16px;grid-template-areas:"name price ch" "terms price ch";gap:8px 12px;align-items:center;text-align:left;padding:15px 0}
+  .plans .prices .pc~.pc{padding-left:0}
+  .plans .prices .pc-name{grid-area:name;align-self:end}
+  .plans .prices .pc-terms{grid-area:terms;align-self:start;margin-top:0}
+  .plans .prices .pc-price{grid-area:price;justify-content:flex-end;margin-top:0}
+  .plans .prices .pc-ch{grid-area:ch;position:relative;top:auto;right:auto;justify-self:end;width:12px;height:12px}
+  .plans .prices .pc::after{content:none}
+  .plans .prices .pc-in{width:100%;padding:0 0 24px}
+  .plans .prices .pc-buy{gap:12px}
+  .plans .prices{margin-top:var(--ps-u)}}
+
+/* ===== Phones (Tristan, 2026-11-16, phone review): the demo bar is one short line ("A Sea of Grass demo · nothing is
+   sent", the link kept), and "Bunny World" shows once: the nav keeps the mark (the wordmark stays for screen readers)
+   and the hero carries the name. Refero: Revolut welcome e6f5a8bf-d1d2-4717-8764-e0da379e5c8d (small mark up top, the
+   big line does the naming). */
+.credit .cr-phone{display:none}
+@media (max-width:760px){
+  .credit{padding:7px 12px;letter-spacing:0;white-space:nowrap}
+  .credit .cr-wide{display:none}.credit .cr-phone{display:inline}
+  .nav .logo span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .nav .logo{min-width:44px;justify-content:center}}   /* the mark alone is still a 44px tap target */
+
+/* ===== Price cards read as a quick graphic card (Tristan, 2026-11-16, phone review: "it should be quickly readable as a
+   graphic card, that's what people like"). "What you get": 3-6 short bullets with a check icon, one line each on a
+   phone. "How you pay": option chips, two side by side for the starter (monthly or once), each with its own Add button.
+   Every fact the paragraphs had is kept, just shorter. Refero: CARROT Weather premium card f51e3307-9f8e-4321-b19b-1d57bc89f8a2
+   (icon checks over one action), Revolut pricing options f6875db2-4608-49b4-b803-9e390a1801b5 (two compact pay options). */
+.plans .prices .pc-in{gap:12px}
+.pc-k{margin:6px 0 0;font:600 16px/1 var(--bf);letter-spacing:0;color:var(--ink)}
+.pc-k:first-child{margin-top:0}
+.pc-get{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.pc-get li{display:flex;align-items:center;gap:10px;font:400 16px/1.3 var(--bf);color:var(--soft)}
+.pc-get li::before{content:"";flex:none;width:18px;height:18px;background:var(--ink);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4.5 12.5l5 5L19.5 7' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4.5 12.5l5 5L19.5 7' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat}
+.pc-get li b{font-weight:600;color:var(--ink)}
+.pc-pay{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.pc-opt{display:grid;grid-template-rows:auto 1fr auto;gap:8px;padding:14px;border:1.5px solid var(--hair);border-radius:16px}
+.pc-opt-p{font:700 18px/1 var(--bf);letter-spacing:-.01em;color:var(--ink)}
+.pc-opt-l{list-style:none;margin:0;padding:0;display:grid;gap:4px;align-content:start}
+.pc-opt-l li{font:400 14px/1.3 var(--bf);color:var(--soft)}
+.plans .prices .pc-opt .pc-add{width:100%;margin-top:4px;padding:0 12px}
+.plans .prices .pc-in .pc-note{font:400 14px/1.3 var(--bf);color:var(--soft);margin:0}
+@media (max-width:760px){
+  .pc-pay{gap:10px}
+  .pc-opt:only-child{grid-column:1/-1}
+  .pc-opt{padding:12px}
+  .pc-opt-l li{font-size:13px}}
+/* in the short phone bar the pill sits mid-sentence ("A Sea of Grass demo"), so no back arrow there */
+@media (max-width:760px){.credit .credit-sog::before{content:none}}
+
+/* ===== The prices are their own section (2026-11-16) so phones can show the landing as three pages. On desktop it reads
+   exactly as before: one background and one smoke host (.hero-host) across the hero and the prices, no gap between. */
+.hero-host{background:var(--hero-bg)}
+.hero-host>.hero,.hero-host>.plans{background:transparent}
+.hero-host>.hero{padding-bottom:0}
+.plans{--u:min(24px, calc((100vw - 40px) / 42));padding-top:0;padding-bottom:clamp(32px,4vw,56px)}
+.plans-kick,.lh-fix{display:none}
+
+/* ===== Phones flow like three pages (Tristan, 2026-11-16): the hero owns the first screen (demo bar, nav, logo,
+   "Bunny World.", the line, the button and a quiet "Fixes from $250" link so prices are never hidden), then the shops,
+   then the four prices, each a screen. The order is one switch, main[data-phone-order="shops-first" | "prices-first"],
+   for an A/B test without touching the markup: main becomes a grid and the hero host spans three rows as a subgrid,
+   so the shops can sit between the hero and the prices while the smoke stays one canvas. Gentle scroll-snap
+   (proximity) so it feels like pages without trapping the scroll; a tall section (an open price card) scrolls freely.
+   --top-h and --nav-h are measured by landing.js (fallbacks here). Desktop order stays hero, prices, shops. */
+@media (max-width:760px){
+  html{scroll-snap-type:y proximity;scroll-padding-top:var(--nav-h,65px)}
+  .credit{scroll-snap-align:start}
+  main#top{display:grid;grid-template-columns:minmax(0,1fr)}
+  main#top>*,.hero-host>*{grid-column:1}   /* explicit, or auto-placement pushes the shops into a second column beside the host */
+  .hero-host{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:subgrid;grid-row:1 / span 3}
+  .hero-host>.hero{grid-row:1;background:var(--hero-bg)}   /* on phones the hero is the smoke host (inline script in index.html) */
+  main[data-phone-order="shops-first"] .hero-host>.plans{grid-row:3}
+  main[data-phone-order="shops-first"]>.show{grid-row:2}
+  main[data-phone-order="prices-first"] .hero-host>.plans{grid-row:2}
+  main[data-phone-order="prices-first"]>.show{grid-row:3}
+  main#top>.close{grid-row:4}
+  .hero-host>.hero{min-height:calc(100svh - var(--top-h,103px));display:flex;flex-direction:column;justify-content:center;padding-top:16px;padding-bottom:16px}
+  .hero-host>.hero>.lh-grid{width:100%}
+  #shops,#plans{scroll-snap-align:start;min-height:calc(100svh - var(--nav-h,65px))}
+  #plans{display:flex;flex-direction:column;justify-content:flex-start;padding-top:28px;padding-bottom:24px}   /* top-aligned: a centred block would jump when a card opens */
+  #plans>.in{width:100%}
+  .plans-kick{display:block;margin:0 0 4px}
+  .plans .prices{margin-top:0}
+  .hero[data-logo="centre"] .lh-fix{display:inline-flex;align-items:center;gap:6px;min-height:40px;margin-top:10px;color:var(--soft);font:500 15px/1 var(--bf);text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px}}
+
+/* ===== Phones, round 3 (HQ for Tristan, 2026-11-16): a bigger hero logo; no nav on the hero page, then a slim sticky
+   bar once the hero has gone (landing.js sets html.past-hero; focus inside the nav always shows it); and a swipeable
+   row of phone previews in place of the trade pills (built by landing.js; the slide in the middle is the chosen shop,
+   its site live, the others as posters; touches pass through to the row so a swipe never gets stuck in a shop). */
+@media (max-width:760px){
+  .hero[data-logo="centre"]{--u-logo-h:clamp(240px, 37svh, 330px)}   /* HQ review: the bunny leads its page, about 37% of the screen */
+  .nav{position:fixed;left:0;right:0;top:0;padding:4px 16px;transform:translateY(-100%);transition:transform .25s var(--ease)}
+  html.past-hero .nav,.nav:focus-within{transform:none}
+  .nav .logo{min-height:40px}.nav .logo .mk{width:22px;height:33px}
+  .rail{display:flex;align-self:stretch;min-width:0;max-width:100vw;gap:14px;margin:0 calc(-1 * var(--side));padding:2px calc(50vw - 115px) 4px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .rail::-webkit-scrollbar{display:none}
+  .rail:focus-visible{outline:3px solid var(--stage-accent);outline-offset:-3px}
+  .rail-s{flex:0 0 230px;margin:0;display:grid;gap:8px;justify-items:stretch;scroll-snap-align:center;opacity:.5;transition:opacity .2s}
+  .rail-s.on{opacity:1}
+  .rail-ph{padding:7px;background:#0d0b1c;border:1px solid rgba(255,246,233,.35);border-radius:28px}
+  .rail-ph .screen{aspect-ratio:390/560;border-radius:22px}
+  .rail-s iframe{pointer-events:none}
+  .rail-s figcaption{font:400 14px/1.2 var(--bf);color:var(--on-stage);text-align:center}
+  .rail-s figcaption b{font-weight:700}
+  .show .tabs,.stage>.phone{display:none}}
+@media (min-width:761px){.rail{display:none}}
+@media (max-width:760px){
+  /* only the centred shop is labelled (peeking labels collided), and dots under it show where you are in the row */
+  .rail-s figcaption{visibility:hidden;opacity:0;transition:opacity .2s}
+  .rail-s.on figcaption{visibility:visible;opacity:1}
+  .rail-dots{display:flex;justify-content:center;gap:7px;margin-top:-4px}
+  .rail-dots i{width:6px;height:6px;border-radius:50%;background:color-mix(in srgb,var(--on-stage) 30%,transparent);transition:background .2s,transform .2s}
+  .rail-dots i.on{background:var(--on-stage);transform:scale(1.25)}}
+@media (min-width:761px){.rail-dots{display:none}}
