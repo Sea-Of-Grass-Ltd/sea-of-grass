@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="referrer" content="no-referrer">
+<title>Walk-in Log</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+[hidden]{display:none!important}
+/* Phone field guide: sticky tab bar (Stops · Pitch · Costs · Log), one column of cards below. Read in sunlight: high contrast, big type, big targets. */
+:root{--bg:#f4f4ef;--card:#ffffff;--fg:#151c18;--muted:#4c5751;--line:#d3d7cf;--accent:#24603f;--accent-fg:#ffffff;--soft:#e6eee7;--warn:#9a4a12;--good:#24603f;--bar-diy:#9a4a12;--bar-time:#e3c3a6;--bar-sog:#24603f;--bar-free:#7d8c84;--body:Inter,system-ui,-apple-system,sans-serif;--mono:"IBM Plex Mono",ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121614;--card:#1b211e;--fg:#eef2ef;--muted:#a5b0aa;--line:#303a35;--accent:#7cc9a0;--accent-fg:#0b110e;--soft:#1f2c25;--warn:#eba36b;--good:#7cc9a0;--bar-diy:#eba36b;--bar-time:#6b4a30;--bar-sog:#7cc9a0;--bar-free:#7d8c84;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121614;--card:#1b211e;--fg:#eef2ef;--muted:#a5b0aa;--line:#303a35;--accent:#7cc9a0;--accent-fg:#0b110e;--soft:#1f2c25;--warn:#eba36b;--good:#7cc9a0;--bar-diy:#eba36b;--bar-time:#6b4a30;--bar-sog:#7cc9a0;--bar-free:#7d8c84;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:17px/1.5 var(--body)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+a{color:var(--accent)}
+.wrap{max-width:620px;margin:0 auto;padding-block:16px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:18px}
+header h1{font:700 25px/1.2 var(--body);margin:0;text-wrap:balance}
+header p{color:var(--muted);margin:4px 0 0;font-size:15px}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding-block:8px;border-bottom:1px solid var(--line)}
+nav.tabs a{text-decoration:none;text-align:center;font:600 15px var(--body);color:var(--fg);padding:11px 4px;border-radius:10px;border:1px solid var(--line);background:var(--card)}
+nav.tabs a[aria-current="page"]{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+nav.tabs a:focus-visible,button:focus-visible,.chipbtn:focus-visible{outline:3px solid var(--fg);outline-offset:2px}
+h2{font:700 21px/1.25 var(--body);margin:0;text-wrap:balance}
+h3{font:600 17px/1.3 var(--body);margin:0}
+.label{font:500 12px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.lede{color:var(--muted);margin:0;font-size:15px}
+section.view{display:grid;gap:14px;min-width:0}
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chipbtn{font:600 15px var(--body);border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:999px;padding:9px 14px;cursor:pointer;font-variant-numeric:tabular-nums}
+.chipbtn[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.chipbtn small{font-weight:500;opacity:.75;margin-left:4px}
+.chips.radio label{display:inline-flex}
+.chips.radio input{position:absolute;opacity:0;pointer-events:none}
+.chips.radio span{border:1px solid var(--line);border-radius:999px;padding:9px 13px;font-size:15px;cursor:pointer;background:var(--card)}
+.chips.radio input:checked+span{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+.chips.radio input:focus-visible+span{outline:3px solid var(--fg);outline-offset:2px}
+/* stop cards */
+.daybar{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-top:6px}
+.daybar h3{font-size:16px}
+.daybar span{font-size:13px;color:var(--muted)}
+.cards{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.stop{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:8px;min-width:0}
+.stop .top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.stop h3{font-size:18px}
+.flags{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.flag{font:500 12px var(--mono);letter-spacing:.04em;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:2px 6px}
+.badge{flex:none;font:600 13px var(--body);border-radius:999px;padding:4px 10px;white-space:nowrap;border:1.5px solid currentColor}
+.badge.none{color:var(--muted);border-style:dashed}
+.badge.left{color:var(--fg)}
+.badge.int{color:var(--warn)}
+.badge.yes{color:var(--accent-fg);background:var(--good);border-color:var(--good)}
+.badge.no{color:var(--muted)}
+.meta{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:15px;margin:0}
+.meta dt{color:var(--muted)}
+.meta dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.broken{margin:0;font-size:16px}
+.pitch{margin:0;display:flex;justify-content:space-between;gap:10px;align-items:baseline;background:var(--soft);border-radius:10px;padding:10px 12px}
+.pitch b{font-variant-numeric:tabular-nums;white-space:nowrap}
+.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{font:600 16px var(--body);border:0;border-radius:10px;padding:12px 16px;background:var(--accent);color:var(--accent-fg);cursor:pointer;text-decoration:none;display:inline-block}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.btn:disabled{opacity:.5;cursor:default}
+.empty{color:var(--muted);font-size:15px;background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:16px;margin:0}
+/* pitch */
+.step{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:grid;gap:8px}
+.step .say{font-size:18px;line-height:1.5;margin:0}
+.step .do{font-size:15px;color:var(--muted);margin:0}
+.step ul{margin:0;padding-left:20px;display:grid;gap:4px;font-size:16px}
+.replies{display:grid;gap:8px}
+details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 14px}
+summary{cursor:pointer;font-weight:600;padding:13px 0;list-style-position:outside}
+details p{margin:0 0 14px}
+.rules{border-left:4px solid var(--warn);padding:10px 14px;background:var(--card);border-radius:0 12px 12px 0;margin:0}
+.rules ul{margin:6px 0 0;padding-left:20px;display:grid;gap:4px}
+/* costs */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:15px;min-width:520px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:500 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+td small{color:var(--muted);display:block;font-size:13px}
+tr.group td{background:var(--soft);font-weight:600;font-size:14px}
+tr:last-child td{border-bottom:0}
+.est{font:500 11px var(--mono);color:var(--warn);border:1px solid currentColor;border-radius:4px;padding:0 4px;margin-left:4px;white-space:nowrap}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:14px}
+.slider{display:grid;gap:6px}
+.slider .row{display:flex;justify-content:space-between;align-items:baseline}
+.slider output{font:700 18px var(--body);font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent);height:32px}
+.bars{display:grid;gap:12px}
+.bar{display:grid;gap:4px}
+.bar .row{display:flex;justify-content:space-between;gap:10px;font-size:15px}
+.bar .row b{font-variant-numeric:tabular-nums;white-space:nowrap}
+.track{height:18px;background:var(--soft);border-radius:5px;overflow:hidden;display:flex}
+.track i{display:block;height:100%}
+.bar small{color:var(--muted);font-size:13px}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;color:var(--muted)}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;background:var(--c);vertical-align:-1px}
+.note{font-size:14px;color:var(--muted);margin:0}
+/* log form (kept from the first version) */
+form{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:14px}
+.field{display:grid;gap:6px}
+select,input:not([type=range]):not([type=radio]),textarea{font:16px var(--body);color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:11px 12px;width:100%}
+textarea{min-height:70px;resize:vertical}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+form button[type=submit]{font:600 17px var(--body);border:0;border-radius:10px;padding:15px;background:var(--accent);color:var(--accent-fg);cursor:pointer}
+form{scroll-margin-top:calc(76px + env(safe-area-inset-top,0px))}
+form.flash{outline:3px solid var(--accent);outline-offset:2px}
+.status{font-size:15px;color:var(--muted);min-height:1.2em;margin:0}
+.strip{display:flex;flex-wrap:wrap;gap:18px;font-variant-numeric:tabular-nums}
+.strip b{font:700 23px var(--body);display:block}
+.strip span{font-size:13px;color:var(--muted)}
+ul.visits{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+ul.visits li{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:4px;min-width:0}
+ul.visits .top{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+ul.visits .name{font-weight:600}
+ul.visits .when{font:500 12px var(--mono);color:var(--muted);white-space:nowrap}
+ul.visits .vnote{color:var(--muted);font-size:15px;overflow-wrap:anywhere}
+.check{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.check li{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start}
+.check li::before{content:"";flex:none;width:18px;height:18px;border:2px solid var(--accent);border-radius:5px;margin-top:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+/* sign-in */
+.gate{min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding:24px max(16px,env(safe-area-inset-left,0px))}
+.gate-card{width:100%;max-width:380px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;display:grid;gap:16px}
+.gate-card h1{font:700 25px/1.2 var(--body);margin:0}
+.gate-card p{margin:0;color:var(--muted);font-size:15px}
+.google-btn{display:flex;align-items:center;justify-content:center;gap:10px;font:600 17px var(--body);border:1px solid var(--line);border-radius:10px;padding:14px;background:var(--bg);color:var(--fg);cursor:pointer;width:100%}
+.gate-or{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px}
+.gate-or::before,.gate-or::after{content:"";flex:1;border-top:1px solid var(--line)}
+.gate form{border:0;padding:0;background:none;gap:12px}
+.gate form button{font:600 17px var(--body);border:0;border-radius:10px;padding:14px;background:var(--accent);color:var(--accent-fg);cursor:pointer}
+.form-error{color:var(--warn)!important}
+.form-ok{color:var(--good)!important}
+.form-error:empty,.form-ok:empty{display:none}
+.whobar{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;font-size:14px;color:var(--muted);margin-top:6px}
+.linkbtn{font:600 14px var(--body);background:none;border:0;padding:0;color:var(--accent);cursor:pointer;text-decoration:underline}
+.gf{display:grid;gap:16px}.nm{display:grid;gap:12px}
+</style>
+</head><body>
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <div>
+      <h1>Walk-in Log</h1>
+      <p>Sea of Grass. Sign in with your Talaria account.</p>
+    </div>
+    <div id="gateForms" class="gf">
+      <button type="button" class="google-btn" id="google"><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>Sign in with Google</button>
+      <div class="gate-or">or use email</div>
+      <form id="emailForm" autocomplete="on">
+        <div class="field"><label class="label" for="email">Email</label><input id="email" type="email" autocomplete="username" required></div>
+        <div class="field"><label class="label" for="password">Password</label><input id="password" type="password" autocomplete="current-password" required minlength="6"></div>
+        <button type="submit" id="emailGo">Sign in</button>
+      </form>
+    </div>
+    <div id="notMember" hidden class="nm">
+      <p><b id="notMemberWho"></b> isn’t on the Sea of Grass list yet. Ask Tristan to add it, or sign in with a different account.</p>
+      <button type="button" class="google-btn" id="notMemberOut">Use a different account</button>
+    </div>
+    <p id="gateMsg" role="status"></p>
+  </div>
+</div>
+<main id="app" hidden>
+<div class="wrap">
+  <header>
+    <h1>Walk-in Log</h1>
+    <p>Sea of Grass field guide: who to visit, what to say, what it costs, and the log.</p>
+    <div class="whobar"><span id="whoami"></span><button type="button" class="linkbtn" id="signOut">Sign out</button></div>
+  </header>
+
+  <nav class="tabs" aria-label="Sections">
+    <a href="#stops" data-view="stops">Stops</a>
+    <a href="#pitch" data-view="pitch">Pitch</a>
+    <a href="#costs" data-view="costs">Costs</a>
+    <a href="#log" data-view="log">Log</a>
+  </nav>
+
+  <!-- STOPS -->
+  <section class="view" id="v-stops" aria-label="Stops">
+    <div class="chips" id="regionChips" role="group" aria-label="Filter stops"></div>
+    <p class="lede" id="stopsLede"></p>
+    <div id="stopList"></div>
+  </section>
+
+  <!-- PITCH -->
+  <section class="view" id="v-pitch" aria-label="Pitch" hidden>
+    <div>
+      <h2>What to say at the counter</h2>
+      <p class="lede">Short, spoken, and in this order. Ask once, then stop talking.</p>
+    </div>
+    <div class="chips radio" role="radiogroup" aria-label="Who is pitching">
+      <label><input type="radio" name="pitchWho" id="pwT" value="Tristan" checked><span>I'm Tristan</span></label>
+      <label><input type="radio" name="pitchWho" id="pwB" value="Bryce"><span>I'm Bryce</span></label>
+    </div>
+
+    <div class="step">
+      <span class="label">Open · a heads-up, no ask</span>
+      <p class="say">“Hi, I'm <span class="pName">Tristan</span>, I build websites here in <span class="pTown">Berthoud</span>. I was checking local business sites on my phone and noticed something on yours. Can I show you? It takes thirty seconds.”</p>
+      <p class="do">Under 20 seconds. If it's an employee: “Could you pass this to the owner? It's about a problem with the website.” Ask when the owner's usually in.</p>
+    </div>
+
+    <div class="step">
+      <span class="label">Show · their own site on your phone</span>
+      <p class="say">“That's your site on a phone, last night.”</p>
+      <p class="do">Hand over the printout face up, or turn your phone round. Point at the problem and say one sentence in their words:</p>
+      <ul>
+        <li>Security warning: “Before anyone sees your site, the browser tells them it isn't safe.”</li>
+        <li>Someone else's page: “When people type your address, this comes up instead of you.”</li>
+        <li>Error or dead page: “This is what people get when they tap your website on Google.”</li>
+        <li>Phone layout: “On a phone, this is what people see. It's hard to read.”</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <span class="label">Ask · what would it cost you to do it yourself?</span>
+      <p class="say">“Can I ask you something? If you fixed this yourself, what do you think it would cost?”</p>
+      <p class="do">Let them answer. Then be straight with them:</p>
+      <p class="say">“Honestly, the builders are cheap: about <span class="pDiy">$200 to $350</span> a year. What it really costs is your time. Most owners spend twenty to forty hours getting a site right, and then it's on you when something breaks. That's the part I take off your plate.”</p>
+      <p class="do">If they want numbers, open the Costs tab and let them move the slider.</p>
+    </div>
+
+    <div class="step">
+      <span class="label">Price · the $250 fix first</span>
+      <p class="say">“I can fix this one problem for $250, flat. The price is agreed before I start, and you pay once it's done and you've checked it.”</p>
+      <p class="do">Say the one price on their page. Only if they ask what a whole new site costs: “$1,200 for a starter site, or $100 a month for twelve months, same total, no interest. A bigger site is $2,000.”</p>
+    </div>
+
+    <div class="step">
+      <span class="label">Demo · only if they have two minutes</span>
+      <p class="say">“If you've got two minutes, I'll show you what one like yours could look like.”</p>
+      <p class="do">Open the matching Bunny World shop on the laptop beside their site on the phone. “Here's yours today; here's what one like it could be.” Say it plainly: these are demo shops we built, not clients. Each stop card links its closest match.</p>
+    </div>
+
+    <div class="step">
+      <span class="label">Leave · the page, and the choice</span>
+      <p class="say">“No pressure at all, you're free to say no. The page is yours to keep either way. Would you like me to take care of it?”</p>
+      <p class="do">Ask once, then stop talking. Whatever they say, thank them and log it before the next stop.</p>
+    </div>
+
+    <h3>When they say…</h3>
+    <div class="replies">
+      <details><summary>“My nephew does it.” / “We have someone.”</summary><p>“Great, then hand them this page. It shows exactly what's wrong. If they ever get busy, I'm local and happy to help.”</p></details>
+      <details><summary>“Too expensive.”</summary><p>“That's fair. It's a flat $250 and nothing until it's fixed. If it's not worth that to you right now, that's completely fine.” For a site: “There's also $100 a month for twelve months. Same $1,200 total, no interest.”</p></details>
+      <details><summary>“We're fine with Facebook.”</summary><p>“Facebook's good for news, keep it. The trouble is that Google still sends people to your web address, and right now that's what they see. I can make that address show your hours, menu and a link to your Facebook.”</p></details>
+      <details><summary>“Send me something.” / “Email me.”</summary><p>“Happy to. What's the best address?” Write it down. Send one short note that day with the same page attached, and nothing more until they reply.</p></details>
+      <details><summary>“Is this a scam?”</summary><p>“Fair question, I'd ask too. I'm local. You don't pay anything until it's fixed and you've seen it working, and the price is in writing before I start.”</p></details>
+      <details><summary>“Do you have references?”</summary><p>“Not yet. I'm just starting out locally, so I'd rather be honest about it. Here's what I've built.” Show Bunny World and let them tap a shop. “That's why the first job is small and paid at the end.”</p></details>
+      <details><summary>“We use Wix / Square / Squarespace.”</summary><p>“Good, keep it. I'd fix it where it is, or move it, whichever costs you less.”</p></details>
+    </div>
+
+    <div class="rules">
+      <span class="label">Rules</span>
+      <ul>
+        <li>No guarantees: never “more customers”, “top of Google” or “you're losing $X”.</li>
+        <li>Never say “hacked”. Say “it's showing the wrong page” or “browsers show a warning”.</li>
+        <li>No discounts. The prices are the prices.</li>
+        <li>Never knock their current web person. Never invent clients: Bunny World is a demo.</li>
+        <li>One visit, one ask. Leave at once on “not interested” or if they're annoyed.</li>
+      </ul>
+    </div>
+
+    <h3>Before you walk in with the laptop</h3>
+    <ul class="check">
+      <li>Their broken site open on your phone (or the printout's screenshot), ready to hand over.</li>
+      <li>The matching Bunny World shop open on the laptop, hotspot on, page already loaded.</li>
+      <li>The work agreement open in a second tab, so a yes can be written down on the spot.</li>
+      <li>This page on your phone, on their stop card, so “Log visit” is one tap on the way out.</li>
+    </ul>
+  </section>
+
+  <!-- COSTS -->
+  <section class="view" id="v-costs" aria-label="Costs" hidden>
+    <div>
+      <h2>What it really costs to do it yourself</h2>
+      <p class="lede">List prices from each company's own pricing page, US dollars. Builders are cheaper in cash. Our case is time, a site that works, and someone looking after it.</p>
+    </div>
+    <div class="tablewrap"><table id="costTable"><thead><tr><th>Service</th><th>Price</th><th>Checked</th></tr></thead><tbody></tbody></table></div>
+
+    <div>
+      <h2>First year, side by side</h2>
+      <p class="lede">A builder plan plus the owner's own hours, against hiring it out.</p>
+    </div>
+    <div class="calc">
+      <div class="slider">
+        <div class="row"><label class="label" for="rate">Your hour is worth</label><output id="rateOut" for="rate">$40</output></div>
+        <input type="range" id="rate" min="15" max="150" step="5" value="40">
+      </div>
+      <div class="slider">
+        <div class="row"><label class="label" for="hours">Hours to build it yourself</label><output id="hoursOut" for="hours">30 h</output></div>
+        <input type="range" id="hours" min="20" max="40" step="5" value="30">
+      </div>
+      <div class="legend">
+        <span style="--c:var(--bar-diy)">Cash</span>
+        <span style="--c:var(--bar-time)">Your time</span>
+        <span style="--c:var(--bar-sog)">Sea of Grass</span>
+        <span style="--c:var(--bar-free)">Hired elsewhere</span>
+      </div>
+      <div class="bars" id="bars"></div>
+      <p class="note" id="calcNote"></p>
+    </div>
+  </section>
+
+  <!-- LOG -->
+  <section class="view" id="v-log" aria-label="Log" hidden>
+    <form id="f" autocomplete="off">
+      <div class="field">
+        <span class="label" id="byL">Logged by</span>
+        <div class="chips radio" role="radiogroup" aria-labelledby="byL">
+          <label><input type="radio" name="by" id="byT" value="Tristan" checked><span>Tristan</span></label>
+          <label><input type="radio" name="by" id="byB" value="Bryce"><span>Bryce</span></label>
+        </div>
+      </div>
+      <div class="field">
+        <label class="label" for="biz">Business</label>
+        <select id="biz" required><option value="">Pick one</option></select>
+        <input id="bizOther" placeholder="Business name" hidden>
+      </div>
+      <div class="field">
+        <span class="label" id="howL">How</span>
+        <div class="chips radio" role="radiogroup" aria-labelledby="howL">
+          <label><input type="radio" name="how" value="Walk-in" checked><span>Walk-in</span></label>
+          <label><input type="radio" name="how" value="Call"><span>Call</span></label>
+          <label><input type="radio" name="how" value="Email"><span>Email</span></label>
+        </div>
+      </div>
+      <div class="field">
+        <span class="label" id="whoL">Spoke with</span>
+        <div class="chips radio" role="radiogroup" aria-labelledby="whoL">
+          <label><input type="radio" name="who" value="Owner" checked><span>Owner</span></label>
+          <label><input type="radio" name="who" value="Manager"><span>Manager</span></label>
+          <label><input type="radio" name="who" value="Staff"><span>Staff</span></label>
+          <label><input type="radio" name="who" value="Nobody"><span>Nobody / closed</span></label>
+        </div>
+      </div>
+      <div class="field">
+        <span class="label" id="resL">Result</span>
+        <div class="chips radio" role="radiogroup" aria-labelledby="resL">
+          <label><input type="radio" name="res" value="Yes"><span>Said yes</span></label>
+          <label><input type="radio" name="res" value="Interested"><span>Interested</span></label>
+          <label><input type="radio" name="res" value="Left page" checked><span>Left the page</span></label>
+          <label><input type="radio" name="res" value="Has someone"><span>Has someone</span></label>
+          <label><input type="radio" name="res" value="Not interested"><span>Not interested</span></label>
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label class="label" for="price">Price quoted</label>
+          <select id="price">
+            <option value="">None</option>
+            <option>$250 fix</option>
+            <option>$1,200 starter</option>
+            <option>$100/mo starter</option>
+            <option>$2,000 site</option>
+            <option>$50/mo care</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="label" for="follow">Follow up</label>
+          <input id="follow" type="date">
+        </div>
+      </div>
+      <div class="field">
+        <label class="label" for="note">Notes</label>
+        <textarea id="note" placeholder="Name, best time to come back, what they said"></textarea>
+      </div>
+      <button id="save" type="submit">Save visit</button>
+      <p class="status" id="status" role="status"></p>
+    </form>
+
+    <section class="strip" id="strip" aria-label="Totals"></section>
+
+    <section style="display:grid;gap:10px">
+      <div class="daybar"><span class="label">Visits</span></div>
+      <div class="chips" id="personChips" role="group" aria-label="Filter visits by person"></div>
+      <ul class="visits" id="list"><li class="empty">Loading your log…</li></ul>
+    </section>
+  </section>
+</div>
+
+</main>
+<script src="supabase.js"></script>
+<script src="app.js?v=2"></script>
+</body></html>

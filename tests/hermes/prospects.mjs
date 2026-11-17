@@ -43,7 +43,7 @@ export function textFiles(root, skip = new Set(['node_modules', '.git'])) {
   return out;
 }
 
-// CLI: node field/prospects.mjs < names.txt > field/prospect-hashes.json   (names never touch the repo)
+// CLI: node hermes/prospects.mjs < names.txt > hermes/prospect-hashes.json   (names never touch the repo)
 if (process.argv[1] && import.meta.url === 'file://' + path.resolve(process.argv[1])) {
   const names = fs.readFileSync(0, 'utf8').split('\n').map(s => s.trim()).filter(Boolean);
   process.stdout.write(JSON.stringify({ note: 'One-way fingerprints of walk-in prospect names. See prospects.mjs.', count: names.length, prints: fingerprint(names) }, null, 1) + '\n');
