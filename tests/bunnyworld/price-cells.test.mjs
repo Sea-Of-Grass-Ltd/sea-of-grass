@@ -13,10 +13,10 @@ const txt = s => (s || '').replace(/\s+/g, ' ').trim();
 
 // what each panel must say (the terms already on the site; nothing invented) and what its button adds
 const PACKS = [
-  { key: 'fix', price: /\$250/, must: [/from \$250/i, /after it’s done/i, /checked/i], add: ['fix'] },
-  { key: 'starter', price: /\$100/, must: [/\$100 a month/i, /12 months|12 payments/i, /\$1,200/, /payment 12/i, /30%/, /first draft/i], add: ['starter-monthly', 'starter'] },
-  { key: 'site', price: /\$2,000/, must: [/from \$2,000/i, /30%/, /first draft/i, /the rest at launch/i], add: ['bw-site-bunny-burritos'] },
-  { key: 'care', price: /\$50/, must: [/\$50 a month/i, /hosting/i, /security/i, /30 minutes/i, /bigger jobs/i, /cancel any month/i], add: ['care'] },
+  { key: 'fix', price: /\$250/, must: [/from \$250/i, /after it’s done/i, /checked/i, /a few days/i, /flat fee/i, /before any work/i, /nothing up front/i], add: ['fix'] },
+  { key: 'starter', price: /\$100/, must: [/\$100\/mo/i, /× 12/, /\$1,200/, /after #12/i, /30%/, /first draft/i, /no interest/i, /billed monthly/i, /rest at launch/i, /round of changes/i], add: ['starter-monthly', 'starter'] },
+  { key: 'site', price: /\$2,000/, must: [/from \$2,000/i, /30%/, /first draft/i, /rest at launch/i, /fixed price in writing/i, /nothing to start/i, /domain, email, Google listing/i], add: ['bw-site-bunny-burritos'] },
+  { key: 'care', price: /\$50/, must: [/\$50\/mo/i, /hosting/i, /security/i, /30 minutes/i, /bigger jobs/i, /cancel any month/i, /text Tristan or Bryce/i, /after launch/i], add: ['care'] },
 ];
 const state = page => page.evaluate(() => [...document.querySelectorAll('#prices [aria-controls]')].map(b => {
   const p = document.getElementById(b.getAttribute('aria-controls')), r = p.getBoundingClientRect();
@@ -171,9 +171,37 @@ for (const w of [390, 1440]) test(`price strip @ ${w}: the open cell is marked b
     if (w >= 900) { assert.ok(s.cells[1].barShown && Math.abs(s.cells[1].bar - 4) <= 0.5, 'a 4px bar under the open cell'); assert.ok(!s.cells[0].barShown || s.cells[0].bar === 0, 'no bar under closed cells'); }
     const r = await page.evaluate(() => { const p = document.querySelector('#pc-starter-a .pc-in'), b = p.getBoundingClientRect(), s = document.querySelector('#prices').getBoundingClientRect();
       const btn = [...p.querySelectorAll('.pc-add')].map(x => ({ h: x.getBoundingClientRect().height, f: parseFloat(getComputedStyle(x).fontSize) }));
-      const para = getComputedStyle(p.querySelector('p')); return { w: b.width, mid: (b.left + b.right) / 2, smid: (s.left + s.right) / 2, btn, pf: parseFloat(para.fontSize), pw: para.fontWeight }; });
+      const para = getComputedStyle(p.querySelector('li')); return { w: b.width, mid: (b.left + b.right) / 2, smid: (s.left + s.right) / 2, btn, pf: parseFloat(para.fontSize), pw: para.fontWeight }; });
     if (w >= 900) { assert.ok(r.w <= 28 * s.u + 2, `panel column 28u wide (${r.w})`); assert.ok(Math.abs(r.mid - r.smid) <= 2, 'centred under the strip'); }
     assert.ok(r.btn.every(b => Math.abs(b.h - 48) <= 1 && b.f === 16), `buttons match the hero button: ${JSON.stringify(r.btn)}`);
     assert.ok(r.pf === 16 && r.pw === '400', 'panel text in the small style');
+  } finally { await ctx.close(); }
+});
+
+// Tristan (2026-11-16, phone review): "it should be quickly readable as a graphic card, that's what people like".
+// Each panel: "What you get" as 3-6 short icon bullets (one line each on a phone), and "How you pay" as option chips,
+// two side by side for the starter (monthly or once), one for the others. No paragraphs.
+const CARD = { fix: 1, starter: 2, site: 1, care: 1 };
+for (const w of [360, 390, 1440]) test(`price cards @ ${w}: a quick graphic card, short icon bullets and pay chips, no paragraphs`, async () => {
+  const { ctx, page } = await site.open(URL, w, { reducedMotion: 'reduce' });
+  try {
+    for (const [k, chips] of Object.entries(CARD)) {
+      await page.locator(`#pc-${k}`).click(); await page.waitForTimeout(150);
+      const r = await page.evaluate(k => { const p = document.querySelector(`#pc-${k}-a .pc-in`);
+        const heads = [...p.querySelectorAll('.pc-k')].map(h => h.innerText.trim());
+        const li = [...p.querySelectorAll('.pc-get li')].map(l => { const c = getComputedStyle(l); return { t: l.innerText.trim(), h: l.getBoundingClientRect().height, lh: parseFloat(c.lineHeight) || parseFloat(c.fontSize) * 1.3, icon: getComputedStyle(l, '::before').content !== 'none' }; });
+        const opts = [...p.querySelectorAll('.pc-opt')].map(o => ({ top: Math.round(o.getBoundingClientRect().top), w: o.getBoundingClientRect().width, add: !!o.querySelector('[data-add]'),
+          lines: [...o.querySelectorAll('.pc-opt-l li')].map(l => ({ h: l.getBoundingClientRect().height, lh: parseFloat(getComputedStyle(l).lineHeight) })) }));
+        const paras = [...p.querySelectorAll('p')].filter(x => !x.classList.contains('pc-note') && x.getBoundingClientRect().height > 0).length;
+        return { heads, li, opts, paras }; }, k);
+      assert.deepEqual(r.heads, ['What you get', 'How you pay'], `${k}: two labelled parts`);
+      assert.ok(r.li.length >= 3 && r.li.length <= 6, `${k}: 3-6 bullets (${r.li.length})`);
+      for (const l of r.li) { assert.ok(l.icon, `${k}: "${l.t}" has its icon`); assert.ok(l.h <= l.lh * 1.5, `${k}: "${l.t}" fits one line (${Math.round(l.h)}px)`); assert.ok(l.t.split(/\s+/).length <= 8, `${k}: "${l.t}" is a few words`); }
+      assert.equal(r.paras, 0, `${k}: no paragraphs`);
+      assert.equal(r.opts.length, chips, `${k}: ${chips} pay option(s)`);
+      assert.ok(r.opts.every(o => o.add), `${k}: each option has its Add to cart`);
+      if (chips === 2) assert.equal(r.opts[0].top, r.opts[1].top, `${k}: the two options sit side by side`);
+      for (const o of r.opts) for (const l of o.lines) assert.ok(l.h <= l.lh * 1.5, `${k}: every chip line fits one line`);
+    }
   } finally { await ctx.close(); }
 });

@@ -39,8 +39,8 @@ for (const w of [390, 1440]) test(`hero @ ${w}: logo over a one-line headline as
     // the critic's Refero pick (2026-11-16): the logo centred directly above a one-line headline, one big unit;
     // the line and the button centred and smaller below
     // one line from 1000px up; below that both loop lines break onto two (proportion spec)
-    assert.equal(r.h1Lines, w >= 1000 ? 1 : 2, `headline lines (${Math.round(r.h1.height)}px tall at ${r.h1Font}px)`);
-    const big = w >= 1000 ? [300, 310] : [140, 190];
+    assert.equal(r.h1Lines, 1, `headline lines (${Math.round(r.h1.height)}px tall at ${r.h1Font}px)`);
+    const big = w >= 1000 ? [300, 310] : [80, 130]; // phones: a compact unit (Tristan, 2026-11-16: the logo was oversized)
     assert.ok(r.mark.h >= big[0] && r.mark.h <= big[1], `the logo is big (${Math.round(r.mark.h)}px tall, want ${big})`);
     if (w >= 900) assert.ok(r.h1Font >= 120, `the headline is big (${r.h1Font}px)`);
     const midMark = r.mark.left + r.mark.w / 2, midH1 = r.h1.left + r.h1.width / 2;
@@ -155,14 +155,16 @@ for (const w of [390, 1440]) test(`hero @ ${w}: sizes follow the logo (u = its s
     assert.equal(r.weight, '800');
     assert.ok(near(r.ls, -0.035, 0.002), `letter-spacing -0.035em (${r.ls})`);
     assert.ok(near(r.line, Math.max(16, r.u)), `the line is 1u, 16px floor (${r.line})`);
-    assert.ok(near(r.btnH, Math.max(48, 2 * r.u)), `button is 2u tall, 48px floor (${r.btnH})`);
-    assert.ok(near(r.btnFont, Math.max(16, r.u * 2 / 3)), `button text 2/3u, 16px floor (${r.btnFont})`);
+    if (w >= 1000) { assert.ok(near(r.btnH, Math.max(48, 2 * r.u)), `button is 2u tall, 48px floor (${r.btnH})`); assert.ok(near(r.btnFont, Math.max(16, r.u * 2 / 3)), `button text 2/3u, 16px floor (${r.btnFont})`); }
+    else assert.ok(r.btnH >= 40 && r.btnH <= 44 && r.btnFont === 15, `phones: a smaller button, still a 40px+ tap target (${r.btnH}, ${r.btnFont})`); // Tristan: "Pick your shop" too big on phones
   } finally { await ctx.close(); }
 });
 
-// HQ's condition (2026-11-16): on every phone width both loop lines break into exactly two lines ("Bunny / World.",
+// Was: two lines on phones. Tristan (2026-11-16, phone review): the headline must be one line at 360-390, so both loop lines
+// are now exactly one line at every width ("Bunny World." and "Hop with style."), same height, so the swap moves nothing
+// (old note: on every phone width both loop lines break into exactly two lines ("Bunny / World.",
 // "Hop with / style.") with the same block height, so the swap never shifts anything below it
-test('phones: both loop lines are exactly two lines, same height, at every width from 320 to 820', async () => {
+test('phones: both loop lines are exactly one line, same height, at every width from 320 to 820', async () => {
   const bad = [];
   for (const w of [320, 340, 360, 375, 390, 414, 430, 480, 600, 768, 820]) {
     const { ctx, page } = await site.open(URL, w);
@@ -173,7 +175,7 @@ test('phones: both loop lines are exactly two lines, same height, at every width
         const h = document.querySelector('.hero h1').getBoundingClientRect();
         return { from: layer('.lh-from'), to: layer('.lh-to'), box: { l: h.left, r: h.right, h: h.height } };
       });
-      if (r.from.lines !== 2 || r.to.lines !== 2) bad.push(`${w}: lines from ${r.from.lines}, to ${r.to.lines}`);
+      if (r.from.lines !== 1 || r.to.lines !== 1) bad.push(`${w}: lines from ${r.from.lines}, to ${r.to.lines}`);
       if (Math.abs(r.from.h - r.to.h) > 2) bad.push(`${w}: heights differ (${r.from.h} vs ${r.to.h})`);
       for (const k of ['from', 'to']) if (r[k].left < r.box.l - 1 || r[k].right > r.box.r + 1) bad.push(`${w}: ${k} spills the box`);
     } finally { await ctx.close(); }
