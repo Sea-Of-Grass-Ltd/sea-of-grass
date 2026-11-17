@@ -537,7 +537,7 @@ html:not([data-look]) .hero[data-logo="centre"] h1,html[data-look="clean"] .hero
   main#top{display:grid;grid-template-columns:minmax(0,1fr)}
   main#top>*,.hero-host>*{grid-column:1}   /* explicit, or auto-placement pushes the shops into a second column beside the host */
   .hero-host{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:subgrid;grid-row:1 / span 3}
-  .hero-host>.hero{grid-row:1}
+  .hero-host>.hero{grid-row:1;background:var(--hero-bg)}   /* on phones the hero is the smoke host (inline script in index.html) */
   main[data-phone-order="shops-first"] .hero-host>.plans{grid-row:3}
   main[data-phone-order="shops-first"]>.show{grid-row:2}
   main[data-phone-order="prices-first"] .hero-host>.plans{grid-row:2}

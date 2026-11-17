@@ -13,20 +13,22 @@ before(async () => { site = await startSite({ webgl: true }); });
 after(async () => { await site?.close(); });
 
 // hide the hero's content so only its background (and the smoke canvas) is measured
-const HIDE = '.hero *:not(canvas){visibility:hidden !important}';
+// the smoke host is [data-smoke]: since 2026-11-16 a wrapper around the hero and its prices (the same content the hero
+// section held before the prices became their own section for the phone pages)
+const HIDE = '[data-smoke] *:not(canvas){visibility:hidden !important}';
 // measure the hero's painted background: how far any pixel is from the section colour, and how many are saturated colour
 async function measure(page) {
-  const box = await page.evaluate(() => { const r = document.querySelector('.hero').getBoundingClientRect(); return { x: r.x, y: r.y, width: r.width, height: Math.min(r.height, innerHeight - r.y) }; });
+  const box = await page.evaluate(() => { const r = document.querySelector('[data-smoke]').getBoundingClientRect(); return { x: r.x, y: r.y, width: r.width, height: Math.min(r.height, innerHeight - r.y) }; });
   const png = await page.screenshot({ clip: box, scale: 'css' });
   return page.evaluate(async b64 => {
     const img = await createImageBitmap(await (await fetch('data:image/png;base64,' + b64)).blob());
     const c = new OffscreenCanvas(img.width, img.height), x = c.getContext('2d'); x.drawImage(img, 0, 0);
     const d = x.getImageData(0, 0, img.width, img.height).data;
-    const bg = getComputedStyle(document.querySelector('.hero')).backgroundColor.match(/\d+/g).map(Number);
+    const bg = getComputedStyle(document.querySelector('[data-smoke]')).backgroundColor.match(/\d+/g).map(Number);
     // the hero's words, in screenshot pixels: colour must never show behind them (solid things on top, like the logo and the
     // dark button, are opaque, so colour may run right up to them; words on the button's fill and in closed panels don't count)
-    const hr = document.querySelector('.hero').getBoundingClientRect(), k = img.width / hr.width, boxes = [], rg = document.createRange();
-    const tw = document.createTreeWalker(document.querySelector('.hero'), NodeFilter.SHOW_TEXT, { acceptNode: n => n.nodeValue.trim() && !n.parentElement.closest('.sr,.lh-go') && n.parentElement.checkVisibility({ visibilityProperty: true }) ? 1 : 2 });
+    const hr = document.querySelector('[data-smoke]').getBoundingClientRect(), k = img.width / hr.width, boxes = [], rg = document.createRange();
+    const tw = document.createTreeWalker(document.querySelector('[data-smoke]'), NodeFilter.SHOW_TEXT, { acceptNode: n => n.nodeValue.trim() && !n.parentElement.closest('.sr,.lh-go') && n.parentElement.checkVisibility({ visibilityProperty: true }) ? 1 : 2 });
     for (let n; (n = tw.nextNode());) { rg.selectNodeContents(n); boxes.push(...rg.getClientRects()); }
     const inBox = (x, y) => boxes.some(b => x >= (b.left - hr.left) * k && x < (b.right - hr.left) * k && y >= (b.top - hr.top) * k && y < (b.bottom - hr.top) * k);
     let dev = 0, colour = 0, onCopy = 0, off = 0;
@@ -40,13 +42,13 @@ async function measure(page) {
 // ink-rim pixels (dark: only the sparkles' rims are dark once the content is hidden), and how many of them have no gap
 // colour within 10px, i.e. were drawn over closed smoke
 async function rims(page) {
-  const box = await page.evaluate(() => { const r = document.querySelector('.hero').getBoundingClientRect(); return { x: r.x, y: r.y, width: r.width, height: Math.min(r.height, innerHeight - r.y) }; });
+  const box = await page.evaluate(() => { const r = document.querySelector('[data-smoke]').getBoundingClientRect(); return { x: r.x, y: r.y, width: r.width, height: Math.min(r.height, innerHeight - r.y) }; });
   const png = await page.screenshot({ clip: box, scale: 'css' });
   return page.evaluate(async b64 => {
     const img = await createImageBitmap(await (await fetch('data:image/png;base64,' + b64)).blob());
     const c = new OffscreenCanvas(img.width, img.height), x = c.getContext('2d'); x.drawImage(img, 0, 0);
     const W = img.width, H = img.height, d = x.getImageData(0, 0, W, H).data;
-    const bg = getComputedStyle(document.querySelector('.hero')).backgroundColor.match(/\d+/g).map(Number);
+    const bg = getComputedStyle(document.querySelector('[data-smoke]')).backgroundColor.match(/\d+/g).map(Number);
     const off = (i) => Math.max(Math.abs(d[i] - bg[0]), Math.abs(d[i + 1] - bg[1]), Math.abs(d[i + 2] - bg[2])) > 6;
     let rimsN = 0, outside = 0;
     for (let y = 0; y < H; y++) for (let X = 0; X < W; X++) { const i = (y * W + X) * 4; if (d[i] + d[i + 1] + d[i + 2] > 240) continue;
@@ -58,13 +60,13 @@ async function rims(page) {
   }, png.toString('base64'));
 }
 async function drag(page, { from = .15, to = .85, y = .55, steps = 24, ms = 700, release = true } = {}) {
-  const r = await page.evaluate(() => { const b = document.querySelector('.hero').getBoundingClientRect(); return [b.x, b.y, b.width, Math.min(b.height, innerHeight - b.y)]; });
+  const r = await page.evaluate(() => { const b = document.querySelector('[data-smoke]').getBoundingClientRect(); return [b.x, b.y, b.width, Math.min(b.height, innerHeight - b.y)]; });
   const Y = r[1] + r[3] * y;
   await page.mouse.move(r[0] + r[2] * from, Y); await page.mouse.down();
   for (let i = 1; i <= steps; i++) { await page.mouse.move(r[0] + r[2] * (from + (to - from) * i / steps), Y + Math.sin(i / 3) * 30); await page.waitForTimeout(ms / steps); }
   if (release) await page.mouse.up();
 }
-const rects = page => page.evaluate(() => ['.hero', '.hero h1', '.hero .lede', '.hero .lh-go', '#prices'].map(s => { const e = document.querySelector(s); if (!e) return s + ': missing'; const r = e.getBoundingClientRect(); return `${s} ${[r.x, r.y + scrollY, r.width, r.height].map(Math.round)}`; }));
+const rects = page => page.evaluate(() => ['[data-smoke]', '.hero h1', '.hero .lede', '.hero .lh-go', '#prices'].map(s => { const e = document.querySelector(s); if (!e) return s + ': missing'; const r = e.getBoundingClientRect(); return `${s} ${[r.x, r.y + scrollY, r.width, r.height].map(Math.round)}`; }));
 
 for (const w of [390, 1440]) {
   test(`at rest the hero background is flat; a drag shows colour, then it closes within 4.5s @ ${w}`, async () => {
@@ -75,7 +77,7 @@ for (const w of [390, 1440]) {
       const rest = await measure(page);
       assert.ok(rest.dev <= 2, `at rest the hero is flat (max deviation ${rest.dev})`);
       assert.equal(rest.colour, 0, 'no colour at rest');
-      assert.ok(await page.$('.hero canvas.bw-smoke'), 'the smoke canvas is mounted');
+      assert.ok(await page.$('[data-smoke] canvas.bw-smoke'), 'the smoke canvas is mounted');
       await drag(page, { from: .03, to: .3, y: w < 900 ? .5 : .3, release: false });   // through the open space beside the centred copy (desktop: left of the logo, above the headline)
       const open = await measure(page);
       await page.mouse.up();
@@ -86,9 +88,9 @@ for (const w of [390, 1440]) {
       while (Date.now() - t0 < 6000) { const m = await measure(page); if (m.colour === 0 && m.dev <= 2) { closed = Date.now() - t0; break; } await page.waitForTimeout(150); }
       assert.ok(closed !== null && closed <= 4500, `closes again within 4.5s of letting go (closed after ${closed ?? '>6000'} ms)`);
       assert.ok(closed > 600, `it lingers before closing, not a snap (${closed} ms)`);
-      const s = await page.evaluate(() => { const a = document.querySelector('.hero').__bwSmoke; return { running: a.stats.running, sheet: a.stats.sheet, dpr: a.stats.dpr }; });
+      const s = await page.evaluate(() => { const a = document.querySelector('[data-smoke]').__bwSmoke; return { running: a.stats.running, sheet: a.stats.sheet, dpr: a.stats.dpr }; });
       await page.waitForTimeout(Math.max(0, 5000 - (Date.now() - t0)));
-      assert.equal((await page.evaluate(() => document.querySelector('.hero').__bwSmoke.stats.running)), false, 'the loop has stopped 5s after letting go');
+      assert.equal((await page.evaluate(() => document.querySelector('[data-smoke]').__bwSmoke.stats.running)), false, 'the loop has stopped 5s after letting go');
       assert.ok((await measure(page)).dev <= 2, 'and the hero is flat again');
       assert.ok(Math.max(...s.sheet) <= 220, `the field is low-res (${s.sheet})`);
       assert.ok(s.dpr <= 1.5, `the canvas resolution is capped (${s.dpr})`);
@@ -103,7 +105,7 @@ for (const w of [390, 1440]) {
     try {
       // shifts of anything in the hero, since load (buffered, so mounting is covered); the header's Cart button arriving
       // from cart.js during load is the page's own and not the smoke's
-      await page.evaluate(() => { window.__cls = 0; const hero = document.querySelector('.hero'); new PerformanceObserver(l => l.getEntries().forEach(e => { if (!e.hadRecentInput && (e.sources || []).some(x => x.node && hero.contains(x.node))) window.__cls += e.value; })).observe({ type: 'layout-shift', buffered: true }); });
+      await page.evaluate(() => { window.__cls = 0; const hero = document.querySelector('[data-smoke]'); new PerformanceObserver(l => l.getEntries().forEach(e => { if (!e.hadRecentInput && (e.sources || []).some(x => x.node && hero.contains(x.node))) window.__cls += e.value; })).observe({ type: 'layout-shift', buffered: true }); });
       assert.deepEqual(await rects(page), base, 'same layout as the plain page');
       await drag(page, { release: false });
       assert.deepEqual(await rects(page), base, 'same layout mid-drag');
@@ -117,7 +119,7 @@ for (const w of [390, 1440]) {
     const { ctx, page, errors } = await site.open(URL, w, { reducedMotion: 'reduce' });
     try {
       await page.addStyleTag({ content: HIDE });
-      assert.equal(await page.$('.hero canvas.bw-smoke'), null, 'no canvas');
+      assert.equal(await page.$('[data-smoke] canvas.bw-smoke'), null, 'no canvas');
       await drag(page);
       const m = await measure(page);
       assert.ok(m.dev <= 2 && m.colour === 0, `stays flat after a drag (dev ${m.dev}, colour ${m.colour})`);
@@ -128,7 +130,7 @@ for (const w of [390, 1440]) {
   test(`pauses off screen and in a hidden tab @ ${w}`, async () => {
     const { ctx, page, errors } = await site.open(URL, w);
     try {
-      const frames = () => page.evaluate(() => document.querySelector('.hero').__bwSmoke.stats.frames);
+      const frames = () => page.evaluate(() => document.querySelector('[data-smoke]').__bwSmoke.stats.frames);
       await drag(page);
       const a = await frames(); await page.waitForTimeout(200);
       assert.ok(await frames() > a, 'runs while open and on screen');
@@ -154,13 +156,13 @@ for (const w of [390, 1440]) test(`carrots appear only inside the open gap, neve
     await page.addStyleTag({ content: HIDE });
     await page.waitForTimeout(400);
     // a carrot placed where the smoke is closed: across its whole life the hero stays flat
-    await page.evaluate(() => { const h = document.querySelector('.hero'), r = h.getBoundingClientRect(); h.__bwSmoke._sparkAt(Math.min(140, r.width * .2), 160); });
+    await page.evaluate(() => { const h = document.querySelector('[data-smoke]'), r = h.getBoundingClientRect(); h.__bwSmoke._sparkAt(Math.min(140, r.width * .2), 160); });
     for (const t of [150, 350, 600, 900]) { await page.waitForTimeout(t === 150 ? 150 : 250); const m = await measure(page); assert.ok(m.dev <= 2, `no carrot over closed smoke (${t}ms: max deviation ${m.dev})`); }
     await page.waitForTimeout(1200);
     // a real drag through open space: carrots appear while it goes, and every dark (ink-rim) pixel sits in the gap
     // (on a phone the copy fills the hero; the clear room is the corner right of the logo)
     await drag(page, { from: w < 900 ? .45 : .03, to: w < 900 ? .97 : .3, y: w < 900 ? .07 : .45, steps: 30, ms: 900, release: false });
-    const made = await page.evaluate(() => document.querySelector('.hero').__bwSmoke.stats.made);
+    const made = await page.evaluate(() => document.querySelector('[data-smoke]').__bwSmoke.stats.made);
     await page.mouse.up();
     assert.ok(made > 0, `carrots appeared during the drag (${made})`);
     for (let i = 0; i < 8; i++) {
@@ -178,15 +180,15 @@ for (const w of [390, 1440]) test(`at most 6 carrots per drag, none under the co
   try {
     await page.waitForTimeout(400);
     const copy = () => page.evaluate(() => {
-      const hero = document.querySelector('.hero'), hr = hero.getBoundingClientRect(), out = [], rg = document.createRange();
+      const hero = document.querySelector('[data-smoke]'), hr = hero.getBoundingClientRect(), out = [], rg = document.createRange();
       const tw = document.createTreeWalker(hero, NodeFilter.SHOW_TEXT, { acceptNode: n => n.nodeValue.trim() && !n.parentElement.closest('.sr') ? 1 : 2 });
       for (let n; (n = tw.nextNode());) { rg.selectNodeContents(n); for (const r of rg.getClientRects()) out.push([r.left - hr.left, r.top - hr.top, r.right - hr.left, r.bottom - hr.top]); }
       return out; });
     const ys = w < 900 ? ['.hero h1', '.hero .lede'] : ['.hero h1', '.hero .lede', '.hero .lh-mark'];
     for (const sel of [null, ...ys]) {
-      const y = sel ? await page.evaluate(s => { const h = document.querySelector('.hero').getBoundingClientRect(), r = document.querySelector(s).getBoundingClientRect(); return (r.top + r.height / 2 - h.top) / Math.min(h.height, innerHeight - h.top); }, sel) : (w < 900 ? .07 : .3);
+      const y = sel ? await page.evaluate(s => { const h = document.querySelector('[data-smoke]').getBoundingClientRect(), r = document.querySelector(s).getBoundingClientRect(); return (r.top + r.height / 2 - h.top) / Math.min(h.height, innerHeight - h.top); }, sel) : (w < 900 ? .07 : .3);
       await drag(page, { from: .02, to: .98, y, steps: 40, ms: 1100, release: false });
-      const st = await page.evaluate(() => { const s = document.querySelector('.hero').__bwSmoke.stats; return { made: s.made, cars: s.cars }; });
+      const st = await page.evaluate(() => { const s = document.querySelector('[data-smoke]').__bwSmoke.stats; return { made: s.made, cars: s.cars }; });
       await page.mouse.up();
       assert.ok(st.made <= 6, `at most 6 carrots in one drag (${st.made}, drag ${sel || 'open space'})`);
       if (!sel) assert.ok(st.made >= (w < 900 ? 1 : 2), `a long drag through open space leaves a wake (${st.made})`);
@@ -207,14 +209,14 @@ test('an older part of the gap closes before a newer one', async () => {
   try {
     await page.addStyleTag({ content: HIDE });
     await page.waitForTimeout(400);
-    const hb = await page.evaluate(() => { const r = document.querySelector('.hero').getBoundingClientRect(); return { x: r.x, y: r.y, width: r.width, height: Math.min(r.height, innerHeight - r.y) }; });
+    const hb = await page.evaluate(() => { const r = document.querySelector('[data-smoke]').getBoundingClientRect(); return { x: r.x, y: r.y, width: r.width, height: Math.min(r.height, innerHeight - r.y) }; });
     // off-background pixels in the first and last thirds of the drag's span
     const thirds = async () => { const png = await page.screenshot({ clip: hb, scale: 'css' });
       return page.evaluate(async b64 => {
         const img = await createImageBitmap(await (await fetch('data:image/png;base64,' + b64)).blob());
         const c = new OffscreenCanvas(img.width, img.height), x = c.getContext('2d'); x.drawImage(img, 0, 0);
         const W = img.width, H = img.height, d = x.getImageData(0, 0, W, H).data;
-        const bg = getComputedStyle(document.querySelector('.hero')).backgroundColor.match(/\d+/g).map(Number);
+        const bg = getComputedStyle(document.querySelector('[data-smoke]')).backgroundColor.match(/\d+/g).map(Number);
         const x0 = W * .03, x1 = W * .33, k = (x1 - x0) / 3; let a = 0, b = 0;
         for (let y = 0; y < H; y++) for (let X = Math.floor(x0); X < x1; X++) { const i = (y * W + X) * 4;
           if (Math.max(Math.abs(d[i] - bg[0]), Math.abs(d[i + 1] - bg[1]), Math.abs(d[i + 2] - bg[2])) > 24) { if (X < x0 + k) a++; else if (X > x1 - k) b++; } }
@@ -239,9 +241,9 @@ test('phone: a vertical swipe on the hero scrolls the page; a sideways drag part
   const { ctx, page, errors } = await site.open(URL, 390);
   try {
     await page.addStyleTag({ content: HIDE });
-    assert.match(await page.evaluate(() => getComputedStyle(document.querySelector('.hero')).touchAction), /pan-y/, 'touch-action leaves vertical panning to the page');
+    assert.match(await page.evaluate(() => getComputedStyle(document.querySelector('[data-smoke]')).touchAction), /pan-y/, 'touch-action leaves vertical panning to the page');
     const cdp = await ctx.newCDPSession(page);
-    const r = await page.evaluate(() => { const b = document.querySelector('.hero').getBoundingClientRect(); return [b.x + b.width / 2, b.y + Math.min(b.height, innerHeight - b.y) * .5]; });
+    const r = await page.evaluate(() => { const b = document.querySelector('[data-smoke]').getBoundingClientRect(); return [b.x + b.width / 2, b.y + Math.min(b.height, innerHeight - b.y) * .5]; });
     await cdp.send('Input.synthesizeScrollGesture', { x: Math.round(r[0] - 120), y: Math.round(r[1]), xDistance: 260, yDistance: 0, gestureSourceType: 'touch', speed: 500, preventFling: true });
     const m = await measure(page);
     assert.ok(m.colour > 0, `a sideways drag shows colour (${m.colour} px)`);
@@ -260,9 +262,9 @@ test('colour runs across the price strip\'s edges with no hard step', async () =
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.addStyleTag({ content: HIDE });
     // without the sparkle carrots: their glints are crisp by design, and this measures only the smoke and its colour
-    await page.evaluate(() => { const h = document.querySelector('.hero'); h.__bwSmoke.destroy(); BWSmoke.mount(h, { sparkles: false }); });
+    await page.evaluate(() => { const h = document.querySelector('[data-smoke]'); h.__bwSmoke.destroy(); BWSmoke.mount(h, { sparkles: false }); });
     await page.waitForTimeout(700);
-    const s = await page.evaluate(() => { const r = document.querySelector('.hero .prices').getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, h: r.height }; });
+    const s = await page.evaluate(() => { const r = document.querySelector('#prices').getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, h: r.height }; });
     const line = async (x0, y0, x1, y1, n = 26) => { await page.mouse.move(x0, y0); await page.mouse.down();
       for (let i = 1; i <= n; i++) { await page.mouse.move(x0 + (x1 - x0) * i / n, y0 + (y1 - y0) * i / n + Math.sin(i / 2) * 3); await page.waitForTimeout(22); } await page.mouse.up(); };
     await line(s.x + 20, s.y - 4, s.x + s.w - 20, s.y - 4);          // along the top border
@@ -276,7 +278,7 @@ test('colour runs across the price strip\'s edges with no hard step', async () =
       const px = (X, Y) => { const i = (Math.round(Y) * W + Math.round(X)) * 4; return [d[i], d[i + 1], d[i + 2]]; };
       const chroma = (X, Y) => { const p = px(X, Y); return Math.max(0, Math.max(...p) - Math.min(...p) - 16); };   // above the hero colour's own faint tint
       // keep 48px clear of the strip's words, where the smoke is meant to thicken back to white
-      const words = [], rg = document.createRange(), tw = document.createTreeWalker(document.querySelector('.hero .prices'), NodeFilter.SHOW_TEXT, { acceptNode: n => n.nodeValue.trim() ? 1 : 2 });
+      const words = [], rg = document.createRange(), tw = document.createTreeWalker(document.querySelector('#prices'), NodeFilter.SHOW_TEXT, { acceptNode: n => n.nodeValue.trim() ? 1 : 2 });
       for (let n; (n = tw.nextNode());) { rg.selectNodeContents(n); words.push(...rg.getClientRects()); }
       const clear = (X, Y) => !words.some(b => X > b.left - 48 && X < b.right + 48 && Y > b.top - 48 && Y < b.bottom + 48);
       let outT = 0, inT = 0, outL = 0, inL = 0, step = 0, at = null;
@@ -303,7 +305,7 @@ for (const w of [390, 1440]) test(`colour runs right up to the logo and the butt
   const { ctx, page, errors } = await site.open(URL, w);
   try {
     await page.setViewportSize({ width: w, height: w < 900 ? 844 : 1000 });
-    await page.evaluate(() => { const h = document.querySelector('.hero'); h.__bwSmoke.destroy(); BWSmoke.mount(h, { sparkles: false }); });
+    await page.evaluate(() => { const h = document.querySelector('[data-smoke]'); h.__bwSmoke.destroy(); BWSmoke.mount(h, { sparkles: false }); });
     await page.waitForTimeout(700);
     const shot = async () => (await page.screenshot({ scale: 'css' })).toString('base64');
     // the outline: per row, the first and last ink pixel inside the logo's box (and the button's pill edges)
@@ -316,7 +318,7 @@ for (const w of [390, 1440]) test(`colour runs right up to the logo and the butt
         for (let X = Math.floor(m.left); X < m.right; X++) if (ink(X, Y)) { if (l < 0) l = X; r = X; }
         if (l >= 0) rows.push([Y, l, r]); }
       const b = document.querySelector('.hero .lh-go').getBoundingClientRect();
-      const words = [], rg = document.createRange(), tw = document.createTreeWalker(document.querySelector('.hero'), NodeFilter.SHOW_TEXT, { acceptNode: n => n.nodeValue.trim() && !n.parentElement.closest('.sr,.lh-go') ? 1 : 2 });
+      const words = [], rg = document.createRange(), tw = document.createTreeWalker(document.querySelector('[data-smoke]'), NodeFilter.SHOW_TEXT, { acceptNode: n => n.nodeValue.trim() && !n.parentElement.closest('.sr,.lh-go') ? 1 : 2 });
       for (let n; (n = tw.nextNode());) { rg.selectNodeContents(n); for (const r of rg.getClientRects()) if (r.width) words.push([r.left, r.top, r.right, r.bottom]); }
       return { rows, btn: [b.left, b.top, b.right, b.bottom], words, W, H: img.height };
     }, await shot());
