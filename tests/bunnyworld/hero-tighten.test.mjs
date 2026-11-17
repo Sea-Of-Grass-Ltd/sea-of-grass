@@ -16,7 +16,7 @@ for (const w of [390, 1440]) test(`hero @ ${w}: logo over a one-line headline as
   try {
     const r = await page.evaluate(() => {
       const hero = document.querySelector('.hero'), h1 = hero.querySelector('h1'), lede = hero.querySelector('.lede');
-      const prices = [...hero.querySelectorAll('.prices > div')].map(p => p.getBoundingClientRect());
+      const prices = [...document.querySelectorAll('#prices .pc')].map(p => p.getBoundingClientRect());
       const go = hero.querySelector('.lh-go'), mark = hero.querySelector('.lh-mark').getBoundingClientRect(), hr = h1.getBoundingClientRect();
       const lh = parseFloat(getComputedStyle(h1).fontSize);
       return {
@@ -35,7 +35,8 @@ for (const w of [390, 1440]) test(`hero @ ${w}: logo over a one-line headline as
     assert.equal(r.question, false, 'the shop question moved to Main Street');
     assert.deepEqual(r.calls, [], 'no call link in the hero: the call is in the header');
     assert.equal(r.priceCount, 4);
-    assert.ok(r.pricesBottom <= r.vh, `all four prices on the first screen (they end at ${Math.round(r.pricesBottom)}px of ${r.vh})`);
+    // desktop: all four prices under the hero on the first screen. Phones are three pages now (hero, shops, prices; mobile-hero.test.mjs)
+    if (w >= 900) assert.ok(r.pricesBottom <= r.vh, `all four prices on the first screen (they end at ${Math.round(r.pricesBottom)}px of ${r.vh})`);
     // the critic's Refero pick (2026-11-16): the logo centred directly above a one-line headline, one big unit;
     // the line and the button centred and smaller below
     // one line from 1000px up; below that both loop lines break onto two (proportion spec)

@@ -109,4 +109,9 @@
   /* the small business site is built in the look of the shop chosen on Main Street */
   function pcSync(t) { const a = document.querySelector('[data-pc-site]'), n = document.querySelector('[data-pc-look]'); if (!a) return;
     a.dataset.add = 'bw-site-' + t.dataset.shop; n.textContent = t.dataset.name; pcStates(); }
+
+  /* phones: the three "pages" size themselves to the screen minus the demo bar and the sticky bar (brand.css) */
+  const topBars = () => { const c = document.querySelector('.credit'), n = document.querySelector('.nav'); if (!c || !n) return;
+    document.documentElement.style.setProperty('--nav-h', n.offsetHeight + 'px'); document.documentElement.style.setProperty('--top-h', (c.offsetHeight + n.offsetHeight) + 'px'); };
+  topBars(); addEventListener('resize', topBars); addEventListener('load', topBars);
 })();

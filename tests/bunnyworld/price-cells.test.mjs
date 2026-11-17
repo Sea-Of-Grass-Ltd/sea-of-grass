@@ -75,7 +75,7 @@ for (const w of [390, 1440]) test(`price cells @ ${w}: closed, the strip is exac
     const r = await page.evaluate(() => { const s = document.querySelector('#prices'), bs = [...s.querySelectorAll('[aria-controls]')];
       return { strip: s.getBoundingClientRect().bottom, cells: Math.max(...bs.map(b => b.getBoundingClientRect().bottom)), vh: innerHeight }; });
     assert.ok(r.strip - r.cells <= 2, `closed panels take no room (${Math.round(r.strip - r.cells)}px)`);
-    assert.ok(r.cells <= r.vh, 'all four prices still on the first screen');
+    if (w >= 900) assert.ok(r.cells <= r.vh, 'all four prices still on the first screen'); // phones: the prices are their own page (mobile-hero.test.mjs)
   } finally { await ctx.close(); }
 });
 

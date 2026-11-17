@@ -114,7 +114,7 @@ test('Clean is the default look, and the bunny cycles Clean → Bold → Warm �
   try {
     const state = () => page.evaluate(() => ({
       name: document.querySelector('[data-look-name]').textContent.trim(),
-      bg: getComputedStyle(document.querySelector('.hero')).backgroundColor,
+      bg: getComputedStyle(document.querySelector('.hero-host')).backgroundColor,
       ink: getComputedStyle(document.querySelector('.hero h1')).color,
       theme: document.querySelector('meta[name="theme-color"]').content.toUpperCase(),
     }));
@@ -132,7 +132,7 @@ test('Clean is the default even before the script runs (no flash of another look
     // with scripts off the CSS alone decides the look
     await page.route('**/*.js', r => r.abort());
     await page.reload({ waitUntil: 'load' });
-    const bg = await page.evaluate(() => getComputedStyle(document.querySelector('.hero')).backgroundColor);
+    const bg = await page.evaluate(() => getComputedStyle(document.querySelector('.hero-host')).backgroundColor);
     assert.equal(bg, 'rgb(245, 247, 249)');
   } finally { await ctx.close(); }
 });

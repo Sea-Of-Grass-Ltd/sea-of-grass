@@ -407,7 +407,7 @@ html:not([data-look]) .hero[data-logo="centre"] h1,html[data-look="clean"] .hero
   .hero[data-logo="centre"] .lh-hint{right:calc(100% + 2px);top:10%;flex-direction:column;align-items:flex-end;font-size:15px}
   .hero[data-logo="centre"] .lh-hint svg{width:30px;margin:2px 4px 0 0}}
 /* the price strip sits 4 globe-lines (4 x u/3) under the button, so all four prices stay on a 900px screen */
-.hero[data-logo="centre"] .prices{margin-top:max(24px, calc(var(--u) * 4 / 3))}
+.plans .prices{margin-top:max(24px, calc(var(--u) * 4 / 3))}
 
 /* ===== The price cells open like the switching FAQ (Tristan, 2026-11-16): one at a time, the panel shows that package
    in full with an Add to cart that uses the shared cart. Same motion as the FAQ (rows 0fr to 1fr) and the same +/-
@@ -448,35 +448,35 @@ html:not([data-look]) .hero[data-logo="centre"] h1,html[data-look="clean"] .hero
    28u column with hero-sized buttons. Phone: four rows, name and terms left, price right. Ink, grey and hairlines only.
    Refero: Apple "Which Mac" edbef47f-2bf4-43ee-9005-c05977e769ee, Square plans fa3189a6-0ad9-42f0-8e3b-8bfc6c69c066,
    Linear pricing 5d709fa1-5b61-416b-996f-f049cae07791. */
-.hero .prices{--ps-u:var(--u, 24px);--ps-price:max(32px, calc(var(--ps-u) * 2));margin-top:calc(var(--ps-u) * 1.5)}
-.hero .prices .pc{display:flex;flex-direction:column;align-items:center;gap:0;text-align:center;padding:calc(var(--ps-u) * .908) var(--ps-u)}
-.hero .prices .pc~.pc{padding-left:var(--ps-u)}
-.hero .prices .pc-name{font:600 16px/1 var(--bf);letter-spacing:0;color:var(--ink)}
-.hero .prices .pc-price{display:flex;align-items:baseline;justify-content:center;gap:calc(var(--ps-price) * .18);margin-top:calc(var(--ps-u) * .304)}
-.hero .prices .pc .pc-price b{font:800 var(--ps-price)/1 var(--hf);letter-spacing:-.03em;white-space:nowrap;text-align:inherit}
-.hero .prices .pc-price small,.hero .prices .pc-terms{font:400 16px/1 var(--bf);letter-spacing:0;color:var(--soft);opacity:1}
-.hero .prices .pc-terms{margin-top:calc(var(--ps-u) * .304)}
-.hero .prices .pc-ch{position:absolute;top:16px;right:16px;width:12px;height:12px;border:0;border-radius:0;background:none;color:var(--ink)}
-.hero .prices .pc-ch::before,.hero .prices .pc-ch::after{width:12px;height:2px}
-.hero .prices .pc[aria-expanded="true"] .pc-ch{background:none;border:0;color:var(--ink)}
-.hero .prices .pc::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:4px;background:var(--ink);opacity:0}
-.hero .prices .pc[aria-expanded="true"]::after{opacity:1}
-.hero .prices .pc-in{width:min(100%, calc(var(--ps-u) * 28));margin:0 auto;padding:var(--ps-u) 0 calc(var(--ps-u) * 1.5);border-top:0;gap:calc(var(--ps-u) * 2 / 3)}
-.hero .prices .pc-in p{max-width:none;font:400 16px/1.5 var(--bf);color:var(--soft)}
-.hero .prices .pc-in .pc-note{font-size:16px}
-.hero .prices .pc-buy{gap:calc(var(--ps-u) * 2 / 3);margin-top:0}
-.hero .prices .pc-add{height:48px;min-height:0;padding:0 24px;border-radius:999px;font:600 16px/1 var(--bf)}
+.plans .prices{--ps-u:var(--u, 24px);--ps-price:max(32px, calc(var(--ps-u) * 2));margin-top:max(24px, calc(var(--ps-u) * 4 / 3))}   /* 4u/3: what desktop shipped with (the 1.5u rule never won before) */
+.plans .prices .pc{display:flex;flex-direction:column;align-items:center;gap:0;text-align:center;padding:calc(var(--ps-u) * .908) var(--ps-u)}
+.plans .prices .pc~.pc{padding-left:var(--ps-u)}
+.plans .prices .pc-name{font:600 16px/1 var(--bf);letter-spacing:0;color:var(--ink)}
+.plans .prices .pc-price{display:flex;align-items:baseline;justify-content:center;gap:calc(var(--ps-price) * .18);margin-top:calc(var(--ps-u) * .304)}
+.plans .prices .pc .pc-price b{font:800 var(--ps-price)/1 var(--hf);letter-spacing:-.03em;white-space:nowrap;text-align:inherit}
+.plans .prices .pc-price small,.plans .prices .pc-terms{font:400 16px/1 var(--bf);letter-spacing:0;color:var(--soft);opacity:1}
+.plans .prices .pc-terms{margin-top:calc(var(--ps-u) * .304)}
+.plans .prices .pc-ch{position:absolute;top:16px;right:16px;width:12px;height:12px;border:0;border-radius:0;background:none;color:var(--ink)}
+.plans .prices .pc-ch::before,.plans .prices .pc-ch::after{width:12px;height:2px}
+.plans .prices .pc[aria-expanded="true"] .pc-ch{background:none;border:0;color:var(--ink)}
+.plans .prices .pc::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:4px;background:var(--ink);opacity:0}
+.plans .prices .pc[aria-expanded="true"]::after{opacity:1}
+.plans .prices .pc-in{width:min(100%, calc(var(--ps-u) * 28));margin:0 auto;padding:var(--ps-u) 0 calc(var(--ps-u) * 1.5);border-top:0;gap:calc(var(--ps-u) * 2 / 3)}
+.plans .prices .pc-in p{max-width:none;font:400 16px/1.5 var(--bf);color:var(--soft)}
+.plans .prices .pc-in .pc-note{font-size:16px}
+.plans .prices .pc-buy{gap:calc(var(--ps-u) * 2 / 3);margin-top:0}
+.plans .prices .pc-add{height:48px;min-height:0;padding:0 24px;border-radius:999px;font:600 16px/1 var(--bf)}
 @media (max-width:760px){
-  .hero .prices .pc{display:grid;grid-template-columns:1fr auto 16px;grid-template-areas:"name price ch" "terms price ch";gap:8px 12px;align-items:center;text-align:left;padding:15px 0}
-  .hero .prices .pc~.pc{padding-left:0}
-  .hero .prices .pc-name{grid-area:name;align-self:end}
-  .hero .prices .pc-terms{grid-area:terms;align-self:start;margin-top:0}
-  .hero .prices .pc-price{grid-area:price;justify-content:flex-end;margin-top:0}
-  .hero .prices .pc-ch{grid-area:ch;position:relative;top:auto;right:auto;justify-self:end;width:12px;height:12px}
-  .hero .prices .pc::after{content:none}
-  .hero .prices .pc-in{width:100%;padding:0 0 24px}
-  .hero .prices .pc-buy{gap:12px}
-  .hero .prices{margin-top:var(--ps-u)}}
+  .plans .prices .pc{display:grid;grid-template-columns:1fr auto 16px;grid-template-areas:"name price ch" "terms price ch";gap:8px 12px;align-items:center;text-align:left;padding:15px 0}
+  .plans .prices .pc~.pc{padding-left:0}
+  .plans .prices .pc-name{grid-area:name;align-self:end}
+  .plans .prices .pc-terms{grid-area:terms;align-self:start;margin-top:0}
+  .plans .prices .pc-price{grid-area:price;justify-content:flex-end;margin-top:0}
+  .plans .prices .pc-ch{grid-area:ch;position:relative;top:auto;right:auto;justify-self:end;width:12px;height:12px}
+  .plans .prices .pc::after{content:none}
+  .plans .prices .pc-in{width:100%;padding:0 0 24px}
+  .plans .prices .pc-buy{gap:12px}
+  .plans .prices{margin-top:var(--ps-u)}}
 
 /* ===== Phones (Tristan, 2026-11-16, phone review): the demo bar is one short line ("A Sea of Grass demo · nothing is
    sent", the link kept), and "Bunny World" shows once: the nav keeps the mark (the wordmark stays for screen readers)
@@ -493,7 +493,7 @@ html:not([data-look]) .hero[data-logo="centre"] h1,html[data-look="clean"] .hero
    phone. "How you pay": option chips, two side by side for the starter (monthly or once), each with its own Add button.
    Every fact the paragraphs had is kept, just shorter. Refero: CARROT Weather premium card f51e3307-9f8e-4321-b19b-1d57bc89f8a2
    (icon checks over one action), Revolut pricing options f6875db2-4608-49b4-b803-9e390a1801b5 (two compact pay options). */
-.hero .prices .pc-in{gap:12px}
+.plans .prices .pc-in{gap:12px}
 .pc-k{margin:6px 0 0;font:600 16px/1 var(--bf);letter-spacing:0;color:var(--ink)}
 .pc-k:first-child{margin-top:0}
 .pc-get{list-style:none;margin:0;padding:0;display:grid;gap:10px}
@@ -505,8 +505,8 @@ html:not([data-look]) .hero[data-logo="centre"] h1,html[data-look="clean"] .hero
 .pc-opt-p{font:700 18px/1 var(--bf);letter-spacing:-.01em;color:var(--ink)}
 .pc-opt-l{list-style:none;margin:0;padding:0;display:grid;gap:4px;align-content:start}
 .pc-opt-l li{font:400 14px/1.3 var(--bf);color:var(--soft)}
-.hero .prices .pc-opt .pc-add{width:100%;margin-top:4px;padding:0 12px}
-.hero .prices .pc-in .pc-note{font:400 14px/1.3 var(--bf);color:var(--soft);margin:0}
+.plans .prices .pc-opt .pc-add{width:100%;margin-top:4px;padding:0 12px}
+.plans .prices .pc-in .pc-note{font:400 14px/1.3 var(--bf);color:var(--soft);margin:0}
 @media (max-width:760px){
   .pc-pay{gap:10px}
   .pc-opt:only-child{grid-column:1/-1}
@@ -514,3 +514,39 @@ html:not([data-look]) .hero[data-logo="centre"] h1,html[data-look="clean"] .hero
   .pc-opt-l li{font-size:13px}}
 /* in the short phone bar the pill sits mid-sentence ("A Sea of Grass demo"), so no back arrow there */
 @media (max-width:760px){.credit .credit-sog::before{content:none}}
+
+/* ===== The prices are their own section (2026-11-16) so phones can show the landing as three pages. On desktop it reads
+   exactly as before: one background and one smoke host (.hero-host) across the hero and the prices, no gap between. */
+.hero-host{background:var(--hero-bg)}
+.hero-host>.hero,.hero-host>.plans{background:transparent}
+.hero-host>.hero{padding-bottom:0}
+.plans{--u:min(24px, calc((100vw - 40px) / 42));padding-top:0;padding-bottom:clamp(32px,4vw,56px)}
+.plans-kick,.lh-fix{display:none}
+
+/* ===== Phones flow like three pages (Tristan, 2026-11-16): the hero owns the first screen (demo bar, nav, logo,
+   "Bunny World.", the line, the button and a quiet "Fixes from $250" link so prices are never hidden), then the shops,
+   then the four prices, each a screen. The order is one switch, main[data-phone-order="shops-first" | "prices-first"],
+   for an A/B test without touching the markup: main becomes a grid and the hero host spans three rows as a subgrid,
+   so the shops can sit between the hero and the prices while the smoke stays one canvas. Gentle scroll-snap
+   (proximity) so it feels like pages without trapping the scroll; a tall section (an open price card) scrolls freely.
+   --top-h and --nav-h are measured by landing.js (fallbacks here). Desktop order stays hero, prices, shops. */
+@media (max-width:760px){
+  html{scroll-snap-type:y proximity;scroll-padding-top:var(--nav-h,65px)}
+  .credit{scroll-snap-align:start}
+  main#top{display:grid;grid-template-columns:minmax(0,1fr)}
+  main#top>*,.hero-host>*{grid-column:1}   /* explicit, or auto-placement pushes the shops into a second column beside the host */
+  .hero-host{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:subgrid;grid-row:1 / span 3}
+  .hero-host>.hero{grid-row:1}
+  main[data-phone-order="shops-first"] .hero-host>.plans{grid-row:3}
+  main[data-phone-order="shops-first"]>.show{grid-row:2}
+  main[data-phone-order="prices-first"] .hero-host>.plans{grid-row:2}
+  main[data-phone-order="prices-first"]>.show{grid-row:3}
+  main#top>.close{grid-row:4}
+  .hero-host>.hero{min-height:calc(100svh - var(--top-h,103px));display:flex;flex-direction:column;justify-content:center;padding-top:16px;padding-bottom:16px}
+  .hero-host>.hero>.lh-grid{width:100%}
+  #shops,#plans{scroll-snap-align:start;min-height:calc(100svh - var(--nav-h,65px))}
+  #plans{display:flex;flex-direction:column;justify-content:flex-start;padding-top:28px;padding-bottom:24px}   /* top-aligned: a centred block would jump when a card opens */
+  #plans>.in{width:100%}
+  .plans-kick{display:block;margin:0 0 4px}
+  .plans .prices{margin-top:0}
+  .hero[data-logo="centre"] .lh-fix{display:inline-flex;align-items:center;gap:6px;min-height:40px;margin-top:4px;color:var(--soft);font:500 15px/1 var(--bf);text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px}}
