@@ -3,8 +3,8 @@
 // Square's own prices, from the bakery's catalog), and answers with that page's link. Customers pay on
 // Square; card details never reach us. Node 18+, no dependencies: `node server/checkout.mjs`.
 //
-// UNTESTED against Square until we have a sandbox or the bakery's connection. Test it in Square's sandbox
-// first (SQUARE_ENV=sandbox) with a sandbox token and location.
+// Tested in Square's sandbox 2026-11-17: a cart of 2 steak + 1 horchata became a $13 pickup order for "Test Order".
+// Production still needs the bakery's own token (via Connect Square) and their item ids.
 //
 // Settings (server secrets, never in the website code or the repo):
 //   SQUARE_TOKEN        the bakery's access token from "Connect Square" (OAuth), revocable by them any time

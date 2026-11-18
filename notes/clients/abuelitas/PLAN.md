@@ -38,7 +38,7 @@ The Bunny Burritos cart is what sold them, so the site has a real cart. Payment 
 **To go live:**
 - [ ] Prices for every item entered in their Square item library (Square shows them at checkout).
 - [ ] Register the Sea of Grass Square app (developer.squareup.com), and build the "Connect Square" OAuth step with token refresh.
-- [ ] Test `checkout.mjs` end to end in Square's sandbox. It is untested until then.
+- [x] Tested `checkout.mjs` in Square's sandbox (2026-11-17): 2 steak + 1 horchata became a $13 pickup order with the name and phone on it.
 - [ ] Map each menu key (`data-key` in `index.html`) to its Square item-variation id in `SQUARE_CATALOG`.
 - [ ] Deploy the server, then set `data-checkout` to its address.
 - [ ] Combo: needs a Square modifier (side: corn cup or nachos) before it can go in the cart. For now it is shown but can't be added.
