@@ -24,7 +24,7 @@
   };
   const build = () => {
     const w = box.clientWidth, small = w < 600;
-    const fw = small ? 34 : 46, gap = small ? 6 : 10, sag = small ? 10 : 18;
+    const fw = small ? 22 : 30, gap = small ? 5 : 7, sag = small ? 7 : 12;
     const n = Math.max(5, Math.floor((w + gap) / (fw + gap)));
     const start = (w - (n * fw + (n - 1) * gap)) / 2;
     const h = sag + fw * 1.2 + 8;

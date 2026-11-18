@@ -349,3 +349,6 @@ h1 { position: relative; }
 .glints .g3 { left: 43.4%; top: 46%; }
 .glints .g4 { left: 96.4%; top: 54%; }
 @media (min-width: 860px) { h1 { margin-top: 0; } .arch { margin-top: 14px; } .hero-row { padding-top: 18px; } }
+/* smaller flags (Tristan: still kinda big) */
+.picado { height: 44px; }
+@media (min-width: 600px) { .picado { height: 56px; margin-bottom: -4px; } }
