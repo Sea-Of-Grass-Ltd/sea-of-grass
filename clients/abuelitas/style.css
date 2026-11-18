@@ -439,3 +439,16 @@ h3 { margin: 40px 0 12px; }
 .combo, .visit { border-image: linear-gradient(var(--ink), var(--ink)) fill 0 / 0 / 0 100vmax; }
 .sweetboard { border-image: linear-gradient(var(--maroon), var(--maroon)) fill 0 / 0 / 0 100vmax; }
 .menu > h2, .chips { border-image: linear-gradient(var(--paper), var(--paper)) fill 0 / 0 / 0 100vmax; }
+/* the coffee emblem's steam is live: three maroon wisps rise out of the cup and fade, one after another */
+.cup-wrap { position: relative; align-self: center; }
+.cup-wrap .cup-art { display: block; width: 100%; height: auto; margin: 0; }
+@media (max-width: 759px) { .cup-wrap { width: 168px; margin: 8px auto 12px; } }
+.cup-steam { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.cup-steam path { stroke: var(--maroon); stroke-width: 15; stroke-linecap: round; stroke-dasharray: .42 1.6; stroke-dashoffset: .42; opacity: 0; animation: cupsteam 3.6s ease-in-out infinite; }
+.cup-steam path:nth-child(2) { stroke-width: 10; animation-delay: 1.2s; }
+.cup-steam path:nth-child(3) { stroke-width: 10; animation-delay: 2.4s; }
+@keyframes cupsteam { 0% { stroke-dashoffset: .42; opacity: 0; } 15% { opacity: 1; } 70% { opacity: 1; } 100% { stroke-dashoffset: -1.05; opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .cup-steam path { animation: none; opacity: 1; stroke-dasharray: none; } .cup-steam path:nth-child(n+2) { display: none; } }
+.cup-steam path { stroke-width: 22; stroke-dasharray: .55 1.6; stroke-dashoffset: .55; }
+.cup-steam path:nth-child(2), .cup-steam path:nth-child(3) { stroke-width: 15; }
+@keyframes cupsteam { 0% { stroke-dashoffset: .55; opacity: 0; } 15% { opacity: 1; } 70% { opacity: 1; } 100% { stroke-dashoffset: -1.05; opacity: 0; } }
