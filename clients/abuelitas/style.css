@@ -241,3 +241,42 @@ footer { border-top-color: var(--maroon); }
 .list li { justify-content: flex-start; }
 .list li > .qty { margin-left: auto; }
 .chips { border-bottom: 0; box-shadow: 0 1px 0 var(--maroon); clip-path: inset(0 -100vmax -1px); }
+
+/* ---- v8 style guide (notes/clients/abuelitas/STYLE.md). Refero lead: Roberta's 3bccc923 (poster, neutral grounds,
+   red for actions + one loud chapter, label buttons, dark closing stage); borrowed: OLIPOP 1bfb0316 (unboxed objects
+   on cream, colour as whole scenes). Tristan: no teal behind the drinks. ---- */
+/* hero stage: their black menu board, not teal */
+.arch { background: var(--ink); border-color: var(--red); }
+/* buttons: sturdy poster labels, slab capitals, small corners */
+.btn { border-radius: 8px; font: 400 16px/1 var(--slab); text-transform: uppercase; letter-spacing: .03em; padding: 0 24px; }
+.add { border-radius: 8px; font: 400 14px/1 var(--slab); text-transform: uppercase; letter-spacing: .04em; }
+.add.plus { border-radius: 50%; font: 800 24px/1 var(--body); }
+.cartbar .count { font-family: var(--body); font-weight: 800; }
+/* menu items: unboxed on the cream, like goods on a shelf */
+.tiles .card:not(.frame) { background: transparent; border: 0; padding: 0 0 8px; border-radius: 0; }
+.tiles .card:not(.frame) .pic { background: transparent; border-radius: 0; height: 150px; }
+@media (min-width: 760px) { .tiles .card:not(.frame) .pic { height: 180px; } }
+.tiles .card:not(.frame) h4 { margin: 6px 2px 0; text-align: center; }
+.tiles .card:not(.frame) .sub { text-align: center; }
+@media (hover: hover) { .tiles .card:hover { transform: none; } }
+.tiles { row-gap: 22px; }
+.sweetboard .card .pic .photo { filter: drop-shadow(0 8px 10px rgba(90,40,0,.3)); }
+/* panels: ruled, small corners, flat */
+.list, .order .step { border-radius: 10px; }
+.combo { border-radius: 10px; }
+.sweetboard { border-radius: 10px; }
+/* favourites: the one loud chapter, a full red band */
+.board { background: var(--red); border-radius: 0; overflow: visible; box-shadow: 0 0 0 100vmax var(--red); clip-path: inset(0 -100vmax); margin: 0; padding: 18px 0 40px; }
+.board::before { display: none; }
+.knows-sub { color: #fde7df; }
+/* closing stage: full-bleed black with the woven edge on top */
+.visit { background: var(--ink); box-shadow: 0 0 0 100vmax var(--ink); clip-path: inset(0 -100vmax); margin-top: 56px; padding: 0 0 48px; }
+.visit h2 { color: var(--cream); padding-top: 48px; }
+.visit-card { border-radius: 0; padding: 0; max-width: 820px; overflow: visible; }
+.visit-card::before { display: none; }
+.visit::before { content: ''; display: block; height: 34px; margin: 0 -100vmax; background: var(--weave) repeat-x var(--weave-x, 0px) center / auto 34px; }
+.visit + .cartbar + .band.break, .band.break { display: none; }
+footer { border-top: 0; }
+.visit::before { margin: 0 calc(50% - 50vw); }
+html, body { overflow-x: clip; }
+@media (min-width: 860px) { .hero-row { grid-template-columns: 1fr auto; max-width: 960px; } .lede { font-size: 18px; } .hero .btn { padding: 0 20px; font-size: 15px; } }
