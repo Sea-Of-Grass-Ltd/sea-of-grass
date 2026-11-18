@@ -520,3 +520,6 @@ footer a { display: inline-flex; align-items: center; min-height: 44px; }
 @keyframes steamdrift { from { transform: translateY(0) skewX(0deg); opacity: 1; } to { transform: translateY(-5px) skewX(-3deg); opacity: .72; } }
 @media (prefers-reduced-motion: reduce) { .cup-wrap .cup-steam-art { animation: none; } }
 button, a { -webkit-tap-highlight-color: transparent; }
+/* hero: the one original render, flat and uncut (Tristan: the glasses can't be cut out and floated over a drifting
+   wall, since the tile seen through the glass never lines up). No layers, no drift; only the steam moves. */
+.plate .scene { position: absolute; inset: 0; width: 100%; height: 100%; filter: brightness(.85); }
