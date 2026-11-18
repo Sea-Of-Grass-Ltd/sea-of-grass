@@ -15,7 +15,7 @@ before(async () => { site = await startSite(); });
 after(async () => { await site?.close(); });
 
 async function open(w, live) {
-  const o = await site.open(PAGE, w, { reducedMotion: 'reduce', initScript: live ? `window.ABUELITAS_CHECKOUT = ${JSON.stringify(ENDPOINT)};` : undefined });
+  const o = await site.open(PAGE, w, { reducedMotion: 'reduce', initScript: `window.ABUELITAS_CHECKOUT = ${JSON.stringify(live ? ENDPOINT : '')};` });
   o.posted = [];
   // stand in for the server: it gets the cart and answers with a Square checkout link
   await o.ctx.route(u => u.pathname === ENDPOINT, async r => { o.posted.push(JSON.parse(r.request().postData() || '{}')); await r.fulfill({ contentType: 'application/json', body: JSON.stringify({ url: SQUARE }) }); });

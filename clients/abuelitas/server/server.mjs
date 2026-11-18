@@ -14,6 +14,7 @@
 //   PUBLIC_URL         where this server is reached, e.g. http://localhost:8787 (its /connected must be the app's Redirect URL)
 //   VAULT_KEY          64 hex chars; encrypts the shops' keys at rest in data/vault.json
 //   ADMIN_KEY          a long random string for /status
+//   VAULT_PATH         where the encrypted vault lives (default ./data/vault.json; outside the app folder in hosting)
 //   PORT               defaults to 8787
 import http from 'node:http';
 import crypto from 'node:crypto';
@@ -31,7 +32,8 @@ const SHOPS = JSON.parse(fs.readFileSync(path.join(DIR, 'shops.json'), 'utf8'));
 const PICKUP_MIN = { asap: 20, 30: 30, 60: 60, 120: 120 };
 
 // ---- the vault: each shop's Square key, encrypted at rest ----
-const VAULT = path.join(DIR, 'data', 'vault.json');
+// keep the vault outside the app folder in hosting, so a redeploy never wipes the shops' keys
+const VAULT = env.VAULT_PATH || path.join(DIR, 'data', 'vault.json');
 const KEY = Buffer.from(env.VAULT_KEY || '', 'hex');
 if (KEY.length !== 32) throw new Error('VAULT_KEY must be 64 hex characters');
 const seal = obj => { const iv = crypto.randomBytes(12), c = crypto.createCipheriv('aes-256-gcm', KEY, iv); const data = Buffer.concat([c.update(JSON.stringify(obj)), c.final()]); return [iv, c.getAuthTag(), data].map(b => b.toString('base64')).join('.'); };
@@ -165,6 +167,7 @@ http.createServer(async (req, res) => {
     if (u.pathname === '/connected') return await connected(req, res, u.searchParams);
     if (u.pathname === '/checkout') return await checkout(req, res, u.searchParams);
     if (u.pathname === '/status') return status(req, res, u.searchParams);
+    if (u.pathname === '/') { res.writeHead(200, { 'content-type': 'text/plain' }); return res.end('Sea of Grass shop server'); }
     res.writeHead(404); res.end();
   } catch (e) { console.error(e.message); if (!res.headersSent) page(res, 500, 'Something went wrong', '<h1>Something went wrong on our side.</h1><p>Please try again in a minute, or call Sea of Grass.</p>'); }
 }).listen(+env.PORT || 8787, () => console.log(`shop server on ${env.PUBLIC_URL || 'http://localhost:' + (env.PORT || 8787)} (${SANDBOX ? 'sandbox' : 'PRODUCTION'})`));

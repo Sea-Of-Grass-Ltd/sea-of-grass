@@ -42,7 +42,8 @@ The Bunny Burritos cart is what sold them, so the site has a real cart. Payment 
 - [ ] Production: set the app's production Redirect URL to the hosted server's `/connected`, with production keys in the server's settings.
 - [x] Tested `checkout.mjs` in Square's sandbox (2026-11-17): 2 steak + 1 horchata became a $13 pickup order with the name and phone on it.
 - [x] Menu matching is automatic: on connect, the server matches the site's menu names (in `shops.json`) to the shop's Square items. Any it can't find are listed at `/status`.
-- [ ] Deploy the server, then set `data-checkout` to its address.
+- [x] Shop server hosted on Hostinger at https://shop.seaofgrass.studio (Node 22, settings entered by Tristan in hPanel as environment variables; encrypted vault at /home/u853137291/sog-shop-vault/, outside the app folder). Sandbox connected 2026-11-17, 30/30 items matched; the draft site's `data-checkout` points at it, so the demo reaches Square's test checkout.
+- [ ] Go live: in Square switch to Production, set the production Redirect URL to https://shop.seaofgrass.studio/connected, and replace the sandbox settings in hPanel with production ones (SQUARE_ENV=production plus the production app id and secret). Then the owner taps https://shop.seaofgrass.studio/connect?shop=abuelitas.
 - [ ] Combo: needs a Square modifier (side: corn cup or nachos) before it can go in the cart. For now it is shown but can't be added.
 
 ## What we need from the owner

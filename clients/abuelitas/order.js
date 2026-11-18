@@ -4,7 +4,7 @@
 // and the order lands on the bakery's register. Until that server piece is live, the last step says "draft".
 (() => {
   const TEL = 'tel:+17202189808';
-  const ENDPOINT = (window.ABUELITAS_CHECKOUT || document.body.dataset.checkout || '').trim();
+  const ENDPOINT = String('ABUELITAS_CHECKOUT' in window ? window.ABUELITAS_CHECKOUT : document.body.dataset.checkout || '').trim();
   const KEEP = 'abuelitas-order';
   const box = document.getElementById('order');
   const steps = [...box.querySelectorAll('[data-q]')];
