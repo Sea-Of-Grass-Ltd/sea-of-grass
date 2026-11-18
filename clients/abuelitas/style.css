@@ -490,3 +490,22 @@ h3 { margin: 40px 0 12px; }
   .tiles > li.card:not([data-fav]):last-child:nth-child(odd) .sub { grid-row: 3; margin: 0; line-height: 1.35; }
 }
 footer a { display: inline-flex; align-items: center; min-height: 44px; }
+/* ---- Fable phone review ---- */
+.lede, .knows-sub, .combo p, .tiles h4, .tiles .sub, .order p { text-wrap: balance; }
+.list .add.plus { position: relative; }
+.list .add.plus::after { content: ''; position: absolute; inset: -2px; }
+@media (max-width: 759px) {
+  .chips { gap: 10px; }
+  .chips a { padding: 0 18px; }
+  h3, .sweetboard h3 { font-size: clamp(22px, 6.6vw, 26px); }
+  .tiles .sub { line-height: 1.35; }
+  .visit-card { text-align: center; }
+  .addr { font-size: 17px; }
+  .cup-wrap { margin: 0 auto 20px; }
+  .sweetboard { padding-top: 32px; }
+  footer { justify-content: center; text-align: center; padding-bottom: 20px; }
+  /* lone wide tile: two equal columns, the plus on the far right like the coffee rows */
+  .tiles > li.card:not([data-fav]):last-child:nth-child(odd) { grid-template-columns: calc(50% - 6px) calc(50% - 6px); }
+  .tiles > li.card:not([data-fav]):last-child:nth-child(odd) .pic .qty { right: calc(-100% - 12px); bottom: 50%; transform: translateY(50%); }
+  .tiles > li.card:not([data-fav]):last-child:nth-child(odd) h4, .tiles > li.card:not([data-fav]):last-child:nth-child(odd) .sub { padding-right: 52px; }
+}
