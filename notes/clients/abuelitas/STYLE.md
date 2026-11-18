@@ -14,7 +14,7 @@
 | Headings and outlines | maroon `#6b2420` |
 | Primary action, and the one loud chapter (favourites) | red `#d8402c` |
 | Their menu board: hero stage, closing stage | ink `#141414` |
-| Their dessert board, used only there | orange `#f39a3b` |
+| Desserts band (orange washed things out, 11-18) | maroon `#6b2420` |
 | Only in the woven band; no fills | teal `#149c8e` |
 | Only in the favourites frames | gold |
 
@@ -34,7 +34,7 @@
 2. **Woven band.**
 3. **Favourites:** a full red band with "Abuelita knows best" and the gold-framed trio.
 4. **Savoury, appetisers, combo and sweet:** on cream, unboxed.
-5. **Desserts:** on their orange board.
+5. **Desserts:** a full maroon band with the woven top edge; the combo is a full black band.
 6. **Coffee and drinks:** the cup art beside a ruled list.
 7. **Order:** one question at a time.
 8. **Visit:** a full black closing stage, with the woven band on top.
