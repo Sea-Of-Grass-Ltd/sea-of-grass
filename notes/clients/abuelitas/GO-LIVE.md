@@ -4,13 +4,16 @@
 **Preview for David:** https://shop.seaofgrass.studio/preview/abuelitas/ (sandbox, "Preview, no real payment").
 
 ## 1. Left to build (Claude, by Thursday 11/19)
-- [ ] Finish the phone pass (Fable review running), then refresh the preview.
-- [ ] Checkout fallback: if Square doesn't answer, show a big "Call 720-218-9808 to order" button next to the error, not just text. The call button is already in the hero and the visit section.
-- [ ] Downtime alert for shop.seaofgrass.studio: an external uptime check every 5 minutes on `/` and `/checkout` (a free UptimeRobot-style monitor) emailing Tristan. **Tristan creates the account**, since it's his sign-up; Claude gives him the exact settings.
-- [ ] Backup of the encrypted key file (the vault file (its path is the VAULT_PATH setting in hPanel)) once David connects: a copy outside the server, plus a written note of where the VAULT_KEY lives (hPanel only). If either is lost, David just taps Connect Square again, so a lost backup costs a minute, not orders.
+- [x] Phone pass done (Fable reviewed) and the preview refreshed. Hero is the flat single render (Tristan picked D).
+- [x] Checkout fallback: if Square doesn't answer, the pay step shows the error plus a big "Call 720-218-9808" button. Tested at 360/390/1440.
+- [ ] **Uptime alert** (Tristan creates the free account, about 5 minutes, at uptimerobot.com):
+  - Monitor 1: HTTP(s), `https://shop.seaofgrass.studio/`, every 5 minutes, keyword "Sea of Grass shop server", alert by email + phone app.
+  - Monitor 2: HTTP(s), `https://orderabuelitasempanadas.com/`, every 5 minutes, keyword "Abuelita", once the domain is live.
+  - Alert when down for 2 checks in a row (avoids one-off blips). If it fires while he's away: the site still shows the call button, so orders can be phoned in.
+- [ ] **Vault backup**, after David connects: in hPanel File Manager, download the vault file (the VAULT_PATH setting) to Tristan's computer. It's encrypted; the key stays only in hPanel. Re-download after any reconnect. If it's ever lost, Tristan issues a new connect link and David taps it again: a minute, not lost orders.
 - [ ] Production switch on the shop server: SQUARE_ENV=production, plus the production app ID and secret.
   - **Tristan enters these in hPanel himself.** Claude never handles the production secret.
-- [ ] Turn the site live: remove the "draft" strip and `noindex`, point `data-checkout` at the server, add the real hours, and replace the sample prices note.
+- [x] Live build ready: `python3 clients/abuelitas/build-live.py --hours "..."` makes `clients/abuelitas/live/` with no draft strip and no noindex, the real hours, and checkout on the shop server. It refuses to build without hours. Waiting on David's hours.
 - [ ] Host the site at orderabuelitasempanadas.com: a static site on Tristan's Hostinger Business plan, with SSL, and the domain added to the server's allowed origins (already listed).
 - [ ] Final test run on 360/390/1440, then **"Merge #223" from Tristan** (Claude merges only on that).
 

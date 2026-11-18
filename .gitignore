@@ -18,3 +18,4 @@ clients/*/server/data/
 
 # built client previews (server/build-preview.py)
 clients/*/server/preview/
+clients/*/live/
