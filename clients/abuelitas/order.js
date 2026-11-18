@@ -114,8 +114,11 @@
     } catch {
       b.disabled = false; b.textContent = 'Pay on Square';
       box.querySelector('[data-q="pay"] [data-err]')?.remove();
-      const e = el('p', 'err', 'Square didn’t answer just now, so please try again or call the bakery.'); e.setAttribute('data-err', ''); e.setAttribute('role', 'alert');
-      b.parentElement.after(e);
+      box.querySelector('[data-q="pay"] [data-fallback]')?.remove();
+      const e = el('p', 'err', 'Square didn’t answer just now. Please try again, or call and we’ll take your order by phone.'); e.setAttribute('data-err', ''); e.setAttribute('role', 'alert');
+      const call = Object.assign(el('a', 'btn line', 'Call 720-218-9808'), { href: 'tel:+17202189808' });
+      const wrap = el('div', 'choices'); wrap.setAttribute('data-fallback', ''); wrap.append(call);
+      b.parentElement.after(e, wrap);
     }
   }
 

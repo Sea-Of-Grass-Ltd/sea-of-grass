@@ -219,3 +219,30 @@ for (const w of WIDTHS) {
     } finally { await ctx.close(); }
   });
 }
+
+for (const w of WIDTHS) {
+  test(`${w}px · if Square doesn't answer, the pay step offers a call button that dials the bakery`, async () => {
+    const o = await site.open(PAGE, w, { reducedMotion: 'reduce', initScript: `window.ABUELITAS_CHECKOUT = ${JSON.stringify(ENDPOINT)};` });
+    const { ctx, page } = o;
+    await ctx.route(u => u.pathname === ENDPOINT, r => r.fulfill({ status: 503, contentType: 'application/json', body: '{"error":"down"}' }));
+    try {
+      await page.locator('[data-key="tinga"] button[data-add]').click();
+      await page.evaluate(() => scrollTo(0, 0)); await page.waitForTimeout(150);
+      await page.locator('[data-cartbar] a, [data-cartbar] button').first().click();
+      await page.locator('#order [data-q="cart"] button[data-next]').click();
+      await page.locator('#order [data-q="when"] button[data-next]').click();
+      await page.locator('#order [data-q="who"] input[autocomplete="name"]').fill('Sam');
+      await page.locator('#order [data-q="who"] button[data-next]').click();
+      await page.locator('#order [data-q="phone"] input[type="tel"]').fill('7205550199');
+      await page.locator('#order [data-q="phone"] button[data-next]').click();
+      await page.locator('#order [data-q="pay"] [data-pay-go] .btn').click();
+      const step = page.locator('#order [data-q="pay"]');
+      await step.locator('[data-err]').waitFor();
+      const call = step.locator('a[href="tel:+17202189808"]');
+      assert.equal(await call.count(), 1, 'one call button');
+      assert.ok(await call.isVisible(), 'call button visible');
+      const box = await call.boundingBox();
+      assert.ok(box.height >= 44, 'big enough to tap');
+    } finally { await ctx.close(); }
+  });
+}
