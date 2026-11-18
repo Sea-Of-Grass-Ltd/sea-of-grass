@@ -192,3 +192,19 @@ footer a { color: var(--soft); }
 /* "Abuelita knows best": the favourites heading in their own script */
 .board h3.knows { font: italic 700 clamp(34px, 8vw, 48px)/1.05 var(--script); color: var(--cream); text-align: center; margin: 26px 0 6px; }
 .knows-sub { text-align: center; color: #d9cbb3; margin: 0 auto 18px; max-width: 30em; }
+/* desktop top: the favourites on a big gold-framed board label (their counter board), food spilling past its edges,
+   white steam on the black, as in the version Tristan liked */
+.stage { display: none; }
+@media (min-width: 860px) {
+  .hero-in { min-height: 0; padding: 64px 40px 96px; grid-template-columns: 1fr 1.15fr; gap: 48px; }
+  h1 { font-size: clamp(88px, 8.4vw, 132px); }
+  .lede { font-size: 21px; max-width: 24em; }
+  .hero-food { height: 520px; }
+  .stage { display: block; position: absolute; left: 3%; right: 3%; top: 34%; bottom: 14%; }
+  .hero-food .drink { bottom: 26%; width: 33%; z-index: 1; }
+  .hero-food .d1 { left: 12%; }
+  .hero-food .d2 { right: 12%; }
+  .hero-food .emp { bottom: 0; width: 66%; z-index: 2; }
+  .steam { bottom: 33%; width: 24%; z-index: 3; }
+  .steam path { stroke: rgba(255,255,255,.6); stroke-width: 4; filter: blur(1.4px); }
+}
