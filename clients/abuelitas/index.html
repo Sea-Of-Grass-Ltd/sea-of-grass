@@ -8,7 +8,7 @@
 <meta name="robots" content="noindex">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Delius&family=Delius+Swash+Caps&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Delius&family=Delius+Swash+Caps&family=Figtree:wght@400;600;700&display=swap">
 <link rel="stylesheet" href="style.css">
 </head>
 <!-- data-checkout: the shop server's /checkout?shop=abuelitas address once it is hosted; empty keeps the last step in draft -->
@@ -21,7 +21,7 @@
     <div class="frame big">
       <p class="kick">Old Town Marketplace · Longmont</p>
       <h1>Abuelita's Empanadas</h1>
-      <div class="tray" aria-hidden="true"><img src="photos/spicy-chicken.webp" alt=""><img src="photos/steak.webp" alt=""><img src="photos/dulce-con-leche.webp" alt=""></div>
+      <div class="tray" aria-hidden="true"><svg class="steam" viewBox="0 0 120 70"><path d="M30 68c-8-12 10-18 0-32s8-20 2-34"/><path d="M60 68c-8-12 10-18 0-32s8-20 2-34"/><path d="M90 68c-8-12 10-18 0-32s8-20 2-34"/></svg><img src="photos/spicy-chicken.webp" alt=""><img src="photos/steak.webp" alt=""><img src="photos/dulce-con-leche.webp" alt=""></div>
     </div>
     <p class="lede">Savory and sweet empanadas, fruit tarts, coffee and agua fresca, at the Old Town Marketplace on Main Street in Longmont.</p>
     <div class="acts">
@@ -60,21 +60,22 @@
 
     <div class="cols">
       <div class="sweets">
-        <h3>Desserts &amp; appetizers</h3>
+        <h3 class="board-h">Try our desserts &amp; appetizers</h3>
         <ul class="list">
-          <li data-key="lemon-tart" data-name="Lemon tart">Lemon tart</li>
-          <li data-key="cherry-nut-tart" data-name="Cherry &amp; nut tart">Cherry &amp; nut tart</li>
-          <li data-key="nut-tart" data-name="Nut tart">Nut tart <span class="es">nuez</span></li>
-          <li data-key="apple-cinnamon-walnut-tart" data-name="Apple cinnamon walnut tart">Apple cinnamon walnut tart <span class="es">manzana con canela y nuez</span></li>
-          <li data-key="chocolate-tart" data-name="Chocolate tart">Chocolate tart</li>
-          <li data-key="blueberry-strawberry-tart" data-name="Blueberry strawberry tart">Blueberry strawberry tart</li>
-          <li data-key="cookies" data-name="Cookies">Cookies <span class="es">polvorones</span></li>
-          <li data-key="nachos" data-name="Nachos">Nachos <span class="es">cheese &amp; jalapeños</span></li>
-          <li data-key="cup-of-corn" data-name="Cup of corn">Cup of corn</li>
+          <li class="frame" data-key="lemon-tart" data-name="Lemon tart">Lemon tart</li>
+          <li class="frame" data-key="cherry-nut-tart" data-name="Cherry &amp; nut tart">Cherry &amp; nut tart</li>
+          <li class="frame" data-key="nut-tart" data-name="Nut tart">Nut tart <span class="es">nuez</span></li>
+          <li class="frame" data-key="apple-cinnamon-walnut-tart" data-name="Apple cinnamon walnut tart">Apple cinnamon walnut tart <span class="es">manzana con canela y nuez</span></li>
+          <li class="frame" data-key="chocolate-tart" data-name="Chocolate tart">Chocolate tart</li>
+          <li class="frame" data-key="blueberry-strawberry-tart" data-name="Blueberry strawberry tart">Blueberry strawberry tart</li>
+          <li class="frame" data-key="cookies" data-name="Cookies">Cookies <span class="es">polvorones</span></li>
+          <li class="frame" data-key="nachos" data-name="Nachos">Nachos <span class="es">cheese &amp; jalapeños</span></li>
+          <li class="frame" data-key="cup-of-corn" data-name="Cup of corn">Cup of corn</li>
         </ul>
       </div>
-      <div>
-        <h3>Coffee</h3>
+      <div class="drinks">
+        <div>
+        <h3 class="drinks-h">Drinks</h3>
         <ul class="list">
           <li data-key="espresso" data-name="Espresso">Espresso</li>
           <li data-key="cappuccino" data-name="Cappuccino">Cappuccino</li>
@@ -82,13 +83,16 @@
           <li data-key="iced-coffee" data-name="Iced coffee">Iced coffee</li>
           <li data-key="french-press-cafe" data-name="French press café">French press café</li>
         </ul>
-        <h3>Fresh waters &amp; more</h3>
+        </div>
+        <div>
+        <h3 class="drinks-h">Fresh waters</h3>
         <ul class="list">
           <li data-key="horchata" data-name="Agua de horchata">Agua de horchata</li>
           <li data-key="jamaica" data-name="Agua de jamaica">Agua de jamaica</li>
           <li data-key="coke-products" data-name="Coke products">Coke products</li>
           <li data-key="abuelitas-chocolate" data-name="Abuelita's chocolate">Abuelita's chocolate <span class="es">Saturdays only</span></li>
         </ul>
+        </div>
       </div>
     </div>
   </section>
@@ -151,7 +155,7 @@
 
   <section class="visit" id="visit" aria-labelledby="visit-h">
     <h2 id="visit-h">Come by</h2>
-    <div class="cols">
+    <div class="cols frame visit-card">
       <div>
         <h3>Where</h3>
         <p class="addr">Inside the Old Town Marketplace<br>332 Main St, Longmont, CO 80501</p>
