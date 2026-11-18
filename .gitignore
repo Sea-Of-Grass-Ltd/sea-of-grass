@@ -10,3 +10,12 @@ Business Info/
 
 # share-card build captures (tools/og/build.py)
 tools/og/cap/
+
+# client server secrets (Square tokens etc.)
+.env
+**/.env
+clients/*/server/data/
+
+# built client previews (server/build-preview.py)
+clients/*/server/preview/
+clients/*/live/

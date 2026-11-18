@@ -4,12 +4,13 @@
   "type": "module",
   "description": "Browser tests for the shop pages: user journey first, then the build. Uses the system Chrome.",
   "scripts": {
-    "test": "node --test --test-concurrency=1 \"unit/*.test.mjs\" \"bunnyworld/*.test.mjs\" \"copy/*.test.mjs\" \"hermes/*.test.mjs\"",
+    "test": "node --test --test-concurrency=1 \"unit/*.test.mjs\" \"bunnyworld/*.test.mjs\" \"copy/*.test.mjs\" \"hermes/*.test.mjs\" \"clients/*.test.mjs\"",
     "test:hermes": "node --test \"hermes/*.test.mjs\"",
     "test:unit": "node --test \"unit/*.test.mjs\"",
     "test:audit": "node --test bunnyworld/audit.test.mjs",
     "test:hopwell": "node --test bunnyworld/hopwell.test.mjs",
-    "test:copy": "node --test \"copy/*.test.mjs\""
+    "test:copy": "node --test \"copy/*.test.mjs\"",
+    "test:abuelitas": "node --test clients/abuelitas.test.mjs"
   },
   "devDependencies": {
     "playwright-core": "1.48.2"

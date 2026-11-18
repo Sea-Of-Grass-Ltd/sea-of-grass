@@ -1,0 +1,525 @@
+/* Abuelita's Empanadas, v4 (2026-11-18). Tristan: the board-pastiche version looked so old he'd be afraid to order.
+   So their identity now lives in the name, the colours and one woven accent; the ordering part looks like a
+   modern ordering app. Refero: DoorDash store menu 87a97d65 (photo cards, clear Add), Uber Eats store info
+   f38700d4, Yellowbird 17c67636 (bold colour, big food). Earlier refs: Yelp aa22636c, Blue Apron fb0d6839, Roberta's 3bccc923. */
+:root {
+  --weave: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='34'%3E%3Crect width='64' height='34' fill='%23ee8a1f'/%3E%3Crect width='64' height='3' fill='%235a1f1d'/%3E%3Crect y='3' width='64' height='3' fill='%23149c8e'/%3E%3Crect y='6' width='64' height='19' fill='%23d8402c'/%3E%3Cpath d='M32 7l11 8.5L32 24l-11-8.5z' fill='%23f2c230'/%3E%3Cpath d='M32 10.5l6.5 5L32 20.5l-6.5-5z' fill='%23149c8e'/%3E%3Cpath d='M32 13.5l2.5 2L32 17.5l-2.5-2z' fill='%235a1f1d'/%3E%3Cpath d='M0 7l9 8.5L0 24zM64 7l-9 8.5L64 24z' fill='%23149c8e'/%3E%3Crect y='25' width='64' height='2' fill='%235a1f1d'/%3E%3Cpath d='M0 34l4-7 4 7 4-7 4 7 4-7 4 7 4-7 4 7 4-7 4 7 4-7 4 7 4-7 4 7 4-7 4 7z' fill='%23149c8e'/%3E%3C/svg%3E");
+  --ink: #141414;
+  --paper: #ffffff;
+  --page: #f8f6f3;       /* soft off-white page, not cream */
+  --cream: #f7efdf;      /* their sign's board */
+  --maroon: #6b2420;
+  --red: #d8402c;        /* their "EMPANADAS" */
+  --teal: #149c8e;
+  --orange: #ee8a1f;
+  --line: #e9e1d4;
+  --soft: #6a5f55;
+  --script: 'Lobster Two', 'Brush Script MT', cursive;
+  --slab: 'Alfa Slab One', 'Rockwell Extra Bold', Rockwell, Georgia, serif;
+  --body: 'Figtree', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--page); color: var(--ink); font: 17px/1.55 var(--body); -webkit-text-size-adjust: 100%; -webkit-font-smoothing: antialiased; }
+main, footer { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+@media (min-width: 860px) { main, footer { padding: 0 32px; } }
+h1, h2, h3, h4, p, ul { margin: 0; }
+ul { padding: 0; list-style: none; }
+img { display: block; }
+.draft { background: #ece6dc; color: var(--soft); font: 12px/1.35 var(--body); text-align: center; padding: 7px 16px; }
+
+/* ---- first screen, poster style (after Bunny Burritos): a kicker, the name huge across the page,
+   the favourites in one big arch, then one line and the buttons. Flat colours only. ---- */
+.hero { background: var(--cream); color: var(--maroon); }
+.band { height: 34px; background: var(--weave) repeat-x var(--weave-x, 0px) center / auto 34px; }
+.hero-in { max-width: 1180px; margin: 0 auto; padding: 18px 16px 0; text-align: center; }
+.rule { display: flex; align-items: center; gap: 14px; font: 700 11px/1.3 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--maroon); }
+.rule::before, .rule::after { content: ''; flex: 1; border-top: 2px dotted var(--red); }
+@media (min-width: 860px) { .rule { font-size: 13px; } .hero-in { padding-top: 28px; } }
+h1 { margin-top: 6px; line-height: 1; font-family: var(--script); font-size: min(14vw, 150px); }
+h1 .script { display: block; font: italic 700 min(14vw, 150px)/.8 var(--script); color: var(--maroon); position: relative; z-index: 1; }
+h1 .caps { display: block; font: 400 min(12vw, 152px)/.86 var(--slab); color: var(--red); text-transform: uppercase; letter-spacing: -.005em; margin-top: -.06em; }
+/* the arch: the three favourites on their teal, outlined in their red */
+.arch { position: relative; max-width: 880px; aspect-ratio: 4 / 3; margin: clamp(14px, 2vw, 26px) auto 0; background: var(--teal); border: 3px solid var(--red); border-bottom: 0; border-radius: 50% 50% 0 0 / 38% 38% 0 0; overflow: hidden; }
+
+.arch img { position: absolute; height: auto; filter: drop-shadow(0 18px 18px rgba(0,0,0,.28)); }
+.arch .drink { width: 25%; bottom: 22%; }
+.arch .d1 { left: 15%; transform: rotate(-4deg); }
+.arch .d2 { right: 15%; transform: rotate(4deg); }
+.arch .emp { width: 56%; left: 50%; bottom: -3%; transform: translateX(-50%); z-index: 1; }
+.steam { position: absolute; left: 50%; bottom: 33%; width: 22%; height: auto; aspect-ratio: 120 / 80; transform: translateX(-50%); overflow: visible; pointer-events: none; z-index: 2; }
+.steam path { fill: none; stroke: rgba(255,255,255,.7); stroke-width: 4; stroke-linecap: round; filter: blur(1.3px); opacity: 0; animation: rise 4.4s ease-in-out infinite; }
+.steam path:nth-child(2) { animation-delay: 1.45s; }
+.steam path:nth-child(3) { animation-delay: 2.9s; }
+@keyframes rise { 0% { opacity: 0; transform: translateY(14px) scaleY(.85); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(-24px) scaleY(1.1); } }
+@media (prefers-reduced-motion: reduce) { .steam { display: none; } }
+@media (min-width: 860px) { .arch { aspect-ratio: 2.15 / 1; max-width: 920px; border-radius: 50% 50% 0 0 / 46% 46% 0 0; } .arch .drink { width: 19%; bottom: 14%; } .arch .d1 { left: 24%; } .arch .d2 { right: 24%; } .arch .emp { width: 42%; bottom: -6%; } .steam { bottom: 40%; width: 16%; } }
+.hero-row { display: grid; gap: 4px; padding: 18px 0 26px; }
+@media (min-width: 860px) { .hero-row { grid-template-columns: 1fr auto; align-items: center; gap: 32px; text-align: left; max-width: 880px; margin: 0 auto; padding: 24px 0 40px; } .hero-row .acts { margin-top: 0; } }
+.lede { font-size: 17px; font-weight: 500; margin: 0 auto; max-width: 34em; color: var(--ink); }
+@media (min-width: 860px) { .lede { margin: 0; font-size: 19px; } }
+
+/* buttons */
+.acts, .choices { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 22px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 54px; padding: 0 28px; border: 2px solid var(--ink); border-radius: 999px;
+  background: var(--ink); color: var(--paper); font: 700 17px/1 var(--body); text-decoration: none; cursor: pointer; transition: transform .12s, background .15s; }
+.btn:active { transform: scale(.98); }
+.btn:hover { background: var(--red); border-color: var(--red); }
+.btn.line { background: transparent; color: var(--ink); }
+.hero .btn { background: var(--red); border-color: var(--red); color: var(--paper); }
+.hero .btn:hover { background: #ef5a41; border-color: #ef5a41; }
+.hero .btn.line { background: transparent; border-color: var(--maroon); color: var(--maroon); }
+.hero .btn.line:hover { background: var(--maroon); color: var(--cream); }
+.btn:focus-visible, .back:focus-visible, .link:focus-visible, input:focus-visible, select:focus-visible, .add:focus-visible, .mini:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; }
+@media (max-width: 520px) { .acts .btn, .choices .btn { flex: 1 1 100%; } }
+
+/* sections */
+section { padding: 56px 0 8px; }
+h2 { font: 400 clamp(32px, 7vw, 44px)/1 var(--slab); text-transform: uppercase; letter-spacing: .03em; text-align: center; margin: 0 0 22px; color: var(--red); }
+h3 { font: 800 24px/1.2 var(--body); letter-spacing: -.01em; margin: 34px 0 14px; }
+.hint { color: var(--soft); margin: -8px 0 10px; }
+
+/* sticky section chips */
+.chips { position: sticky; top: 0; z-index: 5; display: flex; gap: 8px; overflow-x: auto; padding: 10px 16px; margin: 0 -16px 4px; background: rgba(248,246,243,.94); backdrop-filter: blur(8px); scrollbar-width: none; }
+.chips::-webkit-scrollbar { display: none; }
+.chips a { flex: none; padding: 9px 16px; border-radius: 999px; background: var(--paper); color: var(--ink); text-decoration: none; font: 700 15px/1 var(--body); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+.chips a:hover { background: var(--ink); color: var(--paper); }
+@media (min-width: 860px) { .chips { justify-content: center; margin: 0 -32px 4px; } }
+h3[id] { scroll-margin-top: 70px; }
+
+/* menu cards */
+.tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+@media (max-width: 759px) { .favs li:first-child { grid-column: 1 / -1; } .favs li:first-child .pic { height: 190px; } }
+@media (min-width: 760px) { .tiles { grid-template-columns: repeat(4, 1fr); gap: 18px; } .favs { grid-template-columns: repeat(3, 1fr); } }
+.card { background: var(--paper); border-radius: 18px; padding: 10px 10px 14px; display: flex; flex-direction: column; box-shadow: 0 1px 2px rgba(40,20,10,.06), 0 8px 24px rgba(40,20,10,.06); transition: transform .2s, box-shadow .2s; }
+@media (hover: hover) { .card:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgba(40,20,10,.08), 0 14px 32px rgba(40,20,10,.1); } }
+.pic { background: #f6efe4; border-radius: 12px; height: 132px; position: relative; overflow: hidden; }
+@media (min-width: 760px) { .pic { height: 160px; } .favs .pic { height: 210px; } }
+.photo { position: absolute; inset: 12px; width: calc(100% - 24px); height: calc(100% - 24px); object-fit: contain; filter: drop-shadow(0 8px 10px rgba(60,30,10,.25)); transition: transform .25s; }
+@media (hover: hover) { .card:hover .photo { transform: scale(1.05) rotate(-1.5deg); } }
+h4 { font: 700 16px/1.25 var(--body); margin: 12px 4px 0; }
+@media (min-width: 760px) { h4 { font-size: 17px; } }
+.sub { display: block; font-size: 13px; color: var(--soft); margin: 2px 4px 0; }
+.pic .qty { position: absolute; right: 8px; bottom: 8px; z-index: 1; }
+.favs .card .qty { margin: auto 4px 0; padding-top: 12px; }
+.combo { background: var(--ink); color: var(--cream); border-radius: 18px; padding: 22px 24px; margin-top: 18px; display: grid; gap: 4px; }
+.combo h3 { margin: 0; color: var(--cream); }
+.combo p { color: #e9dcc6; }
+
+/* coffee list */
+.list { background: var(--paper); border-radius: 18px; padding: 4px 16px; box-shadow: 0 1px 2px rgba(40,20,10,.06), 0 8px 24px rgba(40,20,10,.06); }
+@media (min-width: 760px) { .list { columns: 2; column-gap: 40px; padding: 8px 24px; } }
+.list li { padding: 12px 0; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; gap: 16px; font-weight: 600; break-inside: avoid; }
+.list li:last-child { border-bottom: 0; }
+.list li > .qty { margin-left: auto; flex: none; }
+
+/* ordering controls */
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.qty { display: flex; }
+.add { min-height: 40px; padding: 0 18px; border-radius: 999px; border: 0; background: var(--red); color: var(--paper); font: 700 15px/1 var(--body); cursor: pointer; transition: background .15s; }
+.add:hover { background: #b93322; }
+.favs .card .add { width: 100%; }
+.add.plus { width: 40px; height: 40px; min-height: 0; padding: 0; font-size: 24px; line-height: 1; display: inline-grid; place-items: center; }
+.stepper { display: inline-flex; align-items: center; gap: 6px; }
+.card .stepper { background: #fbeee9; border-radius: 999px; padding: 2px; }
+.favs .card .stepper { width: 100%; justify-content: space-between; }
+.pic .stepper { background: var(--paper); box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+.pic .mini { box-shadow: none; }
+.add[hidden], .stepper[hidden] { display: none !important; }
+.add.plus { box-shadow: 0 3px 10px rgba(216,64,44,.35); }
+.stepper[hidden] { display: none; }
+.mini { width: 38px; height: 38px; border-radius: 50%; border: 0; background: var(--paper); color: var(--red); font: 800 20px/1 var(--body); cursor: pointer; display: inline-grid; place-items: center; box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+.stepper .n { min-width: 24px; text-align: center; font: 800 17px/1 var(--body); }
+
+.cartbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); background: rgba(250,246,239,.9); backdrop-filter: blur(10px); box-shadow: 0 -6px 18px rgba(0,0,0,.08); display: flex; justify-content: center; }
+.cartbar[hidden] { display: none; }
+.cartbar .btn { width: 100%; max-width: 440px; gap: 10px; background: var(--red); border-color: var(--red); }
+.cartbar .count { background: var(--paper); color: var(--red); border-radius: 999px; min-width: 28px; height: 28px; display: inline-grid; place-items: center; font-size: 15px; }
+body.has-cart { padding-bottom: 84px; }
+
+/* order ahead: one question at a time, on one clean card */
+.choices[hidden] { display: none; }
+.btn:disabled { opacity: .35; pointer-events: none; }
+.order .step { max-width: 720px; margin: 0 auto; text-align: center; background: var(--paper); border-radius: 20px; padding: 26px 20px 20px; box-shadow: 0 1px 2px rgba(40,20,10,.06), 0 8px 24px rgba(40,20,10,.06); }
+.q { display: block; font: 800 24px/1.25 var(--body); margin-bottom: 8px; }
+.order p:not(.q) { color: var(--soft); }
+.order input { display: block; width: 100%; max-width: 220px; margin: 14px auto 0; font: 600 20px/1 var(--body); text-align: center; padding: 14px; border: 1.5px solid #d9cfc1; border-radius: 14px; background: var(--paper); }
+.back { margin-top: 12px; background: none; border: 0; color: var(--soft); font: 600 15px/1 var(--body); text-decoration: underline; cursor: pointer; padding: 10px; }
+.draft-note { margin-top: 10px; font-size: 14px; color: var(--soft); background: var(--page); border-radius: 10px; padding: 10px 14px; }
+.order .lines { text-align: left; margin: 0 0 4px; }
+.order .lines li { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.order .lines .nm, .order .review li { font: 700 18px/1.3 var(--body); }
+.order .review { text-align: left; margin: 8px 0; }
+.order .review li { padding: 8px 0; border-bottom: 1px solid var(--line); }
+.order .note, .order .empty { margin-top: 12px; }
+.order select { display: block; width: 100%; max-width: 340px; margin: 14px auto 0; font: 17px/1.2 var(--body); padding: 14px; border: 1.5px solid #d9cfc1; border-radius: 14px; background: var(--paper); color: var(--ink); }
+.order .field { display: block; text-align: left; max-width: 360px; margin: 14px auto 0; font: 700 15px/1.3 var(--body); }
+.order .field input { max-width: none; margin-top: 6px; text-align: left; font: 17px/1.2 var(--body); }
+.order .err { color: var(--red); min-height: 1.4em; margin-top: 8px; font-size: 15px; }
+.order .err:empty { min-height: 0; margin: 0; }
+.order .who { margin-top: 12px; color: var(--ink) !important; font-weight: 600; }
+
+/* visit */
+.visit { padding-bottom: 56px; }
+.cols { display: grid; gap: 24px; }
+.visit-card { background: var(--ink); color: var(--cream); border-radius: 22px; padding: 30px 26px; max-width: 720px; margin: 0 auto; position: relative; overflow: hidden; }
+.visit-card::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 10px; background: var(--weave) repeat-x var(--weave-x, 0px) center / auto 30px; }
+@media (min-width: 760px) { .visit-card { grid-template-columns: 1fr 1fr; gap: 40px; padding: 44px 48px; } }
+.visit h3 { margin: 0 0 6px; color: var(--cream); }
+.visit-card p { color: #e9dcc6; }
+.addr { font-size: 19px; }
+.link { display: inline-block; margin-top: 10px; color: var(--cream); font-weight: 700; text-underline-offset: 4px; padding: 6px 0; }
+.link:hover { color: #ef5a41; }
+.hours { background: rgba(255,255,255,.07); color: #ddd; border-radius: 12px; padding: 10px 14px; margin-bottom: 10px; }
+
+footer { border-top: 1px solid var(--line); padding-top: 18px; padding-bottom: 32px; font-size: 14px; color: var(--soft); display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: space-between; }
+footer a { color: var(--soft); }
+
+/* ---- their own pieces, brought back sparingly ---- */
+/* favourites on their counter board: a black strip, gold-framed labels (frame.js draws the frame) */
+.board { background: #141414; box-shadow: 0 0 0 100vmax #141414; clip-path: inset(0 -100vmax); padding: 8px 0 28px; margin: 14px 0 8px; color: var(--cream); }
+.board h3 { color: var(--cream); margin-top: 22px; }
+.favs .card.frame { background: no-repeat center / 100% 100%; box-shadow: none; padding: 26px 22px 24px; border-radius: 0; color: var(--cream); }
+.favs .card.frame .pic { background: transparent; }
+.favs .card.frame h4 { color: var(--cream); font-size: 19px; text-align: center; }
+.favs .card.frame .qty { padding-top: 14px; }
+@media (hover: hover) { .favs .card.frame:hover { transform: none; box-shadow: none; } }
+/* desserts on their dessert board: one flat orange panel */
+.sweetboard { background: #f39a3b; border-radius: 22px; padding: 6px 14px 16px; margin-top: 30px; }
+.sweetboard h3 { color: #141414; font: 400 30px/1.1 var(--slab); text-transform: uppercase; letter-spacing: .02em; margin-top: 22px; }
+@media (min-width: 760px) { .sweetboard { padding: 10px 24px 24px; } }
+/* coffee beside their sign's cup illustration */
+.coffee-row { display: grid; gap: 4px; align-items: center; }
+.cup-art { width: min(70%, 300px); height: auto; margin: 24px auto -10px; }
+@media (min-width: 760px) { .coffee-row { grid-template-columns: 300px 1fr; gap: 36px; } .cup-art { width: 100%; margin: 30px 0 0; } }
+.band.break { margin-top: 8px; }
+/* "Abuelita knows best": the favourites heading in their own script */
+.board h3.knows { font: italic 700 clamp(34px, 8vw, 48px)/1.05 var(--script); color: var(--cream); text-align: center; margin: 26px 0 6px; }
+.knows-sub { text-align: center; color: #d9cbb3; margin: 0 auto 18px; max-width: 30em; }
+
+/* ---- v7 (Fable round 3): one ground, inset boards, one heading system, no shadows ---- */
+:root { --page: #f7efdf; }
+body { background: var(--cream); }
+/* section heads: slab capitals everywhere; the script appears only in the name and "Abuelita knows best" */
+h3 { font: 400 26px/1.1 var(--slab); text-transform: uppercase; letter-spacing: .02em; color: var(--maroon); margin: 40px 0 16px; }
+.sweetboard h3 { color: #141414; font-size: 30px; }
+.combo h3 { color: var(--cream); }
+.visit h3 { color: var(--cream); font-size: 22px; }
+/* cards: crisp maroon outline on cream, no soft shadows */
+.card { border: 2px solid var(--maroon); box-shadow: none; }
+@media (hover: hover) { .card:hover { box-shadow: none; transform: translateY(-2px); } }
+.list { border: 2px solid var(--maroon); box-shadow: none; }
+.order .step { border: 2px solid var(--maroon); box-shadow: none; }
+.add.plus, .pic .stepper { box-shadow: none; }
+/* no lone last card: rows are centred */
+.tiles { display: flex; flex-wrap: wrap; justify-content: center; }
+.tiles > li { flex: 0 0 calc(50% - 6px); }
+@media (min-width: 760px) { .tiles > li { flex-basis: calc(25% - 14px); } .favs > li { flex-basis: calc(33.333% - 12px); } }
+@media (max-width: 759px) { .favs li:first-child { flex-basis: 100%; } }
+/* the three boards are insets on the cream, same radius, each with the woven edge along the top */
+.board, .sweetboard, .visit-card { position: relative; overflow: hidden; border-radius: 22px; }
+.board { box-shadow: none; clip-path: none; padding: 18px 16px 26px; margin: 18px 0 8px; }
+@media (min-width: 760px) { .board { padding: 22px 28px 32px; } }
+.board::before, .sweetboard::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 10px; background: var(--weave) repeat-x var(--weave-x, 0px) center / auto 30px; }
+.visit-card::before { background-position: var(--weave-x, 0px) center; }
+.sweetboard { padding-top: 16px; }
+.favs .card.frame { border: 0; }
+/* the chip bar: solid cream, a thin maroon rule, no blur */
+.chips { background: var(--cream); backdrop-filter: none; border-bottom: 1px solid var(--maroon); }
+.chips a { box-shadow: none; border: 1.5px solid var(--maroon); color: var(--maroon); background: transparent; }
+.chips a:hover { background: var(--maroon); color: var(--cream); }
+/* one primary button colour: their red, checkout included */
+.btn { background: var(--red); border-color: var(--red); color: var(--paper); }
+.btn:hover { background: #b93322; border-color: #b93322; }
+.btn.line { background: transparent; color: var(--maroon); border-color: var(--maroon); }
+.btn.line:hover { background: var(--maroon); color: var(--cream); }
+.cartbar { background: var(--cream); backdrop-filter: none; box-shadow: none; border-top: 1px solid var(--maroon); }
+footer { border-top-color: var(--maroon); }
+.board h3.knows { text-transform: none; letter-spacing: 0; font: italic 700 clamp(34px, 8vw, 50px)/1.05 var(--script); color: var(--cream); }
+.list .es { white-space: nowrap; font-size: 13px; font-weight: 500; color: var(--soft); margin-left: 10px; }
+.list li { justify-content: flex-start; }
+.list li > .qty { margin-left: auto; }
+.chips { border-bottom: 0; box-shadow: 0 1px 0 var(--maroon); clip-path: inset(0 -100vmax -1px); }
+
+/* ---- v8 style guide (notes/clients/abuelitas/STYLE.md). Refero lead: Roberta's 3bccc923 (poster, neutral grounds,
+   red for actions + one loud chapter, label buttons, dark closing stage); borrowed: OLIPOP 1bfb0316 (unboxed objects
+   on cream, colour as whole scenes). Tristan: no teal behind the drinks. ---- */
+/* hero stage: their black menu board, not teal */
+.arch { background: var(--ink); border-color: var(--red); }
+/* buttons: sturdy poster labels, slab capitals, small corners */
+.btn { border-radius: 8px; font: 400 16px/1 var(--slab); text-transform: uppercase; letter-spacing: .03em; padding: 0 24px; }
+.add { border-radius: 8px; font: 400 14px/1 var(--slab); text-transform: uppercase; letter-spacing: .04em; }
+.add.plus { border-radius: 50%; font: 800 24px/1 var(--body); }
+.cartbar .count { font-family: var(--body); font-weight: 800; }
+/* menu items: unboxed on the cream, like goods on a shelf */
+.tiles .card:not(.frame) { background: transparent; border: 0; padding: 0 0 8px; border-radius: 0; }
+.tiles .card:not(.frame) .pic { background: transparent; border-radius: 0; height: 150px; }
+@media (min-width: 760px) { .tiles .card:not(.frame) .pic { height: 180px; } }
+.tiles .card:not(.frame) h4 { margin: 6px 2px 0; text-align: center; }
+.tiles .card:not(.frame) .sub { text-align: center; }
+@media (hover: hover) { .tiles .card:hover { transform: none; } }
+.tiles { row-gap: 22px; }
+.sweetboard .card .pic .photo { filter: drop-shadow(0 8px 10px rgba(90,40,0,.3)); }
+/* panels: ruled, small corners, flat */
+.list, .order .step { border-radius: 10px; }
+.combo { border-radius: 10px; }
+.sweetboard { border-radius: 10px; }
+/* favourites: the one loud chapter, a full red band */
+.board { background: var(--red); border-radius: 0; overflow: visible; box-shadow: 0 0 0 100vmax var(--red); clip-path: inset(0 -100vmax); margin: 0; padding: 18px 0 40px; }
+.board::before { display: none; }
+.knows-sub { color: #fde7df; }
+/* closing stage: full-bleed black with the woven edge on top */
+.visit { background: var(--ink); box-shadow: 0 0 0 100vmax var(--ink); clip-path: inset(0 -100vmax); margin-top: 56px; padding: 0 0 48px; }
+.visit h2 { color: var(--cream); padding-top: 48px; }
+.visit-card { border-radius: 0; padding: 0; max-width: 820px; overflow: visible; }
+.visit-card::before { display: none; }
+.visit::before { content: ''; display: block; height: 34px; margin: 0 -100vmax; background: var(--weave) repeat-x var(--weave-x, 0px) center / auto 34px; }
+.visit + .cartbar + .band.break, .band.break { display: none; }
+footer { border-top: 0; }
+.visit::before { margin: 0 calc(50% - 50vw); }
+html, body { overflow-x: clip; }
+@media (min-width: 860px) { .hero-row { grid-template-columns: 1fr auto; max-width: 960px; } .lede { font-size: 18px; } .hero .btn { padding: 0 20px; font-size: 15px; } }
+/* v8b: Tristan — the orange washed everything out, and these bands should run edge to edge like the ones above.
+   Desserts go on their maroon; the combo is a full black band. */
+.combo, .sweetboard { border-radius: 0; overflow: visible; clip-path: inset(0 -100vmax); }
+.combo { box-shadow: 0 0 0 100vmax var(--ink); margin: 34px 0 0; padding: 28px 0; }
+.sweetboard { background: var(--maroon); box-shadow: 0 0 0 100vmax var(--maroon); margin-top: 40px; padding: 40px 0 44px; color: var(--cream); }
+.sweetboard::before { left: calc(50% - 50vw); right: auto; width: 100vw; }
+.sweetboard h3 { color: var(--cream); margin-top: 0; }
+.sweetboard h4 { color: var(--cream); }
+.sweetboard .sub { color: #e2c9c3; }
+.sweetboard .card .pic .photo { filter: drop-shadow(0 8px 10px rgba(0,0,0,.4)); }
+.sweetboard + * , .coffee-row { margin-top: 8px; }
+/* Tristan: the location line sits in a white band across the top */
+.hero-in { padding-top: 0; }
+.rule { justify-content: center; background: var(--paper); margin: 0 calc(50% - 50vw) 14px; padding: 12px 16px; }
+.rule::before, .rule::after { display: none; }
+@media (min-width: 860px) { .hero-in { padding-top: 0; } .rule { padding: 14px 16px; margin-bottom: 22px; } }
+/* Tristan: the menu opening felt unfinished (a short rule ending mid-page, loose gaps).
+   The chips become a full-width white band, like the location band at the top, sitting flush on the red. */
+.menu { padding-top: 40px; }
+.menu > h2 { margin-bottom: 18px; }
+.chips { background: var(--paper); box-shadow: 0 0 0 100vmax var(--paper); clip-path: inset(0 -100vmax); border: 0; margin-bottom: 0; padding-top: 12px; padding-bottom: 12px; }
+.board { margin-top: 0; }
+.knows-sub, .lede { text-wrap: pretty; } .knows-sub { max-width: 36em; }
+/* hero backdrop: Abuelita's tiled kitchen wall and flour-dusted counter (Nano Banana plate).
+   The wall drifts as you scroll; the counter, cut from the same picture, stays put under the food. */
+.arch { container-type: size; }
+.plate { position: absolute; left: 50%; bottom: 0; width: max(100%, 179.2cqh); aspect-ratio: 1376 / 768; transform: translateX(-50%); }
+.plate img { position: absolute; inset: 0; width: 100%; height: 100%; filter: none; }
+.plate .wall { transform: translateY(var(--wall-y, 0px)) scale(1.14); transform-origin: 50% 100%; filter: brightness(.62) saturate(.9); }
+.plate .counter { clip-path: inset(71.5% 0 0 0); filter: brightness(.85); }
+.arch .drink { bottom: 24%; filter: drop-shadow(0 10px 8px rgba(0,0,0,.45)); }
+@media (min-width: 860px) { .arch .drink { bottom: 26%; } }
+.arch .drink { width: 22%; }
+@media (min-width: 860px) { .arch .drink { width: 16.5%; bottom: 25%; } }
+/* Tristan: drinks were tipped at the wrong angle, and the empanada sat on the bottom edge instead of the table.
+   Glasses stand upright on the back of the counter; the empanada rests on its front half. */
+.arch .d1, .arch .d2 { transform: none; }
+.arch .drink { bottom: 23%; filter: drop-shadow(0 6px 4px rgba(0,0,0,.5)); }
+.arch .emp { width: 50%; bottom: 9%; filter: drop-shadow(0 8px 6px rgba(0,0,0,.5)); }
+.steam { bottom: 38%; }
+@media (min-width: 860px) {
+  .arch .drink { width: 16%; bottom: 25%; } .arch .d1 { left: 27%; } .arch .d2 { right: 27%; }
+  .arch .emp { width: 33%; bottom: 11%; } .steam { bottom: 41%; width: 13%; }
+}
+/* papel picado: hangs under the location band, sways live (picado.js) */
+.picado { margin: -14px calc(50% - 50vw) 0; height: 62px; overflow: hidden; }
+@media (min-width: 600px) { .picado { height: 82px; margin-bottom: -6px; } }
+@media (min-width: 860px) { .picado { margin-top: -22px; } }
+.picado svg { display: block; margin: 0 auto; }
+.picado .cord { fill: none; stroke: var(--maroon); stroke-width: 1.5; }
+.picado .flag { animation: sway 3.4s ease-in-out infinite alternate; }
+@keyframes sway { from { transform: rotate(-4deg) skewX(-2deg); } to { transform: rotate(4deg) skewX(2deg); } }
+/* sign-painter glints: four placed sparkles that catch the light one after another */
+h1 { position: relative; }
+.glints { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
+.glints i { position: absolute; width: clamp(14px, 2.6vw, 34px); aspect-ratio: 1; transform: translate(-50%, -50%) scale(0);
+  background: #fff8e8; clip-path: polygon(50% 0, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0 50%, 42% 42%);
+  animation: glint 5.2s ease-in-out infinite; }
+.glints .g1 { left: 31.5%; top: 8%; animation-delay: .2s; }
+.glints .g2 { left: 69%; top: 6%; animation-delay: 1.5s; }
+.glints .g3 { left: 41.5%; top: 52%; animation-delay: 2.8s; }
+.glints .g4 { left: 93%; top: 86%; animation-delay: 4s; }
+@keyframes glint { 0%, 74%, 100% { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 0; } 82% { transform: translate(-50%, -50%) scale(1) rotate(45deg); opacity: 1; } 90% { transform: translate(-50%, -50%) scale(.2) rotate(90deg); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .picado .flag, .glints i { animation: none; } .glints { display: none; } }
+/* desktop: a slightly flatter arch keeps the buttons on the first screen */
+@media (min-width: 860px) { .arch { aspect-ratio: 2.35 / 1; } }
+.glints .g3 { left: 43.4%; top: 46%; }
+.glints .g4 { left: 96.4%; top: 54%; }
+@media (min-width: 860px) { h1 { margin-top: 0; } .arch { margin-top: 14px; } .hero-row { padding-top: 18px; } }
+/* smaller flags (Tristan: still kinda big) */
+.picado { height: 44px; }
+@media (min-width: 600px) { .picado { height: 56px; margin-bottom: -4px; } }
+/* Tristan: the area between the woven band and the chips goes white, one white block with the chips */
+.menu { padding-top: 0; }
+.menu > h2 { background: var(--paper); box-shadow: 0 0 0 100vmax var(--paper); clip-path: inset(0 -100vmax); margin: 0; padding: 36px 0 6px; }
+/* Tristan: the woven band replaces the paper flags, right under the location band */
+.band.top { margin: -14px calc(50% - 50vw) 18px; }
+@media (min-width: 860px) { .band.top { margin-top: -22px; margin-bottom: 22px; } }
+/* Tristan: lean into the empanada. The arch gets a crimped red rim (crimp.js) instead of a thin outline. */
+.arch { border: 0; }
+.crimp { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
+.crimp .rim { fill: var(--red); }
+.crimp .crease { fill: none; stroke: #9c2a1c; stroke-width: 1.6; stroke-linecap: round; }
+/* hero trio re-shot at counter height (Tristan: the angles didn't sit on the table). All three stand on the counter top. */
+.arch .drink { width: 19%; bottom: 19%; filter: drop-shadow(0 3px 3px rgba(0,0,0,.55)); }
+.arch .d1 { left: 13%; } .arch .d2 { right: 13%; }
+.arch .emp { width: 46%; bottom: 13%; filter: drop-shadow(0 4px 4px rgba(0,0,0,.55)); }
+.steam { bottom: 44%; width: 18%; }
+@media (min-width: 860px) {
+  .arch .drink { width: 12.5%; bottom: 25%; } .arch .d1 { left: 25%; } .arch .d2 { right: 25%; }
+  .arch .emp { width: 30%; bottom: 18%; } .steam { bottom: 56%; width: 12%; }
+}
+/* hero v3 (Tristan: render them together once for the light, then separately). The trio was rendered into the
+   kitchen photo itself, then lifted out against the empty plate: front = counter + the three, in one light.
+   The wall drifts behind; steam rides the picture so it stays over the empanada at every width. */
+.plate .front { position: absolute; inset: 0; width: 100%; height: 100%; filter: brightness(.9); }
+.plate .wall { filter: brightness(.6) saturate(.9); }
+.plate .steam { left: 50%; bottom: 49%; width: 9%; transform: translateX(-50%); z-index: 2; }
+/* show the glasses' tops on the wide arch: drop the picture a little so less of the top is cropped */
+@media (min-width: 860px) { .plate { bottom: -13%; } }
+.plate .front { filter: brightness(.85); }
+.plate .wall { filter: brightness(.68) saturate(.92); }
+
+/* ---- Fable round 4 (Tristan: "Do those") — tighter geometry ---- */
+/* three widths: menu 1056, hero 920, narrow panels 720 */
+@media (min-width: 860px) { .hero-row { max-width: 920px; padding: 16px 0 32px; } .arch { margin-top: 8px; } }
+.visit-card { max-width: 720px; }
+h1 .caps { font-size: min(12vw, 146px); }
+@media (max-width: 859px) { .acts { margin-top: 16px; } .hero-row { padding-bottom: 20px; } }
+/* centred section heads over centred rows */
+.menu h3, .combo h3, .combo p, .menu .hint { text-align: center; }
+.menu .hint { margin-top: -6px; }
+/* one vertical rhythm */
+section { padding: 48px 0 0; }
+@media (max-width: 759px) { section { padding-top: 36px; } }
+h3 { margin: 40px 0 12px; }
+@media (max-width: 759px) { h3 { margin: 32px 0 8px; } }
+.combo { margin-top: 40px; padding: 24px 0; }
+.sweetboard { padding: 40px 0 32px; }
+.board { padding: 14px 0 36px; }
+.visit { margin-top: 48px; padding-bottom: 40px; }
+.visit h2 { padding-top: 40px; }
+/* tile rows */
+.tiles { row-gap: 14px; column-gap: 16px; }
+@media (min-width: 760px) { .tiles > li { flex-basis: calc(25% - 12px); } }
+@media (max-width: 759px) { .tiles { column-gap: 12px; } }
+.tiles .card:not(.frame) { padding-bottom: 0; }
+.tiles .card:not(.frame) .pic { height: 132px; }
+@media (min-width: 760px) { .tiles .card:not(.frame) .pic { height: 164px; } }
+.tiles .card:not(.frame) .photo { inset: 6px 14px 6px 6px; width: calc(100% - 20px); height: calc(100% - 12px); }
+/* plus buttons off the food, into the corner */
+.pic .qty { right: 0; bottom: 0; }
+.tiles .add.plus { width: 36px; height: 36px; font-size: 22px; position: relative; }
+.tiles .add.plus::after { content: ''; position: absolute; inset: -4px; }
+/* one radius: 8 */
+.list, .order .step, .hours { border-radius: 8px; }
+.chips a { border-radius: 8px; border-width: 2px; }
+/* coffee list */
+.list li { padding: 8px 0; }
+@media (min-width: 760px) { .list { column-gap: 32px; padding: 4px 20px; } .list li:nth-child(4) { border-bottom: 0; } }
+.list .nm { display: flex; flex-direction: column; }
+.list .nm .es { margin: 2px 0 0; white-space: normal; }
+.coffee-row { margin-top: 4px; }
+@media (min-width: 760px) { .coffee-row { grid-template-columns: 240px 1fr; gap: 32px; } .cup-art { margin: 0; align-self: center; } }
+@media (max-width: 759px) { .cup-art { width: 168px; margin: 8px auto 12px; } }
+/* desserts woven edge: the whole motif, scaled, not a slice */
+.sweetboard::before { height: 12px; background-size: auto 12px; }
+/* hours: plain text, not a grey app box */
+.hours { background: none; padding: 0; color: var(--cream); margin-bottom: 0; }
+/* glints: grow and fade only, no spin (a half-turned star read as a little X) */
+@keyframes glint { 0%, 74%, 100% { transform: translate(-50%, -50%) scale(0); opacity: 0; } 82% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 90% { transform: translate(-50%, -50%) scale(.6); opacity: 0; } }
+.sweetboard + h3 { margin-top: 40px; } @media (max-width: 759px) { .sweetboard + h3 { margin-top: 32px; } }
+/* full-bleed bands painted once (border-image fill, solid colour), so a fractional edge no longer shows a hairline
+   at content width where the element's own background and its 100vmax shadow anti-aliased differently */
+.board, .combo, .sweetboard, .visit, .menu > h2, .chips { box-shadow: none; background: none; clip-path: none; }
+.board { border-image: linear-gradient(var(--red), var(--red)) fill 0 / 0 / 0 100vmax; }
+.combo, .visit { border-image: linear-gradient(var(--ink), var(--ink)) fill 0 / 0 / 0 100vmax; }
+.sweetboard { border-image: linear-gradient(var(--maroon), var(--maroon)) fill 0 / 0 / 0 100vmax; }
+.menu > h2, .chips { border-image: linear-gradient(var(--paper), var(--paper)) fill 0 / 0 / 0 100vmax; }
+/* the coffee emblem's steam is live: three maroon wisps rise out of the cup and fade, one after another */
+.cup-wrap { position: relative; align-self: center; }
+.cup-wrap .cup-art { display: block; width: 100%; height: auto; margin: 0; }
+@media (max-width: 759px) { .cup-wrap { width: 168px; margin: 8px auto 12px; } }
+.cup-steam { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.cup-steam path { stroke: var(--maroon); stroke-width: 15; stroke-linecap: round; stroke-dasharray: .42 1.6; stroke-dashoffset: .42; opacity: 0; animation: cupsteam 3.6s ease-in-out infinite; }
+.cup-steam path:nth-child(2) { stroke-width: 10; animation-delay: 1.2s; }
+.cup-steam path:nth-child(3) { stroke-width: 10; animation-delay: 2.4s; }
+@keyframes cupsteam { 0% { stroke-dashoffset: .42; opacity: 0; } 15% { opacity: 1; } 70% { opacity: 1; } 100% { stroke-dashoffset: -1.05; opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .cup-steam path { animation: none; opacity: 1; stroke-dasharray: none; } .cup-steam path:nth-child(n+2) { display: none; } }
+.cup-steam path { stroke-width: 22; stroke-dasharray: .55 1.6; stroke-dashoffset: .55; }
+.cup-steam path:nth-child(2), .cup-steam path:nth-child(3) { stroke-width: 15; }
+@keyframes cupsteam { 0% { stroke-dashoffset: .55; opacity: 0; } 15% { opacity: 1; } 70% { opacity: 1; } 100% { stroke-dashoffset: -1.05; opacity: 0; } }
+
+/* ---- phone pass (Tristan: "formatted for mobile just as cleanly") ---- */
+/* the photo's soft shadow was clipped square by its frame and read as a pale box */
+.tiles .card:not(.frame) .pic { overflow: visible; }
+/* tap targets: 44px */
+.chips a { min-height: 44px; display: inline-flex; align-items: center; }
+.order .link, .order a.link, .visit .link, [data-party-start], .order .back { min-height: 44px; display: inline-flex; align-items: center; }
+@media (max-width: 759px) {
+  /* chips: start on the page's 16px edge, end with breathing room */
+  .chips { padding-left: 16px; padding-right: 16px; scroll-padding-inline: 16px; }
+  .chips::after { content: ''; flex: 0 0 4px; }
+  /* no orphans: a lone last tile becomes one wide row card, photo left, name right */
+  .tiles > li:not([data-fav]):last-child:nth-child(odd) { flex-basis: 100%; }
+  .tiles > li:not([data-fav]):last-child:nth-child(odd) .card, .tiles > li.card:not([data-fav]):last-child:nth-child(odd) { flex-direction: row; align-items: center; gap: 12px; }
+  .tiles > li:not([data-fav]):last-child:nth-child(odd) .pic { flex: 0 0 calc(50% - 6px); }
+  .tiles > li:not([data-fav]):last-child:nth-child(odd) h4, .tiles > li:not([data-fav]):last-child:nth-child(odd) .sub { text-align: left; margin-left: 0; }
+  /* favourites: the wide chile relleno card a little shorter */
+  .favs li:first-child .pic { height: 150px; }
+  .favs .card.frame { padding: 22px 18px 20px; }
+  .favs .card.frame h4 { font-size: 17px; }
+  /* section heads and hint on the same centre line, even gaps */
+  .menu > h2 { padding-top: 28px; }
+  .board h3.knows { margin-top: 18px; }
+  .lede { font-size: 16px; }
+}
+@media (max-width: 759px) {
+  .tiles > li.card:not([data-fav]):last-child:nth-child(odd) { display: grid; grid-template-columns: calc(50% - 6px) 1fr; grid-template-rows: 1fr auto 1fr; column-gap: 12px; align-items: end; }
+  .tiles > li.card:not([data-fav]):last-child:nth-child(odd) .pic { grid-row: 1 / 4; }
+  .tiles > li.card:not([data-fav]):last-child:nth-child(odd) h4 { grid-column: 2; grid-row: 1; align-self: end; }
+  .tiles > li.card:not([data-fav]):last-child:nth-child(odd) .sub { grid-column: 2; grid-row: 2; align-self: start; }
+}
+@media (max-width: 759px) {
+  .tiles > li.card:not([data-fav]):last-child:nth-child(odd) { grid-template-rows: 1fr auto auto 1fr; row-gap: 2px; }
+  .tiles > li.card:not([data-fav]):last-child:nth-child(odd) .pic { grid-row: 1 / 5; }
+  .tiles > li.card:not([data-fav]):last-child:nth-child(odd) h4 { grid-row: 2; margin: 0; }
+  .tiles > li.card:not([data-fav]):last-child:nth-child(odd) .sub { grid-row: 3; margin: 0; line-height: 1.35; }
+}
+footer a { display: inline-flex; align-items: center; min-height: 44px; }
+/* ---- Fable phone review ---- */
+.lede, .knows-sub, .combo p, .tiles h4, .tiles .sub, .order p { text-wrap: balance; }
+.list .add.plus { position: relative; }
+.list .add.plus::after { content: ''; position: absolute; inset: -2px; }
+@media (max-width: 759px) {
+  .chips { gap: 10px; }
+  .chips a { padding: 0 18px; }
+  h3, .sweetboard h3 { font-size: clamp(22px, 6.6vw, 26px); }
+  .tiles .sub { line-height: 1.35; }
+  .visit-card { text-align: center; }
+  .addr { font-size: 17px; }
+  .cup-wrap { margin: 0 auto 20px; }
+  .sweetboard { padding-top: 32px; }
+  footer { justify-content: center; text-align: center; padding-bottom: 20px; }
+  /* lone wide tile: two equal columns, the plus on the far right like the coffee rows */
+  .tiles > li.card:not([data-fav]):last-child:nth-child(odd) { grid-template-columns: calc(50% - 6px) calc(50% - 6px); }
+  .tiles > li.card:not([data-fav]):last-child:nth-child(odd) .pic .qty { right: calc(-100% - 12px); bottom: 50%; transform: translateY(50%); }
+  .tiles > li.card:not([data-fav]):last-child:nth-child(odd) h4, .tiles > li.card:not([data-fav]):last-child:nth-child(odd) .sub { padding-right: 52px; }
+}
+/* Tristan's phone review:
+   1. The photo shadow is baked into each picture now; Safari drew the live CSS shadow as a dark box while loading. */
+.photo, .tiles .card:not(.frame) .photo, .sweetboard .card .pic .photo, .favs .photo { filter: none !important; }
+/* 2. The stepper count was cream on a cream pill inside the gold frames. */
+.stepper .n, .favs .card.frame .stepper .n { color: var(--ink); }
+/* 3. painted coffee steam back, as its own layer drifting gently */
+.cup-steam { display: none; }
+.cup-wrap .cup-steam-art { position: absolute; inset: 0; width: 100%; height: auto; pointer-events: none; animation: steamdrift 3.8s ease-in-out infinite alternate; transform-origin: 58% 30%; }
+@keyframes steamdrift { from { transform: translateY(0) skewX(0deg); opacity: 1; } to { transform: translateY(-5px) skewX(-3deg); opacity: .72; } }
+@media (prefers-reduced-motion: reduce) { .cup-wrap .cup-steam-art { animation: none; } }
+button, a { -webkit-tap-highlight-color: transparent; }
+/* hero: the one original render, flat and uncut (Tristan: the glasses can't be cut out and floated over a drifting
+   wall, since the tile seen through the glass never lines up). No layers, no drift; only the steam moves. */
+.plate .scene { position: absolute; inset: 0; width: 100%; height: 100%; filter: brightness(.85); }
