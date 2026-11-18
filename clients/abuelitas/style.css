@@ -291,3 +291,8 @@ html, body { overflow-x: clip; }
 .sweetboard .sub { color: #e2c9c3; }
 .sweetboard .card .pic .photo { filter: drop-shadow(0 8px 10px rgba(0,0,0,.4)); }
 .sweetboard + * , .coffee-row { margin-top: 8px; }
+/* Tristan: the location line sits in a white band across the top */
+.hero-in { padding-top: 0; }
+.rule { justify-content: center; background: var(--paper); margin: 0 calc(50% - 50vw) 14px; padding: 12px 16px; }
+.rule::before, .rule::after { display: none; }
+@media (min-width: 860px) { .hero-in { padding-top: 0; } .rule { padding: 14px 16px; margin-bottom: 22px; } }
