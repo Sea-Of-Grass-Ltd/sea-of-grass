@@ -509,3 +509,14 @@ footer a { display: inline-flex; align-items: center; min-height: 44px; }
   .tiles > li.card:not([data-fav]):last-child:nth-child(odd) .pic .qty { right: calc(-100% - 12px); bottom: 50%; transform: translateY(50%); }
   .tiles > li.card:not([data-fav]):last-child:nth-child(odd) h4, .tiles > li.card:not([data-fav]):last-child:nth-child(odd) .sub { padding-right: 52px; }
 }
+/* Tristan's phone review:
+   1. The photo shadow is baked into each picture now; Safari drew the live CSS shadow as a dark box while loading. */
+.photo, .tiles .card:not(.frame) .photo, .sweetboard .card .pic .photo, .favs .photo { filter: none !important; }
+/* 2. The stepper count was cream on a cream pill inside the gold frames. */
+.stepper .n, .favs .card.frame .stepper .n { color: var(--ink); }
+/* 3. painted coffee steam back, as its own layer drifting gently */
+.cup-steam { display: none; }
+.cup-wrap .cup-steam-art { position: absolute; inset: 0; width: 100%; height: auto; pointer-events: none; animation: steamdrift 3.8s ease-in-out infinite alternate; transform-origin: 58% 30%; }
+@keyframes steamdrift { from { transform: translateY(0) skewX(0deg); opacity: 1; } to { transform: translateY(-5px) skewX(-3deg); opacity: .72; } }
+@media (prefers-reduced-motion: reduce) { .cup-wrap .cup-steam-art { animation: none; } }
+button, a { -webkit-tap-highlight-color: transparent; }
