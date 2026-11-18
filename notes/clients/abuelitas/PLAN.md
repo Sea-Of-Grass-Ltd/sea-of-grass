@@ -68,3 +68,9 @@ The Bunny Burritos cart is what sold them, so the site has a real cart. Payment 
 ## Status
 
 - 2026-11-17: tests written first and shown failing (the page did not exist), then the draft was built until all 9 pass at 360, 390 and 1440. Draft PR open, waiting on the owner's list above.
+
+## Identity update (2026-11-17, after Tristan's photos of the sidewalk and wall signs)
+
+Their real logo is on both signs: maroon script "Abuelita's", red slab "EMPANADAS", "COFFEE BAR", a steaming coffee cup with empanadas, and a woven Mexican border (teal, red, orange, yellow). The top of the site now follows that sign: Lobster Two for the script, Alfa Slab One for the caps, and the border drawn in code. The cup-and-empanadas artwork is one Nano Banana redraw of their wall sign (`notes/clients/abuelitas/src/cup-empanadas-nb-blue.png`, keyed to `clients/abuelitas/art/cup-empanadas.webp`). It is their own artwork redrawn, so confirm with the owner that they're happy with it. The empanada lady mascot is not used yet.
+
+The menu below stays in their counter-board style. Fable's critique was applied: a thicker gold frame band, solid gold Add buttons, bigger tile photos, the pink glow on the "menu" band only, 2px ink rules, the cart showing its count, and no pickup-time button on an empty order. Fable's first point, photos on the dessert labels and drink glasses, is still to do (it needs one more generated sheet, on Tristan's go).

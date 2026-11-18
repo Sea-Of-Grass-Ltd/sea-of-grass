@@ -49,7 +49,7 @@
     lines.replaceChildren(...[...cart].map(([k, q]) => {
       const li = el('li'); li.dataset.line = k;
       const s = el('div', 'stepper');
-      s.append(btn('−', ' fewer ' + names[k], 'data-less'), btn('+', ' more ' + names[k], 'data-more'));
+      s.append(btn('−', ' fewer ' + names[k], 'data-less'), el('span', 'n', String(q)), btn('+', ' more ' + names[k], 'data-more'));
       s.firstChild.onclick = () => set(k, q - 1); s.lastChild.onclick = () => set(k, q + 1);
       li.append(el('span', 'nm', `${q} × ${names[k]}`), s);
       return li;
@@ -57,7 +57,8 @@
     const n = count();
     box.querySelector('[data-empty]').hidden = n > 0;
     box.querySelector('[data-total-note]').hidden = n === 0;
-    box.querySelector('[data-q="cart"] [data-next]').disabled = n === 0;
+    const go = box.querySelector('[data-q="cart"] [data-next]');
+    go.disabled = n === 0; go.parentElement.hidden = n === 0; // no dead button on an empty order
     bar.hidden = n === 0 || orderInView;
     document.body.classList.toggle('has-cart', n > 0);
     bar.querySelector('[data-count]').textContent = n;

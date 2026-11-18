@@ -18,7 +18,8 @@
     const w = Math.round(el.offsetWidth), h = Math.round(el.offsetHeight);
     if (!w || !h) return;
     const big = w > 420;
-    const r = big ? 30 : 18, b = big ? 14 : 9, gap = big ? 9 : 7, line = big ? 2.6 : 2;
+    // like their board: a thin black rim, a fat gold band, then the black label
+    const r = big ? 30 : 18, b = big ? 14 : 9, line = big ? 8 : 5, gap = (big ? 4 : 3) + line / 2;
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">` +
       `<path d="${path(w, h, 0, r, b)}" fill="${INK}"/>` +
       `<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6dc87"/><stop offset=".35" stop-color="${GOLD}"/><stop offset=".55" stop-color="#9c7a22"/><stop offset=".8" stop-color="#e8c766"/><stop offset="1" stop-color="#b48d2c"/></linearGradient></defs>` +
