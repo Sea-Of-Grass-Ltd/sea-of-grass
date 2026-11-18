@@ -352,3 +352,6 @@ h1 { position: relative; }
 /* smaller flags (Tristan: still kinda big) */
 .picado { height: 44px; }
 @media (min-width: 600px) { .picado { height: 56px; margin-bottom: -4px; } }
+/* Tristan: the area between the woven band and the chips goes white, one white block with the chips */
+.menu { padding-top: 0; }
+.menu > h2 { background: var(--paper); box-shadow: 0 0 0 100vmax var(--paper); clip-path: inset(0 -100vmax); margin: 0; padding: 36px 0 6px; }
