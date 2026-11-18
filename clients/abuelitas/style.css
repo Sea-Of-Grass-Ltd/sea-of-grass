@@ -432,3 +432,10 @@ h3 { margin: 40px 0 12px; }
 /* glints: grow and fade only, no spin (a half-turned star read as a little X) */
 @keyframes glint { 0%, 74%, 100% { transform: translate(-50%, -50%) scale(0); opacity: 0; } 82% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 90% { transform: translate(-50%, -50%) scale(.6); opacity: 0; } }
 .sweetboard + h3 { margin-top: 40px; } @media (max-width: 759px) { .sweetboard + h3 { margin-top: 32px; } }
+/* full-bleed bands painted once (border-image fill, solid colour), so a fractional edge no longer shows a hairline
+   at content width where the element's own background and its 100vmax shadow anti-aliased differently */
+.board, .combo, .sweetboard, .visit, .menu > h2, .chips { box-shadow: none; background: none; clip-path: none; }
+.board { border-image: linear-gradient(var(--red), var(--red)) fill 0 / 0 / 0 100vmax; }
+.combo, .visit { border-image: linear-gradient(var(--ink), var(--ink)) fill 0 / 0 / 0 100vmax; }
+.sweetboard { border-image: linear-gradient(var(--maroon), var(--maroon)) fill 0 / 0 / 0 100vmax; }
+.menu > h2, .chips { border-image: linear-gradient(var(--paper), var(--paper)) fill 0 / 0 / 0 100vmax; }
