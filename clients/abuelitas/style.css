@@ -358,3 +358,8 @@ h1 { position: relative; }
 /* Tristan: the woven band replaces the paper flags, right under the location band */
 .band.top { margin: -14px calc(50% - 50vw) 18px; }
 @media (min-width: 860px) { .band.top { margin-top: -22px; margin-bottom: 22px; } }
+/* Tristan: lean into the empanada. The arch gets a crimped red rim (crimp.js) instead of a thin outline. */
+.arch { border: 0; }
+.crimp { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
+.crimp .rim { fill: var(--red); }
+.crimp .crease { fill: none; stroke: #9c2a1c; stroke-width: 1.6; stroke-linecap: round; }
