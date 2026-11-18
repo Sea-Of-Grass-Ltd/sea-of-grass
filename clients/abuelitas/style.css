@@ -280,3 +280,14 @@ footer { border-top: 0; }
 .visit::before { margin: 0 calc(50% - 50vw); }
 html, body { overflow-x: clip; }
 @media (min-width: 860px) { .hero-row { grid-template-columns: 1fr auto; max-width: 960px; } .lede { font-size: 18px; } .hero .btn { padding: 0 20px; font-size: 15px; } }
+/* v8b: Tristan — the orange washed everything out, and these bands should run edge to edge like the ones above.
+   Desserts go on their maroon; the combo is a full black band. */
+.combo, .sweetboard { border-radius: 0; overflow: visible; clip-path: inset(0 -100vmax); }
+.combo { box-shadow: 0 0 0 100vmax var(--ink); margin: 34px 0 0; padding: 28px 0; }
+.sweetboard { background: var(--maroon); box-shadow: 0 0 0 100vmax var(--maroon); margin-top: 40px; padding: 40px 0 44px; color: var(--cream); }
+.sweetboard::before { left: calc(50% - 50vw); right: auto; width: 100vw; }
+.sweetboard h3 { color: var(--cream); margin-top: 0; }
+.sweetboard h4 { color: var(--cream); }
+.sweetboard .sub { color: #e2c9c3; }
+.sweetboard .card .pic .photo { filter: drop-shadow(0 8px 10px rgba(0,0,0,.4)); }
+.sweetboard + * , .coffee-row { margin-top: 8px; }
