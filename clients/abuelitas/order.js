@@ -26,12 +26,14 @@
   document.querySelectorAll('#menu [data-key]').forEach(item => {
     const k = item.dataset.key, n = names[k] + (item.hasAttribute('data-fav') ? ', a favorite' : '');
     const wrap = el('div', 'qty');
-    const add = btn('Add', ' ' + n, 'data-add', 'add');
+    // favourites get a full Add button; everything else a small round plus on the photo
+    const fav = item.hasAttribute('data-fav');
+    const add = fav ? btn('Add', ' ' + n, 'data-add', 'add') : btn('+', 'Add ' + n, 'data-add', 'add plus');
     const stepper = el('div', 'stepper'); stepper.hidden = true;
     const qty = el('span', 'n'); qty.setAttribute('data-qty', '');
     stepper.append(btn('−', ' one ' + n, 'data-less'), qty, btn('+', ' one more ' + n, 'data-more'));
     wrap.append(add, stepper);
-    item.append(wrap);
+    (fav ? item : item.querySelector('.pic') || item).append(wrap); // the plus sits on the photo's corner
     add.onclick = () => set(k, 1);
     stepper.querySelector('[data-less]').onclick = () => set(k, (cart.get(k) || 0) - 1);
     stepper.querySelector('[data-more]').onclick = () => set(k, (cart.get(k) || 0) + 1);
@@ -51,7 +53,7 @@
       const s = el('div', 'stepper');
       s.append(btn('−', ' fewer ' + names[k], 'data-less'), el('span', 'n', String(q)), btn('+', ' more ' + names[k], 'data-more'));
       s.firstChild.onclick = () => set(k, q - 1); s.lastChild.onclick = () => set(k, q + 1);
-      li.append(el('span', 'nm', `${q} × ${names[k]}`), s);
+      li.append(el('span', 'nm', names[k]), s);
       return li;
     }));
     const n = count();
@@ -62,14 +64,14 @@
     bar.hidden = n === 0 || orderInView;
     document.body.classList.toggle('has-cart', n > 0);
     bar.querySelector('[data-count]').textContent = n;
-    if (n === 0 && ['when', 'who', 'pay'].includes(current)) show('cart');
+    if (n === 0 && ['when', 'who', 'phone', 'pay'].includes(current)) show('cart');
   }
 
   // the bar is a way to the order, so it steps aside while the order itself is on screen
   let orderInView = false;
   new IntersectionObserver(([e]) => { orderInView = e.isIntersecting; bar.hidden = count() === 0 || orderInView; }, { threshold: 0.15 }).observe(box);
 
-  const order = ['cart', 'when', 'who', 'pay'];
+  const order = ['cart', 'when', 'who', 'phone', 'pay'];
   let current = 'cart';
   function show(name) {
     current = name;
@@ -79,8 +81,8 @@
     if (f) f.focus({ preventScroll: true });
   }
 
-  const who = box.querySelector('[data-q="who"]');
-  const nameIn = who.querySelector('input[name="name"]'), phoneIn = who.querySelector('input[name="phone"]');
+  const who = box.querySelector('[data-q="who"]'), tel = box.querySelector('[data-q="phone"]');
+  const nameIn = who.querySelector('input[name="name"]'), phoneIn = tel.querySelector('input[name="phone"]');
   const when = box.querySelector('#when');
 
   function fillReview() {
@@ -122,7 +124,12 @@
     if (t.hasAttribute('data-next')) {
       if (current === 'who') {
         const err = who.querySelector('[data-err]');
-        if (!nameIn.value.trim() || phoneIn.value.replace(/\D/g, '').length < 10) { err.textContent = 'Please add a name and a mobile number, so the bakery can reach you about the order.'; (nameIn.value.trim() ? phoneIn : nameIn).focus(); return; }
+        if (!nameIn.value.trim()) { err.textContent = 'Please add a name, so the bakery knows whose order it is.'; nameIn.focus(); return; }
+        err.textContent = '';
+      }
+      if (current === 'phone') {
+        const err = tel.querySelector('[data-err]');
+        if (phoneIn.value.replace(/\D/g, '').length < 10) { err.textContent = 'Please add a 10-digit number, so the bakery can reach you about the order.'; phoneIn.focus(); return; }
         err.textContent = '';
       }
       show(order[order.indexOf(current) + 1]);

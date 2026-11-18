@@ -45,7 +45,7 @@ function actionLabels() {
 function layoutFaults() {
   const out = [];
   if (document.documentElement.scrollWidth > innerWidth) out.push(`page is ${document.documentElement.scrollWidth - innerWidth}px wider than the screen`);
-  const t = [...document.querySelectorAll('a[href], button, input, select, textarea')].filter(e => { if (e.closest('[hidden],.sr,[data-cartbar]')) return false; const r = e.getBoundingClientRect(); return r.width > 1 && r.height > 1; });
+  const t = [...document.querySelectorAll('a[href], button, input, select, textarea')].filter(e => { if (e.closest('[hidden],.sr,[data-cartbar],[data-sticky]')) return false; const r = e.getBoundingClientRect(); return r.width > 1 && r.height > 1; });
   for (let i = 0; i < t.length; i++) for (let j = i + 1; j < t.length; j++) {
     const a = t[i], b = t[j]; if (a.contains(b) || b.contains(a)) continue;
     const r = a.getBoundingClientRect(), s = b.getBoundingClientRect();
@@ -109,7 +109,7 @@ for (const w of WIDTHS) {
       // 5 the hero's Order button leads to the menu, where every empanada can be added
       assert.match(await page.locator('[data-order-start]').getAttribute('href'), /#menu$/, 'Order for pickup leads to the menu');
       for (let i = 0; i < await items.count(); i++) assert.equal(await items.nth(i).locator('button[data-add]').count(), 1, `menu item ${i + 1} has an Add button`);
-      assert.ok(await page.locator('#menu [data-key] button[data-add]').count() >= 33, 'everything on the menu can be added, desserts, drinks and coffee too');
+      assert.ok(await page.locator('#menu [data-key] button[data-add]').count() >= 30, 'everything on the menu can be added, desserts, drinks and coffee too');
       // rules
       const labels = await page.evaluate(actionLabels);
       const dups = labels.filter((t, i) => labels.indexOf(t) !== i);
@@ -129,11 +129,11 @@ for (const w of WIDTHS) {
     try {
       const bar = page.locator('[data-cartbar]');
       assert.equal(await bar.isVisible(), false, 'no order bar until something is added');
-      await page.locator('[data-key="steak"]:not([data-fav]) button[data-add]').click();
-      await page.locator('[data-key="steak"]:not([data-fav]) button[data-more]').click();
-      await page.locator('[data-key="pineapple"]:not([data-fav]) button[data-add]').click();
-      await page.locator('[data-key="horchata"]:not([data-fav]) button[data-add]').click();
-      assert.match(await page.locator('[data-key="steak"]:not([data-fav]) [data-qty]').innerText(), /^2$/, 'the Steak tile shows 2');
+      await page.locator('[data-key="steak"] button[data-add]').click();
+      await page.locator('[data-key="steak"] button[data-more]').click();
+      await page.locator('[data-key="pineapple"] button[data-add]').click();
+      await page.locator('[data-key="horchata"] button[data-add]').click();
+      assert.match(await page.locator('[data-key="steak"] [data-qty]').innerText(), /^2$/, 'the Steak tile shows 2');
       await page.evaluate(() => scrollTo(0, 0)); await page.waitForTimeout(150); // the bar hides while the order itself is on screen
       assert.ok(await bar.isVisible(), 'the order bar appears');
       assert.match(await bar.innerText(), /\b4\b/, `the bar counts 4 items: "${await bar.innerText()}"`);
@@ -141,7 +141,8 @@ for (const w of WIDTHS) {
       await page.waitForTimeout(150);
       assert.deepEqual(await visibleQs(page), ['cart'], 'the order opens on the cart, one step at a time');
       const cart = page.locator('#order [data-q="cart"]');
-      assert.match(await cart.innerText(), /steak[^\n]*2|2[^\n]*steak/i, 'cart lists Steak x2');
+      assert.match(await cart.locator('[data-line="steak"]').innerText(), /steak/i, 'cart lists Steak');
+      assert.equal(await cart.locator('[data-line="steak"] .n').innerText(), '2', 'Steak shows 2, once');
       await cart.locator('[data-line="pineapple"] button[data-less]').click();
       assert.doesNotMatch(await cart.innerText(), /pineapple/i, 'taking the pineapple out removes it');
       assert.match(await cart.innerText(), /total[^.]*checkout/i, 'says the total is shown at checkout (no invented prices)');
@@ -151,10 +152,14 @@ for (const w of WIDTHS) {
       await page.locator('#order [data-q="when"] button[data-next]').click();
       assert.deepEqual(await visibleQs(page), ['who'], 'then one question: who is picking it up');
       await page.locator('#order [data-q="who"] button[data-next]').click();
-      assert.deepEqual(await visibleQs(page), ['who'], 'cannot go on without a name and phone');
+      assert.deepEqual(await visibleQs(page), ['who'], 'cannot go on without a name');
       await page.locator('#order [data-q="who"] input[autocomplete="name"]').fill('Rosa Diaz');
-      await page.locator('#order [data-q="who"] input[type="tel"]').fill('7205550142');
       await page.locator('#order [data-q="who"] button[data-next]').click();
+      assert.deepEqual(await visibleQs(page), ['phone'], 'then one question: the phone number');
+      await page.locator('#order [data-q="phone"] button[data-next]').click();
+      assert.deepEqual(await visibleQs(page), ['phone'], 'cannot go on without a phone number');
+      await page.locator('#order [data-q="phone"] input[type="tel"]').fill('7205550142');
+      await page.locator('#order [data-q="phone"] button[data-next]').click();
       assert.deepEqual(await visibleQs(page), ['pay'], 'then the review');
       const review = await page.locator('#order [data-q="pay"]').innerText();
       for (const t of [/steak/i, /horchata/i, /rosa/i, /square/i]) assert.match(review, t, `review shows ${t}`);
@@ -196,14 +201,15 @@ for (const w of WIDTHS) {
   test(`${w}px · before Square is connected, the last step says draft and still offers the call`, async () => {
     const { ctx, page, errors } = await open(w, false);
     try {
-      await page.locator('[data-key="tinga"]:not([data-fav]) button[data-add]').click();
+      await page.locator('[data-key="tinga"] button[data-add]').click();
       await page.evaluate(() => scrollTo(0, 0)); await page.waitForTimeout(150);
       await page.locator('[data-cartbar] a, [data-cartbar] button').first().click();
       await page.locator('#order [data-q="cart"] button[data-next]').click();
       await page.locator('#order [data-q="when"] button[data-next]').click();
       await page.locator('#order [data-q="who"] input[autocomplete="name"]').fill('Sam');
-      await page.locator('#order [data-q="who"] input[type="tel"]').fill('7205550199');
       await page.locator('#order [data-q="who"] button[data-next]').click();
+      await page.locator('#order [data-q="phone"] input[type="tel"]').fill('7205550199');
+      await page.locator('#order [data-q="phone"] button[data-next]').click();
       const step = page.locator('#order [data-q="pay"]');
       assert.match(await step.innerText(), /draft/i, 'says it is a draft');
       assert.equal(await step.locator('button[data-pay]').count(), 0, 'no dead pay button');

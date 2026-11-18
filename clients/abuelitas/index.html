@@ -8,7 +8,7 @@
 <meta name="robots" content="noindex">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Figtree:wght@400;600;700&family=Lobster+Two:ital,wght@1,700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Figtree:wght@400;500;600;700;800&family=Lobster+Two:ital,wght@1,700&display=swap">
 <link rel="stylesheet" href="style.css">
 </head>
 <!-- data-checkout: the shop server's /checkout?shop=abuelitas address once it is hosted; empty keeps the last step in draft -->
@@ -42,18 +42,19 @@
   <section class="menu" id="menu" aria-labelledby="menu-h">
     <h2 id="menu-h">Menu</h2>
 
-    <h3>Our favorites</h3>
+    <nav class="chips" data-sticky aria-label="Menu sections"><a href="#s-fav">Favorites</a><a href="#s-savory">Savory</a><a href="#s-sweet">Sweet</a><a href="#s-desserts">Desserts</a><a href="#s-snacks">Appetizers</a><a href="#s-drinks">Drinks</a><a href="#s-coffee">Coffee</a></nav>
+
+    <h3 id="s-fav">Our favorites</h3>
     <ul class="tiles favs">
       <li class="card" data-item data-key="chile-relleno" data-name="Chile Relleno" data-fav><div class="pic"><img class="photo" src="photos/chile-relleno.webp" width="474" height="263" alt="Chile Relleno empanada" loading="lazy" decoding="async"></div><h4>Chile Relleno</h4></li>
       <li class="card" data-item data-key="horchata" data-name="Agua de horchata" data-fav><div class="pic"><img class="photo" src="photos/horchata.webp" width="266" height="481" alt="Agua de horchata" loading="lazy" decoding="async"></div><h4>Agua de horchata</h4></li>
       <li class="card" data-item data-key="jamaica" data-name="Agua de jamaica" data-fav><div class="pic"><img class="photo" src="photos/jamaica.webp" width="266" height="478" alt="Agua de jamaica" loading="lazy" decoding="async"></div><h4>Agua de jamaica</h4></li>
     </ul>
 
-    <h3>Savory empanadas</h3>
+    <h3 id="s-savory">Savory empanadas</h3>
     <ul class="tiles">
       <li class="card" data-item data-key="ground-beef" data-name="Ground Beef"><div class="pic"><img class="photo" src="photos/ground-beef.webp" width="528" height="227" alt="Ground Beef empanada" loading="lazy" decoding="async"></div><h4>Ground Beef</h4></li>
       <li class="card" data-item data-key="steak" data-name="Steak"><div class="pic"><img class="photo" src="photos/steak.webp" width="511" height="314" alt="Steak empanada" loading="lazy" decoding="async"></div><h4>Steak</h4></li>
-      <li class="card" data-item data-key="chile-relleno" data-name="Chile Relleno"><div class="pic"><img class="photo" src="photos/chile-relleno.webp" width="474" height="263" alt="Chile Relleno empanada" loading="lazy" decoding="async"></div><h4>Chile Relleno</h4></li>
       <li class="card" data-item data-key="ham-cheese" data-name="Ham &amp; Cheese"><div class="pic"><img class="photo" src="photos/ham-cheese.webp" width="409" height="340" alt="Ham and Cheese empanada" loading="lazy" decoding="async"></div><h4>Ham &amp; Cheese</h4></li>
       <li class="card" data-item data-key="spicy-chicken" data-name="Spicy Chicken"><div class="pic"><img class="photo" src="photos/spicy-chicken.webp" width="541" height="250" alt="Spicy Chicken empanada" loading="lazy" decoding="async"></div><h4>Spicy Chicken</h4></li>
       <li class="card" data-item data-key="spinach-cheese" data-name="Spinach &amp; Cheese"><div class="pic"><img class="photo" src="photos/spinach-cheese.webp" width="423" height="353" alt="Spinach and Cheese empanada" loading="lazy" decoding="async"></div><h4>Spinach &amp; Cheese</h4></li>
@@ -61,12 +62,18 @@
       <li class="card" data-item data-key="tinga" data-name="Tinga"><div class="pic"><img class="photo" src="photos/tinga.webp" width="508" height="271" alt="Tinga empanada" loading="lazy" decoding="async"></div><h4>Tinga</h4><span class="sub">chicken y chipotle</span></li>
     </ul>
 
+    <h3 id="s-snacks">Appetizers</h3>
+    <ul class="tiles">
+      <li class="card" data-item data-key="nachos" data-name="Nachos"><div class="pic"><img class="photo" src="photos/nachos.webp" width="538" height="350" alt="Nachos" loading="lazy" decoding="async"></div><h4>Nachos</h4><span class="sub">cheese &amp; jalapeños</span></li>
+      <li class="card" data-item data-key="cup-of-corn" data-name="Cup of corn"><div class="pic"><img class="photo" src="photos/cup-of-corn.webp" width="380" height="458" alt="Cup of corn" loading="lazy" decoding="async"></div><h4>Cup of corn</h4></li>
+    </ul>
+
     <div class="combo">
       <h3>Combo</h3>
       <p>Choose any savory empanada and add one side: a regular corn cup or nachos.</p>
     </div>
 
-    <h3>Sweet empanadas</h3>
+    <h3 id="s-sweet">Sweet empanadas</h3>
     <ul class="tiles">
       <li class="card" data-item data-key="sweet-potato" data-name="Sweet Potato"><div class="pic"><img class="photo" src="photos/sweet-potato.webp" width="533" height="245" alt="Sweet Potato empanada" loading="lazy" decoding="async"></div><h4>Sweet Potato</h4></li>
       <li class="card" data-item data-key="pineapple" data-name="Pineapple"><div class="pic"><img class="photo" src="photos/pineapple.webp" width="517" height="269" alt="Pineapple empanada" loading="lazy" decoding="async"></div><h4>Pineapple</h4></li>
@@ -74,7 +81,7 @@
       <li class="card" data-item data-key="apple" data-name="Apple"><div class="pic"><img class="photo" src="photos/apple.webp" width="518" height="274" alt="Apple empanada" loading="lazy" decoding="async"></div><h4>Apple</h4></li>
     </ul>
 
-    <h3>Desserts &amp; appetizers</h3>
+    <h3 id="s-desserts">Desserts</h3>
     <ul class="tiles">
       <li class="card" data-item data-key="lemon-tart" data-name="Lemon tart"><div class="pic"><img class="photo" src="photos/lemon-tart.webp" width="497" height="369" alt="Lemon tart" loading="lazy" decoding="async"></div><h4>Lemon tart</h4></li>
       <li class="card" data-item data-key="cherry-nut-tart" data-name="Cherry &amp; nut tart"><div class="pic"><img class="photo" src="photos/cherry-nut-tart.webp" width="462" height="354" alt="Cherry and nut tart" loading="lazy" decoding="async"></div><h4>Cherry &amp; nut tart</h4></li>
@@ -83,18 +90,14 @@
       <li class="card" data-item data-key="chocolate-tart" data-name="Chocolate tart"><div class="pic"><img class="photo" src="photos/chocolate-tart.webp" width="478" height="370" alt="Chocolate tart" loading="lazy" decoding="async"></div><h4>Chocolate tart</h4></li>
       <li class="card" data-item data-key="blueberry-strawberry-tart" data-name="Blueberry strawberry tart"><div class="pic"><img class="photo" src="photos/blueberry-strawberry-tart.webp" width="468" height="363" alt="Blueberry strawberry tart" loading="lazy" decoding="async"></div><h4>Blueberry strawberry tart</h4></li>
       <li class="card" data-item data-key="cookies" data-name="Cookies"><div class="pic"><img class="photo" src="photos/cookies.webp" width="482" height="370" alt="Cookies" loading="lazy" decoding="async"></div><h4>Cookies</h4><span class="sub">polvorones</span></li>
-      <li class="card" data-item data-key="nachos" data-name="Nachos"><div class="pic"><img class="photo" src="photos/nachos.webp" width="538" height="350" alt="Nachos" loading="lazy" decoding="async"></div><h4>Nachos</h4><span class="sub">cheese &amp; jalapeños</span></li>
-      <li class="card" data-item data-key="cup-of-corn" data-name="Cup of corn"><div class="pic"><img class="photo" src="photos/cup-of-corn.webp" width="380" height="458" alt="Cup of corn" loading="lazy" decoding="async"></div><h4>Cup of corn</h4></li>
     </ul>
 
-    <h3>Aguas frescas &amp; chocolate</h3>
+    <h3 id="s-drinks">Aguas frescas &amp; chocolate</h3>
     <ul class="tiles">
-      <li class="card" data-item data-key="horchata" data-name="Agua de horchata"><div class="pic"><img class="photo" src="photos/horchata.webp" width="266" height="481" alt="Agua de horchata" loading="lazy" decoding="async"></div><h4>Agua de horchata</h4></li>
-      <li class="card" data-item data-key="jamaica" data-name="Agua de jamaica"><div class="pic"><img class="photo" src="photos/jamaica.webp" width="266" height="478" alt="Agua de jamaica" loading="lazy" decoding="async"></div><h4>Agua de jamaica</h4></li>
       <li class="card" data-item data-key="abuelitas-chocolate" data-name="Abuelita's chocolate"><div class="pic"><img class="photo" src="photos/abuelitas-chocolate.webp" width="419" height="423" alt="Abuelita's chocolate" loading="lazy" decoding="async"></div><h4>Abuelita's chocolate</h4><span class="sub">Saturdays only</span></li>
     </ul>
 
-    <h3>Coffee &amp; more</h3>
+    <h3 id="s-coffee">Coffee &amp; more</h3>
     <p class="hint">Coffee is on in the mornings.</p>
     <ul class="list">
       <li data-key="espresso" data-name="Espresso">Espresso</li>
@@ -130,9 +133,16 @@
     </div>
 
     <div class="step" data-q="who" hidden>
-      <p class="q">Who&rsquo;s picking it up?</p>
-      <label class="field">Name<input name="name" autocomplete="name" required></label>
-      <label class="field">Mobile number<input name="phone" type="tel" inputmode="tel" autocomplete="tel" required></label>
+      <label class="q" for="o-name">Who&rsquo;s picking it up?</label>
+      <input id="o-name" name="name" autocomplete="name" required>
+      <p class="err" role="alert" data-err></p>
+      <div class="choices"><button class="btn" type="button" data-next>Next</button></div>
+      <button class="back" type="button" data-back>Back</button>
+    </div>
+
+    <div class="step" data-q="phone" hidden>
+      <label class="q" for="o-phone">What&rsquo;s the best number to reach you?</label>
+      <input id="o-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required>
       <p class="err" role="alert" data-err></p>
       <div class="choices"><button class="btn" type="button" data-next>Review my order</button></div>
       <button class="back" type="button" data-back>Back</button>
