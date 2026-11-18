@@ -101,6 +101,7 @@ for (const w of WIDTHS) {
         assert.ok(ph, `menu item ${i + 1}: photo loads, or the slot names the photo it waits for`);
       }
       assert.doesNotMatch(await page.locator('body').innerText(), /\$\s?\d/, 'no prices anywhere until the owner sends them');
+      assert.doesNotMatch(await page.locator('body').innerText(), /\b(rsquo|lsquo|ldquo|rdquo|amp|middot|nbsp|mdash|ndash);/, 'no broken character codes in the visible text');
       // 3 visit
       const visit = await page.locator('#visit').innerText();
       for (const s of ['Old Town Marketplace', '332 Main St', 'Longmont']) assert.ok(visit.includes(s), `visit block names ${s}`);
