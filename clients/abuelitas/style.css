@@ -296,3 +296,10 @@ html, body { overflow-x: clip; }
 .rule { justify-content: center; background: var(--paper); margin: 0 calc(50% - 50vw) 14px; padding: 12px 16px; }
 .rule::before, .rule::after { display: none; }
 @media (min-width: 860px) { .hero-in { padding-top: 0; } .rule { padding: 14px 16px; margin-bottom: 22px; } }
+/* Tristan: the menu opening felt unfinished (a short rule ending mid-page, loose gaps).
+   The chips become a full-width white band, like the location band at the top, sitting flush on the red. */
+.menu { padding-top: 40px; }
+.menu > h2 { margin-bottom: 18px; }
+.chips { background: var(--paper); box-shadow: 0 0 0 100vmax var(--paper); clip-path: inset(0 -100vmax); border: 0; margin-bottom: 0; padding-top: 12px; padding-bottom: 12px; }
+.board { margin-top: 0; }
+.knows-sub, .lede { text-wrap: pretty; } .knows-sub { max-width: 36em; }
