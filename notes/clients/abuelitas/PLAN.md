@@ -19,7 +19,7 @@ Palette (taken from their shop): black #111 and the gold line #d9b44a from the b
 
 The label shape is their board's: scooped corners and a soft rise in the middle of the top and bottom edges, with a gold line inset. `frame.js` draws it at each box's real size, so the curves never stretch.
 
-**Photos (2026-11-17):** the twelve empanada pictures are **stand-ins**. They come from one Nano Banana sheet made from Tristan's photos of the board (`notes/clients/abuelitas/src/empanada-sheet-nb.png`), cut out to `clients/abuelitas/photos/*.webp`. The draft strip says so. Replace them with real photos before launch and never present them as the bakery's own.
+**Photos (2026-11-17):** the twelve empanada pictures are **stand-ins**. They come from one Nano Banana sheet made from Tristan's photos of the board (`notes/clients/abuelitas/src/empanada-sheet-nb.png`), re-rendered on flat chroma blue with no shadows (`empanada-sheet-nb-blue.png`) and keyed out to `clients/abuelitas/photos/*.webp`. The draft strip says so. Replace them with real photos before launch and never present them as the bakery's own.
 
 **Mascot:** the corn chef on the board is too small in our photos to redraw faithfully. We need a clear photo or the original file before making a clean vector, and Tristan sees the vector before it goes on the site.
 
