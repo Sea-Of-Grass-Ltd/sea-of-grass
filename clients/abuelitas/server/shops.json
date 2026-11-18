@@ -1,0 +1,15 @@
+{
+  "abuelitas": {
+    "name": "Abuelita's Empanadas",
+    "origins": ["http://localhost:8742", "https://orderabuelitasempanadas.com", "https://www.orderabuelitasempanadas.com"],
+    "menu": {
+      "ground-beef": "Ground Beef", "steak": "Steak", "chile-relleno": "Chile Relleno", "ham-cheese": "Ham & Cheese",
+      "spicy-chicken": "Spicy Chicken", "spinach-cheese": "Spinach & Cheese", "chicken-vegetable": "Chicken Vegetable", "tinga": "Tinga",
+      "sweet-potato": "Sweet Potato", "pineapple": "Pineapple", "dulce-con-leche": "Dulce con leche", "apple": "Apple",
+      "lemon-tart": "Lemon tart", "cherry-nut-tart": "Cherry & nut tart", "nut-tart": "Nut tart", "apple-cinnamon-walnut-tart": "Apple cinnamon walnut tart",
+      "chocolate-tart": "Chocolate tart", "blueberry-strawberry-tart": "Blueberry strawberry tart", "cookies": "Cookies", "nachos": "Nachos", "cup-of-corn": "Cup of corn",
+      "espresso": "Espresso", "cappuccino": "Cappuccino", "latte": "Latte", "iced-coffee": "Iced coffee", "french-press-cafe": "French press café",
+      "horchata": "Agua de horchata", "jamaica": "Agua de jamaica", "coke-products": "Coke products", "abuelitas-chocolate": "Abuelita's chocolate"
+    }
+  }
+}

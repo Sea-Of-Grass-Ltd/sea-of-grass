@@ -1,5 +1,5 @@
 // The order: Add on any menu item, a cart, then one question at a time (when, who), then Square checkout.
-// We never take payment. "Pay on Square" sends the cart to a small server piece (worker/checkout.js), which asks
+// We never take payment. "Pay on Square" sends the cart to a small server piece (server/server.mjs), which asks
 // Square for a checkout page holding these items and answers with its link; the browser goes there to pay,
 // and the order lands on the bakery's register. Until that server piece is live, the last step says "draft".
 (() => {

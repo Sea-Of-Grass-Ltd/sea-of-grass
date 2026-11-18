@@ -30,16 +30,18 @@ Refero references: Yelp menu list `aa22636c-19f3-4617-90d1-539f037d0659` for how
 The Bunny Burritos cart is what sold them, so the site has a real cart. Payment still happens only on Square, and orders land on their register.
 
 1. **On the site** (`order.js`): every menu item has Add and a stepper, and an order bar counts the items. The order then asks one question at a time: the cart, when you'll pick it up, who's picking it up (name and mobile), then a review. No prices are shown. The cart says the total appears on Square's checkout page.
-2. **"Pay on Square"** sends the cart, pickup time, name and phone to `clients/abuelitas/server/checkout.mjs`. That is a small Node server (Hostinger Node hosting is fine). It asks Square's Checkout API for a payment link holding those catalog items with a PICKUP fulfilment, and returns the link. The browser goes to Square's page, the customer pays there, and the order shows up in their Square orders like any online sale.
+2. **"Pay on Square"** sends the cart, pickup time, name and phone to the shop server (`clients/abuelitas/server/server.mjs`, one server for every client, shops listed in `shops.json`). That is a small Node server (Hostinger Node hosting is fine). It asks Square's Checkout API for a payment link holding those catalog items with a PICKUP fulfilment, and returns the link. The browser goes to Square's page, the customer pays there, and the order shows up in their Square orders like any online sale.
 3. **Until it's live**, `<body data-checkout="">` stays empty and the last step says it's a draft and offers the call.
 
 **What we hold, and what we don't.** Sea of Grass registers one Square app. The owner taps "Connect Square" once and approves limited permissions (orders, checkout, read items) on Square's own page. Square gives us an access token. It is stored as an encrypted server secret, one per shop, never in the website code or the repo. The owner can revoke it from their Square dashboard any time. We never see their Square password, their bank details or any customer's card.
 
 **To go live:**
 - [ ] Prices for every item entered in their Square item library (Square shows them at checkout).
-- [ ] Register the Sea of Grass Square app (developer.squareup.com), and build the "Connect Square" OAuth step with token refresh.
+- [x] Sea of Grass Square app registered (sandbox side set up 2026-11-17).
+- [x] "Connect Square" built and tested in sandbox (2026-11-17): `/connect?shop=abuelitas` → Square's Allow page → "You're connected". The server stores the shop's key encrypted (`data/vault.json`, never committed), renews it before it expires, and matched all 30 menu items by name. A full order from the site page in Chrome landed on Square's checkout.
+- [ ] Production: set the app's production Redirect URL to the hosted server's `/connected`, with production keys in the server's settings.
 - [x] Tested `checkout.mjs` in Square's sandbox (2026-11-17): 2 steak + 1 horchata became a $13 pickup order with the name and phone on it.
-- [ ] Map each menu key (`data-key` in `index.html`) to its Square item-variation id in `SQUARE_CATALOG`.
+- [x] Menu matching is automatic: on connect, the server matches the site's menu names (in `shops.json`) to the shop's Square items. Any it can't find are listed at `/status`.
 - [ ] Deploy the server, then set `data-checkout` to its address.
 - [ ] Combo: needs a Square modifier (side: corn cup or nachos) before it can go in the cart. For now it is shown but can't be added.
 

@@ -14,3 +14,4 @@ tools/og/cap/
 # client server secrets (Square tokens etc.)
 .env
 **/.env
+clients/*/server/data/
