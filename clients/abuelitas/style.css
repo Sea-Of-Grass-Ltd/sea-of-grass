@@ -382,3 +382,53 @@ h1 { position: relative; }
 @media (min-width: 860px) { .plate { bottom: -13%; } }
 .plate .front { filter: brightness(.85); }
 .plate .wall { filter: brightness(.68) saturate(.92); }
+
+/* ---- Fable round 4 (Tristan: "Do those") — tighter geometry ---- */
+/* three widths: menu 1056, hero 920, narrow panels 720 */
+@media (min-width: 860px) { .hero-row { max-width: 920px; padding: 16px 0 32px; } .arch { margin-top: 8px; } }
+.visit-card { max-width: 720px; }
+h1 .caps { font-size: min(12vw, 146px); }
+@media (max-width: 859px) { .acts { margin-top: 16px; } .hero-row { padding-bottom: 20px; } }
+/* centred section heads over centred rows */
+.menu h3, .combo h3, .combo p, .menu .hint { text-align: center; }
+.menu .hint { margin-top: -6px; }
+/* one vertical rhythm */
+section { padding: 48px 0 0; }
+@media (max-width: 759px) { section { padding-top: 36px; } }
+h3 { margin: 40px 0 12px; }
+@media (max-width: 759px) { h3 { margin: 32px 0 8px; } }
+.combo { margin-top: 40px; padding: 24px 0; }
+.sweetboard { padding: 40px 0 32px; }
+.board { padding: 14px 0 36px; }
+.visit { margin-top: 48px; padding-bottom: 40px; }
+.visit h2 { padding-top: 40px; }
+/* tile rows */
+.tiles { row-gap: 14px; column-gap: 16px; }
+@media (min-width: 760px) { .tiles > li { flex-basis: calc(25% - 12px); } }
+@media (max-width: 759px) { .tiles { column-gap: 12px; } }
+.tiles .card:not(.frame) { padding-bottom: 0; }
+.tiles .card:not(.frame) .pic { height: 132px; }
+@media (min-width: 760px) { .tiles .card:not(.frame) .pic { height: 164px; } }
+.tiles .card:not(.frame) .photo { inset: 6px 14px 6px 6px; width: calc(100% - 20px); height: calc(100% - 12px); }
+/* plus buttons off the food, into the corner */
+.pic .qty { right: 0; bottom: 0; }
+.tiles .add.plus { width: 36px; height: 36px; font-size: 22px; position: relative; }
+.tiles .add.plus::after { content: ''; position: absolute; inset: -4px; }
+/* one radius: 8 */
+.list, .order .step, .hours { border-radius: 8px; }
+.chips a { border-radius: 8px; border-width: 2px; }
+/* coffee list */
+.list li { padding: 8px 0; }
+@media (min-width: 760px) { .list { column-gap: 32px; padding: 4px 20px; } .list li:nth-child(4) { border-bottom: 0; } }
+.list .nm { display: flex; flex-direction: column; }
+.list .nm .es { margin: 2px 0 0; white-space: normal; }
+.coffee-row { margin-top: 4px; }
+@media (min-width: 760px) { .coffee-row { grid-template-columns: 240px 1fr; gap: 32px; } .cup-art { margin: 0; align-self: center; } }
+@media (max-width: 759px) { .cup-art { width: 168px; margin: 8px auto 12px; } }
+/* desserts woven edge: the whole motif, scaled, not a slice */
+.sweetboard::before { height: 12px; background-size: auto 12px; }
+/* hours: plain text, not a grey app box */
+.hours { background: none; padding: 0; color: var(--cream); margin-bottom: 0; }
+/* glints: grow and fade only, no spin (a half-turned star read as a little X) */
+@keyframes glint { 0%, 74%, 100% { transform: translate(-50%, -50%) scale(0); opacity: 0; } 82% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 90% { transform: translate(-50%, -50%) scale(.6); opacity: 0; } }
+.sweetboard + h3 { margin-top: 40px; } @media (max-width: 759px) { .sweetboard + h3 { margin-top: 32px; } }
