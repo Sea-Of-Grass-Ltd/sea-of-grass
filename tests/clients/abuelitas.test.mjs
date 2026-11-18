@@ -7,14 +7,19 @@ import { copyFindings } from '../lib/copy-rules.mjs';
 
 const PAGE = '/clients/abuelitas/';
 const WIDTHS = [360, 390, 1440];
-const SQUARE = 'https://abuelitas-test.square.site/';
+const SQUARE = 'https://square.link/u/test-abuelitas';
+const ENDPOINT = '/api/abuelitas-checkout'; // the small server piece that asks Square for a checkout page
 
 let site;
 before(async () => { site = await startSite(); });
 after(async () => { await site?.close(); });
 
-async function open(w, square) {
-  return site.open(PAGE, w, { reducedMotion: 'reduce', initScript: square ? `window.ABUELITAS_SQUARE_URL = ${JSON.stringify(square)};` : undefined });
+async function open(w, live) {
+  const o = await site.open(PAGE, w, { reducedMotion: 'reduce', initScript: live ? `window.ABUELITAS_CHECKOUT = ${JSON.stringify(ENDPOINT)};` : undefined });
+  o.posted = [];
+  // stand in for the server: it gets the cart and answers with a Square checkout link
+  await o.ctx.route(u => u.pathname === ENDPOINT, async r => { o.posted.push(JSON.parse(r.request().postData() || '{}')); await r.fulfill({ contentType: 'application/json', body: JSON.stringify({ url: SQUARE }) }); });
+  return o;
 }
 
 function firstScreen() {
@@ -40,7 +45,7 @@ function actionLabels() {
 function layoutFaults() {
   const out = [];
   if (document.documentElement.scrollWidth > innerWidth) out.push(`page is ${document.documentElement.scrollWidth - innerWidth}px wider than the screen`);
-  const t = [...document.querySelectorAll('a[href], button, input, select, textarea')].filter(e => { if (e.closest('[hidden],.sr')) return false; const r = e.getBoundingClientRect(); return r.width > 1 && r.height > 1; });
+  const t = [...document.querySelectorAll('a[href], button, input, select, textarea')].filter(e => { if (e.closest('[hidden],.sr,[data-cartbar]')) return false; const r = e.getBoundingClientRect(); return r.width > 1 && r.height > 1; });
   for (let i = 0; i < t.length; i++) for (let j = i + 1; j < t.length; j++) {
     const a = t[i], b = t[j]; if (a.contains(b) || b.contains(a)) continue;
     const r = a.getBoundingClientRect(), s = b.getBoundingClientRect();
@@ -91,7 +96,8 @@ for (const w of WIDTHS) {
       for (let i = 0; i < await items.count(); i++) {
         const it = items.nth(i);
         assert.equal(await it.locator('h4').count(), 1, `menu item ${i + 1} has a name`);
-        const ph = await it.locator('.photo').evaluate(p => p.tagName === 'IMG' ? p.complete && p.naturalWidth > 0 : /\.(webp|jpg)$/.test(p.dataset.photo || ''));
+        await it.scrollIntoViewIfNeeded();
+        const ph = await it.locator('.photo').evaluate(p => p.tagName !== 'IMG' ? /\.(webp|jpg)$/.test(p.dataset.photo || '') : p.decode().then(() => p.naturalWidth > 0, () => false));
         assert.ok(ph, `menu item ${i + 1}: photo loads, or the slot names the photo it waits for`);
       }
       assert.doesNotMatch(await page.locator('body').innerText(), /\$\s?\d/, 'no prices anywhere until the owner sends them');
@@ -100,16 +106,10 @@ for (const w of WIDTHS) {
       for (const s of ['Old Town Marketplace', '332 Main St', 'Longmont']) assert.ok(visit.includes(s), `visit block names ${s}`);
       assert.ok(await page.locator('#visit a[href*="maps"]').count() >= 1, 'a directions link');
       assert.equal(await page.locator('#visit [data-hours][data-sample="true"]').count(), 1, 'hours are marked as coming from the bakery');
-      // 5 order today
-      await page.locator('[data-order-start]').click();
-      await page.waitForTimeout(200);
-      assert.deepEqual(await visibleQs(page), ['when'], 'the order block starts with one question');
-      await page.locator('#order [data-q="when"] button', { hasText: /today, for pickup/i }).click();
-      assert.deepEqual(await visibleQs(page), ['square'], 'then one step: the Square hand-off');
-      const go = page.locator('#order [data-q="square"] a[data-square]');
-      assert.equal(await go.getAttribute('href'), SQUARE, 'the hand-off opens their Square ordering page');
-      assert.match(await page.locator('#order [data-q="square"]').innerText(), /square/i, 'the hand-off says payment happens in Square');
-      assert.equal(await page.locator('#order input[type=email], #order [autocomplete*=cc]').count(), 0, 'we never take card or checkout details ourselves');
+      // 5 the hero's Order button leads to the menu, where every empanada can be added
+      assert.match(await page.locator('[data-order-start]').getAttribute('href'), /#menu$/, 'Order for pickup leads to the menu');
+      for (let i = 0; i < await items.count(); i++) assert.equal(await items.nth(i).locator('button[data-add]').count(), 1, `menu item ${i + 1} has an Add button`);
+      assert.ok(await page.locator('#menu .list button[data-add]').count() >= 15, 'desserts, coffee and waters can be added too');
       // rules
       const labels = await page.evaluate(actionLabels);
       const dups = labels.filter((t, i) => labels.indexOf(t) !== i);
@@ -124,31 +124,89 @@ for (const w of WIDTHS) {
     } finally { await ctx.close(); }
   });
 
-  test(`${w}px · a party order asks how many, alone, then offers the call`, async () => {
-    const { ctx, page, errors } = await open(w, SQUARE);
+  test(`${w}px · add to the order, review it, pick a time, then pay on Square`, async () => {
+    const o = await open(w, true), { ctx, page, errors } = o;
     try {
-      await page.locator('[data-order-start]').click();
-      await page.locator('#order [data-q="when"] button', { hasText: /party or event/i }).click();
+      const bar = page.locator('[data-cartbar]');
+      assert.equal(await bar.isVisible(), false, 'no order bar until something is added');
+      await page.locator('[data-key="steak"] button[data-add]').click();
+      await page.locator('[data-key="steak"] button[data-more]').click();
+      await page.locator('[data-key="pineapple"] button[data-add]').click();
+      await page.locator('[data-key="horchata"] button[data-add]').click();
+      assert.match(await page.locator('[data-key="steak"] [data-qty]').innerText(), /^2$/, 'the Steak tile shows 2');
+      await page.evaluate(() => scrollTo(0, 0)); await page.waitForTimeout(150); // the bar hides while the order itself is on screen
+      assert.ok(await bar.isVisible(), 'the order bar appears');
+      assert.match(await bar.innerText(), /\b4\b/, `the bar counts 4 items: "${await bar.innerText()}"`);
+      await bar.locator('a, button').first().click();
+      await page.waitForTimeout(150);
+      assert.deepEqual(await visibleQs(page), ['cart'], 'the order opens on the cart, one step at a time');
+      const cart = page.locator('#order [data-q="cart"]');
+      assert.match(await cart.innerText(), /steak[^\n]*2|2[^\n]*steak/i, 'cart lists Steak x2');
+      await cart.locator('[data-line="pineapple"] button[data-less]').click();
+      assert.doesNotMatch(await cart.innerText(), /pineapple/i, 'taking the pineapple out removes it');
+      assert.match(await cart.innerText(), /total[^.]*checkout/i, 'says the total is shown at checkout (no invented prices)');
+      await cart.locator('button[data-next]').click();
+      assert.deepEqual(await visibleQs(page), ['when'], 'then one question: when');
+      await page.locator('#order [data-q="when"] select').selectOption({ index: 1 });
+      await page.locator('#order [data-q="when"] button[data-next]').click();
+      assert.deepEqual(await visibleQs(page), ['who'], 'then one question: who is picking it up');
+      await page.locator('#order [data-q="who"] button[data-next]').click();
+      assert.deepEqual(await visibleQs(page), ['who'], 'cannot go on without a name and phone');
+      await page.locator('#order [data-q="who"] input[autocomplete="name"]').fill('Rosa Diaz');
+      await page.locator('#order [data-q="who"] input[type="tel"]').fill('7205550142');
+      await page.locator('#order [data-q="who"] button[data-next]').click();
+      assert.deepEqual(await visibleQs(page), ['pay'], 'then the review');
+      const review = await page.locator('#order [data-q="pay"]').innerText();
+      for (const t of [/steak/i, /horchata/i, /rosa/i, /square/i]) assert.match(review, t, `review shows ${t}`);
+      assert.doesNotMatch(review, /\$\s?\d/, 'no invented prices in the review');
+      assert.equal(await page.locator('#order input[autocomplete*="cc"], #order input[name*="card"]').count(), 0, 'we never ask for card details');
+      const nav = page.waitForRequest(r => r.url().startsWith(SQUARE), { timeout: 3000 });
+      await page.locator('#order [data-q="pay"] button[data-pay]').click();
+      await nav;
+      assert.equal(o.posted.length, 1, 'the cart was sent once');
+      const sent = o.posted[0];
+      assert.deepEqual(sent.items, [{ key: 'steak', qty: 2 }, { key: 'horchata', qty: 1 }], 'the cart sent is Steak x2 and horchata x1');
+      assert.equal(sent.name, 'Rosa Diaz'); assert.match(sent.phone, /7205550142/);
+      assert.ok(sent.pickup, 'a pickup time is sent');
+      assert.deepEqual(errors, [], 'no console errors');
+    } finally { await ctx.close(); }
+  });
+
+  test(`${w}px · an empty order says what to do, and a party order asks how many then offers the call`, async () => {
+    const { ctx, page, errors } = await open(w, true);
+    try {
+      await page.goto(page.url().replace(/#.*$/, '') + '#order');
+      await page.waitForTimeout(150);
+      const cart = page.locator('#order [data-q="cart"]');
+      assert.match(await cart.innerText(), /empty/i, 'an empty cart says so');
+      assert.equal(await cart.locator('button[data-next]').isEnabled(), false, 'cannot go on with nothing in it');
+      await page.locator('#order button[data-party]').click();
       assert.deepEqual(await visibleQs(page), ['people'], 'one question: how many people');
       await page.locator('#order [data-q="people"] input').fill('30');
       await page.locator('#order [data-q="people"] button[type=submit]').click();
       assert.deepEqual(await visibleQs(page), ['party'], 'then the party hand-off');
       const t = await page.locator('#order [data-q="party"]').innerText();
       assert.match(t, /\b30\b/, 'the hand-off names 30 people');
-      assert.ok(await page.locator('#order [data-q="party"] a[href="tel:+17202189808"], #order [data-q="party"] [data-call]').count() >= 1, 'it offers the call');
+      assert.ok(await page.locator('#order [data-q="party"] [data-call]').count() >= 1, 'it offers the call');
       assert.deepEqual(await page.evaluate(layoutFaults), [], 'no overlaps or sideways scroll');
       assert.deepEqual(errors, [], 'no console errors');
     } finally { await ctx.close(); }
   });
 
-  test(`${w}px · before the Square link exists, the hand-off says draft and still offers the call`, async () => {
-    const { ctx, page, errors } = await open(w);
+  test(`${w}px · before Square is connected, the last step says draft and still offers the call`, async () => {
+    const { ctx, page, errors } = await open(w, false);
     try {
-      await page.locator('[data-order-start]').click();
-      await page.locator('#order [data-q="when"] button', { hasText: /today, for pickup/i }).click();
-      const step = page.locator('#order [data-q="square"]');
+      await page.locator('[data-key="tinga"] button[data-add]').click();
+      await page.evaluate(() => scrollTo(0, 0)); await page.waitForTimeout(150);
+      await page.locator('[data-cartbar] a, [data-cartbar] button').first().click();
+      await page.locator('#order [data-q="cart"] button[data-next]').click();
+      await page.locator('#order [data-q="when"] button[data-next]').click();
+      await page.locator('#order [data-q="who"] input[autocomplete="name"]').fill('Sam');
+      await page.locator('#order [data-q="who"] input[type="tel"]').fill('7205550199');
+      await page.locator('#order [data-q="who"] button[data-next]').click();
+      const step = page.locator('#order [data-q="pay"]');
       assert.match(await step.innerText(), /draft/i, 'says it is a draft');
-      assert.equal(await step.locator('a[data-square]').count(), 0, 'no dead Square link');
+      assert.equal(await step.locator('button[data-pay]').count(), 0, 'no dead pay button');
       assert.ok(await step.locator('[data-call]').count() >= 1, 'offers the call instead');
       assert.deepEqual(errors, [], 'no console errors');
     } finally { await ctx.close(); }

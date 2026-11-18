@@ -25,22 +25,31 @@ The label shape is their board's: scooped corners and a soft rise in the middle 
 
 Refero references: Yelp menu list `aa22636c-19f3-4617-90d1-539f037d0659` for how the menu reads, Uber Eats store info `f38700d4-faff-4d0d-8ac2-383f6f5d93f8` for the address and hours rows, DoorDash store menu `87a97d65-2a42-4ec2-8be3-2cd02537d13e` for the tile grid, and Blue Apron `fb0d6839-6e16-4ab5-a7b9-715e784a33a8` for a two-colour landing with one strong button.
 
-## Ordering through Square
+## Ordering: our cart, Square's checkout (Tristan, 2026-11-17)
 
-They already ring up on Square. We never build a checkout. Orders and payment stay in their register.
+The Bunny Burritos cart is what sold them, so the site has a real cart. Payment still happens only on Square, and orders land on their register.
 
-- **Preferred:** Square Online ordering (free on Square's basic plan). Their register items show up there. We link the "Open the order page" button to it by setting `data-square="…"` on `<body>` in `clients/abuelitas/index.html`.
-- **Fallback:** Square checkout links (Payment Links) per item or per box, made in their Square dashboard.
-- Until we have a link, the order step says it is a draft and offers the call, so nothing on the page is broken.
-- Tristan does not need his own Square account. If he wants to click through the experience before the meeting, a free account with one test item is fine, with no real charges.
+1. **On the site** (`order.js`): every menu item has Add and a stepper, and an order bar counts the items. The order then asks one question at a time: the cart, when you'll pick it up, who's picking it up (name and mobile), then a review. No prices are shown. The cart says the total appears on Square's checkout page.
+2. **"Pay on Square"** sends the cart, pickup time, name and phone to `clients/abuelitas/server/checkout.mjs`. That is a small Node server (Hostinger Node hosting is fine). It asks Square's Checkout API for a payment link holding those catalog items with a PICKUP fulfilment, and returns the link. The browser goes to Square's page, the customer pays there, and the order shows up in their Square orders like any online sale.
+3. **Until it's live**, `<body data-checkout="">` stays empty and the last step says it's a draft and offers the call.
+
+**What we hold, and what we don't.** Sea of Grass registers one Square app. The owner taps "Connect Square" once and approves limited permissions (orders, checkout, read items) on Square's own page. Square gives us an access token. It is stored as an encrypted server secret, one per shop, never in the website code or the repo. The owner can revoke it from their Square dashboard any time. We never see their Square password, their bank details or any customer's card.
+
+**To go live:**
+- [ ] Prices for every item entered in their Square item library (Square shows them at checkout).
+- [ ] Register the Sea of Grass Square app (developer.squareup.com), and build the "Connect Square" OAuth step with token refresh.
+- [ ] Test `checkout.mjs` end to end in Square's sandbox. It is untested until then.
+- [ ] Map each menu key (`data-key` in `index.html`) to its Square item-variation id in `SQUARE_CATALOG`.
+- [ ] Deploy the server, then set `data-checkout` to its address.
+- [ ] Combo: needs a Square modifier (side: corn cup or nachos) before it can go in the cart. For now it is shown but can't be added.
 
 ## What we need from the owner
 
-- [ ] **Prices** for every item, or permission to leave prices off and let Square show them.
+- [ ] **Prices** for every item, entered in Square, which shows them at checkout.
 - [ ] **Hours**, including any day the bakery is closed.
 - [ ] **Photos:** the original files behind the menu-board pictures, or 20 minutes at the counter to shoot them. File names are already set in the page (`photos/ground-beef.webp` and so on).
 - [ ] **Logo:** the corn mascot and the "Abuelitas Empanadas" lettering on the board, as the original file if they have it.
-- [ ] **Square:** their Square Online ordering link, or adding Tristan as a team member so he can turn it on and copy the link.
+- [ ] **Square:** tap "Connect Square" once we send the link, and enter prices in their Square item library.
 - [ ] **Domain login:** orderabuelitasempanadas.com at NameBright (it is parked on "Coming Soon" now). Ask whether they also own a shorter name.
 - [ ] Check the copy: name spellings, "Dulce con leche", "Tinga, chicken y chipotle", and the Saturday chocolate.
 - [ ] Whether Colorado Dumplings joins (the free month per store that signs).
