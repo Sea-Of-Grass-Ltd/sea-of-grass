@@ -324,3 +324,28 @@ html, body { overflow-x: clip; }
   .arch .drink { width: 16%; bottom: 25%; } .arch .d1 { left: 27%; } .arch .d2 { right: 27%; }
   .arch .emp { width: 33%; bottom: 11%; } .steam { bottom: 41%; width: 13%; }
 }
+/* papel picado: hangs under the location band, sways live (picado.js) */
+.picado { margin: -14px calc(50% - 50vw) 0; height: 62px; overflow: hidden; }
+@media (min-width: 600px) { .picado { height: 82px; margin-bottom: -6px; } }
+@media (min-width: 860px) { .picado { margin-top: -22px; } }
+.picado svg { display: block; margin: 0 auto; }
+.picado .cord { fill: none; stroke: var(--maroon); stroke-width: 1.5; }
+.picado .flag { animation: sway 3.4s ease-in-out infinite alternate; }
+@keyframes sway { from { transform: rotate(-4deg) skewX(-2deg); } to { transform: rotate(4deg) skewX(2deg); } }
+/* sign-painter glints: four placed sparkles that catch the light one after another */
+h1 { position: relative; }
+.glints { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
+.glints i { position: absolute; width: clamp(14px, 2.6vw, 34px); aspect-ratio: 1; transform: translate(-50%, -50%) scale(0);
+  background: #fff8e8; clip-path: polygon(50% 0, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0 50%, 42% 42%);
+  animation: glint 5.2s ease-in-out infinite; }
+.glints .g1 { left: 31.5%; top: 8%; animation-delay: .2s; }
+.glints .g2 { left: 69%; top: 6%; animation-delay: 1.5s; }
+.glints .g3 { left: 41.5%; top: 52%; animation-delay: 2.8s; }
+.glints .g4 { left: 93%; top: 86%; animation-delay: 4s; }
+@keyframes glint { 0%, 74%, 100% { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 0; } 82% { transform: translate(-50%, -50%) scale(1) rotate(45deg); opacity: 1; } 90% { transform: translate(-50%, -50%) scale(.2) rotate(90deg); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .picado .flag, .glints i { animation: none; } .glints { display: none; } }
+/* desktop: a slightly flatter arch keeps the buttons on the first screen */
+@media (min-width: 860px) { .arch { aspect-ratio: 2.35 / 1; } }
+.glints .g3 { left: 43.4%; top: 46%; }
+.glints .g4 { left: 96.4%; top: 54%; }
+@media (min-width: 860px) { h1 { margin-top: 0; } .arch { margin-top: 14px; } .hero-row { padding-top: 18px; } }
