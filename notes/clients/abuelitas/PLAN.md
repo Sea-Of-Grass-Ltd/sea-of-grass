@@ -15,7 +15,13 @@ First paying client. Owner said "yes, ASAP" to the $50/month plan on 2026-11-17.
 
 The bold idea is the board itself. The page wears the same black labels with a gold line that people already see over the counter. There are no effects on the page.
 
-Palette: black #111, white, the gold line #d9b44a used for lines only (never a button) and a jamaica red #b3122e for hover and focus. Type: Anton for the name and the section bands, and Delius for the item names, which is close to the board's hand lettering.
+Palette (taken from their shop): black #111 and the gold line #d9b44a from the board (gold is for lines only, never a button), the yellow of their wall #f1d36e behind the first screen, the yellow-to-orange of their dessert board (#f6c443 to #ef8f3a) behind the desserts, and a jamaica red #b3122e for hover and focus. Type: Anton for the name and the section bands, Delius for the item names, and Delius Swash Caps for section titles. Both Delius faces are close to the board's hand lettering.
+
+The label shape is their board's: scooped corners and a soft rise in the middle of the top and bottom edges, with a gold line inset. `frame.js` draws it at each box's real size, so the curves never stretch.
+
+**Photos (2026-11-17):** the twelve empanada pictures are **stand-ins**. They come from one Nano Banana sheet made from Tristan's photos of the board (`notes/clients/abuelitas/src/empanada-sheet-nb.png`), cut out to `clients/abuelitas/photos/*.webp`. The draft strip says so. Replace them with real photos before launch and never present them as the bakery's own.
+
+**Mascot:** the corn chef on the board is too small in our photos to redraw faithfully. We need a clear photo or the original file before making a clean vector, and Tristan sees the vector before it goes on the site.
 
 Refero references: Yelp menu list `aa22636c-19f3-4617-90d1-539f037d0659` for how the menu reads, Uber Eats store info `f38700d4-faff-4d0d-8ac2-383f6f5d93f8` for the address and hours rows, DoorDash store menu `87a97d65-2a42-4ec2-8be3-2cd02537d13e` for the tile grid, and Blue Apron `fb0d6839-6e16-4ab5-a7b9-715e784a33a8` for a two-colour landing with one strong button.
 

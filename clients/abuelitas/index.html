@@ -8,57 +8,58 @@
 <meta name="robots" content="noindex">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Delius&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Delius&family=Delius+Swash+Caps&display=swap">
 <link rel="stylesheet" href="style.css">
 </head>
 <!-- data-square: the bakery's Square Online ordering link, once the owner sends it (see notes/clients/abuelitas/PLAN.md) -->
 <body data-square="">
 
-<p class="draft">Draft for Abuelita's · hours, photos and the Square link are still to come</p>
+<p class="draft">Draft for Abuelita's · the empanada photos are stand-ins until we shoot yours, and hours and the Square link are still to come</p>
 
 <main>
-  <section class="hero">
-    <div class="label big">
+  <div class="wall"><section class="hero">
+    <div class="frame big">
       <p class="kick">Old Town Marketplace · Longmont</p>
       <h1>Abuelita's Empanadas</h1>
+      <div class="tray" aria-hidden="true"><img src="photos/spicy-chicken.webp" alt=""><img src="photos/steak.webp" alt=""><img src="photos/dulce-con-leche.webp" alt=""></div>
     </div>
     <p class="lede">Savory and sweet empanadas, fruit tarts, coffee and agua fresca, at the Old Town Marketplace on Main Street in Longmont.</p>
     <div class="acts">
       <a class="btn" href="#order" data-order-start>Order for pickup</a>
       <a class="btn line" href="tel:+17202189808">Call 720-218-9808</a>
     </div>
-  </section>
+  </section></div>
 
   <section class="menu" id="menu" aria-labelledby="menu-h">
     <h2 id="menu-h">menu</h2>
 
     <h3>Savory empanadas</h3>
     <ul class="tiles">
-      <li data-item><div class="label"><h4>Ground Beef</h4></div><div class="photo" data-photo="photos/ground-beef.webp" role="img" aria-label="Photo of the ground beef empanada, coming soon"></div></li>
-      <li data-item><div class="label"><h4>Steak</h4></div><div class="photo" data-photo="photos/steak.webp" role="img" aria-label="Photo of the steak empanada, coming soon"></div></li>
-      <li data-item><div class="label"><h4>Chile Relleno</h4></div><div class="photo" data-photo="photos/chile-relleno.webp" role="img" aria-label="Photo of the chile relleno empanada, coming soon"></div></li>
-      <li data-item><div class="label"><h4>Ham &amp; Cheese</h4></div><div class="photo" data-photo="photos/ham-cheese.webp" role="img" aria-label="Photo of the ham and cheese empanada, coming soon"></div></li>
-      <li data-item><div class="label"><h4>Spicy Chicken</h4></div><div class="photo" data-photo="photos/spicy-chicken.webp" role="img" aria-label="Photo of the spicy chicken empanada, coming soon"></div></li>
-      <li data-item><div class="label"><h4>Spinach &amp; Cheese</h4></div><div class="photo" data-photo="photos/spinach-cheese.webp" role="img" aria-label="Photo of the spinach and cheese empanada, coming soon"></div></li>
-      <li data-item><div class="label"><h4>Chicken Vegetable</h4></div><div class="photo" data-photo="photos/chicken-vegetable.webp" role="img" aria-label="Photo of the chicken vegetable empanada, coming soon"></div></li>
-      <li data-item><div class="label"><h4>Tinga</h4><span class="sub">chicken y chipotle</span></div><div class="photo" data-photo="photos/tinga.webp" role="img" aria-label="Photo of the tinga empanada, coming soon"></div></li>
+      <li class="frame" data-item><h4>Ground Beef</h4><img class="photo" src="photos/ground-beef.webp" width="529" height="232" alt="Ground Beef empanada" loading="lazy" decoding="async"></li>
+      <li class="frame" data-item><h4>Steak</h4><img class="photo" src="photos/steak.webp" width="513" height="328" alt="Steak empanada" loading="lazy" decoding="async"></li>
+      <li class="frame" data-item><h4>Chile Relleno</h4><img class="photo" src="photos/chile-relleno.webp" width="474" height="280" alt="Chile Relleno empanada" loading="lazy" decoding="async"></li>
+      <li class="frame" data-item><h4>Ham &amp; Cheese</h4><img class="photo" src="photos/ham-cheese.webp" width="410" height="356" alt="Ham and Cheese empanada" loading="lazy" decoding="async"></li>
+      <li class="frame" data-item><h4>Spicy Chicken</h4><img class="photo" src="photos/spicy-chicken.webp" width="541" height="266" alt="Spicy Chicken empanada" loading="lazy" decoding="async"></li>
+      <li class="frame" data-item><h4>Spinach &amp; Cheese</h4><img class="photo" src="photos/spinach-cheese.webp" width="423" height="377" alt="Spinach and Cheese empanada" loading="lazy" decoding="async"></li>
+      <li class="frame" data-item><h4>Chicken Vegetable</h4><img class="photo" src="photos/chicken-vegetable.webp" width="546" height="216" alt="Chicken Vegetable empanada" loading="lazy" decoding="async"></li>
+      <li class="frame" data-item><h4>Tinga</h4><span class="sub">chicken y chipotle</span><img class="photo" src="photos/tinga.webp" width="510" height="292" alt="Tinga empanada" loading="lazy" decoding="async"></li>
     </ul>
 
     <h3>Sweet empanadas</h3>
     <ul class="tiles">
-      <li data-item><div class="label"><h4>Sweet Potato</h4></div><div class="photo" data-photo="photos/sweet-potato.webp" role="img" aria-label="Photo of the sweet potato empanada, coming soon"></div></li>
-      <li data-item><div class="label"><h4>Pineapple</h4></div><div class="photo" data-photo="photos/pineapple.webp" role="img" aria-label="Photo of the pineapple empanada, coming soon"></div></li>
-      <li data-item><div class="label"><h4>Dulce con leche</h4><span class="sub">caramel</span></div><div class="photo" data-photo="photos/dulce-con-leche.webp" role="img" aria-label="Photo of the dulce con leche empanada, coming soon"></div></li>
-      <li data-item><div class="label"><h4>Apple</h4></div><div class="photo" data-photo="photos/apple.webp" role="img" aria-label="Photo of the apple empanada, coming soon"></div></li>
+      <li class="frame" data-item><h4>Sweet Potato</h4><img class="photo" src="photos/sweet-potato.webp" width="534" height="264" alt="Sweet Potato empanada" loading="lazy" decoding="async"></li>
+      <li class="frame" data-item><h4>Pineapple</h4><img class="photo" src="photos/pineapple.webp" width="516" height="282" alt="Pineapple empanada" loading="lazy" decoding="async"></li>
+      <li class="frame" data-item><h4>Dulce con leche</h4><span class="sub">caramel</span><img class="photo" src="photos/dulce-con-leche.webp" width="498" height="299" alt="Dulce con leche empanada" loading="lazy" decoding="async"></li>
+      <li class="frame" data-item><h4>Apple</h4><img class="photo" src="photos/apple.webp" width="520" height="292" alt="Apple empanada" loading="lazy" decoding="async"></li>
     </ul>
 
-    <div class="combo label">
+    <div class="combo frame">
       <h3>Combo</h3>
       <p>Choose any savory empanada and add one side: a regular corn cup or nachos.</p>
     </div>
 
     <div class="cols">
-      <div>
+      <div class="sweets">
         <h3>Desserts &amp; appetizers</h3>
         <ul class="list">
           <li>Lemon tart</li>
@@ -146,6 +147,7 @@
   <a href="https://seaofgrass.studio" rel="noopener">Site by Sea of Grass</a>
 </footer>
 
+<script src="frame.js"></script>
 <script src="order.js"></script>
 </body>
 </html>
