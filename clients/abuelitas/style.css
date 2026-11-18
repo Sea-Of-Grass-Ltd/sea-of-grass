@@ -170,3 +170,22 @@ body.has-cart { padding-bottom: 84px; }
 
 footer { border-top: 1px solid var(--line); padding-top: 18px; padding-bottom: 32px; font-size: 14px; color: var(--soft); display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: space-between; }
 footer a { color: var(--soft); }
+
+/* ---- their own pieces, brought back sparingly ---- */
+/* favourites on their counter board: a black strip, gold-framed labels (frame.js draws the frame) */
+.board { background: #141414; box-shadow: 0 0 0 100vmax #141414; clip-path: inset(0 -100vmax); padding: 8px 0 28px; margin: 14px 0 8px; color: var(--cream); }
+.board h3 { color: var(--cream); margin-top: 22px; }
+.favs .card.frame { background: no-repeat center / 100% 100%; box-shadow: none; padding: 26px 22px 24px; border-radius: 0; color: var(--cream); }
+.favs .card.frame .pic { background: transparent; }
+.favs .card.frame h4 { color: var(--cream); font-size: 19px; text-align: center; }
+.favs .card.frame .qty { padding-top: 14px; }
+@media (hover: hover) { .favs .card.frame:hover { transform: none; box-shadow: none; } }
+/* desserts on their dessert board: one flat orange panel */
+.sweetboard { background: #f39a3b; border-radius: 22px; padding: 6px 14px 16px; margin-top: 30px; }
+.sweetboard h3 { color: #141414; font: 400 30px/1.1 var(--slab); text-transform: uppercase; letter-spacing: .02em; margin-top: 22px; }
+@media (min-width: 760px) { .sweetboard { padding: 10px 24px 24px; } }
+/* coffee beside their sign's cup illustration */
+.coffee-row { display: grid; gap: 4px; align-items: center; }
+.cup-art { width: min(70%, 300px); height: auto; margin: 24px auto -10px; }
+@media (min-width: 760px) { .coffee-row { grid-template-columns: 300px 1fr; gap: 36px; } .cup-art { width: 100%; margin: 30px 0 0; } }
+.band.break { margin-top: 8px; }

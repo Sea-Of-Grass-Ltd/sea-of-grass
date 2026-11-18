@@ -9,7 +9,7 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Figtree:wght@400;500;600;700;800&family=Lobster+Two:ital,wght@1,700&display=swap">
-<link rel="stylesheet" href="style.css?v=b489048d">
+<link rel="stylesheet" href="style.css?v=e73ad5ab">
 </head>
 <!-- data-checkout: the shop server's /checkout?shop=abuelitas address once it is hosted; empty keeps the last step in draft -->
 <body data-checkout="https://shop.seaofgrass.studio/checkout?shop=abuelitas">
@@ -44,12 +44,14 @@
 
     <nav class="chips" data-sticky aria-label="Menu sections"><a href="#s-fav">Favorites</a><a href="#s-savory">Savory</a><a href="#s-sweet">Sweet</a><a href="#s-desserts">Desserts</a><a href="#s-snacks">Appetizers</a><a href="#s-drinks">Drinks</a><a href="#s-coffee">Coffee</a></nav>
 
+    <div class="board">
     <h3 id="s-fav">Our favorites</h3>
     <ul class="tiles favs">
-      <li class="card" data-item data-key="chile-relleno" data-name="Chile Relleno" data-fav><div class="pic"><img class="photo" src="photos/chile-relleno.webp" width="474" height="263" alt="Chile Relleno empanada" loading="lazy" decoding="async"></div><h4>Chile Relleno</h4></li>
-      <li class="card" data-item data-key="horchata" data-name="Agua de horchata" data-fav><div class="pic"><img class="photo" src="photos/horchata.webp" width="266" height="481" alt="Agua de horchata" loading="lazy" decoding="async"></div><h4>Agua de horchata</h4></li>
-      <li class="card" data-item data-key="jamaica" data-name="Agua de jamaica" data-fav><div class="pic"><img class="photo" src="photos/jamaica.webp" width="266" height="478" alt="Agua de jamaica" loading="lazy" decoding="async"></div><h4>Agua de jamaica</h4></li>
+      <li class="card frame" data-item data-key="chile-relleno" data-name="Chile Relleno" data-fav><div class="pic"><img class="photo" src="photos/chile-relleno.webp" width="474" height="263" alt="Chile Relleno empanada" loading="lazy" decoding="async"></div><h4>Chile Relleno</h4></li>
+      <li class="card frame" data-item data-key="horchata" data-name="Agua de horchata" data-fav><div class="pic"><img class="photo" src="photos/horchata.webp" width="266" height="481" alt="Agua de horchata" loading="lazy" decoding="async"></div><h4>Agua de horchata</h4></li>
+      <li class="card frame" data-item data-key="jamaica" data-name="Agua de jamaica" data-fav><div class="pic"><img class="photo" src="photos/jamaica.webp" width="266" height="478" alt="Agua de jamaica" loading="lazy" decoding="async"></div><h4>Agua de jamaica</h4></li>
     </ul>
+    </div>
 
     <h3 id="s-savory">Savory empanadas</h3>
     <ul class="tiles">
@@ -81,6 +83,7 @@
       <li class="card" data-item data-key="apple" data-name="Apple"><div class="pic"><img class="photo" src="photos/apple.webp" width="518" height="274" alt="Apple empanada" loading="lazy" decoding="async"></div><h4>Apple</h4></li>
     </ul>
 
+    <div class="sweetboard">
     <h3 id="s-desserts">Desserts</h3>
     <ul class="tiles">
       <li class="card" data-item data-key="lemon-tart" data-name="Lemon tart"><div class="pic"><img class="photo" src="photos/lemon-tart.webp" width="497" height="369" alt="Lemon tart" loading="lazy" decoding="async"></div><h4>Lemon tart</h4></li>
@@ -91,12 +94,16 @@
       <li class="card" data-item data-key="blueberry-strawberry-tart" data-name="Blueberry strawberry tart"><div class="pic"><img class="photo" src="photos/blueberry-strawberry-tart.webp" width="468" height="363" alt="Blueberry strawberry tart" loading="lazy" decoding="async"></div><h4>Blueberry strawberry tart</h4></li>
       <li class="card" data-item data-key="cookies" data-name="Cookies"><div class="pic"><img class="photo" src="photos/cookies.webp" width="482" height="370" alt="Cookies" loading="lazy" decoding="async"></div><h4>Cookies</h4><span class="sub">polvorones</span></li>
     </ul>
+    </div>
 
     <h3 id="s-drinks">Aguas frescas &amp; chocolate</h3>
     <ul class="tiles">
       <li class="card" data-item data-key="abuelitas-chocolate" data-name="Abuelita's chocolate"><div class="pic"><img class="photo" src="photos/abuelitas-chocolate.webp" width="419" height="423" alt="Abuelita's chocolate" loading="lazy" decoding="async"></div><h4>Abuelita's chocolate</h4><span class="sub">Saturdays only</span></li>
     </ul>
 
+    <div class="coffee-row">
+    <img class="cup-art" src="art/cup-empanadas.webp" width="1200" height="797" alt="" aria-hidden="true" loading="lazy" decoding="async">
+    <div>
     <h3 id="s-coffee">Coffee &amp; more</h3>
     <p class="hint">Coffee is on in the mornings.</p>
     <ul class="list">
@@ -107,6 +114,8 @@
       <li data-key="french-press-cafe" data-name="French press café">French press café</li>
       <li data-key="coke-products" data-name="Coke products">Coke products</li>
     </ul>
+    </div>
+    </div>
   </section>
 
   <section class="order" id="order" aria-labelledby="order-h">
@@ -191,12 +200,14 @@
 
 <div class="cartbar" data-cartbar hidden><a class="btn" href="#order" data-open-cart>Review your order <span class="count" data-count>0</span></a></div>
 
+<div class="band break" aria-hidden="true"></div>
 <footer>
   <p>Abuelita's Empanadas, a sister shop to Colorado Dumplings in the same marketplace.</p>
   <a href="https://seaofgrass.studio" rel="noopener">Site by Sea of Grass</a>
 </footer>
 
-<script src="weave.js?v=b489048d"></script>
-<script src="order.js?v=b489048d"></script>
+<script src="frame.js?v=e73ad5ab"></script>
+<script src="weave.js?v=e73ad5ab"></script>
+<script src="order.js?v=e73ad5ab"></script>
 </body>
 </html>
