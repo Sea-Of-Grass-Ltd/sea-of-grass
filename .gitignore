@@ -15,3 +15,6 @@ tools/og/cap/
 .env
 **/.env
 clients/*/server/data/
+
+# built client previews (server/build-preview.py)
+clients/*/server/preview/

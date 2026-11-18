@@ -1,7 +1,7 @@
 {
   "abuelitas": {
     "name": "Abuelita's Empanadas",
-    "origins": ["http://localhost:8742", "https://orderabuelitasempanadas.com", "https://www.orderabuelitasempanadas.com"],
+    "origins": ["http://localhost:8742", "https://shop.seaofgrass.studio", "https://orderabuelitasempanadas.com", "https://www.orderabuelitasempanadas.com"],
     "menu": {
       "ground-beef": "Ground Beef", "steak": "Steak", "chile-relleno": "Chile Relleno", "ham-cheese": "Ham & Cheese",
       "spicy-chicken": "Spicy Chicken", "spinach-cheese": "Spinach & Cheese", "chicken-vegetable": "Chicken Vegetable", "tinga": "Tinga",

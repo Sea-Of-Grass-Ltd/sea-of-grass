@@ -160,6 +160,23 @@ function status(req, res, q) {
   res.end(JSON.stringify(rec ? { connected: true, sandbox: SANDBOX, location: rec.location_name, matched: Object.keys(rec.map).length, missing: rec.missing, expires_at: rec.expires_at, connected_at: rec.connected_at } : { connected: false }, null, 2));
 }
 
+// Unlisted client previews: /preview/<shop>/... serves the static draft from ./preview/<shop>/, never indexed.
+const PREVIEW_TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg' };
+function preview(req, res, pathname) {
+  const parts = pathname.split('/').filter(Boolean).slice(1);
+  if (!parts.length || parts.some(p => p.startsWith('.') || p.includes('\\'))) { res.writeHead(404); return res.end(); }
+  if (parts.length === 1 && !pathname.endsWith('/')) { res.writeHead(301, { location: pathname + '/' }); return res.end(); }
+  const root = path.join(path.dirname(fileURLToPath(import.meta.url)), 'preview');
+  let file = path.join(root, ...parts);
+  if (pathname.endsWith('/')) file = path.join(file, 'index.html');
+  if (!file.startsWith(root + path.sep)) { res.writeHead(404); return res.end(); }
+  fs.readFile(file, (err, buf) => {
+    if (err) { res.writeHead(404, { 'x-robots-tag': 'noindex, nofollow' }); return res.end(); }
+    res.writeHead(200, { 'content-type': PREVIEW_TYPES[path.extname(file)] || 'application/octet-stream', 'x-robots-tag': 'noindex, nofollow', 'cache-control': 'no-cache' });
+    res.end(buf);
+  });
+}
+
 http.createServer(async (req, res) => {
   const u = new URL(req.url, 'http://x');
   try {
@@ -167,6 +184,8 @@ http.createServer(async (req, res) => {
     if (u.pathname === '/connected') return await connected(req, res, u.searchParams);
     if (u.pathname === '/checkout') return await checkout(req, res, u.searchParams);
     if (u.pathname === '/status') return status(req, res, u.searchParams);
+    if (u.pathname.startsWith('/preview/')) return preview(req, res, u.pathname);
+    if (u.pathname === '/robots.txt') { res.writeHead(200, { 'content-type': 'text/plain' }); return res.end('User-agent: *\nDisallow: /\n'); }
     if (u.pathname === '/') { res.writeHead(200, { 'content-type': 'text/plain' }); return res.end('Sea of Grass shop server'); }
     res.writeHead(404); res.end();
   } catch (e) { console.error(e.message); if (!res.headersSent) page(res, 500, 'Something went wrong', '<h1>Something went wrong on our side.</h1><p>Please try again in a minute, or call Sea of Grass.</p>'); }
