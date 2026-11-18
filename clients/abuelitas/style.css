@@ -197,3 +197,47 @@ footer a { color: var(--soft); }
 /* "Abuelita knows best": the favourites heading in their own script */
 .board h3.knows { font: italic 700 clamp(34px, 8vw, 48px)/1.05 var(--script); color: var(--cream); text-align: center; margin: 26px 0 6px; }
 .knows-sub { text-align: center; color: #d9cbb3; margin: 0 auto 18px; max-width: 30em; }
+
+/* ---- v7 (Fable round 3): one ground, inset boards, one heading system, no shadows ---- */
+:root { --page: #f7efdf; }
+body { background: var(--cream); }
+/* section heads: slab capitals everywhere; the script appears only in the name and "Abuelita knows best" */
+h3 { font: 400 26px/1.1 var(--slab); text-transform: uppercase; letter-spacing: .02em; color: var(--maroon); margin: 40px 0 16px; }
+.sweetboard h3 { color: #141414; font-size: 30px; }
+.combo h3 { color: var(--cream); }
+.visit h3 { color: var(--cream); font-size: 22px; }
+/* cards: crisp maroon outline on cream, no soft shadows */
+.card { border: 2px solid var(--maroon); box-shadow: none; }
+@media (hover: hover) { .card:hover { box-shadow: none; transform: translateY(-2px); } }
+.list { border: 2px solid var(--maroon); box-shadow: none; }
+.order .step { border: 2px solid var(--maroon); box-shadow: none; }
+.add.plus, .pic .stepper { box-shadow: none; }
+/* no lone last card: rows are centred */
+.tiles { display: flex; flex-wrap: wrap; justify-content: center; }
+.tiles > li { flex: 0 0 calc(50% - 6px); }
+@media (min-width: 760px) { .tiles > li { flex-basis: calc(25% - 14px); } .favs > li { flex-basis: calc(33.333% - 12px); } }
+@media (max-width: 759px) { .favs li:first-child { flex-basis: 100%; } }
+/* the three boards are insets on the cream, same radius, each with the woven edge along the top */
+.board, .sweetboard, .visit-card { position: relative; overflow: hidden; border-radius: 22px; }
+.board { box-shadow: none; clip-path: none; padding: 18px 16px 26px; margin: 18px 0 8px; }
+@media (min-width: 760px) { .board { padding: 22px 28px 32px; } }
+.board::before, .sweetboard::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 10px; background: var(--weave) repeat-x var(--weave-x, 0px) center / auto 30px; }
+.visit-card::before { background-position: var(--weave-x, 0px) center; }
+.sweetboard { padding-top: 16px; }
+.favs .card.frame { border: 0; }
+/* the chip bar: solid cream, a thin maroon rule, no blur */
+.chips { background: var(--cream); backdrop-filter: none; border-bottom: 1px solid var(--maroon); }
+.chips a { box-shadow: none; border: 1.5px solid var(--maroon); color: var(--maroon); background: transparent; }
+.chips a:hover { background: var(--maroon); color: var(--cream); }
+/* one primary button colour: their red, checkout included */
+.btn { background: var(--red); border-color: var(--red); color: var(--paper); }
+.btn:hover { background: #b93322; border-color: #b93322; }
+.btn.line { background: transparent; color: var(--maroon); border-color: var(--maroon); }
+.btn.line:hover { background: var(--maroon); color: var(--cream); }
+.cartbar { background: var(--cream); backdrop-filter: none; box-shadow: none; border-top: 1px solid var(--maroon); }
+footer { border-top-color: var(--maroon); }
+.board h3.knows { text-transform: none; letter-spacing: 0; font: italic 700 clamp(34px, 8vw, 50px)/1.05 var(--script); color: var(--cream); }
+.list .es { white-space: nowrap; font-size: 13px; font-weight: 500; color: var(--soft); margin-left: 10px; }
+.list li { justify-content: flex-start; }
+.list li > .qty { margin-left: auto; }
+.chips { border-bottom: 0; box-shadow: 0 1px 0 var(--maroon); clip-path: inset(0 -100vmax -1px); }
