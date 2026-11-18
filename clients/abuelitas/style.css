@@ -372,3 +372,13 @@ h1 { position: relative; }
   .arch .drink { width: 12.5%; bottom: 25%; } .arch .d1 { left: 25%; } .arch .d2 { right: 25%; }
   .arch .emp { width: 30%; bottom: 18%; } .steam { bottom: 56%; width: 12%; }
 }
+/* hero v3 (Tristan: render them together once for the light, then separately). The trio was rendered into the
+   kitchen photo itself, then lifted out against the empty plate: front = counter + the three, in one light.
+   The wall drifts behind; steam rides the picture so it stays over the empanada at every width. */
+.plate .front { position: absolute; inset: 0; width: 100%; height: 100%; filter: brightness(.9); }
+.plate .wall { filter: brightness(.6) saturate(.9); }
+.plate .steam { left: 50%; bottom: 49%; width: 9%; transform: translateX(-50%); z-index: 2; }
+/* show the glasses' tops on the wide arch: drop the picture a little so less of the top is cropped */
+@media (min-width: 860px) { .plate { bottom: -13%; } }
+.plate .front { filter: brightness(.85); }
+.plate .wall { filter: brightness(.68) saturate(.92); }
