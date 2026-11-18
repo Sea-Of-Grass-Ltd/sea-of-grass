@@ -452,3 +452,41 @@ h3 { margin: 40px 0 12px; }
 .cup-steam path { stroke-width: 22; stroke-dasharray: .55 1.6; stroke-dashoffset: .55; }
 .cup-steam path:nth-child(2), .cup-steam path:nth-child(3) { stroke-width: 15; }
 @keyframes cupsteam { 0% { stroke-dashoffset: .55; opacity: 0; } 15% { opacity: 1; } 70% { opacity: 1; } 100% { stroke-dashoffset: -1.05; opacity: 0; } }
+
+/* ---- phone pass (Tristan: "formatted for mobile just as cleanly") ---- */
+/* the photo's soft shadow was clipped square by its frame and read as a pale box */
+.tiles .card:not(.frame) .pic { overflow: visible; }
+/* tap targets: 44px */
+.chips a { min-height: 44px; display: inline-flex; align-items: center; }
+.order .link, .order a.link, .visit .link, [data-party-start], .order .back { min-height: 44px; display: inline-flex; align-items: center; }
+@media (max-width: 759px) {
+  /* chips: start on the page's 16px edge, end with breathing room */
+  .chips { padding-left: 16px; padding-right: 16px; scroll-padding-inline: 16px; }
+  .chips::after { content: ''; flex: 0 0 4px; }
+  /* no orphans: a lone last tile becomes one wide row card, photo left, name right */
+  .tiles > li:not([data-fav]):last-child:nth-child(odd) { flex-basis: 100%; }
+  .tiles > li:not([data-fav]):last-child:nth-child(odd) .card, .tiles > li.card:not([data-fav]):last-child:nth-child(odd) { flex-direction: row; align-items: center; gap: 12px; }
+  .tiles > li:not([data-fav]):last-child:nth-child(odd) .pic { flex: 0 0 calc(50% - 6px); }
+  .tiles > li:not([data-fav]):last-child:nth-child(odd) h4, .tiles > li:not([data-fav]):last-child:nth-child(odd) .sub { text-align: left; margin-left: 0; }
+  /* favourites: the wide chile relleno card a little shorter */
+  .favs li:first-child .pic { height: 150px; }
+  .favs .card.frame { padding: 22px 18px 20px; }
+  .favs .card.frame h4 { font-size: 17px; }
+  /* section heads and hint on the same centre line, even gaps */
+  .menu > h2 { padding-top: 28px; }
+  .board h3.knows { margin-top: 18px; }
+  .lede { font-size: 16px; }
+}
+@media (max-width: 759px) {
+  .tiles > li.card:not([data-fav]):last-child:nth-child(odd) { display: grid; grid-template-columns: calc(50% - 6px) 1fr; grid-template-rows: 1fr auto 1fr; column-gap: 12px; align-items: end; }
+  .tiles > li.card:not([data-fav]):last-child:nth-child(odd) .pic { grid-row: 1 / 4; }
+  .tiles > li.card:not([data-fav]):last-child:nth-child(odd) h4 { grid-column: 2; grid-row: 1; align-self: end; }
+  .tiles > li.card:not([data-fav]):last-child:nth-child(odd) .sub { grid-column: 2; grid-row: 2; align-self: start; }
+}
+@media (max-width: 759px) {
+  .tiles > li.card:not([data-fav]):last-child:nth-child(odd) { grid-template-rows: 1fr auto auto 1fr; row-gap: 2px; }
+  .tiles > li.card:not([data-fav]):last-child:nth-child(odd) .pic { grid-row: 1 / 5; }
+  .tiles > li.card:not([data-fav]):last-child:nth-child(odd) h4 { grid-row: 2; margin: 0; }
+  .tiles > li.card:not([data-fav]):last-child:nth-child(odd) .sub { grid-row: 3; margin: 0; line-height: 1.35; }
+}
+footer a { display: inline-flex; align-items: center; min-height: 44px; }
