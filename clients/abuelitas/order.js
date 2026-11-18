@@ -24,7 +24,7 @@
 
   // controls on every menu item: Add, then a little stepper
   document.querySelectorAll('#menu [data-key]').forEach(item => {
-    const k = item.dataset.key, n = names[k];
+    const k = item.dataset.key, n = names[k] + (item.hasAttribute('data-fav') ? ', a favorite' : '');
     const wrap = el('div', 'qty');
     const add = btn('Add', ' ' + n, 'data-add', 'add');
     const stepper = el('div', 'stepper'); stepper.hidden = true;

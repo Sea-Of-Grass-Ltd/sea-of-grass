@@ -8,7 +8,7 @@
 <meta name="robots" content="noindex">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Cherry+Swash:wght@400;700&family=Figtree:wght@400;600;700&family=Lobster+Two:ital,wght@1,700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Figtree:wght@400;600;700&family=Lobster+Two:ital,wght@1,700&display=swap">
 <link rel="stylesheet" href="style.css">
 </head>
 <!-- data-checkout: the shop server's /checkout?shop=abuelitas address once it is hosted; empty keeps the last step in draft -->
@@ -16,93 +16,94 @@
 
 <p class="draft">Draft for Abuelita's · the empanada photos are stand-ins until we shoot yours, hours are still to come, and checkout runs in Square&rsquo;s test mode with sample prices</p>
 
-<header>
-  <section class="hero">
-    <div class="band" aria-hidden="true"></div>
-    <div class="hero-in">
+<header class="hero">
+  <div class="hero-in">
+    <div class="hero-copy">
       <h1><span class="script">Abuelita&rsquo;s</span> <span class="caps">Empanadas</span></h1>
-      <p class="coffee">Coffee Bar</p>
-      <div class="art" aria-hidden="true">
-        <img src="art/cup-empanadas.webp" alt="" width="1200" height="797">
-      </div>
-      <p class="lede">Savory and sweet empanadas, fruit tarts and good coffee, inside the Old Town Marketplace at 332 Main Street in Longmont.</p>
+      <p class="lede">Savory and sweet empanadas with fresh agua de horchata and jamaica, and coffee in the mornings, at the Old Town Marketplace in Longmont.</p>
       <div class="acts">
         <a class="btn" href="#menu" data-order-start>Order for pickup</a>
         <a class="btn line" href="tel:+17202189808">Call 720-218-9808</a>
       </div>
     </div>
-    <div class="band" aria-hidden="true"></div>
-  </section>
+    <div class="hero-food" aria-hidden="true">
+      <img class="drink d1" src="photos/horchata.webp" alt="">
+      <img class="drink d2" src="photos/jamaica.webp" alt="">
+      <img class="emp" src="photos/chile-relleno.webp" alt="">
+      <svg class="steam" viewBox="0 0 120 80"><path d="M34 78c-9-12 11-20 0-36s9-22 2-40"/><path d="M60 78c-9-12 11-20 0-36s9-22 2-40"/><path d="M86 78c-9-12 11-20 0-36s9-22 2-40"/></svg>
+    </div>
+  </div>
+  <div class="band" aria-hidden="true"></div>
 </header>
 
 <main>
 
 
   <section class="menu" id="menu" aria-labelledby="menu-h">
-    <h2 id="menu-h">menu</h2>
+    <h2 id="menu-h">Menu</h2>
+
+    <h3>Our favorites</h3>
+    <ul class="tiles favs">
+      <li class="card" data-item data-key="chile-relleno" data-name="Chile Relleno" data-fav><div class="pic"><img class="photo" src="photos/chile-relleno.webp" width="474" height="263" alt="Chile Relleno empanada" loading="lazy" decoding="async"></div><h4>Chile Relleno</h4></li>
+      <li class="card" data-item data-key="horchata" data-name="Agua de horchata" data-fav><div class="pic"><img class="photo" src="photos/horchata.webp" width="266" height="481" alt="Agua de horchata" loading="lazy" decoding="async"></div><h4>Agua de horchata</h4></li>
+      <li class="card" data-item data-key="jamaica" data-name="Agua de jamaica" data-fav><div class="pic"><img class="photo" src="photos/jamaica.webp" width="266" height="478" alt="Agua de jamaica" loading="lazy" decoding="async"></div><h4>Agua de jamaica</h4></li>
+    </ul>
 
     <h3>Savory empanadas</h3>
     <ul class="tiles">
-      <li class="frame" data-item data-key="ground-beef" data-name="Ground Beef"><h4>Ground Beef</h4><img class="photo" src="photos/ground-beef.webp" width="529" height="232" alt="Ground Beef empanada" loading="lazy" decoding="async"></li>
-      <li class="frame" data-item data-key="steak" data-name="Steak"><h4>Steak</h4><img class="photo" src="photos/steak.webp" width="513" height="328" alt="Steak empanada" loading="lazy" decoding="async"></li>
-      <li class="frame" data-item data-key="chile-relleno" data-name="Chile Relleno"><h4>Chile Relleno</h4><img class="photo" src="photos/chile-relleno.webp" width="474" height="280" alt="Chile Relleno empanada" loading="lazy" decoding="async"></li>
-      <li class="frame" data-item data-key="ham-cheese" data-name="Ham &amp; Cheese"><h4>Ham &amp; Cheese</h4><img class="photo" src="photos/ham-cheese.webp" width="410" height="356" alt="Ham and Cheese empanada" loading="lazy" decoding="async"></li>
-      <li class="frame" data-item data-key="spicy-chicken" data-name="Spicy Chicken"><h4>Spicy Chicken</h4><img class="photo" src="photos/spicy-chicken.webp" width="541" height="266" alt="Spicy Chicken empanada" loading="lazy" decoding="async"></li>
-      <li class="frame" data-item data-key="spinach-cheese" data-name="Spinach &amp; Cheese"><h4>Spinach &amp; Cheese</h4><img class="photo" src="photos/spinach-cheese.webp" width="423" height="377" alt="Spinach and Cheese empanada" loading="lazy" decoding="async"></li>
-      <li class="frame" data-item data-key="chicken-vegetable" data-name="Chicken Vegetable"><h4>Chicken Vegetable</h4><img class="photo" src="photos/chicken-vegetable.webp" width="546" height="216" alt="Chicken Vegetable empanada" loading="lazy" decoding="async"></li>
-      <li class="frame" data-item data-key="tinga" data-name="Tinga"><h4>Tinga</h4><span class="sub">chicken y chipotle</span><img class="photo" src="photos/tinga.webp" width="510" height="292" alt="Tinga empanada" loading="lazy" decoding="async"></li>
+      <li class="card" data-item data-key="ground-beef" data-name="Ground Beef"><div class="pic"><img class="photo" src="photos/ground-beef.webp" width="528" height="227" alt="Ground Beef empanada" loading="lazy" decoding="async"></div><h4>Ground Beef</h4></li>
+      <li class="card" data-item data-key="steak" data-name="Steak"><div class="pic"><img class="photo" src="photos/steak.webp" width="511" height="314" alt="Steak empanada" loading="lazy" decoding="async"></div><h4>Steak</h4></li>
+      <li class="card" data-item data-key="chile-relleno" data-name="Chile Relleno"><div class="pic"><img class="photo" src="photos/chile-relleno.webp" width="474" height="263" alt="Chile Relleno empanada" loading="lazy" decoding="async"></div><h4>Chile Relleno</h4></li>
+      <li class="card" data-item data-key="ham-cheese" data-name="Ham &amp; Cheese"><div class="pic"><img class="photo" src="photos/ham-cheese.webp" width="409" height="340" alt="Ham and Cheese empanada" loading="lazy" decoding="async"></div><h4>Ham &amp; Cheese</h4></li>
+      <li class="card" data-item data-key="spicy-chicken" data-name="Spicy Chicken"><div class="pic"><img class="photo" src="photos/spicy-chicken.webp" width="541" height="250" alt="Spicy Chicken empanada" loading="lazy" decoding="async"></div><h4>Spicy Chicken</h4></li>
+      <li class="card" data-item data-key="spinach-cheese" data-name="Spinach &amp; Cheese"><div class="pic"><img class="photo" src="photos/spinach-cheese.webp" width="423" height="353" alt="Spinach and Cheese empanada" loading="lazy" decoding="async"></div><h4>Spinach &amp; Cheese</h4></li>
+      <li class="card" data-item data-key="chicken-vegetable" data-name="Chicken Vegetable"><div class="pic"><img class="photo" src="photos/chicken-vegetable.webp" width="544" height="199" alt="Chicken Vegetable empanada" loading="lazy" decoding="async"></div><h4>Chicken Vegetable</h4></li>
+      <li class="card" data-item data-key="tinga" data-name="Tinga"><div class="pic"><img class="photo" src="photos/tinga.webp" width="508" height="271" alt="Tinga empanada" loading="lazy" decoding="async"></div><h4>Tinga</h4><span class="sub">chicken y chipotle</span></li>
     </ul>
 
-    <h3>Sweet empanadas</h3>
-    <ul class="tiles">
-      <li class="frame" data-item data-key="sweet-potato" data-name="Sweet Potato"><h4>Sweet Potato</h4><img class="photo" src="photos/sweet-potato.webp" width="534" height="264" alt="Sweet Potato empanada" loading="lazy" decoding="async"></li>
-      <li class="frame" data-item data-key="pineapple" data-name="Pineapple"><h4>Pineapple</h4><img class="photo" src="photos/pineapple.webp" width="516" height="282" alt="Pineapple empanada" loading="lazy" decoding="async"></li>
-      <li class="frame" data-item data-key="dulce-con-leche" data-name="Dulce con leche"><h4>Dulce con leche</h4><span class="sub">caramel</span><img class="photo" src="photos/dulce-con-leche.webp" width="498" height="299" alt="Dulce con leche empanada" loading="lazy" decoding="async"></li>
-      <li class="frame" data-item data-key="apple" data-name="Apple"><h4>Apple</h4><img class="photo" src="photos/apple.webp" width="520" height="292" alt="Apple empanada" loading="lazy" decoding="async"></li>
-    </ul>
-
-    <div class="combo frame">
+    <div class="combo">
       <h3>Combo</h3>
       <p>Choose any savory empanada and add one side: a regular corn cup or nachos.</p>
     </div>
 
-    <div class="cols">
-      <div class="sweets">
-        <h3 class="board-h">Try our desserts &amp; appetizers</h3>
-        <ul class="list">
-          <li class="frame" data-key="lemon-tart" data-name="Lemon tart">Lemon tart</li>
-          <li class="frame" data-key="cherry-nut-tart" data-name="Cherry &amp; nut tart">Cherry &amp; nut tart</li>
-          <li class="frame" data-key="nut-tart" data-name="Nut tart">Nut tart <span class="es">nuez</span></li>
-          <li class="frame" data-key="apple-cinnamon-walnut-tart" data-name="Apple cinnamon walnut tart">Apple cinnamon walnut tart <span class="es">manzana con canela y nuez</span></li>
-          <li class="frame" data-key="chocolate-tart" data-name="Chocolate tart">Chocolate tart</li>
-          <li class="frame" data-key="blueberry-strawberry-tart" data-name="Blueberry strawberry tart">Blueberry strawberry tart</li>
-          <li class="frame" data-key="cookies" data-name="Cookies">Cookies <span class="es">polvorones</span></li>
-          <li class="frame" data-key="nachos" data-name="Nachos">Nachos <span class="es">cheese &amp; jalapeños</span></li>
-          <li class="frame" data-key="cup-of-corn" data-name="Cup of corn">Cup of corn</li>
-        </ul>
-      </div>
-      <div class="drinks">
-        <div>
-        <h3 class="drinks-h">Drinks</h3>
-        <ul class="list">
-          <li data-key="espresso" data-name="Espresso">Espresso</li>
-          <li data-key="cappuccino" data-name="Cappuccino">Cappuccino</li>
-          <li data-key="latte" data-name="Latte">Latte</li>
-          <li data-key="iced-coffee" data-name="Iced coffee">Iced coffee</li>
-          <li data-key="french-press-cafe" data-name="French press café">French press café</li>
-        </ul>
-        </div>
-        <div>
-        <h3 class="drinks-h">Fresh waters</h3>
-        <ul class="list">
-          <li data-key="horchata" data-name="Agua de horchata">Agua de horchata</li>
-          <li data-key="jamaica" data-name="Agua de jamaica">Agua de jamaica</li>
-          <li data-key="coke-products" data-name="Coke products">Coke products</li>
-          <li data-key="abuelitas-chocolate" data-name="Abuelita's chocolate">Abuelita's chocolate <span class="es">Saturdays only</span></li>
-        </ul>
-        </div>
-      </div>
-    </div>
+    <h3>Sweet empanadas</h3>
+    <ul class="tiles">
+      <li class="card" data-item data-key="sweet-potato" data-name="Sweet Potato"><div class="pic"><img class="photo" src="photos/sweet-potato.webp" width="533" height="245" alt="Sweet Potato empanada" loading="lazy" decoding="async"></div><h4>Sweet Potato</h4></li>
+      <li class="card" data-item data-key="pineapple" data-name="Pineapple"><div class="pic"><img class="photo" src="photos/pineapple.webp" width="517" height="269" alt="Pineapple empanada" loading="lazy" decoding="async"></div><h4>Pineapple</h4></li>
+      <li class="card" data-item data-key="dulce-con-leche" data-name="Dulce con leche"><div class="pic"><img class="photo" src="photos/dulce-con-leche.webp" width="497" height="299" alt="Dulce con leche empanada" loading="lazy" decoding="async"></div><h4>Dulce con leche</h4><span class="sub">caramel</span></li>
+      <li class="card" data-item data-key="apple" data-name="Apple"><div class="pic"><img class="photo" src="photos/apple.webp" width="518" height="274" alt="Apple empanada" loading="lazy" decoding="async"></div><h4>Apple</h4></li>
+    </ul>
+
+    <h3>Desserts &amp; appetizers</h3>
+    <ul class="tiles">
+      <li class="card" data-item data-key="lemon-tart" data-name="Lemon tart"><div class="pic"><img class="photo" src="photos/lemon-tart.webp" width="497" height="369" alt="Lemon tart" loading="lazy" decoding="async"></div><h4>Lemon tart</h4></li>
+      <li class="card" data-item data-key="cherry-nut-tart" data-name="Cherry &amp; nut tart"><div class="pic"><img class="photo" src="photos/cherry-nut-tart.webp" width="462" height="354" alt="Cherry and nut tart" loading="lazy" decoding="async"></div><h4>Cherry &amp; nut tart</h4></li>
+      <li class="card" data-item data-key="nut-tart" data-name="Nut tart"><div class="pic"><img class="photo" src="photos/nut-tart.webp" width="466" height="356" alt="Nut tart" loading="lazy" decoding="async"></div><h4>Nut tart</h4><span class="sub">nuez</span></li>
+      <li class="card" data-item data-key="apple-cinnamon-walnut-tart" data-name="Apple cinnamon walnut tart"><div class="pic"><img class="photo" src="photos/apple-cinnamon-walnut-tart.webp" width="472" height="374" alt="Apple cinnamon walnut tart" loading="lazy" decoding="async"></div><h4>Apple cinnamon walnut tart</h4><span class="sub">manzana con canela y nuez</span></li>
+      <li class="card" data-item data-key="chocolate-tart" data-name="Chocolate tart"><div class="pic"><img class="photo" src="photos/chocolate-tart.webp" width="478" height="370" alt="Chocolate tart" loading="lazy" decoding="async"></div><h4>Chocolate tart</h4></li>
+      <li class="card" data-item data-key="blueberry-strawberry-tart" data-name="Blueberry strawberry tart"><div class="pic"><img class="photo" src="photos/blueberry-strawberry-tart.webp" width="468" height="363" alt="Blueberry strawberry tart" loading="lazy" decoding="async"></div><h4>Blueberry strawberry tart</h4></li>
+      <li class="card" data-item data-key="cookies" data-name="Cookies"><div class="pic"><img class="photo" src="photos/cookies.webp" width="482" height="370" alt="Cookies" loading="lazy" decoding="async"></div><h4>Cookies</h4><span class="sub">polvorones</span></li>
+      <li class="card" data-item data-key="nachos" data-name="Nachos"><div class="pic"><img class="photo" src="photos/nachos.webp" width="538" height="350" alt="Nachos" loading="lazy" decoding="async"></div><h4>Nachos</h4><span class="sub">cheese &amp; jalapeños</span></li>
+      <li class="card" data-item data-key="cup-of-corn" data-name="Cup of corn"><div class="pic"><img class="photo" src="photos/cup-of-corn.webp" width="380" height="458" alt="Cup of corn" loading="lazy" decoding="async"></div><h4>Cup of corn</h4></li>
+    </ul>
+
+    <h3>Aguas frescas &amp; chocolate</h3>
+    <ul class="tiles">
+      <li class="card" data-item data-key="horchata" data-name="Agua de horchata"><div class="pic"><img class="photo" src="photos/horchata.webp" width="266" height="481" alt="Agua de horchata" loading="lazy" decoding="async"></div><h4>Agua de horchata</h4></li>
+      <li class="card" data-item data-key="jamaica" data-name="Agua de jamaica"><div class="pic"><img class="photo" src="photos/jamaica.webp" width="266" height="478" alt="Agua de jamaica" loading="lazy" decoding="async"></div><h4>Agua de jamaica</h4></li>
+      <li class="card" data-item data-key="abuelitas-chocolate" data-name="Abuelita's chocolate"><div class="pic"><img class="photo" src="photos/abuelitas-chocolate.webp" width="419" height="423" alt="Abuelita's chocolate" loading="lazy" decoding="async"></div><h4>Abuelita's chocolate</h4><span class="sub">Saturdays only</span></li>
+    </ul>
+
+    <h3>Coffee &amp; more</h3>
+    <p class="hint">Coffee is on in the mornings.</p>
+    <ul class="list">
+      <li data-key="espresso" data-name="Espresso">Espresso</li>
+      <li data-key="cappuccino" data-name="Cappuccino">Cappuccino</li>
+      <li data-key="latte" data-name="Latte">Latte</li>
+      <li data-key="iced-coffee" data-name="Iced coffee">Iced coffee</li>
+      <li data-key="french-press-cafe" data-name="French press café">French press café</li>
+      <li data-key="coke-products" data-name="Coke products">Coke products</li>
+    </ul>
   </section>
 
   <section class="order" id="order" aria-labelledby="order-h">
@@ -163,7 +164,7 @@
 
   <section class="visit" id="visit" aria-labelledby="visit-h">
     <h2 id="visit-h">Come by</h2>
-    <div class="cols frame visit-card">
+    <div class="cols visit-card">
       <div>
         <h3>Where</h3>
         <p class="addr">Inside the Old Town Marketplace<br>332 Main St, Longmont, CO 80501</p>
@@ -185,7 +186,7 @@
   <a href="https://seaofgrass.studio" rel="noopener">Site by Sea of Grass</a>
 </footer>
 
-<script src="frame.js"></script>
+<script src="weave.js"></script>
 <script src="order.js"></script>
 </body>
 </html>

@@ -6,7 +6,8 @@ The rule (Tristan, 2026-11-15): write the steps and the tests first, then build 
 ## Steps
 
 1. **Land.** One idea fills the first screen: a huge headline, one line about the bakery, and two actions only: "Order for pickup" and the call button with the phone number. Nothing to fill in.
-2. **Look at the menu.** The counter board as it stands (Tristan's photos, 2026-11-17): eight savory and four sweet empanadas, each named with a photo slot, then the combo, desserts and appetizers, drinks and fresh waters. The board shows no prices, so the site shows none. No invented dollar figures.
+2. **See the favorites.** Below the first screen, the owner's three favorites (Chile Relleno, agua de horchata, agua de jamaica, per the owner on 2026-11-17) sit in their own row with Add, then the full menu.
+3. **Look at the menu.** The counter board as it stands (Tristan's photos, 2026-11-17): eight savory and four sweet empanadas, each named with a photo slot, then the combo, desserts and appetizers, drinks and fresh waters. The board shows no prices, so the site shows none. No invented dollar figures.
 3. **Find the shop.** The visit block names Old Town Marketplace, 332 Main St, Longmont, and has a directions link. Hours are marked as coming from the bakery until we have them.
 4. **Call.** The call button dials 720-218-9808.
 5. **Build an order (Tristan, 2026-11-17: the Bunny Burritos cart is what sold them).** "Order for pickup" leads to the menu. Every empanada tile, and every dessert, coffee and water, has an Add button. Add two Steak, one Pineapple and one horchata. The tile shows its count, and an order bar appears with 4 items. The bar steps aside while the order section itself is on screen.

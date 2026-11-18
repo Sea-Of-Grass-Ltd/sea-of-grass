@@ -74,3 +74,11 @@ The Bunny Burritos cart is what sold them, so the site has a real cart. Payment 
 Their real logo is on both signs: maroon script "Abuelita's", red slab "EMPANADAS", "COFFEE BAR", a steaming coffee cup with empanadas, and a woven Mexican border (teal, red, orange, yellow). The top of the site now follows that sign: Lobster Two for the script, Alfa Slab One for the caps, and the border drawn in code. The cup-and-empanadas artwork is one Nano Banana redraw of their wall sign (`notes/clients/abuelitas/src/cup-empanadas-nb-blue.png`, keyed to `clients/abuelitas/art/cup-empanadas.webp`). It is their own artwork redrawn, so confirm with the owner that they're happy with it. The empanada lady mascot is not used yet.
 
 The menu below stays in their counter-board style. Fable's critique was applied: a thicker gold frame band, solid gold Add buttons, bigger tile photos, the pink glow on the "menu" band only, 2px ink rules, the cart showing its count, and no pickup-time button on an empty order. Fable's first point, photos on the dessert labels and drink glasses, is still to do (it needs one more generated sheet, on Tristan's go).
+
+## v4, modern (2026-11-18)
+
+Tristan: the board-pastiche version looked "so old I'd be afraid to order". Their identity now lives in the name (maroon-and-cream script with the red slab caps, on a warm dark stage), their colours, and one woven band that slides sideways as you scroll. The ordering part looks like a modern ordering app (Refero DoorDash `87a97d65`): white photo cards, a red Add button, one clean typeface (Figtree), and a light page.
+
+The owner wants to feature the **Chile Relleno, agua de horchata and agua de jamaica**. They are the hero (empanada in front with live steam, drinks behind) and the "Our favorites" row. Coffee is morning only, so "Coffee Bar" is off the name and coffee sits in a small list.
+
+Stand-in photos for the desserts and drinks come from one more Nano Banana sheet (`src/desserts-drinks-nb-blue.png`). The coffee-cup artwork from v3 is no longer used.
