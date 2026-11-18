@@ -314,3 +314,13 @@ html, body { overflow-x: clip; }
 @media (min-width: 860px) { .arch .drink { bottom: 26%; } }
 .arch .drink { width: 22%; }
 @media (min-width: 860px) { .arch .drink { width: 16.5%; bottom: 25%; } }
+/* Tristan: drinks were tipped at the wrong angle, and the empanada sat on the bottom edge instead of the table.
+   Glasses stand upright on the back of the counter; the empanada rests on its front half. */
+.arch .d1, .arch .d2 { transform: none; }
+.arch .drink { bottom: 23%; filter: drop-shadow(0 6px 4px rgba(0,0,0,.5)); }
+.arch .emp { width: 50%; bottom: 9%; filter: drop-shadow(0 8px 6px rgba(0,0,0,.5)); }
+.steam { bottom: 38%; }
+@media (min-width: 860px) {
+  .arch .drink { width: 16%; bottom: 25%; } .arch .d1 { left: 27%; } .arch .d2 { right: 27%; }
+  .arch .emp { width: 33%; bottom: 11%; } .steam { bottom: 41%; width: 13%; }
+}
