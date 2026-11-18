@@ -355,3 +355,6 @@ h1 { position: relative; }
 /* Tristan: the area between the woven band and the chips goes white, one white block with the chips */
 .menu { padding-top: 0; }
 .menu > h2 { background: var(--paper); box-shadow: 0 0 0 100vmax var(--paper); clip-path: inset(0 -100vmax); margin: 0; padding: 36px 0 6px; }
+/* Tristan: the woven band replaces the paper flags, right under the location band */
+.band.top { margin: -14px calc(50% - 50vw) 18px; }
+@media (min-width: 860px) { .band.top { margin-top: -22px; margin-bottom: 22px; } }
