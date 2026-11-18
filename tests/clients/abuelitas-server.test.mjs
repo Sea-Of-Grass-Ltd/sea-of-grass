@@ -11,7 +11,7 @@ const ADMIN = 'a'.repeat(40);
 Object.assign(process.env, {
   SQUARE_ENV: 'sandbox', SQUARE_APP_ID: 'app-test', SQUARE_APP_SECRET: 'secret-test',
   PUBLIC_URL: 'https://shop.example.test', VAULT_KEY: '1'.repeat(64), ADMIN_KEY: ADMIN,
-  VAULT_PATH: path.join(tmp, 'vault.json'),
+  VAULT_PATH: path.join(tmp, 'vault.json'), SHOP_SERVER_NO_LISTEN: '1',
 });
 
 // fake Square: whoever finishes OAuth is `merchant`

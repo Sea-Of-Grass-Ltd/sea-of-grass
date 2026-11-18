@@ -286,5 +286,6 @@ export async function handle(req, res) {
 }
 export const _test = { signLink, readLink, getShop, putShop, readVault, limit };
 
-if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1]))
+// always listen, except when the tests import this file (they set SHOP_SERVER_NO_LISTEN); hosts may start us through a wrapper
+if (!env.SHOP_SERVER_NO_LISTEN)
   http.createServer(handle).listen(+env.PORT || 8787, () => console.log(`shop server on ${env.PUBLIC_URL || 'http://localhost:' + (env.PORT || 8787)} (${SANDBOX ? 'sandbox' : 'PRODUCTION'})`));
