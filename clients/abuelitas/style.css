@@ -363,3 +363,12 @@ h1 { position: relative; }
 .crimp { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
 .crimp .rim { fill: var(--red); }
 .crimp .crease { fill: none; stroke: #9c2a1c; stroke-width: 1.6; stroke-linecap: round; }
+/* hero trio re-shot at counter height (Tristan: the angles didn't sit on the table). All three stand on the counter top. */
+.arch .drink { width: 19%; bottom: 19%; filter: drop-shadow(0 3px 3px rgba(0,0,0,.55)); }
+.arch .d1 { left: 13%; } .arch .d2 { right: 13%; }
+.arch .emp { width: 46%; bottom: 13%; filter: drop-shadow(0 4px 4px rgba(0,0,0,.55)); }
+.steam { bottom: 44%; width: 18%; }
+@media (min-width: 860px) {
+  .arch .drink { width: 12.5%; bottom: 25%; } .arch .d1 { left: 25%; } .arch .d2 { right: 25%; }
+  .arch .emp { width: 30%; bottom: 18%; } .steam { bottom: 56%; width: 12%; }
+}
