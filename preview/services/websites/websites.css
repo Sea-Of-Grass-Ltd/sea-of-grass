@@ -244,3 +244,91 @@ footer.foot a{color:var(--soft)}
 .f-echo a{color:#fff;font-weight:600}
 .home span,.top nav a.book{white-space:nowrap}
 @media (max-width:420px){.top nav a.book{padding:10px 12px;font-size:14px}.home{font-size:15px;gap:8px}.home img{width:26px}}
+
+/* ======== The Short: eleven full-screen beats, one line each (storyboard approved 2026-11-19) ======== */
+body.short-mode{background:#071026}
+.progress{position:fixed;z-index:30;top:max(8px,env(safe-area-inset-top,0px));left:var(--side);right:var(--side);display:flex;gap:4px;pointer-events:none}
+.progress i{flex:1;height:3px;border-radius:2px;background:rgba(238,241,234,.18);overflow:hidden;position:relative}
+.progress i::after{content:"";position:absolute;inset:0;background:var(--fg);transform:scaleX(0);transform-origin:0 50%;transition:transform .3s cubic-bezier(.2,.9,.25,1)}
+.progress i.on::after{transform:scaleX(1)}
+.top-wrap{position:fixed;z-index:25;top:0;left:0;right:0;padding:12px var(--side) 0;pointer-events:none}
+.top-wrap header.top{max-width:var(--max);margin:0 auto;border-bottom:0;padding-top:max(10px,env(safe-area-inset-top,0px));pointer-events:auto}
+.short{position:relative;height:100vh;height:100dvh;overflow:hidden;background:#071026;touch-action:pan-x}
+.track{will-change:transform;transition:transform .42s cubic-bezier(.2,.9,.25,1)}
+.beat{position:relative;height:100vh;height:100dvh;display:grid;place-items:center;padding:88px var(--side) max(28px,env(safe-area-inset-bottom,0px));overflow:hidden;cursor:default}
+.beat:nth-child(even){background:#0A0C11}
+.beat-in{position:relative;z-index:1;width:100%;max-width:var(--max);display:grid;gap:18px;align-content:center}
+.beat [data-line]{font:500 clamp(38px,9.4vw,104px)/.98 var(--head);letter-spacing:-.045em;max-width:15ch;margin:0}
+.beat [data-line] em{font-style:normal;color:var(--blue2)}
+.b2 [data-line],.b5 [data-line],.b7 [data-line],.b8 [data-line],.b9 [data-line],.b10 [data-line]{font-size:clamp(32px,7.4vw,84px);line-height:1.02;max-width:17ch}
+.b4 [data-line],.b6 [data-line]{font-size:clamp(28px,6.6vw,60px);max-width:none}
+.beat .cap{font-size:clamp(16px,1.6vw,21px);color:var(--soft);max-width:44ch}
+.beat .kick{margin:0}
+.hint{font:500 12px/1.3 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--soft)}
+.hint .t-desk{display:none}
+@media (hover:hover) and (pointer:fine){.hint .t-touch{display:none}.hint .t-desk{display:inline}}
+.b1 .live-grass{position:absolute;z-index:0;left:0;right:0;bottom:0;height:clamp(150px,22vh,240px);color:var(--grass);pointer-events:none;overflow:hidden}
+.quotes q{display:block;quotes:"\201C" "\201D"}
+.prices span{display:block}
+.prices b{font-weight:500;color:var(--blue2)}
+.chip{justify-self:start;font:500 13px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--soft);border:1px solid var(--blue);border-radius:999px;padding:9px 14px}
+.chip b{color:var(--fg);font-weight:500}
+
+/* landing motion: the line rises in, the rest follows a beat later */
+@keyframes rise{from{opacity:0;transform:translate3d(0,28px,0)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(.9);opacity:0}60%{transform:scale(1.06);opacity:1}100%{transform:scale(1)}}
+.beat.is-in [data-line]{animation:rise .42s cubic-bezier(.2,.9,.25,1) both}
+.beat.is-in .cap,.beat.is-in .acts,.beat.is-in .register,.beat.is-in .rail,.beat.is-in .bw-foot,.beat.is-in .more-link{animation:rise .42s .14s cubic-bezier(.2,.9,.25,1) both}
+.beat.is-in .reg-shop,.beat.is-in .reach{animation:rise .42s .24s cubic-bezier(.2,.9,.25,1) both}
+.beat.is-in .quotes q,.beat.is-in .prices span{animation:rise .38s cubic-bezier(.2,.9,.25,1) both}
+.beat.is-in .quotes q:nth-child(2),.beat.is-in .prices span:nth-child(2){animation-delay:.32s}
+.beat.is-in .quotes q:nth-child(3),.beat.is-in .prices span:nth-child(3){animation-delay:.64s}
+.beat.is-in .quotes,.beat.is-in .prices{animation:none}
+.beat.is-in .chip{animation:pop .5s .1s cubic-bezier(.2,.9,.25,1) both}
+@media (prefers-reduced-motion:reduce){.track,.progress i::after{transition:none}.beat.is-in *{animation:none!important}}
+
+/* beat 4: the register and the live shop */
+.short .phone{position:relative;right:auto;bottom:auto;display:block;width:auto;border-radius:26px;padding:7px;background:#141922;border:1px solid rgba(238,241,234,.2);box-shadow:0 30px 70px rgba(0,0,0,.5)}
+.short .phone .view{aspect-ratio:auto;height:100%;border-radius:19px}
+.reg-play{grid-template-columns:minmax(0,1fr) auto;gap:20px clamp(28px,5vw,72px);align-items:center}
+.reg-side{display:grid;gap:18px;align-content:center}
+.b4 .register{max-width:560px}
+.b4 .reg-row{grid-template-columns:minmax(0,1fr) auto auto auto;gap:10px 12px;padding:10px 16px}
+.b4 .reg-step button{width:42px}
+.b4 .reg-out{padding:0 12px}
+.reg-shop .phone{height:min(70dvh,640px);aspect-ratio:9/17}
+/* beat 6: Bunny World rail */
+.bw-play{gap:16px}
+.rail{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;padding:4px 2px 10px;margin:0 calc(var(--side)*-1);padding-left:var(--side);padding-right:var(--side);scrollbar-width:none;touch-action:pan-x}
+.rail::-webkit-scrollbar{display:none}
+.shop{flex:0 0 auto;scroll-snap-align:center;display:grid;gap:10px;justify-items:start}
+.shop .phone{height:min(52dvh,470px);aspect-ratio:9/16}
+.shop-name{display:grid;gap:2px;font-size:14px;color:var(--soft)}
+.shop-name b{color:var(--fg);font:500 17px/1.2 var(--head);letter-spacing:-.01em}
+.bw-foot{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline;font-size:14px;color:var(--mute)}
+.bw-foot a{color:var(--blue2);font-weight:600;text-decoration:none;font-size:16px}
+/* beat 11: the end card */
+.b11 .acts{display:flex;flex-wrap:wrap;gap:12px}
+.more-link{all:unset;cursor:pointer;justify-self:start;font:600 16px/1 var(--body);color:var(--blue2);padding:12px 0;min-height:24px}
+.more-link:hover{text-decoration:underline}.more-link:focus-visible{outline:2px solid var(--blue2);outline-offset:3px;border-radius:6px}
+.b11 .reach{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:15px;color:var(--soft)}
+.b11 .reach a{text-decoration:none}
+
+/* the details: hidden until asked for (shown without JavaScript) */
+.short-ready body.short-mode:not(.details-open) .details{display:none}
+.details{background:var(--bg)}
+
+@media (max-width:980px){.reg-play{grid-template-columns:1fr;gap:14px}.reg-side{display:contents}
+  .short .reg-shop{order:0;position:static;background:none;padding:0;border:0;justify-self:center}.b4 .register{order:1;width:100%}
+  .reg-shop .phone{height:min(44dvh,440px)}}
+@media (max-width:700px){
+  .beat{padding-top:76px}
+  .beat-in{gap:14px}
+  .b4 .reg-row{grid-template-columns:minmax(0,1fr) auto auto auto;gap:8px;padding:8px 12px}
+  .b4 .reg-name{font-size:15px}
+  .b4 .reg-price{min-width:3.6em;font-size:14px}
+  .b4 .reg-step button{width:38px}
+  .b4 .reg-out{padding:0 9px;font-size:14px}
+  .b4 .reg-top{padding:10px 12px}
+  .shop .phone{height:min(46dvh,400px)}
+}

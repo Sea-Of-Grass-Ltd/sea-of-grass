@@ -146,6 +146,10 @@ for (const w of WIDTHS) {
       await goTo(page, 9);
       const p = await text(page.locator('#short .beat[data-beat="9"]'));
       for (const x of ['$250', '$50 a month', '$1,200', '$2,000']) assert.ok(p.includes(x), `beat 9 shows ${x}`);
+      // Tristan, word for word (2026-11-19): honest about orders bringing in money, never profit or "pays for itself"
+      const WEEK = '$1,200 works out to about $23 a week for a year, roughly what a couple of online orders bring in.';
+      assert.equal(await text(page.locator('#short .beat[data-beat="9"] [data-week]')), WEEK, 'beat 9 carries the $23-a-week line exactly');
+      assert.doesNotMatch(p, /profit|pays for itself/i, 'no profit or pays-for-itself claims');
       await next(page);
       const cfg = await page.evaluate(() => window.SOG_SHOP.founding);
       const f = await text(page.locator('#short .beat[data-beat="10"]'));
