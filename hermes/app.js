@@ -118,12 +118,20 @@ function fmt(ts) { try { return new Date(ts).toLocaleString([], { month: 'short'
 function host(u) { try { return new URL(u).hostname.replace(/^www\./, ''); } catch (e) { return u; } }
 
 /* ---------- views (hash routes) ---------- */
-const VIEWS = ['stops', 'pitch', 'costs', 'log'];
+const VIEWS = ['script', 'stops', 'pitch', 'costs', 'log'];
 function show(v) { if (!VIEWS.includes(v)) v = 'stops'; VIEWS.forEach(n => { $('v-' + n).hidden = n !== v; }); document.querySelectorAll('nav.tabs a').forEach(a => { if (a.dataset.view === v) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }); }
 let curView = 'stops';
 function go(v) { if (!VIEWS.includes(v)) v = 'stops'; const changed = v !== curView; curView = v; show(v); if (changed) window.scrollTo(0, 0); try { if (location.hash.slice(1) !== v) location.hash = v; } catch (e) {} }
 window.addEventListener('hashchange', () => { const v = location.hash.slice(1); if (VIEWS.includes(v) && v !== curView) go(v); });
 document.querySelectorAll('nav.tabs a').forEach(a => a.addEventListener('click', e => { e.preventDefault(); go(a.dataset.view); }));
+document.querySelectorAll('a[data-go]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); go(a.dataset.go); }));
+
+/* ---------- founding five: spots left, read from founding.js only ---------- */
+(function renderSpots() {
+  const f = window.FOUNDING_FIVE || {};
+  const ok = Number.isInteger(f.total) && Number.isInteger(f.left) && f.left >= 0 && f.left <= f.total;
+  $('spotsLeft').textContent = !ok ? 'Count unknown: check founding.js' : f.left === 0 ? 'All ' + f.total + ' spots taken' : f.left + ' of ' + f.total + ' spots left';
+})();
 
 /* ---------- visits state ---------- */
 let rows = [], loaded = false;
@@ -187,6 +195,7 @@ function renderStops() {
 function setPitcher(who) {
   document.querySelectorAll('.pName').forEach(n => n.textContent = who);
   document.querySelectorAll('.pTown').forEach(n => n.textContent = who === 'Bryce' ? 'Golden' : 'Berthoud');
+  document.querySelectorAll('.pPartner').forEach(n => n.textContent = who === 'Bryce' ? 'Tristan' : 'Bryce');
 }
 document.querySelectorAll('input[name=pitchWho]').forEach(i => i.addEventListener('change', () => { setPitcher(i.value); setBy(i.value); }));
 
