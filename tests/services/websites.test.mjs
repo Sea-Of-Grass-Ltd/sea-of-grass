@@ -131,8 +131,9 @@ for (const w of WIDTHS) {
   });
 }
 
-// Founding five (Tristan, 2026-11-19): first five shops get month one of the $50 plan free and $50 locked for a year,
-// for a review, a photo and permission to feature them. The spots count lives in SOG_SHOP.founding and is never faked.
+// Founding five, paid (Tristan and Bryce, 2026-11-19): no free month anywhere. The first five shops pay $50 a month from day one,
+// with the price locked for two years, a free photo shoot, nothing owed if they back out at the hookup, and an honest review in return.
+// The spots count lives in SOG_SHOP.founding and is never faked.
 for (const w of WIDTHS) {
   test(`${w}px · journey: the founding-five offer and an honest spots count`, async () => {
     const { ctx, page, errors } = await site.open(PAGE, w, { reducedMotion: 'reduce' });
@@ -146,12 +147,11 @@ for (const w of WIDTHS) {
       assert.ok(await offer.isVisible(), 'offer visible inside the prices section');
       const t = await text(offer);
       assert.match(t, /five founding shops/i, 'names the five founding shops');
-      assert.match(t, /first month (is )?free/i, 'first month free');
-      assert.match(t, /locked/i, 'price locked');
-      assert.match(t, /year/i, 'locked for a year');
-      assert.match(t, /review/i, 'asks for a review');
-      assert.match(t, /photo/i, 'asks for a photo');
-      assert.match(t, /\$50/, 'states $50 from month two');
+      assert.match(t, /\$50 a month from (the first day|day one)/i, 'pays $50 a month from day one');
+      assert.match(t, /locked[^.]*two years/i, 'price locked for two years');
+      assert.match(t, /free photo shoot/i, 'a free photo shoot');
+      assert.match(t, /owe nothing[^.]*hookup|hookup[^.]*owe nothing/i, 'owe nothing if they back out at the hookup');
+      assert.match(t, /honest review/i, 'an honest review in return');
       const spots = await text(offer.locator('[data-spots]'));
       assert.match(spots, new RegExp(`${cfg.left} of ${cfg.total}`), `spots count reads ${cfg.left} of ${cfg.total}, from SOG_SHOP.founding`);
 
@@ -159,12 +159,36 @@ for (const w of WIDTHS) {
       assert.ok(await echo.isVisible(), 'short echo near the close');
       assert.match(await text(echo), /founding/i, 'echo mentions the founding offer');
       assert.match(await text(echo), new RegExp(`${cfg.left} of ${cfg.total}`), 'echo shows the same count');
+      assert.match(await text(echo), /two years/i, 'echo carries the two-year lock');
+
+      // no free month, no free trial, anywhere on the page
+      const body = await page.evaluate(() => document.body.innerText.replace(/\s+/g, ' '));
+      assert.doesNotMatch(body, /first month (is )?free|free (first )?month|month (is )?free|free trial/i, 'no free month or free trial anywhere');
 
       // the other public prices are unchanged, and the biggest still comes first
       const buy = await text(page.locator('#buy'));
       assert.equal((buy.match(/\$\d[\d,]*/g) || [])[0], '$2,000', 'whole site is still the first price');
       for (const p of ['$1,200', '$100 a month', '$250']) assert.ok(buy.includes(p), `still shows ${p}`);
       assert.deepEqual(errors, [], 'no console errors');
+    } finally { await ctx.close(); }
+  });
+}
+
+// Modest, practical promises (Bryce, 2026-11-19): easier orders and easier to find, never "transform your business".
+// Some owners don't want more business, so the page also speaks to saving time and fewer phone calls.
+for (const w of WIDTHS) {
+  test(`${w}px · copy: modest promises, time saved and fewer calls`, async () => {
+    const { ctx, page } = await site.open(PAGE, w, { reducedMotion: 'reduce' });
+    try {
+      await page.evaluate(() => document.querySelectorAll('details').forEach(d => d.open = true));
+      const body = await page.evaluate(() => document.body.innerText.replace(/\s+/g, ' '));
+      const hype = body.match(/\b(transform\w*|revolution\w*|next level|grow your|growth|skyrocket\w*|supercharg\w*|boost\w*|game.chang\w*|unlock\w*|empower\w*|dominat\w*|explod\w*|10x|level up|cutting.edge|world.class)\b/gi) || [];
+      assert.deepEqual(hype, [], 'overselling words on the page');
+      assert.match(body, /fewer (phone )?calls/i, 'speaks to fewer phone calls');
+      assert.match(body, /sav\w* (you )?time|time back/i, 'speaks to saving time');
+      assert.match(body, /easier (to|for)[^.]*(order|find)/i, 'the practical promise: easier to order, easier to find');
+      const hero = await text(page.locator('.hero'));
+      assert.match(hero, /fewer (phone )?calls|sav\w* (you )?time/i, 'the hero itself mentions time or calls, not only more orders');
     } finally { await ctx.close(); }
   });
 }
