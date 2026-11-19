@@ -79,7 +79,7 @@ function regionName(id) { const k = KNOWN_REGIONS.find(r => r[0] === id); return
 
 let STOPS = [], BY_ID = {}, REGIONS = [];
 function setStops(data) {
-  STOPS = (data || []).map(r => ({ id: r.id, region: r.region, name: r.business, address: r.address, town: r.town, day: r.day || '', time: r.slot || '', broken: r.problem, pitch: r.pitch, price: r.price, kind: SHOPS[r.kind] ? r.kind : 'shop', url: r.url, notes: r.notes, printout: r.printout, confirm: r.confirm, email: r.email_only }));
+  STOPS = (data || []).map(r => ({ id: r.id, region: r.region, name: r.business, address: r.address, town: r.town, day: r.day || '', time: r.slot || '', broken: r.problem, pitch: r.pitch, price: r.price, kind: SHOPS[r.kind] ? r.kind : 'shop', url: r.url, notes: r.notes, printout: r.printout, confirm: r.confirm, email: r.email_only, owner: r.owner_first || r.owner || '', register: r.register || r.pos || '', registrar: r.registrar || '' }));
   BY_ID = Object.fromEntries(STOPS.map(s => [s.id, s]));
   const ids = KNOWN_REGIONS.map(r => r[0]);
   for (const s of STOPS) if (!ids.includes(s.region)) ids.push(s.region);
@@ -118,12 +118,20 @@ function fmt(ts) { try { return new Date(ts).toLocaleString([], { month: 'short'
 function host(u) { try { return new URL(u).hostname.replace(/^www\./, ''); } catch (e) { return u; } }
 
 /* ---------- views (hash routes) ---------- */
-const VIEWS = ['stops', 'pitch', 'costs', 'log'];
+const VIEWS = ['script', 'stops', 'pitch', 'costs', 'log'];
 function show(v) { if (!VIEWS.includes(v)) v = 'stops'; VIEWS.forEach(n => { $('v-' + n).hidden = n !== v; }); document.querySelectorAll('nav.tabs a').forEach(a => { if (a.dataset.view === v) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }); }
 let curView = 'stops';
 function go(v) { if (!VIEWS.includes(v)) v = 'stops'; const changed = v !== curView; curView = v; show(v); if (changed) window.scrollTo(0, 0); try { if (location.hash.slice(1) !== v) location.hash = v; } catch (e) {} }
 window.addEventListener('hashchange', () => { const v = location.hash.slice(1); if (VIEWS.includes(v) && v !== curView) go(v); });
 document.querySelectorAll('nav.tabs a').forEach(a => a.addEventListener('click', e => { e.preventDefault(); go(a.dataset.view); }));
+document.querySelectorAll('a[data-go]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); go(a.dataset.go); }));
+
+/* ---------- founding five: spots left, read from founding.js only ---------- */
+(function renderSpots() {
+  const f = window.FOUNDING_FIVE || {};
+  const ok = Number.isInteger(f.total) && Number.isInteger(f.left) && f.left >= 0 && f.left <= f.total;
+  $('spotsLeft').textContent = !ok ? 'Count unknown: check founding.js' : f.left === 0 ? 'All ' + f.total + ' spots taken' : f.left + ' of ' + f.total + ' spots left';
+})();
 
 /* ---------- visits state ---------- */
 let rows = [], loaded = false;
@@ -187,6 +195,7 @@ function renderStops() {
 function setPitcher(who) {
   document.querySelectorAll('.pName').forEach(n => n.textContent = who);
   document.querySelectorAll('.pTown').forEach(n => n.textContent = who === 'Bryce' ? 'Golden' : 'Berthoud');
+  document.querySelectorAll('.pPartner').forEach(n => n.textContent = who === 'Bryce' ? 'Tristan' : 'Bryce');
 }
 document.querySelectorAll('input[name=pitchWho]').forEach(i => i.addEventListener('change', () => { setPitcher(i.value); setBy(i.value); }));
 
@@ -233,7 +242,7 @@ function buildSelect() {
 }
 biz.addEventListener('change', () => { bizOther.hidden = biz.value !== '__other'; if (!bizOther.hidden) bizOther.focus(); const s = BY_ID[biz.value]; if (s) $('price').value = (PRICE[s.price] || PRICE.starter)[1]; });
 function setBy(who) { const i = who === 'Bryce' ? $('byB') : $('byT'); i.checked = true; store.set('wl.by', who); const p = who === 'Bryce' ? $('pwB') : $('pwT'); p.checked = true; setPitcher(who); }
-document.querySelectorAll('input[name=by]').forEach(i => i.addEventListener('change', () => setBy(i.value)));
+document.querySelectorAll('input[name=by]').forEach(i => i.addEventListener('change', () => { setBy(i.value); renderOwnerText(); }));
 function logFor(id) {
   go('log');
   biz.value = id; bizOther.hidden = true; const s = BY_ID[id]; if (s) $('price').value = (PRICE[s.price] || PRICE.starter)[1];
@@ -265,7 +274,50 @@ function renderLog() {
     list.append(li);
   });
 }
-function renderAll() { renderStops(); renderLog(); }
+function renderAll() { renderStops(); renderLog(); renderOwnerShops(); }
+
+/* ---------- owner text (built and copied here; never sent by Hermes) ---------- */
+const OT_FIELDS = ['otOwner', 'otRegister', 'otDomain', 'otRegistrar'];
+const otKey = id => 'wl.ot.' + id;
+function otSaved(id) { try { return JSON.parse(store.get(otKey(id)) || '{}') || {}; } catch (e) { return {}; } }
+function renderOwnerShops() {
+  const sel = $('otShop'), keep = sel.value;
+  sel.innerHTML = ''; sel.append(el('option', { value: '', text: 'Pick a shop' }));
+  const yesIds = [];
+  for (const r of rows.slice().sort((a, b) => (b.at || 0) - (a.at || 0))) if (r.result === 'Yes' && r.stopId && BY_ID[r.stopId] && !yesIds.includes(r.stopId)) yesIds.push(r.stopId);
+  if (yesIds.length) { const g = el('optgroup', { label: 'Said yes' }); yesIds.forEach(id => g.append(el('option', { value: id, text: BY_ID[id].name }))); sel.append(g); }
+  const rest = STOPS.filter(s => !yesIds.includes(s.id));
+  if (rest.length) { const g = el('optgroup', { label: 'All stops' }); rest.forEach(s => g.append(el('option', { value: s.id, text: s.name }))); sel.append(g); }
+  sel.value = keep; if (sel.value !== keep) sel.value = '';
+  renderOwnerText();
+}
+function fillOwner() {
+  const s = BY_ID[$('otShop').value], saved = s ? otSaved(s.id) : {};
+  $('otOwner').value = saved.otOwner ?? (s ? s.owner : '') ?? '';
+  $('otRegister').value = saved.otRegister ?? (s ? String(s.register || '').toLowerCase() : '');
+  if (!['', 'square', 'shopify', 'clover'].includes($('otRegister').value)) $('otRegister').value = '';
+  $('otDomain').value = saved.otDomain ?? (s && s.url ? host(s.url) : '');
+  $('otRegistrar').value = saved.otRegistrar ?? (s ? s.registrar : '') ?? '';
+  $('otStatus').textContent = '';
+  renderOwnerText();
+}
+function renderOwnerText() {
+  const s = BY_ID[$('otShop').value];
+  const me = (document.querySelector('input[name=by]:checked') || {}).value || 'Tristan';
+  $('otText').value = window.HermesOwnerText ? window.HermesOwnerText.build({ shop: s ? s.name : '', owner: $('otOwner').value, register: $('otRegister').value, domain: $('otDomain').value, registrar: $('otRegistrar').value, me }) : '';
+}
+$('otShop').addEventListener('change', fillOwner);
+OT_FIELDS.forEach(id => $(id).addEventListener('input', () => {
+  const s = BY_ID[$('otShop').value];
+  if (s) { const o = {}; OT_FIELDS.forEach(f => { o[f] = $(f).value; }); store.set(otKey(s.id), JSON.stringify(o)); }
+  $('otStatus').textContent = ''; renderOwnerText();
+}));
+$('otCopy').addEventListener('click', () => {
+  const text = $('otText').value;
+  const done = () => { $('otStatus').textContent = 'Copied. Paste it into Messages and send it yourself.'; };
+  const fallback = () => { const t = $('otText'); t.focus(); t.select(); $('otStatus').textContent = 'Text selected. Tap Copy in the menu, then paste it into Messages.'; };
+  try { navigator.clipboard.writeText(text).then(done, fallback); } catch (e) { fallback(); }
+});
 
 /* ---------- data ---------- */
 const visitRow = r => ({ id: r.id, business: r.business, how: r.how, who: r.who, result: r.result, price: r.price, followUp: r.follow_up || '', notes: r.notes, at: Date.parse(r.at) || 0, by: r.by_name, stopId: r.stop_id || '', region: r.region });
@@ -281,7 +333,7 @@ function wipe() {
   teardown();
   setStops([]); rows = []; loaded = false;
   ['stopList', 'list', 'strip', 'regionChips', 'personChips'].forEach(id => { $(id).innerHTML = ''; });
-  biz.innerHTML = ''; $('stopsLede').textContent = ''; $('whoami').textContent = ''; statusEl.textContent = '';
+  biz.innerHTML = ''; $('otShop').innerHTML = ''; ['otOwner', 'otRegister', 'otDomain', 'otRegistrar', 'otText'].forEach(id => { $(id).value = ''; }); $('otStatus').textContent = ''; $('stopsLede').textContent = ''; $('whoami').textContent = ''; statusEl.textContent = '';
 }
 let booted = false;
 async function boot() {

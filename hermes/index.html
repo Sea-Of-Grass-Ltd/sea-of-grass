@@ -20,8 +20,27 @@ a{color:var(--accent)}
 .wrap{max-width:620px;margin:0 auto;padding-block:16px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:18px}
 header h1{font:700 25px/1.2 var(--body);margin:0;text-wrap:balance}
 header p{color:var(--muted);margin:4px 0 0;font-size:15px}
-nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding-block:8px;border-bottom:1px solid var(--line)}
-nav.tabs a{text-decoration:none;text-align:center;font:600 15px var(--body);color:var(--fg);padding:11px 4px;border-radius:10px;border:1px solid var(--line);background:var(--card)}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;padding-block:8px;border-bottom:1px solid var(--line)}
+nav.tabs a{text-decoration:none;text-align:center;font:600 15px var(--body);color:var(--fg);padding:12px 2px;min-height:46px;border-radius:10px;border:1px solid var(--line);background:var(--card)}
+/* founding-five script */
+.spots{display:flex;justify-content:space-between;align-items:baseline;gap:10px;background:var(--soft);border-radius:12px;padding:12px 14px}
+.spots b{font:700 19px var(--body);font-variant-numeric:tabular-nums}
+.scard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:12px}
+.scard h2{font-size:19px}
+.scard ol{margin:0;padding-left:22px;display:grid;gap:12px;font-size:17px;line-height:1.45}
+.scard ol li::marker{font-weight:700;color:var(--accent)}
+.scard .k{font-weight:700}
+.scard .q{font-style:normal}
+.scard dl{margin:0;display:grid;gap:4px}
+.scard dt{font-weight:700;font-size:17px;margin-top:8px}
+.scard dt:first-child{margin-top:0}
+.scard dd{margin:0;font-size:17px;line-height:1.45}
+.sfoot{margin:0;font-size:15px;color:var(--muted);border-top:1px solid var(--line);padding-top:10px}
+#v-script>.btn{text-align:center}
+.ot{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:14px}
+.ot textarea{min-height:320px;font-size:16px;line-height:1.45;white-space:pre-wrap}
+.ot .row2{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+.jump{font:600 16px var(--body);display:block;text-align:center;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--card);text-decoration:none}
 nav.tabs a[aria-current="page"]{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
 nav.tabs a:focus-visible,button:focus-visible,.chipbtn:focus-visible{outline:3px solid var(--fg);outline-offset:2px}
 h2{font:700 21px/1.25 var(--body);margin:0;text-wrap:balance}
@@ -174,11 +193,41 @@ ul.visits .vnote{color:var(--muted);font-size:15px;overflow-wrap:anywhere}
   </header>
 
   <nav class="tabs" aria-label="Sections">
+    <a href="#script" data-view="script">Script</a>
     <a href="#stops" data-view="stops">Stops</a>
     <a href="#pitch" data-view="pitch">Pitch</a>
     <a href="#costs" data-view="costs">Costs</a>
     <a href="#log" data-view="log">Log</a>
   </nav>
+
+  <!-- SCRIPT: the founding-five pocket card, both sides -->
+  <section class="view" id="v-script" aria-label="Script" hidden>
+    <div class="spots"><span class="label">Founding five</span><b id="spotsLeft"></b></div>
+    <section class="scard card-front" aria-labelledby="frontH">
+      <h2 id="frontH">Walk-in script</h2>
+      <ol>
+        <li><span class="k">Opener.</span> <span class="q">“I'm <span class="pName">Tristan</span>. <span class="pPartner">Bryce</span> and I run a little web studio here. Is the owner around?”</span></li>
+        <li><span class="k">Hook.</span> <span class="q">“When you change a price or sell out at the register, does your website keep up?”</span> Then listen.</li>
+        <li><span class="k">Ask what they want.</span> <span class="q">“Do you want more orders, or fewer phone calls and your menu and hours showing right when people search?”</span> Pitch to their answer.</li>
+        <li><span class="k">Offer.</span> <span class="q">“We build sites that run from your Square, Shopify or Clover. We're taking five founding shops: your price is locked at $50 a month for two years, and we'll photograph your food for free. All we ask is an honest review.”</span></li>
+        <li><span class="k">Show</span> Bunny World on your phone, <span class="k">then close.</span> <span class="q">“Want me to put you down as one of the five?”</span> Book a slow time to set it up, then log it.</li>
+      </ol>
+      <p class="sfoot">Never push past a no. A first visit can just be a heads-up.</p>
+    </section>
+    <section class="scard card-back" aria-labelledby="backH">
+      <h2 id="backH">If they say…</h2>
+      <dl>
+        <dt>“No time.”</dt><dd>“That's the point. We do the work. The hookup takes about two minutes with us beside you.”</dd>
+        <dt>“I have Facebook.”</dt><dd>“Keep it. This is what comes up when people search for you.”</dd>
+        <dt>“Don't need more business.”</dt><dd>“Then we keep it simple: menu, hours, no ordering, or ordering you switch off when it's busy.”</dd>
+        <dt>“Nervous about my register.”</dt><dd>“You tap Connect on Square's own page and never give us a password. Change your mind and you owe nothing. One click undoes it.”</dd>
+        <dt>“What's the catch?”</dt><dd>“None. It's $50 a month from day one, cancel any time. Back out at the hookup and you owe nothing.”</dd>
+        <dt>“Not right now.”</dt><dd>“Fair. Can I leave a card and check back next week? There are only five spots.”</dd>
+      </dl>
+      <p class="sfoot">Unsure? Leave a card and note when the manager's in.</p>
+    </section>
+    <a class="btn" href="#log" data-go="log">Log this visit</a>
+  </section>
 
   <!-- STOPS -->
   <section class="view" id="v-stops" aria-label="Stops">
@@ -319,6 +368,7 @@ ul.visits .vnote{color:var(--muted);font-size:15px;overflow-wrap:anywhere}
 
   <!-- LOG -->
   <section class="view" id="v-log" aria-label="Log" hidden>
+    <a class="jump" href="#script" data-go="script">Open the founding-five script</a>
     <form id="f" autocomplete="off">
       <div class="field">
         <span class="label" id="byL">Logged by</span>
@@ -392,10 +442,32 @@ ul.visits .vnote{color:var(--muted);font-size:15px;overflow-wrap:anywhere}
       <div class="chips" id="personChips" role="group" aria-label="Filter visits by person"></div>
       <ul class="visits" id="list"><li class="empty">Loading your log…</li></ul>
     </section>
+
+    <section class="ot" id="ownerText" aria-labelledby="otH">
+      <div>
+        <h2 id="otH">Text an owner who said yes</h2>
+        <p class="lede">Pick the shop and check the details. Copy the text, then paste it into Messages and send it yourself.</p>
+      </div>
+      <div class="field"><label class="label" for="otShop">Shop</label><select id="otShop"><option value="">Pick a shop</option></select></div>
+      <div class="row2">
+        <div class="field"><label class="label" for="otOwner">Owner’s first name</label><input id="otOwner" autocomplete="off"></div>
+        <div class="field"><label class="label" for="otRegister">Register</label>
+          <select id="otRegister"><option value="">Not sure yet</option><option value="square">Square</option><option value="shopify">Shopify</option><option value="clover">Clover</option></select></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label class="label" for="otDomain">Web address</label><input id="otDomain" autocomplete="off" inputmode="url" autocapitalize="off"></div>
+        <div class="field"><label class="label" for="otRegistrar">Registered with</label><input id="otRegistrar" autocomplete="off" placeholder="e.g. GoDaddy"></div>
+      </div>
+      <div class="field"><label class="label" for="otText">The text</label><textarea id="otText" readonly rows="14"></textarea></div>
+      <button type="button" class="btn" id="otCopy">Copy text</button>
+      <p class="status" id="otStatus" role="status"></p>
+    </section>
   </section>
 </div>
 
 </main>
+<script src="founding.js"></script>
+<script src="owner-text.js"></script>
 <script src="supabase.js"></script>
-<script src="app.js?v=2"></script>
+<script src="app.js?v=4"></script>
 </body></html>
