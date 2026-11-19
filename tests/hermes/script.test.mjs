@@ -31,6 +31,14 @@ async function openApp(w) {
   return o;
 }
 
+test('the paid founding offer everywhere: no free month left in Hermes', () => {
+  for (const f of ['index.html', 'app.js', 'owner-text.js', 'founding.js']) {
+    const src = fs.readFileSync(path.join(ROOT, 'hermes', f), 'utf8');
+    assert.doesNotMatch(src, /free month|first month (is )?free|month free/i, f);
+    assert.doesNotMatch(src, /transform your business/i, f);
+  }
+});
+
 test('the spots count lives in one place and is honest', () => {
   assert.ok(fs.existsSync(CONFIG), 'hermes/founding.js holds the count');
   const f = readConfig();
@@ -58,14 +66,17 @@ for (const w of [360, 390]) {
     assert.match(front0(await page.innerText('#v-script .card-front ol > li:nth-child(3)')), /more orders, or fewer phone calls and your menu and hours showing right when people search/);
     assert.match(await page.innerText('#v-script .card-front ol > li:nth-child(5)'), /then close.*put you down as one of the five/s);
     const front = await page.innerText('#v-script .card-front');
-    assert.match(front, /first month free/i);
-    assert.match(front, /\$50 a month for a year/);
-    assert.match(front, /honest review and a photo/);
+    assert.match(front, /locked at \$50 a month for two years/);
+    assert.match(front, /photograph your food for free/);
+    assert.match(front, /All we ask is an honest review/);
+    assert.doesNotMatch(front, /free month|month free|for a year/i);
     assert.match(front, /Bunny World/);
     assert.match(front, /Never push past a no/);
     const answers = await page.locator('#v-script .card-back dt').allInnerTexts();
     assert.equal(answers.length, 6, 'six "If they say…" answers');
     assert.match(answers.join(' | '), /No time.*Facebook.*Don.t need more business.*register.*catch.*Not right now/s);
+    assert.match(await page.innerText('#v-script .card-back'), /\$50 a month from day one, cancel any time\. Back out at the hookup and you owe nothing\./);
+    assert.doesNotMatch(await page.innerText('#v-script .card-back'), /free month/i);
     assert.match(await page.innerText('#v-script .card-back'), /menu, hours, no ordering, or ordering you switch off when it.s busy/);
 
     assert.match(await page.innerText('#spotsLeft'), /^5 of 5 spots left$/);
