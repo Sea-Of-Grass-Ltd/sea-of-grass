@@ -72,12 +72,17 @@ for (const w of [360, 390]) {
     assert.doesNotMatch(front, /free month|month free|for a year/i);
     assert.match(front, /Bunny World/);
     assert.match(front, /Never push past a no/);
-    const answers = await page.locator('#v-script .card-back dt').allInnerTexts();
-    assert.equal(answers.length, 6, 'six "If they say…" answers');
-    assert.match(answers.join(' | '), /No time.*Facebook.*Don.t need more business.*register.*catch.*Not right now/s);
-    assert.match(await page.innerText('#v-script .card-back'), /\$50 a month from day one, cancel any time\. Back out at the hookup and you owe nothing\./);
-    assert.doesNotMatch(await page.innerText('#v-script .card-back'), /free month/i);
-    assert.match(await page.innerText('#v-script .card-back'), /menu, hours, no ordering, or ordering you switch off when it.s busy/);
+    const backSide = await page.$$eval('#v-script .card-back dt', dts => dts.map(dt => [dt.textContent, dt.nextElementSibling.textContent]));
+    const q = t => t.replace(/[“”"]/g, '').replace(/[’']/g, "'");
+    assert.deepEqual(backSide.map(([a, b]) => [q(a), q(b)]), [
+      ['No time.', "That's the point. We do the work, and the hookup takes two minutes."],
+      ['I have Facebook.', 'Keep it. This is what shows up when people search.'],
+      ["Don't need more business.", 'Then we keep it simple: menu and hours, or ordering you switch off when busy.'],
+      ['Nervous about my register.', "You tap Connect on Square's own page, with no password shared. Change your mind and you owe nothing."],
+      ['Too expensive.', '$1,200 is about $23 a week for a year, roughly what a couple of online orders bring in. Or start at $50 a month.'],
+      ["What's the catch?", 'None. $50 a month from day one, cancel any time.'],
+      ['Not right now.', 'Fair. Can I leave a card and check back next week?'],
+    ], 'the back matches the printed card');
 
     assert.match(await page.innerText('#spotsLeft'), /^5 of 5 spots left$/);
 
