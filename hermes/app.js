@@ -118,7 +118,7 @@ function fmt(ts) { try { return new Date(ts).toLocaleString([], { month: 'short'
 function host(u) { try { return new URL(u).hostname.replace(/^www\./, ''); } catch (e) { return u; } }
 
 /* ---------- views (hash routes) ---------- */
-const VIEWS = ['script', 'stops', 'pitch', 'costs', 'log'];
+const VIEWS = ['script', 'stops', 'pitch', 'costs', 'docs', 'log'];
 function show(v) { if (!VIEWS.includes(v)) v = 'stops'; VIEWS.forEach(n => { $('v-' + n).hidden = n !== v; }); document.querySelectorAll('nav.tabs a').forEach(a => { if (a.dataset.view === v) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }); }
 let curView = 'stops';
 function go(v) { if (!VIEWS.includes(v)) v = 'stops'; const changed = v !== curView; curView = v; show(v); if (changed) window.scrollTo(0, 0); try { if (location.hash.slice(1) !== v) location.hash = v; } catch (e) {} }

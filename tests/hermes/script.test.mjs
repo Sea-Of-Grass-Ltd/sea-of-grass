@@ -97,7 +97,7 @@ for (const w of [360, 390]) {
       assert.ok(over <= 0, `${v}: no sideways scroll (${over}px)`);
     }
     const tabs = await page.$$eval('nav.tabs a', as => as.map(a => ({ t: a.textContent.trim(), clip: a.scrollWidth > a.clientWidth + 1, h: a.getBoundingClientRect().height })));
-    assert.deepEqual(tabs.map(t => t.t), ['Script', 'Stops', 'Pitch', 'Costs', 'Log']);
+    assert.deepEqual(tabs.map(t => t.t), ['Script', 'Stops', 'Pitch', 'Costs', 'Docs', 'Log']);
     for (const t of tabs) { assert.equal(t.clip, false, `${t.t} tab label fits`); assert.ok(t.h >= 44, `${t.t} tab is a 44px target`); }
     await page.click('nav.tabs a[data-view="log"]');
     const small = await page.$$eval('#app input:not([type=radio]):not([type=range]), #app select, #app textarea', els => els.filter(e => parseFloat(getComputedStyle(e).fontSize) < 16).map(e => e.id || e.tagName));
