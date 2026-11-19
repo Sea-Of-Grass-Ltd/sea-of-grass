@@ -67,7 +67,7 @@ for (const w of [360, 390]) {
     assert.match(await page.innerText('#v-script .card-front ol > li:nth-child(5)'), /then close.*put you down as one of the five/s);
     const front = await page.innerText('#v-script .card-front');
     assert.match(front, /locked at \$50 a month for two years/);
-    assert.match(front, /photograph your food for free/);
+    assert.match(front, /photograph your food or shop for free/);
     assert.match(front, /All we ask is an honest review/);
     assert.doesNotMatch(front, /free month|month free|for a year/i);
     assert.match(front, /Bunny World/);
