@@ -37,6 +37,9 @@ nav.tabs a{text-decoration:none;text-align:center;font:600 15px var(--body);colo
 .scard dd{margin:0;font-size:17px;line-height:1.45}
 .sfoot{margin:0;font-size:15px;color:var(--muted);border-top:1px solid var(--line);padding-top:10px}
 #v-script>.btn{text-align:center}
+.ot{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:14px}
+.ot textarea{min-height:320px;font-size:16px;line-height:1.45;white-space:pre-wrap}
+.ot .row2{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
 .jump{font:600 16px var(--body);display:block;text-align:center;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--card);text-decoration:none}
 nav.tabs a[aria-current="page"]{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
 nav.tabs a:focus-visible,button:focus-visible,.chipbtn:focus-visible{outline:3px solid var(--fg);outline-offset:2px}
@@ -438,11 +441,32 @@ ul.visits .vnote{color:var(--muted);font-size:15px;overflow-wrap:anywhere}
       <div class="chips" id="personChips" role="group" aria-label="Filter visits by person"></div>
       <ul class="visits" id="list"><li class="empty">Loading your log…</li></ul>
     </section>
+
+    <section class="ot" id="ownerText" aria-labelledby="otH">
+      <div>
+        <h2 id="otH">Text an owner who said yes</h2>
+        <p class="lede">Pick the shop and check the details. Copy the text, then paste it into Messages and send it yourself.</p>
+      </div>
+      <div class="field"><label class="label" for="otShop">Shop</label><select id="otShop"><option value="">Pick a shop</option></select></div>
+      <div class="row2">
+        <div class="field"><label class="label" for="otOwner">Owner’s first name</label><input id="otOwner" autocomplete="off"></div>
+        <div class="field"><label class="label" for="otRegister">Register</label>
+          <select id="otRegister"><option value="">Not sure yet</option><option value="square">Square</option><option value="shopify">Shopify</option><option value="clover">Clover</option></select></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label class="label" for="otDomain">Web address</label><input id="otDomain" autocomplete="off" inputmode="url" autocapitalize="off"></div>
+        <div class="field"><label class="label" for="otRegistrar">Registered with</label><input id="otRegistrar" autocomplete="off" placeholder="e.g. GoDaddy"></div>
+      </div>
+      <div class="field"><label class="label" for="otText">The text</label><textarea id="otText" readonly rows="14"></textarea></div>
+      <button type="button" class="btn" id="otCopy">Copy text</button>
+      <p class="status" id="otStatus" role="status"></p>
+    </section>
   </section>
 </div>
 
 </main>
 <script src="founding.js"></script>
+<script src="owner-text.js"></script>
 <script src="supabase.js"></script>
-<script src="app.js?v=3"></script>
+<script src="app.js?v=4"></script>
 </body></html>
