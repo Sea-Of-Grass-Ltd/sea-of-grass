@@ -20,8 +20,8 @@ a{color:var(--accent)}
 .wrap{max-width:620px;margin:0 auto;padding-block:16px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:18px}
 header h1{font:700 25px/1.2 var(--body);margin:0;text-wrap:balance}
 header p{color:var(--muted);margin:4px 0 0;font-size:15px}
-nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;padding-block:8px;border-bottom:1px solid var(--line)}
-nav.tabs a{text-decoration:none;text-align:center;font:600 15px var(--body);color:var(--fg);padding:12px 2px;min-height:46px;border-radius:10px;border:1px solid var(--line);background:var(--card)}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;padding-block:8px;border-bottom:1px solid var(--line)}
+nav.tabs a{text-decoration:none;text-align:center;font:600 14px var(--body);letter-spacing:-.01em;color:var(--fg);padding:12px 2px;min-height:46px;border-radius:10px;border:1px solid var(--line);background:var(--card)}
 /* founding-five script */
 .spots{display:flex;justify-content:space-between;align-items:baseline;gap:10px;background:var(--soft);border-radius:12px;padding:12px 14px}
 .spots b{font:700 19px var(--body);font-variant-numeric:tabular-nums}
@@ -40,6 +40,16 @@ nav.tabs a{text-decoration:none;text-align:center;font:600 15px var(--body);colo
 .ot{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:14px}
 .ot textarea{min-height:320px;font-size:16px;line-height:1.45;white-space:pre-wrap}
 .ot .row2{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+.doc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:0 16px}
+.doc>summary{font:700 18px var(--body);padding:14px 0;cursor:pointer;list-style-position:inside}
+.docbody{display:grid;gap:12px;padding-bottom:18px;font-size:16px;line-height:1.5}
+.docbody h2{font-size:20px}
+.docbody h3{font-size:17px;margin-top:10px;padding-top:12px;border-top:1px solid var(--line)}
+.docbody p{margin:0}
+.docbody ol.steps{margin:0;padding-left:24px;display:grid;gap:12px}
+.docbody ol.steps>li::marker{font-weight:700;color:var(--accent)}
+.docbody ul{margin:6px 0 0;padding-left:20px;display:grid;gap:4px}
+.fill{background:var(--soft);border-radius:4px;padding:0 3px;font-weight:600;white-space:nowrap}
 .jump{font:600 16px var(--body);display:block;text-align:center;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--card);text-decoration:none}
 nav.tabs a[aria-current="page"]{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
 nav.tabs a:focus-visible,button:focus-visible,.chipbtn:focus-visible{outline:3px solid var(--fg);outline-offset:2px}
@@ -197,6 +207,7 @@ ul.visits .vnote{color:var(--muted);font-size:15px;overflow-wrap:anywhere}
     <a href="#stops" data-view="stops">Stops</a>
     <a href="#pitch" data-view="pitch">Pitch</a>
     <a href="#costs" data-view="costs">Costs</a>
+    <a href="#docs" data-view="docs">Docs</a>
     <a href="#log" data-view="log">Log</a>
   </nav>
 
@@ -366,6 +377,107 @@ ul.visits .vnote{color:var(--muted);font-size:15px;overflow-wrap:anywhere}
     </div>
   </section>
 
+  <!-- DOCS -->
+  <section class="view" id="v-docs" aria-label="Docs" hidden>
+    <div>
+      <h2>Documents</h2>
+      <p class="lede">Things we hand to shops. Fill the marked <span class="fill">[fields]</span> for each one.</p>
+    </div>
+    <details class="doc" id="doc-owner-guide" open>
+      <summary>Website owner’s guide</summary>
+      <article class="docbody">
+      <h2>Your new website: how to get people using it</h2>
+<p>Your website now sends orders straight into your Square register. That only helps if people know it’s there, so here’s what actually works, in order of how much it helps for the time it takes. Most of it is ten minutes, once.</p>
+<p>One thing worth knowing first: most people find a place like yours by word of mouth or by walking past, not by searching. So half of this guide is about Google, and half is about your counter, your bags and your window.</p>
+<h3>The first week (about two hours in all)</h3>
+<ol class="steps" start="1">
+<li><b>Put your order page on Google, and make it the first choice.</b> This is the biggest one.
+<ul>
+<li>Open your Google Business Profile (the box that shows when someone searches your name).</li>
+<li>Add your website, <span class="fill">[website]</span>.</li>
+<li>Under <b>Menu</b>, add <span class="fill">[website]</span>/menu.</li>
+<li>Under <b>Food ordering</b>, tap <b>Add a link</b>, paste <span class="fill">[website]</span>/order, then choose <b>Set as preferred</b> for pickup.</li>
+<li>If delivery apps you don’t use show up in that list, turn off <b>Show provider to customers</b> for each one.</li>
+<li>Check your hours while you’re there.</li>
+</ul>
+</li>
+</ol>
+<p>If you skip the "preferred" step, an app that takes up to 30% of every order can sit in that spot instead of you.</p>
+<ol class="steps" start="2">
+<li><b>Add Sea of Grass as a manager, not your password.</b> If you’d like us to help with Google, go to <b>People and access</b> and invite <span class="fill">[hello@seaofgrass.studio]</span> as a <b>Manager</b>. You stay the owner, and you can remove us any time.
+</li>
+<li><b>Ask everyone for a Google review.</b> We’ll print you a small card with a QR code that opens your review page. Hand one out with orders, or keep a stack by the register.
+<ul>
+<li>Ask everyone, not just the happy ones.</li>
+<li>Never offer a discount or a freebie for a review. Google and the FTC both forbid it.</li>
+<li>Don’t have staff or family review you.</li>
+<li>Reviews matter more than almost anything: one extra star has been shown to bring independent restaurants 5–9% more sales, and about half of people won’t try a place with fewer than 20 reviews.</li>
+</ul>
+</li>
+<li><b>Say yes to Apple Maps and Bing too.</b> They’re free and take about 45 minutes together.
+<ul>
+<li>Every iPhone uses Apple Maps when someone asks Siri. Claim your place at business.apple.com.</li>
+<li>Bing Places can copy your Google profile in a couple of clicks, and Bing feeds some of the AI search answers people now use.</li>
+</ul>
+</li>
+<li><b>Put the website on your Square receipts.</b> In your Square Dashboard, go to <b>Settings &gt; Account &amp; Settings &gt; Payments &gt; Receipts</b>, and type "Order ahead at <span class="fill">[website]</span>" in the extra text. Then send yourself a test receipt to check it shows.
+</li>
+<li><b>Update your bios.</b> On Instagram and Facebook, put <span class="fill">[website]</span>/order in the link spot and write "Order ahead" next to it. On Yelp, claim your free listing and fix the hours and website. Please don’t ask anyone for Yelp reviews, because Yelp punishes it.
+</li>
+<li><b>Tell the people who already love you, once.</b> Post one photo: "You can now order ahead at <span class="fill">[website]</span>. It’ll be ready when you walk in." Text it to regulars who’ve told you it’s fine to text them. One message is plenty.
+</li>
+</ol>
+<h3>At the counter (it keeps working every day)</h3>
+<ol class="steps" start="8">
+<li><b>A QR card by the register and a cling on the window.</b> We’ll give you both: "Skip the line next time: order ahead," with the code.
+<ul>
+<li>The QR is for <i>next time</i>. Keep your paper menu, because plenty of people don’t like ordering from a code while they’re standing there.</li>
+<li>The window cling catches people walking past, which is how almost a third of people find somewhere new.</li>
+</ul>
+</li>
+<li><b>Say it out loud.</b> When someone’s waiting: "Next time you can order ahead on our website, and it’ll be ready when you walk in." One sentence, every day, and it sticks.
+</li>
+<li><b>Put it on bags, boxes and menus</b> the next time you reorder them. Just the web address, in big letters.
+</li>
+<li><b>If you’re on DoorDash or Uber Eats, keep them.</b> They help new people find you. But when a regular orders through them, tell them they can order direct next time. The apps take 15–30% of each delivery order; ordering through your own site costs you about 3%.
+</li>
+</ol>
+<h3>Keep it true (five minutes a week)</h3>
+<ol class="steps" start="12">
+<li><b>Keep your hours the same everywhere</b> : on Google, on Apple Maps and on your site. Wrong hours lose more customers than anything. Google also reads your website, so if the site is out of date, Google can change your correct hours to the wrong ones. Tell us about holiday hours and we’ll update the site; that’s part of your plan.
+</li>
+<li><b>Keep your menu and prices in Square.</b> Your website reads from Square, so change things there and the site follows. Mark an item sold out in Square when you run out.
+</li>
+<li><b>Answer reviews</b> , the good ones and the bad ones. A short, kind reply tells new customers there’s a real person here who cares.
+</li>
+<li><b>Leave your name, address and category on Google alone</b> once they’re verified. Changing them can make Google ask you to verify all over again.
+</li>
+</ol>
+<h3>Once a month (fifteen minutes)</h3>
+<ol class="steps" start="16">
+<li><b>Look at what sold online.</b> In Square, go to <b>Reports &gt; Sales summary</b> and group it by <b>Source</b>. If one item sells better online than in the shop, put it first on your site and on your counter card.
+</li>
+<li><b>Peek at Google.</b> Your profile’s <b>Performance</b> page shows how many people called, tapped your website or asked for directions. Count your orders in Square, though; Google’s order count won’t include orders from your website.
+</li>
+<li><b>Post one real photo</b> of something fresh, with your link. A phone photo of today’s special beats anything polished.
+</li>
+</ol>
+<h3>Things you can skip</h3>
+<ul>
+<li><b>Google "Posts"</b> barely move anything. Do them only if you enjoy it.</li>
+<li><b>Paying for listings on dozens of directories.</b> Google, Apple, Bing and Yelp are the ones that matter.</li>
+<li><b>Square Marketing and Square Loyalty</b> come with Square’s Plus plan, $49 a month per location. They’re good tools if you’re already on Plus. If you’re not, start with everything above first.</li>
+</ul>
+<h3>When to call us</h3>
+<ul>
+<li>Something on the site looks wrong or an order didn’t come through: email hello@seaofgrass.studio, or call or text the number on your agreement. Care is part of your plan.</li>
+<li>You want to add something: catering, gift cards, a new page. Just ask.</li>
+</ul>
+<p><i>You run the shop. We keep the website working for you.</i></p>
+      </article>
+    </details>
+  </section>
+
   <!-- LOG -->
   <section class="view" id="v-log" aria-label="Log" hidden>
     <a class="jump" href="#script" data-go="script">Open the founding-five script</a>
@@ -469,5 +581,5 @@ ul.visits .vnote{color:var(--muted);font-size:15px;overflow-wrap:anywhere}
 <script src="founding.js"></script>
 <script src="owner-text.js"></script>
 <script src="supabase.js"></script>
-<script src="app.js?v=4"></script>
+<script src="app.js?v=5"></script>
 </body></html>
