@@ -14,8 +14,9 @@ window.SOG_SHOP = {
   thanks: '/preview/shop/thanks/',
   demoCheckout: '/preview/shop/checkout/',
   book: 'https://cal.com/sea-of-grass',
-  // Founding five: the first five shops on the $50 care plan get month one free and $50 locked for a year,
-  // for a review, a photo and permission to feature them. Lower `left` by hand when a shop signs. Never fake it.
+  // Founding five (paid, 2026-11-19): the first five shops pay $50 a month from day one, locked for two years, with a free
+  // photo shoot, nothing owed if they back out at the hookup, and an honest review in return. No free month.
+  // Lower `left` by hand when a shop signs. Never fake it.
   founding: { total: 5, left: 5 },
 
   products: {
