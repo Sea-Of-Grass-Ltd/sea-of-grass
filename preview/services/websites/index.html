@@ -128,6 +128,12 @@
   <div class="buy-more"><span class="amt">$1,200</span><p><b>Do you just need one good page?</b> A starter site gives you one page in a ready Bunny World look, with your hours, menu, photos, map and a link to the booking tool you already use. You can also pay $100 a month, billed monthly, with a 12-month minimum ($1,200 total).</p><div class="links"><a class="btn q" href="/bunnyworld/">See the looks</a></div></div>
   <div class="buy-head"><h3>Buy outright</h3><p>Pick one, pay by card, and we call you to get going.</p></div>
   <div class="shop-cards joined" data-shop-cards="fix,care,kickoff" data-shop-pick="care"><noscript><p>Turn on JavaScript to buy here, or book a call with us instead.</p></noscript></div>
+  <div class="founding" id="founding">
+    <div class="f-head"><p class="kick">Founding shops</p><p class="f-spots" data-spots><b data-spots-left>5 of 5</b> spots left</p></div>
+    <p class="f-lede">We&rsquo;re taking five founding shops onto the care plan. Your first month is free, and your $50 a month is locked in for a whole year.</p>
+    <p class="f-deal">In return, we&rsquo;d ask for an honest review, a photo of your shop and your permission to feature you here. From the second month it&rsquo;s the normal $50 a month, and you can still cancel in any month, so it&rsquo;s a real plan rather than a free trial.</p>
+    <a class="btn" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Claim a founding spot</a>
+  </div>
   <p class="buy-note">A fixed price and a date, in writing, before any work starts.</p>
 </div></section>
 <!-- 4 How it goes: big step words on a ruled grid (the home's steps) -->
@@ -161,7 +167,7 @@
 
 <!-- 7 Close: the home's full-colour band -->
 <section class="band close" id="start" aria-labelledby="h-start"><div class="in">
-  <div><h2 id="h-start">Rather talk first?</h2><p>Book fifteen or thirty minutes with Tristan or Bryce. Tell us what you have, and you&rsquo;ll leave with a next step and a price.</p><a class="btn" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a 15 or 30 minute call &rarr;</a></div>
+  <div><h2 id="h-start">Rather talk first?</h2><p>Book fifteen or thirty minutes with Tristan or Bryce. Tell us what you have, and you&rsquo;ll leave with a next step and a price.</p><a class="btn" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a 15 or 30 minute call &rarr;</a><p class="f-echo" data-founding-echo>We&rsquo;re still taking founding shops, with <span data-spots-left>5 of 5</span> spots left, and you can <a href="#founding">read about the offer</a> with the prices.</p></div>
   <div class="reach"><a href="mailto:hello@seaofgrass.studio">hello@seaofgrass.studio</a><a href="tel:+13037751333">303.775.1333</a></div>
 </div></section>
 </main>
@@ -177,5 +183,6 @@
 <script src="/preview/assets/shop/cart.js" defer></script>
 <script src="/preview/services/websites/showcase.js" defer></script>
 <script src="/preview/services/websites/register.js" defer></script>
+<script>/* founding spots: the count lives in SOG_SHOP.founding (checkout-links.js) */(function(){var f=window.SOG_SHOP&&SOG_SHOP.founding;if(!f)return;var t=f.left+" of "+f.total;document.querySelectorAll("[data-spots-left]").forEach(function(e){e.textContent=t;});if(f.left<=0){var o=document.getElementById("founding");if(o)o.classList.add("full");document.querySelectorAll("[data-founding-echo]").forEach(function(e){e.hidden=true;});}})();</script>
 </body>
 </html>

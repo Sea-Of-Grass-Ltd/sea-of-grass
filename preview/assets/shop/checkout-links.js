@@ -14,6 +14,9 @@ window.SOG_SHOP = {
   thanks: '/preview/shop/thanks/',
   demoCheckout: '/preview/shop/checkout/',
   book: 'https://cal.com/sea-of-grass',
+  // Founding five: the first five shops on the $50 care plan get month one free and $50 locked for a year,
+  // for a review, a photo and permission to feature them. Lower `left` by hand when a shop signs. Never fake it.
+  founding: { total: 5, left: 5 },
 
   products: {
     fix: {
