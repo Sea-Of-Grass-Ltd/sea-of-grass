@@ -131,6 +131,44 @@ for (const w of WIDTHS) {
   });
 }
 
+// Founding five (Tristan, 2026-11-19): first five shops get month one of the $50 plan free and $50 locked for a year,
+// for a review, a photo and permission to feature them. The spots count lives in SOG_SHOP.founding and is never faked.
+for (const w of WIDTHS) {
+  test(`${w}px · journey: the founding-five offer and an honest spots count`, async () => {
+    const { ctx, page, errors } = await site.open(PAGE, w, { reducedMotion: 'reduce' });
+    try {
+      const cfg = await page.evaluate(() => window.SOG_SHOP && window.SOG_SHOP.founding);
+      assert.ok(cfg && Number.isInteger(cfg.total) && Number.isInteger(cfg.left), 'SOG_SHOP.founding holds total and left');
+      assert.ok(cfg.left >= 0 && cfg.left <= cfg.total, 'spots left is between 0 and the total');
+
+      const offer = page.locator('#buy .founding');
+      await offer.scrollIntoViewIfNeeded();
+      assert.ok(await offer.isVisible(), 'offer visible inside the prices section');
+      const t = await text(offer);
+      assert.match(t, /five founding shops/i, 'names the five founding shops');
+      assert.match(t, /first month (is )?free/i, 'first month free');
+      assert.match(t, /locked/i, 'price locked');
+      assert.match(t, /year/i, 'locked for a year');
+      assert.match(t, /review/i, 'asks for a review');
+      assert.match(t, /photo/i, 'asks for a photo');
+      assert.match(t, /\$50/, 'states $50 from month two');
+      const spots = await text(offer.locator('[data-spots]'));
+      assert.match(spots, new RegExp(`${cfg.left} of ${cfg.total}`), `spots count reads ${cfg.left} of ${cfg.total}, from SOG_SHOP.founding`);
+
+      const echo = page.locator('#start [data-founding-echo]');
+      assert.ok(await echo.isVisible(), 'short echo near the close');
+      assert.match(await text(echo), /founding/i, 'echo mentions the founding offer');
+      assert.match(await text(echo), new RegExp(`${cfg.left} of ${cfg.total}`), 'echo shows the same count');
+
+      // the other public prices are unchanged, and the biggest still comes first
+      const buy = await text(page.locator('#buy'));
+      assert.equal((buy.match(/\$\d[\d,]*/g) || [])[0], '$2,000', 'whole site is still the first price');
+      for (const p of ['$1,200', '$100 a month', '$250']) assert.ok(buy.includes(p), `still shows ${p}`);
+      assert.deepEqual(errors, [], 'no console errors');
+    } finally { await ctx.close(); }
+  });
+}
+
 test('stylesheet uses no CSS gradients as surfaces', () => {
   const css = fs.readFileSync(path.join(ROOT, 'preview/services/websites/websites.css'), 'utf8');
   assert.doesNotMatch(css, /(linear|radial|conic)-gradient\(/, 'gradient found in websites.css');
