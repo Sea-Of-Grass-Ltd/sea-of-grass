@@ -23,6 +23,7 @@ let site;
 before(async () => { site = await startSite(); });
 after(async () => { await site?.close(); });
 
+const front0 = s => s.replace(/\s+/g, ' ');
 async function openApp(w) {
   const o = await site.open(PAGE, w);
   // stand in for a signed-in member: show the app shell (no data is loaded or needed for the script)
@@ -52,8 +53,10 @@ for (const w of [360, 390]) {
     assert.equal(await page.isVisible('#v-script'), true, 'one tap opens the script');
     assert.equal(await page.getAttribute('nav.tabs a[data-view="script"]', 'aria-current'), 'page');
 
-    const steps = await page.locator('#v-script .card-front ol > li .k').allInnerTexts();
-    assert.deepEqual(steps.map(s => s.replace(/\W+$/, '')), ['Opener', 'Hook', 'Offer', 'Show', 'Close']);
+    const steps = await page.$$eval('#v-script .card-front ol > li', lis => lis.map(li => li.querySelector('.k').textContent.replace(/\W+$/, '')));
+    assert.deepEqual(steps, ['Opener', 'Hook', 'Ask what they want', 'Offer', 'Show']);
+    assert.match(front0(await page.innerText('#v-script .card-front ol > li:nth-child(3)')), /more orders, or fewer phone calls and your menu and hours showing right when people search/);
+    assert.match(await page.innerText('#v-script .card-front ol > li:nth-child(5)'), /then close.*put you down as one of the five/s);
     const front = await page.innerText('#v-script .card-front');
     assert.match(front, /first month free/i);
     assert.match(front, /\$50 a month for a year/);
@@ -61,8 +64,9 @@ for (const w of [360, 390]) {
     assert.match(front, /Bunny World/);
     assert.match(front, /Never push past a no/);
     const answers = await page.locator('#v-script .card-back dt').allInnerTexts();
-    assert.equal(answers.length, 5, 'five "If they say…" answers');
-    assert.match(answers.join(' | '), /No time.*Facebook.*register.*catch.*Not right now/s);
+    assert.equal(answers.length, 6, 'six "If they say…" answers');
+    assert.match(answers.join(' | '), /No time.*Facebook.*Don.t need more business.*register.*catch.*Not right now/s);
+    assert.match(await page.innerText('#v-script .card-back'), /menu, hours, no ordering, or ordering you switch off when it.s busy/);
 
     assert.match(await page.innerText('#spotsLeft'), /^5 of 5 spots left$/);
 
