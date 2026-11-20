@@ -37,7 +37,7 @@ for (const w of [1440, 390]) {
   test(`${w} · display lines in Syne, the thesis turn in Instrument Serif italic, names in Bricolage`, async () => {
     const { ctx, page, errors } = await site.open('/', w);
     try {
-      for (const sel of ['#services .cb-chp h3', '#brand .cb-chp h3', '.lf-title .cb-h', '.cb-thesis blockquote span', '#cb-close-h', '#services .cb-amt b']) {
+      for (const sel of ['#websites h3', '#brand h3', '#cb-svc-h', '.cb-thesis blockquote span', '#cb-close-h', '#services .cb-amt b']) {
         const f = await face(page, sel);
         assert.ok(f, `${sel} exists`);
         assert.equal(first(f.family), 'Syne', `${sel} is set in Syne (got ${f.family})`);

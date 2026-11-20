@@ -1377,6 +1377,36 @@ html[data-theme="glass"]:not([data-scheme]) body main.cb :is(.vzd-tabs button[ar
    never through the words), and a card steps out before the next one's text reaches it (the script sets .cb-out). */
 html[data-theme="glass"]:not([data-scheme]) body main.cb .cb-ch .cb-chp,html[data-theme="glass"]:not([data-scheme]) body main.cb .cb-ch .cb-chp:is(.cb-snap,.cb-flat){background:var(--p-navy)!important;box-shadow:0 0 0 18px var(--p-navy)!important;border-radius:2px;transition:opacity .16s linear,visibility 0s linear 0s}
 main.cb .cb-ch .cb-chp.cb-out,main.cb .lf-title.cb-out{opacity:0!important;visibility:hidden;pointer-events:none;transition:opacity .16s linear,visibility 0s linear .16s}
+
+/* ---- "Three things, done properly." as one compact section (Tristan, 2026-11-20: "That area of the site drags for a long
+   time"). The night stays pinned for 0.6 of a screen while its ridges rise, then this section slides up over it: a heading,
+   three columns (Websites | Brand | Creative tech) with their lines, prices and links, the promise line, then Work. ---- */
+main.cb .cb-gap{height:160vh;height:160svh}
+main.cb .lf-title{display:none}
+main.cb .cb-three{position:relative;z-index:1;background:var(--cb-light);color:var(--cb-ink);padding-block:clamp(48px,6vw,96px) clamp(36px,4vw,64px)}
+html[data-theme="glass"]:not([data-scheme]) body main.cb .cb-three{background:var(--p-navy);color:var(--p-text)}
+html body main.cb .cb-three > h2.cb-h{max-width:1240px;margin:0 auto clamp(28px,3.4vw,56px);text-align:left;font-size:clamp(36px,4.8vw,72px);line-height:1.04}
+html body main.cb .cb-three .cb-cols{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(28px,3.4vw,56px);align-items:start}
+html body main.cb .cb-three .cb-col{display:grid;gap:12px;align-content:start;min-width:0}
+html body main.cb .cb-three .cb-col h3{margin:0;font-family:var(--cb-hfont);font-weight:800;font-size:clamp(26px,2.4vw,36px);line-height:1.05;letter-spacing:-.035em}
+html body main.cb .cb-three .cb-col h3 a{color:inherit;text-decoration:none}
+html body main.cb .cb-three .cb-col h3::after{content:"";display:block;width:56px;height:4px;margin-top:12px;background:var(--cb-accent)}
+html body main.cb .cb-three .cb-col > p{margin:0}
+html body main.cb .cb-three .cb-col > h3 + p{font:400 clamp(16px,1.2vw,18px)/1.45 var(--cb-body);opacity:.85}
+html body main.cb .cb-three .cb-tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:16px;margin:6px 0 0}
+html body main.cb .cb-three .cb-tier{position:relative;display:grid;gap:6px;align-content:start;border-top:1px solid color-mix(in srgb,currentColor 22%,transparent);padding-top:12px}
+html body main.cb .cb-three .cb-tier::before{content:"";position:absolute;left:0;top:-2px;width:38px;height:3px;background:var(--p-sage,currentColor)}
+html body main.cb .cb-three .cb-tier:nth-child(2)::before{background:var(--p-poppy,currentColor)}
+html body main.cb .cb-three .cb-tier i{font:500 12px/1.2 "IBM Plex Mono",Menlo,monospace;font-style:normal;letter-spacing:.16em;text-transform:uppercase;color:var(--p-gold,inherit)}
+html body main.cb .cb-three .cb-amt{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+html body main.cb .cb-three .cb-amt b{font-family:Syne,"Space Grotesk",sans-serif;font-weight:700;font-size:clamp(28px,2.4vw,38px);line-height:1;letter-spacing:-.04em}
+html body main.cb .cb-three .cb-amt em{font:500 14px/1 var(--cb-body);font-style:normal;opacity:.75}
+html body main.cb .cb-three .cb-tier > span:last-child{font:400 14px/1.45 var(--cb-body);opacity:.8}
+html body main.cb .cb-three .cb-note{font:400 14px/1.45 var(--cb-body);opacity:.8}
+html body main.cb .cb-three .cb-more{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:4px!important;font:600 15px/1.35 var(--cb-body)}
+html body main.cb .cb-three .cb-more a:not(:first-child){text-decoration-color:var(--p-sage,currentColor)}
+html body main.cb .cb-three .cb-promise{max-width:1240px;margin:clamp(28px,3vw,48px) auto 0;font:400 15px/1.4 var(--cb-body);opacity:.8}
+@media (max-width:899px){html body main.cb .cb-three .cb-cols{grid-template-columns:1fr;gap:36px}}
 </style>
 <script>
 (function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#120607',glass:'#EEF1F8',neu:'#EFE6D8',brutal:'#FFFDF5',simple:'#F4F1EA',editorial:'#f3f1ea'};
@@ -1427,65 +1457,32 @@ apply(get());})();
     <canvas id="lf-cv" aria-label="The headline and the Sea of Grass S over a heap of grass. Move your pointer or finger sideways through it: the S gets knocked and springs back, and the grass is scooped up and settles again. Press to throw more grass."></canvas>
   </section>
   <div class="cb-gap" aria-hidden="true"></div>
-  <div class="cb-ch" id="services" data-field="meadow">
-    <article class="cb-p cb-chp">
-        <a class="ui ui-web" href="/preview/services/websites/" tabindex="-1" aria-hidden="true">
-          <span class="pl win"><span class="bar"><i></i><i></i><i></i><span class="url">harpershardware.com</span></span>
-            <span class="site"><b>Seed, feed and<br>hardware since 1952.</b><span class="ln" style="width:70%"></span><span class="ln" style="width:48%"></span><span class="btn">Visit the shop</span><span class="g3"><u></u><u></u><u></u></span></span></span>
-          <span class="pl live"><i class="dot"></i>Live &middot; 99.98% up</span>
-          <span class="pl score"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" fill="none" stroke="currentColor" stroke-opacity=".15" stroke-width="4"/><circle cx="20" cy="20" r="16" fill="none" stroke="var(--u-ok)" stroke-width="4" stroke-linecap="round" stroke-dasharray="98 100.5" pathLength="100" transform="rotate(-90 20 20)"/><text x="20" y="24.5" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor">98</text></svg><span class="mute">Speed</span></span>
-        </a>
+  </div>
+
+  <section class="cb-band cb-stage cb-three" id="services" aria-labelledby="cb-svc-h"><!-- Tristan, 2026-11-20: one heading, three columns, then straight into Work -->
+    <h2 class="cb-h" id="cb-svc-h">Three things, done properly.</h2>
+    <div class="cb-cols">
+      <article class="cb-col" id="websites">
         <h3><a href="/preview/services/websites/">Websites</a></h3>
         <p>We fix sites, build new ones and host them.</p>
         <p class="cb-price cb-tiers"><span class="cb-tier"><i>Fixes</i><span class="cb-amt"><b>$250</b><em>from, once</em></span><span>Small jobs and repairs on the site you have.</span></span><span class="cb-tier"><i>Care</i><span class="cb-amt"><b>$50</b><em>a month</em></span><span>We look after the hosting, the security and up to 30 minutes of small changes a month.</span></span></p><p class="cb-note">Starter sites are $1,200, or $100 a month for 12 months, and new sites start at $2,000.</p>
         <p class="cb-more"><a href="/preview/services/websites/#buy">Buy without a call</a><a href="/preview/services/websites/">Websites and hosting</a><a href="/preview/services/apps/">Apps</a></p>
       </article>
-  </div>
-  <div class="cb-ch" id="brand" data-field="mark">
-    <article class="cb-p cb-chp cb-flat">
-        <a class="ui ui-brand" href="/preview/services/brand/" tabindex="-1" aria-hidden="true">
-          <span class="pl kit"><span class="kt"><span>Brand kit</span><span>v3</span></span>
-            <span class="mk"><svg viewBox="0 0 44 44"><rect width="44" height="44" rx="12" fill="#2F4A2A"/><path d="M13 31V13h4l10 12V13h4v18h-4L17 19v12z" fill="#F3E7B0"/></svg><span class="aa">Aa<small>Fraunces &middot; Inter</small></span></span>
-            <span class="sw"><span style="background:#2F4A2A" data-h="2F4A2A"></span><span style="background:#E8C34A" data-h="E8C34A"></span><span style="background:#F3E7B0" data-h="F3E7B0"></span><span style="background:#C0603F" data-h="C0603F"></span></span></span>
-          <span class="pl card"><b>Harper&rsquo;s<br>Hardware &amp; Feed</b><i>Main St &middot; open 7&ndash;6</i></span>
-          <span class="pl ok"><i class="dot"></i>Approved</span>
-        </a>
+      <article class="cb-col" id="brand">
         <h3><a href="/preview/services/brand/">Brand</a></h3>
         <p>One look for your sign, menu, site and cards.</p>
         <p class="cb-price cb-tiers"><span class="cb-tier"><i>Price</i><span class="cb-amt"><b>Fixed quote</b></span><span>Priced after a free call and written down before work starts.</span></span></p>
         <p class="cb-more"><a href="/preview/services/brand/#buy">Start with a Kickoff</a><a href="/preview/services/brand/">Brand and identity</a><a href="/preview/services/illustration/">Illustration</a></p>
       </article>
-  </div>
-  <div class="cb-ch" id="creative-tech" data-field="viz">
-    <article class="cb-p cb-chp cb-flat">
-
+      <article class="cb-col" id="creative-tech">
         <h3><a href="/preview/services/live-visuals/">Creative tech</a></h3>
         <p>We make the things a template can&rsquo;t do.</p>
         <p class="cb-price cb-tiers"><span class="cb-tier"><i>Price</i><span class="cb-amt"><b>Fixed quote</b></span><span>Priced after a free call and written down before work starts.</span></span></p>
         <p class="cb-more"><a href="/preview/services/live-visuals/">Live visuals</a><a href="/preview/services/characters/">3D characters</a></p>
-      
-        <div class="vzd" role="group" aria-label="Controller for the visualizer in the grass">
-          <div class="vzd-tabs" role="tablist"><button type="button" role="tab" aria-selected="true" data-tab="mode">Mode</button><button type="button" role="tab" aria-selected="false" data-tab="shape">Shape</button><button type="button" role="tab" aria-selected="false" data-tab="color">Color</button><button type="button" role="tab" aria-selected="false" data-tab="fx">Effect</button></div>
-          <div class="vzd-p" data-p="mode"><button type="button" class="vzd-b" data-step="-1" aria-label="Previous scene">&lsaquo;</button><span class="vzd-name"><b>Rose</b><small>1 of 3</small></span><button type="button" class="vzd-b" data-step="1" aria-label="Next scene">&rsaquo;</button></div>
-          <div class="vzd-p" data-p="shape" hidden>
-            <label class="vzd-k"><i aria-hidden="true">&#10047;</i><input type="range" min="0" max="100" value="50" data-vz="k" aria-label="Bloom"><output>50</output></label>
-            <label class="vzd-k"><i aria-hidden="true">&#8635;</i><input type="range" min="0" max="100" value="30" data-vz="spin" aria-label="Drift"><output>30</output></label>
-            <label class="vzd-k"><i aria-hidden="true">&#9673;</i><input type="range" min="0" max="100" value="60" data-vz="size" aria-label="Size"><output>60</output></label>
-            <label class="vzd-k"><i aria-hidden="true">&#9833;</i><input type="range" min="60" max="180" value="120" data-vz="bpm" aria-label="Tempo, beats per minute"><output>120</output></label>
-          </div>
-          <div class="vzd-p" data-p="color" hidden><span class="vzd-sw" data-c="hue" title="Blades"></span><button type="button" class="vzd-b" data-c="hue" data-d="-30" aria-label="Blades colour down">&#8964;</button><button type="button" class="vzd-b" data-c="hue" data-d="30" aria-label="Blades colour up">&#8963;</button><span class="vzd-sw" data-c="hue2" title="Flowers"></span><button type="button" class="vzd-b" data-c="hue2" data-d="-30" aria-label="Flowers colour down">&#8964;</button><button type="button" class="vzd-b" data-c="hue2" data-d="30" aria-label="Flowers colour up">&#8963;</button></div>
-          <div class="vzd-p" data-p="fx" hidden><button type="button" class="vzd-fx" data-fx="flash"><i aria-hidden="true">&#9889;</i>Flash</button><button type="button" class="vzd-fx" data-fx="shuffle"><i aria-hidden="true">&#9858;</i>Shuffle</button><button type="button" class="vzd-fx" data-fx="trails" aria-pressed="false"><i aria-hidden="true">&#8734;</i>Trails</button><button type="button" class="vzd-fx" data-fx="cycle" aria-pressed="false"><i aria-hidden="true">&#9680;</i>Cycle</button></div>
-        </div>
       </article>
-  </div>
-  </div>
-
-  <div class="cb-stage">
-  <section class="cb-band cb-svc" aria-labelledby="cb-svc-h">
-    <h2 class="cb-sr" id="cb-svc-h">Three things, done properly.</h2>
-        <p class="cb-promise">Nothing goes live until you&rsquo;ve said yes.</p>
+    </div>
+    <p class="cb-promise">Nothing goes live until you&rsquo;ve said yes.</p>
   </section>
-  </div>
 
   <section class="cb-band cb-work" id="work" aria-labelledby="cb-work-h">
     <h2 class="cb-kick" id="cb-work-h">Work</h2>
@@ -1847,12 +1844,12 @@ function upd(){ticking=false;clipLf();const vh=innerHeight,y=-open.getBoundingCl
   // each chapter calls up its harmony as it arrives and lets it go as it leaves
   let best=null,bm=0;for(const ch of chs){const r=ch.getBoundingClientRect(),m=Math.min(sm((vh-r.top)/(vh*.75)),sm((r.bottom-vh*.35)/(vh*.75)));if(m>bm){bm=m;best=ch;}}
   const f=best?best.dataset.field:'meadow';
-  window.sogOpening&&sogOpening.title&&sogOpening.title(1-out);
+  window.sogOpening&&sogOpening.title&&sogOpening.title(1);   // the headline stays; the Three things section slides up over the night
   open.querySelector('.lf').style.setProperty('--rise',sm(y/.9).toFixed(3));   // the scene comes out as you scroll (Clay)
   window.sogOpening&&sogOpening.field&&sogOpening.field(f==='meadow'?null:f,f==='meadow'?0:bm);
   const gone=chs[0]?sm((vh-chs[0].getBoundingClientRect().top)/(vh*.6)):0;   // "Three things" steps aside as the first chapter comes
-  window.sogOpening&&sogOpening.night&&sogOpening.night(sm(y/.9),1-gone);   // the night rises with the scroll and gives way to the plain ground for the chapters
-  t2.style.opacity=String(inn*(1-gone));t2.style.transform=`translateY(${(1-inn)*24-gone*40}px)`;oneAtATime();rooms();}
+  window.sogOpening&&sogOpening.night&&sogOpening.night(sm(y/.6),1);   // the night rises with the scroll and gives way to the plain ground for the chapters
+  t2.style.opacity='0';}
 addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(upd);}},{passive:true});
 addEventListener('resize',upd);addEventListener('load',upd);upd();if(document.fonts)document.fonts.ready.then(upd);if(window.ResizeObserver)new ResizeObserver(()=>requestAnimationFrame(upd)).observe(document.querySelector('main.cb'));   // late fonts and images change the bands' heights
 })();
@@ -1931,8 +1928,8 @@ window.sogNightLayers={info:()=>({...I}),
   star:i=>({spin:S[i].w,morph:S[i].m,angle:S[i].a}),
   starTarget:()=>{const n=window.sogOpening.nightInfo(),mb=n.markBox||{x0:0,x1:0,y0:0,y1:0},top=parseFloat(getComputedStyle(document.querySelector('header.bar')||document.body).height)||70;
     for(let i=0;i<S.length;i++){const p=pos(S[i]);if(p.x<70||p.x>innerWidth-70||p.y<top+30||p.y>Math.min(n.farCrest,innerHeight)-40)continue;
-      if(p.y<n.headBottom+30&&p.x<n.headRight+80)continue;if(p.x>mb.x0-90&&p.x<mb.x1+90&&p.y>mb.y0-30&&p.y<mb.y1+30)continue;
-      if(S.some((q,j)=>j!==i&&Math.abs(pos(q).y-p.y)<pos(q).rad+p.rad+4&&Math.abs(pos(q).x-p.x)<62))continue;return{i,x:p.x,y:p.y};}return null;}};
+      if(p.y<n.headBottom+30&&p.x<n.headRight+80)continue;const mx=innerWidth<600?40:90;if(p.x>mb.x0-mx&&p.x<mb.x1+mx&&p.y>mb.y0-30&&p.y<mb.y1+30)continue;
+      if(S.some((q,j)=>j!==i&&Math.abs(pos(q).y-p.y)<pos(q).rad+p.rad+4&&Math.abs(pos(q).x-p.x)<(innerWidth<600?44:62)))continue;return{i,x:p.x,y:p.y};}return null;}};
 const hook=()=>{if(window.sogOpening){sogOpening.starTarget=sogNightLayers.starTarget;sogOpening.star=sogNightLayers.star;}};hook();addEventListener('load',hook);
 })();
 </script>

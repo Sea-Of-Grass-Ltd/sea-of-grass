@@ -93,7 +93,7 @@ for (const w of [1440, 390]) {
     } finally { await ctx.close(); }
   });
 
-  test(`${w} · scrolling raises the ridges, near faster; the painting gives way for the chapters`, async () => {
+  test(`${w} · scrolling raises the ridges, near faster; the next section slides over the night`, async () => {
     const { ctx, page, errors } = await site.open('/', w);
     try {
       await ready(page);
@@ -106,11 +106,10 @@ for (const w of [1440, 390]) {
       assert.ok(near > far, `the near ridge rises faster (${near.toFixed(1)} > ${far.toFixed(1)})`);
       assert.ok(stars > 0 && stars < far, 'the stars lift a little, less than the ridges');
       assert.equal(b.off.sky, 0, 'the sky stays put');
-      await page.evaluate(() => { const s = document.getElementById('services'); scrollTo(0, s.getBoundingClientRect().top + scrollY + innerHeight * .2); });
+      // the night stays whole while the Three things section slides up over it (it no longer fades away)
+      await page.evaluate(() => { const s = document.getElementById('services'); scrollTo(0, s.getBoundingClientRect().top + scrollY - innerHeight * .5); });
       await page.waitForTimeout(400);
-      assert.ok((await info(page)).scene < .1, 'the scene fades for the chapters');
-      await page.evaluate(() => scrollTo(0, 0)); await page.waitForTimeout(400);
-      assert.ok((await info(page)).scene > .95, 'and returns at the top');
+      assert.ok((await info(page)).scene > .95, 'the scene stays as the next section arrives');
       assert.deepEqual(errors, []);
     } finally { await ctx.close(); }
   });
