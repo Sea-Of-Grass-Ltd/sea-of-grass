@@ -21,7 +21,7 @@ function apply(row,show){const b=shopButton(row.dataset.item);if(!b)return;
   li.style.opacity=out?'.5':'';
   if(show){const win=frame.contentWindow,r=li.getBoundingClientRect();
     win.scrollTo({top:win.scrollY+r.top-win.innerHeight/2+r.height/2,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
-    li.animate?.([{background:'rgba(80,157,252,.35)'},{background:'transparent'}],{duration:900,easing:'ease-out'});}}
+    const hl=(getComputedStyle(document.documentElement).getPropertyValue('--sage')||'').trim();li.animate?.([{background:hl?hl+'59':'transparent'},{background:'transparent'}],{duration:900,easing:'ease-out'});}}
 
 rows.forEach(row=>{
   const price=row.querySelector('.reg-price'),out=row.querySelector('[data-act="soldout"]');
@@ -40,6 +40,7 @@ frame.addEventListener('load',()=>{rows.forEach(r=>apply(r,false));
   if(first){const win=frame.contentWindow;win.scrollTo(0,win.scrollY+first.getBoundingClientRect().top-win.innerHeight/3);}});
 
 const load=()=>{if(!frame.getAttribute('src'))frame.src=frame.dataset.lazy;};
-load(); // preloaded with the page, so the demo is ready the moment you reach it
+// the shop loads as the demo comes near
+new IntersectionObserver((es,io)=>{if(es.some(e=>e.isIntersecting)){io.disconnect();load();}},{rootMargin:'600px 0px'}).observe(play);
 new ResizeObserver(fit).observe(view);fit();
 })();
