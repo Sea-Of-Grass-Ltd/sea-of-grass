@@ -40,6 +40,7 @@ frame.addEventListener('load',()=>{rows.forEach(r=>apply(r,false));
   if(first){const win=frame.contentWindow;win.scrollTo(0,win.scrollY+first.getBoundingClientRect().top-win.innerHeight/3);}});
 
 const load=()=>{if(!frame.getAttribute('src'))frame.src=frame.dataset.lazy;};
-load(); // preloaded with the page, so the demo is ready the moment you reach it
+// the shop loads as the demo comes near
+new IntersectionObserver((es,io)=>{if(es.some(e=>e.isIntersecting)){io.disconnect();load();}},{rootMargin:'600px 0px'}).observe(play);
 new ResizeObserver(fit).observe(view);fit();
 })();
