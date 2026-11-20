@@ -9,7 +9,7 @@
      mixed with the sky's ultramarine and a breath of poppy. Sections take turns navy / moss / plum; poppy is the only CTA
      colour; gold only on small eyebrow labels; each section borrows 2-4 single touches of the others on real elements. */
   --ground:#1F1F35;--navy:#272C4B;--navy-line:#39406A;--moss:#263535;--grass:#3F6550;--sage:#7F917F;
-  --plum:#332739;--plum-mute:#61465C;--poppy:#D17C66;--poppy-deep:#A8564D;--gold:#C8B27B;--soft:#9B97B1;--text:#DAD1CD;
+  --plum:#332739;--slate:#46508A;--plum-mute:#61465C;--poppy:#D17C66;--poppy-deep:#A8564D;--gold:#C8B27B;--soft:#9B97B1;--text:#DAD1CD;
   --meadow:#4A7A3C;--pop:var(--text);
   --text-rgb:218,209,205;--shade-rgb:0,0,0;--sage-rgb:127,145,127;--plum-mute-rgb:97,70,92;
   /* roles, built only from the palette */
@@ -418,49 +418,30 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .bw-band{--bw-bg:var(--plum);background:var(--bw-bg);transition:--bw-bg .45s ease}
 .bw-band .ticket::before{background:var(--bw-bg);box-shadow:min(78vw,423px) 0 0 var(--bw-bg)}
 @media (max-width:700px){.bw-band .ticket::before{box-shadow:78vw 0 0 var(--bw-bg)}}
-/* the founding five: its own small ticket, tucked over the Site Plan's corner like a coupon (Tristan: "Founding five as its
-   own ticket that pops out and shows the number of spots available"); the notches are cut out, so the card shows through */
-.coupon{--tilt:-4deg;position:relative;z-index:3;transform:rotate(var(--tilt));filter:drop-shadow(0 18px 26px rgba(var(--shade-rgb),.45))}
-.coupon .c-body{display:grid;gap:8px;padding:22px 28px 24px;border-radius:18px;font-size:15px;background:var(--plum-mute);backdrop-filter:none;-webkit-backdrop-filter:none;
-  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Ccircle cx='1' cy='1' r='1'/%3E%3C/svg%3E") -14px 50%/28px 28px no-repeat,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Ccircle cx='1' cy='1' r='1'/%3E%3C/svg%3E") calc(100% + 14px) 50%/28px 28px no-repeat,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2' preserveAspectRatio='none'%3E%3Crect width='2' height='2'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat;-webkit-mask-composite:xor;
-  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Ccircle cx='1' cy='1' r='1'/%3E%3C/svg%3E") -14px 50%/28px 28px no-repeat exclude,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Ccircle cx='1' cy='1' r='1'/%3E%3C/svg%3E") calc(100% + 14px) 50%/28px 28px no-repeat exclude,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2' preserveAspectRatio='none'%3E%3Crect width='2' height='2'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat}
-.coupon .c-spots{margin:0;font:700 clamp(30px,3vw,40px)/1 var(--head);letter-spacing:-.03em}
-.coupon .kick{margin:2px 0 0;color:var(--text)}
-.coupon p{margin:0}
-.coupon .btn{justify-self:start;margin-top:6px}
 /* the sale price, the way pricing pages mark a deal (Tristan, after Higgsfield): a small muted struck $100, a big bright $50 */
-.coupon .c-price{position:relative;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin:4px 0 0}
-.coupon .c-show{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}
-.coupon .c-price s{font:600 20px/1 var(--head);color:var(--soft);text-decoration-thickness:2px;text-decoration-color:var(--text)}
-.coupon .c-now{font:700 52px/.9 var(--head);letter-spacing:-.04em;color:var(--text)}
-.coupon .c-price small{font-size:15px;color:var(--text)}
-.coupon .c-tag{align-self:center;font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ground);background:var(--sage);padding:6px 9px;border-radius:999px}
-.coupon .c-sr{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-.plans{align-items:start}
-/* Pay once spans both rows, so row 1 ends exactly at the Site Plan's bottom and the coupon can clip onto its corner */
-.plans>.plan.sites{grid-column:2;grid-row:1/span 2;align-self:center}
-.plans>.coupon{grid-column:1;grid-row:2;justify-self:end;width:clamp(290px,25vw,360px);margin:-104px -30px 0 0}
-@media (max-width:980px){
-  .coupon{--tilt:-1.5deg}
-  .plans>.coupon{grid-column:auto;grid-row:auto;justify-self:center;width:calc(100% - 20px);margin:-44px 0 0}
-  .plans>.plan.sites{grid-column:auto;grid-row:auto}
-}
+#founding .c-price{position:relative;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin:2px 0 0}
+#founding .c-show{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}
+#founding .c-price s{font:600 20px/1 var(--head);color:var(--soft);text-decoration-thickness:2px;text-decoration-color:var(--text)}
+#founding .c-now{font:700 52px/.9 var(--head);letter-spacing:-.04em;color:var(--text)}
+#founding .c-price small{font-size:15px;color:var(--text)}
+#founding .c-tag{align-self:center;font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ground);background:var(--sage);padding:6px 9px;border-radius:999px}
+#founding .c-sr{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+/* the all-in-one ticket (Tristan: "It used to have more of a fun shape that was all encompassing"): a brighter slate-blue
+   body with the coral button, and the founding five in a warmer tear-off stub under the dashed line, its own deal; the stub
+   lifts a little on hover and the first time it is seen, as if it could tear off (reduced motion: still) */
+.hero .plan.care{background:var(--slate);box-shadow:inset 0 .5px 0 rgba(var(--text-rgb),.5),0 22px 48px rgba(var(--shade-rgb),.35);backdrop-filter:none;-webkit-backdrop-filter:none;overflow:visible}
+.hero .plan.care .plan-h,.hero .plan.care .amt small{color:var(--text)!important}
+.hero .plan.care .week{border-left-color:var(--poppy)}
+.hero .plan.care .stub{margin:12px calc(-1 * clamp(24px,2.6vw,34px)) calc(-1 * clamp(24px,2.6vw,34px));padding:22px clamp(24px,2.6vw,34px) clamp(24px,2.6vw,34px);
+  background:var(--plum-mute);border-radius:0 0 22px 22px;border-top:2px dashed rgba(var(--text-rgb),.55);gap:8px;transform-origin:100% 0;transition:transform .35s cubic-bezier(.3,1.4,.5,1)}
+.hero .plan.care .stub::before,.hero .plan.care .stub::after{top:-17px;background:var(--navy)}
+.hero .plan.care .stub::before{left:-16px}.hero .plan.care .stub::after{right:-16px}
+.hero .plan.care .f-head .kick,.hero .plan.care .f-spots{color:var(--text)}
+.hero .plan.care .f-spots b{font-weight:700}
+#founding .f-line{font-size:14.5px}
+#founding .f-btn{justify-self:start;min-height:44px;padding:0 20px;font-size:16px;margin-top:4px}
 @media (prefers-reduced-motion:no-preference){
-  .coupon.pop{animation:coupon-pop .6s cubic-bezier(.3,1.4,.5,1)}
-  @keyframes coupon-pop{from{transform:rotate(calc(var(--tilt) + 4deg)) scale(.88) translateY(14px)}60%{transform:rotate(calc(var(--tilt) - 1deg)) scale(1.03)}}
+  .hero .plan.care .stub:hover{transform:rotate(1.2deg) translateY(3px)}
+  .hero .plan.care .stub.pop{animation:stub-peel .9s cubic-bezier(.3,1.4,.5,1)}
+  @keyframes stub-peel{45%{transform:rotate(1.8deg) translateY(5px)}}
 }
-/* the Site Plan as the hero (Tristan: "kinda unappealing and unexciting"; Refero: JetBrains Space pricing 19b2e4ee, its hero
-   plan a light card among dark ones with a solid tab; Hers 7d256c97, one deep saturated hero card; Linear pricing 5d709fa1,
-   heavy price type): a light card in the page's cream with navy ink, a huge price, a solid RECOMMENDED tab, the ticket
-   notches cut right through it. Flat colours only. */
-.hero .plan.care{background:var(--text);color:var(--navy);box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;padding-top:clamp(40px,3.6vw,52px);gap:16px;
-  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Ccircle cx='1' cy='1' r='1'/%3E%3C/svg%3E") -16px 58%/32px 32px no-repeat,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Ccircle cx='1' cy='1' r='1'/%3E%3C/svg%3E") calc(100% + 16px) 58%/32px 32px no-repeat,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2' preserveAspectRatio='none'%3E%3Crect width='2' height='2'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat;-webkit-mask-composite:xor;
-  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Ccircle cx='1' cy='1' r='1'/%3E%3C/svg%3E") -16px 58%/32px 32px no-repeat exclude,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Ccircle cx='1' cy='1' r='1'/%3E%3C/svg%3E") calc(100% + 16px) 58%/32px 32px no-repeat exclude,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2' preserveAspectRatio='none'%3E%3Crect width='2' height='2'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat}
-.hero .plan.care .badge{top:0;right:clamp(24px,2.6vw,34px);border:0;border-radius:0 0 10px 10px;background:var(--poppy);color:var(--ground);padding:8px 12px 7px;font-weight:600}
-.hero .plan.care .plan-h{color:var(--navy)!important;opacity:.8}
-.hero .plan.care .amt{font-size:clamp(84px,9vw,136px);letter-spacing:-.06em;color:var(--navy)}
-.hero .plan.care .amt small{color:var(--navy);font-weight:600}
-.hero .plan.care .week{color:var(--navy);border-left-color:var(--poppy);font-weight:500}
-.hero .plan.care .ticks,.hero .plan.care .ticks svg{color:var(--navy)}
-.hero .plan.care .btn.pill{background:var(--navy);color:var(--text)}
-.hero .plan.care .btn.pill:hover{background:var(--ground);color:var(--text)}
