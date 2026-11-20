@@ -325,7 +325,8 @@ const textRects = () => [...document.querySelectorAll('h1,h2,h3,p,li,dt,dd,summa
   // text scrolling under the solid sticky header is hidden by it, not overlapping it
   .filter(o => o.r.width > 0 && o.r.height > 0 && o.r.top >= (document.querySelector('.topbar')?.getBoundingClientRect().bottom || 0) && o.r.top < innerHeight);
 for (const w of WIDTHS) {
-  test(`${w}px · flow: one continuous path through every section, in the margin, with the seed riding it`, async () => {
+  // phones have no line at all (websites-no-phone-line.test.mjs)
+  if (w >= 768) test(`${w}px · flow: one continuous path through every section, in the margin, with the seed riding it`, async () => {
     const { ctx, page } = await site.open(PAGE, w);
     try {
       await page.waitForFunction(() => document.querySelector('[data-through] path')?.getTotalLength() > 0, null, { timeout: 5000 });
@@ -344,8 +345,7 @@ for (const w of WIDTHS) {
       assert.ok(r.minY <= r.first + 260, 'it starts in the top section');
       assert.ok(r.seamsCovered, 'it runs straight across every section seam');
       assert.ok(r.monotonic, 'it always travels down the page');
-      // phones have no margin: there the line lives in the side gutter and swings across the gaps (websites-phone-line.test.mjs)
-      if (w >= 768) assert.ok(r.maxX <= r.textLeft - 3, `it stays in the margin, clear of the text (path x ≤ ${r.maxX.toFixed(0)}, text from ${r.textLeft.toFixed(0)})`);
+      assert.ok(r.maxX <= r.textLeft - 3, `it stays in the margin, clear of the text (path x ≤ ${r.maxX.toFixed(0)}, text from ${r.textLeft.toFixed(0)})`);
       await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight * .45)); await page.waitForTimeout(400);
       const onPath = await page.evaluate(() => {
         const t = document.querySelector('[data-traveller]').getBoundingClientRect(), cx = t.left + t.width / 2, cy = t.top + t.height / 2 + scrollY;
