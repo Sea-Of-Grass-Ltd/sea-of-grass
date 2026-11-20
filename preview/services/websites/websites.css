@@ -62,7 +62,8 @@ body.book-in-page .top nav a.book{visibility:hidden;opacity:0}
 .plan .amt small{font:500 16px/1 var(--body);letter-spacing:0;color:var(--soft)}
 .plan .what{color:var(--soft);font-size:15.5px}
 .plan .btn{justify-self:start}
-.plan.care{border-color:var(--blue)}
+.plan.care{border-color:var(--blue);position:relative}
+.plan .badge{position:absolute;top:-12px;right:18px;font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;background:var(--blue);color:#0A0C11;padding:7px 10px;border-radius:999px}
 .week{color:var(--fg);font-size:15.5px;border-left:2px solid var(--blue);padding-left:12px}
 .founding{margin-top:6px;padding:16px;border-radius:14px;background:rgba(80,157,252,.1);border:1px solid rgba(80,157,252,.35);display:grid;gap:8px}
 .founding p{font-size:15px;color:var(--fg)}
@@ -182,3 +183,83 @@ footer.foot a{color:var(--soft)}
   .see{grid-template-columns:1fr}
   .shop .phone{height:min(52vh,420px)}
 }
+
+/* ======== Dribbble Hiring rhythm (Refero 0797edc6), key words only (2026-11-19) ======== */
+.hero{padding:clamp(40px,7vw,96px) 0 clamp(160px,16vw,210px);text-align:center}
+.hero-in{display:grid;justify-items:center}
+.hero .kick{margin-bottom:14px}
+.hero h1{font-size:clamp(40px,6.4vw,96px);max-width:15ch;margin:0 auto}
+.hero .sub{margin-top:16px;color:var(--soft);font-size:clamp(17px,1.5vw,20px);max-width:40ch}
+.plans{margin-top:clamp(28px,4vw,48px);width:100%;max-width:860px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;text-align:left}
+.plan{position:relative;display:grid;gap:14px;align-content:start;padding:clamp(22px,2.4vw,32px);border:1px solid var(--rule2);border-radius:20px;background:var(--bg2)}
+.plan.care{border-color:var(--blue)}
+.plan-h{font:500 13px/1 var(--mono)!important;letter-spacing:.14em!important;text-transform:uppercase;color:var(--soft)}
+.plan .amt{font:500 clamp(48px,5vw,68px)/1 var(--head);letter-spacing:-.04em}
+.plan .amt small{font:500 16px/1 var(--body);letter-spacing:0;color:var(--soft)}
+.plan .btn{justify-self:stretch}
+.plan .btn.small{justify-self:start}
+.badge{position:absolute;top:-12px;right:18px;margin:0;font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;background:var(--blue);color:#0A0C11;padding:7px 10px;border-radius:999px}
+.ticks{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:15.5px;color:var(--fg)}
+.ticks li{display:flex;gap:10px;align-items:center}
+.ticks svg{width:16px;height:16px;flex:0 0 16px;color:var(--blue2)}
+.founding{padding:14px;border-radius:14px;background:rgba(80,157,252,.1);border:1px solid rgba(80,157,252,.35);display:grid;gap:6px}
+.founding p{font-size:14.5px;color:var(--fg)}
+.also{grid-column:1/-1;text-align:center;color:var(--soft);font-size:15px}
+.link{all:unset;cursor:pointer;color:var(--blue2);font-weight:600;text-decoration:underline;text-underline-offset:3px;padding:8px 2px}
+.link:focus-visible{outline:2px solid var(--blue2);outline-offset:2px;border-radius:4px}
+.hero-links{margin-top:22px;display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:center}
+.hero-links .unsure{margin:0}
+.plans .jump{grid-column:1/-1;margin-top:0;justify-content:center}
+/* proof row */
+.proof{padding:36px 0;border-bottom:1px solid var(--rule)}
+.proof-label{text-align:center;font:500 12px/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin-bottom:18px}
+.marks{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:14px 34px}
+.mark{font-size:clamp(19px,1.8vw,24px);line-height:1.1;color:rgba(238,241,234,.78);letter-spacing:0;text-transform:none}
+/* alternating pitch sections */
+.alt-in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px clamp(32px,6vw,96px);align-items:center}
+.alt-in.flip .visual{order:2}
+.alt .words{display:grid;gap:16px;align-content:center}
+.alt .words .kick{margin:0}
+.alt .words h2{font-size:clamp(34px,4.4vw,62px);line-height:1.02}
+.demo-band{background:var(--bg2)}
+.demo-band .visual{justify-self:center}
+.reg-shop .phone{height:min(66vh,580px);aspect-ratio:9/17}
+.calls-band{background:#122337;min-height:0}
+.calls-band .visual{justify-self:center;width:min(100%,420px);border-radius:20px;overflow:hidden}
+.calls-band .visual img{width:100%;height:auto;display:block}
+.calls{margin:4px 0 0}
+#bunny-world .sub{color:var(--soft);margin:12px 0 26px}
+#bunny-world h2{font-size:clamp(34px,4.4vw,62px);line-height:1.02}
+.hook-in{display:grid;gap:18px;justify-items:start}
+.hook-in .kick{margin:0}
+#hookup h2{font-size:clamp(34px,4.4vw,62px);line-height:1.02}
+.points{margin:6px 0 0;padding:0;list-style:none;display:grid;gap:12px;counter-reset:pt}
+.points li{counter-increment:pt;display:flex;gap:14px;align-items:baseline;font:500 clamp(20px,2vw,28px)/1.2 var(--head);letter-spacing:-.02em}
+.points li::before{content:"0" counter(pt);font:500 12px/1 var(--mono);color:var(--blue2);letter-spacing:.1em}
+.hook-in .promise{margin-top:6px;color:var(--fg)}
+details.more summary{cursor:pointer;color:var(--blue2);font-weight:600;padding:8px 0;list-style:none}
+details.more summary::-webkit-details-marker{display:none}
+details.more summary::after{content:" +"}
+details.more[open] summary::after{content:" −"}
+details.more p{color:var(--soft);font-size:15.5px;margin-top:6px;max-width:56ch}
+details.more b{color:var(--fg)}
+/* benefits */
+.benefits-band{padding:clamp(36px,5vw,56px) 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.benefits{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.benefits li{display:grid;gap:10px;justify-items:center;text-align:center;font:500 16px/1.3 var(--head)}
+.benefits svg{width:30px;height:30px;fill:none;stroke:var(--blue2);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.qs details details{border-bottom:0;padding-left:14px}
+/* close */
+.close-in{justify-items:center;text-align:center}
+.close .call-us{font-size:16px;color:rgba(255,255,255,.88)}
+@media (max-width:980px){
+  .alt-in{grid-template-columns:1fr}.alt-in.flip .visual{order:0}
+  .reg-shop .phone{height:min(60vh,520px)}
+  .benefits{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:700px){
+  .plans{grid-template-columns:1fr}
+  .hero{text-align:left}.hero-in{justify-items:start}.hero h1,.hero .sub{margin-left:0}
+  .also,.hero-links,.jump{justify-content:flex-start;text-align:left}
+}
+.plans{position:relative}.plans>#buy{position:absolute;top:0;left:0}

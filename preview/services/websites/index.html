@@ -33,9 +33,10 @@
 <link rel="stylesheet" href="/preview/assets/shop/cart.css">
 </head>
 <body>
-<!-- The Websites page, two paths (Fable's plan, approved 2026-11-19): a normal page that scrolls on its own. Decided buyers
-     buy or book from the top and can read the fine print; an optional pitch below is for anyone still unsure. The buying
-     path is set in Dew's Manrope; each pitch section borrows one of the site's other style faces. -->
+<!-- Websites page in the rhythm of Dribbble Hiring (Refero 0797edc6): headline and two plan cards up top, a proof row,
+     alternating pitch sections in a few key words, a benefit row, a short FAQ and a one-line close. Plan rows after
+     Whereby (ce015f6d) and Acuity's recommended plan (0bc4bbb5); the calm tone of Shuttle (40379d1d); the section rhythm
+     of Cal.com (8d6b87ed). Dew's Manrope for the buying path; the pitch borrows the site's own style faces. -->
 <div class="topbar">
 <header class="top">
       <a class="home" href="/"><img src="/preview/assets/logo.svg" alt="" width="34" height="25"><span>Sea of Grass</span></a>
@@ -43,84 +44,80 @@
     </header>
 </div>
 
-<!-- 1 Hero -->
+<!-- 1 Top: the line and the two plans -->
 <section class="hero" aria-labelledby="h1">
   <div class="in hero-in">
     <p class="kick">Websites and hosting &middot; <b>Sea of Grass</b></p>
     <h1 id="h1">Your website can run itself from your register.</h1>
-    <p class="prices" data-prices>Fixes $250 &middot; care $50 a month &middot; sites from $1,200</p>
-    <div class="acts"><a class="btn" href="#plans">See prices and buy</a><a class="btn q" data-book href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book 15 minutes</a></div>
-    <a class="unsure" href="#demo">Not sure yet? Watch it work &darr;</a>
+    <p class="sub">We build it, host it and keep it right, and you never log in.</p>
+    <div class="plans" id="plans"><span id="buy"></span>
+      <article class="plan care">
+        <p class="badge">Recommended</p>
+        <h2 class="plan-h">Care</h2><p class="amt">$50<small> a month</small></p>
+        <button type="button" class="btn" data-add="care">Start care</button>
+        <ul class="ticks"><li><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Hosting and security</li><li><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Small changes every month</li><li><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Cancel any time</li></ul>
+        <div class="founding" id="founding">
+          <p class="f-head"><span class="kick">Founding five</span><span class="f-spots"><b data-spots-left>5 of 5</b> spots left</span></p>
+          <p>$50 a month, locked for two years, plus a free photo shoot.</p>
+          <p>Owe nothing if you back out at the hookup; we ask for an honest review.</p>
+        </div>
+      </article>
+      <article class="plan sites">
+        <h2 class="plan-h">Sites</h2><p class="amt"><small>From </small>$1,200</p>
+        <button type="button" class="btn" data-add="starter">Buy a starter site</button>
+        <ul class="ticks"><li><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>One page in a Bunny World look</li><li><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Menu, hours, map and ordering</li><li><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Runs from your register</li></ul>
+        <p class="week" data-week>$1,200 works out to about $23 a week for a year, roughly what a couple of online orders bring in.</p>
+        <button type="button" class="btn q small" data-add="starter-monthly">Or pay $100 a month</button>
+      </article>
+      <div class="also"><span>Fix one thing &middot; $250</span> <button type="button" class="link" data-add="fix">Buy a fix</button> <span>&middot; Your own look: custom from $2,000</span></div>
+      <div class="jump"><span class="kick">Fine print</span> <a href="#hookup">Hookup</a> &middot; <a href="#faq">Questions</a></div>
+    </div>
+    <div class="hero-links"><a class="unsure" href="#demo">Not sure yet? Watch it work &darr;</a><a class="btn q small" data-book href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book 15 minutes</a></div>
   </div>
   <div class="live-grass" data-live-grass aria-hidden="true"></div>
 </section>
 
 <main>
-<!-- 2 Plans: every price, Buy lives only here -->
-<section class="band plans-band" id="plans" aria-labelledby="h-plans"><div class="in"><span id="buy"></span>
-  <div class="sec-h"><div><p class="kick">Prices</p><h2 id="h-plans">Every price, out in the open.</h2></div><p>Pick one and pay by card, and Tristan or Bryce will ring you within one business day to get going.</p></div>
-  <div class="plans">
-    <article class="plan fix">
-      <h3>Fix</h3><p class="amt">$250</p>
-      <p class="what">One thing on your site that is broken, wrong or out of date, fixed for a flat price we agree before we start.</p>
-      <button type="button" class="btn" data-add="fix">Buy a fix</button>
-    </article>
-    <article class="plan care">
-      <h3>Care</h3><p class="amt">$50<small> a month</small></p>
-      <p class="what">Hosting, security and up to 30 minutes of small changes every month, like new hours or a new menu.</p>
-      <button type="button" class="btn" data-add="care">Start care</button>
-      <div class="founding" id="founding">
-        <p class="f-head"><span class="kick">Founding five</span><span class="f-spots"><b data-spots-left>5 of 5</b> spots left</span></p>
-        <p>The first five shops pay $50 a month from day one, and that price is locked for two years. We&rsquo;ll come and do a free photo shoot of your food or your shop, you owe nothing if you back out at the hookup, and all we ask in return is an honest review.</p>
-      </div>
-    </article>
-    <article class="plan sites">
-      <h3>Sites</h3><p class="amt"><small>From </small>$1,200</p>
-      <p class="what">One good page in a ready Bunny World look, with your hours, menu, photos, map and ordering from your register.</p>
-      <p class="week" data-week>$1,200 works out to about $23 a week for a year, roughly what a couple of online orders bring in.</p>
-      <button type="button" class="btn" data-add="starter">Buy a starter site</button>
-      <button type="button" class="btn q small" data-add="starter-monthly">Or pay $100 a month</button>
-    </article>
-  </div>
-  <p class="custom">Want a site in your own look? Those are custom from $2,000, and you can <a href="#start">talk one through with us</a> first.</p>
-  <p class="jump"><span class="kick">Fine print</span> <a href="#hookup">Hookup</a> &middot; <a href="#faq">Questions</a></p>
+<!-- 2 Proof: our nine demo shops, never presented as clients -->
+<section class="proof" aria-label="Our demo shops"><div class="in">
+  <p class="proof-label">Nine demo shops we built, none of them real businesses.</p>
+  <ul class="marks"><li class="mark" style="font-family:Anton,Impact,sans-serif;font-weight:400">Bunny Burritos</li><li class="mark" style="font-family:'Big Shoulders Display',sans-serif;font-weight:800">Hare Today</li><li class="mark" style="font-family:'Albert Sans',sans-serif;font-weight:700">Hopwell</li><li class="mark" style="font-family:'Barlow Condensed',sans-serif;font-weight:700">Bunny Auto</li><li class="mark" style="font-family:'Young Serif',serif;font-weight:400">The Warren</li><li class="mark" style="font-family:Fraunces,serif;font-weight:700">Hop Along</li><li class="mark" style="font-family:'Hanken Grotesk',sans-serif;font-weight:700">Cottontail Farm</li><li class="mark" style="font-family:Newsreader,serif;font-weight:600">Burrow &amp; Bough</li><li class="mark" style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700">Long Ears</li></ul>
 </div></section>
 
-<!-- 3 Demo (Ember's Syne) -->
-<section class="band demo-band" id="demo" aria-labelledby="h-demo">
-  <picture class="bg" aria-hidden="true"><source type="image/webp" srcset="/preview/assets/work/bunny-world/burritos-hero-860.webp 860w, /preview/assets/work/bunny-world/burritos-hero-1290.webp 1290w" sizes="100vw"><img src="/preview/assets/work/bunny-world/burritos-hero-1100.jpg" alt="" width="1100" height="825" loading="lazy"></picture>
-  <div class="in reg-play">
-    <div class="reg-side">
-      <p class="kick">See it work</p>
-      <h2 id="h-demo">Go on. Tap Sold out.</h2>
-      <div class="register" role="group" aria-label="Register for Bunny Burritos, a demo shop">
-        <div class="reg-top"><span>Register</span><span class="reg-live" aria-hidden="true">Connected</span></div>
-        <div class="reg-row" data-item="Horchata, large" data-price="4"><span class="reg-name">Horchata</span><span class="reg-price" aria-live="polite">$4.00</span><button type="button" class="reg-out" data-act="soldout" aria-pressed="false">Sold out</button></div>
-      </div>
-      <p class="cap" data-caption data-after="That&rsquo;s the whole job. We do the rest, and you never log in to anything." aria-live="polite">This is a real page from one of our demo shops, connected to that register.</p>
+<!-- 3a Demo (Ember's Syne): phone left, words right -->
+<section class="band alt demo-band" id="demo" aria-labelledby="h-demo"><div class="in alt-in reg-play">
+  <div class="visual reg-shop"><div class="phone"><div class="view" data-w="390"><iframe title="Bunny Burritos, the demo shop the register is connected to" tabindex="-1" data-lazy="/bunnyworld/bunny-burritos/"></iframe></div></div></div>
+  <div class="words">
+    <p class="kick">See it work</p>
+    <h2 id="h-demo">Go on. Tap Sold out.</h2>
+    <div class="register" role="group" aria-label="Register for Bunny Burritos, a demo shop">
+      <div class="reg-top"><span>Register</span><span class="reg-live" aria-hidden="true">Connected</span></div>
+      <div class="reg-row" data-item="Horchata, large" data-price="4"><span class="reg-name">Horchata</span><span class="reg-price" aria-live="polite">$4.00</span><button type="button" class="reg-out" data-act="soldout" aria-pressed="false">Sold out</button></div>
     </div>
-    <div class="reg-shop"><div class="phone"><div class="view" data-w="390"><iframe title="Bunny Burritos, the demo shop the register is connected to" tabindex="-1" data-lazy="/bunnyworld/bunny-burritos/"></iframe></div></div></div>
+    <p class="cap" data-voice="tagline" data-caption data-after="That&rsquo;s the whole job. You never log in to anything." aria-live="polite">A real demo shop, connected to that register.</p>
   </div>
-</section>
+</div></section>
 
-<!-- 4 Calls (Dusk's Instrument Serif) -->
-<section class="band calls-band" id="calls" aria-labelledby="h-calls">
-  <picture class="bg phone-art" aria-hidden="true"><source type="image/webp" srcset="/preview/assets/work/websites/card3-phone-720.webp 720w, /preview/assets/work/websites/card3-phone-1080.webp 1080w" sizes="(min-width:900px) 46vw, 100vw"><img src="/preview/assets/work/websites/card3-phone-1080.jpg" alt="" width="1080" height="1935" loading="lazy"></picture>
-  <div class="in calls-in">
+<!-- 3b Calls (Dusk's Instrument Serif): words left, picture right -->
+<section class="band alt calls-band" id="calls" aria-labelledby="h-calls"><div class="in alt-in flip">
+  <div class="words">
     <p class="kick">Fewer calls</p>
-    <h2 id="h-calls">That&rsquo;s one less call asking what&rsquo;s left.</h2>
+    <h2 id="h-calls">One less call asking what&rsquo;s left.</h2>
     <dl class="calls" data-voice="quote">
-      <div><dt>&ldquo;Are you open?&rdquo;</dt> <dd>Open today until 9 pm.</dd></div>
-      <div><dt>&ldquo;Any horchata left?&rdquo;</dt> <dd>Sold out today, back tomorrow.</dd></div>
-      <div><dt>&ldquo;Can I order ahead?&rdquo;</dt> <dd>Yes, order for pickup on the site.</dd></div>
+      <div><dt>&ldquo;Are you open?&rdquo;</dt> <dd>Open until 9.</dd></div>
+      <div><dt>&ldquo;Any horchata left?&rdquo;</dt> <dd>Sold out, back tomorrow.</dd></div>
+      <div><dt>&ldquo;Can I order ahead?&rdquo;</dt> <dd>Order for pickup.</dd></div>
     </dl>
-    <dl class="own"><dt>Don&rsquo;t need more business?</dt> <dd>Then we keep it simple: menu and hours, or ordering you switch off when busy.</dd></dl>
+    <dl class="own" data-voice="quote"><dt>Don&rsquo;t need more business?</dt> <dd>Then keep it to menu and hours.</dd></dl>
   </div>
-</section>
+  <picture class="visual phone-art" aria-hidden="true"><source type="image/webp" srcset="/preview/assets/work/websites/card3-phone-720.webp 720w, /preview/assets/work/websites/card3-phone-1080.webp 1080w" sizes="(min-width:900px) 40vw, 100vw"><img src="/preview/assets/work/websites/card3-phone-1080.jpg" alt="" width="1080" height="1935" loading="lazy"></picture>
+</div></section>
 
-<!-- 5 Bunny World (Clay's Bricolage; each shop labelled in its own face) -->
+<!-- 3c Bunny World (Clay's Bricolage) -->
 <section class="band bw-band" id="bunny-world" aria-labelledby="h-bw"><div class="in">
-  <div class="sec-h"><div><p class="kick">The proof</p><h2 id="h-bw">Nine shops we built to show you.</h2></div><p>These are demo shops, with no real business behind them, and every one is a working website you can try right here.</p></div>
+  <p class="kick">The proof</p>
+  <h2 id="h-bw">Nine shops we built to show you.</h2>
+  <p class="sub">Every one is a working website you can try right here, on your phone.</p>
   <div class="rail" aria-label="The nine Bunny World demo shops, scroll sideways">
         <div class="shop"><div class="phone"><div class="view" data-w="390"><iframe title="Bunny Burritos, a Bunny World demo shop" tabindex="-1" loading="lazy" data-lazy="/bunnyworld/bunny-burritos/"></iframe></div></div><span class="shop-name"><b style="font-family:Anton,Impact,sans-serif;font-weight:400">Bunny Burritos</b>Order ahead for pickup</span></div>
         <div class="shop"><div class="phone"><div class="view" data-w="390"><iframe title="Hare Today, a Bunny World demo shop" tabindex="-1" loading="lazy" data-lazy="/bunnyworld/hare-today/"></iframe></div></div><span class="shop-name"><b style="font-family:'Big Shoulders Display',sans-serif;font-weight:800">Hare Today</b>Walk-in wait times</span></div>
@@ -135,49 +132,47 @@
   <p class="bw-foot"><a href="/bunnyworld/">Walk into Bunny World &rarr;</a></p>
 </div></section>
 
-<!-- 6 Hooking up, plainly (Ledger's Libre Caslon) -->
-<section class="band" id="hookup" aria-labelledby="h-hook"><div class="in">
-  <div class="sec-h"><div><p class="kick">Hooking up</p><h2 id="h-hook">Hooking up, plainly</h2></div><p>Connecting your register is the part that makes owners nervous, so here is exactly what happens, start to finish.</p></div>
-  <div class="hook">
-    <div><span class="no">01</span><h3>What it involves</h3><p>One of us sits down with you, and you tap Connect on Square&rsquo;s own page and approve it. It takes about two minutes, and you never give us your password.</p></div>
-    <div><span class="no">02</span><h3>What changes for you</h3><p>Nothing about the way you work the counter changes. Online orders show up on your register already paid, so nobody has to take them over the phone, you never log in to anything to keep the site current, and your menu and prices stay in Square, where you already keep them.</p></div>
-    <div><span class="no">03</span><h3>How to undo it</h3><p>Open your Square Dashboard, find our app and press disconnect, and that&rsquo;s it. Your site keeps working with a call-to-order button, and the site, domain and files stay yours.</p></div>
-  </div>
-  <div class="see">
-    <p><b>What we can see:</b> your orders and the items on your menu, because that&rsquo;s what the website needs to show them.</p>
-    <p><b>What we never see:</b> your Square password, your bank details or any customer&rsquo;s card, because Square handles every payment.</p>
-  </div>
-  <p class="promise">Change your mind at the hookup, and you owe nothing. We&rsquo;d rather you feel sure than feel rushed.</p>
+<!-- 3d Hooking up (Ledger's Libre Caslon) -->
+<section class="band" id="hookup" aria-labelledby="h-hook"><div class="in hook-in">
+  <p class="kick">Hooking up</p>
+  <h2 id="h-hook">Hooking up, plainly.</h2>
+  <ol class="points" data-voice="tagline"><li>Two minutes, on Square&rsquo;s own page.</li><li>Nothing changes at the counter.</li><li>One click in Square undoes it.</li></ol>
+  <p class="promise">Change your mind at the hookup, and you owe nothing.</p>
+  <details class="more"><summary>What we can and never see</summary>
+    <p><b>We can see</b> your orders and your menu items, because the website needs them.</p>
+    <p><b>We never see</b> your Square password, your bank details or any customer&rsquo;s card.</p>
+  </details>
 </div></section>
 
-<!-- 7 Before you buy (Dew) -->
+<!-- 4 Benefits -->
+<section class="benefits-band" aria-label="What you can count on"><div class="in">
+  <ul class="benefits">
+    <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Two-minute hookup</li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7H4V2"/><path d="M4 7a9 9 0 1 1-1 6"/></svg>Owe nothing if you back out</li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l4 4v16H6z"/><path d="M9 13l2 2 4-4"/></svg>Fixed price in writing</li><li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>Cancel any time</li>
+  </ul>
+</div></section>
+
+<!-- 5 Questions (Dew) -->
 <section class="band" id="faq" aria-labelledby="h-faq"><div class="in faq">
-  <div class="side"><p class="kick">Questions</p><h2 id="h-faq">Before you buy</h2><p>Is there anything else you want to know? You can <a href="mailto:hello@seaofgrass.studio">email us</a> or call us on 303.775.1333.</p></div>
+  <div class="side"><p class="kick">Questions</p><h2 id="h-faq">Before you buy</h2></div>
   <div class="qs">
-    <details><summary>I don&rsquo;t have time for this.</summary><p>That&rsquo;s the point of it: we do the work, and the hookup takes about two minutes with one of us sitting beside you.</p></details>
-    <details><summary>We already have a Facebook page.</summary><p>You should keep it, because a real website is what shows up when people search for you, and we can link the two together.</p></details>
-    <details><summary>I don&rsquo;t need more business.</summary><p>Then we keep it simple: your menu and hours kept right, or online ordering you can switch off whenever you&rsquo;re busy.</p></details>
-    <details><summary>What&rsquo;s the catch?</summary><p>There&rsquo;s no catch that we know of. It&rsquo;s $50 a month from day one, and you can cancel any time.</p></details>
-    <details><summary>Which registers do you work with?</summary><p>Square is ready today, and we&rsquo;ve tested it from the menu all the way to the checkout. Shopify and Clover work too, and we set them up for each shop after checking your plan, because a few plans don&rsquo;t allow it.</p></details>
-    <details><summary>Does connecting Square cost anything?</summary><p>We don&rsquo;t charge for the hookup itself. Square takes its usual card fee on online orders, much like the one you already pay at the counter, and your Square Dashboard shows the exact rate.</p></details>
-    <details><summary>What if I switch registers later?</summary><p>Tell us and we&rsquo;ll move the site over to the new one. The site, the domain and the files are yours either way.</p></details>
-    <details><summary>What counts as one fix?</summary><p>One thing on your site that is broken, wrong or out of date: wrong hours, a form that doesn&rsquo;t send, a page that falls apart on phones. If yours turns out bigger than one fix, we say so and agree the price before any work.</p></details>
-    <details><summary>What happens after I pay?</summary><p>We call you within one business day to hear what you need. Then you get what we&rsquo;ll do and when, in writing, before any work starts.</p></details>
-    <details><summary>Can I cancel the care plan?</summary><p>Yes, you can cancel it in any month.</p></details>
-    <details><summary>How much does the care plan cover?</summary><p>It covers hosting, security and up to 30 minutes of small changes each month, like new hours or a new menu. If a job will take longer, we&rsquo;ll give you a fixed price for it before we start.</p></details>
-    <details><summary>What if a Kickoff isn&rsquo;t a fit?</summary><p>If it&rsquo;s not a fit after the call, you get a full refund. If you go ahead, the Kickoff is credited toward your brand or full-site project.</p></details>
-    <details><summary>Do I have to move my site to you?</summary><p>No, we can fix it where it is. Hosting with us is only part of the care plan.</p></details>
-    <details><summary>Who owns the site?</summary><p>You own the files, the domain and the logins.</p></details>
-    <details><summary>Do I get anything beyond the site?</summary><p>Every shop we build joins the Sea of Grass local network, so you&rsquo;re listed in our upcoming guide to Front Range businesses at no extra cost.</p></details>
+    <details><summary>I don&rsquo;t have time for this.</summary><p>That&rsquo;s the point of it: we do the work, and the hookup takes about two minutes.</p></details>
+    <details><summary>We already have a Facebook page.</summary><p>You should keep it, because a website is what shows up when people search for you.</p></details>
+    <details><summary>What&rsquo;s the catch?</summary><p>There&rsquo;s no catch that we know of: $50 a month from day one, and you can cancel any time.</p></details>
+    <details><summary>Which registers do you work with?</summary><p>Square works today, and we set up Shopify or Clover for each shop after checking your plan.</p></details>
+    <details><summary>Does connecting Square cost anything?</summary><p>We don&rsquo;t charge for the hookup, and Square takes its usual card fee on online orders.</p></details>
+    <details><summary>Who owns the site?</summary><p>You own the files, the domain and the logins, whatever happens later.</p></details>
+    <details><summary>More questions</summary>
+      <details><summary>What counts as one fix?</summary><p>One thing that is broken, wrong or out of date, like hours or a form that doesn&rsquo;t send.</p></details>
+      <details><summary>Do I have to move my site to you?</summary><p>No, we can fix it where it is, and hosting is only part of care.</p></details>
+    </details>
   </div>
 </div></section>
 
-<!-- 8 Close (Dew) -->
+<!-- 6 Close (Dew) -->
 <section class="band close" id="start" aria-labelledby="h-start"><div class="in close-in">
   <h2 id="h-start">Talk to Tristan or Bryce.</h2>
-  <p>Book fifteen minutes and tell us what you have, and you&rsquo;ll leave with a next step and a price.</p>
-  <div class="acts"><a class="btn" data-book href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book 15 minutes</a></div>
-  <p class="call-us">Or call us on 303.775.1333, or email hello@seaofgrass.studio.</p>
+  <a class="btn" data-book href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book 15 minutes</a>
+  <span class="call-us">or call 303.775.1333</span>
   </div>
   <div class="live-grass" data-live-grass aria-hidden="true"></div>
 </section>
