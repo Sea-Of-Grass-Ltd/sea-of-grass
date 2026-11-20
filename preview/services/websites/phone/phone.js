@@ -130,10 +130,13 @@ class SogPhone extends HTMLElement {
       renderer.setSize(w, h, false);
       camera.aspect = w / h;
       const p = T.MathUtils.degToRad(STAGE.pitch), half = Math.tan(T.MathUtils.degToRad(camera.fov) / 2);
-      const dist = STAGE.fit / (2 * half * Math.min(1, camera.aspect));   // fills the box's shorter side
+      // the page can set --phone-drop (where it sits in its box) and --phone-fit-w (metres across a wide box)
+      const cs = getComputedStyle(this), drop = parseFloat(cs.getPropertyValue('--phone-drop')), fitW = parseFloat(cs.getPropertyValue('--phone-fit-w'));
+      const dist = camera.aspect > 1 && fitW ? fitW / (2 * half * camera.aspect)   // a wide box: fill its width
+        : STAGE.fit / (2 * half * Math.min(1, camera.aspect));                     // otherwise fill the shorter side
       camera.position.set(look.x, look.y + Math.sin(p) * dist, look.z + Math.cos(p) * dist);
       camera.lookAt(look);
-      camera.setViewOffset(w, h, 0, -h * STAGE.drop, w, h);
+      camera.setViewOffset(w, h, 0, -h * (isNaN(drop) ? STAGE.drop : drop), w, h);
       camera.updateProjectionMatrix();
     };
     this._ro = new ResizeObserver(frame); this._ro.observe(this); frame();

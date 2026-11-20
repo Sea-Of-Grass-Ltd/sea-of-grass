@@ -317,7 +317,9 @@ for (const w of WIDTHS) {
         return { maxChroma: Math.max(...g.map(chroma)), Ls: g.map(v => v[0]), hard, ctas, crossers,
           price: L('.plan .amt'), flap: L('.flap-w'), tick: filt('.ticket img'), phone: filt('#calls [data-embed-slot] img') };
       }, OKLAB);
-      assert.ok(r.crossers >= 2, `art crosses at least 2 section seams (${r.crossers})`);
+      // 2026-11-21: on wide screens the rotary phone now sits centred beside its call cards (Tristan: "awkwardly placed on
+      // the bottom right"), so only the hero grass is guaranteed to cross; the phone still crosses on phones
+      assert.ok(r.crossers >= 1, `art crosses at least 1 section seam (${r.crossers})`);
       assert.ok(r.ctas.length >= 4 && r.ctas.every(c => c >= 0.1), `CTAs stand out in poppy (chroma ${r.ctas.map(c => c.toFixed(3)).join(", ")}, ≥ 0.1)`);
     } finally { await ctx.close(); }
   });
