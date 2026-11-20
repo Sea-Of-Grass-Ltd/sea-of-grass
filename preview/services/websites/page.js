@@ -70,4 +70,29 @@ addEventListener('load',()=>{requestAnimationFrame(remeasure);document.fonts&&do
 const f=window.SOG_SHOP&&SOG_SHOP.founding;
 if(f)document.querySelectorAll('[data-spots-left]').forEach(e=>{e.textContent=`${f.left} of ${f.total}`;});
 if(f&&f.left<=0){const o=document.getElementById('founding');if(o)o.classList.add('full');}
+// the founding stub lifts once, the first time most of it is on screen, as if it could tear off (reduced motion: the CSS has none)
+const coupon=document.getElementById('founding');
+// and its title and count flip in like the Care board's split flaps (Tristan: "some kind of cool font animation"): once, about a
+// second, then still text; again, quicker, on hover. Screen readers get the hidden plain copies; reduced motion: no flip.
+const flipW=coupon&&coupon.querySelector('.flipw'),flipN=coupon&&coupon.querySelector('.flipn'),realN=coupon&&coupon.querySelector('[data-spots-left]');
+if(flipN&&realN)flipN.textContent=realN.textContent;
+let flipping=false;
+const flipIn=(quick)=>{
+  if(!flipW||flipping||!Element.prototype.animate||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  flipping=true;const word=flipW.textContent.trim(),num=realN.textContent.trim(),POOL='ABCDEFGHIJKLMNOPQRSTUVWXYZ',STEP=quick?40:55;
+  const tick=[{transform:'rotateX(90deg)',opacity:.4},{transform:'none',opacity:1}];
+  flipW.innerHTML=[...word].map(c=>c===' '?'<i> </i>':'<i>'+c+'</i>').join('');
+  const cells=[...flipW.children];let left=cells.length;
+  const done=()=>{if(--left>0)return;flipW.textContent=word;flipN.textContent=num;flipping=false;};
+  cells.forEach((c,k)=>{const final=c.textContent;if(final===' '){left--;return;}let n=(quick?2:4)+Math.floor(k/3),s=0;
+    const step=()=>{const last=++s>n;c.textContent=last?final:POOL[Math.random()*26|0];const a=c.animate(tick,{duration:STEP,easing:'ease-out'});
+      a.onfinish=last?done:step;};setTimeout(step,k*(quick?10:22));});
+  // the count rolls up to the real number, like a flip counter
+  const m=num.match(/^(\d+)(.*)$/);
+  if(m){const to=+m[1];let v=Math.max(0,to-(quick?3:6));left++;
+    const roll=()=>{flipN.textContent=v+m[2];flipN.animate(tick,{duration:STEP+20,easing:'ease-out'}).onfinish=()=>{if(v<to){v++;roll();}else done();};};roll();}
+};
+if(coupon&&'IntersectionObserver' in window){const co=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){co.disconnect();coupon.classList.add('pop');flipIn(false);
+  coupon.addEventListener('animationend',()=>coupon.classList.remove('pop'),{once:true});}},{threshold:.6});co.observe(coupon);
+  coupon.addEventListener('mouseenter',()=>flipIn(true));}
 })();

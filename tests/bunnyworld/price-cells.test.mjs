@@ -14,7 +14,7 @@ const txt = s => (s || '').replace(/\s+/g, ' ').trim();
 // what each panel must say (the terms already on the site; nothing invented) and what its button adds
 const PACKS = [
   { key: 'fix', price: /\$250/, must: [/from \$250/i, /after it’s done/i, /checked/i, /a few days/i, /flat fee/i, /before any work/i, /nothing up front/i], add: ['fix'] },
-  { key: 'starter', price: /\$100/, must: [/\$100\/mo/i, /× 12/, /\$1,200/, /after #12/i, /30%/, /first draft/i, /no interest/i, /billed monthly/i, /rest at launch/i, /round of changes/i], add: ['starter-monthly', 'starter'] },
+  { key: 'starter', price: /\$100/, must: [/\$100\/mo/i, /× 12/, /\$1,000 once/, /first year of care/i, /after #12/i, /30%/, /first draft/i, /no interest/i, /billed monthly/i, /rest at launch/i, /round of changes/i], add: ['starter-monthly', 'starter'] },
   { key: 'site', price: /\$2,500/, must: [/from \$2,500/i, /30%/, /first draft/i, /rest at launch/i, /fixed price in writing/i, /nothing to start/i, /domain, email, Google listing/i], add: ['bw-site-bunny-burritos'] },
   { key: 'care', price: /\$50/, must: [/\$50\/mo/i, /hosting/i, /security/i, /30 minutes/i, /bigger jobs/i, /cancel any month/i, /text Tristan or Bryce/i, /after launch/i], add: ['care'] },
 ];
@@ -121,9 +121,9 @@ test('prices match everywhere they appear: strip, panels, Buy menu and the shop'
       const buy = [...document.querySelectorAll('.buy-row')].map(x => x.innerText.replace(/\s+/g, ' '));
       return { P: { fix: P.fix.price, starter: P.starter.price, monthly: P['starter-monthly'].price, site: P['bw-site-bunny-burritos'].price, care: P.care.price }, cells, buy };
     });
-    assert.deepEqual(r.P, { fix: 250, starter: 1200, monthly: 100, site: 2500, care: 50 });
-    assert.match(r.cells[0], /\$250/); assert.match(r.cells[1], /\$100/); assert.match(r.cells[1], /\$1,200/); assert.match(r.cells[2], /\$2,500/); assert.match(r.cells[3], /\$50/);
-    assert.ok(r.buy.some(t => /\$250/.test(t)) && r.buy.some(t => /\$1,200/.test(t)) && r.buy.some(t => /\$100/.test(t)) && r.buy.some(t => /\$2,500/.test(t)) && r.buy.some(t => /\$50/.test(t)), 'the Buy menu agrees');
+    assert.deepEqual(r.P, { fix: 250, starter: 1000, monthly: 100, site: 2500, care: 50 }); // the starter: $1,000 once with a year of care (Tristan, 2026-11-20)
+    assert.match(r.cells[0], /\$250/); assert.match(r.cells[1], /\$100/); assert.match(r.cells[1], /\$1,000 once/); assert.match(r.cells[2], /\$2,500/); assert.match(r.cells[3], /\$50/);
+    assert.ok(r.buy.some(t => /\$250/.test(t)) && r.buy.some(t => /\$1,000/.test(t)) && r.buy.some(t => /\$100/.test(t)) && r.buy.some(t => /\$2,500/.test(t)) && r.buy.some(t => /\$50/.test(t)), 'the Buy menu agrees');
   } finally { await ctx.close(); }
 });
 

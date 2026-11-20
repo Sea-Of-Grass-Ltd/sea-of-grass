@@ -88,6 +88,7 @@ body.book-in-page .top nav a.book{visibility:hidden;opacity:0}
 .plan.sites{padding-top:24px;border-top:1px solid var(--rule2)}
 .plan.sites .amt{font-size:clamp(64px,7.4vw,108px)}
 .week{font-size:15px;border-left:2px solid var(--blue);padding-left:12px;max-width:44ch}
+.plan .save{font-weight:600;max-width:40ch}
 .also{grid-column:1/-1;color:var(--soft);font-size:15px}
 .link{all:unset;cursor:pointer;color:var(--blue2);font-weight:600;text-decoration:underline;text-underline-offset:3px;padding:8px 2px}
 .link:focus-visible{outline:2px solid var(--blue2);outline-offset:2px;border-radius:4px}
@@ -417,3 +418,35 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .bw-band{--bw-bg:var(--plum);background:var(--bw-bg);transition:--bw-bg .45s ease}
 .bw-band .ticket::before{background:var(--bw-bg);box-shadow:min(78vw,423px) 0 0 var(--bw-bg)}
 @media (max-width:700px){.bw-band .ticket::before{box-shadow:78vw 0 0 var(--bw-bg)}}
+/* the sale price, the way pricing pages mark a deal (Tristan, after Higgsfield): a small muted struck $100, a big bright $50 */
+#founding .c-price{position:relative;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin:2px 0 0}
+#founding .c-show{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}
+#founding .c-price s{font:600 20px/1 var(--head);color:var(--soft);text-decoration-thickness:2px;text-decoration-color:var(--text)}
+#founding .c-now{font:700 52px/.9 var(--head);letter-spacing:-.04em;color:var(--text)}
+#founding .c-price small{font-size:15px;color:var(--text)}
+#founding .c-tag{align-self:center;font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ground);background:var(--sage);padding:6px 9px;border-radius:999px}
+#founding .c-sr{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+/* the all-in-one ticket (Tristan: "It used to have more of a fun shape that was all encompassing"; "Bryce likes the darker
+   colors"): the page's dusty-purple body and coral button, and the founding five in a slightly warmer tear-off stub under the
+   dashed line, its own deal; the stub
+   lifts a little on hover and the first time it is seen, as if it could tear off (reduced motion: still) */
+.hero .plan.care{overflow:visible}
+.hero .plan.care .plan-h,.hero .plan.care .amt small{color:var(--text)!important}
+.hero .plan.care .week{border-left-color:var(--poppy)}
+.hero .plan.care .stub{margin:12px calc(-1 * clamp(24px,2.6vw,34px)) calc(-1 * clamp(24px,2.6vw,34px));padding:22px clamp(24px,2.6vw,34px) clamp(24px,2.6vw,34px);
+  background:rgba(var(--plum-mute-rgb),.5);border-radius:0 0 22px 22px;border-top:2px dashed rgba(var(--text-rgb),.55);gap:8px;transform-origin:100% 0;transition:transform .35s cubic-bezier(.3,1.4,.5,1)}
+.hero .plan.care .stub::before,.hero .plan.care .stub::after{top:-17px;background:var(--navy)}
+.hero .plan.care .stub::before{left:-16px}.hero .plan.care .stub::after{right:-16px}
+.hero .plan.care .f-head .kick,.hero .plan.care .f-spots{color:var(--text)}
+.hero .plan.care .f-spots b{font-weight:700}
+#founding .f-line{font-size:14.5px}
+#founding .f-btn{justify-self:start;min-height:44px;padding:0 20px;font-size:16px;margin-top:4px}
+@media (prefers-reduced-motion:no-preference){
+  .hero .plan.care .stub:hover{transform:rotate(1.2deg) translateY(3px)}
+  .hero .plan.care .stub.pop{animation:stub-peel .9s cubic-bezier(.3,1.4,.5,1)}
+  @keyframes stub-peel{45%{transform:rotate(1.8deg) translateY(5px)}}
+}
+/* the founding five's split-flap title and count: each letter a flap, like the Care board */
+#founding .flipw i,#founding .flipn{display:inline-block;font-style:normal;transform-origin:50% 50%;backface-visibility:hidden}
+
+#founding .f-head{perspective:300px}

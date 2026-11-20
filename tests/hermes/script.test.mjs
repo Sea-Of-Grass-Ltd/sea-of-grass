@@ -124,7 +124,9 @@ test('research prices (Tristan, 2026-11-20): custom $2,500 or $200/mo, the 60-da
   assert.match(html, /within 60 days, the \$250 comes off it/);
   assert.match(html, /Launch Setup is \$250 with one of our sites, or \$450 if the site isn't ours/);
   assert.match(html, /<option>\$2,500 site<\/option>/);
-  assert.match(html, /\$1,200 and then \$50 a month for care/, 'the starter stays $1,200');
+  assert.match(html, /\$1,000 with the first year of care included, and then \$50 a month/, 'the starter is $1,000 once with a year of care (Tristan, 2026-11-20)');
+  assert.match(html, /<option>\$1,000 starter<\/option>/);
+  assert.doesNotMatch(html + fs.readFileSync(path.join(ROOT, 'hermes/app.js'), 'utf8'), /\$1,200 (starter|paid once)|or \$1,200'/, 'no $1,200 starter left in the script');
   for (const f of ['index.html', 'app.js', 'owner-text.js']) assert.doesNotMatch(fs.readFileSync(path.join(ROOT, 'hermes', f), 'utf8'), /\$2,000|\[2000 \+/, `${f}: no $2,000 site left`);
   assert.match(fs.readFileSync(path.join(ROOT, 'hermes/owner-text.js'), 'utf8'), /your next month is on us, and their first month is on us too/);
 });
