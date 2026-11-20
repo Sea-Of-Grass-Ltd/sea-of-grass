@@ -318,11 +318,24 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 
 /* ======== Flow: one through-line, one pinned scene, one chapter index (dope.security's flow, in our own motif) ======== */
 .through{position:absolute;left:0;top:0;z-index:4;pointer-events:none;overflow:visible}
-.through path{fill:none;stroke:rgba(var(--text-rgb),.34);stroke-width:1.5;stroke-dasharray:5 7;stroke-linecap:round}
-.through text{font:500 10px/1 var(--mono);letter-spacing:.16em;fill:var(--soft)}
-.traveller{position:absolute;left:0;top:0;z-index:5;width:14px;height:20px;color:var(--pop);pointer-events:none;will-change:transform;filter:drop-shadow(0 0 6px rgba(var(--text-rgb),.45))}
+.through .trail{fill:none;stroke:rgba(var(--text-rgb),.62);stroke-width:1.6;stroke-dasharray:5 6;stroke-linecap:round}
+.traveller{position:absolute;left:0;top:0;z-index:5;width:14px;height:20px;color:var(--pop);pointer-events:none;will-change:transform;filter:drop-shadow(0 0 6px rgba(var(--text-rgb),.45));transition:opacity .35s ease}
 .traveller svg{width:100%;height:100%;display:block}
+.traveller.landed,.traveller.under{opacity:0}
+.traveller.under{transition-duration:.12s}
 .traveller[hidden]{display:none}
+/* where the seed lands in Bunny World: a sprout comes up from the ground line beside the name */
+.sprout{position:absolute;left:0;top:0;z-index:5;width:26px;height:36px;pointer-events:none}
+.sprout svg{width:100%;height:100%;display:block;overflow:visible}
+.sprout .stem{fill:none;stroke:var(--sage);stroke-width:2.2;stroke-linecap:round;transform:scaleY(0);transform-box:fill-box;transform-origin:50% 100%;transition:transform .35s ease}
+.sprout .leaf{fill:var(--sage);transform:scale(0);transform-box:fill-box;transition:transform .45s cubic-bezier(.3,1.6,.5,1)}
+.sprout .leaf:first-of-type{transform-origin:100% 100%}
+.sprout .leaf:last-of-type{transform-origin:0 100%}
+.sprout.up .stem{transform:scaleY(1)}
+.sprout.up .leaf{transform:scale(1);transition-delay:.25s}
+.sprout.up .leaf:last-of-type{transition-delay:.38s}
+.sprout.still *{transition:none!important}
+.sprout[hidden]{display:none}
 /* the pinned register scene (wide screens, motion allowed) */
 .pin{position:relative}
 .open-stage{position:relative}
