@@ -30,6 +30,7 @@ async function open(w, opts = {}) {
   const ctx = await site.browser.newContext({ viewport: { width: w, height: mobile ? 844 : 900 }, isMobile: mobile, hasTouch: true,
     reducedMotion: opts.motion ? 'no-preference' : 'reduce', deviceScaleFactor: 1 });
   await ctx.route(u => !u.href.startsWith(site.base), r => r.abort());
+  if (opts.init) await ctx.addInitScript(opts.init);
   const page = await ctx.newPage();
   const errors = [];
   page.on('pageerror', e => errors.push('pageerror: ' + e.message));
@@ -127,7 +128,7 @@ for (const w of WIDTHS) {
       assert.equal(await current(page), 2, 'tapping the register does not move the card');
       assert.match(await shop.locator('button[data-add="Horchata, large"]').textContent(), /Sold out/i, 'live shop shows Sold out');
       assert.ok(await shop.locator('button[data-add="Horchata, large"]').isDisabled(), 'live shop button disabled');
-      assert.equal(await text(beat.locator('[data-caption]')), "That's the whole job. You never log in to anything.", 'caption swaps after the tap');
+      assert.equal(await text(beat.locator('[data-caption]')), "That's the whole job. We do the rest, and you never log in to anything.", 'caption swaps after the tap');
       const rb = await beat.locator('.register').boundingBox(), fb = await beat.locator('.phone').boundingBox();
       assert.ok(rb.y + rb.height <= h + 1 && fb.y + fb.height <= h + 1, 'register and shop both fit on the screen');
 
@@ -312,6 +313,74 @@ for (const w of WIDTHS) {
         assert.equal(await current(page), n + 1, `Skip on card ${n} → ${n + 1}`);
       }
       assert.ok(await page.locator('#short .beat[data-beat="6"] .more-link').isVisible(), 'the last card moves on through Read the details');
+    } finally { await ctx.close(); }
+  });
+}
+
+// The walk-in card's answers, folded into play (Tristan, 2026-11-19: "incorporated into the cards somehow without it being obvious")
+const CARD = {
+  facebook: 'Keep it. This is what shows up when people search.',
+  business: 'Then we keep it simple: menu and hours, or ordering you switch off when busy.',
+  catch: 'None. $50 a month from day one, cancel any time.',
+};
+for (const w of WIDTHS) {
+  test(`${w}px · the walk-in card's answers live inside the games`, async () => {
+    const init = () => { try { delete Navigator.prototype.share; } catch {} Object.defineProperty(navigator, 'clipboard', { value: { writeText: () => Promise.resolve() }, configurable: true }); };
+    const { ctx, page, errors } = await open(w, { init });
+    try {
+      // card 1: once the pin is up, "We already have Facebook" answers itself on a tap
+      const b1 = page.locator('#short .beat[data-beat="1"]');
+      assert.ok(!(await b1.locator('[data-ask="facebook"]').isVisible()), 'the Facebook bubble waits for the pin');
+      const z = await b1.locator('[data-game="knock"]').boundingBox();
+      for (let i = 0; i < 3; i++) { await page.mouse.move(z.x + 10, z.y + z.height * .7); await page.mouse.move(z.x + z.width - 10, z.y + z.height * .72, { steps: 14 }); }
+      await settle(page);
+      const fb = b1.locator('[data-ask="facebook"]');
+      assert.ok(await fb.isVisible(), 'Facebook bubble appears with the pin');
+      assert.match(await text(fb), /Facebook/, 'it asks about Facebook');
+      await fb.click(); await settle(page);
+      assert.equal(await text(fb.locator('[data-a]')), CARD.facebook, 'Facebook answer, word for word');
+      assert.equal(await current(page), 1, 'still on card 1');
+
+      // card 3: after the three calls, the owner's own doubt: "I don't need more business"
+      await goTo(page, 3);
+      const b3 = page.locator('#short .beat[data-beat="3"]');
+      const own = b3.locator('[data-ask="business"]');
+      assert.ok(!(await own.isVisible()), 'the owner bubble waits for the calls');
+      for (let i = 0; i < 3; i++) await b3.locator('.call').nth(i).click();
+      await settle(page);
+      assert.ok(await own.isVisible(), 'the owner bubble appears after the calls');
+      await own.click(); await settle(page);
+      assert.equal(await text(own.locator('[data-a]')), CARD.business, 'more-business answer, word for word');
+
+      // card 5: the drag answers "too expensive" and offers $50 a month; the catch answers itself on a tap
+      await goTo(page, 5);
+      const b5 = page.locator('#short .beat[data-beat="5"]');
+      await b5.locator('[data-weeks]').evaluate(r => { r.value = '52'; r.dispatchEvent(new Event('input', { bubbles: true })); });
+      await settle(page);
+      assert.equal(await text(b5.locator('[data-or]')), 'Or start at $50 a month.', 'the $50-a-month way in');
+      const ct = b5.locator('[data-ask="catch"]');
+      await ct.click(); await settle(page);
+      assert.equal(await text(ct.locator('[data-a]')), CARD.catch, 'the catch, word for word');
+      assert.equal(await current(page), 5, 'still on card 5');
+      await page.evaluate(() => document.activeElement && document.activeElement.blur());
+
+      // card 6: the safety line answers the nervous owner; "Not yet?" saves the page for later
+      await next(page);
+      const b6 = page.locator('#short .beat[data-beat="6"]'), safe = await text(b6.locator('[data-safety]'));
+      assert.match(safe, /Connect on Square's own page/, 'nervous: you tap Connect on Square\'s own page');
+      assert.match(safe, /owe nothing/, 'nervous: you owe nothing');
+      const later = b6.locator('button', { hasText: 'Not yet? Save this for later' });
+      assert.ok(await later.isVisible(), 'a soft "Not yet" link');
+      assert.equal(await b6.locator('a.btn, button.btn').count(), 1, 'still one button only');
+      await later.click(); await settle(page);
+      assert.match(await text(b6.locator('[data-later-msg]')), /saved|copied|link/i, 'Not yet leaves them a way back');
+      assert.equal(await current(page), 6, 'still on card 6');
+
+      // the full answers still live in the details
+      await b6.locator('.more-link').click(); await settle(page);
+      const qs = (await page.locator('#details #faq summary').allTextContents()).join(' | ');
+      for (const q of [/Facebook/, /more business/i, /time/i]) assert.match(qs, q, `details FAQ covers ${q}`);
+      assert.deepEqual(errors, [], 'no console errors');
     } finally { await ctx.close(); }
   });
 }
