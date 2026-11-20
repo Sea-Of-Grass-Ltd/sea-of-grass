@@ -109,9 +109,8 @@ body.book-in-page .top nav a.book{visibility:hidden;opacity:0}
 .flap-w{display:flex;gap:.18em;font:500 clamp(28px,5vw,72px)/1 var(--mono);text-transform:uppercase;transform:translateY(.06em)}
 .flap-w i{font-style:normal;display:inline-block;transform-origin:50% 50%}
 .flap-a{font:400 clamp(24px,3vw,44px)/1 var(--mono);color:var(--blue2);position:relative;z-index:1}
-.flap.go .flap-w i{animation:flip .5s cubic-bezier(.3,.7,.3,1) both}
-@keyframes flip{0%{transform:rotateX(90deg);opacity:.2}60%{transform:rotateX(-12deg);opacity:1}100%{transform:none}}
-@media (prefers-reduced-motion:reduce){.flap.go .flap-w i{animation:none}}
+/* a row stays blank until page.js flips it in (only with motion allowed; without script the words simply stand) */
+.flap.wait .flap-w i{visibility:hidden}
 
 /* 3 Bunny World: photo ticket rail + the open stage */
 .bw-head{display:flex;align-items:center;gap:14px 20px;margin-bottom:14px}

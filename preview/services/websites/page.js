@@ -2,7 +2,7 @@
    1 the header's Book button shows only when no other Book button is on screen (never two in one view);
    2 the Bunny World ticket rail: tapping a ticket opens that shop's live page on the stage below; Bunny Burritos keeps the
      register and the Sold out demo, the other shops show their own page and a way in;
-   3 the split-flap board flips its letters in once, as it arrives (still under reduced motion);
+   3 the split-flap board flips each row in once the visitor can really see it, one row after another (still under reduced motion);
    4 meadows measured before the page settled are measured again once fonts and images are in;
    5 the founding count comes from SOG_SHOP.founding (checkout-links.js), never typed into the page. */
 (()=>{
@@ -38,12 +38,28 @@ if(stage&&tickets.length){
   tickets.forEach(t=>t.addEventListener('click',()=>pick(t)));
 }
 
-// 3 the split-flap board
+// 3 the split-flap board: a row flips through letters only once the visitor can really see it (its middle above about 70% of
+//   the screen), rows one after another, each letter landing a beat after the one before; reduced motion: the words just stand
 const flaps=[...document.querySelectorAll('.flap')];
-if(flaps.length&&'IntersectionObserver' in window){
-  const fo=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;const f=e.target;
-    f.querySelectorAll('.flap-w i').forEach((c,k)=>c.style.animationDelay=(k*45)+'ms');f.classList.add('go');fo.unobserve(f);}),{threshold:.5});
-  flaps.forEach(f=>fo.observe(f));
+if(flaps.length&&'IntersectionObserver' in window&&Element.prototype.animate&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+  const POOL='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',STEP=90,LAND=240,ROW_GAP=380;
+  const flip=[{transform:'rotateX(90deg)',opacity:.35},{transform:'rotateX(-10deg)',opacity:1,offset:.6},{transform:'none',opacity:1}];
+  const any=not=>{let c;do c=POOL[Math.random()*POOL.length|0];while(c===not);return c;};
+  const play=f=>{
+    f.classList.remove('wait');
+    f.querySelectorAll('.flap-w i').forEach((c,k)=>{
+      const word=c.textContent,n=5+k+(Math.random()*3|0);let s=0;
+      const step=()=>{const last=++s>n;c.textContent=last?word:any(word);
+        const a=c.animate(flip,{duration:last?LAND:STEP,easing:'cubic-bezier(.3,.7,.3,1)'});if(!last)a.onfinish=step;};
+      step();
+    });
+  };
+  let free=0;
+  const fo=new IntersectionObserver(es=>es.filter(e=>e.isIntersecting).map(e=>e.target)
+    .sort((a,b)=>flaps.indexOf(a)-flaps.indexOf(b)).forEach(f=>{fo.unobserve(f);
+      const now=performance.now(),at=Math.max(now,free);free=at+ROW_GAP;setTimeout(()=>play(f),at-now);}),
+    {rootMargin:'0px 0px -30% 0px',threshold:.5});
+  flaps.forEach(f=>{f.classList.add('wait');fo.observe(f);});
 }
 
 // 4 meadows measured again once the page has settled (seen on phones)
