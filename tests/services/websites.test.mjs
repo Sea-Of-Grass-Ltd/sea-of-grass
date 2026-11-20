@@ -383,6 +383,9 @@ for (const w of WIDTHS) {
             const A = T[i], B = T[j]; if (A.e.contains(B.e) || B.e.contains(A.e)) continue;
             if (hit(A.r, B.r)) out.push(`${A.e.tagName}.${A.e.className}「${A.e.textContent.trim().slice(0, 18)}」 × ${B.e.tagName}.${B.e.className}「${B.e.textContent.trim().slice(0, 18)}」`);
           }
+          // the phone screens are full of text (a live page in an iframe): nothing may sit over them, translucent or not
+          for (const v of document.querySelectorAll('.phone .view')) { const vr = v.getBoundingClientRect(); if (!vr.width || vr.bottom < 0 || vr.top > innerHeight) continue;
+            for (const t of T) if (!v.contains(t.e) && hit(vr, t.r)) out.push(`phone screen × 「${t.e.textContent.trim().slice(0, 18)}」`); }
           for (const c of document.querySelectorAll('[data-traveller], [data-chapters], [data-through] text'))
             { const cr = c.getBoundingClientRect(); if (cr.width && getComputedStyle(c).visibility !== 'hidden') for (const t of T) if (!c.contains(t.e) && hit(cr, t.r)) out.push(`${c.className?.baseVal ?? c.className} × 「${t.e.textContent.trim().slice(0, 18)}」`); }
           return out.slice(0, 4);
@@ -441,6 +444,27 @@ test('1440px · flow: the register scene pins, plays Sold out, then releases cle
     } finally { await x.ctx.close(); }
   }
 });
+
+// HQ at ~800px (2026-11-19): the receipt was translucent and sat over the phone's text, so two layers of text read through
+// each other. The receipt is a solid object now, and it never covers the phone screen at any width.
+for (const w of [360, 390, 800, 1024, 1440]) {
+  test(`${w}px · the register receipt is solid and never covers the phone screen`, async () => {
+    const { ctx, page } = await site.open(PAGE, w, { reducedMotion: 'reduce' });
+    try {
+      const stage = page.locator('#bunny-world .open-stage');
+      await stage.scrollIntoViewIfNeeded(); await page.waitForTimeout(300);
+      const r = await stage.evaluate(s => { const reg = s.querySelector('.register'), view = s.querySelector('.phone .view'), c = getComputedStyle(reg);
+        const a = reg.getBoundingClientRect(), b = view.getBoundingClientRect();
+        const alpha = (c.backgroundColor.match(/[\d.]+/g) || []).map(Number)[3] ?? 1;
+        return { alpha, blur: c.backdropFilter, opacity: +c.opacity,
+          overlap: Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left)) * Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top)) }; });
+      assert.equal(r.alpha, 1, 'the receipt has a solid surface');
+      assert.ok(r.blur === 'none' || !r.blur, 'no see-through blur');
+      assert.equal(r.opacity, 1, 'fully opaque');
+      assert.equal(r.overlap, 0, `the receipt covers none of the phone screen (${Math.round(r.overlap)} px² overlap)`);
+    } finally { await ctx.close(); }
+  });
+}
 
 test('stylesheet uses no CSS gradients as surfaces', () => {
   const css = fs.readFileSync(path.join(ROOT, 'preview/services/websites/websites.css'), 'utf8');
