@@ -287,7 +287,6 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .hero .plan.sites.touch{border-top:2px solid var(--sage)}
 .hero .week.touch{border-left-color:var(--plum-mute)}
 .flapboard .flap-a.touch.t-soft{color:var(--soft)}
-.flapboard .flap-a.touch.t-plum{color:var(--plum-mute)}
 .bw-band .bw-word.touch{text-decoration-color:var(--sage)}
 .bw-band .reg-live.touch{color:var(--sage)}
 .bw-band .bw-foot a.touch{text-decoration-color:var(--grass);text-decoration-thickness:2px}
