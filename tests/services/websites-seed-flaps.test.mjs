@@ -21,7 +21,7 @@ const geometry = page => page.evaluate(() => {
   const svg = path.ownerSVGElement.getBoundingClientRect(), ox = svg.left, oy = svg.top + scrollY;
   const n = Math.max(2, Math.ceil(len / 2)), pts = Array.from({ length: n + 1 }, (_, i) => { const q = path.getPointAtLength(len * i / n); return [q.x + ox, q.y + oy]; });
   const box = e => { const r = e.getBoundingClientRect(); return { left: r.left, right: r.right, top: r.top + scrollY, bottom: r.bottom + scrollY }; };
-  const texts = [...document.querySelectorAll('#bunny-world h2, #bunny-world p, #bunny-world .bw-word, #bunny-world .bw-head img, #care .kick')].map(box);
+  const texts = [...document.querySelectorAll('#bunny-world h2, #bunny-world p, #bunny-world .bw-word, #bunny-world .bw-head img, #bunny-world .bw-head .bw-mark, #care .kick')].map(box);
   return { d, len, pts, care: box(document.querySelector('#care')), bw: box(document.querySelector('#bunny-world')), head: box(document.querySelector('.bw-head')),
     flaps: [...document.querySelectorAll('.flap')].map(box), texts };
 });

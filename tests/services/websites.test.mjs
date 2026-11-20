@@ -117,7 +117,7 @@ for (const w of WIDTHS) {
     const { ctx, page, errors } = await site.open(PAGE, w, { reducedMotion: 'reduce' });
     try {
       const bw = page.locator('#bunny-world');
-      assert.ok(await bw.locator('img[src*="/bunnyworld/brand/mark"]').count() === 1, 'led by the Bunny World mark');
+      assert.ok(await bw.locator('svg.bw-mark').count() === 1, 'led by the Bunny World mark (the live bunny, still under reduced motion)');
       assert.equal(await text(bw.locator('h2')), 'Nine shops we built to show you.', 'the heading');
       const tickets = bw.locator('.ticket');
       assert.equal(await tickets.count(), 9, 'nine tickets');
