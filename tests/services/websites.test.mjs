@@ -153,8 +153,8 @@ for (const w of WIDTHS) {
       for (const q of ["What's the catch?", 'We already have a Facebook page.', "I don't have time for this."]) assert.ok(qs.includes(q), `the questions include "${q}"`);
       await page.evaluate(() => document.querySelectorAll('#faq details').forEach(d => d.open = true));
       const at = await text(faq);
-      for (const a of ['None. $50 a month from day one, cancel any time.', 'This is what shows up when people search', 'We do the work, and the hookup takes about two minutes'])
-        assert.ok(at.includes(a), `answer readable as text: "${a}"`);
+      for (const a of [/no catch[^.]*\. It's \$50 a month from day one, and you can cancel any time/i, /what shows up when people search/i, /we do the work, and the hookup takes about two minutes/i])
+        assert.match(at, a, `answer readable as text: ${a}`);
 
       const close = page.locator('#start');
       assert.equal(await text(close.locator('h2')), 'Talk to Tristan or Bryce.', 'the close');
