@@ -21,7 +21,9 @@ after(async () => { await site?.close(); });
 // typographic apostrophes on the page read the same as straight ones in the exact-wording checks
 const text = loc => loc.evaluate(e => e.textContent.replace(/\s+/g, ' ').replace(/\u2019/g, "'").trim());
 const current = page => page.evaluate(() => +document.getElementById('short')?.dataset.current || 0);
-const filled = page => page.locator('.progress i.on').count();
+// progress (Bryce and Tristan, 2026-11-19): flows like a reel without looking like one. No segmented Stories bar;
+// a small "n / 6" and a thin meadow line along the edge that grows with each card.
+const filled = page => page.evaluate(() => { const m = (document.querySelector('[data-count]')?.textContent || '').match(/(\d+)\s*\/\s*6/); return m ? +m[1] : 0; });
 const settle = page => page.waitForTimeout(450);
 
 // open with touch available at every width, so the swipe test runs on desktop too
@@ -58,13 +60,18 @@ for (const w of WIDTHS) {
     const { ctx, page, errors, h } = await open(w);
     try {
       assert.equal(await page.locator('#short .beat').count(), 6, '6 cards');
-      assert.equal(await page.locator('.progress i').count(), 6, '6 progress segments');
+      assert.equal(await page.locator('.progress i').count(), 0, 'no segmented Stories bar');
+      assert.equal(await page.locator('.hint .t-touch', { hasText: /swipe up/i }).count(), 0, 'no "Swipe up" label');
+      assert.ok(await page.locator('[data-count]').isVisible(), 'a small card count');
+      assert.ok(await page.locator('[data-meadow-line]').isVisible(), 'a thin meadow line along the edge');
       assert.equal(await current(page), 1, 'lands on card 1');
       assert.match(await text(page.locator('#short .beat[data-beat="1"]')), /fixed and looked after/i, 'card 1 keeps "fixed and looked after" as its kicker');
       for (let n = 1; n <= 6; n++) {
         if (n > 1) await next(page);
         assert.equal(await current(page), n, `on card ${n}`);
-        assert.equal(await filled(page), n, `bar filled to ${n}`);
+        assert.equal(await filled(page), n, `count reads ${n} / 6`);
+        const frac = await page.evaluate(() => { const l = document.querySelector('[data-meadow-line]'); return +getComputedStyle(l).getPropertyValue('--p'); });
+        assert.ok(Math.abs(frac - n / 6) < .01, `meadow line grown to ${n}/6`);
         const beat = page.locator(`#short .beat[data-beat="${n}"]`);
         assert.equal(await beat.locator('[data-line]').count(), 1, `card ${n} has exactly one line`);
         const line = beat.locator('[data-line]'), t = await text(line);
