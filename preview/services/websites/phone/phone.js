@@ -1,12 +1,12 @@
-// <sog-phone>: the rotary phone from "One less call asking what's left", a big live 3D phone to play with.
-// 2026-11-20, Tristan: "Rather than framing it out, I feel like this area should just be a big phone that you can
-// play with." It stands free on the section's ground: drag to turn it, drag a finger hole to dial (it runs back),
-// and lift the handset (click, drag it up, or tap) to light the section's questions one by one with their answers.
-// It rings now and then as an invitation until it's picked up. The still picture inside the element is the
-// fallback and sets the box: reduced motion, low-power devices, no WebGL or a failed load keep the picture.
-// Model: phone.glb (Blender, tools/rotary-phone/), actions handset_lift, dial (1 s linear 0..1) and ring.
-// data-lines: selector for the question rows that light up. Test hooks: data-state (still | loading | live | failed),
-// data-lift, data-dial, data-yaw, el.pointOf('handset' | 'dial' | 'dial-hole' | 'empty'), el.staging().
+// <sog-phone>: the big live 3D rotary phone in "Tired of annoying calls?" (the old way), to play with.
+// It stands free on the section's ground: drag to turn it, drag a finger hole to dial (it runs back), and lift the
+// handset (click, drag it up, or tap). calls.js runs the story: it sends 'nag' (stage 1-3: a wobble, the handset
+// jumping, a little shuffle), 'nag-end', 'hush' (Sold out tapped above: the phone slumps) and 'wake'; this element
+// sends back 'pickup' and 'hangup'. The still picture inside is the fallback and sets the box: reduced motion,
+// low-power devices, no WebGL or a failed load keep the picture.
+// Model: phone.glb (Blender, tools/rotary-phone/), actions handset_lift and dial (1 s linear 0..1).
+// Test hooks: data-state (still | loading | live | failed), data-lift, data-dial, data-yaw, data-slumped,
+// el.pointOf('handset' | 'dial' | 'dial-hole' | 'empty'), el.staging().
 const HERE = new URL('.', import.meta.url).href;
 const css = `
 sog-phone{display:block;position:relative}
@@ -188,20 +188,22 @@ class SogPhone extends HTMLElement {
 
     // ---- interaction
     let lift = 0, liftTarget = 0, dial = 0, dragging = false, dragAngle = 0, yaw = 0, yawVel = 0, turning = null, grip = null;
-    let lifted = false, everLifted = false, ringsLeft = 3, ringTimer = 0;
-    const rows = this.dataset.lines ? [...document.querySelectorAll(this.dataset.lines)].slice(0, 3) : [];
-    const rowTimers = [];
-    // picking up the phone lights the questions one by one with their answers; hanging up dims them again
-    const setLift = on => {
+    let lifted = false;
+    // picking up / hanging up is news for the section's calls (calls.js), which answers by hand and rings again later
+    const setLift = (on, quiet) => {
       if (on === lifted) return;
       lifted = on; liftTarget = on ? 1 : 0;
-      rowTimers.splice(0).forEach(clearTimeout);
-      if (on) {
-        everLifted = true; clearTimeout(ringTimer);
-        if (act.ring?.isRunning()) { act.ring.stop(); act.handset_lift?.setEffectiveWeight(1); }
-        rows.forEach((r, i) => rowTimers.push(setTimeout(() => r.classList.add('lit'), 350 + i * 600)));
-      } else rows.forEach(r => r.classList.remove('lit'));
+      if (on) nag = null;
+      if (!quiet) this.dispatchEvent(new CustomEvent(on ? 'pickup' : 'hangup'));
     };
+    // ---- the nagging (driven by calls.js): 1 a polite wobble, 2 the handset jumping on its cradle, 3 a little
+    // shuffle and hop that never leaves its spot; a slump when Sold out shuts it up
+    let nag = null, slumpT = -1;
+    const drift = { x: 0, z: 0 }, rnd = (s => () => (s = (s * 16807) % 2147483647) / 2147483647)(11);
+    this.addEventListener('nag', e => { if (!lifted) nag = { stage: e.detail.stage, t: 0, dur: Math.max(0.3, e.detail.ms / 1000), gentle: e.detail.gentle }; this.dataset.slumped = '0'; });
+    this.addEventListener('nag-end', () => { nag = null; });
+    this.addEventListener('hush', () => { nag = null; slumpT = 0; setLift(false, true); this.dataset.slumped = '1'; });
+    this.addEventListener('wake', () => { this.dataset.slumped = '0'; });
     const hit = (e, list) => {
       const r = canvas.getBoundingClientRect();
       ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
@@ -263,31 +265,42 @@ class SogPhone extends HTMLElement {
       lift += (liftTarget - lift) * Math.min(1, dt * 7);
       if (Math.abs(liftTarget - lift) < 0.002) lift = liftTarget;
       if (!dragging && dial > 0) dial = Math.max(0, dial - dt * (420 / dialMax));   // runs back at a steady speed, like a real dial
-      if (act.handset_lift) act.handset_lift.time = lift * act.handset_lift.getClip().duration * 0.999;
+      // nag motion, layered on top of whatever the visitor is doing
+      let rz = 0, hop = 0, jump = 0, ryJ = 0;
+      if (nag) {
+        nag.t += dt;
+        const k = nag.t / nag.dur, st = nag.stage, a = nag.gentle ? 0.55 : 1, t = nag.t;
+        if (k >= 1) nag = null;
+        else {
+          const env = Math.sqrt(Math.sin(Math.PI * k)), burst = (t % 0.6) < 0.42 ? 1 : 0.2;   // two bursts, like the bell
+          rz = a * env * burst * [0, 0.022, 0.04, 0.055][st] * Math.sin(t * 2 * Math.PI * [0, 9, 12, 14][st]);
+          hop = a * env * burst * [0, 0.0005, 0.002, 0.0055][st] * Math.abs(Math.sin(t * 2 * Math.PI * [0, 9, 12, 7][st]));
+          if (st >= 2) jump = a * env * burst * [0, 0, 0.06, 0.11][st] * Math.abs(Math.sin(t * 2 * Math.PI * 13));
+          if (st === 3) {
+            ryJ = a * env * 0.07 * Math.sin(t * 2 * Math.PI * 5);
+            drift.x = Math.max(-0.025, Math.min(0.025, drift.x + (rnd() - 0.5) * dt * 0.35 * a));
+            drift.z = Math.max(-0.02, Math.min(0.02, drift.z + (rnd() - 0.5) * dt * 0.25 * a));
+          }
+        }
+      } else { drift.x *= Math.pow(0.25, dt); drift.z *= Math.pow(0.25, dt); }   // it settles back to its spot
+      let sy = 0, sx = 0;
+      if (slumpT >= 0) { slumpT += dt; sy = -0.004 * Math.exp(-3.5 * slumpT) * Math.cos(10 * slumpT); sx = -0.035 * Math.exp(-2.5 * slumpT); if (slumpT > 3) slumpT = -1; }
+      const shown = Math.max(lift, jump);
+      if (act.handset_lift) act.handset_lift.time = shown * act.handset_lift.getClip().duration * 0.999;
       if (act.dial) act.dial.time = dial * act.dial.getClip().duration * 0.999;
       if (!turning && Math.abs(yawVel) > 0.01) { yaw += yawVel * dt; yawVel *= Math.pow(0.04, dt); }   // a little spin after letting go
-      pivot.rotation.y = STAGE.phoneYaw + yaw;
+      pivot.position.set(drift.x, hop + sy, drift.z);
+      pivot.rotation.set(sx, STAGE.phoneYaw + yaw + ryJ, rz);
       mixer.update(dt);
       renderer.render(scene, camera);
       this.dataset.lift = lift.toFixed(3); this.dataset.dial = dial.toFixed(3); this.dataset.yaw = yaw.toFixed(3);
       if (first) {
         first = false;
         this.classList.add('shown');
-        setTimeout(() => { this.dataset.state = 'live'; rows[0]?.parentElement.classList.add('playing'); ringTimer = setTimeout(ring, 1400); }, 520);
+        setTimeout(() => { this.dataset.state = 'live'; }, 520);
       }
     };
 
-    // ---- it rings now and then until someone picks it up
-    mixer.addEventListener('finished', e => { if (e.action === act.ring) act.handset_lift?.setEffectiveWeight(1); });
-    const ring = () => {
-      if (everLifted || !act.ring || ringsLeft <= 0) return;
-      if (this._visible && !dragging && !turning && !grip) {
-        ringsLeft--;
-        act.handset_lift?.setEffectiveWeight(0);                // the ring moves the handset itself
-        act.ring.reset().play();
-      }
-      ringTimer = setTimeout(ring, 7000);
-    };
     tick();
   }
 }

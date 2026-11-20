@@ -115,16 +115,20 @@
 <!-- 4 Calls: the picture slot is ready for the 3D rotary phone -->
 <section class="band alt calls-band" id="calls" aria-labelledby="h-calls"><div class="in alt-in flip">
   <div class="words">
-    <p class="kick">Fewer calls</p>
-    <h2 id="h-calls" class="touch u">One less call asking what&rsquo;s left.</h2>
+    <p class="kick">The old way</p>
+    <h2 id="h-calls" class="touch u">Tired of annoying calls?</h2>
+    <p class="calls-sub">One less call asking what&rsquo;s left.</p>
     <dl class="calls" data-voice="quote">
-      <div><dt>&ldquo;Are you open?&rdquo;</dt> <dd>Open until 9.</dd></div>
-      <div><dt>&ldquo;Any horchata left?&rdquo;</dt> <dd>Sold out, back tomorrow.</dd></div>
-      <div><dt>&ldquo;Can I order ahead?&rdquo;</dt> <dd>Order for pickup.</dd></div>
+      <div data-call="open"><dt>&ldquo;Are you open?&rdquo;</dt> <dd><span class="call-state" aria-live="polite"></span><span class="call-ans">Open until 9.</span></dd></div>
+      <div data-call="horchata"><dt>&ldquo;Any horchata left?&rdquo;</dt> <dd><span class="call-state" aria-live="polite"></span><span class="call-ans">Sold out, back tomorrow.</span></dd></div>
+      <div data-call="ahead"><dt>&ldquo;Can I order ahead?&rdquo;</dt> <dd><span class="call-state" aria-live="polite"></span><span class="call-ans">Order for pickup.</span></dd></div>
     </dl>
-    <dl class="own touch" data-voice="quote"><dt>Don&rsquo;t need more business?</dt> <dd>Then keep it to menu and hours.</dd></dl>
+    <p class="calls-nudge"><a href="#demo-stage">Tap Sold out above and watch.</a></p>
   </div>
-  <sog-phone class="visual phone-art" data-embed-slot="rotary-phone" data-cross aria-hidden="true" data-lines="#calls dl.calls > div"><!-- the live 3D counter phone (preview/services/websites/phone/); the picture is its fallback and sets its size --><picture aria-hidden="true"><source type="image/webp" srcset="/preview/assets/work/websites/card3-phone-720.webp 720w, /preview/assets/work/websites/card3-phone-1080.webp 1080w" sizes="(min-width:900px) 40vw, 100vw"><img src="/preview/assets/work/websites/card3-phone-1080.jpg" alt="" width="1080" height="1935" loading="lazy"></picture></sog-phone>
+  <div class="visual phone-art phone-stage" data-embed-slot="rotary-phone" data-cross>
+    <sog-phone aria-hidden="true"><!-- the live 3D rotary phone (preview/services/websites/phone/); the picture is its fallback and sets its size --><picture aria-hidden="true"><source type="image/webp" srcset="/preview/assets/work/websites/card3-phone-720.webp 720w, /preview/assets/work/websites/card3-phone-1080.webp 1080w" sizes="(min-width:900px) 40vw, 100vw"><img src="/preview/assets/work/websites/card3-phone-1080.jpg" alt="" width="1080" height="1935" loading="lazy"></picture></sog-phone>
+    <button type="button" class="calls-mute touch" aria-pressed="false" aria-label="Mute the phone"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 20.5a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.8"/><path class="mute-x" d="M4 4l16 16" stroke="currentColor" stroke-width="1.8"/></svg></button>
+  </div>
 </div></section>
 
 <!-- 5 Hooking up -->
@@ -187,6 +191,7 @@
 <script src="/preview/assets/bunny-card.js" defer></script>
 <script src="/preview/services/websites/flow.js" defer></script>
 <script type="module" src="/preview/services/websites/phone/phone.js"></script>
+<script type="module" src="/preview/services/websites/phone/calls.js"></script>
 
 </body>
 </html>

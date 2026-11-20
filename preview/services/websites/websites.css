@@ -172,14 +172,45 @@ body.book-in-page .top nav a.book{visibility:hidden;opacity:0}
 .alt .words{display:grid;gap:16px;align-content:center}
 .alt .words .kick{margin:0}
 .calls-band .visual{justify-self:center;width:min(100%,420px);border-radius:24px;overflow:hidden}
-#calls sog-phone.visual{justify-self:end;align-self:end;width:min(100%,600px);aspect-ratio:1/1;border-radius:0;overflow:visible;box-shadow:none;margin-right:calc(-1 * clamp(0px,3vw,56px))}
+#calls .phone-stage{justify-self:end;align-self:end;width:min(100%,640px);border-radius:0;overflow:visible;box-shadow:none;margin-right:calc(-1 * clamp(0px,3vw,56px))}
+#calls sog-phone{width:100%;aspect-ratio:1/1}
 #calls sog-phone picture{width:100%;height:100%}
 #calls sog-phone img{width:100%;height:100%;object-fit:cover;object-position:50% 74%;border-radius:24px}
-/* while the phone is live, the answers wait for the handset: each question lights up with its answer in turn */
-#calls dl.calls.playing>div{opacity:.72;transition:opacity .4s ease}
-#calls dl.calls.playing>div dd{opacity:.5;transition:opacity .4s ease,color .4s ease}
-#calls dl.calls.playing>div.lit{opacity:1}
-#calls dl.calls.playing>div.lit dd{opacity:1;color:var(--fg)}
+/* the phone carries the section; the words are few */
+#calls .calls-sub{margin:10px 0 18px;color:var(--soft);font-size:18px}
+/* call cards: each question is a call. Ringing, answered by hand, missed, or answered by the site (calls.js) */
+#calls dl.calls{gap:10px}
+#calls dl.calls>div{grid-template-columns:auto 1fr;column-gap:12px;align-items:center;padding:12px 16px;border:1px solid var(--navy-line);border-radius:14px;background:rgba(var(--ink-rgb),.035);transition:border-color .3s,background-color .3s,opacity .3s}
+#calls dl.calls>div::before{content:"";grid-row:1 / span 2;width:10px;height:10px;border-radius:50%;background:var(--navy-line)}
+#calls dl.calls>div>dt,#calls dl.calls>div>dd{grid-column:2}
+#calls dl.calls>div dd{display:grid;gap:1px}
+#calls .call-state{font:500 11px/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--soft)}
+#calls dl.calls.live .call-state:empty::before{content:"\00a0"}   /* the status line keeps its height, so cards never jump */
+#calls dl.calls:not(.live) .call-state{display:none}
+#calls dl.calls.live>div .call-ans{transition:opacity .3s}
+#calls dl.calls.live>div:not(.hand):not(.site) .call-ans{opacity:.35}
+#calls dl.calls>div.ringing{border-color:var(--sage);cursor:pointer}
+#calls dl.calls>div.ringing::before{background:var(--sage);animation:call-pulse .5s ease-in-out infinite alternate}
+#calls dl.calls>div.ringing dt{animation:call-buzz .12s linear infinite}
+#calls dl.calls>div.hand::before{background:var(--soft)}
+#calls dl.calls>div.missed{opacity:.6}
+#calls dl.calls>div.missed::before{background:var(--plum-mute)}
+#calls dl.calls>div.missed dt{text-decoration:line-through;text-decoration-color:var(--plum-mute)}
+#calls dl.calls>div.site{border-color:var(--grass)}
+#calls dl.calls>div.site::before{background:var(--sage)}
+#calls dl.calls>div.site .call-ans,#calls dl.calls>div.hand .call-ans{color:var(--fg)}
+@keyframes call-pulse{to{transform:scale(1.5);opacity:.6}}
+@keyframes call-buzz{0%,100%{transform:translateX(0)}25%{transform:translateX(-1px)}75%{transform:translateX(1px)}}
+@media (prefers-reduced-motion:reduce){#calls dl.calls>div.ringing::before,#calls dl.calls>div.ringing dt{animation:none}}
+#calls .calls-nudge{margin:16px 0 0;font-size:15px;color:var(--soft)}
+#calls .calls-nudge a{color:var(--fg);text-underline-offset:3px}
+/* the bell toggle sits by the phone */
+#calls .phone-stage{position:relative}
+#calls .calls-mute{position:absolute;top:8px;right:clamp(8px,3vw,56px);width:40px;height:40px;display:grid;place-items:center;border-radius:50%;border:1px solid var(--navy-line);background:var(--navy);color:var(--fg);cursor:pointer;z-index:2}
+#calls .calls-mute svg{width:20px;height:20px}
+#calls .calls-mute .mute-x{opacity:0}
+#calls .calls-mute[aria-pressed="true"] .mute-x{opacity:1}
+#calls .calls-mute:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
 .calls-band .visual img{width:100%;height:auto;display:block}
 .calls{display:grid;gap:12px;margin:4px 0 0}
 .calls div{display:grid;gap:2px}
@@ -236,7 +267,8 @@ footer.foot a{color:var(--soft)}
 @media (max-width:980px){
   .plans,.open-stage,.alt-in,.faq{grid-template-columns:1fr}
   .alt-in.flip .visual{order:0}
-  #calls sog-phone.visual{order:2;justify-self:center;margin-right:0}   /* on phones: a big phone under the text */
+  #calls .phone-stage{order:2;justify-self:center;margin-right:0}   /* on phones: a big phone under the text */
+  #calls .calls-mute{right:8px}
   .open-words{order:-1}
   .benefits{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
@@ -303,8 +335,8 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .bw-band .bw-word.touch{text-decoration-color:var(--sage)}
 .bw-band .reg-live.touch{color:var(--sage)}
 .bw-band .bw-foot a.touch{text-decoration-color:var(--grass);text-decoration-thickness:2px}
-#calls .own.touch{border-left-color:var(--sage)}
 #calls h2.touch{text-decoration-color:var(--plum-mute)}
+#calls .calls-mute.touch{border-color:var(--grass)}
 #hookup .points.touch li::before{color:var(--soft)}
 #hookup .promise.touch{text-decoration-color:var(--plum-mute)}
 .benefits li.touch.t-sage svg{stroke:var(--sage)}
