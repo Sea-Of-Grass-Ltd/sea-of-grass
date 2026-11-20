@@ -236,10 +236,48 @@ test('every colour is a custom property, set once in :root', () => {
   const outside = (css.slice(0, i) + css.slice(j + 1)).replace(/\/\*[\s\S]*?\*\//g, '');
   const lits = outside.match(/#[0-9a-f]{3,8}\b|rgba?\(\s*\d[^)]*\)|hsla?\(\s*\d[^)]*\)/gi) || [];
   assert.deepEqual(lits, [], 'colour literals outside :root');
-  for (const t of ['--ground', '--fg', '--accent', '--accent-2', '--accent-ink', '--card-tint-rgb', '--grass']) assert.ok(css.slice(i, j).includes(t + ':'), `${t} is defined`);
+  for (const t of ['--ground', '--text', '--poppy', '--card-tint-rgb', '--grass']) assert.ok(css.slice(i, j).includes(t + ':'), `${t} is defined`);
   const html = fs.readFileSync(path.join(ROOT, 'preview/services/websites/index.html'), 'utf8');
   assert.deepEqual(html.match(/style="[^"]*(#[0-9a-f]{3,8}|rgba?\()[^"]*"/gi) || [], [], 'no inline colours in the page');
 });
+
+// The approved palette, "Night meadow with poppies" (Tristan, 2026-11-19; PALETTE.md in the shared notes). Colour only.
+const PALETTE = { '--ground': '#1F1F35', '--navy': '#272C4B', '--navy-line': '#39406A', '--moss': '#263535', '--grass': '#3F6550', '--sage': '#7F917F',
+  '--plum': '#332739', '--plum-mute': '#61465C', '--poppy': '#D17C66', '--poppy-deep': '#A8564D', '--gold': '#C8B27B', '--soft': '#9B97B1', '--text': '#DAD1CD' };
+const hexRgb = h => `rgb(${parseInt(h.slice(1, 3), 16)}, ${parseInt(h.slice(3, 5), 16)}, ${parseInt(h.slice(5, 7), 16)})`;
+const SKY = /509DFC|7DB5FF|0058D6|6DA7FF|A7CAFF|80,\s*157,\s*252|0,\s*88,\s*214|150,\s*190,\s*255|120,\s*170,\s*255/i;
+test('palette: the exact approved tokens, and no sky blue left in the page files', () => {
+  const css = fs.readFileSync(path.join(ROOT, 'preview/services/websites/websites.css'), 'utf8');
+  const root = css.slice(css.indexOf(':root{'), css.indexOf('}', css.indexOf(':root{')));
+  for (const [k, v] of Object.entries(PALETTE)) assert.ok(new RegExp(k + ':\\s*' + v, 'i').test(root), `${k} is ${v}`);
+  for (const f of ['websites.css', 'index.html', 'page.js', 'register.js'])
+    assert.doesNotMatch(fs.readFileSync(path.join(ROOT, 'preview/services/websites', f), 'utf8'), SKY, `no sky blue in ${f}`);
+});
+for (const w of WIDTHS) {
+  test(`${w}px · palette: sections take turns, poppy is the only CTA, gold only on eyebrows, 2–4 borrowed touches per section`, async () => {
+    const { ctx, page } = await site.open(PAGE, w, { reducedMotion: 'reduce' });
+    try {
+      const grounds = [PALETTE['--navy'], PALETTE['--moss'], PALETTE['--plum']].map(hexRgb);
+      const bgs = await page.$$eval('body > section, main > section', ss => ss.map(s => [s.id || s.className, getComputedStyle(s).backgroundColor]));
+      for (const [n, bg] of bgs) assert.ok(grounds.includes(bg), `${n} sits on navy, moss or plum (${bg})`);
+      for (let i = 1; i < bgs.length; i++) assert.notEqual(bgs[i][1], bgs[i - 1][1], `${bgs[i][0]} takes a turn after ${bgs[i - 1][0]}`);
+      assert.equal(await page.evaluate(() => getComputedStyle(document.body).backgroundColor), hexRgb(PALETTE['--ground']), 'page ground');
+      const poppy = hexRgb(PALETTE['--poppy']);
+      const ctas = await page.$$eval('.btn.pill, header.top a.book', bs => bs.map(b => getComputedStyle(b).backgroundColor));
+      assert.ok(ctas.length >= 4 && ctas.every(c => c === poppy), `every CTA is poppy (${[...new Set(ctas)].join(', ')})`);
+      const others = await page.$$eval('main *, .hero *', (es, p) => es.filter(e => !e.matches('.btn.pill,.reg-out[aria-pressed="true"]') && getComputedStyle(e).backgroundColor === p).map(e => e.className), poppy);
+      assert.deepEqual(others, [], 'poppy fills nothing but buttons');
+      const gold = hexRgb(PALETTE['--gold']);
+      const golds = await page.$$eval('body *', (es, g) => es.filter(e => [...e.childNodes].some(n => n.nodeType === 3 && n.textContent.trim()) && getComputedStyle(e).color === g && !e.closest('.kick')).map(e => e.className || e.tagName), gold);
+      assert.deepEqual(golds, [], 'gold only on small eyebrow labels');
+      for (const sec of await page.$$('body > section, main > section')) {
+        const name = await sec.evaluate(s => s.id || s.className);
+        const n = await sec.$$eval('.touch', ts => ts.filter(t => t.getBoundingClientRect().width > 0).length);
+        assert.ok(n >= 2 && n <= 4, `${name} borrows 2–4 touches from the others (${n})`);
+      }
+    } finally { await ctx.close(); }
+  });
+}
 
 test('stylesheet uses no CSS gradients as surfaces', () => {
   const css = fs.readFileSync(path.join(ROOT, 'preview/services/websites/websites.css'), 'utf8');
