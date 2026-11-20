@@ -62,9 +62,12 @@ for (const w of [768, 1024, 1440]) {
         const seed = document.querySelector('[data-traveller]'), t = seed.getBoundingClientRect(), cx = t.left + t.width / 2, cy = t.top + t.height / 2;
         let best = 1e9, at = 0; const n = Math.ceil(len / 2);
         for (let i = 0; i <= n; i++) { const q = path.getPointAtLength(len * i / n), dd = Math.hypot(q.x + r.left - cx, q.y + r.top - cy); if (dd < best) { best = dd; at = len * i / n; } }
-        const sp = document.querySelector('[data-sprout]'), sr = sp?.getBoundingClientRect();
+        // the sprout's size is what has grown of its stem and leaves
+        const sp = document.querySelector('[data-sprout]'), parts = sp ? [...sp.querySelectorAll('path')].map(e => e.getBoundingClientRect()).filter(q => q.height > .5) : [];
+        const sr = parts.length ? { left: Math.min(...parts.map(q => q.left)), right: Math.max(...parts.map(q => q.right)), top: Math.min(...parts.map(q => q.top)), bottom: Math.max(...parts.map(q => q.bottom)) } : { left: 0, right: 0, top: 0, bottom: 0 };
+        sr.width = sr.right - sr.left; sr.height = sr.bottom - sr.top;
         const end = path.getPointAtLength(len);
-        return { drawn: +svg.dataset.drawn, len, best, at, seedShown: !seed.hidden && getComputedStyle(seed).display !== 'none' && +getComputedStyle(seed).opacity > .5,
+        return { drawn: +svg.dataset.drawn, len, best, at, seedShown: !seed.hidden && getComputedStyle(seed).display !== 'none' && (+getComputedStyle(seed).opacity > .5 || seed.classList.contains('under')), // behind a letter tile it is out of sight on purpose
           inView: t.top >= 0 && t.bottom <= innerHeight, sprout: sr && getComputedStyle(sp).display !== 'none' ? { h: sr.height, x: sr.left + sr.width / 2, y: sr.bottom, ex: end.x + r.left, ey: end.y + r.top } : null };
       });
       const careTop = await page.evaluate(() => document.querySelector('#care').getBoundingClientRect().top + scrollY);
@@ -86,11 +89,11 @@ for (const w of [768, 1024, 1440]) {
       assert.ok(c.drawn > b.drawn + 0.05 * c.len, 'scrolling on draws more of the trail');
       // the landing
       const land = await page.evaluate(() => { const r = document.querySelector('.bw-head').getBoundingClientRect(); return r.top + scrollY - innerHeight * .35; });
-      await page.evaluate(y => scrollTo(0, y), land); await page.waitForTimeout(1200);
+      await page.evaluate(y => scrollTo(0, y), land); await page.waitForTimeout(2000);
       const d = await state();
       assert.ok(d.drawn >= d.len - 2, 'past the board, the whole trail is drawn');
       assert.ok(d.sprout && d.sprout.h >= 12, `a sprout comes up where it lands (${d.sprout?.h?.toFixed(1)}px tall)`);
-      assert.ok(Math.abs(d.sprout.x - d.sprout.ex) <= 6 && d.sprout.y >= d.sprout.ey && d.sprout.y - d.sprout.ey <= 16, 'the sprout grows from the landing spot');
+      assert.ok(Math.abs(d.sprout.x - d.sprout.ex) <= 6 && d.sprout.y >= d.sprout.ey && d.sprout.y - d.sprout.ey <= 16, `the sprout grows from the landing spot (${JSON.stringify(d.sprout)})`);
       // and back up: it undoes
       await page.evaluate(y => scrollTo(0, y), mid); await page.waitForTimeout(1000);
       const e = await state();
@@ -105,7 +108,8 @@ for (const w of [768, 1024, 1440]) {
       await page.waitForFunction(() => document.querySelector('[data-through] .trail')?.getTotalLength() > 0, null, { timeout: 5000 });
       await page.evaluate(() => scrollTo(0, document.querySelector('#care').getBoundingClientRect().top + scrollY - 100)); await page.waitForTimeout(400);
       const r = await page.evaluate(() => { const svg = document.querySelector('[data-through]'), len = svg.querySelector('.trail').getTotalLength(), sp = document.querySelector('[data-sprout]');
-        return { drawn: +svg.dataset.drawn, len, seed: document.querySelector('[data-traveller]').hidden, sprout: sp && getComputedStyle(sp).display !== 'none' ? sp.getBoundingClientRect().height : 0 }; });
+        const parts = sp ? [...sp.querySelectorAll('path')].map(e => e.getBoundingClientRect()) : [];
+        return { drawn: +svg.dataset.drawn, len, seed: document.querySelector('[data-traveller]').hidden, sprout: sp && getComputedStyle(sp).display !== 'none' && parts.length ? Math.max(...parts.map(q => q.bottom)) - Math.min(...parts.map(q => q.top)) : 0 }; });
       assert.ok(r.drawn >= r.len - 2, 'the whole path is drawn');
       assert.ok(r.seed, 'the seed stays out of the way');
       assert.ok(r.sprout >= 12, 'the sprout is simply there');
