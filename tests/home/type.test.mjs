@@ -109,8 +109,8 @@ for (const w of [1440, 390]) {
       assert.deepEqual(d.three.b.map(x => x.t), ['Three things,']);
       assert.deepEqual(d.three.em.map(x => x.t), ['done properly.']);
       assert.equal(d.call.text, 'Start with a short call.');
-      assert.deepEqual(d.call.em.map(x => x.t), ['Start with']);
-      assert.deepEqual(d.call.b.map(x => x.t), ['a short call.']);
+      assert.deepEqual(d.call.em.map(x => x.t), ['Start with a']);   // the 'a' rides with the italic, not stranded in the heavy face
+      assert.deepEqual(d.call.b.map(x => x.t), ['short call.']);
       for (const hd of [d.three, d.call]) {
         const b = hd.b[0], em = hd.em[0];
         assert.equal(b.fam, 'Syne'); assert.equal(b.w, '800'); assert.equal(b.st, 'normal');
