@@ -228,6 +228,19 @@ for (const w of WIDTHS) {
   });
 }
 
+// Palette swap-ready (Tristan, 2026-11-19: "Remove the blue color absolutely, work with Refero to find me a new palette").
+// Every colour lives in :root custom properties, so the chosen palette is one edit; no colour literal outside :root.
+test('every colour is a custom property, set once in :root', () => {
+  const css = fs.readFileSync(path.join(ROOT, 'preview/services/websites/websites.css'), 'utf8');
+  const i = css.indexOf(':root{'), j = css.indexOf('}', i);
+  const outside = (css.slice(0, i) + css.slice(j + 1)).replace(/\/\*[\s\S]*?\*\//g, '');
+  const lits = outside.match(/#[0-9a-f]{3,8}\b|rgba?\(\s*\d[^)]*\)|hsla?\(\s*\d[^)]*\)/gi) || [];
+  assert.deepEqual(lits, [], 'colour literals outside :root');
+  for (const t of ['--ground', '--fg', '--accent', '--accent-2', '--accent-ink', '--card-tint-rgb', '--grass']) assert.ok(css.slice(i, j).includes(t + ':'), `${t} is defined`);
+  const html = fs.readFileSync(path.join(ROOT, 'preview/services/websites/index.html'), 'utf8');
+  assert.deepEqual(html.match(/style="[^"]*(#[0-9a-f]{3,8}|rgba?\()[^"]*"/gi) || [], [], 'no inline colours in the page');
+});
+
 test('stylesheet uses no CSS gradients as surfaces', () => {
   const css = fs.readFileSync(path.join(ROOT, 'preview/services/websites/websites.css'), 'utf8');
   assert.doesNotMatch(css, /(linear|radial|conic)-gradient\(/, 'gradient found in websites.css');
