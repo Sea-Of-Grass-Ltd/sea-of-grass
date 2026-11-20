@@ -326,6 +326,16 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .through{position:absolute;left:0;top:0;z-index:4;pointer-events:none;overflow:visible}
 .through path{fill:none;stroke:rgba(var(--text-rgb),.34);stroke-width:1.5;stroke-dasharray:5 7;stroke-linecap:round}
 .through text{font:500 10px/1 var(--mono);letter-spacing:.16em;fill:var(--soft)}
+/* the drawn part of the line: solid sage behind the seed; on wide screens it simply traces the dashed path */
+.through path.drawn{stroke:var(--sage);stroke-width:1.5;stroke-dasharray:none;opacity:.55}
+.through:not(.weave) path.drawn{display:none}
+.through.weave path:not(.drawn){stroke:rgba(var(--text-rgb),.22)}
+.through.weave path.drawn{stroke-width:2.5;opacity:1}
+/* the line threads behind the ticket photos where the rail runs edge to edge */
+.tickets[data-over-line]{position:relative;z-index:5}
+.through .stop{fill:var(--canvas);stroke:rgba(var(--text-rgb),.35);stroke-width:1.5;transform-box:fill-box;transform-origin:center;transition:fill .3s,stroke .3s,transform .35s cubic-bezier(.3,1.6,.5,1)}
+.through .stop.lit{fill:var(--poppy);stroke:var(--poppy);transform:scale(1.35)}
+@media (prefers-reduced-motion:reduce){.through .stop{transition:none}}
 .traveller{position:absolute;left:0;top:0;z-index:5;width:14px;height:20px;color:var(--pop);pointer-events:none;will-change:transform;filter:drop-shadow(0 0 6px rgba(var(--text-rgb),.45))}
 .traveller svg{width:100%;height:100%;display:block}
 .traveller[hidden]{display:none}
