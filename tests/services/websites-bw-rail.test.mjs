@@ -7,6 +7,10 @@
 // Then: "in Dope Security, the background would do something like shift hues as it happens." While the row runs, the section
 // crossfades through flat colours pulled from each ticket's photo (01 rust, 02 charcoal, 03 tan ... 09), darkened so the cream
 // text and the softer line both pass AA at every stop; when the row lets go it eases back to the page's purple.
+// Then: "Yes, add it to the side-scroll": the live dancing bunny (the home card's, bunny-card.js) replaces the still mark beside
+// "Bunny World". While the row runs, scroll drives it: the run is cut in nine (globe to 01's icon, then 01 to 02 ... 08 to 09);
+// in each it holds, hops once, and its globe turns into that shop's icon as the colour turns. When the row lets go it settles
+// back to the globe. Phones and reduced motion show the still mark.
 // Run:  cd tests && npm install && node --test services/websites-bw-rail.test.mjs
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
@@ -118,22 +122,34 @@ for (const w of [768, 1440]) {
       for (const [i, c] of TONES.entries()) {
         assert.ok(contrast(c, text) >= 4.5 && contrast(c, soft) >= 4.5, `shop ${i + 1}'s colour keeps the text readable (AA)`);
       }
-      const seen = [];
+      const ICONS = ['restaurant', 'barber', 'clinic', 'auto', 'bakery', 'taproom', 'farm', 'giftshop', 'landscaping'];
+      const at = async (seg, fr, wait = 650) => { await page.evaluate(y => scrollTo({ top: y, behavior: 'instant' }), Math.round(y0 + run * (seg + fr) / 9)); await page.waitForTimeout(wait); };
+      const bunny = () => page.evaluate(() => { const m = document.querySelector('#bunny-world .bw-mark'), b = m.querySelector('[data-body]').getAttribute('transform') || '';
+        return { icon: m.dataset.icon, state: m.dataset.state, y: +(b.match(/translate\(0 (-?[\d.]+)/) || [0, 0])[1] }; });
       for (let k = 0; k <= 8; k++) {
-        const p = Math.min(.985, Math.max(.015, k / 8));
-        await page.evaluate(y => scrollTo({ top: y, behavior: 'instant' }), Math.round(y0 + p * run)); await page.waitForTimeout(650);
-        const b = await bg(page); seen.push(b.c);
-        assert.ok(near(b.c, TONES[k], k === 0 || k === 8 ? 10 : 6), `with ticket ${k + 1} up, the section is its colour (${b.c} vs ${TONES[k]})`);
+        // each ticket's stop: the hold of the next ninth (and for 09, the very end of the run)
+        if (k < 8) await at(k + 1, .3); else await at(8, .995);
+        const b = await bg(page), bn = await bunny();
+        assert.ok(near(b.c, TONES[k], k === 8 ? 10 : 6), `with ticket ${k + 1} up, the section is its colour (${b.c} vs ${TONES[k]})`);
+        assert.ok(k < 8 ? bn.icon === ICONS[k] : bn.icon.endsWith(ICONS[8]), `and the bunny's globe has become shop ${k + 1}'s icon (${bn.icon})`);
         assert.ok(near(b.notch, b.c, 2), 'the ticket notches are cut in the same colour');
         assert.ok(contrast(b.c, text) >= 4.5 && contrast(b.c, soft) >= 4.5, `AA at stop ${k + 1}`);
       }
-      // between two stops it is a flat mix of the two, not a jump
-      await page.evaluate(y => scrollTo({ top: y, behavior: 'instant' }), Math.round(y0 + run * 2.5 / 8)); await page.waitForTimeout(650);
-      const mid = (await bg(page)).c, want = TONES[2].map((v, i) => (v + TONES[3][i]) / 2);
+      // the hop: once per ticket, mid-ninth the bunny is in the air
+      await at(4, (1.2 + .275) / 1.9, 100);
+      assert.ok((await bunny()).y < -10, 'it hops as the next ticket comes up');
+      await at(4, .3, 100);
+      assert.ok(Math.abs((await bunny()).y) < 6, 'and is on the ground between hops');
+      // between two stops the colour is a flat mix of the two, turning with the icon, not a jump
+      await at(3, 1.55 / 1.9);
+      const mid = (await bg(page)).c, want = TONES[2].map((v, i) => (v + TONES[3][i]) / 2), bm = await bunny();
       assert.ok(near(mid, want, 4), `between shops 3 and 4 it crossfades (${mid} vs ${want})`);
+      assert.equal(bm.icon, 'clinic>auto', 'while the icon turns from 03 to 04');
       // past the pin, and above it: the purple
       await page.evaluate(y => scrollTo({ top: y, behavior: 'instant' }), Math.round(y0 + run + 300)); await page.waitForTimeout(800);
       assert.ok(near((await bg(page)).c, PLUM, 2), 'after the row lets go, back to the purple');
+      const settled = await page.waitForFunction(() => document.querySelector('#bunny-world .bw-mark').dataset.icon === 'globe', null, { timeout: 6000 }).then(() => true, () => false);
+      assert.ok(settled, `and the bunny settles back to the globe (${(await bunny()).icon})`);
       await page.evaluate(y => scrollTo({ top: y, behavior: 'instant' }), Math.round(y0 - 300)); await page.waitForTimeout(800);
       assert.ok(near((await bg(page)).c, PLUM, 2), 'and before it starts, the purple');
     } finally { await ctx.close(); }
@@ -158,8 +174,36 @@ for (const [w, opts, why] of [[390, {}, 'phones'], [360, {}, 'phones'], [1440, {
         assert.ok(s.pageW <= s.vw, 'no sideways page scroll');
         if (prev) assert.ok(prev.hTop - s.hTop >= 99, 'the block never holds still: no pin');
         assert.ok(near((await bg(page)).c, PLUM, 2), 'the section stays the purple');
+        const m = await page.evaluate(() => { const m = document.querySelector('#bunny-world .bw-mark'); return { frames: +m.dataset.frames, lines: m.querySelectorAll('[data-lines] path').length, ears: m.querySelectorAll('[data-ears] path').length }; });
+        assert.ok(m.frames === 0 && m.lines === 6 && m.ears === 0, 'the bunny is the still mark, its globe untouched');
         prev = s;
       }
+    } finally { await ctx.close(); }
+  });
+}
+
+// "Bunny World should link to the Bunny World part of the website": the bunny and the name are one link to /bunnyworld/,
+// looking as they did; the sprout and the dancing bunny never take the click; the link shows a focus ring.
+for (const w of [1440, 390]) {
+  test(`${w}px · the Bunny World name and bunny link to Bunny World`, async () => {
+    const { ctx, page } = await site.open(PAGE, w);
+    try {
+      await page.waitForTimeout(400);
+      const link = page.locator('#bunny-world .bw-head a.bw-link');
+      assert.equal(await link.count(), 1, 'one link');
+      assert.equal(await link.getAttribute('href'), '/bunnyworld/', 'to Bunny World, like the link at the foot of the section');
+      assert.ok(await link.evaluate(a => !!a.querySelector('.bw-mark') && !!a.querySelector('.bw-word')), 'the bunny and the name are both in it');
+      // scroll it so the sprout is up beside the name, then make sure what is under the word and the bunny is the link
+      await page.evaluate(() => { const r = document.querySelector('.bw-head').getBoundingClientRect(); scrollTo({ top: r.top + scrollY - innerHeight * .35, behavior: 'instant' }); }); await page.waitForTimeout(1500);
+      const hits = await page.evaluate(() => ['.bw-word', '.bw-mark'].map(s => { const r = document.querySelector(s).getBoundingClientRect(), pts = [[.5, .5], [.95, .5], [.5, .2]];
+        return pts.every(([fx, fy]) => !!document.elementFromPoint(r.left + r.width * fx, r.top + r.height * fy)?.closest('a.bw-link')); }));
+      assert.deepEqual(hits, [true, true], 'nothing (the sprout, the seed) sits over the word or the bunny');
+      // keyboard: a visible ring
+      await link.focus(); await page.keyboard.press('Shift+Tab'); await page.keyboard.press('Tab');
+      const ring = await link.evaluate(a => { const c = getComputedStyle(a); return document.activeElement === a && c.outlineStyle !== 'none' && parseFloat(c.outlineWidth) >= 2; });
+      assert.ok(ring, 'a visible focus ring');
+      await Promise.all([page.waitForURL(/\/bunnyworld\/$/, { timeout: 8000 }), page.locator('#bunny-world .bw-word').click()]);
+      assert.match(new URL(page.url()).pathname, /^\/bunnyworld\/$/, 'clicking the name goes to Bunny World');
     } finally { await ctx.close(); }
   });
 }

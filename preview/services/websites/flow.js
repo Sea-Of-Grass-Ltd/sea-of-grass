@@ -51,8 +51,10 @@ function build(){
     if(i<seams.length-1){const out=ltr?to+c:to-c,n=seams[i+1];d+=` C${f(out)} ${f(s)} ${f(out)} ${f(n)} ${f(to)} ${f(n)}`;}});
   // out of the last row, round into the margin, down past the board's end, across above the Bunny World heading, and down beside its name
   const last=seams[seams.length-1],side=seams.length%2?R:L,dir=seams.length%2?1:-1,mx=side+dir*k,y1=last+pitch*.5;
+  // the heading sits in the Bunny World block that holds in place while its row runs: measure it where it rests, not where it is held
+  const st=head.closest('.bw-stick'),lift=st?st.getBoundingClientRect().top-st.parentElement.getBoundingClientRect().top:0;
   const wr=word.getBoundingClientRect(),hr=head.getBoundingClientRect(),lx=Math.min(W-20,wr.right+16);
-  landY=Y(wr.bottom)+2;const endY=landY-12,yh=Y(hr.top)-6,ym=(y1+yh)/2;
+  landY=Y(wr.bottom-lift)+2;const endY=landY-12,yh=Y(hr.top-lift)-6,ym=(y1+yh)/2;
   d+=` C${f(side+dir*k*.55)} ${f(last)} ${f(mx)} ${f(last+pitch*.22)} ${f(mx)} ${f(y1)}`;
   d+=` C${f(mx)} ${f(ym)} ${f(lx)} ${f(ym)} ${f(lx)} ${f(yh)} L${f(lx)} ${f(endY)}`;
   path.setAttribute('d',d);reveal.setAttribute('d',d);len=path.getTotalLength();
@@ -66,7 +68,9 @@ function build(){
   const N=Math.max(200,Math.ceil(len/6));table=new Float32Array(N+1);let prev=path.getPointAtLength(0),acc=0;
   for(let i=1;i<=N;i++){const q=path.getPointAtLength(len*i/N);acc+=Math.abs(q.x-prev.x)*.4+Math.abs(q.y-prev.y)*1.8;table[i]=acc;prev=q;}
   for(let i=1;i<=N;i++)table[i]/=acc;
-  sprout.style.transform=`translate(${f(lx-13)}px,${f(landY-36)}px)`;
+  // the sprout grows in the heading itself, so it stays beside the name while the block is held
+  if(sprout.parentElement!==head)head.appendChild(sprout);
+  sprout.style.transform=`translate(${f(lx-hr.left-13)}px,${f(wr.bottom+2-hr.top-36)}px)`;
   if(reduce.matches){shown=goal=1;}
   ride(true);
 }
@@ -122,11 +126,31 @@ const TONES={'bunny-burritos':'#4C2619','hare-today':'#333030','hopwell-chiro':'
   'hop-along':'#373012','cottontail-farm':'#432A16','burrow-and-bough':'#472818','long-ears':'#253241'};
 const band=rail&&rail.closest('.bw-band'),hex=c=>[1,3,5].map(i=>parseInt(c.slice(i,i+2),16));
 const tones=row?[...row.querySelectorAll('.ticket')].map(t=>hex(TONES[t.dataset.shop]||'#332739')):[];
-function hue(p){
-  if(!band)return;
-  if(!railOn||p<=0||p>=1){band.style.removeProperty('--bw-bg');return;}   // the page's purple, eased back by the CSS
-  const f=p*(tones.length-1),i=Math.min(tones.length-2,Math.floor(f)),k=f-i;    // a flat colour, crossfaded between neighbours
-  band.style.setProperty('--bw-bg','rgb('+tones[i].map((v,j)=>Math.round(v+(tones[i+1][j]-v)*k)).join(',')+')');
+// the bunny beside the name (bunny-card.js, the home card's dance) hops once per ticket and its globe turns into that shop's
+// icon; the colour changes with the turn. The run is cut in nine: globe to 01's icon, then 01 to 02 ... 08 to 09. In each, the
+// bunny holds, crouches, hops, and the icon and colour turn as it lands. When the row lets go it settles back to the globe.
+const ICONS={'bunny-burritos':'restaurant','hare-today':'barber','hopwell-chiro':'clinic','bunny-auto':'auto','warren-bakehouse':'bakery',
+  'hop-along':'taproom','cottontail-farm':'farm','burrow-and-bough':'giftshop','long-ears':'landscaping'};
+const icons=row?[...row.querySelectorAll('.ticket')].map(t=>ICONS[t.dataset.shop]||'globe'):[];
+const mark=document.querySelector('#bunny-world .bw-mark'),bun=()=>mark&&mark.__bw;
+const PLUM=hex('#332739'),io=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+let settle=0,lastIcon='globe';
+function drive(p){
+  const B=bun(),live=railOn&&B&&B.start();
+  if(!railOn||p<=0||p>=1){
+    band&&band.style.removeProperty('--bw-bg');                                    // the page's purple, eased back by the CSS
+    if(!live)return;
+    if(p<=0){cancelAnimationFrame(settle);settle=0;B.pose('globe','globe',.7);lastIcon='globe';return;}
+    if(lastIcon!=='globe'&&!settle){const from=lastIcon,t0=performance.now();   // past 09: settle back to the globe, straight from the crouch
+      const step=now=>{const u=Math.min(B.STEP,.9+Math.max(0,now-t0)/1000);B.pose(from,'globe',u);settle=u<B.STEP?requestAnimationFrame(step):0;if(!settle)lastIcon='globe';};
+      settle=requestAnimationFrame(step);}
+    return;
+  }
+  const n=icons.length,seg=Math.min(n-1,Math.floor(p*n)),fr=p*n-seg;
+  const A=seg?icons[seg-1]:'globe',Z=icons[seg],c0=seg?tones[seg-1]:PLUM,c1=tones[seg];
+  if(live){cancelAnimationFrame(settle);settle=0;const u=fr*B.STEP;B.pose(A,Z,u);lastIcon=u>=B.HOLD?Z:A;}
+  const k=io(Math.min(1,Math.max(0,(fr*(B?B.STEP:1.9)-(B?B.HOLD:1.2))/(B?B.TR:.7)))); // the colour turns with the icon
+  band&&band.style.setProperty('--bw-bg','rgb('+c0.map((v,j)=>Math.round(v+(c1[j]-v)*k)).join(',')+')');
 }
 function railBuild(){
   if(!row)return;
@@ -134,7 +158,7 @@ function railBuild(){
   const h=stick.offsetHeight,room=innerHeight-barH;                // the same whether held or not, so nothing is undone to measure
   travel=row.scrollWidth-row.clientWidth;
   railOn=!phone.matches&&!reduce.matches&&travel>0&&h<=room-16;
-  if(!railOn){rail.classList.remove('on');row.scrollLeft=0;hue(0);return;}
+  if(!railOn){rail.classList.remove('on');row.scrollLeft=0;drive(0);return;}
   run=Math.round(innerHeight*1.25);
   rail.style.setProperty('--rail-h',(h+run)+'px');
   rail.style.setProperty('--stick-top',Math.round(barH+Math.max(16,(room-h)/2))+'px');
@@ -143,7 +167,7 @@ function railBuild(){
 function slide(){
   if(!railOn)return;
   const top=parseFloat(rail.style.getPropertyValue('--stick-top')),p=Math.min(1,Math.max(0,(top-rail.getBoundingClientRect().top)/run));
-  row.scrollLeft=p*travel;hue(p);
+  row.scrollLeft=p*travel;drive(p);
 }
 // Tab into the row: put the page where that ticket is on screen, so the row and the scroll agree
 rail&&rail.addEventListener('focusin',e=>{const t=e.target.closest('.ticket');if(!railOn||!t)return;
