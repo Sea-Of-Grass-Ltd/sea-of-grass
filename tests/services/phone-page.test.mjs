@@ -116,7 +116,6 @@ for (const w of WIDTHS) {
     const btn = page.locator('#demo-stage [data-act="soldout"]');
     await btn.scrollIntoViewIfNeeded();
     // on wide screens the pinned scene may already have tapped it by itself; the visitor's own tap is what counts
-    if ((await btn.getAttribute('aria-pressed')) === 'true') { await btn.click(); await page.waitForTimeout(200); }
     await btn.click();
     await bringIn(page);
     await page.waitForFunction(() => document.querySelector('#calls').dataset.mode === 'new', null, { timeout: 3000 });
@@ -298,7 +297,6 @@ test('the call cards keep their height through every state (nothing below them j
     assert.deepEqual(await heights(), ringing, `${w}px: answered by hand, same heights`);
     const btn = page.locator('#demo-stage [data-act="soldout"]');
     await btn.scrollIntoViewIfNeeded();
-    if ((await btn.getAttribute('aria-pressed')) === 'true') { await btn.click(); await page.waitForTimeout(200); }
     await btn.click();
     await page.waitForFunction(() => document.querySelector('#calls').dataset.mode === 'new', null, { timeout: 2000 });
     assert.deepEqual(await heights(), ringing, `${w}px: answered by the site, same heights`);

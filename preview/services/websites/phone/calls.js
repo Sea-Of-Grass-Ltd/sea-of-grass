@@ -123,7 +123,7 @@ function init(sec) {
   // scrolls past (flow.js), and that scripted click shouldn't hush the phone before anyone has met it
   document.addEventListener('click', e => {
     if (!e.isTrusted || !e.target.closest?.('#demo-stage [data-act="soldout"]')) return;
-    setTimeout(() => (soldOut() ? toNew() : mode === 'new' && toOld()), 0);   // after the register has flipped it
+    toNew();   // any real tap hushes it, whichever way the button ends up (it may already be pressed by the scene)
   }, true);
 
   // ---- pacing: something happens as soon as it scrolls in; nothing while it's away ----------------------------
