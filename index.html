@@ -1293,6 +1293,27 @@ html[data-theme="neu"]:not([data-scheme]) main.cb .lf-range{transform:translateY
 
 /* Clay: a pure white field, no engraving or printed ground; the range and clouds stay hidden */
 html[data-theme="neu"]:not([data-scheme]) main.cb :is(.lf-range,.lf-clouds){display:none}
+
+/* ---- Dew's type, 2026-11-19: the characterful faces come back (north star: Dope Security's mixed type and physical objects).
+   Syne sets the big lines with nerve; Instrument Serif cuts into them at the same size (the opening's connecting words, the thesis);
+   Bricolage names things (work, people, contacts); the four steps are a split-flap board. Colour stays in the meadow and the objects. ---- */
+html[data-theme="glass"]:not([data-scheme]) .lf{--lf-face:Syne,"Space Grotesk",sans-serif;--lf-b:800;--lf-face-t:"Instrument Serif",Georgia,serif;--lf-t:400;--lf-face-em:"Instrument Serif",Georgia,serif;--lf-em:italic 400;--lf-lh:1.16;--lf-serif:1.14}
+html[data-theme="glass"]:not([data-scheme]) body main.cb{--cb-hfont:Syne,"Space Grotesk",sans-serif;--cb-hw:800;--cb-name:"Bricolage Grotesque",Inter,sans-serif}
+html[data-theme="glass"]:not([data-scheme]) body main.cb :is(.cb-h,.cb-ch h3,.cb-close h2){font-weight:800;letter-spacing:-.035em;line-height:1.08}
+html[data-theme="glass"]:not([data-scheme]) body main.cb .cb-ch .cb-chp .cb-amt b{font-family:Syne,"Space Grotesk",sans-serif;font-weight:700;letter-spacing:-.04em}
+html[data-theme="glass"]:not([data-scheme]) body main.cb :is(.cb-feature,.cb-index,.cb-people) b,html[data-theme="glass"]:not([data-scheme]) body main.cb .cb-reach a{font-family:var(--cb-name);font-weight:800;letter-spacing:-.035em}
+html[data-theme="glass"]:not([data-scheme]) body main.cb .cb-thesis blockquote{font-family:Syne,"Space Grotesk",sans-serif;font-weight:800;letter-spacing:-.04em}
+html[data-theme="glass"]:not([data-scheme]) body main.cb .cb-thesis blockquote span{line-height:1.04}
+html[data-theme="glass"]:not([data-scheme]) body main.cb .cb-thesis blockquote em{display:block;font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-weight:400;letter-spacing:-.02em;font-size:clamp(40px,6.6vw,104px);line-height:.98;margin-top:.04em}
+/* the steps as a departure board: each word on opaque flaps split at the middle; the letters riffle in once when the board comes into view */
+html[data-theme="glass"]:not([data-scheme]) body main.cb .cb-steps li b{display:flex;gap:clamp(4px,.4vw,6px);font:500 clamp(34px,4.2vw,64px)/1 "IBM Plex Mono",Menlo,monospace;letter-spacing:0;text-transform:uppercase;color:#EEF1EA}
+html[data-theme="glass"]:not([data-scheme]) body main.cb .cb-steps li b .fl{font:inherit;color:inherit;opacity:1;position:relative;display:grid;place-items:center;width:1.06em;height:1.36em;border-radius:6px;background:#161A22;box-shadow:inset 0 0 0 1px rgba(238,241,234,.07);overflow:hidden}
+html[data-theme="glass"]:not([data-scheme]) body main.cb .cb-steps li b .fl::before{content:"";position:absolute;inset:0 0 50% 0;background:rgba(255,255,255,.035)}
+html[data-theme="glass"]:not([data-scheme]) body main.cb .cb-steps li b .fl::after{content:"";position:absolute;left:0;right:0;top:calc(50% - 1px);height:2px;background:#0A0C11}
+html[data-theme="glass"]:not([data-scheme]) body main.cb .cb-steps li b .fl i{position:relative;font-style:normal}
+html[data-theme="glass"]:not([data-scheme]) body main.cb .cb-steps li b .fl.flip i{animation:fl-flip .07s linear}
+@keyframes fl-flip{0%{transform:scaleY(1)}50%{transform:scaleY(.15)}100%{transform:scaleY(1)}}
+@media (prefers-reduced-motion:reduce){html[data-theme="glass"]:not([data-scheme]) body main.cb .cb-steps li b .fl.flip i{animation:none}}
 </style>
 <script>
 (function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#120607',glass:'#EEF1F8',neu:'#EFE6D8',brutal:'#FFFDF5',simple:'#F4F1EA',editorial:'#f3f1ea'};
@@ -1311,7 +1332,7 @@ apply(get());})();
 </script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@800&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=DM+Sans:wght@400;500;700&family=Libre+Caslon+Display&family=Libre+Franklin:wght@400;600&family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&family=Inter+Tight:wght@200;300;400;500&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Instrument+Serif:ital@0;1&display=swap">
 </head>
 <body>
 <header class="bar wrap">
@@ -1510,7 +1531,8 @@ function build(){pieces=[];const phone=W<600;
 function lockup(phone,add,S){ // 'A design and / technology studio / for the Front Range.' as on the front page: light, bold and italic voices
   const lines=[[['A','t'],['design','b'],['and','em']],[['technology','b'],['studio','t']],[['for','em'],['the','em'],['Front','b'],['Range.','b']]];
   const FV=getComputedStyle(SEC),fv=n=>FV.getPropertyValue(n).trim(),FACE=fv('--lf-face')||'"Cormorant Garamond", Georgia, serif',FT=fv('--lf-t')||'300',FB=fv('--lf-b')||'600',FE=fv('--lf-em')||'italic 400';
-  const font=(v,fs)=>(v==='t'?FT:v==='b'?FB:FE)+' '+fs+'px '+FACE; // each style sets its own face for the headline
+  const VF={t:fv('--lf-face-t')||FACE,b:fv('--lf-face-b')||FACE,em:fv('--lf-face-em')||FACE},SER=parseFloat(fv('--lf-serif'))||1;   // a style can set a face per voice (Dew: Syne with Instrument Serif cutting in, the serif nudged up to the grotesk's size)
+  const font=(v,fs)=>(v==='t'?FT:v==='b'?FB:FE)+' '+(v==='b'||VF[v]===VF.b?fs:fs*SER)+'px '+VF[v]; // each style sets its own face for the headline
   const maxW=phone?W-40:W*.5;let fs=phone?Math.min(W*.13,H*.075):Math.min(W*.068,H*.13);
   const lw=f=>Math.max(...lines.map(l=>{let w=0;for(const[t,v]of l){c.font=font(v,f);w+=c.measureText(t+' ').width;}return w;}));
   fs=Math.min(fs,fs*maxW/lw(fs));const lh=fs*(parseFloat(fv('--lf-lh'))||1.08),x0=phone?20:W*.08,y0=phone?Math.max(TOP+20,H*.13):Math.max(TOP+24,H*.43-lh*1.6),gap=fs*.24;
@@ -1684,7 +1706,7 @@ if(!still){SEC.addEventListener('pointermove',move);SEC.addEventListener('pointe
 // ---- the ground color (remembered)
 const looks=[...SEC.querySelectorAll('.lf-looks button')];function look(k,keep){SEC.dataset.look=k;looks.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.look===k)));if(keep!==false)try{localStorage.setItem('sog-opening-look',k);}catch(e){}}
 looks.forEach(b=>b.addEventListener('click',()=>look(b.dataset.look)));
-let rw=innerWidth;addEventListener('resize',()=>{if(Math.abs(innerWidth-rw)<2&&W>0&&Math.abs(SEC.getBoundingClientRect().height-H)<120)return;rw=innerWidth;size();if(still){for(let k=0;k<90;k++)fluid(grass,1/120,0);ready=15;draw();}});document.fonts&&Promise.all([(getComputedStyle(SEC).getPropertyValue('--lf-t').trim()||'300')+' 40px '+(getComputedStyle(SEC).getPropertyValue('--lf-face').trim()||'Archivo'),(getComputedStyle(SEC).getPropertyValue('--lf-b').trim()||'600')+' 40px '+(getComputedStyle(SEC).getPropertyValue('--lf-face').trim()||'Archivo'),'300 40px "Cormorant Garamond"','600 40px "Cormorant Garamond"','italic 400 40px "Cormorant Garamond"','800 40px Archivo'].map(f=>document.fonts.load(f))).then(()=>{size();if(still)draw();});
+let rw=innerWidth;addEventListener('resize',()=>{if(Math.abs(innerWidth-rw)<2&&W>0&&Math.abs(SEC.getBoundingClientRect().height-H)<120)return;rw=innerWidth;size();if(still){for(let k=0;k<90;k++)fluid(grass,1/120,0);ready=15;draw();}});document.fonts&&Promise.all([(getComputedStyle(SEC).getPropertyValue('--lf-t').trim()||'300')+' 40px '+(getComputedStyle(SEC).getPropertyValue('--lf-face').trim()||'Archivo'),(getComputedStyle(SEC).getPropertyValue('--lf-b').trim()||'600')+' 40px '+(getComputedStyle(SEC).getPropertyValue('--lf-face').trim()||'Archivo'),(getComputedStyle(SEC).getPropertyValue('--lf-em').trim()||'italic 400')+' 40px '+(getComputedStyle(SEC).getPropertyValue('--lf-face-em').trim()||'Archivo'),(getComputedStyle(SEC).getPropertyValue('--lf-t').trim()||'300')+' 40px '+(getComputedStyle(SEC).getPropertyValue('--lf-face-t').trim()||'Archivo'),'300 40px "Cormorant Garamond"','600 40px "Cormorant Garamond"','italic 400 40px "Cormorant Garamond"','800 40px Archivo'].map(f=>document.fonts.load(f))).then(()=>{size();if(still)draw();});
 // the Mark / Lockup toggle: remembered, and #lockup or #mark opens straight onto one
 const modes=[...SEC.querySelectorAll('.lf-modes button')];function mode(k,keep){MODE=k;modes.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===k)));if(keep!==false)try{localStorage.setItem('sog-opening-mode',k);}catch(e){}}
 modes.forEach(b=>b.addEventListener('click',()=>{mode(b.dataset.mode);build();if(still)draw();}));
@@ -1756,5 +1778,17 @@ const set=()=>{m.style.color=getComputedStyle(o).getPropertyValue('--lf-grass').
 ['sog-theme','sog-scheme'].forEach(t=>document.addEventListener(t,()=>requestAnimationFrame(set)));})();
 </script>
 <script src="/preview/assets/live-grass.js" defer></script>
+<script>
+// the steps' split-flap board (Dew): each letter on its own flap; when the board first comes into view the flaps riffle through the
+// alphabet and land on the word, left to right. Screen readers get the plain word.
+(function(){const words=[...document.querySelectorAll('main.cb .cb-steps li b')];if(!words.length)return;
+const dew=()=>document.documentElement.getAttribute('data-theme')==='glass'&&!document.documentElement.hasAttribute('data-scheme');
+const AZ='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+words.forEach(b=>{const w=b.textContent.trim();b.setAttribute('aria-label',w);b.dataset.word=w;b.innerHTML=[...w].map(ch=>'<span class="fl" aria-hidden="true"><i>'+ch+'</i></span>').join('');});
+if(!dew()||matchMedia('(prefers-reduced-motion: reduce)').matches||!window.IntersectionObserver)return;
+function riffle(){words.forEach((b,wi)=>{[...b.querySelectorAll('.fl')].forEach((f,li)=>{const end=f.textContent,i=f.firstChild;let n=6+wi*2+li*3+Math.floor(Math.random()*3),k=AZ.indexOf(end.toUpperCase())-n;
+  const step=()=>{f.classList.remove('flip');void f.offsetWidth;f.classList.add('flip');i.textContent=n>0?AZ[(k%26+26)%26]:end;k++;if(n-->0)setTimeout(step,70);};step();});});}
+const io=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){io.disconnect();riffle();}},{threshold:.5});io.observe(document.querySelector('main.cb .cb-steps ol'));})();
+</script>
 </body>
 </html>
