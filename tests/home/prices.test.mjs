@@ -12,7 +12,8 @@ test('home (index.html): Site Plan, the 60-day fix credit, custom $2,500 or $200
   const s = read('index.html');
   assert.match(s, /<i>Site Plan<\/i><span class="cb-amt"><b>\$100<\/b>/);
   assert.match(s, /within 60 days, the fix comes off it/);
-  assert.match(s, /starter site is \$1,200/, 'the starter stays $1,200');
+  assert.match(s, /starter site is \$1,000 with the first year of care included/, 'the starter is $1,000 once with a year of care (Tristan, 2026-11-20)');
+  assert.doesNotMatch(s, /starter site is \$1,200/, 'no $1,200 starter left');
   assert.match(s, /custom sites start at \$2,500, or \$200 a month/);
   assert.match(s, /<i>Refresh<\/i><span class="cb-amt"><b>\$1,000<\/b>/);
   assert.match(s, /<i>New brand<\/i><span class="cb-amt"><b>\$2,500<\/b>/);
@@ -23,7 +24,7 @@ test('home (index.html): Site Plan, the 60-day fix credit, custom $2,500 or $200
 
 for (const f of ['preview/index.html', 'preview/scenes/index.html']) test(`${f}: the same prices in the service list`, () => {
   const s = read(f);
-  assert.match(s, /<li>The Site Plan, \$100\/mo with care included, or \$1,200 once<\/li>/);
+  assert.match(s, /<li>The Site Plan, \$100\/mo with care included, or \$1,000 once with a year of care<\/li>/);
   assert.match(s, /<li>Custom sites from \$2,500, or \$200\/mo<\/li>/);
   assert.match(s, /<li>Brand refresh \$1,000, new brand \$2,500<\/li>/);
   assert.match(s, /<li>From \$1,500, with a fixed quote in writing<\/li>/);

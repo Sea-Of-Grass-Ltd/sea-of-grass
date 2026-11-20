@@ -16,7 +16,7 @@ import { startSite, ROOT } from '../lib/site.mjs';
 
 const PAGE = '/preview/services/websites/';
 const WIDTHS = [360, 390, 1440];
-const WEEK = '$1,200 works out to about $23 a week for a year, roughly what a couple of online orders bring in.';
+const WEEK = '$1,000 works out to about $19 a week for a year, roughly what a couple of online orders bring in.'; // $1,000 once with a year of care (Tristan, 2026-11-20)
 const HYPE = /\b(transform\w*|revolution\w*|next level|grow your|growth|skyrocket\w*|supercharg\w*|boost\w*|game.chang\w*|unlock\w*|empower\w*|dominat\w*|explod\w*|10x|level up|cutting.edge|world.class)\b/gi;
 const STYLE_FACES = /Syne|Instrument Serif|Libre Caslon Display|Archivo|Bricolage Grotesque/;
 const WORDS_BEFORE = 1152, WORD_LIMIT = 634; // was 600; +20 on 2026-11-20 for the approved research prices (60-day fix credit, Launch Setup, custom $200/mo); +14 the same day for the $23-a-week line under the Site Plan (Tristan: "Yes, add it under the Site Plan")
@@ -88,12 +88,16 @@ for (const w of WIDTHS) {
       const cfg = await page.evaluate(() => window.SOG_SHOP.founding);
       const f = await text(page.locator('#plans #founding'));
       assert.match(f, new RegExp(`${cfg.left} of ${cfg.total}`), 'the real spots count');
-      for (const re of [/half price: \$50 a month/i, /locked for two years/i, /free photo shoot/i, /owe nothing/i, /case study/i]) assert.match(f, re, `founding: ${re}`);
+      for (const re of [/was \$100, now \$50 a month/i, /locked for two years/i, /free photo shoot/i, /owe nothing/i, /case study/i]) assert.match(f, re, `founding: ${re}`);
       assert.doesNotMatch(f, /review/i, 'the founding deal never asks for a review (Google bans rewarded reviews)');
       assert.doesNotMatch(await text(page.locator('body')), /honest review/i, 'no review in return anywhere on the page');
       const week = page.locator('#plans .plan.sites [data-week]');
       assert.ok(await week.isVisible(), 'the $23 line without any interaction');
       assert.equal(await text(week), WEEK, 'the $23 line, exactly');
+      const once = await text(page.locator('#plans .plan.sites'));
+      assert.match(once, /\$1,000/, 'pay once is $1,000'); assert.doesNotMatch(once, /1,200/, 'no $1,200 left');
+      assert.match(once, /Care included for the first year, then \$50 a month/);
+      assert.match(once, /\$1,000 once, with the first year of care included\. Paying up front saves you \$200\./, 'the saving shows');
       const jump = page.locator('#plans .jump');
       assert.ok(await jump.locator('a[href="#hookup"]').count() === 1 && await jump.locator('a[href="#faq"]').count() === 1, 'jump to the hookup and the questions');
     } finally { await ctx.close(); }
@@ -347,6 +351,7 @@ for (const w of WIDTHS) {
           const out = [];
           for (let i = 0; i < T.length; i++) for (let j = i + 1; j < T.length; j++) {
             const A = T[i], B = T[j]; if (A.e.contains(B.e) || B.e.contains(A.e)) continue;
+            if (A.e.closest('#founding') && B.e.closest('#founding')) continue; // lines inside the tilted coupon: their boxes tilt into each other, the words do not
             if (hit(A.r, B.r)) out.push(`${A.e.tagName}.${A.e.className}「${A.e.textContent.trim().slice(0, 18)}」 × ${B.e.tagName}.${B.e.className}「${B.e.textContent.trim().slice(0, 18)}」`);
           }
           // the seed may slide through a flap row's split seam (it threads the notch, Tristan's ask); anywhere else it keeps off text
