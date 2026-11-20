@@ -1449,6 +1449,11 @@ html body main.cb .cb-three .cbx-reset:active{transform:translateY(2px);box-shad
 @media (max-width:899px){html body main.cb .cb-three .cbx-stage{grid-column:auto;grid-template-columns:1fr;gap:48px}html body main.cb .cb-three .cbx-stage > .cb-col{padding:16px;margin:-16px}html body main.cb .cb-three .cbx-stage:is([data-shape="round"],[data-shape="cut"]) > .cb-col{padding:20px;margin:-20px -16px}
   html body main.cb .cb-three .cbx-fx{height:76px}html body main.cb .cb-three .cbx .vzd-b,html body main.cb .cb-three .cbx .vzd-tabs button,html body main.cb .cb-three .cbx-reset{min-width:44px;min-height:44px}html body main.cb .cb-three .cbx .vzd-name{min-height:44px}}
 @media (prefers-reduced-motion:reduce){html body main.cb .cb-three .cbx-stage > .cb-col{transition:none}}
+
+/* the hero's pairing on the section headings (Tristan, 2026-11-20: "'Three Things' 'Done Properly'"): key words in the heavy
+   display face, the connecting words in the italic serif at the hero's serif-to-display ratio (--lf-serif, 1.14) */
+html[data-theme="glass"]:not([data-scheme]) body main.cb h2.cb-pair b{font-family:Syne,"Space Grotesk",sans-serif;font-weight:800;font-style:normal;letter-spacing:-.035em}
+html[data-theme="glass"]:not([data-scheme]) body main.cb h2.cb-pair em{font-family:"Instrument Serif",Georgia,serif;font-weight:400;font-style:italic;font-size:1.14em;letter-spacing:-.01em;line-height:inherit;color:inherit;background:none}
 </style>
 <script>
 (function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#120607',glass:'#EEF1F8',neu:'#EFE6D8',brutal:'#FFFDF5',simple:'#F4F1EA',editorial:'#f3f1ea'};
@@ -1502,7 +1507,7 @@ apply(get());})();
   </div>
 
   <section class="cb-band cb-stage cb-three" id="services" aria-labelledby="cb-svc-h"><!-- Tristan, 2026-11-20: one heading, three columns, then straight into Work -->
-    <h2 class="cb-h" id="cb-svc-h">Three things, done properly.</h2>
+    <h2 class="cb-h cb-pair" id="cb-svc-h"><b>Three things,</b> <em>done properly.</em></h2>
     <div class="cb-cols">
       <div class="cbx-stage" data-mode="syne" data-shape="open" data-color="night" data-fx="off"><!-- the two columns the Creative tech controller plays -->
       <article class="cb-col" id="websites">
@@ -1569,7 +1574,7 @@ apply(get());})();
   <section class="cb-band cb-close" id="contact" aria-labelledby="cb-close-h">
     <div class="live-grass cb-home" data-live-grass="fall" aria-hidden="true"></div>
     <div class="cb-call">
-      <h2 id="cb-close-h">Start with a short call.</h2>
+      <h2 class="cb-pair" id="cb-close-h"><em>Start with</em> <b>a short call.</b></h2>
       <p>Book fifteen or thirty minutes with Tristan or Bryce. Tell us what you have, and you&rsquo;ll leave with a next step and a price range.</p>
       <a class="cb-book" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a meeting <span aria-hidden="true">&rarr;</span></a>
       <p class="cb-reach"><a href="tel:+13037751333">303.775.1333</a><a href="mailto:hello@seaofgrass.studio">hello@seaofgrass.studio</a></p>

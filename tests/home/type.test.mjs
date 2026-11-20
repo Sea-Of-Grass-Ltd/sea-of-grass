@@ -91,3 +91,34 @@ test('reduced motion · the board shows the words straight away, no riffle', asy
     assert.deepEqual(errors, []);
   } finally { await ctx.close(); }
 });
+
+// The hero's pairing carried to the section headings (Tristan, 2026-11-20: "it was originally like that, where it would be like
+// 'Three Things' 'Done Properly'"): the key words in the heavy display face, the connecting words in the italic serif, at the
+// hero's weights and its serif-to-display size ratio; one italic run per heading at most.
+for (const w of [1440, 390]) {
+  test(`${w} · section headings pair like the hero: key words heavy, connecting words italic serif`, async () => {
+    const { ctx, page, errors } = await site.open('/', w);
+    try {
+      const d = await page.evaluate(() => {
+        const ratio = parseFloat(getComputedStyle(document.querySelector('.lf')).getPropertyValue('--lf-serif')) || 1;
+        const f = e => { const c = getComputedStyle(e); return { fam: c.fontFamily.split(',')[0].replace(/["']/g, '').trim(), w: c.fontWeight, st: c.fontStyle, px: parseFloat(c.fontSize) }; };
+        const h = id => { const el = document.getElementById(id); return { text: el.textContent.replace(/\s+/g, ' ').trim(), b: [...el.querySelectorAll('b')].map(e => ({ t: e.textContent.trim(), ...f(e) })), em: [...el.querySelectorAll('em')].map(e => ({ t: e.textContent.trim(), ...f(e) })) }; };
+        return { ratio, three: h('cb-svc-h'), call: h('cb-close-h'), ems: [...document.querySelectorAll('main.cb h2')].map(e => e.querySelectorAll('em').length) };
+      });
+      assert.equal(d.three.text, 'Three things, done properly.');
+      assert.deepEqual(d.three.b.map(x => x.t), ['Three things,']);
+      assert.deepEqual(d.three.em.map(x => x.t), ['done properly.']);
+      assert.equal(d.call.text, 'Start with a short call.');
+      assert.deepEqual(d.call.em.map(x => x.t), ['Start with']);
+      assert.deepEqual(d.call.b.map(x => x.t), ['a short call.']);
+      for (const hd of [d.three, d.call]) {
+        const b = hd.b[0], em = hd.em[0];
+        assert.equal(b.fam, 'Syne'); assert.equal(b.w, '800'); assert.equal(b.st, 'normal');
+        assert.equal(em.fam, 'Instrument Serif'); assert.equal(em.w, '400'); assert.equal(em.st, 'italic');
+        assert.ok(Math.abs(em.px / b.px - d.ratio) < .02, `the serif sits at the hero's ratio to the display face (${(em.px / b.px).toFixed(2)} vs ${d.ratio})`);
+      }
+      assert.ok(d.ems.every(n => n <= 1), 'one italic run per heading at most');
+      assert.deepEqual(errors, []);
+    } finally { await ctx.close(); }
+  });
+}
