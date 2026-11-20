@@ -4,14 +4,14 @@
    fills or CSS gradients. Glass appears only in distinctive shapes (the notched Care ticket, pills, the receipt), never as a
    page of identical rounded boxes. Physical objects carry the character: a split-flap board and a photo ticket rail. */
 :root{
-  /* PALETTE: "Night meadow with poppies", approved by Tristan 2026-11-19 (PALETTE.md in the shared notes), retuned on his
-     next note so the grounds recede (quiet, close, lifted) and the focal things pop ("saturation as well as value"). Every colour is
+  /* PALETTE: "Night meadow with poppies", approved by Tristan 2026-11-19 (PALETTE.md in the shared notes), and restored on
+     his later note ("this color scheme was better"). Every colour is
      mixed with the sky's ultramarine and a breath of poppy. Sections take turns navy / moss / plum; poppy is the only CTA
      colour; gold only on small eyebrow labels; each section borrows 2-4 single touches of the others on real elements. */
-  --ground:#2E3042;--navy:#363A4D;--navy-line:#4A5175;--moss:#343B41;--grass:#4F7A5F;--sage:#93A893;
-  --plum:#3A3647;--plum-mute:#7A5C74;--poppy:#EE7656;--poppy-deep:#D35B3E;--gold:#CDB680;--soft:#ACA8C0;--text:#E9E2DD;
-  --meadow:#4A7A3C;--pop:#F7F1EC;
-  --text-rgb:233,226,221;--shade-rgb:0,0,0;--sage-rgb:147,168,147;--plum-mute-rgb:122,92,116;
+  --ground:#1F1F35;--navy:#272C4B;--navy-line:#39406A;--moss:#263535;--grass:#3F6550;--sage:#7F917F;
+  --plum:#332739;--plum-mute:#61465C;--poppy:#D17C66;--poppy-deep:#A8564D;--gold:#C8B27B;--soft:#9B97B1;--text:#DAD1CD;
+  --meadow:#4A7A3C;--pop:var(--text);
+  --text-rgb:218,209,205;--shade-rgb:0,0,0;--sage-rgb:127,145,127;--plum-mute-rgb:97,70,92;
   /* roles, built only from the palette */
   --canvas:var(--ground);--fg:var(--text);--fg-rgb:var(--text-rgb);--ink-rgb:var(--text-rgb);--mute:var(--soft);
   --rule:rgba(var(--text-rgb),.12);--rule2:rgba(var(--text-rgb),.24);
@@ -315,11 +315,6 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .calls-band .visual.phone-art{position:relative;margin-bottom:calc(-1 * clamp(110px,12vw,170px));box-shadow:0 30px 60px rgba(var(--shade-rgb),.35)}
 #hookup{position:relative;z-index:1;padding-top:clamp(150px,16vw,220px)}
 @media (max-width:980px){.calls-band .visual.phone-art{margin-bottom:calc(-1 * 120px)}#hookup{padding-top:170px}}
-/* pop: real saturation and light on the few focal things */
-.plan .amt,.flap-w{color:var(--pop)}
-.ticket img{filter:saturate(1.3) contrast(1.06)}
-.ticket::after{background:rgba(var(--shade-rgb),.36)}
-.calls-band .visual img{filter:saturate(1.3) brightness(1.08)}
 
 
 /* ======== Flow: one through-line, one pinned scene, one chapter index (dope.security's flow, in our own motif) ======== */
@@ -350,11 +345,3 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .chapters a[aria-current="true"]{color:var(--text)}
 .chapters a[aria-current="true"]::before{background:var(--pop);border-color:var(--pop)}
 @media (max-width:1180px){.chapters{display:none}}
-
-/* the receipt: a solid object beside the phone, never over its screen (HQ at ~800px: two layers of text read through each other) */
-.open-stage .stack{position:relative;min-height:0;display:flex;flex-wrap:wrap;align-items:flex-end;gap:20px 24px}
-.open-stage .reg-shop{position:relative;right:auto;top:auto;flex:0 0 auto}
-.register{position:relative;left:auto;bottom:auto;flex:1 1 260px;max-width:340px;width:auto;margin-bottom:24px;
-  background:var(--ground);backdrop-filter:none;-webkit-backdrop-filter:none;opacity:1;box-shadow:inset 0 .5px 0 rgba(var(--text-rgb),.4),0 22px 44px rgba(var(--shade-rgb),.45)}
-@media (min-width:981px) and (prefers-reduced-motion:no-preference){.pin .register{opacity:1}}
-@media (max-width:700px){.open-stage .reg-shop{margin:0 auto}.register{max-width:none;flex-basis:100%;margin-bottom:12px}}
