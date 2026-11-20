@@ -19,7 +19,7 @@ const WIDTHS = [360, 390, 1440];
 const WEEK = '$1,200 works out to about $23 a week for a year, roughly what a couple of online orders bring in.';
 const HYPE = /\b(transform\w*|revolution\w*|next level|grow your|growth|skyrocket\w*|supercharg\w*|boost\w*|game.chang\w*|unlock\w*|empower\w*|dominat\w*|explod\w*|10x|level up|cutting.edge|world.class)\b/gi;
 const STYLE_FACES = /Syne|Instrument Serif|Libre Caslon Display|Archivo|Bricolage Grotesque/;
-const WORDS_BEFORE = 1152, WORD_LIMIT = 600;
+const WORDS_BEFORE = 1152, WORD_LIMIT = 620; // was 600; +20 on 2026-11-20 for the approved research prices (60-day fix credit, Launch Setup, custom $200/mo)
 
 let site;
 before(async () => { site = await startSite(); });
@@ -60,7 +60,7 @@ for (const w of WIDTHS) {
       assert.ok(await care.locator('.ticks li').count() >= 3 && await sites.locator('.ticks li').count() >= 3, 'check-marked lines on each card');
       assert.ok(await inView(plans.locator('[data-add]').first()), 'a Buy button on the first screen, with no taps');
       const small = await text(plans.locator('.also'));
-      assert.match(small, /Fix/); assert.match(small, /\$250/); assert.match(small, /custom from \$2,000/i); assert.match(small, /Care alone · \$50\s?a\s?month/);
+      assert.match(small, /Fix/); assert.match(small, /\$250/); assert.match(small, /custom from \$2,500, or \$200\s?a\s?month/i); assert.match(small, /credited to a site you start within 60\s?days/); assert.match(small, /Launch Setup · \$250 with our site, \$450 without/); assert.match(small, /Care alone · \$50\s?a\s?month/);
       assert.ok(await plans.locator('.also [data-add="care"]').count() === 1, 'care alone can be bought from the small line');
       assert.ok(await plans.locator('.also [data-add="fix"]').count() === 1, 'the fix can be bought from the small line');
       assert.equal(await page.locator('[data-add]').count(), await plans.locator('[data-add]').count(), 'Buy lives only in the plans');

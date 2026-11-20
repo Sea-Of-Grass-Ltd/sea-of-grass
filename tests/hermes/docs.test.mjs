@@ -36,7 +36,7 @@ for (const w of [360, 390, 1440]) {
     assert.ok(await guide.locator('.fill').count() >= 3, 'per-shop fields are marked');
     assert.doesNotMatch(text, /empanad/i, 'no one shop’s details');
     assert.doesNotMatch(text, /\(?\d{3}\)?[ .-]\d{3}[ .-]\d{4}/, 'no phone numbers');
-    assert.doesNotMatch(text, /\$350|Launch Setup/, 'unapproved add-on stays out');
+    assert.doesNotMatch(text, /\$350|Launch Setup/, 'the owner’s guide never sells: Launch Setup lives in the price script, not here');
     const over = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
     assert.ok(over <= 0, `no sideways scroll (${over}px)`);
     const tiny = await guide.locator('p, li').evaluateAll(els => els.filter(e => parseFloat(getComputedStyle(e).fontSize) < 15).length);
