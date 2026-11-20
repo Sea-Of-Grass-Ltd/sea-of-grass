@@ -68,7 +68,7 @@ for (const w of WIDTHS) {
       assert.equal(await board.count(), 4, 'a split-flap board');
       assert.deepEqual((await board.locator('.flap-w').allTextContents()).map(x => x.replace(/\s/g, '')), ['HOSTING', 'CHANGES', 'ORDERS', 'HOURS'], 'spelling out what care includes');
       const unsure = page.locator('a', { hasText: 'Not sure yet? Watch it work' });
-      assert.ok(await unsure.count() === 1 && (await unsure.getAttribute('href')) === '#demo', 'the unsure path');
+      assert.ok(await unsure.count() === 1 && (await unsure.getAttribute('href')) === '#bunny-world', 'the unsure path goes to the demo inside Bunny World');
       assert.ok(await page.evaluate(inkOf, '.hero [data-live-grass]') > 1000, 'the live meadow at the foot of the top');
       assert.equal(await booksInView(page), 1, 'one Book in view on landing');
       assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'no sideways scroll');

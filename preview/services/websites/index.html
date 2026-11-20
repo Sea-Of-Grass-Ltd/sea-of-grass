@@ -33,10 +33,10 @@
 <link rel="stylesheet" href="/preview/assets/shop/cart.css">
 </head>
 <body>
-<!-- Websites page in the rhythm of Dribbble Hiring (Refero 0797edc6): headline and two plan cards up top, a proof row,
-     alternating pitch sections in a few key words, a benefit row, a short FAQ and a one-line close. Plan rows after
-     Whereby (ce015f6d) and Acuity's recommended plan (0bc4bbb5); the calm tone of Shuttle (40379d1d); the section rhythm
-     of Cal.com (8d6b87ed). Dew's Manrope for the buying path; the pitch borrows the site's own style faces. -->
+<!-- Websites page: the rhythm of Dribbble Hiring (Refero 0797edc6) in the Dope Security treatment (Refero style e2324e47,
+     adapted: no names, art or claims of theirs). Syne for display, Bricolage Grotesque for section heads, IBM Plex Mono labels,
+     Inter body. Near-black canvas; colour lives in the meadow, the shop photos and the actions. Glass appears only in distinctive
+     shapes: the notched Care ticket, pills and the receipt. Physical objects: a split-flap board and a photo ticket rail. -->
 <div class="topbar">
 <header class="top">
       <a class="home" href="/"><img src="/preview/assets/logo.svg" alt="" width="34" height="25"><span>Sea of Grass</span></a>
@@ -46,17 +46,17 @@
 
 <!-- 1 Top: the line and the two plans -->
 <section class="hero" aria-labelledby="h1">
-  <div class="in hero-in">
+  <div class="in">
     <p class="kick">Websites and hosting &middot; <b>Sea of Grass</b></p>
     <h1 id="h1">Your website can run itself from your register.</h1>
     <p class="sub">We build it, host it and keep it right, and you never log in.</p>
     <div class="plans" id="plans"><span id="buy"></span>
-      <article class="plan care">
+      <article class="plan care ticket-shape">
         <p class="badge">Recommended</p>
         <h2 class="plan-h">Care</h2><p class="amt">$50<small> a month</small></p>
-        <button type="button" class="btn" data-add="care">Start care</button>
+        <button type="button" class="btn pill" data-add="care">Start care &rarr;</button>
         <ul class="ticks"><li><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Hosting and security</li><li><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Small changes every month</li><li><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Cancel any time</li></ul>
-        <div class="founding" id="founding">
+        <div class="stub founding" id="founding">
           <p class="f-head"><span class="kick">Founding five</span><span class="f-spots"><b data-spots-left>5 of 5</b> spots left</span></p>
           <p>$50 a month, locked for two years, plus a free photo shoot.</p>
           <p>Owe nothing if you back out at the hookup; we ask for an honest review.</p>
@@ -64,43 +64,47 @@
       </article>
       <article class="plan sites">
         <h2 class="plan-h">Sites</h2><p class="amt"><small>From </small>$1,200</p>
-        <button type="button" class="btn" data-add="starter">Buy a starter site</button>
+        <button type="button" class="btn pill" data-add="starter">Buy a starter site &rarr;</button>
         <ul class="ticks"><li><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>One page in a Bunny World look</li><li><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Menu, hours, map and ordering</li><li><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Runs from your register</li></ul>
         <p class="week" data-week>$1,200 works out to about $23 a week for a year, roughly what a couple of online orders bring in.</p>
       </article>
       <div class="also"><span>Fix one thing &middot; $250</span> <button type="button" class="link" data-add="fix">Buy a fix</button> <span>&middot; Your own look: custom from $2,000</span></div>
       <div class="jump"><span class="kick">Fine print</span> <a href="#hookup">Hookup</a> &middot; <a href="#faq">Questions</a></div>
     </div>
-    <div class="hero-links"><a class="unsure" href="#demo">Not sure yet? Watch it work &darr;</a><a class="btn q small" data-book href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book 15 minutes</a></div>
+    <div class="hero-links"><a class="unsure" href="#bunny-world">Not sure yet? Watch it work &darr;</a><a class="btn pill quiet" data-book href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book 15 minutes</a></div>
   </div>
   <div class="live-grass" data-live-grass aria-hidden="true"></div>
 </section>
 
 <main>
-<!-- 2 Proof: our nine demo shops, never presented as clients -->
-<section class="proof" aria-label="Our demo shops"><div class="in">
-  <p class="proof-label">Nine demo shops we built, none of them real businesses.</p>
-  <ul class="marks"><li class="mark" style="font-family:Anton,Impact,sans-serif;font-weight:400">Bunny Burritos</li><li class="mark" style="font-family:'Big Shoulders Display',sans-serif;font-weight:800">Hare Today</li><li class="mark" style="font-family:'Albert Sans',sans-serif;font-weight:700">Hopwell</li><li class="mark" style="font-family:'Barlow Condensed',sans-serif;font-weight:700">Bunny Auto</li><li class="mark" style="font-family:'Young Serif',serif;font-weight:400">The Warren</li><li class="mark" style="font-family:Fraunces,serif;font-weight:700">Hop Along</li><li class="mark" style="font-family:'Hanken Grotesk',sans-serif;font-weight:700">Cottontail Farm</li><li class="mark" style="font-family:Newsreader,serif;font-weight:600">Burrow &amp; Bough</li><li class="mark" style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700">Long Ears</li></ul>
+<!-- 2 What care includes: a split-flap board -->
+<section class="flapboard" aria-label="What care includes"><div class="in">
+  <p class="kick">Care includes</p>
+  <div class="flap" aria-label="Hosting"><span class="flap-w" aria-hidden="true"><i>H</i><i>O</i><i>S</i><i>T</i><i>I</i><i>N</i><i>G</i></span><span class="flap-a" aria-hidden="true">&rarr;</span></div><div class="flap" aria-label="Changes"><span class="flap-w" aria-hidden="true"><i>C</i><i>H</i><i>A</i><i>N</i><i>G</i><i>E</i><i>S</i></span><span class="flap-a" aria-hidden="true">&rarr;</span></div><div class="flap" aria-label="Orders"><span class="flap-w" aria-hidden="true"><i>O</i><i>R</i><i>D</i><i>E</i><i>R</i><i>S</i></span><span class="flap-a" aria-hidden="true">&rarr;</span></div><div class="flap" aria-label="Hours"><span class="flap-w" aria-hidden="true"><i>H</i><i>O</i><i>U</i><i>R</i><i>S</i></span><span class="flap-a" aria-hidden="true">&rarr;</span></div>
 </div></section>
 
-<!-- 3a Demo (Ember's Syne): phone left, words right -->
-<section class="band alt demo-band" id="demo" aria-labelledby="h-demo"><div class="in alt-in reg-play">
-  <div class="visual panel">
-    <picture><source type="image/webp" srcset="/preview/assets/work/bunny-world/burritos-hero-860.webp 860w, /preview/assets/work/bunny-world/burritos-hero-1290.webp 1290w" sizes="(min-width:900px) 52vw, 100vw"><img src="/preview/assets/work/bunny-world/burritos-hero-1100.jpg" alt="" width="1100" height="825" loading="lazy"></picture>
-    <div class="reg-shop"><div class="phone"><div class="view" data-w="390"><iframe title="Bunny Burritos, the demo shop the register is connected to" tabindex="-1" data-lazy="/bunnyworld/bunny-burritos/"></iframe></div></div></div>
-    <div class="register" role="group" aria-label="Register for Bunny Burritos, a demo shop">
-      <div class="reg-top"><span>Register</span><span class="reg-live" aria-hidden="true">Connected</span></div>
-      <div class="reg-row" data-item="Horchata, large" data-price="4"><span class="reg-name">Horchata</span><span class="reg-price" aria-live="polite">$4.00</span><button type="button" class="reg-out" data-act="soldout" aria-pressed="false">Sold out</button></div>
+<!-- 3 Bunny World: a photo ticket rail; Bunny Burritos holds the Sold out demo -->
+<section class="band bw-band" id="bunny-world" aria-labelledby="h-bw"><div class="in">
+  <div class="bw-head"><img src="/bunnyworld/brand/mark-cream.svg" alt="" width="52" height="78"><span class="bw-word">Bunny World</span></div>
+  <h2 id="h-bw">Nine shops we built to show you.</h2>
+  <p class="sub">Pick a ticket to open one of our demo shops; Bunny Burritos is wired to a register.</p>
+  <div class="tickets" role="group" aria-label="The nine Bunny World demo shops"><button type="button" class="ticket" data-shop="bunny-burritos" data-name="Bunny Burritos" data-line="Go on. Tap Sold out." data-face="Anton,Impact,sans-serif" data-weight="400" aria-pressed="true"><img src="/preview/assets/work/bunny-world/burritos-hero-1100.jpg" alt="" loading="lazy" width="600" height="420"><span class="t-lab">01 &middot; Restaurant</span><span class="t-num" aria-hidden="true">01</span><span class="t-name" style="font-family:Anton,Impact,sans-serif;font-weight:400">Bunny Burritos <svg viewBox="0 0 20 16" aria-hidden="true"><path d="M1 8h16M11 2l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span></button><button type="button" class="ticket" data-shop="hare-today" data-name="Hare Today" data-line="Walk-in wait times." data-face="&#39;Big Shoulders Display&#39;,sans-serif" data-weight="800" aria-pressed="false"><img src="/preview/assets/work/bunny-world/haretoday-hero-1200.jpg" alt="" loading="lazy" width="600" height="420"><span class="t-lab">02 &middot; Barbershop</span><span class="t-num" aria-hidden="true">02</span><span class="t-name" style="font-family:'Big Shoulders Display',sans-serif;font-weight:800">Hare Today <svg viewBox="0 0 20 16" aria-hidden="true"><path d="M1 8h16M11 2l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span></button><button type="button" class="ticket" data-shop="hopwell-chiro" data-name="Hopwell" data-line="Book a first visit." data-face="&#39;Albert Sans&#39;,sans-serif" data-weight="700" aria-pressed="false"><img src="/preview/assets/work/bunny-world/hopwell-room-1200.jpg" alt="" loading="lazy" width="600" height="420"><span class="t-lab">03 &middot; Chiropractor</span><span class="t-num" aria-hidden="true">03</span><span class="t-name" style="font-family:'Albert Sans',sans-serif;font-weight:700">Hopwell <svg viewBox="0 0 20 16" aria-hidden="true"><path d="M1 8h16M11 2l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span></button><button type="button" class="ticket" data-shop="bunny-auto" data-name="Bunny Auto" data-line="Prices up front." data-face="&#39;Barlow Condensed&#39;,sans-serif" data-weight="700" aria-pressed="false"><img src="/preview/assets/work/bunny-world/auto-hero-1600.jpg" alt="" loading="lazy" width="600" height="420"><span class="t-lab">04 &middot; Auto repair</span><span class="t-num" aria-hidden="true">04</span><span class="t-name" style="font-family:'Barlow Condensed',sans-serif;font-weight:700">Bunny Auto <svg viewBox="0 0 20 16" aria-hidden="true"><path d="M1 8h16M11 2l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span></button><button type="button" class="ticket" data-shop="warren-bakehouse" data-name="The Warren" data-line="Today&rsquo;s bakes." data-face="&#39;Young Serif&#39;,serif" data-weight="400" aria-pressed="false"><img src="/preview/assets/work/bunny-world/warren-hero-1600.jpg" alt="" loading="lazy" width="600" height="420"><span class="t-lab">05 &middot; Bakery</span><span class="t-num" aria-hidden="true">05</span><span class="t-name" style="font-family:'Young Serif',serif;font-weight:400">The Warren <svg viewBox="0 0 20 16" aria-hidden="true"><path d="M1 8h16M11 2l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span></button><button type="button" class="ticket" data-shop="hop-along" data-name="Hop Along" data-line="What&rsquo;s on tap." data-face="Fraunces,serif" data-weight="700" aria-pressed="false"><img src="/preview/assets/work/bunny-world/hopalong-hero-1100.jpg" alt="" loading="lazy" width="600" height="420"><span class="t-lab">06 &middot; Brewery</span><span class="t-num" aria-hidden="true">06</span><span class="t-name" style="font-family:Fraunces,serif;font-weight:700">Hop Along <svg viewBox="0 0 20 16" aria-hidden="true"><path d="M1 8h16M11 2l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span></button><button type="button" class="ticket" data-shop="cottontail-farm" data-name="Cottontail Farm" data-line="Festival tickets." data-face="&#39;Hanken Grotesk&#39;,sans-serif" data-weight="700" aria-pressed="false"><img src="/preview/assets/work/bunny-world/cottontail-fall-1200.jpg" alt="" loading="lazy" width="600" height="420"><span class="t-lab">07 &middot; Farm festival</span><span class="t-num" aria-hidden="true">07</span><span class="t-name" style="font-family:'Hanken Grotesk',sans-serif;font-weight:700">Cottontail Farm <svg viewBox="0 0 20 16" aria-hidden="true"><path d="M1 8h16M11 2l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span></button><button type="button" class="ticket" data-shop="burrow-and-bough" data-name="Burrow &amp; Bough" data-line="Gifts to order." data-face="Newsreader,serif" data-weight="600" aria-pressed="false"><img src="/preview/assets/work/bunny-world/bough-hero-900.jpg" alt="" loading="lazy" width="600" height="420"><span class="t-lab">08 &middot; Gift shop</span><span class="t-num" aria-hidden="true">08</span><span class="t-name" style="font-family:Newsreader,serif;font-weight:600">Burrow &amp; Bough <svg viewBox="0 0 20 16" aria-hidden="true"><path d="M1 8h16M11 2l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span></button><button type="button" class="ticket" data-shop="long-ears" data-name="Long Ears" data-line="Quotes for your yard." data-face="&#39;Bricolage Grotesque&#39;,sans-serif" data-weight="700" aria-pressed="false"><img src="/preview/assets/work/bunny-world/longears-hero-1200.jpg" alt="" loading="lazy" width="600" height="420"><span class="t-lab">09 &middot; Landscaping</span><span class="t-num" aria-hidden="true">09</span><span class="t-name" style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700">Long Ears <svg viewBox="0 0 20 16" aria-hidden="true"><path d="M1 8h16M11 2l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span></button></div>
+  <div class="open-stage reg-play" id="demo-stage">
+    <div class="stack">
+      <div class="reg-shop"><div class="phone"><div class="view" data-w="390"><iframe title="Bunny Burritos, the demo shop the register is connected to" tabindex="-1" data-lazy="/bunnyworld/bunny-burritos/"></iframe></div></div></div>
+      <div class="register" role="group" aria-label="Register for Bunny Burritos, a demo shop"><div class="reg-top"><span>Register</span><span class="reg-live" aria-hidden="true">Connected</span></div><div class="reg-row" data-item="Horchata, large" data-price="4"><span class="reg-name">Horchata</span><span class="reg-price" aria-live="polite">$4.00</span><button type="button" class="reg-out" data-act="soldout" aria-pressed="false">Sold out</button></div></div>
+    </div>
+    <div class="open-words" aria-live="polite">
+      <p class="kick" data-stage-kick>01 &middot; Bunny Burritos</p>
+      <h3 data-stage-h>Go on. Tap Sold out.</h3>
+      <p class="cap" data-voice="tagline" data-caption data-after="That&rsquo;s the whole job. You never log in to anything.">The phone is this shop, wired to the register.</p>
+      <a class="open-shop" data-stage-open href="/bunnyworld/bunny-burritos/" hidden>Open the shop &rarr;</a>
     </div>
   </div>
-  <div class="words">
-    <p class="kick">See it work</p>
-    <h2 id="h-demo">Go on. Tap Sold out.</h2>
-    <p class="cap" data-voice="tagline" data-caption data-after="That&rsquo;s the whole job. You never log in to anything." aria-live="polite">A real demo shop, connected to that register.</p>
-  </div>
+  <p class="bw-foot"><a href="/bunnyworld/">Walk into Bunny World &rarr;</a></p>
 </div></section>
 
-<!-- 3b Calls (Dusk's Instrument Serif): words left, picture right -->
+<!-- 4 Calls: the picture slot is ready for the 3D rotary phone -->
 <section class="band alt calls-band" id="calls" aria-labelledby="h-calls"><div class="in alt-in flip">
   <div class="words">
     <p class="kick">Fewer calls</p>
@@ -112,29 +116,10 @@
     </dl>
     <dl class="own" data-voice="quote"><dt>Don&rsquo;t need more business?</dt> <dd>Then keep it to menu and hours.</dd></dl>
   </div>
-  <picture class="visual phone-art" aria-hidden="true"><source type="image/webp" srcset="/preview/assets/work/websites/card3-phone-720.webp 720w, /preview/assets/work/websites/card3-phone-1080.webp 1080w" sizes="(min-width:900px) 40vw, 100vw"><img src="/preview/assets/work/websites/card3-phone-1080.jpg" alt="" width="1080" height="1935" loading="lazy"></picture>
+  <div class="visual phone-art" data-embed-slot="rotary-phone"><!-- slot: a rigged 3D rotary phone (separate session) can replace this picture --><picture aria-hidden="true"><source type="image/webp" srcset="/preview/assets/work/websites/card3-phone-720.webp 720w, /preview/assets/work/websites/card3-phone-1080.webp 1080w" sizes="(min-width:900px) 40vw, 100vw"><img src="/preview/assets/work/websites/card3-phone-1080.jpg" alt="" width="1080" height="1935" loading="lazy"></picture></div>
 </div></section>
 
-<!-- 3c Bunny World (Clay's Bricolage) -->
-<section class="band bw-band" id="bunny-world" aria-labelledby="h-bw"><div class="in">
-  <p class="kick">The proof</p>
-  <h2 id="h-bw">Nine shops we built to show you.</h2>
-  <p class="sub">Every one is a working website you can try right here, on your phone.</p>
-  <div class="rail" aria-label="The nine Bunny World demo shops, scroll sideways">
-        <div class="shop"><div class="phone"><div class="view" data-w="390"><iframe title="Bunny Burritos, a Bunny World demo shop" tabindex="-1" loading="lazy" data-lazy="/bunnyworld/bunny-burritos/"></iframe></div></div><span class="shop-name"><b style="font-family:Anton,Impact,sans-serif;font-weight:400">Bunny Burritos</b>Order ahead for pickup</span></div>
-        <div class="shop"><div class="phone"><div class="view" data-w="390"><iframe title="Hare Today, a Bunny World demo shop" tabindex="-1" loading="lazy" data-lazy="/bunnyworld/hare-today/"></iframe></div></div><span class="shop-name"><b style="font-family:'Big Shoulders Display',sans-serif;font-weight:800">Hare Today</b>Walk-in wait times</span></div>
-        <div class="shop"><div class="phone"><div class="view" data-w="390"><iframe title="Hopwell, a Bunny World demo shop" tabindex="-1" loading="lazy" data-lazy="/bunnyworld/hopwell-chiro/"></iframe></div></div><span class="shop-name"><b style="font-family:'Albert Sans',sans-serif;font-weight:700">Hopwell</b>Book a first visit</span></div>
-        <div class="shop"><div class="phone"><div class="view" data-w="390"><iframe title="Bunny Auto, a Bunny World demo shop" tabindex="-1" loading="lazy" data-lazy="/bunnyworld/bunny-auto/"></iframe></div></div><span class="shop-name"><b style="font-family:'Barlow Condensed',sans-serif;font-weight:700">Bunny Auto</b>Prices up front</span></div>
-        <div class="shop"><div class="phone"><div class="view" data-w="390"><iframe title="The Warren Bakehouse, a Bunny World demo shop" tabindex="-1" loading="lazy" data-lazy="/bunnyworld/warren-bakehouse/"></iframe></div></div><span class="shop-name"><b style="font-family:'Young Serif',serif;font-weight:400">The Warren Bakehouse</b>Today&rsquo;s bakes</span></div>
-        <div class="shop"><div class="phone"><div class="view" data-w="390"><iframe title="Hop Along, a Bunny World demo shop" tabindex="-1" loading="lazy" data-lazy="/bunnyworld/hop-along/"></iframe></div></div><span class="shop-name"><b style="font-family:Fraunces,serif;font-weight:700">Hop Along</b>What&rsquo;s on tap</span></div>
-        <div class="shop"><div class="phone"><div class="view" data-w="390"><iframe title="Cottontail Farm, a Bunny World demo shop" tabindex="-1" loading="lazy" data-lazy="/bunnyworld/cottontail-farm/"></iframe></div></div><span class="shop-name"><b style="font-family:'Hanken Grotesk',sans-serif;font-weight:700">Cottontail Farm</b>Festival tickets</span></div>
-        <div class="shop"><div class="phone"><div class="view" data-w="390"><iframe title="Burrow &amp; Bough, a Bunny World demo shop" tabindex="-1" loading="lazy" data-lazy="/bunnyworld/burrow-and-bough/"></iframe></div></div><span class="shop-name"><b style="font-family:Newsreader,serif;font-weight:600">Burrow &amp; Bough</b>Gifts to order</span></div>
-        <div class="shop"><div class="phone"><div class="view" data-w="390"><iframe title="Long Ears, a Bunny World demo shop" tabindex="-1" loading="lazy" data-lazy="/bunnyworld/long-ears/"></iframe></div></div><span class="shop-name"><b style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700">Long Ears</b>Quotes for your yard</span></div>
-  </div>
-  <p class="bw-foot"><a href="/bunnyworld/">Walk into Bunny World &rarr;</a></p>
-</div></section>
-
-<!-- 3d Hooking up (Ledger's Libre Caslon) -->
+<!-- 5 Hooking up -->
 <section class="band" id="hookup" aria-labelledby="h-hook"><div class="in hook-in">
   <p class="kick">Hooking up</p>
   <h2 id="h-hook">Hooking up, plainly.</h2>
@@ -146,14 +131,14 @@
   </details>
 </div></section>
 
-<!-- 4 Benefits -->
+<!-- 6 Benefits -->
 <section class="benefits-band" aria-label="What you can count on"><div class="in">
   <ul class="benefits">
     <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Two-minute hookup</li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7H4V2"/><path d="M4 7a9 9 0 1 1-1 6"/></svg>Owe nothing if you back out</li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l4 4v16H6z"/><path d="M9 13l2 2 4-4"/></svg>Fixed price in writing</li><li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>Cancel any time</li>
   </ul>
 </div></section>
 
-<!-- 5 Questions (Dew) -->
+<!-- 7 Questions -->
 <section class="band" id="faq" aria-labelledby="h-faq"><div class="in faq">
   <div class="side"><p class="kick">Questions</p><h2 id="h-faq">Before you buy</h2></div>
   <div class="qs">
@@ -170,10 +155,10 @@
   </div>
 </div></section>
 
-<!-- 6 Close (Dew) -->
-<section class="band close" id="start" aria-labelledby="h-start"><div class="in close-in">
+<!-- 8 Close: a light, large line and a glass pill over the meadow -->
+<section class="close" id="start" aria-labelledby="h-start"><div class="in close-in">
   <h2 id="h-start">Talk to Tristan or Bryce.</h2>
-  <a class="btn" data-book href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book 15 minutes</a>
+  <a class="btn pill big" data-book href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book 15 minutes &rarr;</a>
   <span class="call-us">or call 303.775.1333</span>
   </div>
   <div class="live-grass" data-live-grass aria-hidden="true"></div>
