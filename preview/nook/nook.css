@@ -1,105 +1,96 @@
-/* Book nook prototype (home page). Builds on PR #238's styles (base.css, copied from that page as it stood).
-   The page opens zoomed out on a narrow nook between book spines; scrolling pushes the camera in until the nook's
-   top floor (the painted night) fills the screen. Below that the page is the inside of the nook: the meadow ledge cut
-   into soil with roots (Three things), then the lamp-lit moss hollow with the Work shelf.
-   Flat painted shapes only: no CSS gradient washes. Colours are the approved night palette (PALETTE.md) and close
-   variations on it. */
+/* Home, low-poly flow (preview). Built from Tristan's approved sheet home-flow-lowpoly-nb-1: a faceted night with the
+   extruded S, the live meadow and its poppy, the root running down through the soil past "Three things" to the lamp in the
+   moss hollow, where the Work cards stand on a shelf. Every shape is a flat-shaded facet (SVG polygons drawn by nook.js);
+   no CSS gradients, no star scatter. Colours: the night meadow palette (PALETTE.md) and close variations of it.
+   base.css is PR #238's stylesheet, copied as it stood, for the bar, the columns and the controller. */
 :root{
-  --nk-wall:#16162A;      /* the bookcase's back wall, behind the books */
-  --nk-wood:#2E2431;      /* the nook's case and the shelves: wood mixed with the sky's ultramarine */
-  --nk-wood-hi:#43343F;
-  --nk-wood-lo:#211A25;
-  --nk-soil:#1F1F35;      /* palette --ground */
-  --nk-soil-2:#25233C;    /* a stratum a breath warmer */
-  --nk-turf:#272C4B;      /* palette --navy: the meadow's own ground carries down into the cut */
-  --nk-root:#61465C;      /* palette --plum-mute */
-  --nk-root-far:#2C2A46;
-  --nk-moss:#263535;      /* palette --moss */
-  --nk-moss-2:#3F6550;    /* palette --grass */
-  --nk-moss-far:#1F2B2D;
-  --nk-plank:#5A4344;     /* the work shelf: a warmer wood so the cards read as standing on something */
-  --nk-plank-hi:#71585A;
-  --nk-plank-lo:#3E2E31;
-  --nk-lamp:#F1E8D2;
-  --nk-card:#F2EADD;
-  --nk-card-ink:#1F1F35;
+  --p-ground:#1F1F35;--p-navy:#272C4B;--p-navy-line:#39406A;--p-moss:#263535;--p-grass:#3F6550;--p-sage:#7F917F;
+  --p-plum:#332739;--p-plum-mute:#61465C;--p-poppy:#D17C66;--p-poppy-deep:#A8564D;--p-gold:#C8B27B;--p-soft:#9B97B1;--p-text:#DAD1CD;
 }
-html,body{background:var(--nk-soil)}
+html,body{background:var(--p-ground)}
 main.nk{position:relative;overflow-x:clip}
+.nk svg.nk-facets{position:absolute;left:0;top:0;display:block;overflow:visible;pointer-events:none}
 
-/* ---------------- the opening: a scroll track with a pinned stage ---------------- */
-.nk-open{position:relative;height:300vh;height:300svh}
-.nk-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:var(--nk-wall);contain:layout paint}
-.nk-world{position:absolute;left:0;top:0;width:100%;transform-origin:0 0}
-.nk-world>.lf{position:relative;z-index:2;width:100%}
-.nk-books,.nk-case{position:absolute;pointer-events:none}
-.nk-books{z-index:0;overflow:visible}
-.nk-case{z-index:1;background:var(--nk-wood);box-shadow:inset 0 0 0 var(--nk-edge,4px) var(--nk-wood-hi)}
-.nk-below{position:relative;z-index:2;display:block;width:100%}
-.nk-below svg{display:block;width:100%;height:100%}
-/* the phone's opening has no room for the headline lockup's hint chips etc.; nothing else changes inside .lf */
-.nk-hint{position:absolute;left:50%;bottom:max(18px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:5;margin:0;
-  font:500 11px/1 "IBM Plex Mono",Menlo,monospace;letter-spacing:.14em;text-transform:uppercase;color:#DAD1CD;opacity:calc(1 - var(--nk-e,0) * 4);pointer-events:none;white-space:nowrap}
+/* ---------------- the opening: the night, pinned for a short while so its planes can recede and pop ---------------- */
+.nk-open{position:relative}
+.nk-night{position:relative;height:100vh;height:100svh;min-height:560px;overflow:hidden;background:var(--p-ground);isolation:isolate}
+.nk-plane{position:absolute;inset:0;will-change:transform;pointer-events:none}
+.nk-plane svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.nk-sky{z-index:0}.nk-far{z-index:1}.nk-near{z-index:2}.nk-hill{z-index:4}
+.nk-headline{position:absolute;z-index:5;left:max(24px,8vw);top:calc(var(--nk-bar,64px) + clamp(28px,6vh,72px));margin:0;max-width:min(640px,52vw);
+  font:800 clamp(38px,4.7vw,74px)/1.04 Syne,"Space Grotesk",sans-serif;letter-spacing:-.025em;color:var(--p-text);will-change:transform}
+.nk-headline,html[data-theme] body main.nk h1.nk-headline{max-width:none;font:800 clamp(34px,4.3vw,66px)/1.06 Syne,"Space Grotesk",sans-serif;letter-spacing:-.025em;color:var(--p-text);text-transform:none}
+html[data-theme] body main.nk h1.nk-headline :is(em,.nk-ser){color:var(--p-text);background:none;font-family:"Instrument Serif",Georgia,serif;font-weight:400;letter-spacing:-.01em;font-size:1.12em;line-height:1}
+html[data-theme] body main.nk h1.nk-headline em{font-style:italic}
+.nk-headline em,.nk-headline .nk-ser{font-family:"Instrument Serif",Georgia,serif;font-weight:400;letter-spacing:-.01em;font-size:1.12em}
+.nk-headline em{font-style:italic}.nk-headline .nk-ser{font-style:normal}
+.nk-headline span.l{display:block;white-space:nowrap}
+.nk-mark{position:absolute;z-index:3;right:max(24px,7vw);top:calc(var(--nk-bar,64px) + clamp(18px,4vh,56px));width:min(27vw,400px);will-change:transform}
+.nk-mark svg{display:block;width:100%;height:auto;overflow:visible}
+.nk-grass{position:absolute;z-index:6;left:0;right:0;bottom:0;height:min(30vh,250px);color:#4A7A3C;--lf-flowers:#F3E7B0,#E8C34A,#9B97B1,#D17C66}
+.nk-grass canvas{display:block;width:100%;height:100%}
 
-/* ---------------- room 1: the meadow ledge cut into soil, with roots ---------------- */
-.nk-room{position:relative;isolation:isolate}
-.nk-room1{background:var(--nk-soil);padding-top:clamp(120px,13vw,200px)}
-.nk-cut{position:absolute;left:0;right:0;top:0;height:clamp(64px,7vw,104px);width:100%;z-index:0;pointer-events:none}
-.nk-layer{position:absolute;inset:0;pointer-events:none;overflow:visible}
-.nk-roots{z-index:0}
-.nk-roots svg{position:absolute;left:0;top:0;width:100%;overflow:visible}
-html[data-theme] body main.cb.nk .nk-room1 section.cb-three.cb-band{background:transparent;position:relative;z-index:2;padding-top:0}
-/* the poppy: its head stands in the meadow above the cut; its long root runs down past the heading */
-.nk-poppy{position:absolute;top:0;left:0;width:100%;height:100%;z-index:3;pointer-events:none;overflow:visible}
-.nk-poppy svg{position:absolute;left:0;top:0;overflow:visible}
+/* ---------------- under the meadow: the soil, the roots, the rooms ---------------- */
+.nk-under{position:relative;isolation:isolate;background:var(--p-ground)}
+.nk-soil{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.nk-roots,.nk-poppy{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:visible}
+.nk-poppy{z-index:2}
 .nk-poppy .nk-head{transform-box:fill-box;transform-origin:50% 100%;animation:nk-sway 7s ease-in-out infinite alternate}
 @keyframes nk-sway{from{transform:rotate(-2.2deg)}to{transform:rotate(2.6deg)}}
+.nk-room1{position:relative;z-index:3;padding-top:clamp(110px,11vw,170px)}
+html[data-theme] body main.cb.nk .nk-room1 section.cb-three.cb-band{background:transparent;padding-top:0;position:relative}
+/* the column panels sit on the soil as dark flat planes, so the root and the facets read behind them */
+html[data-theme] body main.cb.nk .nk-room1 .cb-three > h2.cb-h{text-shadow:none}
 
-/* ---------------- room 2: the lamp-lit moss hollow with the work shelf ---------------- */
-.nk-room2{background:var(--nk-soil);padding:clamp(40px,5vw,80px) 0 clamp(64px,7vw,110px)}
-.nk-hollow{position:relative;margin:0 auto;width:min(1360px,calc(100% - 2 * clamp(10px,3vw,48px)));
-  padding:clamp(150px,15vw,210px) 0 clamp(96px,9vw,140px)}
-.nk-hollow>.nk-art{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:visible}
-.nk-hollow>.nk-art svg{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible}
-.nk-hollow .nk-front{z-index:4}
-.nk-workhead{position:relative;z-index:3;max-width:1240px;margin:0 auto 18px;padding:0 clamp(20px,4vw,64px)}
-html body main.nk .nk-workhead h2.cb-kick{margin:0;color:#C8B27B;opacity:1}
-.nk-shelf{position:relative;z-index:3;overflow-x:auto;overflow-y:visible;scrollbar-width:thin;scrollbar-color:var(--nk-moss-2) transparent;
-  overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;padding-top:12px}
-.nk-shelf-in{position:relative;display:flex;align-items:flex-end;gap:clamp(18px,2vw,30px);width:max-content;min-width:100%;box-sizing:border-box;
-  padding:0 clamp(28px,5vw,84px) 0}
-/* the plank: part of the scrolled row, so a longer list just makes a longer shelf */
-.nk-plank{position:absolute;left:0;right:0;bottom:-30px;height:30px;background:var(--nk-plank);
-  box-shadow:inset 0 5px 0 var(--nk-plank-hi),inset 0 -6px 0 var(--nk-plank-lo)}
-.nk-plank::before,.nk-plank::after{content:"";position:absolute;top:30px;width:14px;height:44px;background:var(--nk-plank-lo)}  /* two brackets under it */
-.nk-plank::before{left:clamp(40px,8%,140px)}.nk-plank::after{right:clamp(40px,8%,140px)}
-.nk-shelf-pad{height:80px}   /* room under the plank for the brackets, inside the scroller */
-.nk-card{position:relative;flex:none;width:clamp(220px,19vw,268px);display:flex;flex-direction:column;background:var(--nk-card);color:var(--nk-card-ink);
-  text-decoration:none;border-radius:6px;box-shadow:10px 10px 0 rgba(10,14,20,.28);transform-origin:50% 100%;transition:transform .25s ease}
-.nk-card.nk-big{width:clamp(280px,31vw,440px)}
-.nk-card:hover,.nk-card:focus-visible{transform:translateY(-6px) rotate(-.6deg)}
-.nk-card .nk-art{display:block;aspect-ratio:1.5/1;border-radius:6px 6px 0 0;overflow:hidden;background:#F2EADD}
+/* room 2: the moss hollow */
+.nk-hollow{position:relative;margin:clamp(-40px,-2vw,-10px) auto 0;width:min(1380px,calc(100% - 2 * clamp(8px,2.4vw,40px)));
+  padding:clamp(150px,13vw,200px) 0 clamp(110px,10vw,150px)}
+.nk-hollow .nk-hart{position:absolute;inset:0;pointer-events:none;overflow:visible}
+.nk-hollow .nk-hart.nk-back{z-index:1}
+.nk-hollow .nk-hart.nk-front{z-index:4}
+.nk-workhead{position:relative;z-index:3;padding:0 clamp(28px,5vw,84px);margin:0 0 16px}
+html body main.nk .nk-workhead h2.cb-kick{margin:0;color:var(--p-gold);opacity:1}
+.nk-shelf{position:relative;z-index:3;overflow-x:auto;overflow-y:visible;scrollbar-width:thin;scrollbar-color:var(--p-grass) transparent;overscroll-behavior-x:contain;padding-top:14px}
+.nk-shelf-in{position:relative;display:flex;align-items:flex-end;gap:clamp(18px,2vw,30px);width:max-content;min-width:100%;box-sizing:border-box;padding:0 clamp(28px,5vw,84px)}
+.nk-ledge{position:absolute;left:0;top:100%;width:100%;height:60px;overflow:visible;pointer-events:none}   /* the faceted plank, drawn to the row's length */
+.nk-ledge svg{position:absolute;left:0;top:0;overflow:visible}
+.nk-shelf-pad{height:76px}
+.nk-card{position:relative;flex:none;width:clamp(220px,18.5vw,262px);display:flex;flex-direction:column;background:#F2EADD;color:#1F1F35;text-decoration:none;
+  border-radius:4px;box-shadow:8px 8px 0 rgba(8,12,16,.32);transition:transform .25s ease}
+.nk-card.nk-big{width:clamp(280px,30vw,430px);background:transparent;box-shadow:none;color:var(--p-text)}
+.nk-card.nk-big .nk-art{background:#F2EADD;border-radius:4px;box-shadow:8px 8px 0 rgba(8,12,16,.32)}
+.nk-card.nk-dark{background:#2E3F38;color:var(--p-text)}
+.nk-card:hover,.nk-card:focus-visible{transform:translateY(-6px)}
+.nk-card .nk-art{display:block;aspect-ratio:1.5/1;border-radius:4px 4px 0 0;overflow:hidden;background:#F2EADD}
+.nk-card.nk-dark .nk-art{background:#2E3F38}
 .nk-card .nk-art :is(img,svg){display:block;width:100%;height:100%;object-fit:cover}
-.nk-card .nk-art img.nk-contain{object-fit:contain;padding:10px;box-sizing:border-box}
-.nk-card .nk-txt{display:grid;gap:4px;padding:14px 16px 16px}
-.nk-card b{font:800 clamp(18px,1.3vw,21px)/1.1 Syne,Manrope,sans-serif;letter-spacing:-.02em;overflow-wrap:anywhere}
+.nk-card .nk-art img.nk-contain{object-fit:contain;padding:12px;box-sizing:border-box}
+.nk-card .nk-txt{display:grid;gap:4px;padding:12px 15px 15px}
+.nk-card.nk-big .nk-txt{padding:12px 2px 0}
+.nk-card b{font:800 clamp(17px,1.25vw,20px)/1.1 Syne,Manrope,sans-serif;letter-spacing:-.02em;overflow-wrap:anywhere}
 .nk-card.nk-big b{font-size:clamp(20px,1.7vw,26px)}
 .nk-card .nk-type{font:500 11px/1.2 "IBM Plex Mono",Menlo,monospace;letter-spacing:.1em;text-transform:uppercase;color:#61465C}
-.nk-card .nk-line{font:400 15px/1.4 Manrope,Inter,sans-serif;color:#3A3550}
-.nk-card .nk-tick{position:absolute;left:16px;top:-6px;width:36px;height:6px;border-radius:2px 2px 0 0;background:var(--tick,#D17C66)}  /* a speckle from another room */
-.nk-card[aria-disabled="true"]{cursor:default}
-.nk-card[aria-disabled="true"]:hover{transform:none}
+.nk-card:is(.nk-big,.nk-dark) .nk-type{color:var(--p-soft)}
+.nk-card .nk-line{font:400 14.5px/1.4 Manrope,Inter,sans-serif;color:#3A3550}
+.nk-card:is(.nk-big,.nk-dark) .nk-line{color:var(--p-text)}
+.nk-card[aria-disabled="true"]{cursor:default}.nk-card[aria-disabled="true"]:hover{transform:none}
+/* the cards come up onto the shelf as it arrives */
+.nk-pop .nk-card{opacity:0;transform:translateY(26px)}
+.nk-pop.nk-in .nk-card{opacity:1;transform:none;transition:opacity .5s ease,transform .6s cubic-bezier(.2,.8,.2,1)}
+.nk-pop.nk-in .nk-card:nth-child(2){transition-delay:.08s}.nk-pop.nk-in .nk-card:nth-child(3){transition-delay:.16s}.nk-pop.nk-in .nk-card:nth-child(4){transition-delay:.24s}.nk-pop.nk-in .nk-card:nth-child(n+5){transition-delay:.3s}
 
-/* ---------------- footer ---------------- */
-html body main.nk .cb-foot{background:var(--nk-soil);color:#DAD1CD;border-top:1px solid #39406A}
+html body main.nk .cb-foot{position:relative;z-index:1;background:var(--p-ground);color:var(--p-text);border-top:1px solid var(--p-navy-line)}
 
-/* ---------------- phones ---------------- */
 @media (max-width:700px){
-  .nk-open{height:230vh;height:230svh}
+  html[data-theme] body main.nk h1.nk-headline{font-size:clamp(28px,8.4vw,40px)}
+  .nk-headline span.l{white-space:normal}
+  .nk-headline{left:20px;right:20px;max-width:none;font-size:clamp(32px,9.4vw,44px)}
+  .nk-mark{right:auto;left:50%;top:auto;bottom:calc(min(30vh,250px) + 6vh);width:48vw;margin-left:-24vw}
   .nk-hollow{padding-top:150px}
-  .nk-card{width:232px}.nk-card.nk-big{width:288px}
+  .nk-card{width:228px}.nk-card.nk-big{width:282px}
 }
 @media (prefers-reduced-motion:reduce){
   .nk-poppy .nk-head{animation:none}
   .nk-card{transition:none}
+  .nk-pop .nk-card{opacity:1;transform:none}
 }

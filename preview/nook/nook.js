@@ -1,167 +1,168 @@
-/* Book nook prototype: the camera into the nook, the books and the nook's lower floors seen from outside, the roots and
-   poppy of room 1, the moss hollow of room 2, and a gentle scroll parallax. Every shape is a flat painted fill. */
+/* Home, low-poly flow (preview). Draws every plane as flat-shaded facets (SVG triangles lit from the upper left), builds the
+   night's ranges and the extruded S, the soil and roots under the meadow, the poppy whose root grows down to light the lamp in
+   the moss hollow, the hollow itself, and the faceted plank under the Work cards. Depth comes from layered planes: in the
+   opening they spread apart as you scroll (the far ones recede, the S and the words pop); below, the far layers lag. */
 (()=>{
 const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg';
 const rnd=s=>()=>{s=(s*16807)%2147483647;return(s-1)/2147483646;};
-const svgEl=(tag,attrs,parent)=>{const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;};
+const el=(tag,attrs,parent)=>{const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;};
 const sm=x=>{x=Math.min(1,Math.max(0,x));return x*x*(3-2*x);};
-const C={wall:'#16162A',wood:'#2E2431',woodHi:'#43343F',woodLo:'#211A25',soil:'#1F1F35',soil2:'#25233C',turf:'#272C4B',navyLine:'#39406A',
-  root:'#4E3A52',rootFar:'#2A2946',moss:'#263535',moss2:'#3F6550',mossFar:'#1F2B2D',plum:'#332739',plumMute:'#61465C',sage:'#7F917F',
-  poppy:'#D17C66',poppyDeep:'#A8564D',text:'#DAD1CD',lamp:'#F1E8D2',card:'#F2EADD',plank:'#5A4344',plankLo:'#3E2E31',dawn:'#E2C7B8',dawn2:'#C9A9A4'};
+const hsl=(h,s,l)=>`hsl(${h.toFixed(0)} ${s.toFixed(0)}% ${Math.max(3,Math.min(94,l)).toFixed(1)}%)`;
+let uid=0;const nid=()=>'nk'+(++uid);
+const svgBox=(host,w,h,x=0,y=0)=>{const s=el('svg',{class:'nk-facets',width:w,height:h,viewBox:`${x} ${y} ${w} ${h}`},host);s.style.left=x+'px';s.style.top=y+'px';return s;};
+const LV=(()=>{const v=[-.45,-.6,.66],m=Math.hypot(...v);return v.map(x=>x/m);})();   // the light: upper left, in front
+const poly=pts=>'M'+pts.map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join('L')+'Z';
 
-/* ---------- a tapered root as a filled shape (with a few side roots) ---------- */
-function rootShapes(r,x,y,L,w,o={}){const out=[];const lo=o.xmin??-1e9,hi=o.xmax??1e9;
-  (function grow(x,y,L,w,ang,depth){const N=Math.max(8,Math.round(L/14)),step=L/N,P=[];let a=ang;
-    for(let i=0;i<=N;i++){P.push([x,y]);a+=(r()-.5)*.32+(Math.PI/2-a)*.12;x=Math.min(hi,Math.max(lo,x+Math.cos(a)*step));y+=Math.sin(a)*step;}
-    const Lp=[],Rp=[];for(let i=0;i<P.length;i++){const p=P[i],q=P[Math.min(P.length-1,i+1)],pp=P[Math.max(0,i-1)],dx=q[0]-pp[0],dy=q[1]-pp[1],d=Math.hypot(dx,dy)||1,t=i/(P.length-1),ww=w*(1-t)*.5+.15;
-      Lp.push([p[0]-dy/d*ww,p[1]+dx/d*ww]);Rp.push([p[0]+dy/d*ww,p[1]-dx/d*ww]);}
-    const pts=Lp.concat(Rp.reverse());let d=`M${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`;
-    for(let i=1;i<pts.length;i++){const m=[(pts[i-1][0]+pts[i][0])/2,(pts[i-1][1]+pts[i][1])/2];d+=`Q${pts[i-1][0].toFixed(1)} ${pts[i-1][1].toFixed(1)} ${m[0].toFixed(1)} ${m[1].toFixed(1)}`;}
-    out.push(d+'Z');
-    if(depth<2){const nb=depth?1:2+Math.floor(r()*2);for(let b=0;b<nb;b++){const t=.18+r()*.55,i=Math.floor(t*N),side=r()<.5?-1:1;grow(P[i][0],P[i][1],L*(.25+r()*.25),w*(1-t)*.6,Math.PI/2+side*(.6+r()*.5),depth+1);}}
-  })(x,y,L,w,o.ang??Math.PI/2,0);return out;}
+/* flat-shaded facets over a rectangle: a jittered grid, two triangles a cell, each lit by its own normal */
+function facets(g,X,Y,w,h,cell,[H,S,Lt],o={}){const r=rnd(o.seed||3),cols=Math.max(1,Math.ceil(w/cell)),rows=Math.max(1,Math.ceil(h/cell)),cw=w/cols,ch=h/rows,P=[];
+  for(let j=0;j<=rows;j++){P.push([]);for(let i=0;i<=cols;i++){const ex=i===0||i===cols,ey=j===0||j===rows;
+    P[j].push([X+i*cw+(ex?0:(r()-.5)*cw*.8),Y+j*ch+(ey?0:(r()-.5)*ch*.8),r()*cell*(o.z??.7)]);}}
+  const tri=(a,b,c)=>{const u=[b[0]-a[0],b[1]-a[1],b[2]-a[2]],v=[c[0]-a[0],c[1]-a[1],c[2]-a[2]];let n=[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]];
+    const m=Math.hypot(...n)||1;n=n.map(x=>x/m);if(n[2]<0)n=n.map(x=>-x);const sh=n[0]*LV[0]+n[1]*LV[1]+n[2]*LV[2];
+    const cx=(a[0]+b[0]+c[0])/3,cy=(a[1]+b[1]+c[1])/3,fy=(cy-Y)/h;
+    const l=Lt+(sh-.72)*(o.amp??16)+(o.tint?o.tint(fy,cx,cy):0)+(r()-.5)*(o.noise??1.5),f=hsl(H,S,l);
+    el('polygon',{points:`${a[0].toFixed(1)},${a[1].toFixed(1)} ${b[0].toFixed(1)},${b[1].toFixed(1)} ${c[0].toFixed(1)},${c[1].toFixed(1)}`,fill:f,stroke:f,'stroke-width':.6,'stroke-linejoin':'round'},g);};
+  for(let j=0;j<rows;j++)for(let i=0;i<cols;i++){const a=P[j][i],b=P[j][i+1],c=P[j+1][i+1],d=P[j+1][i];if(r()<.5){tri(a,b,c);tri(a,c,d);}else{tri(a,b,d);tri(b,c,d);}}}
+function clipped(svg,d){const cid=nid(),cp=el('clipPath',{id:cid},svg);el('path',{d},cp);return el('g',{'clip-path':`url(#${cid})`},svg);}
+/* a low-poly ridge: a few straight runs between peaks */
+function ridge(r,x0,x1,yB,top,n,amp){const P=[[x0,yB]];for(let i=0;i<=n;i++){const x=x0+(x1-x0)*i/n+(i&&i<n?(r()-.5)*(x1-x0)/n*.5:0);P.push([x,top(i/n)-(i%2?r()*amp:-r()*amp*.4)]);}P.push([x1,yB]);return P;}
+/* a wandering root's centre line */
+function rootLine(r,x,y,len,ang,o={}){const N=Math.max(6,Math.round(len/(o.step||18))),st=len/N,P=[[x,y]];let a=ang;
+  for(let i=0;i<N;i++){a+=(r()-.5)*(o.wob??.35)+((o.toward??Math.PI/2)-a)*(o.pull??.12);x+=Math.cos(a)*st;y+=Math.sin(a)*st;if(o.xmin!==undefined)x=Math.max(o.xmin,Math.min(o.xmax,x));P.push([x,y]);}return P;}
+/* a root as a faceted solid: each segment split along its length into a lit half and a shaded half */
+function facetRoot(g,P,w0,w1,lit,dark){const n=P.length;const off=(i,s)=>{const p=P[i],q=P[Math.min(n-1,i+1)],o=P[Math.max(0,i-1)],dx=q[0]-o[0],dy=q[1]-o[1],m=Math.hypot(dx,dy)||1,w=(w0+(w1-w0)*i/(n-1))/2*s;return[p[0]-dy/m*w,p[1]+dx/m*w];};
+  for(let i=0;i<n-1;i++){const a=P[i],b=P[i+1],la=off(i,1),lb=off(i+1,1),ra=off(i,-1),rb=off(i+1,-1),flip=false;
+    el('path',{d:poly([a,b,lb,la]),fill:flip?dark:lit,stroke:flip?dark:lit,'stroke-width':.5},g);el('path',{d:poly([a,b,rb,ra]),fill:flip?lit:dark,stroke:flip?lit:dark,'stroke-width':.5},g);}}
+/* a thin root: a tapered single fill with a couple of side roots */
+function thinRoot(g,r,x,y,len,w,fill,o={}){(function grow(x,y,len,w,ang,depth){const P=rootLine(r,x,y,len,ang,{...o,step:12});const Lp=[],Rp=[];
+    for(let i=0;i<P.length;i++){const p=P[i],q=P[Math.min(P.length-1,i+1)],pp=P[Math.max(0,i-1)],dx=q[0]-pp[0],dy=q[1]-pp[1],m=Math.hypot(dx,dy)||1,ww=w*(1-i/(P.length-1))*.5+.2;Lp.push([p[0]-dy/m*ww,p[1]+dx/m*ww]);Rp.push([p[0]+dy/m*ww,p[1]-dx/m*ww]);}
+    el('path',{d:poly(Lp.concat(Rp.reverse())),fill},g);
+    if(depth<2)for(let b=0;b<(depth?1:2);b++){const t=.2+r()*.5,i=Math.floor(t*(P.length-1)),s=r()<.5?-1:1;grow(P[i][0],P[i][1],len*(.3+r()*.25),w*(1-t)*.6,Math.PI/2+s*(.5+r()*.6),depth+1);}
+  })(x,y,len,w,o.ang??Math.PI/2,0);}
+function box(a,ref){const p=a.getBoundingClientRect(),q=ref.getBoundingClientRect();return{l:p.left-q.left,t:p.top-q.top,r:p.right-q.left,b:p.bottom-q.top,w:p.width,h:p.height};}
+const octo=(x,y,rx,ry,n=8,rot=.2)=>{const P=[];for(let k=0;k<n;k++){const t=k/n*Math.PI*2+rot;P.push([x+Math.cos(t)*rx,y+Math.sin(t)*ry]);}return poly(P);};
 
-/* ---------- the opening: camera into the nook ---------- */
-const track=$('nk-open'),stage=track.querySelector('.nk-stage'),world=$('nk-world'),lf=$('opening'),below=$('nk-below'),books=$('nk-books'),kase=$('nk-case');
-let W=0,H=0,VH=0,Hn=0,Hl=0,F=0,S0=.2,Y0=0,E=-1;
-function layoutOpening(){W=stage.clientWidth;VH=stage.clientHeight;H=lf.offsetHeight;const phone=W<700;
-  // a narrow nook: tall for its width. On a phone the screen is already narrow, so the nook is shorter and the zoom gentler.
-  Hl=Math.round(phone?H*1.35:Math.max(H*1.4,W*2.45-H));below.style.height=Hl+'px';Hn=H+Hl;F=Math.round(Hn*(phone?.014:.011));
-  const bar=document.querySelector('header.bar'),top=bar?bar.getBoundingClientRect().height:0;
-  S0=Math.min((VH-top-VH*.1)/(Hn+2*F),phone?.42:.3);Y0=top+(VH-top-S0*(Hn+2*F))/2+S0*F;   // screen y of the nook's top floor at the start
-  kase.style.cssText=`left:${-F}px;top:${-F}px;width:${W+2*F}px;height:${Hn+2*F}px;--nk-edge:${Math.max(2,F*.22)}px`;
-  paintBooks(phone);paintBelow(phone);E=-1;camera();}
-function paintBooks(phone){books.innerHTML='';const r=rnd(29),shelfT=Hn*.05,gapTop=Hn*.075,base=Hn+F,reach=(W/2)/S0+W*.2,ceil=-F-gapTop;
-  const x0=-reach,x1=W+reach,y0=ceil-shelfT-Hn*.5,y1=base+shelfT+Hn*.6;
-  books.setAttribute('viewBox',`${x0} ${y0} ${x1-x0} ${y1-y0}`);Object.assign(books.style,{left:x0+'px',top:y0+'px',width:(x1-x0)+'px',height:(y1-y0)+'px'});
-  // the shelf above (its underside) and the shelf the nook stands on
-  svgEl('rect',{x:x0,y:y0,width:x1-x0,height:ceil-y0,fill:C.woodLo},books);
-  svgEl('rect',{x:x0,y:ceil-shelfT*.22,width:x1-x0,height:shelfT*.22,fill:C.wood},books);
-  svgEl('rect',{x:x0,y:base,width:x1-x0,height:shelfT,fill:C.wood},books);
-  svgEl('rect',{x:x0,y:base,width:x1-x0,height:shelfT*.16,fill:C.woodHi},books);
-  svgEl('rect',{x:x0,y:base+shelfT,width:x1-x0,height:y1-base-shelfT,fill:C.woodLo},books);
-  // spines: the approved palette's grounds and their close cousins; the two books against the nook show their page edges
-  const SP=[['#272C4B','#323860'],['#263535','#30443F'],['#332739','#43334A'],['#3F6550','#4C7660'],['#61465C','#70546A'],['#39406A','#46507E'],['#A8564D','#B8665A'],['#2B2F45','#373C57']];
-  const hMax=base-ceil-Hn*.012;
-  for(const side of[-1,1]){let x=side<0?-F:W+F,k=side<0?0:3;
-    for(let i=0;x>x0&&x<x1&&i<40;i++){const page=i===0,w=Hn*(page?.13+r()*.03:.085+r()*.075),h=hMax*(page?.93:.74+r()*.24),bx=side<0?x-w:x,by=base-h;
-      if(page){svgEl('rect',{x:bx,y:by,width:w,height:h,fill:'#3A4A44'},books);const t=w*.07;svgEl('rect',{x:bx+t,y:by+h*.008,width:w-2*t,height:h*.984,fill:'#D6CCBF'},books);
-        for(let j=1;j<5;j++)svgEl('rect',{x:bx+t,y:by+h*j/5,width:w-2*t,height:Math.max(1,h*.002),fill:'#C5BAAE'},books);}   // the page block's soft signatures
-      else{const [c,hi]=SP[(k++)%SP.length];svgEl('rect',{x:bx,y:by,width:w,height:h,fill:c},books);svgEl('rect',{x:bx,y:by,width:w*.09,height:h,fill:hi},books);
-        const band=h*.012;for(const f of[.07,.1,.88,.91])svgEl('rect',{x:bx,y:by+h*f,width:w,height:band,fill:hi},books);
-        if(r()<.55)svgEl('rect',{x:bx+w*.24,y:by+h*(.2+r()*.08),width:w*.52,height:h*.13,fill:hi,opacity:.55},books);}   // a blank label panel, no fake titles
-      x+=side*(w+Hn*.004);}}}
-function paintBelow(phone){below.innerHTML='';const s=svgEl('svg',{viewBox:`0 0 ${W} ${Hl}`,preserveAspectRatio:'none'},below),r=rnd(11);
-  const R1=Hl*(phone?.36:.26),R2=Hl*(phone?.36:.24),R3=Hl*(phone?.28:.24),u=Math.min(W,Hl)/100;   // rooms: soil+roots, hollow, cavern, dawn
-  svgEl('rect',{x:0,y:0,width:W,height:Hl,fill:C.soil},s);
-  // room 1 seen small: turf lip, roots, three panels
-  svgEl('rect',{x:0,y:0,width:W,height:u*3,fill:C.turf},s);
-  for(let i=0;i<9;i++){const x=W*(i+.5)/9+(r()-.5)*W*.05;for(const d of rootShapes(r,x,u*2,R1*(.25+r()*.45),u*1.4))svgEl('path',{d,fill:i%3?C.rootFar:C.root},s);}
-  const pw=W*(phone?.25:.24),py=R1*.42,ph=R1*.36;for(let i=0;i<3;i++){const px=W*.08+i*(pw+W*.06);
-    svgEl('rect',{x:px,y:py,width:pw,height:ph,fill:C.turf,rx:u*.8},s);svgEl('rect',{x:px+pw*.12,y:py+ph*.14,width:pw*.5,height:ph*.09,fill:C.text},s);
-    for(let j=0;j<3;j++)svgEl('rect',{x:px+pw*.12,y:py+ph*(.36+j*.15),width:pw*(.7-j*.12),height:ph*.05,fill:C.soft||'#9B97B1',opacity:.7},s);
-    svgEl('rect',{x:px+pw*.12,y:py+ph*.82,width:pw*.18,height:ph*.05,fill:i===2?C.sage:C.poppy},s);}
-  // room 2 seen small: the moss hollow, its lamp, the shelf of cards
-  const hy=R1,hw=W*.9,hx=W*.05,hh=R2*.86;svgEl('path',{d:blob(hx-u*1.4,hy-u*1.4,hw+u*2.8,hh+u*2.8,r,.025),fill:C.moss2},s);svgEl('path',{d:blob(hx,hy,hw,hh,r,.02),fill:C.moss},s);
-  const lx=hx+hw*.78,ly=hy+hh*.26;for(const [rr,a] of[[.3,.06],[.2,.06],[.12,.07]])svgEl('circle',{cx:lx,cy:ly,r:hh*rr,fill:C.lamp,opacity:a},s);
-  svgEl('rect',{x:lx-u*.12,y:hy,width:u*.24,height:hh*.24,fill:C.root},s);svgEl('circle',{cx:lx,cy:ly,r:u*1.1,fill:'#F6E7B8'},s);
-  const sy=hy+hh*.72;svgEl('rect',{x:hx+hw*.04,y:sy,width:hw*.92,height:u*1.6,fill:C.plank},s);
-  const cw=hw*(phone?.2:.17);for(let i=0;i<4;i++){const w=i?cw:cw*1.5,x=hx+hw*.07+(i?cw*1.5+hw*.03+(i-1)*(cw+hw*.03):0),ch=w*.82;svgEl('rect',{x,y:sy-ch,width:w,height:ch,fill:C.card,rx:u*.4},s);svgEl('rect',{x,y:sy-ch,width:w,height:ch*.55,fill:i?'#E6DCCB':'#ECE2D2',rx:u*.4},s);}
-  // room 3: the plum cavern with the flap board
-  const cy=R1+R2;svgEl('path',{d:blob(W*.04,cy,W*.92,R3*.86,r,.04),fill:C.plum},s);
-  const fw=W*.17;for(let i=0;i<4;i++){const x=W*.12+i*(fw+W*.03);svgEl('rect',{x,y:cy+R3*.3,width:fw,height:fw*.62,fill:C.soil,rx:u*.5},s);svgEl('rect',{x:x+fw*.3,y:cy+R3*.3+fw*.18,width:fw*.4,height:fw*.26,fill:C.text},s);}
-  // room 4: the tunnel up to the dawn meadow
-  const dy=R1+R2+R3,dh=Hl-dy;svgEl('path',{d:blob(W*.05,dy+dh*.06,W*.9,dh*.8,r,.03),fill:C.dawn},s);svgEl('path',{d:`M${W*.05} ${dy+dh*.62}Q${W*.5} ${dy+dh*.5} ${W*.95} ${dy+dh*.6}V${dy+dh*.86}H${W*.05}Z`,fill:C.moss2},s);
-  svgEl('rect',{x:W*.12,y:dy+dh*.32,width:W*.34,height:dh*.06,fill:C.soil},s);svgEl('rect',{x:W*.12,y:dy+dh*.42,width:W*.16,height:dh*.035,fill:C.poppy,rx:u*.6},s);}
-function blob(x,y,w,h,r,jit){const N=40,cx=x+w/2,cy=y+h/2,P=[];   // a rounded hollow with a slightly hand-cut edge
-  for(let i=0;i<N;i++){const t=i/N*Math.PI*2,c=Math.cos(t),s2=Math.sin(t),e=2.6,k=1+(r()-.5)*jit*2;const px=Math.sign(c)*Math.pow(Math.abs(c),2/e),py=Math.sign(s2)*Math.pow(Math.abs(s2),2/e);P.push([cx+px*w/2*k,cy+py*h/2*k]);}
-  let d='';for(let i=0;i<N;i++){const a=P[i],b=P[(i+1)%N],m=[(a[0]+b[0])/2,(a[1]+b[1])/2];d+=(i?'':`M${((P[N-1][0]+a[0])/2).toFixed(1)} ${((P[N-1][1]+a[1])/2).toFixed(1)}`)+`Q${a[0].toFixed(1)} ${a[1].toFixed(1)} ${m[0].toFixed(1)} ${m[1].toFixed(1)}`;}return d+'Z';}
-function camera(){const span=track.offsetHeight-VH,p=span>0?Math.min(1,Math.max(0,-track.getBoundingClientRect().top/span)):1;
-  let e=sm((p-.05)/.78);if(still)e=p<.4?0:1;   // a hold on the opening shot, the push in, then a hold on the full top floor; under reduced motion, one cut
-  if(Math.abs(e-E)<.0005)return;E=e;
-  if(e>=.9995){world.style.transform='none';}
-  else{const s=S0*Math.pow(1/S0,e),yc=(Y0+S0*H/2)*(1-e)+(H/2)*e,tx=W/2-s*W/2,ty=yc-s*H/2;world.style.transform=`translate(${tx.toFixed(2)}px,${ty.toFixed(2)}px) scale(${s.toFixed(5)})`;}
-  stage.style.setProperty('--nk-e',e.toFixed(3));
-  if(window.sogOpening&&sogOpening.night)sogOpening.night(sm(e*1.1),1);}   // the ridges rise as the camera arrives
+/* ---------------- the opening ---------------- */
+const night=$('opening'),planes={};night.querySelectorAll('[data-plane]').forEach(p=>planes[p.dataset.plane]=p);
+const mark=night.querySelector('.nk-mark'),head=$('nk-h1');
+function paintNight(){const W=night.clientWidth,H=night.clientHeight,phone=W<700,r=rnd(41),bar=document.querySelector('header.bar');
+  night.style.setProperty('--nk-bar',(bar?bar.getBoundingClientRect().height:64)+'px');
+  for(const k in planes)planes[k].innerHTML='';const grassH=Math.min(H*.3,250);
+  // the sky: deep at the top, lifting toward the ranges in flat steps of facets
+  facets(el('g',{},svgBox(planes.sky,W,H)),0,0,W,H,phone?70:110,[236,28,13],{seed:5,amp:8,tint:fy=>fy*13});
+  // the far range: pale periwinkle, lit on its left faces; the near range deeper
+  const farTop=t=>H*(phone?.54:.47)+Math.sin(t*Math.PI*2.2+.6)*H*.04,nearTop=t=>H*(phone?.64:.62)+Math.sin(t*Math.PI*1.6+2)*H*.035;
+  {const s=svgBox(planes.far,W,H);facets(clipped(s,poly(ridge(r,-W*.05,W*1.05,H,farTop,phone?6:10,H*.07))),-W*.05,H*.18,W*1.1,H*.82,phone?60:96,[236,28,44],{seed:9,amp:16,z:1,tint:fy=>-fy*14});}
+  {const s=svgBox(planes.near,W,H);facets(clipped(s,poly(ridge(r,-W*.05,W*1.05,H,nearTop,phone?5:8,H*.05))),-W*.05,H*.3,W*1.1,H*.7,phone?56:90,[236,28,27],{seed:13,amp:13,z:1,tint:fy=>-fy*10});}
+  // the hill the meadow grows on
+  {const s=svgBox(planes.hill,W,H),y0=H-Math.min(130,grassH*.55),P=[[-20,H+10]];for(let i=0;i<=12;i++)P.push([-20+(W+40)*i/12,y0+Math.sin(i*1.3)*12+(r()-.5)*14]);P.push([W+20,H+10]);
+    facets(clipped(s,poly(P)),-20,y0-40,W+40,H-y0+60,phone?40:60,[175,20,11],{seed:17,amp:7});}
+  paintMark();}
+function paintMark(){const svg=mark.querySelector('svg'),ex=svg.querySelector('#nk-sx'),face=svg.querySelector('.nk-sface');ex.innerHTML='';face.innerHTML='';
+  // the S as a chunky solid: its side built from stepped copies, darkest at the back; its face cut into a few pale facets
+  const N=14;for(let i=N;i>=1;i--){const l=20+(N-i)*1.3;for(const p of['#nk-s1','#nk-s2'])el('use',{href:p,transform:`translate(${(i*1.05).toFixed(2)} ${(i*1.35).toFixed(2)})`,fill:hsl(244,14,l)},ex);}
+  const cid=nid(),cp=el('clipPath',{id:cid},face);el('use',{href:'#nk-s1'},cp);el('use',{href:'#nk-s2'},cp);
+  facets(el('g',{'clip-path':`url(#${cid})`},face),30,30,390,300,64,[350,7,80],{seed:23,amp:10,z:.5});
+  for(const p of['#nk-s1','#nk-s2'])el('use',{href:p,fill:'none',stroke:'#EEE8E4','stroke-width':1.6,opacity:.7},face);}
+function nightScroll(){const H=night.offsetHeight,p=still?0:Math.min(1,Math.max(0,-night.getBoundingClientRect().top/H));
+  // as the night scrolls away its planes part: the far ones lag behind (recede), the S and the words run ahead (pop)
+  const lag={sky:.42,far:.3,near:.18,hill:.06};for(const k in planes)planes[k].style.transform=p?`translate3d(0,${(lag[k]*p*H).toFixed(1)}px,0)`:'';
+  mark.style.transform=p?`translate3d(0,${(-p*H*.12).toFixed(1)}px,0) scale(${(1+.12*p).toFixed(4)})`:'';
+  head.style.transform=p?`translate3d(0,${(-p*H*.16).toFixed(1)}px,0)`:'';}
 
-/* ---------- room 1: roots and the poppy ---------- */
-const room1=$('nk-room1'),rootsBox=$('nk-roots'),poppyBox=$('nk-poppy');let poppyRoot=null,rootlets=[],farG=null;
-function box(el,ref){const a=el.getBoundingClientRect(),b=ref.getBoundingClientRect();return{l:a.left-b.left,t:a.top-b.top,r:a.right-b.left,b:a.bottom-b.top,w:a.width,h:a.height};}
-function textRight(el){const rg=document.createRange();rg.selectNodeContents(el);let m=0;for(const q of rg.getClientRects())m=Math.max(m,q.right);return m-room1.getBoundingClientRect().left;}
-function paintRoom1(){const Wr=room1.clientWidth,Hr=room1.clientHeight,phone=Wr<700,cut=room1.querySelector('.nk-cut').getBoundingClientRect().height,r=rnd(5);
-  const h2=room1.querySelector('h2.cb-h'),cols=room1.querySelector('.cb-cols'),hb=box(h2,room1),cb=box(cols,room1),side=Math.max(12,cb.l);
-  rootsBox.innerHTML='';const far=svgEl('svg',{width:Wr,height:Hr,viewBox:`0 0 ${Wr} ${Hr}`},rootsBox),near=svgEl('svg',{width:Wr,height:Hr,viewBox:`0 0 ${Wr} ${Hr}`},rootsBox);
-  far.style.zIndex='-1';far.style.position='absolute';farG=svgEl('g',{},far);
-  // the poppy stands in the meadow over the left margin; its long root runs straight down that margin, past the heading and the
-  // first column, so it never crosses a word
-  const xg=Math.max(10,Math.min(side*.42,60)),xp=Math.max(xg+(phone?8:14),phone?24:0),yTop=cut*.45,yEnd=cb.t+cb.h*.62;
-  const path=`M${xp} ${yTop}C${xp} ${yTop+40} ${xg} ${yTop+60} ${xg} ${yTop+110}C${xg+4} ${yTop+(yEnd-yTop)*.45} ${xg-4} ${yTop+(yEnd-yTop)*.75} ${xg+1} ${yEnd}`;
-  // the other roots: long in the side margins, short over the words (they stop well above the heading)
-  const clearY=hb.t-14;for(let i=0,n=Math.round(Wr/(phone?60:85));i<n;i++){const x=(i+.3+r()*.4)/n*Wr;if(x<side+(phone?10:30))continue;
-    const inSide=x<side-6||x>Wr-side+6,lo=inSide?(x<side?2:Wr-side+8):x-60,hi=inSide?(x<side?side-8:Wr-2):x+60,q=r(),L=inSide?Math.min(Hr*.55,(phone?140:420)*(.5+r()*.6)):Math.max(0,(clearY-cut*.4)*(.15+q*q*.85));
-    if(L<12||(!inSide&&r()<.3))continue;for(const d of rootShapes(r,x,cut*.4,L,(phone?5:11)*(.7+r()*.6),{xmin:lo,xmax:hi}))svgEl('path',{d,fill:C.root},near);}
-  for(let i=0,n=Math.round(Wr/(phone?80:120));i<n;i++){const x=(i+r())/n*Wr,inSide=x<side-6||x>Wr-side+6;const L=inSide?Hr*(.3+r()*.4):Math.max(30,clearY*(.6+r()*.5));
-    for(const d of rootShapes(r,x,-90,L+90,(phone?7:14)*(.6+r()*.6),{xmin:inSide?(x<side?0:Wr-side):x-80,xmax:inSide?(x<side?side:Wr):x+80}))svgEl('path',{d,fill:C.rootFar},farG);}
-  // the poppy
-  poppyBox.innerHTML='';const ps=svgEl('svg',{width:Wr,height:Hr,viewBox:`0 0 ${Wr} ${Hr}`},poppyBox),stemH=phone?112:168,hs=phone?1:1.45;
-  poppyRoot=svgEl('path',{d:path,fill:'none',stroke:'#9C8287','stroke-width':phone?2.6:3.8,'stroke-linecap':'round',pathLength:1,'stroke-dasharray':'1 1'},ps);
-  rootlets=[];const total=poppyRoot.getTotalLength();for(let i=0;i<(phone?5:8);i++){const t=.12+i*(.8/(phone?5:8))+r()*.04,pt=poppyRoot.getPointAtLength(t*total),pt2=poppyRoot.getPointAtLength(Math.min(total,t*total+4)),
-    dir=(i%2&&side-xg>30)?1:-1,ang=Math.atan2(pt2.y-pt.y,pt2.x-pt.x)+dir*(.8+r()*.4),len=Math.min(dir>0?side-xg-14:xg-3,(phone?8:16)+r()*(phone?4:14));
-    const e=svgEl('path',{d:`M${pt.x.toFixed(1)} ${pt.y.toFixed(1)}q${(Math.cos(ang)*len*.5).toFixed(1)} ${(Math.sin(ang)*len*.5+2).toFixed(1)} ${(Math.cos(ang)*len).toFixed(1)} ${(Math.sin(ang)*len+5).toFixed(1)}`,fill:'none',stroke:'#9C8287','stroke-width':phone?1.3:1.8,'stroke-linecap':'round',pathLength:1,'stroke-dasharray':'1 1'},ps);rootlets.push([t,e]);}
-  const g=svgEl('g',{},ps),by=cut*.45,hx=xp+(phone?4:10),hy=-stemH;
-  svgEl('path',{d:`M${xp} ${by}C${xp-2} ${by-stemH*.4} ${hx+6} ${hy+stemH*.45} ${hx} ${hy+10*hs}`,fill:'none',stroke:C.moss2,'stroke-width':phone?2.6:3.4,'stroke-linecap':'round'},g);
-  svgEl('path',{d:`M${xp} ${by-stemH*.18}c${-14*hs} ${-8*hs} ${-30*hs} ${-28*hs} ${-34*hs} ${-46*hs}c${14*hs} ${6*hs} ${30*hs} ${22*hs} ${34*hs} ${46*hs}z`,fill:C.moss2},g);   // a leaf
-  svgEl('path',{d:`M${xp-1} ${by-stemH*.36}c${12*hs} ${-6*hs} ${24*hs} ${-22*hs} ${26*hs} ${-38*hs}c${-12*hs} ${6*hs} ${-24*hs} ${20*hs} ${-26*hs} ${38*hs}z`,fill:'#4C7660'},g);
-  // the head, seen from the front: four round petals around a dark centre
-  const head=svgEl('g',{class:'nk-head'},g),pet=(dx,dy,rr,f)=>svgEl('circle',{cx:hx+dx*hs,cy:hy+dy*hs,r:rr*hs,fill:f},head);
-  pet(-10,-9,14,C.poppyDeep);pet(10,-9,14,C.poppyDeep);pet(-11,6,15,C.poppy);pet(11,6,15,C.poppy);pet(0,-1,12,C.poppy);
-  svgEl('circle',{cx:hx,cy:hy-1*hs,r:7.5*hs,fill:'#332739'},head);svgEl('circle',{cx:hx,cy:hy-1*hs,r:4*hs,fill:C.soil},head);svgEl('circle',{cx:hx,cy:hy-1*hs,r:1.8*hs,fill:'#4C7660'},head);
-  growRoot();}
-function growRoot(){if(!poppyRoot)return;const r=room1.getBoundingClientRect(),vh=innerHeight;let k=still?1:sm((vh*.95-r.top)/(r.height*.72));   // the root grows down as the room comes up
-  poppyRoot.setAttribute('stroke-dashoffset',(1-k).toFixed(4));for(const[t,e]of rootlets)e.setAttribute('stroke-dashoffset',(1-sm((k-t)/.08)).toFixed(4));}
+/* ---------------- under the meadow ---------------- */
+const under=$('nk-under'),soil=$('nk-soil'),roots=$('nk-roots'),poppy=$('nk-poppy'),room1=$('nk-room1'),hollow=$('work');
+let soilSvg=null,rootPath=null,tendrils=[],lampG=null,backIn=null,frontG=null,LAMP={x:0,y:0};
+function paintUnder(){const W=under.clientWidth,Hu=under.clientHeight,phone=W<700,r=rnd(61),hb=box(hollow,under);
+  soil.innerHTML='';soilSvg=svgBox(soil,W,Hu+240,0,-120);
+  facets(el('g',{},soilSvg),0,-120,W,Hu+240,phone?80:120,[234,27,17],{seed:31,amp:9});
+  // the lit edge where the meadow's ground is cut
+  roots.innerHTML='';const rs=svgBox(roots,W,Hu);{const P=[[0,0],[W,0]];for(let i=14;i>=0;i--)P.push([W*i/14,5+r()*6]);el('path',{d:poly(P),fill:hsl(232,30,38)},rs);}
+  // pale roots hanging from the cut, long down the sides, short over the words
+  const h2=room1.querySelector('h2.cb-h'),cols=room1.querySelector('.cb-cols'),hh=box(h2,under),cb=box(cols,under),side=Math.max(14,cb.l);
+  const brand=$('brand'),web=$('websites'),gapX=(!phone&&web&&brand)?(box(web,under).r+box(brand,under).l)/2:W-Math.max(12,side*.45);
+  for(let i=0,n=Math.round(W/(phone?55:70));i<n;i++){const x=(i+.2+r()*.6)/n*W;if(Math.abs(x-gapX)<(phone?30:50))continue;const inSide=x<side-8||x>W-side+8;
+    const len=inSide?(phone?120:Math.min(460,cb.t*.9))*(.5+r()*.6):(hh.t-30)*(.2+r()*r()*.7);if(len<14||(!inSide&&r()<.35))continue;
+    thinRoot(el('g',{},rs),r,x,6,len,(phone?4:7)*(.6+r()*.6),i%3?hsl(246,18,36):hsl(246,20,48),inSide?{xmin:x<side?2:W-side+6,xmax:x<side?side-6:W-2,wob:.4}:{xmin:x-50,xmax:x+50});}
+  // the poppy, its root, and the lamp the root carries into the hollow
+  poppy.innerHTML='';const ps=svgBox(poppy,W,Hu),stemH=phone?118:176,hs=phone?1:1.5;
+  const lx=phone?hb.l+hb.w*.74:gapX,ly=hb.t+(phone?78:96),xp=phone?W-30:gapX;LAMP={x:lx-hb.l,y:ly-hb.t};
+  let d;if(phone){const xr=W-12;d=`M${xp} 8C${xp} 40 ${xr} 50 ${xr} 90L${xr} ${hb.t-40}C${xr} ${hb.t+10} ${lx} ${hb.t+5} ${lx} ${ly-16}`;}
+  else{const y1=hh.t-40,y2=cb.t,y3=cb.b,mid=(a,b)=>(a+b)/2;d=`M${xp} 8C${xp+22} ${mid(8,y1)} ${xp-24} ${mid(8,y1)+40} ${xp-6} ${y1}C${xp+14} ${mid(y1,y2)} ${xp-10} ${mid(y1,y2)} ${xp} ${y2}C${xp+10} ${mid(y2,y3)} ${xp-10} ${mid(y2,y3)+40} ${xp+4} ${y3}C${xp+18} ${mid(y3,ly)} ${xp-14} ${mid(y3,ly)} ${lx} ${ly-16}`;}
+  rootPath=el('path',{d,fill:'none',stroke:'#A99AA6','stroke-width':phone?2.6:4,'stroke-linecap':'round',pathLength:1,'stroke-dasharray':'1 1'},ps);
+  // where it reaches the hollow it spreads across the ceiling
+  tendrils=[];for(let i=0;i<(phone?2:3);i++){const s=i%2?1:-1,len=(phone?50:90)+r()*(phone?30:70),P=rootLine(r,lx,hb.t+30,len,Math.PI/2+s*(1.25+r()*.2),{toward:Math.PI/2+s*1.2,pull:.1,wob:.2,step:14});
+    tendrils.push(el('path',{d:'M'+P.map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join('L'),fill:'none',stroke:'#8E8090','stroke-width':phone?1.6:2.4,'stroke-linecap':'round','stroke-linejoin':'round',pathLength:1,'stroke-dasharray':'1 1'},ps));}
+  lampG=el('g',{},ps);for(const[rr,a]of[[phone?150:230,.035],[phone?100:150,.05],[phone?62:90,.07],[phone?36:50,.1]])el('path',{d:octo(lx,ly,rr,rr*.92),fill:'#F1E8D2',opacity:a},lampG);
+  el('path',{d:poly([[lx-7,ly-18],[lx+7,ly-18],[lx+8,ly-8],[lx-8,ly-8]]),fill:'#C8B27B'},ps);
+  el('path',{d:octo(lx,ly+3,11*(phone?.85:1),13*(phone?.85:1),7,-Math.PI/2),fill:'#F6E2A8'},ps);el('path',{d:poly([[lx-6,ly-4],[lx,ly-6],[lx-1,ly+6],[lx-6,ly+4]]),fill:'#FFF6DC'},ps);
+  // the poppy itself, standing in the meadow above the cut
+  const g=el('g',{},ps),hx=xp+(phone?-2:6),hy=-stemH;
+  el('path',{d:`M${xp} 10C${xp-3} ${-stemH*.35} ${hx+8} ${hy+stemH*.5} ${hx} ${hy+8*hs}`,fill:'none',stroke:'#3F6550','stroke-width':phone?2.8:3.6,'stroke-linecap':'round'},g);
+  el('path',{d:poly([[xp,-stemH*.22],[xp-20*hs,-stemH*.3],[xp-36*hs,-stemH*.5],[xp-12*hs,-stemH*.36]]),fill:'#3F6550'},g);
+  el('path',{d:poly([[xp-1,-stemH*.42],[xp+16*hs,-stemH*.5],[xp+28*hs,-stemH*.66],[xp+8*hs,-stemH*.55]]),fill:'#4C7660'},g);
+  const hd=el('g',{class:'nk-head'},g),pet=(pts,f)=>el('path',{d:poly(pts.map(([x,y])=>[hx+x*hs,hy+y*hs])),fill:f},hd);   // the head as a few cut planes
+  for(let k=0;k<5;k++){const t=-Math.PI/2+k*Math.PI*2/5,c=Math.cos(t),n=Math.sin(t),q=(a,rr)=>[Math.cos(t+a)*rr,Math.sin(t+a)*rr];
+    pet([q(-.62,7),q(-.5,24),q(0,30),q(.5,24),q(.62,7)],k%2?'#C46E59':'#D17C66');pet([q(0,8),q(.5,24),q(0,30)],k%2?'#A8564D':'#B8604F');}
+  pet([[-8,-3],[0,-9],[8,-3],[6,6],[-6,6]],'#332739');pet([[-3,-3],[3,-3],[3,2],[-3,2]],'#4C7660');
+  paintHollow();grow();}
+function grow(){if(!rootPath)return;const r=room1.getBoundingClientRect(),vh=innerHeight,hb=hollow.getBoundingClientRect();
+  const k=still?1:sm((vh*.9-r.top)/((hb.top+150)-r.top));   // the root reaches the lamp as the hollow comes up
+  rootPath.setAttribute('stroke-dashoffset',(1-k).toFixed(4));tendrils.forEach((t,i)=>t.setAttribute('stroke-dashoffset',(1-sm((k-.9-i*.01)/.08)).toFixed(4)));
+  if(lampG)lampG.setAttribute('opacity',(still?1:sm((k-.94)/.06)).toFixed(3));}
 
-/* ---------- room 2: the moss hollow ---------- */
-const hollow=$('work'),hArt=$('nk-hollow-art'),hFront=$('nk-hollow-front');let backG=null,lipSvg=null;
-function paintHollow(){const w=hollow.clientWidth,h=hollow.clientHeight,phone=w<600,r=rnd(17),u=phone?.7:1;
-  const shelf=hollow.querySelector('.nk-shelf'),sb=box(shelf,hollow),plankY=sb.b-80-30;   // plank top (row bottom), from the shelf's padding
-  hArt.innerHTML='';const s=svgEl('svg',{viewBox:`0 0 ${w} ${h}`,preserveAspectRatio:'none'},hArt),cid='nkc'+Math.round(Math.random()*1e6);
-  const outer=blob(-10*u,-6*u,w+20*u,h+12*u,r,.02),inner=blob(6*u,8*u,w-12*u,h-16*u,r,.015);
-  svgEl('path',{d:outer,fill:C.moss2},s);const wall=svgEl('path',{d:inner,fill:C.moss},s);
-  const cp=svgEl('clipPath',{id:cid},s);svgEl('path',{d:inner},cp);const clip=svgEl('g',{'clip-path':`url(#${cid})`},s);
-  backG=svgEl('g',{},clip);   // the far wall of the hollow: a darker recess, and the far roots, moving slower than the near wall
-  svgEl('path',{d:blob(w*.1,h*.08,w*.8,h*.62,r,.05),fill:C.mossFar},backG);
-  for(let i=0;i<7;i++){const x=w*(.12+i*.12+r()*.04);for(const d of rootShapes(r,x,h*.02,h*(.12+r()*.16),6*u))svgEl('path',{d,fill:'#2A3A3A'},backG);}
-  // near roots hanging from the ceiling, one of them carrying the lamp
-  const lx=w*(phone?.8:.82),cordEnd=Math.min(plankY-150*u,(phone?92:118));
-  for(let i=0;i<9;i++){const x=w*(.06+i*.11+r()*.03);if(Math.abs(x-lx)<w*.05)continue;for(const d of rootShapes(r,x,-4,(phone?40:70)*(.5+r()*.9),7*u))svgEl('path',{d,fill:C.root},clip);}
-  // the lamp: a warm bulb on its cord, its glow painted as a few flat rings of light
-  const glow=svgEl('g',{},clip);for(const[rr,a,dx,dy]of[[330,.028,-30,26],[220,.036,-14,14],[132,.05,-4,6],[70,.07,0,2]])svgEl('ellipse',{cx:lx+dx*u,cy:cordEnd+dy*u,rx:rr*u,ry:rr*u*.92,fill:C.lamp,opacity:a},glow);
-  svgEl('rect',{x:lx-1.2,y:0,width:2.4,height:cordEnd-12*u,fill:'#1B1B2C'},clip);svgEl('rect',{x:lx-7*u,y:cordEnd-16*u,width:14*u,height:10*u,rx:2,fill:'#C8B27B'},clip);
-  svgEl('ellipse',{cx:lx,cy:cordEnd+4*u,rx:11*u,ry:13*u,fill:'#F6E7B8'},clip);svgEl('ellipse',{cx:lx-3*u,cy:cordEnd+1*u,rx:3.5*u,ry:5*u,fill:'#FFF8E6'},clip);
-  // the lamp's light falling on the wall behind the shelf: one soft flat pool
-  svgEl('ellipse',{cx:lx-w*.12,cy:plankY-40,rx:w*.36,ry:110*u,fill:C.lamp,opacity:.035},clip);
-  // the foreground lip: the near edge of the hollow, in front of the shelf's feet
-  hFront.innerHTML='';lipSvg=svgEl('svg',{viewBox:`0 0 ${w} ${h}`,preserveAspectRatio:'none'},hFront);
-  const N=24,base=h-(phone?46:62),rise=phone?40:64;let d=`M${-40} ${h+80}`;   // low in the middle, rising toward the sides like the rim of a bowl
-  for(let i=0;i<=N;i++){const t=i/N,x=-40+(w+80)*t,yy=base-rise*Math.pow(2*t-1,4)+Math.sin(i*2.3)*3+(r()-.5)*5;d+=(i?'L':'L')+`${x.toFixed(1)} ${yy.toFixed(1)}`;}
-  d+=`L${w+40} ${h+80}Z`;svgEl('path',{d,fill:C.soil2},lipSvg);svgEl('path',{d,fill:C.soil,transform:'translate(0 10)'},lipSvg);
-  for(let i=0;i<14;i++){const t=(i+.5)/14,x=w*t+(r()-.5)*24,top=base-rise*Math.pow(2*t-1,4);svgEl('path',{d:`M${x} ${top+4}q${-4+r()*8} ${-12-r()*10} ${-8+r()*16} ${-22-r()*14}`,fill:'none',stroke:C.moss2,'stroke-width':3*u,'stroke-linecap':'round'},lipSvg);}   // moss on the lip
-}
+/* ---------------- room 2: the moss hollow ---------------- */
+function paintHollow(){const back=$('nk-hollow-back'),front=$('nk-hollow-front'),w=hollow.clientWidth,h=hollow.clientHeight,phone=w<600,r=rnd(71);
+  back.innerHTML='';front.innerHTML='';const s=svgBox(back,w,h);
+  const shelf=hollow.querySelector('.nk-shelf'),sb=box(shelf,hollow),floorY=sb.b-76,lx=LAMP.x,ly=LAMP.y;
+  // the mouth: a rounded shape in straight cuts, a moss rim around a dark inside
+  const mouth=(inset,jit)=>{const N=phone?18:28,P=[];for(let i=0;i<N;i++){const t=i/N*Math.PI*2,c=Math.cos(t),sn=Math.sin(t),e=phone?2.4:3.2,px=Math.sign(c)*Math.pow(Math.abs(c),2/e),py=Math.sign(sn)*Math.pow(Math.abs(sn),2/e),k=1+(r()-.5)*jit;
+    P.push([w/2+px*(w/2-inset)*k,h/2+py*(h/2-inset*.9)*k]);}return P;};
+  const outer=mouth(0,.05),inner=mouth(phone?14:26,.04);
+  facets(clipped(s,poly(outer)),-10,-10,w+20,h+20,phone?40:62,[140,24,28],{seed:73,amp:14,z:1,tint:(fy)=>-fy*8});
+  const cave=clipped(s,poly(inner));backIn=el('g',{},cave);
+  facets(backIn,-10,-60,w+20,h+120,phone?46:72,[168,18,10],{seed:79,amp:8,z:.9,tint:(fy,cx,cy)=>Math.max(0,1-Math.hypot(cx-lx,cy-ly)/(phone?260:480))*10});   // the lamp lights the faces near it
+  // moss lining just inside the rim, brightest under the lamp
+  for(let i=0;i<inner.length;i++){const a=inner[i],b=inner[(i+1)%inner.length],m=[(a[0]+b[0])/2+(w/2-(a[0]+b[0])/2)*.06,(a[1]+b[1])/2+(h/2-(a[1]+b[1])/2)*.1];
+    el('path',{d:poly([a,b,m]),fill:hsl(138,26,22+Math.max(0,1-Math.hypot(m[0]-lx,m[1]-ly)/600)*14)},cave);}
+  // roots across the ceiling, and a small lantern hung on the right
+  for(let i=0;i<(phone?4:8);i++){const x=w*(.1+i*(phone?.22:.11)+r()*.04);if(Math.abs(x-lx)<w*.06)continue;thinRoot(el('g',{},cave),r,x,8,(phone?50:90)*(.5+r()*.8),phone?5:8,hsl(20,14,26));}
+  {const qx=w-(phone?40:110),qy=phone?96:150,u=phone?.75:1;el('rect',{x:qx-1,y:0,width:2,height:qy-22*u,fill:'#1B1B2C'},cave);
+    for(const[rr,a]of[[90,.05],[50,.08]])el('path',{d:octo(qx,qy,rr*u,rr*u,6,0),fill:'#F2C27A',opacity:a},cave);
+    el('path',{d:poly([[qx-9*u,qy-22*u],[qx+9*u,qy-22*u],[qx+13*u,qy-14*u],[qx-13*u,qy-14*u]]),fill:'#3A2F2C'},cave);
+    el('path',{d:poly([[qx-11*u,qy-14*u],[qx+11*u,qy-14*u],[qx+9*u,qy+16*u],[qx-9*u,qy+16*u]]),fill:'#F2C27A'},cave);
+    el('path',{d:poly([[qx-11*u,qy-14*u],[qx-3*u,qy-14*u],[qx-3*u,qy+16*u],[qx-9*u,qy+16*u]]),fill:'#E8A85E'},cave);
+    el('path',{d:poly([[qx-12*u,qy+16*u],[qx+12*u,qy+16*u],[qx+9*u,qy+22*u],[qx-9*u,qy+22*u]]),fill:'#3A2F2C'},cave);}
+  // in front: two big roots twisting over the rim, and the floor's near lip under the shelf
+  const fs=svgBox(front,w,h);frontG=el('g',{},fs);const lit=hsl(18,16,34),dark=hsl(18,16,22);
+  const band=phone?14:46;   // the rim's width: the roots keep to it, clear of the cards
+  for(const side of[-1,1]){const lo=side<0?-40:w-band,hi=side<0?band:w+40,x0=side<0?-10:w+10,P=rootLine(r,x0,h*.04,h*(phone?.95:1.05),Math.PI/2+side*.15,{toward:Math.PI/2,pull:.05,wob:.45,step:phone?20:26,xmin:lo,xmax:hi});
+    facetRoot(frontG,P,phone?16:30,phone?5:8,lit,dark);
+    const b=Math.floor(P.length*.35),Q=rootLine(r,P[b][0],P[b][1],h*.45,Math.PI/2-side*.5,{toward:Math.PI/2,pull:.06,step:18,xmin:lo,xmax:hi});facetRoot(frontG,Q,phone?8:14,3,lit,dark);}
+  {const y0=Math.max(floorY+58,h-(phone?60:84)),P=[[-30,h+40]];for(let i=0;i<=16;i++){const t=i/16;P.push([-30+(w+60)*t,y0-Math.pow(2*t-1,4)*(phone?30:50)+(r()-.5)*8]);}P.push([w+30,h+40]);
+    facets(clipped(fs,poly(P)),-30,y0-60,w+60,h-y0+110,phone?34:52,[140,22,20],{seed:83,amp:14,z:1});}
+  paintLedge();}
+/* the shelf: a faceted plank the length of the row, so more cards make a longer shelf */
+function paintLedge(){const lg=$('nk-ledge'),row=$('nk-shelf');if(!lg)return;lg.innerHTML='';const w=row.scrollWidth,r=rnd(91),s=el('svg',{width:w,height:80,viewBox:`0 0 ${w} 80`},lg);
+  const n=Math.max(4,Math.round(w/90)),top=[];for(let i=0;i<=n;i++)top.push([w*i/n,(r()-.5)*3]);const front=top.map(([x,y])=>[x,y+12]),bot=top.map(([x,y],i)=>[x,y+28+(i%2?2:-1)]);
+  for(const x of[w*.12,w*.86]){const P=rootLine(r,x,22,54,Math.PI/2,{wob:.2,step:10});facetRoot(el('g',{},s),P,18,8,hsl(18,16,30),hsl(18,16,20));}   // two root knees hold it up
+  for(let i=0;i<n;i++){const l1=31+(r()-.5)*4,l2=21+(r()-.5)*3;el('path',{d:poly([top[i],top[i+1],front[i+1],front[i]]),fill:hsl(22,22,l1),stroke:hsl(22,22,l1),'stroke-width':.5},s);
+    el('path',{d:poly([front[i],front[i+1],bot[i+1],bot[i]]),fill:hsl(20,22,l2),stroke:hsl(20,22,l2),'stroke-width':.5},s);}}
 
-/* ---------- gentle parallax: far layers lag, the lip leads ---------- */
-function parallax(){if(still)return;const vh=innerHeight;
-  const move=(el,ref,d,svgAttr)=>{if(!el||!ref)return;const r=ref.getBoundingClientRect();if(r.bottom<-200||r.top>vh+200)return;const off=((r.top+r.height/2)-vh/2)*d;
-    if(svgAttr)el.setAttribute('transform',`translate(0 ${off.toFixed(1)})`);else el.style.transform=`translate3d(0,${off.toFixed(1)}px,0)`;};
-  move(farG,room1,.09,true);move(backG,hollow,.07,true);move(lipSvg,hollow,-.035,false);}
+/* ---------------- depth below the meadow: far layers lag, near roots lead ---------------- */
+function underScroll(){if(still)return;const vh=innerHeight,mv=(node,ref,d)=>{if(!node)return;const q=ref.getBoundingClientRect();if(q.bottom<-300||q.top>vh+300)return;node.setAttribute('transform',`translate(0 ${(((q.top+q.height/2)-vh/2)*d).toFixed(1)})`);};
+  if(soilSvg){const q=under.getBoundingClientRect();soilSvg.style.transform=`translate3d(0,${Math.max(-110,Math.min(110,(-q.top)*.06)).toFixed(1)}px,0)`;}
+  mv(backIn,hollow,.06);mv(frontG,hollow,-.035);}
 
-/* ---------- wiring ---------- */
-let tick=false;const onScroll=()=>{if(tick)return;tick=true;requestAnimationFrame(()=>{tick=false;camera();growRoot();parallax();});};
-addEventListener('scroll',onScroll,{passive:true});
-let rw=innerWidth,rt=0;function relayout(){layoutOpening();paintRoom1();paintHollow();parallax();}
-addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{if(Math.abs(innerWidth-rw)<2&&Math.abs(stage.clientHeight-VH)<120){camera();return;}rw=innerWidth;relayout();},120);});
-relayout();
-(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{paintRoom1();paintHollow();parallax();});
-addEventListener('load',()=>{paintRoom1();paintHollow();parallax();});
-window.sogNook={state:()=>({e:E,s0:S0,W,H,Hn}),paint:relayout};
+/* the cards come up onto the shelf when it arrives */
+const row=$('nk-shelf');if(still||!('IntersectionObserver' in window))row.classList.add('nk-in');else new IntersectionObserver((es,o)=>{if(es[0].isIntersecting){row.classList.add('nk-in');o.disconnect();}},{threshold:.25}).observe(row);
+
+/* ---------------- wiring ---------------- */
+let tick=false;addEventListener('scroll',()=>{if(tick)return;tick=true;requestAnimationFrame(()=>{tick=false;nightScroll();grow();underScroll();});},{passive:true});
+let rw=innerWidth,rt=0;const all=()=>{paintNight();paintUnder();nightScroll();underScroll();};
+addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{if(Math.abs(innerWidth-rw)<2)return;rw=innerWidth;all();},140);});
+all();(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{paintUnder();underScroll();});addEventListener('load',()=>{paintUnder();underScroll();});
+if(window.ResizeObserver){let last=0;new ResizeObserver(()=>{const h=under.offsetHeight;if(Math.abs(h-last)>4){last=h;requestAnimationFrame(()=>{paintUnder();underScroll();});}}).observe(under);}
+window.sogNook={repaint:all};
 })();
