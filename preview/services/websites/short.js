@@ -143,7 +143,7 @@ short.querySelectorAll('[data-skip]').forEach(b=>b.addEventListener('click',next
   const done=short.querySelector('[data-calls-done]'),bloom=short.querySelector('.b3 .live-grass.bloom');
   calls.forEach(c=>c.addEventListener('click',()=>{if(c.classList.contains('answered'))return;c.classList.add('answered');
     c.setAttribute('aria-label',c.querySelector('.q').textContent+' Answered: '+c.querySelector('.a').textContent);
-    if(calls.every(x=>x.classList.contains('answered'))){if(done)done.hidden=false;if(bloom)bloom.hidden=false;
+    if(calls.every(x=>x.classList.contains('answered'))){if(done)done.hidden=false;if(bloom){bloom.hidden=false;document.dispatchEvent(new Event('sog-theme'));}
       const own=short.querySelector('[data-ask="business"]');if(own)own.hidden=false;}}));
 })();
 
@@ -176,6 +176,10 @@ short.querySelectorAll('.ask').forEach(b=>b.addEventListener('click',()=>{if(b.c
     try{await navigator.clipboard.writeText(url);say('Link copied. Come back any time.');}
     catch{say('Save this link for later: '+url);}
   });})();
+
+// a meadow measured before the page settled (seen on phones) gets measured again once fonts and images are in
+const remeasure=()=>dispatchEvent(new Event('resize'));
+addEventListener('load',()=>{requestAnimationFrame(remeasure);document.fonts&&document.fonts.ready.then(()=>requestAnimationFrame(remeasure));});
 
 // first beat: everything else inert
 beats.forEach((b,i)=>{if(i){b.inert=true;b.setAttribute('aria-hidden','true');}});
