@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Counter phone · demo</title>
+<link rel="icon" href="data:,">
+<style>
+  /* a stand-in for the Websites page's "Fewer calls" band, so the phone can be tried and tested on its own */
+  :root{color-scheme:dark}
+  body{margin:0;background:#0e1a2a;color:#e9ecef;font:18px/1.5 system-ui,sans-serif}
+  .intro{min-height:100vh;display:grid;place-items:center;padding:0 16px;text-align:center}
+  .calls-band{background:#122337;padding:64px 16px}
+  .in{max-width:1120px;margin:0 auto;display:grid;gap:40px;align-items:center}
+  @media (min-width:900px){.in{grid-template-columns:1fr 1fr}}
+  h2{font-size:clamp(28px,4vw,44px);line-height:1.1;margin:0 0 16px}
+  .calls-band .visual{justify-self:center;width:min(100%,420px);border-radius:20px;overflow:hidden}
+  .calls-band .visual img{width:100%;height:auto;display:block}
+  .outro{min-height:60vh}
+</style>
+</head>
+<body>
+<section class="intro"><p>Scroll down to the phone.</p></section>
+<section class="calls-band"><div class="in">
+  <div class="words">
+    <h2>One less call asking what&rsquo;s left.</h2>
+    <p>Hover or tap the handset. Drag the dial.</p>
+  </div>
+  <sog-phone class="visual phone-art" aria-hidden="true" data-glb="/preview/services/websites/phone/phone.glb">
+    <picture><source type="image/webp" srcset="/preview/assets/work/websites/card3-phone-720.webp 720w, /preview/assets/work/websites/card3-phone-1080.webp 1080w" sizes="(min-width:900px) 40vw, 100vw"><img src="/preview/assets/work/websites/card3-phone-1080.jpg" alt="" width="1080" height="1935"></picture>
+  </sog-phone>
+</div></section>
+<section class="outro"></section>
+<script type="module" src="/preview/services/websites/phone/phone.js"></script>
+</body>
+</html>
