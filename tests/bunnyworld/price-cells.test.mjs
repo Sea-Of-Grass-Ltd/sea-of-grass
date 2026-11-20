@@ -15,7 +15,7 @@ const txt = s => (s || '').replace(/\s+/g, ' ').trim();
 const PACKS = [
   { key: 'fix', price: /\$250/, must: [/from \$250/i, /after it’s done/i, /checked/i, /a few days/i, /flat fee/i, /before any work/i, /nothing up front/i], add: ['fix'] },
   { key: 'starter', price: /\$100/, must: [/\$100\/mo/i, /× 12/, /\$1,200/, /after #12/i, /30%/, /first draft/i, /no interest/i, /billed monthly/i, /rest at launch/i, /round of changes/i], add: ['starter-monthly', 'starter'] },
-  { key: 'site', price: /\$2,000/, must: [/from \$2,000/i, /30%/, /first draft/i, /rest at launch/i, /fixed price in writing/i, /nothing to start/i, /domain, email, Google listing/i], add: ['bw-site-bunny-burritos'] },
+  { key: 'site', price: /\$2,500/, must: [/from \$2,500/i, /30%/, /first draft/i, /rest at launch/i, /fixed price in writing/i, /nothing to start/i, /domain, email, Google listing/i], add: ['bw-site-bunny-burritos'] },
   { key: 'care', price: /\$50/, must: [/\$50\/mo/i, /hosting/i, /security/i, /30 minutes/i, /bigger jobs/i, /cancel any month/i, /text Tristan or Bryce/i, /after launch/i], add: ['care'] },
 ];
 const state = page => page.evaluate(() => [...document.querySelectorAll('#prices [aria-controls]')].map(b => {
@@ -121,9 +121,9 @@ test('prices match everywhere they appear: strip, panels, Buy menu and the shop'
       const buy = [...document.querySelectorAll('.buy-row')].map(x => x.innerText.replace(/\s+/g, ' '));
       return { P: { fix: P.fix.price, starter: P.starter.price, monthly: P['starter-monthly'].price, site: P['bw-site-bunny-burritos'].price, care: P.care.price }, cells, buy };
     });
-    assert.deepEqual(r.P, { fix: 250, starter: 1200, monthly: 100, site: 2000, care: 50 });
-    assert.match(r.cells[0], /\$250/); assert.match(r.cells[1], /\$100/); assert.match(r.cells[1], /\$1,200/); assert.match(r.cells[2], /\$2,000/); assert.match(r.cells[3], /\$50/);
-    assert.ok(r.buy.some(t => /\$250/.test(t)) && r.buy.some(t => /\$1,200/.test(t)) && r.buy.some(t => /\$100/.test(t)) && r.buy.some(t => /\$2,000/.test(t)) && r.buy.some(t => /\$50/.test(t)), 'the Buy menu agrees');
+    assert.deepEqual(r.P, { fix: 250, starter: 1200, monthly: 100, site: 2500, care: 50 });
+    assert.match(r.cells[0], /\$250/); assert.match(r.cells[1], /\$100/); assert.match(r.cells[1], /\$1,200/); assert.match(r.cells[2], /\$2,500/); assert.match(r.cells[3], /\$50/);
+    assert.ok(r.buy.some(t => /\$250/.test(t)) && r.buy.some(t => /\$1,200/.test(t)) && r.buy.some(t => /\$100/.test(t)) && r.buy.some(t => /\$2,500/.test(t)) && r.buy.some(t => /\$50/.test(t)), 'the Buy menu agrees');
   } finally { await ctx.close(); }
 });
 
@@ -132,7 +132,7 @@ test('prices match everywhere they appear: strip, panels, Buy menu and the shop'
 // price's line, one terms line in every cell, centred cells on desktop, a plain plus (no circle, no purple), the open cell
 // marked by a 4px ink bar, the panel a centred 28u column with hero-sized buttons.
 const CELLS = [['Fix one broken thing', 'from', '$250', '', 'paid after it’s done'], ['A starter site', '', '$100', '/mo', '12 months, $1,200 total'],
-  ['A small business site', 'from', '$2,000', '', '30% at first draft'], ['Care plan', '', '$50', '/mo', 'cancel any month']];
+  ['A small business site', 'from', '$2,500', '', '30% at first draft'], ['Care plan', '', '$50', '/mo', 'cancel any month']];
 const strip = page => page.evaluate(() => {
   const u = document.querySelector('.lh-mark').getBoundingClientRect().height / 12.75;
   const st = e => { const c = getComputedStyle(e); return { fam: c.fontFamily, size: parseFloat(c.fontSize), weight: c.fontWeight, tt: c.textTransform, color: c.color, r: e.getBoundingClientRect() }; };

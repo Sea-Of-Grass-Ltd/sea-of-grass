@@ -117,3 +117,14 @@ for (const w of [360, 390]) {
     await ctx.close();
   });
 }
+
+test('research prices (Tristan, 2026-11-20): custom $2,500 or $200/mo, the 60-day fix credit, Launch Setup $250/$450, a two-sided referral', () => {
+  const html = fs.readFileSync(path.join(ROOT, 'hermes/index.html'), 'utf8');
+  assert.match(html, /custom site starts at \$2,500, or \$200 a month/);
+  assert.match(html, /within 60 days, the \$250 comes off it/);
+  assert.match(html, /Launch Setup is \$250 with one of our sites, or \$450 if the site isn't ours/);
+  assert.match(html, /<option>\$2,500 site<\/option>/);
+  assert.match(html, /\$1,200 and then \$50 a month for care/, 'the starter stays $1,200');
+  for (const f of ['index.html', 'app.js', 'owner-text.js']) assert.doesNotMatch(fs.readFileSync(path.join(ROOT, 'hermes', f), 'utf8'), /\$2,000|\[2000 \+/, `${f}: no $2,000 site left`);
+  assert.match(fs.readFileSync(path.join(ROOT, 'hermes/owner-text.js'), 'utf8'), /your next month is on us, and their first month is on us too/);
+});

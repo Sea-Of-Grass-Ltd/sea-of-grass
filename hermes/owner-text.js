@@ -43,7 +43,7 @@
       opener,
       'You’re one of our five founding shops, so your Site Plan is $50 a month instead of $100, locked for two years, and I’ll photograph your food or shop for free.',
       'To finish it, I just need a few things from you:\n' + needs.map((n, i) => (i + 1) + '. ' + n).join('\n'),
-      'For every shop you send our way that signs up, your next month is on us.',
+      'For every shop you send our way that signs up, your next month is on us, and their first month is on us too.',
       'When’s a good time for me to stop by?',
     ].join('\n\n');
   }

@@ -71,7 +71,7 @@ const SHOPS = {
   shop: ['burrow-and-bough', 'Burrow & Bough', 'online shop, pickup or shipping'],
   farm: ['cottontail-farm', 'Cottontail Farm', 'seasons, timed tickets, farm map'],
 };
-const PRICE = { fix: ['$250 fix', '$250 fix'], starter: ['$100/mo or $1,200', '$1,200 starter'], site: ['$2,000 site', '$2,000 site'] };
+const PRICE = { fix: ['$250 fix', '$250 fix'], starter: ['$100/mo or $1,200', '$1,200 starter'], site: ['$2,500 site', '$2,500 site'] };
 const KNOWN_REGIONS = [['longmont', 'Longmont'], ['berthoud', 'Berthoud'], ['loveland', 'Loveland'], ['fortcollins', 'Fort Collins'], ['wellington', 'Wellington'], ['golden', 'Golden']];
 const WD = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 function dayLabel(d) { const m = /^(\d{4})-(\d\d)-(\d\d)$/.exec(d || ''); if (!m) return d || ''; return WD[new Date(+m[1], +m[2] - 1, +m[3]).getDay()] + ' ' + m[2] + '-' + m[3]; }
@@ -105,7 +105,7 @@ const COSTS = [
   ['Hiring it out', 'Monthly maintenance', '$50–300 a month', 'Vendor blog estimates; no solid survey found.', 'https://www.designrush.com/agency/web-development-companies/trends/small-business-website-cost', 1],
   ['Sea of Grass', 'Fix one broken thing', '$250 once', 'Paid after it’s done and checked.', 'https://seaofgrass.studio/bunnyworld/#prices'],
   ['Sea of Grass', 'Site Plan', '$100 a month', 'Nothing up front, care included, 12-month minimum. The site is theirs after 12 months. Or $1,200 paid once.', 'https://seaofgrass.studio/bunnyworld/#prices'],
-  ['Sea of Grass', 'Small business site', '$2,000', '30% at the first-draft OK, the rest at launch.', 'https://seaofgrass.studio/bunnyworld/#prices'],
+  ['Sea of Grass', 'Custom site', 'From $2,500, or $200 a month', '30% at the first-draft OK, the rest at launch. Monthly: 12-month minimum, care included.', 'https://seaofgrass.studio/bunnyworld/#prices'],
   ['Sea of Grass', 'Care', '$50 a month', 'Hosting, security, up to 30 minutes of changes a month. Cancel any month.', 'https://seaofgrass.studio/bunnyworld/'],
 ];
 const FIRST_YEAR = { diyCash: [210, 350], diyLabel: 'Builder plan for a year', freelance: [1500, 5000], freelanceCare: [600, 3600], agency: [3000, 10000] };
@@ -219,7 +219,7 @@ function renderCalc() {
     { name: 'Agency', parts: [[(F.agency[0] + F.agency[1]) / 2, '--bar-free']], total: null, range: F.agency, sub: 'Site only, upkeep extra. Estimate from Clutch and GoodFirms.' },
     { name: 'Sea of Grass $250 fix + care', parts: [[250 + 600, '--bar-sog'], [rate * 1, '--bar-time']], total: 850 + rate, sub: '$250 fix, then $50/mo care (hosting, security, 30 min of changes a month). About an hour of your time.' },
     { name: 'Sea of Grass starter + care', parts: [[1200 + 600, '--bar-sog'], [ownerSog, '--bar-time']], total: 1800 + ownerSog, sub: '$1,200 paid once, plus $50/mo care. About 2–3 h of yours for photos and the first draft.' },
-    { name: 'Sea of Grass site + care', parts: [[2000 + 600, '--bar-sog'], [ownerSog, '--bar-time']], total: 2600 + ownerSog, sub: '$2,000 site plus $50/mo care. About 2–3 h of yours.' },
+    { name: 'Sea of Grass site + care', parts: [[2500 + 600, '--bar-sog'], [ownerSog, '--bar-time']], total: 3100 + ownerSog, sub: '$2,500 site plus $50/mo care. About 2–3 h of yours.' },
   ];
   const max = Math.max(...opts.map(o => o.parts.reduce((a, p) => a + p[0], 0)), 1);
   const box = $('bars'); box.innerHTML = '';

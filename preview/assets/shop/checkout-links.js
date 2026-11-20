@@ -25,7 +25,7 @@ window.SOG_SHOP = {
       name: 'Fix one broken thing',
       price: 250, from: true, interval: null, maxQty: 5, pay: 'after', // PLACEHOLDER price
       blurb: 'One thing on your site that is broken, wrong or out of date.',
-      lines: ['One broken thing, fixed', 'Done in a few days', 'Flat fee, agreed before we start', 'If it’s bigger than one fix, we say so before any work'] // PLACEHOLDER inclusions
+      lines: ['One broken thing, fixed', 'Done in a few days', 'Flat fee, agreed before we start', 'If it’s bigger than one fix, we say so before any work', 'The $250 comes off a site you start with us within 60 days'] // PLACEHOLDER inclusions
     },
     care: {
       name: 'Care plan',
@@ -71,7 +71,7 @@ window.SOG_SHOP = {
 };
 
 /* Bunny World: a small business site in the look of one of the nine demo shops.
-   ALL PLACEHOLDER (price from the Bunny World price strip, "from $2,000"), demo mode only.
+   ALL PLACEHOLDER (price from the Bunny World price strip, "from $2,500", raised from $2,000 on 2026-11-20), demo mode only.
    No Payment Links yet: in live mode these fall back to the demo checkout until links exist.
    Fix and Care on Bunny World reuse the 'fix' and 'care' products above. */
 (function(P){
@@ -89,7 +89,7 @@ window.SOG_SHOP = {
   LOOKS.forEach(function(l){
     P['bw-site-' + l[0]] = {
       name: 'Small business site · ' + l[1] + ' look',
-      price: 2000, from: true, interval: null, maxQty: 1, pay: 'deposit', // PLACEHOLDER price
+      price: 2500, from: true, interval: null, maxQty: 1, pay: 'deposit', // custom site, from $2,500 (Tristan, 2026-11-20)
       blurb: 'A working site for your ' + l[2] + ', built in the ' + l[1] + ' look and fitted to your business.',
       lines: ['Built in the ' + l[1] + ' look, in your name, photos and colours', 'Booking, orders or forms wired to the tools you use', 'Fixed price in writing before we start', 'Your domain, email and Google listing stay put'], // PLACEHOLDER inclusions
       look: l[0], lookName: l[1]
