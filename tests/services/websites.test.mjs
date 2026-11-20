@@ -1,4 +1,7 @@
-// Websites page: a normal page in the rhythm of Dribbble Hiring (Refero 0797edc6), on Tristan's word (2026-11-19):
+// Websites page: a normal page in the rhythm of Dribbble Hiring (Refero 0797edc6), dressed in the Dope Security treatment
+// (Refero style e2324e47, adapted; Tristan approved the sketch: "Approve both, build them"). Syne for display, Bricolage for
+// section heads; glass only in distinctive shapes (a notched ticket, pills, a receipt); a photo ticket rail and a split-flap board.
+// On Tristan's word (2026-11-19):
 // "everything flows with just key words and it does the salespitch ... with just a normal scrollable page".
 // Top: headline, one line, two plan cards (Care recommended with the founding five; Sites) and a small Fix / custom line.
 // Then a proof row, alternating two-column pitch sections, a benefit row, a short FAQ and a one-line close.
@@ -57,6 +60,13 @@ for (const w of WIDTHS) {
       assert.ok(await plans.locator('.also [data-add="fix"]').count() === 1, 'the fix can be bought from the small line');
       assert.equal(await page.locator('[data-add]').count(), await plans.locator('[data-add]').count(), 'Buy lives only in the plans');
       assert.equal(await page.locator('[data-add="starter-monthly"]').count(), 0, 'no $100-a-month option until Tristan confirms it');
+      assert.ok(await care.evaluate(e => e.classList.contains('ticket-shape') && !!e.querySelector('.stub.founding')), 'Care is a notched glass ticket with a perforated founding stub');
+      assert.ok(await sites.evaluate(e => { const c = getComputedStyle(e); return c.backgroundColor === 'rgba(0, 0, 0, 0)' && parseFloat(c.borderLeftWidth) === 0; }), 'Sites is open type, not another box');
+      assert.ok(await plans.locator('.btn.pill').count() >= 2, 'the buy buttons are glass pills');
+      assert.ok(await plans.locator('.btn.pill').first().evaluate(e => parseFloat(getComputedStyle(e).borderTopLeftRadius) >= 999), 'pill-shaped');
+      const board = page.locator('.flapboard .flap');
+      assert.equal(await board.count(), 4, 'a split-flap board');
+      assert.deepEqual((await board.locator('.flap-w').allTextContents()).map(x => x.replace(/\s/g, '')), ['HOSTING', 'CHANGES', 'ORDERS', 'HOURS'], 'spelling out what care includes');
       const unsure = page.locator('a', { hasText: 'Not sure yet? Watch it work' });
       assert.ok(await unsure.count() === 1 && (await unsure.getAttribute('href')) === '#demo', 'the unsure path');
       assert.ok(await page.evaluate(inkOf, '.hero [data-live-grass]') > 1000, 'the live meadow at the foot of the top');
@@ -95,45 +105,57 @@ for (const w of WIDTHS) {
     } finally { await ctx.close(); }
   });
 
-  test(`${w}px · proof row: the nine demo shops, honestly labelled, each in its own type`, async () => {
-    const { ctx, page } = await site.open(PAGE, w, { reducedMotion: 'reduce' });
+  test(`${w}px · Bunny World: a photo ticket rail, and the Sold out demo inside Bunny Burritos`, async () => {
+    const { ctx, page, errors } = await site.open(PAGE, w, { reducedMotion: 'reduce' });
     try {
-      const row = page.locator('.proof');
-      assert.equal(await row.locator('.mark').count(), 9, 'nine shop marks');
-      assert.match(await text(row), /demo shops/i, 'labelled as our demo shops');
-      assert.doesNotMatch(await text(row), /client|trusted by|customers/i, 'never presented as clients');
-      const faces = await row.locator('.mark').evaluateAll(ms => ms.map(m => getComputedStyle(m).fontFamily.split(',')[0].replace(/"/g, '').trim()));
-      assert.ok(new Set(faces).size >= 6, `each mark in its shop's own face (${[...new Set(faces)].join(', ')})`);
+      const bw = page.locator('#bunny-world');
+      assert.ok(await bw.locator('img[src*="/bunnyworld/brand/mark"]').count() === 1, 'led by the Bunny World mark');
+      assert.equal(await text(bw.locator('h2')), 'Nine shops we built to show you.', 'the heading');
+      const tickets = bw.locator('.ticket');
+      assert.equal(await tickets.count(), 9, 'nine tickets');
+      assert.equal(await tickets.locator('img').count(), 9, 'each ticket is the shop\'s own photo');
+      assert.match(await text(tickets.first().locator('.t-lab')), /^01 · /, 'indexed');
+      const faces = await bw.locator('.t-name').evaluateAll(ms => ms.map(m => getComputedStyle(m).fontFamily.split(',')[0].replace(/"/g, '').trim()));
+      assert.ok(new Set(faces).size >= 6, `each shop named in its own type (${[...new Set(faces)].join(', ')})`);
+      assert.ok(await bw.locator('.tickets').evaluate(r => r.scrollWidth > r.clientWidth + 20), 'the rail runs sideways');
+      assert.match(await text(bw), /demo shops|no real business/i, 'honestly labelled as demo shops');
+      assert.equal(await tickets.first().getAttribute('aria-pressed'), 'true', 'Bunny Burritos is open first');
+
+      const stage = bw.locator('.open-stage');
+      await stage.scrollIntoViewIfNeeded();
+      await page.waitForFunction(() => document.querySelector('#bunny-world .open-stage iframe')?.contentDocument?.querySelector('button[data-add="Horchata, large"]'), null, { timeout: 8000 });
+      assert.equal(await text(stage.locator('h3')), 'Go on. Tap Sold out.', 'the demo heading');
+      const reg = stage.locator('.register');
+      assert.ok(await reg.evaluate(e => getComputedStyle(e).clipPath !== 'none'), 'the register is shaped like a receipt');
+      const shop = await (await stage.locator('iframe').elementHandle()).contentFrame();
+      await stage.locator('[data-act="soldout"]').click(); await page.waitForTimeout(300);
+      assert.match(await shop.locator('button[data-add="Horchata, large"]').textContent(), /Sold out/i, 'the live shop flips to Sold out');
+      assert.equal(await text(stage.locator('[data-caption]')), "That's the whole job. You never log in to anything.", 'the after-tap caption');
+
+      await tickets.nth(1).click(); await page.waitForTimeout(400);
+      assert.equal(await tickets.nth(1).getAttribute('aria-pressed'), 'true', 'tapping a ticket selects it');
+      assert.match(await stage.locator('iframe').getAttribute('src'), /hare-today/, 'and opens that shop\'s live page');
+      assert.ok(!(await reg.isVisible()), 'the register belongs to Bunny Burritos only');
+      assert.ok(await stage.locator('a[href="/bunnyworld/hare-today/"]').count() === 1, 'with a way into that shop');
+      await tickets.first().click(); await page.waitForTimeout(400);
+      assert.ok(await reg.isVisible(), 'back to Bunny Burritos, the register returns');
+      assert.ok(await bw.locator('a[href="/bunnyworld/"]').count() >= 1, 'a way into Bunny World');
+      assert.deepEqual(errors, [], 'no console errors');
     } finally { await ctx.close(); }
   });
 
-  test(`${w}px · the pitch: alternating sections, a few key words each`, async () => {
+  test(`${w}px · the pitch: fewer calls and hooking up, a few key words each`, async () => {
     const { ctx, page, errors } = await site.open(PAGE, w, { reducedMotion: 'reduce' });
     try {
-      const demo = page.locator('#demo');
-      assert.equal(await text(demo.locator('h2')), 'Go on. Tap Sold out.', 'the demo heading');
-      await demo.scrollIntoViewIfNeeded();
-      await page.waitForFunction(() => document.querySelector('#demo iframe')?.contentDocument?.querySelector('button[data-add="Horchata, large"]'), null, { timeout: 8000 });
-      const shop = await (await demo.locator('iframe').elementHandle()).contentFrame();
-      await demo.locator('[data-act="soldout"]').click(); await page.waitForTimeout(300);
-      assert.match(await shop.locator('button[data-add="Horchata, large"]').textContent(), /Sold out/i, 'the live shop flips');
-      assert.equal(await text(demo.locator('[data-caption]')), "That's the whole job. You never log in to anything.", 'the after-tap caption');
-      const panel = demo.locator('.panel');
-      assert.ok(await panel.locator('img[src*="burritos-hero"], source[srcset*="burritos-hero"]').count() >= 1, 'the burrito photo as a big rounded panel');
-      assert.ok(await panel.locator('.phone iframe').count() === 1 && await panel.locator('.register').count() === 1, 'the live phone and the register sit on the panel');
-      assert.ok(await panel.evaluate(e => parseFloat(getComputedStyle(e.querySelector('picture')).borderTopLeftRadius) >= 24), 'rounded panel corners');
-
+      assert.equal(await page.locator('#demo').count(), 0, 'the demo now lives inside Bunny World');
       const calls = page.locator('#calls');
       assert.equal(await text(calls.locator('h2')), "One less call asking what's left.", 'the calls heading');
       assert.equal(await calls.locator('button').count(), 0, 'the calls are plain text');
-      assert.ok(await calls.locator('img[src*="card3-phone"], source[srcset*="card3-phone"]').count() >= 1, 'the counter-phone picture');
+      const slot = calls.locator('[data-embed-slot="rotary-phone"]');
+      assert.equal(await slot.count(), 1, 'the picture sits in a slot ready for the 3D phone');
+      assert.ok(await slot.locator('img[src*="card3-phone"], source[srcset*="card3-phone"]').count() >= 1, 'with the counter-phone picture for now');
       const ct = await text(calls);
-      for (const s of ['Are you open?', 'Open until 9.', 'Any horchata left?', 'Sold out, back tomorrow.', "Don't need more business?", 'Then keep it to menu and hours.']) assert.ok(ct.includes(s), `reads: ${s}`);
-
-      const bw = page.locator('#bunny-world');
-      assert.equal(await text(bw.locator('h2')), 'Nine shops we built to show you.', 'the Bunny World heading');
-      assert.equal(await bw.locator('.rail .shop iframe').count(), 9, 'all nine as live pages');
-      assert.ok(await bw.locator('a[href="/bunnyworld/"]').count() >= 1, 'a way into Bunny World');
+      for (const x of ['Are you open?', 'Open until 9.', 'Any horchata left?', 'Sold out, back tomorrow.', "Don't need more business?", 'Then keep it to menu and hours.']) assert.ok(ct.includes(x), `reads: ${x}`);
 
       const hook = page.locator('#hookup');
       assert.equal(await text(hook.locator('h2')), 'Hooking up, plainly.', 'the hookup heading');
@@ -144,12 +166,6 @@ for (const w of WIDTHS) {
       assert.match(await text(see.locator('summary')), /see/i, 'what we can and never see sits behind a toggle');
       await see.locator('summary').click();
       assert.match(await text(see), /never see/i, 'and opens to read');
-
-      if (w >= 1440) {
-        const side = async (sec, vis) => page.evaluate(([s, v]) => { const a = document.querySelector(s + ' ' + v).getBoundingClientRect(), t = document.querySelector(s + ' h2').getBoundingClientRect(); return a.left < t.left ? 'left' : 'right'; }, [sec, vis]);
-        const d = await side('#demo', '.visual'), c = await side('#calls', '.visual');
-        assert.notEqual(d, c, `the pitch alternates sides (demo picture ${d}, calls picture ${c})`);
-      }
       assert.deepEqual(errors, [], 'no console errors');
     } finally { await ctx.close(); }
   });
@@ -175,6 +191,8 @@ for (const w of WIDTHS) {
       const close = page.locator('#start');
       assert.equal(await text(close.locator('h2')), 'Talk to Tristan or Bryce.', 'a one-line close');
       assert.equal(await close.locator('a', { hasText: /^Book/ }).count(), 1, 'one Book button');
+      assert.ok(await close.locator('a.btn.pill', { hasText: /^Book/ }).count() === 1, 'the closing Book is a glass pill');
+      assert.ok(await close.locator('[data-live-grass]').count() === 1, 'over the meadow');
       assert.ok((await text(close)).includes('303.775.1333'), 'the phone number as text');
       const body = await page.evaluate(() => document.body.innerText.replace(/\s+/g, ' '));
       assert.doesNotMatch(body, /first month (is )?free|free (first )?month|month (is )?free|free trial/i, 'no free month');
@@ -197,14 +215,15 @@ for (const w of WIDTHS) {
     } finally { await ctx.close(); }
   });
 
-  test(`${w}px · faces: Dew's Manrope for the buying path, the site's style faces for the pitch`, async () => {
+  test(`${w}px · one headline system: Syne for display, Bricolage for section heads`, async () => {
     const { ctx, page } = await site.open(PAGE, w, { reducedMotion: 'reduce' });
     try {
-      for (const s of ['h1', '#start h2', '#faq h2']) assert.match(await fam(page, s), /Manrope/, `${s} in Manrope`);
-      const pitch = await Promise.all(['#demo h2', '#calls h2', '#bunny-world h2', '#hookup h2'].map(s => fam(page, s)));
-      assert.ok(pitch.every(f => STYLE_FACES.test(f)), `pitch in the site's style faces (${pitch.map(f => f.split(',')[0]).join(', ')})`);
-      assert.ok(new Set(pitch.map(f => f.split(',')[0])).size >= 3, 'the pitch sections differ');
+      assert.match(await fam(page, 'h1'), /Syne/, 'the headline in Syne');
+      assert.match(await fam(page, '#start h2'), /Syne/, 'the closing line in Syne');
+      const heads = await page.$$eval('main h2:not(#start h2), .plan .amt', hs => hs.map(h => getComputedStyle(h).fontFamily));
+      assert.ok(heads.length >= 5 && heads.every(f => /Bricolage/.test(f)), `section heads and prices in Bricolage (${[...new Set(heads.map(f => f.split(',')[0]))].join(', ')})`);
       assert.match(await fam(page, '.kick'), /Plex Mono/, 'mono only for labels');
+      assert.match(await fam(page, '.hero .sub'), /Bricolage|Inter/, 'no third headline face');
     } finally { await ctx.close(); }
   });
 }
