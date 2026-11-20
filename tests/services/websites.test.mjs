@@ -157,13 +157,14 @@ for (const w of WIDTHS) {
     try {
       assert.equal(await page.locator('#demo').count(), 0, 'the demo now lives inside Bunny World');
       const calls = page.locator('#calls');
-      assert.equal(await text(calls.locator('h2')), "One less call asking what's left.", 'the calls heading');
-      assert.equal(await calls.locator('button').count(), 0, 'the calls are plain text');
+      // 2026-11-20, Tristan: "Tired of annoying calls?" (sentence case); the nagging rotary phone is the old way
+      assert.equal(await text(calls.locator('h2')), 'Tired of annoying calls?', 'the calls heading');
+      assert.equal(await calls.locator('button').count(), 1, 'the calls are plain text; the one button is the phone\'s bell toggle');
       const slot = calls.locator('[data-embed-slot="rotary-phone"]');
-      assert.equal(await slot.count(), 1, 'the picture sits in a slot ready for the 3D phone');
-      assert.ok(await slot.locator('img[src*="card3-phone"], source[srcset*="card3-phone"]').count() >= 1, 'with the counter-phone picture for now');
+      assert.equal(await slot.count(), 1, 'the 3D phone sits in its slot');
+      assert.ok(await slot.locator('img[src*="card3-phone"], source[srcset*="card3-phone"]').count() >= 1, 'with the counter-phone picture as its fallback');
       const ct = await text(calls);
-      for (const x of ['Are you open?', 'Open until 9.', 'Any horchata left?', 'Sold out, back tomorrow.', "Don't need more business?", 'Then keep it to menu and hours.']) assert.ok(ct.includes(x), `reads: ${x}`);
+      for (const x of ["One less call asking what's left.", 'Are you open?', 'Open until 9.', 'Any horchata left?', 'Sold out, back tomorrow.', 'Can I order ahead?', 'Order for pickup.', 'Tap Sold out above and watch.']) assert.ok(ct.includes(x), `reads: ${x}`);
 
       const hook = page.locator('#hookup');
       assert.equal(await text(hook.locator('h2')), 'Hooking up, plainly.', 'the hookup heading');
