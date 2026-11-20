@@ -7,6 +7,11 @@
    2 One pinned scene. On wide screens the register demo holds in place while you scroll: the receipt slides in, Sold out
      plays on its own, the caption lands, then the scene lets go. Tapping still works, and phones simply scroll.
    3 A small fixed chapter index on wide screens that lights up as you go.
+   4 The Bunny World ticket row (Tristan: "On Dope security, they'd have the scroll function make you quickly cause this to
+     scroll from left to right"). On 768 px and up the heading and row hold in place and scrolling runs the row 01 to 09 in
+     about 1.25 screens, then the page carries on; scrolling back runs it back. While it runs, the section takes on each shop's
+     colour in turn ("the background would do something like shift hues as it happens"). Phones and reduced motion: the plain
+     swipe row on the purple.
    Phones (≤ 767 px) have no line, seed or sprout at all (Tristan: "Remove the line that cuts through the mobile version").
    Reduced motion: the trail is a still drawing with the sprout already up; the seed and the pin are off. */
 (()=>{
@@ -109,12 +114,49 @@ function light(){
   links.forEach(a=>{if(a===cur)a.setAttribute('aria-current','true');else a.removeAttribute('aria-current');});
 }
 
-let tick=0;const frame=()=>{tick=0;ride();play();light();};
+// ---- 4 the Bunny World ticket row ----
+const rail=document.querySelector('[data-rail]'),stick=rail&&rail.querySelector('.bw-stick'),row=rail&&rail.querySelector('.tickets');
+let railOn=false,run=0,travel=0;
+// each shop's colour, pulled from its ticket photo and darkened until the cream text and the softer line both pass AA
+const TONES={'bunny-burritos':'#4C2619','hare-today':'#333030','hopwell-chiro':'#382F24','bunny-auto':'#28323C','warren-bakehouse':'#422B1A',
+  'hop-along':'#373012','cottontail-farm':'#432A16','burrow-and-bough':'#472818','long-ears':'#253241'};
+const band=rail&&rail.closest('.bw-band'),hex=c=>[1,3,5].map(i=>parseInt(c.slice(i,i+2),16));
+const tones=row?[...row.querySelectorAll('.ticket')].map(t=>hex(TONES[t.dataset.shop]||'#332739')):[];
+function hue(p){
+  if(!band)return;
+  if(!railOn||p<=0||p>=1){band.style.removeProperty('--bw-bg');return;}   // the page's purple, eased back by the CSS
+  const f=p*(tones.length-1),i=Math.min(tones.length-2,Math.floor(f)),k=f-i;    // a flat colour, crossfaded between neighbours
+  band.style.setProperty('--bw-bg','rgb('+tones[i].map((v,j)=>Math.round(v+(tones[i+1][j]-v)*k)).join(',')+')');
+}
+function railBuild(){
+  if(!row)return;
+  const bar=document.querySelector('.topbar'),barH=bar?bar.getBoundingClientRect().height:0;
+  const h=stick.offsetHeight,room=innerHeight-barH;                // the same whether held or not, so nothing is undone to measure
+  travel=row.scrollWidth-row.clientWidth;
+  railOn=!phone.matches&&!reduce.matches&&travel>0&&h<=room-16;
+  if(!railOn){rail.classList.remove('on');row.scrollLeft=0;hue(0);return;}
+  run=Math.round(innerHeight*1.25);
+  rail.style.setProperty('--rail-h',(h+run)+'px');
+  rail.style.setProperty('--stick-top',Math.round(barH+Math.max(16,(room-h)/2))+'px');
+  rail.classList.add('on');slide();
+}
+function slide(){
+  if(!railOn)return;
+  const top=parseFloat(rail.style.getPropertyValue('--stick-top')),p=Math.min(1,Math.max(0,(top-rail.getBoundingClientRect().top)/run));
+  row.scrollLeft=p*travel;hue(p);
+}
+// Tab into the row: put the page where that ticket is on screen, so the row and the scroll agree
+rail&&rail.addEventListener('focusin',e=>{const t=e.target.closest('.ticket');if(!railOn||!t)return;
+  requestAnimationFrame(()=>{const tr=t.getBoundingClientRect(),rr=row.getBoundingClientRect(),want=Math.min(travel,Math.max(0,row.scrollLeft+tr.left-rr.left-(rr.width-tr.width)/2));
+    const top=parseFloat(rail.style.getPropertyValue('--stick-top')),y0=rail.getBoundingClientRect().top+scrollY-top;
+    scrollTo({top:y0+want/travel*run,behavior:"instant"});slide();});});
+
+let tick=0;const frame=()=>{tick=0;ride();play();light();slide();};
 addEventListener('scroll',()=>{if(!tick)tick=requestAnimationFrame(frame);},{passive:true});
-const rebuild=()=>requestAnimationFrame(()=>{build();frame();});
+const rebuild=()=>requestAnimationFrame(()=>{railBuild();build();frame();});
 addEventListener('resize',rebuild);phone.addEventListener?.('change',rebuild);addEventListener('load',rebuild);
 document.fonts&&document.fonts.ready.then(rebuild);
 new ResizeObserver(rebuild).observe(document.body);
 reduce.addEventListener?.('change',rebuild);
-build();frame();
+railBuild();build();frame();
 })();

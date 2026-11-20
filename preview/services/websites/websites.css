@@ -357,3 +357,15 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .chapters a[aria-current="true"]{color:var(--text)}
 .chapters a[aria-current="true"]::before{background:var(--pop);border-color:var(--pop)}
 @media (max-width:1180px){.chapters{display:none}}
+/* the Bunny World ticket row: on 768 px and up with motion allowed, the heading and row hold in place while scrolling runs the
+   row sideways, 01 to 09, in about 1.25 screens (Tristan, after dope.security); flow.js turns it on and sets the sizes */
+.bw-rail.on{height:var(--rail-h)}
+.bw-rail.on .bw-stick{position:sticky;top:var(--stick-top)}
+.bw-rail.on .tickets{overflow-x:hidden;scroll-snap-type:none}
+/* while the row runs, the section takes on each shop's colour in turn (Tristan: "the background would do something like shift
+   hues as it happens"): flat colours pulled from each ticket's photo, darkened so the cream text keeps AA; the ticket notches
+   are cut in the same colour; back to the purple when the row lets go */
+@property --bw-bg{syntax:'<color>';inherits:true;initial-value:#332739}
+.bw-band{--bw-bg:var(--plum);background:var(--bw-bg);transition:--bw-bg .45s ease}
+.bw-band .ticket::before{background:var(--bw-bg);box-shadow:min(78vw,423px) 0 0 var(--bw-bg)}
+@media (max-width:700px){.bw-band .ticket::before{box-shadow:78vw 0 0 var(--bw-bg)}}

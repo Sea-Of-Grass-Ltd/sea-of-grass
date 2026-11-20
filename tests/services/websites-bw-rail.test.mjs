@@ -4,6 +4,9 @@
 // scrolling down runs the row from ticket 01 to 09 in about 1 to 1.5 screen heights; then the page carries on. Scrolling back
 // up runs it back. No jump at either end, no sideways page scroll, nothing after it overlaps, ticket clicks still work, and
 // the seed's sprout beside "Bunny World" stays with its word. Phones and reduced motion keep the plain swipeable row.
+// Then: "in Dope Security, the background would do something like shift hues as it happens." While the row runs, the section
+// crossfades through flat colours pulled from each ticket's photo (01 rust, 02 charcoal, 03 tan ... 09), darkened so the cream
+// text and the softer line both pass AA at every stop; when the row lets go it eases back to the page's purple.
 // Run:  cd tests && npm install && node --test services/websites-bw-rail.test.mjs
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
@@ -24,6 +27,14 @@ const read = page => page.evaluate(() => {
     first: t[0], last: t[t.length - 1], vw: innerWidth, vh: innerHeight, pageW: document.documentElement.scrollWidth, afterTop: after.top,
     word: { right: word.right, bottom: word.bottom }, sprout: parts.length ? { bottom: Math.max(...parts.map(q => q.bottom)), left: Math.min(...parts.map(q => q.left)), h: Math.max(...parts.map(q => q.bottom)) - Math.min(...parts.map(q => q.top)) } : null };
 });
+const PLUM = [0x33, 0x27, 0x39];
+const TONES = ['#4C2619', '#333030', '#382F24', '#28323C', '#422B1A', '#373012', '#432A16', '#472818', '#253241'].map(c => [1, 3, 5].map(i => parseInt(c.slice(i, i + 2), 16)));
+const lum = c => c.map(v => (v /= 255) <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4).reduce((a, v, i) => a + v * [.2126, .7152, .0722][i], 0);
+const contrast = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + .05) / (y + .05); };
+const near = (a, b, d = 6) => a.every((v, i) => Math.abs(v - b[i]) <= d);
+const bg = page => page.evaluate(() => { const c = getComputedStyle(document.querySelector('#bunny-world')).backgroundColor.match(/[\d.]+/g).map(Number);
+  const n = getComputedStyle(document.querySelector('.ticket'), '::before').backgroundColor.match(/[\d.]+/g).map(Number);
+  const row = document.querySelector('.tickets'); return { c: c.slice(0, 3), notch: n.slice(0, 3), sl: row.scrollLeft, max: row.scrollWidth - row.clientWidth }; });
 const to = async (page, y, wait = 60) => { await page.evaluate(y => scrollTo(0, y), y); await page.waitForTimeout(wait); return read(page); };
 
 for (const w of [768, 1024, 1440]) {
@@ -96,6 +107,39 @@ for (const w of [768, 1024, 1440]) {
   });
 }
 
+for (const w of [768, 1440]) {
+  test(`${w}px · the background shifts through each shop's colour as the row runs, then eases back to the purple`, async () => {
+    const { ctx, page } = await site.open(PAGE, w);
+    try {
+      await page.waitForTimeout(400);
+      const y0 = await page.evaluate(() => { const r = document.querySelector('[data-rail]'); return r.getBoundingClientRect().top + scrollY - parseFloat(r.style.getPropertyValue('--stick-top')); });
+      const run = await page.evaluate(() => { const r = document.querySelector('[data-rail]'); return r.offsetHeight - r.querySelector('.bw-stick').offsetHeight; });
+      const text = [0xDA, 0xD1, 0xCD], soft = [0x9B, 0x97, 0xB1];
+      for (const [i, c] of TONES.entries()) {
+        assert.ok(contrast(c, text) >= 4.5 && contrast(c, soft) >= 4.5, `shop ${i + 1}'s colour keeps the text readable (AA)`);
+      }
+      const seen = [];
+      for (let k = 0; k <= 8; k++) {
+        const p = Math.min(.985, Math.max(.015, k / 8));
+        await page.evaluate(y => scrollTo({ top: y, behavior: 'instant' }), Math.round(y0 + p * run)); await page.waitForTimeout(650);
+        const b = await bg(page); seen.push(b.c);
+        assert.ok(near(b.c, TONES[k], k === 0 || k === 8 ? 10 : 6), `with ticket ${k + 1} up, the section is its colour (${b.c} vs ${TONES[k]})`);
+        assert.ok(near(b.notch, b.c, 2), 'the ticket notches are cut in the same colour');
+        assert.ok(contrast(b.c, text) >= 4.5 && contrast(b.c, soft) >= 4.5, `AA at stop ${k + 1}`);
+      }
+      // between two stops it is a flat mix of the two, not a jump
+      await page.evaluate(y => scrollTo({ top: y, behavior: 'instant' }), Math.round(y0 + run * 2.5 / 8)); await page.waitForTimeout(650);
+      const mid = (await bg(page)).c, want = TONES[2].map((v, i) => (v + TONES[3][i]) / 2);
+      assert.ok(near(mid, want, 4), `between shops 3 and 4 it crossfades (${mid} vs ${want})`);
+      // past the pin, and above it: the purple
+      await page.evaluate(y => scrollTo({ top: y, behavior: 'instant' }), Math.round(y0 + run + 300)); await page.waitForTimeout(800);
+      assert.ok(near((await bg(page)).c, PLUM, 2), 'after the row lets go, back to the purple');
+      await page.evaluate(y => scrollTo({ top: y, behavior: 'instant' }), Math.round(y0 - 300)); await page.waitForTimeout(800);
+      assert.ok(near((await bg(page)).c, PLUM, 2), 'and before it starts, the purple');
+    } finally { await ctx.close(); }
+  });
+}
+
 for (const [w, opts, why] of [[390, {}, 'phones'], [360, {}, 'phones'], [1440, { reducedMotion: 'reduce' }, 'reduced motion']]) {
   test(`${w}px · ${why}: the plain swipeable row, no pin`, async () => {
     const { ctx, page } = await site.open(PAGE, w, opts);
@@ -106,12 +150,14 @@ for (const [w, opts, why] of [[390, {}, 'phones'], [360, {}, 'phones'], [1440, {
       assert.equal(r.ox, 'auto', 'the row swipes');
       assert.match(r.snap, /x/, 'and snaps to tickets');
       const start = await page.evaluate(() => document.querySelector('#bunny-world').getBoundingClientRect().top + scrollY - 200);
-      let prev = null;
+      let prev = null, sl0 = null;
       for (let y = start; y < start + 1600; y += 100) {
         const s = await to(page, y, 30);
-        assert.ok(s.sl <= 1, 'scrolling the page does not move the row');
+        if (sl0 === null) sl0 = s.sl;                                  // the snap may rest the first ticket a gutter in
+        assert.ok(Math.abs(s.sl - sl0) <= 1, 'scrolling the page does not move the row');
         assert.ok(s.pageW <= s.vw, 'no sideways page scroll');
         if (prev) assert.ok(prev.hTop - s.hTop >= 99, 'the block never holds still: no pin');
+        assert.ok(near((await bg(page)).c, PLUM, 2), 'the section stays the purple');
         prev = s;
       }
     } finally { await ctx.close(); }
