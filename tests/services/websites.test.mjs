@@ -316,7 +316,7 @@ for (const w of WIDTHS) {
 // A few things done well; reduced motion turns the movement off.
 const TEXT_SEL = 'h1,h2,h3,p,li,dt,dd,summary,a,button,label,.t-name,.t-lab,.badge,.flap-w,.amt';
 const textRects = () => [...document.querySelectorAll('h1,h2,h3,p,li,dt,dd,summary,a,button,label,.t-name,.t-lab,.badge,.flap-w,.amt')]
-  .filter(e => !e.closest('[aria-hidden="true"],[hidden],.more,footer,[data-through],.topbar,[data-chapters]') && !(e.closest('details:not([open])') && !e.closest('summary')) && e.textContent.trim() && getComputedStyle(e).visibility !== 'hidden')
+  .filter(e => !e.closest('[aria-hidden="true"],[hidden],.more,footer,[data-through],.topbar,[data-chapters]') && !(() => { for (let d = e.closest('details'); d; d = d.parentElement && d.parentElement.closest('details')) if (!d.open && !(d.querySelector(':scope>summary') || d).contains(e)) return true; return false; })() && e.textContent.trim() && getComputedStyle(e).visibility !== 'hidden')
   // what is clipped away by a scrolling or clipping box (the ticket rail) is not on screen
   .map(e => { let r = e.getBoundingClientRect(); let L = r.left, T = r.top, R = r.right, B = r.bottom;
     for (let p = e.parentElement; p && p !== document.body; p = p.parentElement) { const c = getComputedStyle(p);
@@ -344,7 +344,7 @@ for (const w of WIDTHS) {
       assert.ok(r.minY <= r.first + 260, 'it starts in the top section');
       assert.ok(r.seamsCovered, 'it runs straight across every section seam');
       assert.ok(r.monotonic, 'it always travels down the page');
-      assert.ok(r.maxX <= r.textLeft - 3, `it stays in the margin, clear of the text (path x ≤ ${r.maxX.toFixed(0)}, text from ${r.textLeft.toFixed(0)})`);
+      if (w >= 981) assert.ok(r.maxX <= r.textLeft - 3, `wide screens: it stays in the margin, clear of the text (path x ≤ ${r.maxX.toFixed(0)}, text from ${r.textLeft.toFixed(0)})`);
       await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight * .45)); await page.waitForTimeout(400);
       const onPath = await page.evaluate(() => {
         const t = document.querySelector('[data-traveller]').getBoundingClientRect(), cx = t.left + t.width / 2, cy = t.top + t.height / 2 + scrollY;
@@ -450,6 +450,172 @@ for (const w of [390, 1440]) {
       assert.match(r.blur, /blur\(/, 'frosted');
       assert.equal(r.pos, 'absolute', 'laid over the stage, not in the flow');
       assert.ok(r.overlap > 0 && r.lowHalf, 'it overlaps the bottom of the phone');
+    } finally { await ctx.close(); }
+  });
+}
+
+// Tristan (2026-11-19) on the flap board: "the effect on this text could be refined some, it triggers before you get to it".
+// Each row waits, dimmed, until it has come up to the middle of the screen; then its letters spin through the alphabet like a
+// real split-flap and land one after another, left to right, slowly enough to watch. Reduced motion: the words simply sit there.
+test('1440px · the flap board plays row by row only once each row reaches the middle of the screen', async () => {
+  const { ctx, page } = await site.open(PAGE, 1440);
+  try {
+    const rows = page.locator('.flapboard .flap');
+    const word = i => rows.nth(i).locator('.flap-w').evaluate(e => e.textContent.replace(/\s/g, ''));
+    const state = () => rows.evaluateAll(rs => rs.map(r => r.dataset.flap || ''));
+    const toRow = async (i, frac) => { await page.evaluate(([i, frac]) => { const r = document.querySelectorAll('.flapboard .flap')[i]; scrollTo(0, r.getBoundingClientRect().top + scrollY - innerHeight * frac); }, [i, frac]); await page.waitForTimeout(250); };
+    assert.deepEqual(await state(), ['wait', 'wait', 'wait', 'wait'], 'on landing every row is waiting');
+    await toRow(0, .85);
+    assert.deepEqual(await state(), ['wait', 'wait', 'wait', 'wait'], 'a row low on the screen has not started yet');
+    await toRow(0, .5);
+    const s1 = await state();
+    assert.notEqual(s1[0], 'wait', 'the first row plays once it reaches the middle');
+    assert.equal(s1[3], 'wait', 'the last row is still waiting below');
+    const early = await word(0);
+    assert.notEqual(early, 'HOSTING', `it spins before landing, it does not just snap in (${early})`);
+    await page.waitForFunction(() => document.querySelector('.flapboard .flap').dataset.flap === 'done', null, { timeout: 4000 });
+    assert.equal(await word(0), 'HOSTING', 'and lands on the exact word');
+    await toRow(3, .45); await page.waitForFunction(() => [...document.querySelectorAll('.flapboard .flap')].every(r => r.dataset.flap === 'done'), null, { timeout: 5000 });
+    assert.deepEqual(await rows.locator('.flap-w').evaluateAll(es => es.map(e => e.textContent.replace(/\s/g, ''))), ['HOSTING', 'CHANGES', 'ORDERS', 'HOURS'], 'every row lands on its word');
+  } finally { await ctx.close(); }
+  const rm = await site.open(PAGE, 1440, { reducedMotion: 'reduce' });
+  try {
+    const st = await rm.page.locator('.flapboard .flap').evaluateAll(rs => rs.map(r => [r.dataset.flap || '', getComputedStyle(r.querySelector('.flap-w')).opacity]));
+    assert.ok(st.every(([f, o]) => f !== 'wait' && +o === 1), 'reduced motion: the words sit there, plain and full strength');
+  } finally { await rm.ctx.close(); }
+});
+
+// Tristan (2026-11-19): "on mobile it just scrolls on the side of the phone, on actual professionally made websites, an effect
+// like that is far more engaging". On phones the line weaves: it sweeps right across the screen through the gaps between
+// sections, never over text or pictures, draws itself in behind the seed as you scroll, and lights a stop at each crossing.
+const OBSTACLES = 'h1,h2,h3,p,li,dt,dd,summary,a,button,label,img,iframe,.flap,.ticket,.register,.phone,.amt,.badge';
+for (const w of [360, 390]) {
+  test(`${w}px · mobile path: weaves across the screen between sections, draws in as you scroll, lights its stops`, async () => {
+    const { ctx, page } = await site.open(PAGE, w);
+    try {
+      await page.waitForFunction(() => document.querySelector('[data-through] path')?.getTotalLength() > 0, null, { timeout: 5000 });
+      await page.waitForTimeout(600);
+      const geo = await page.evaluate(sel => {
+        const path = document.querySelector('[data-through] path'), len = path.getTotalLength(), W = document.documentElement.clientWidth;
+        const svg = path.ownerSVGElement.getBoundingClientRect(), ox = svg.left + scrollX, oy = svg.top + scrollY;
+        const pts = Array.from({ length: 1500 }, (_, i) => { const q = path.getPointAtLength(len * i / 1499); return [q.x + ox, q.y + oy]; });
+        // crossings: count sweeps from one edge to the other
+        let side = pts[0][0] < W / 2 ? 'L' : 'R', sweeps = 0;
+        for (const [x] of pts) { if (side === 'L' && x > W - 40) { side = 'R'; sweeps++; } else if (side === 'R' && x < 40) { side = 'L'; sweeps++; } }
+        const obs = [...document.querySelectorAll(sel)].filter(e => { for (let d = e.closest('details'); d; d = d.parentElement && d.parentElement.closest('details')) if (!d.open && !(d.querySelector(':scope>summary') || d).contains(e)) return false; return true; })
+          .filter(e => !e.closest('[aria-hidden="true"],[hidden],.more,footer,[data-through],header,nav,.topbar') && getComputedStyle(e).visibility !== 'hidden')
+          .map(e => { const r = e.getBoundingClientRect(); return { e, l: r.left + scrollX, r: r.right + scrollX, t: r.top + scrollY, b: r.bottom + scrollY }; })
+          .filter(o => o.r - o.l > 0 && o.b - o.t > 0);
+        const hits = [];
+        for (const [x, y] of pts) for (const o of obs) if (!o.e.closest('[data-over-line]') && x > o.l + 1 && x < o.r - 1 && y > o.t + 1 && y < o.b - 1) { hits.push(`${o.e.tagName}.${o.e.className}「${(o.e.textContent || o.e.alt || '').trim().slice(0, 16)}」 at ${x.toFixed(0)},${y.toFixed(0)}`); break; }
+        const rail = document.querySelector('.tickets'), rz = getComputedStyle(rail);
+        return { railAbove: rail.hasAttribute('data-over-line') && rz.position !== 'static' && +rz.zIndex > +getComputedStyle(document.querySelector('[data-through]')).zIndex, sweeps, hits: [...new Set(hits)].slice(0, 5), stops: document.querySelectorAll('[data-through] .stop').length };
+      }, OBSTACLES);
+      assert.ok(geo.sweeps >= 4, `the line sweeps right across the screen at least 4 times (${geo.sweeps})`);
+      assert.deepEqual(geo.hits, [], 'it never runs over text or pictures');
+      assert.ok(geo.railAbove, 'where it meets the edge-to-edge ticket rail it threads behind the photos');
+      assert.ok(geo.stops >= 4, `a stop at each crossing (${geo.stops})`);
+      const at = async f => { await page.evaluate(f => scrollTo(0, (document.documentElement.scrollHeight - innerHeight) * f), f); await page.waitForTimeout(350);
+        return page.evaluate(() => {
+          const drawn = document.querySelector('[data-through] .drawn'), path = document.querySelector('[data-through] path');
+          const len = path.getTotalLength(), shown = len - parseFloat(getComputedStyle(drawn).strokeDashoffset);
+          const end = path.getPointAtLength(Math.max(0, shown)), svg = path.ownerSVGElement.getBoundingClientRect();
+          const t = document.querySelector('[data-traveller]').getBoundingClientRect();
+          const stops = [...document.querySelectorAll('[data-through] .stop')].map(c => ({ y: +c.getAttribute('cy') + svg.top, lit: c.classList.contains('lit') }));
+          return { shown, gap: Math.hypot(end.x + svg.left - (t.left + t.width / 2), end.y + svg.top - (t.top + t.height / 2)), seedY: t.top + t.height / 2, stops };
+        }); };
+      const a = await at(.3), b = await at(.65);
+      assert.ok(b.shown > a.shown + 200, `the line draws itself in as you scroll (${a.shown.toFixed(0)} → ${b.shown.toFixed(0)} px drawn)`);
+      assert.ok(b.gap <= 8, `the drawn line ends at the seed (${b.gap.toFixed(1)}px)`);
+      assert.ok(b.stops.every(s => s.lit === (s.y < b.seedY)), 'stops behind the seed are lit, stops ahead are not');
+    } finally { await ctx.close(); }
+    const rm = await site.open(PAGE, w, { reducedMotion: 'reduce' });
+    try {
+      await rm.page.waitForTimeout(500);
+      const r = await rm.page.evaluate(() => ({ seed: !document.querySelector('[data-traveller]').hidden, off: parseFloat(getComputedStyle(document.querySelector('[data-through] .drawn')).strokeDashoffset) }));
+      assert.ok(!r.seed && r.off <= 1, 'reduced motion: the whole line sits there drawn, no seed');
+    } finally { await rm.ctx.close(); }
+  });
+}
+
+// Tristan (2026-11-20): "I wanted the line on the left to be more dynamic in how it interacted with the page on mobile, rather
+// than being mostly off screen." On phones the line lives on the page: a confident palette stroke in a real gutter, the seed
+// fully on screen, a piece of line in every screenful, and three moments where it plays with the page: it dips through the
+// meadow grass, a seed branches off to tap Sold out on the register, and the line ends at the Book button under "Talk to
+// Tristan or Bryce".
+for (const w of [360, 390]) {
+  test(`${w}px · mobile line lives on the page: on screen, visible in every screenful, in a real gutter`, async () => {
+    const { ctx, page } = await site.open(PAGE, w);
+    try {
+      await page.waitForFunction(() => document.querySelector('[data-through] path')?.getTotalLength() > 0, null, { timeout: 5000 });
+      await page.waitForTimeout(600);
+      const style = await page.evaluate(() => { const c = getComputedStyle(document.querySelector('[data-through] path:not(.drawn)')), d = getComputedStyle(document.querySelector('[data-through] .drawn'));
+        const sage = getComputedStyle(document.documentElement).getPropertyValue('--sage').trim();
+        const hex = h => `rgb(${parseInt(h.slice(1, 3), 16)}, ${parseInt(h.slice(3, 5), 16)}, ${parseInt(h.slice(5, 7), 16)})`;
+        return { base: c.stroke, baseW: parseFloat(c.strokeWidth), baseO: +c.opacity * +c.strokeOpacity, drawn: d.stroke, drawnW: parseFloat(d.strokeWidth), sage: hex(sage) }; });
+      assert.equal(style.base, style.sage, 'the line ahead is drawn in the palette sage, not a grey hairline');
+      assert.ok(style.baseW >= 2 && style.baseO >= 0.5, `and is a confident stroke (${style.baseW}px at ${style.baseO})`);
+      assert.ok(style.drawn === style.sage && style.drawnW >= 3, 'the drawn line behind the seed is solid sage, 3px or more');
+      const gut = await page.evaluate(() => { const path = document.querySelector('[data-through] path'), len = path.getTotalLength(), W = document.documentElement.clientWidth;
+        let lo = 1e9, hi = -1e9; for (let i = 0; i <= 800; i++) { const x = path.getPointAtLength(len * i / 800).x; lo = Math.min(lo, x); hi = Math.max(hi, x); }
+        const textLeft = document.querySelector('.hero .in h1').getBoundingClientRect().left;
+        return { lo, hi: W - hi, textLeft }; });
+      assert.ok(gut.lo >= 12 && gut.hi >= 12, `the line keeps at least 12px from both screen edges (${gut.lo.toFixed(0)} / ${gut.hi.toFixed(0)})`);
+      assert.ok(gut.textLeft - gut.lo >= 12, `with a visible gutter between it and the text (${(gut.textLeft - gut.lo).toFixed(0)}px)`);
+      const H = await page.evaluate(() => document.documentElement.scrollHeight - innerHeight);
+      const bad = [];
+      for (let y = 0; y <= H; y += 300) {
+        await page.evaluate(y => scrollTo(0, y), y); await page.waitForTimeout(90);
+        const r = await page.evaluate(() => { const W = document.documentElement.clientWidth, t = document.querySelector('[data-traveller]').getBoundingClientRect(), cx = t.left + t.width / 2, cy = t.top + t.height / 2;
+          const path = document.querySelector('[data-through] path'), len = path.getTotalLength(), svg = path.ownerSVGElement.getBoundingClientRect(), top = document.querySelector('.topbar').getBoundingClientRect().bottom;
+          let vis = 0, prev = null; for (let i = 0; i <= 3000; i++) { const q = path.getPointAtLength(len * i / 3000), x = q.x + svg.left, yy = q.y + svg.top;
+            if (prev && yy > top && yy < innerHeight && prev[1] > top && prev[1] < innerHeight) vis += Math.hypot(x - prev[0], yy - prev[1]); prev = [x, yy]; }
+          return { cx, cy, W, vis, inV: cy > 0 && cy < innerHeight }; });
+        if (r.cx < 12 || r.cx > r.W - 12) bad.push(`seed at x ${r.cx.toFixed(0)} (scroll ${y})`);
+        if (r.vis < 120) bad.push(`only ${r.vis.toFixed(0)}px of line on screen (scroll ${y})`);
+      }
+      assert.deepEqual(bad.slice(0, 6), [], 'the seed is fully on screen and at least 120px of line shows in every screenful');
+    } finally { await ctx.close(); }
+  });
+
+  test(`${w}px · mobile line plays with the page: dips through the meadow, taps Sold out, ends at Book`, async () => {
+    const { ctx, page } = await site.open(PAGE, w);
+    try {
+      await page.waitForFunction(() => document.querySelector('[data-through] path')?.getTotalLength() > 0, null, { timeout: 5000 });
+      await page.waitForTimeout(600);
+      const g = await page.evaluate(() => {
+        const path = document.querySelector('[data-through] path'), len = path.getTotalLength(), svg = path.ownerSVGElement.getBoundingClientRect(), ox = svg.left + scrollX, oy = svg.top + scrollY;
+        const P = i => { const q = path.getPointAtLength(i); return [q.x + ox, q.y + oy]; };
+        const grass = document.querySelector('.hero [data-live-grass]'), gr = grass.getBoundingClientRect(), gl = gr.left + scrollX, gt = gr.top + scrollY;
+        let inGrass = 0; for (let i = 0; i <= 2000; i++) { const [x, y] = P(len * i / 2000); if (y > gt + 4 && y < gt + gr.height - 4 && x > gl + 40 && x < gl + gr.width - 40) inGrass++; }
+        const gz = getComputedStyle(grass), sz = +getComputedStyle(path.ownerSVGElement).zIndex;
+        const end = P(len), btn = document.querySelector('.close .btn.pill.big').getBoundingClientRect(), bl = btn.left + scrollX, bt = btn.top + scrollY;
+        const dEnd = Math.max(bl - end[0], 0, end[0] - (bl + btn.width)) + Math.max(bt - end[1], 0, end[1] - (bt + btn.height));
+        return { inGrass, grassAbove: gz.position !== 'static' && +gz.zIndex > sz, dEnd: Math.max(0, dEnd - 0), endNear: Math.min(Math.abs(end[0] - bl), Math.abs(end[0] - bl - btn.width)) };
+      });
+      assert.ok(g.inGrass >= 20, `the line dips through the meadow grass (${g.inGrass} samples inside it)`);
+      assert.ok(g.grassAbove, 'and the grass blades sit in front of it');
+      assert.ok(g.dEnd <= 4 && g.endNear <= 6, `the line ends touching the Book button (${g.dEnd.toFixed(1)}px away)`);
+      // the register moment: scroll the seed past the receipt and a seed branches off to tap Sold out
+      const btnSel = '#bunny-world [data-act="soldout"]';
+      assert.equal(await page.locator(btnSel).getAttribute('aria-pressed'), 'false', 'Sold out starts untapped');
+      await page.evaluate(() => { const r = document.querySelector('#bunny-world .register').getBoundingClientRect(); scrollTo(0, r.bottom + scrollY - innerHeight * .3); });
+      await page.waitForTimeout(1600);
+      const tap = await page.evaluate(sel => { const spur = document.querySelector('[data-through] .tap'); if (!spur) return null;
+        const len = spur.getTotalLength(), q = spur.getPointAtLength(len), svg = spur.ownerSVGElement.getBoundingClientRect(), b = document.querySelector(sel).getBoundingClientRect();
+        const x = q.x + svg.left, y = q.y + svg.top;
+        return { d: Math.max(b.left - x, 0, x - b.right) + Math.max(b.top - y, 0, y - b.bottom), shown: len - parseFloat(getComputedStyle(spur).strokeDashoffset), len }; }, btnSel);
+      assert.ok(tap, 'a branch of the line reaches into the register');
+      assert.ok(tap.d <= 3, `it ends at the Sold out button (${tap.d.toFixed(1)}px)`);
+      assert.ok(tap.shown >= tap.len - 2, 'it has drawn itself in');
+      assert.equal(await page.locator(btnSel).getAttribute('aria-pressed'), 'true', 'and the seed taps Sold out');
+      // the branch never crosses text either
+      const hits = await page.evaluate(sel => { const spur = document.querySelector('[data-through] .tap'), len = spur.getTotalLength(), svg = spur.ownerSVGElement.getBoundingClientRect();
+        const T = [...document.querySelectorAll('h1,h2,h3,p,li,a,button,label,.reg-name,.reg-price,.reg-top span,iframe')].filter(e => !e.closest('[data-through]')).map(e => ({ e, r: e.getBoundingClientRect() }));
+        const out = []; for (let i = 0; i <= 300; i++) { const q = spur.getPointAtLength(len * i / 300), x = q.x + svg.left, y = q.y + svg.top;
+          for (const t of T) if (!t.e.matches(sel) && x > t.r.left + 1 && x < t.r.right - 1 && y > t.r.top + 1 && y < t.r.bottom - 1) out.push(t.e.className || t.e.tagName); }
+        return [...new Set(out)]; }, btnSel);
+      assert.deepEqual(hits, [], 'the branch never runs over text');
     } finally { await ctx.close(); }
   });
 }

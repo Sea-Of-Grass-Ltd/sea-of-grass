@@ -2,7 +2,7 @@
    1 the header's Book button shows only when no other Book button is on screen (never two in one view);
    2 the Bunny World ticket rail: tapping a ticket opens that shop's live page on the stage below; Bunny Burritos keeps the
      register and the Sold out demo, the other shops show their own page and a way in;
-   3 the split-flap board flips its letters in once, as it arrives (still under reduced motion);
+   3 the split-flap board spins each row in once it reaches the middle of the screen (still under reduced motion);
    4 meadows measured before the page settled are measured again once fonts and images are in;
    5 the founding count comes from SOG_SHOP.founding (checkout-links.js), never typed into the page. */
 (()=>{
@@ -38,11 +38,24 @@ if(stage&&tickets.length){
   tickets.forEach(t=>t.addEventListener('click',()=>pick(t)));
 }
 
-// 3 the split-flap board
+// 3 the split-flap board: each row waits, dimmed, until it has come up past the middle of the screen, then its letters spin
+//   through the alphabet like a real split-flap and land one after another, left to right. Reduced motion: plain words.
 const flaps=[...document.querySelectorAll('.flap')];
-if(flaps.length&&'IntersectionObserver' in window){
-  const fo=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;const f=e.target;
-    f.querySelectorAll('.flap-w i').forEach((c,k)=>c.style.animationDelay=(k*45)+'ms');f.classList.add('go');fo.unobserve(f);}),{threshold:.5});
+const still=matchMedia('(prefers-reduced-motion: reduce)').matches||!('IntersectionObserver' in window);
+const ABC='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+function spin(f){
+  f.dataset.flap='spin';
+  const cells=[...f.querySelectorAll('.flap-w i')];let left=cells.length;
+  cells.forEach((c,k)=>{const want=c.dataset.ch||(c.dataset.ch=c.textContent);let n=7+k*2;
+    const step=()=>{c.textContent=n>0?ABC[(Math.random()*26)|0]:want;
+      c.animate?.([{transform:'rotateX(70deg)',opacity:.55},{transform:'none',opacity:1}],{duration:n>0?70:220,easing:'cubic-bezier(.3,.7,.3,1)'});
+      if(n-->0)setTimeout(step,n<3?110:72);else if(!--left)f.dataset.flap='done';};
+    setTimeout(step,k*60);});
+}
+if(still)flaps.forEach(f=>f.dataset.flap='done');
+else{
+  flaps.forEach(f=>f.dataset.flap='wait');
+  const fo=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;fo.unobserve(e.target);spin(e.target);}),{rootMargin:'0px 0px -45% 0px'});
   flaps.forEach(f=>fo.observe(f));
 }
 

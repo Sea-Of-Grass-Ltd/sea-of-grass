@@ -109,9 +109,9 @@ body.book-in-page .top nav a.book{visibility:hidden;opacity:0}
 .flap-w{display:flex;gap:.18em;font:500 clamp(28px,5vw,72px)/1 var(--mono);text-transform:uppercase;transform:translateY(.06em)}
 .flap-w i{font-style:normal;display:inline-block;transform-origin:50% 50%}
 .flap-a{font:400 clamp(24px,3vw,44px)/1 var(--mono);color:var(--blue2);position:relative;z-index:1}
-.flap.go .flap-w i{animation:flip .5s cubic-bezier(.3,.7,.3,1) both}
-@keyframes flip{0%{transform:rotateX(90deg);opacity:.2}60%{transform:rotateX(-12deg);opacity:1}100%{transform:none}}
-@media (prefers-reduced-motion:reduce){.flap.go .flap-w i{animation:none}}
+.flap-w i{min-width:.62em;text-align:center}
+.flap[data-flap="wait"] .flap-w{opacity:.22;transition:opacity .3s}
+.flap[data-flap="spin"] .flap-w,.flap[data-flap="done"] .flap-w{opacity:1;transition:opacity .25s}
 
 /* 3 Bunny World: photo ticket rail + the open stage */
 .bw-head{display:flex;align-items:center;gap:14px 20px;margin-bottom:14px}
@@ -321,6 +321,24 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .through{position:absolute;left:0;top:0;z-index:4;pointer-events:none;overflow:visible}
 .through path{fill:none;stroke:rgba(var(--text-rgb),.34);stroke-width:1.5;stroke-dasharray:5 7;stroke-linecap:round}
 .through text{font:500 10px/1 var(--mono);letter-spacing:.16em;fill:var(--soft)}
+/* the drawn part of the line: solid sage behind the seed; on wide screens it simply traces the dashed path */
+.through path.drawn{stroke:var(--sage);stroke-width:1.5;stroke-dasharray:none;opacity:.55}
+.through:not(.weave) path.drawn{display:none}
+.through.weave path:not(.drawn){stroke:var(--sage);stroke-width:2;opacity:.6;stroke-dasharray:6 7}
+.through.weave path.drawn{stroke-width:3;opacity:1}
+.through.weave path.tap{stroke:var(--sage);stroke-width:3;stroke-dasharray:none;opacity:1;transition:stroke-dashoffset .6s cubic-bezier(.3,.7,.3,1)}
+.traveller.tapper{transition:opacity .35s}.traveller.tapper.gone{opacity:0}
+.reg-out.tapped{animation:tap .45s cubic-bezier(.3,1.6,.5,1)}
+@keyframes tap{0%{transform:scale(1)}40%{transform:scale(.9)}100%{transform:scale(1)}}
+/* phones: a real gutter for the line, and the meadow grass in front of it */
+@media (max-width:980px){body>section,main{--side:30px}}
+.line-weave .hero{z-index:auto}
+.line-weave .hero>.live-grass{z-index:5}
+/* the line threads behind the ticket photos where the rail runs edge to edge */
+.tickets[data-over-line]{position:relative;z-index:5}
+.through .stop{fill:var(--canvas);stroke:rgba(var(--text-rgb),.35);stroke-width:1.5;transform-box:fill-box;transform-origin:center;transition:fill .3s,stroke .3s,transform .35s cubic-bezier(.3,1.6,.5,1)}
+.through .stop.lit{fill:var(--poppy);stroke:var(--poppy);transform:scale(1.35)}
+@media (prefers-reduced-motion:reduce){.through .stop{transition:none}}
 .traveller{position:absolute;left:0;top:0;z-index:5;width:14px;height:20px;color:var(--pop);pointer-events:none;will-change:transform;filter:drop-shadow(0 0 6px rgba(var(--text-rgb),.45))}
 .traveller svg{width:100%;height:100%;display:block}
 .traveller[hidden]{display:none}
