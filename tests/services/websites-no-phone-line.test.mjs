@@ -15,7 +15,7 @@ const painted = page => page.evaluate(() => {
   const shows = e => { if (!e) return false; for (let p = e; p && p.nodeType === 1; p = p.parentElement) { const c = getComputedStyle(p); if (c.display === 'none' || c.visibility === 'hidden' || +c.opacity === 0) return false; }
     const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth; };
   const line = document.querySelector('[data-through]'), d = line?.querySelector('path')?.getAttribute('d') || '';
-  return { line: shows(line) && d.length > 0, seed: shows(document.querySelector('[data-traveller]')) };
+  return { line: shows(line) && d.length > 0, seed: shows(document.querySelector('[data-traveller]')) || shows(document.querySelector('[data-sprout]')) };
 });
 
 for (const w of [360, 390, 767]) {
@@ -38,7 +38,7 @@ for (const w of [1440]) {
   test(`${w}px · the wide-screen line and seed stay`, async () => {
     const { ctx, page } = await site.open(PAGE, w);
     try {
-      await page.evaluate(() => scrollTo(0, 1600)); await page.waitForTimeout(300);
+      await page.evaluate(() => { const f = document.querySelectorAll('.flap')[1].getBoundingClientRect(); scrollTo(0, f.top + scrollY - innerHeight * .5); }); await page.waitForTimeout(600);
       const p = await painted(page);
       assert.ok(p.line && p.seed, 'line and seed on wide screens');
     } finally { await ctx.close(); }

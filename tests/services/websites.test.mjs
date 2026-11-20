@@ -333,43 +333,8 @@ const textRects = () => [...document.querySelectorAll('h1,h2,h3,p,li,dt,dd,summa
   // text scrolling under the solid sticky header is hidden by it, not overlapping it
   .filter(o => o.r.width > 0 && o.r.height > 0 && o.r.top >= (document.querySelector('.topbar')?.getBoundingClientRect().bottom || 0) && o.r.top < innerHeight);
 for (const w of WIDTHS) {
-  // phones have no line at all (websites-no-phone-line.test.mjs)
-  if (w >= 768) test(`${w}px · flow: one continuous path through every section, in the margin, with the seed riding it`, async () => {
-    const { ctx, page } = await site.open(PAGE, w);
-    try {
-      await page.waitForFunction(() => document.querySelector('[data-through] path')?.getTotalLength() > 0, null, { timeout: 5000 });
-      const r = await page.evaluate(() => {
-        const path = document.querySelector('[data-through] path'), d = path.getAttribute('d'), len = path.getTotalLength();
-        const svg = path.ownerSVGElement.getBoundingClientRect(), oy = svg.top + scrollY, ox = svg.left;
-        const pts = Array.from({ length: 400 }, (_, i) => { const q = path.getPointAtLength(len * i / 399); return [q.x + ox, q.y + oy]; });
-        const secs = [...document.querySelectorAll('body > section, main > section')];
-        const seams = secs.slice(1).map(s => s.getBoundingClientRect().top + scrollY);
-        const col = document.querySelector('.hero .in').getBoundingClientRect(), padL = parseFloat(getComputedStyle(document.querySelector('.hero .in')).paddingLeft);
-        return { moves: (d.match(/M/gi) || []).length, minY: Math.min(...pts.map(p => p[1])), maxY: Math.max(...pts.map(p => p[1])), first: secs[0].getBoundingClientRect().top + scrollY,
-          seamsCovered: seams.every(y => pts.some((p, i) => i && (pts[i - 1][1] - y) * (p[1] - y) <= 0)), maxX: Math.max(...pts.map(p => p[0])), textLeft: col.left + padL,
-          monotonic: pts.every((p, i) => !i || p[1] >= pts[i - 1][1] - .5) };
-      });
-      assert.equal(r.moves, 1, 'one unbroken path');
-      assert.ok(r.minY <= r.first + 260, 'it starts in the top section');
-      assert.ok(r.seamsCovered, 'it runs straight across every section seam');
-      assert.ok(r.monotonic, 'it always travels down the page');
-      assert.ok(r.maxX <= r.textLeft - 3, `it stays in the margin, clear of the text (path x ≤ ${r.maxX.toFixed(0)}, text from ${r.textLeft.toFixed(0)})`);
-      await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight * .45)); await page.waitForTimeout(400);
-      const onPath = await page.evaluate(() => {
-        const t = document.querySelector('[data-traveller]').getBoundingClientRect(), cx = t.left + t.width / 2, cy = t.top + t.height / 2 + scrollY;
-        const path = document.querySelector('[data-through] path'), len = path.getTotalLength(), svg = path.ownerSVGElement.getBoundingClientRect();
-        let best = 1e9; const n = Math.ceil(len / 2); for (let i = 0; i <= n; i++) { const q = path.getPointAtLength(len * i / n); best = Math.min(best, Math.hypot(q.x + svg.left - cx, q.y + svg.top + scrollY - cy)); }
-        return { best, inView: t.top >= 0 && t.bottom <= innerHeight };
-      });
-      assert.ok(onPath.best <= 4, `the seed rides the path (${onPath.best.toFixed(1)}px off)`);
-      assert.ok(onPath.inView, 'the seed travels with you, on screen');
-    } finally { await ctx.close(); }
-    const rm = await site.open(PAGE, w, { reducedMotion: 'reduce' });
-    try {
-      assert.ok(!(await rm.page.locator('[data-traveller]').isVisible()), 'reduced motion: the seed stays still and out of the way');
-    } finally { await rm.ctx.close(); }
-  });
-
+  // the seed's path now lives only around the Care board and lands in Bunny World (websites-seed-flaps.test.mjs);
+  // phones have none of it (websites-no-phone-line.test.mjs)
   test(`${w}px · flow: no text overlaps anything at any scroll position`, async () => {
     const { ctx, page } = await site.open(PAGE, w);
     try {
@@ -383,8 +348,10 @@ for (const w of WIDTHS) {
             const A = T[i], B = T[j]; if (A.e.contains(B.e) || B.e.contains(A.e)) continue;
             if (hit(A.r, B.r)) out.push(`${A.e.tagName}.${A.e.className}「${A.e.textContent.trim().slice(0, 18)}」 × ${B.e.tagName}.${B.e.className}「${B.e.textContent.trim().slice(0, 18)}」`);
           }
-          for (const c of document.querySelectorAll('[data-traveller], [data-chapters], [data-through] text'))
-            { const cr = c.getBoundingClientRect(); if (cr.width && getComputedStyle(c).visibility !== 'hidden') for (const t of T) if (!c.contains(t.e) && hit(cr, t.r)) out.push(`${c.className?.baseVal ?? c.className} × 「${t.e.textContent.trim().slice(0, 18)}」`); }
+          // the seed may slide through a flap row's split seam (it threads the notch, Tristan's ask); anywhere else it keeps off text
+          const onSeam = c => { const r = c.getBoundingClientRect(), cy = r.top + r.height / 2; return [...document.querySelectorAll('.flap')].some(f => { const q = f.getBoundingClientRect(); return Math.abs(cy - (q.top + q.height / 2)) <= 3; }); };
+          for (const c of document.querySelectorAll('[data-traveller], [data-chapters], [data-through] text, [data-sprout]'))
+            { const cr = c.getBoundingClientRect(); if (cr.width && !c.hidden && getComputedStyle(c).visibility !== 'hidden') for (const t of T) if (!c.contains(t.e) && hit(cr, t.r) && !(c.matches('[data-traveller]') && t.e.matches('.flap-w') && onSeam(c))) out.push(`${c.className?.baseVal ?? c.className} × 「${t.e.textContent.trim().slice(0, 18)}」`); }
           return out.slice(0, 4);
         }, textRects.toString());
         assert.deepEqual(bad, [], `nothing overlaps at scroll ${y}`);
