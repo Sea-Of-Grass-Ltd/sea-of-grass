@@ -66,7 +66,7 @@ for (const w of WIDTHS) {
       assert.equal(await page.locator('[data-add]').count(), await plans.locator('[data-add]').count(), 'Buy lives only in the plans');
       assert.equal(await care.locator('[data-add="site-plan"]').count(), 1, 'the Site Plan button adds the Site Plan');
       assert.equal(await page.locator('[data-add="starter-monthly"]').count(), 0, 'the old $100 x 12 starter is gone from this page');
-      assert.ok(await care.evaluate(e => e.classList.contains('ticket-shape') && !!e.querySelector('.stub.founding')), 'the Site Plan is a notched glass ticket with a perforated founding stub');
+      assert.ok(await care.evaluate(e => e.classList.contains('ticket-shape') && !e.querySelector('#founding')), 'the Site Plan is a notched glass ticket; the founding five is its own coupon (websites-founding-coupon.test.mjs)');
       assert.ok(await sites.evaluate(e => { const c = getComputedStyle(e); return c.backgroundColor === 'rgba(0, 0, 0, 0)' && parseFloat(c.borderLeftWidth) === 0; }), 'Sites is open type, not another box');
       assert.ok(await plans.locator('.btn.pill').count() >= 2, 'the buy buttons are glass pills');
       assert.ok(await plans.locator('.btn.pill').first().evaluate(e => parseFloat(getComputedStyle(e).borderTopLeftRadius) >= 999), 'pill-shaped');
@@ -86,7 +86,7 @@ for (const w of WIDTHS) {
     const { ctx, page } = await site.open(PAGE, w, { reducedMotion: 'reduce' });
     try {
       const cfg = await page.evaluate(() => window.SOG_SHOP.founding);
-      const f = await text(page.locator('#plans .plan.care .founding'));
+      const f = await text(page.locator('#plans #founding'));
       assert.match(f, new RegExp(`${cfg.left} of ${cfg.total}`), 'the real spots count');
       for (const re of [/half price: \$50 a month/i, /locked for two years/i, /free photo shoot/i, /owe nothing/i, /case study/i]) assert.match(f, re, `founding: ${re}`);
       assert.doesNotMatch(f, /review/i, 'the founding deal never asks for a review (Google bans rewarded reviews)');
