@@ -41,9 +41,9 @@ window.SOG_SHOP = {
     },
     starter: {
       name: 'Starter site',
-      price: 1200, from: false, interval: null, maxQty: 1, pay: 'deposit', // PLACEHOLDER price
+      price: 1000, from: false, interval: null, maxQty: 1, pay: 'deposit', // $1,000 once with the first year of care (Tristan, 2026-11-20)
       blurb: 'One page in a ready Bunny World look, with your name, photos and colours.',
-      lines: ['One page: hours, menu or services, photos, map, a call button', 'A link button to the booking or ordering tool you already use', 'One round of changes', 'The $1,200 counts toward a full site if you upgrade within 90 days'] // PLACEHOLDER inclusions
+      lines: ['One page: hours, menu or services, photos, map, a call button', 'A link button to the booking or ordering tool you already use', 'One round of changes', 'The first year of care included, then $50 a month', 'The $1,000 counts toward a full site if you upgrade within 90 days'] // PLACEHOLDER inclusions
     },
     'starter-monthly': {
       name: 'Starter site, paid monthly',

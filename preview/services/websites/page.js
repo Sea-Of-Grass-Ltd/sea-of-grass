@@ -70,4 +70,8 @@ addEventListener('load',()=>{requestAnimationFrame(remeasure);document.fonts&&do
 const f=window.SOG_SHOP&&SOG_SHOP.founding;
 if(f)document.querySelectorAll('[data-spots-left]').forEach(e=>{e.textContent=`${f.left} of ${f.total}`;});
 if(f&&f.left<=0){const o=document.getElementById('founding');if(o)o.classList.add('full');}
+// the founding coupon pops once, the first time most of it is on screen, then stays still (reduced motion: the CSS has no pop)
+const coupon=document.getElementById('founding');
+if(coupon&&'IntersectionObserver' in window){const co=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){co.disconnect();coupon.classList.add('pop');
+  coupon.addEventListener('animationend',()=>coupon.classList.remove('pop'),{once:true});}},{threshold:.6});co.observe(coupon);}
 })();
