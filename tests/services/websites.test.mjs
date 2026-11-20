@@ -3,7 +3,8 @@
 // section heads; glass only in distinctive shapes (a notched ticket, pills, a receipt); a photo ticket rail and a split-flap board.
 // On Tristan's word (2026-11-19):
 // "everything flows with just key words and it does the salespitch ... with just a normal scrollable page".
-// Top: headline, one line, two plan cards (Care recommended with the founding five; Sites) and a small Fix / custom line.
+// Top: headline, one line, two plan cards (the $100 Site Plan recommended with the founding five; Pay once $1,200) and a small Fix / Care / custom line.
+// Pricing on Tristan's word (2026-11-20): the Site Plan leads; the founding five never trade the deal for a review.
 // Then a proof row, alternating two-column pitch sections, a benefit row, a short FAQ and a one-line close.
 // Key words, not paragraphs: the whole page is held to about half the words it had (1,152).
 // Written from websites.journey.md before the build.  Run:  cd tests && npm install && node --test services/websites.test.mjs
@@ -51,16 +52,21 @@ for (const w of WIDTHS) {
       const plans = page.locator('#plans');
       assert.equal(await plans.locator('.plan').count(), 2, 'two plan cards side by side, Dribbble-style');
       const care = plans.locator('.plan.care'), sites = plans.locator('.plan.sites');
-      assert.match(await text(care.locator('.badge')), /Recommended/, 'Care is the recommended card');
-      assert.match(await text(care), /\$50/, 'Care $50 a month'); assert.match(await text(sites), /\$1,200/, 'Sites from $1,200');
+      assert.match(await text(care.locator('.badge')), /Recommended/, 'the Site Plan is the recommended card');
+      assert.match(await text(care.locator('.plan-h')), /Site Plan/, 'the Site Plan leads');
+      assert.match(await text(care.locator('.amt')), /\$100 a month/, 'Site Plan $100 a month');
+      for (const re of [/nothing up front/i, /care included/i, /yours after 12 months/i]) assert.match(await text(care.locator('.ticks')), re, `Site Plan: ${re}`);
+      assert.match(await text(sites), /Pay once/, 'the one-time option'); assert.match(await text(sites.locator('.amt')), /\$1,200/, 'Pay once $1,200'); assert.match(await text(sites), /care at \$50 a month/i, 'then care at $50');
       assert.ok(await care.locator('.ticks li').count() >= 3 && await sites.locator('.ticks li').count() >= 3, 'check-marked lines on each card');
       assert.ok(await inView(plans.locator('[data-add]').first()), 'a Buy button on the first screen, with no taps');
       const small = await text(plans.locator('.also'));
-      assert.match(small, /Fix/); assert.match(small, /\$250/); assert.match(small, /custom from \$2,000/i);
+      assert.match(small, /Fix/); assert.match(small, /\$250/); assert.match(small, /custom from \$2,000/i); assert.match(small, /Care alone · \$50\s?a\s?month/);
+      assert.ok(await plans.locator('.also [data-add="care"]').count() === 1, 'care alone can be bought from the small line');
       assert.ok(await plans.locator('.also [data-add="fix"]').count() === 1, 'the fix can be bought from the small line');
       assert.equal(await page.locator('[data-add]').count(), await plans.locator('[data-add]').count(), 'Buy lives only in the plans');
-      assert.equal(await page.locator('[data-add="starter-monthly"]').count(), 0, 'no $100-a-month option until Tristan confirms it');
-      assert.ok(await care.evaluate(e => e.classList.contains('ticket-shape') && !!e.querySelector('.stub.founding')), 'Care is a notched glass ticket with a perforated founding stub');
+      assert.equal(await care.locator('[data-add="site-plan"]').count(), 1, 'the Site Plan button adds the Site Plan');
+      assert.equal(await page.locator('[data-add="starter-monthly"]').count(), 0, 'the old $100 x 12 starter is gone from this page');
+      assert.ok(await care.evaluate(e => e.classList.contains('ticket-shape') && !!e.querySelector('.stub.founding')), 'the Site Plan is a notched glass ticket with a perforated founding stub');
       assert.ok(await sites.evaluate(e => { const c = getComputedStyle(e); return c.backgroundColor === 'rgba(0, 0, 0, 0)' && parseFloat(c.borderLeftWidth) === 0; }), 'Sites is open type, not another box');
       assert.ok(await plans.locator('.btn.pill').count() >= 2, 'the buy buttons are glass pills');
       assert.ok(await plans.locator('.btn.pill').first().evaluate(e => parseFloat(getComputedStyle(e).borderTopLeftRadius) >= 999), 'pill-shaped');
@@ -82,7 +88,9 @@ for (const w of WIDTHS) {
       const cfg = await page.evaluate(() => window.SOG_SHOP.founding);
       const f = await text(page.locator('#plans .plan.care .founding'));
       assert.match(f, new RegExp(`${cfg.left} of ${cfg.total}`), 'the real spots count');
-      for (const re of [/\$50 a month/i, /locked for two years/i, /free photo shoot/i, /owe nothing/i, /honest review/i]) assert.match(f, re, `founding: ${re}`);
+      for (const re of [/half price: \$50 a month/i, /locked for two years/i, /free photo shoot/i, /owe nothing/i, /case study/i]) assert.match(f, re, `founding: ${re}`);
+      assert.doesNotMatch(f, /review/i, 'the founding deal never asks for a review (Google bans rewarded reviews)');
+      assert.doesNotMatch(await text(page.locator('body')), /honest review/i, 'no review in return anywhere on the page');
       const week = page.locator('#plans .plan.sites [data-week]');
       assert.ok(await week.isVisible(), 'the $23 line without any interaction');
       assert.equal(await text(week), WEEK, 'the $23 line, exactly');
@@ -174,7 +182,7 @@ for (const w of WIDTHS) {
     const { ctx, page } = await site.open(PAGE, w, { reducedMotion: 'reduce' });
     try {
       const ben = (await page.locator('.benefits li').allTextContents()).map(t => t.trim());
-      assert.deepEqual(ben, ['Two-minute hookup', 'Owe nothing if you back out', 'Fixed price in writing', 'Cancel any time'], 'the benefit row');
+      assert.deepEqual(ben, ['Two-minute hookup', 'Owe nothing if you back out', 'Fixed price in writing', 'Yours after 12 months'], 'the benefit row');
       assert.equal(await page.locator('.benefits li svg').count(), 4, 'an icon on each benefit');
 
       const top = page.locator('#faq .qs > details');

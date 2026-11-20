@@ -11,7 +11,7 @@ import vm from 'node:vm';
 import { startSite, ROOT } from '../lib/site.mjs';
 
 const FILE = path.join(ROOT, 'hermes/owner-text.js');
-const FOUNDING = 'You’re one of our five founding shops, so your $50 a month is locked for two years, and I’ll photograph your food or shop for free.';
+const FOUNDING = 'You’re one of our five founding shops, so your Site Plan is $50 a month instead of $100, locked for two years, and I’ll photograph your food or shop for free.';
 const REFERRAL = 'For every shop you send our way that signs up, your next month is on us.';
 
 function lib() {
