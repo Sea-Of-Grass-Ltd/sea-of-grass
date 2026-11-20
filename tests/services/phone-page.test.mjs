@@ -178,7 +178,8 @@ for (const w of WIDTHS) {
     assert.match(r.bg, /rgba\(0, 0, 0, 0\)|transparent/, 'stands on the section background');
     assert.equal(r.scenery, 0, 'no counter, grass or backdrop in the scene');
     const phonePx = (r.phone.r - r.phone.l) * r.boxW;
-    assert.ok(phonePx >= (w < 900 ? 300 : 440), `the phone is big (${Math.round(phonePx)}px across)`);
+    // 2026-11-21: "scale it up until it really dominates": at 1440 the phone spans well over 40% of the screen
+    assert.ok(phonePx >= (w < 900 ? 300 : 0.42 * w), `the phone dominates (${Math.round(phonePx)}px across)`);
     assert.ok(r.phone.l > 0.02 && r.phone.t > 0.02 && r.phone.b < 0.98, `the phone isn't cut off (${JSON.stringify(r.phone)})`);
     // its base may cross into the next section (the page's art crosses the seams), but never far
     assert.ok(r.phoneBottomPx <= r.secBottom + 160, 'the phone stands at its section, not down in the next one');

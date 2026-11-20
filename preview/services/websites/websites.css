@@ -206,6 +206,9 @@ body.book-in-page .top nav a.book{visibility:hidden;opacity:0}
 #calls .calls-nudge a{color:var(--fg);text-underline-offset:3px}
 /* the bell toggle sits by the phone */
 #calls .phone-stage{position:relative}
+/* wide screens: the phone dominates. Its box runs from just inside the gap to the screen's right edge */
+#calls{overflow-x:clip}   /* the phone bleeds right without a sideways scroll */
+@media (min-width:981px){#calls .phone-stage{justify-self:start;width:min(calc(50vw + 20px),900px);margin-left:calc(-1 * clamp(0px,3vw,44px));margin-right:0}}
 #calls .calls-mute{position:absolute;top:8px;right:clamp(8px,3vw,56px);width:40px;height:40px;display:grid;place-items:center;border-radius:50%;border:1px solid var(--navy-line);background:var(--navy);color:var(--fg);cursor:pointer;z-index:2}
 #calls .calls-mute svg{width:20px;height:20px}
 #calls .calls-mute .mute-x{opacity:0}
