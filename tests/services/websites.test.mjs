@@ -356,7 +356,7 @@ for (const w of WIDTHS) {
       assert.ok(r.minY <= r.first + 260, 'it starts in the top section');
       assert.ok(r.seamsCovered, 'it runs straight across every section seam');
       assert.ok(r.monotonic, 'it always travels down the page');
-      assert.ok(r.maxX <= r.textLeft - 3, `it stays in the margin, clear of the text (path x ≤ ${r.maxX.toFixed(0)}, text from ${r.textLeft.toFixed(0)})`);
+      if (w >= 981) assert.ok(r.maxX <= r.textLeft - 3, `wide screens: it stays in the margin, clear of the text (path x ≤ ${r.maxX.toFixed(0)}, text from ${r.textLeft.toFixed(0)})`);
       await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight * .45)); await page.waitForTimeout(400);
       const onPath = await page.evaluate(() => {
         const t = document.querySelector('[data-traveller]').getBoundingClientRect(), cx = t.left + t.width / 2, cy = t.top + t.height / 2 + scrollY;
@@ -499,6 +499,58 @@ test('1440px · the flap board plays row by row only once each row reaches the m
     assert.ok(st.every(([f, o]) => f !== 'wait' && +o === 1), 'reduced motion: the words sit there, plain and full strength');
   } finally { await rm.ctx.close(); }
 });
+
+// Tristan (2026-11-19): "on mobile it just scrolls on the side of the phone, on actual professionally made websites, an effect
+// like that is far more engaging". On phones the line weaves: it sweeps right across the screen through the gaps between
+// sections, never over text or pictures, draws itself in behind the seed as you scroll, and lights a stop at each crossing.
+const OBSTACLES = 'h1,h2,h3,p,li,dt,dd,summary,a,button,label,img,iframe,.flap,.ticket,.register,.phone,.amt,.badge';
+for (const w of [360, 390]) {
+  test(`${w}px · mobile path: weaves across the screen between sections, draws in as you scroll, lights its stops`, async () => {
+    const { ctx, page } = await site.open(PAGE, w);
+    try {
+      await page.waitForFunction(() => document.querySelector('[data-through] path')?.getTotalLength() > 0, null, { timeout: 5000 });
+      await page.waitForTimeout(600);
+      const geo = await page.evaluate(sel => {
+        const path = document.querySelector('[data-through] path'), len = path.getTotalLength(), W = document.documentElement.clientWidth;
+        const svg = path.ownerSVGElement.getBoundingClientRect(), ox = svg.left + scrollX, oy = svg.top + scrollY;
+        const pts = Array.from({ length: 1500 }, (_, i) => { const q = path.getPointAtLength(len * i / 1499); return [q.x + ox, q.y + oy]; });
+        // crossings: count sweeps from one edge to the other
+        let side = pts[0][0] < W / 2 ? 'L' : 'R', sweeps = 0;
+        for (const [x] of pts) { if (side === 'L' && x > W - 40) { side = 'R'; sweeps++; } else if (side === 'R' && x < 40) { side = 'L'; sweeps++; } }
+        const obs = [...document.querySelectorAll(sel)].filter(e => !e.closest('[aria-hidden="true"],[hidden],.more,footer,[data-through],header,nav,.topbar') && getComputedStyle(e).visibility !== 'hidden')
+          .map(e => { const r = e.getBoundingClientRect(); return { e, l: r.left + scrollX, r: r.right + scrollX, t: r.top + scrollY, b: r.bottom + scrollY }; })
+          .filter(o => o.r - o.l > 0 && o.b - o.t > 0);
+        const hits = [];
+        for (const [x, y] of pts) for (const o of obs) if (!o.e.closest('[data-over-line]') && x > o.l + 1 && x < o.r - 1 && y > o.t + 1 && y < o.b - 1) { hits.push(`${o.e.tagName}.${o.e.className}「${(o.e.textContent || o.e.alt || '').trim().slice(0, 16)}」 at ${x.toFixed(0)},${y.toFixed(0)}`); break; }
+        const rail = document.querySelector('.tickets'), rz = getComputedStyle(rail);
+        return { railAbove: rail.hasAttribute('data-over-line') && rz.position !== 'static' && +rz.zIndex > +getComputedStyle(document.querySelector('[data-through]')).zIndex, sweeps, hits: [...new Set(hits)].slice(0, 5), stops: document.querySelectorAll('[data-through] .stop').length };
+      }, OBSTACLES);
+      assert.ok(geo.sweeps >= 4, `the line sweeps right across the screen at least 4 times (${geo.sweeps})`);
+      assert.deepEqual(geo.hits, [], 'it never runs over text or pictures');
+      assert.ok(geo.railAbove, 'where it meets the edge-to-edge ticket rail it threads behind the photos');
+      assert.ok(geo.stops >= 4, `a stop at each crossing (${geo.stops})`);
+      const at = async f => { await page.evaluate(f => scrollTo(0, (document.documentElement.scrollHeight - innerHeight) * f), f); await page.waitForTimeout(350);
+        return page.evaluate(() => {
+          const drawn = document.querySelector('[data-through] .drawn'), path = document.querySelector('[data-through] path');
+          const len = path.getTotalLength(), shown = len - parseFloat(getComputedStyle(drawn).strokeDashoffset);
+          const end = path.getPointAtLength(Math.max(0, shown)), svg = path.ownerSVGElement.getBoundingClientRect();
+          const t = document.querySelector('[data-traveller]').getBoundingClientRect();
+          const stops = [...document.querySelectorAll('[data-through] .stop')].map(c => ({ y: +c.getAttribute('cy') + svg.top, lit: c.classList.contains('lit') }));
+          return { shown, gap: Math.hypot(end.x + svg.left - (t.left + t.width / 2), end.y + svg.top - (t.top + t.height / 2)), seedY: t.top + t.height / 2, stops };
+        }); };
+      const a = await at(.3), b = await at(.65);
+      assert.ok(b.shown > a.shown + 200, `the line draws itself in as you scroll (${a.shown.toFixed(0)} → ${b.shown.toFixed(0)} px drawn)`);
+      assert.ok(b.gap <= 8, `the drawn line ends at the seed (${b.gap.toFixed(1)}px)`);
+      assert.ok(b.stops.every(s => s.lit === (s.y < b.seedY)), 'stops behind the seed are lit, stops ahead are not');
+    } finally { await ctx.close(); }
+    const rm = await site.open(PAGE, w, { reducedMotion: 'reduce' });
+    try {
+      await rm.page.waitForTimeout(500);
+      const r = await rm.page.evaluate(() => ({ seed: !document.querySelector('[data-traveller]').hidden, off: parseFloat(getComputedStyle(document.querySelector('[data-through] .drawn')).strokeDashoffset) }));
+      assert.ok(!r.seed && r.off <= 1, 'reduced motion: the whole line sits there drawn, no seed');
+    } finally { await rm.ctx.close(); }
+  });
+}
 
 test('stylesheet uses no CSS gradients as surfaces', () => {
   const css = fs.readFileSync(path.join(ROOT, 'preview/services/websites/websites.css'), 'utf8');
