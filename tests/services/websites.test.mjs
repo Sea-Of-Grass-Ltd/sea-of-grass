@@ -215,13 +215,16 @@ for (const w of WIDTHS) {
     } finally { await ctx.close(); }
   });
 
-  test(`${w}px · one headline system: Syne for display, Bricolage for section heads`, async () => {
+  test(`${w}px · one headline system: Syne with Instrument Serif for headings, Bricolage for prices`, async () => {
     const { ctx, page } = await site.open(PAGE, w, { reducedMotion: 'reduce' });
     try {
       assert.match(await fam(page, 'h1'), /Syne/, 'the headline in Syne');
       assert.match(await fam(page, '#start h2'), /Syne/, 'the closing line in Syne');
-      const heads = await page.$$eval('main h2:not(#start h2), .plan .amt', hs => hs.map(h => getComputedStyle(h).fontFamily));
-      assert.ok(heads.length >= 5 && heads.every(f => /Bricolage/.test(f)), `section heads and prices in Bricolage (${[...new Set(heads.map(f => f.split(',')[0]))].join(', ')})`);
+      // section heads now speak in the home hero's two voices (Syne with Instrument Serif); prices stay in Bricolage
+      const heads = await page.$$eval('main h2.pair', hs => hs.map(h => getComputedStyle(h).fontFamily));
+      assert.ok(heads.length >= 5 && heads.every(f => /Syne/.test(f)), `section heads in Syne (${[...new Set(heads.map(f => f.split(',')[0]))].join(', ')})`);
+      const amts = await page.$$eval('.plan .amt', hs => hs.map(h => getComputedStyle(h).fontFamily));
+      assert.ok(amts.length >= 2 && amts.every(f => /Bricolage/.test(f)), 'prices in Bricolage');
       assert.match(await fam(page, '.kick'), /Plex Mono/, 'mono only for labels');
       assert.match(await fam(page, '.hero .sub'), /Bricolage|Inter/, 'no third headline face');
     } finally { await ctx.close(); }
@@ -453,6 +456,50 @@ for (const w of [390, 1440]) {
     } finally { await ctx.close(); }
   });
 }
+
+// Tristan (2026-11-20): carry the home hero's type pairing onto this page's headings. The home's Dew lockup speaks in two
+// voices: the key words in Syne 800, the connecting words in Instrument Serif italic 400, plain glue words in Instrument
+// Serif roman, both serifs set 1.14x the Syne size (--lf-serif), lines at 1.16. Each section heading takes it: key word or
+// phrase heavy, the connecting phrase italic (one or two italic runs), a plain serif word where it reads better.
+const PAIRED = { '#h1': ['Your website', 'can run itself from', 'your register.'], '#h-bw': ['Nine shops', 'we built to show you.'],
+  '#h-calls': ['One less call', "asking what's left."], '#h-hook': ['Hooking up,', 'plainly.'], '#h-faq': ['Before', 'you buy'],
+  '#h-start': ['Talk to', 'Tristan', 'or', 'Bryce.'], '[data-stage-h]': ['Go on.', 'Tap Sold out.'] };
+for (const w of [390, 1440]) {
+  test(`${w}px · headings use the home hero's pairing: Syne 800 key words, Instrument Serif italic connecting words`, async () => {
+    const { ctx, page } = await site.open(PAGE, w, { reducedMotion: 'reduce' });
+    try {
+      for (const [sel, parts] of Object.entries(PAIRED)) {
+        const r = await page.locator(sel).evaluate(h => {
+          const hs = getComputedStyle(h), runs = [];
+          for (const n of h.childNodes) { const t = n.textContent.replace(/\s+/g, ' ').replace(/’/g, "'").trim(); if (!t) continue;
+            const cs = n.nodeType === 1 ? getComputedStyle(n) : hs;
+            runs.push({ t, fam: cs.fontFamily, w: cs.fontWeight, st: cs.fontStyle, size: parseFloat(cs.fontSize), ls: cs.letterSpacing }); }
+          return { runs, size: parseFloat(hs.fontSize), lh: parseFloat(hs.lineHeight) };
+        });
+        assert.deepEqual(r.runs.map(x => x.t), parts, `${sel}: split by meaning into ${parts.join(' | ')}`);
+        assert.ok(Math.abs(r.lh / r.size - 1.16) < 0.01, `${sel}: lines at 1.16, as on the home (${(r.lh / r.size).toFixed(3)})`);
+        const em = r.runs.filter(x => x.st === 'italic'), plain = r.runs.filter(x => x.st !== 'italic' && /Instrument/.test(x.fam)), key = r.runs.filter(x => !/Instrument/.test(x.fam));
+        for (const t of plain) assert.ok(t.w === '400' && Math.abs(t.size / r.size - 1.14) < 0.01, `${sel}: plain "${t.t}" in Instrument Serif roman 400 at 1.14x`);
+        assert.ok(em.length >= 1 && em.length <= 2, `${sel}: one or two italic runs`);
+        for (const k of key) assert.ok(/^"?Syne/.test(k.fam) && k.w === '800' && Math.abs(k.size - r.size) < .5, `${sel}: "${k.t}" in Syne 800 (${k.fam} ${k.w})`);
+        for (const e of em) {
+          assert.ok(/^"?Instrument Serif/.test(e.fam) && e.w === '400', `${sel}: "${e.t}" in Instrument Serif italic 400 (${e.fam} ${e.w})`);
+          assert.ok(Math.abs(e.size / r.size - 1.14) < 0.01, `${sel}: the serif is set 1.14x the Syne size, as on the home (${(e.size / r.size).toFixed(3)})`);
+        }
+      }
+      // the other shops' lines on the stage keep the pairing too
+      await page.locator('.ticket[data-shop="hop-along"]').click();
+      const hop = await page.locator('[data-stage-h]').evaluate(h => [...h.children].map(c => [c.textContent.replace(/’/g, "'"), getComputedStyle(c).fontStyle]));
+      assert.deepEqual(hop, [["What's on", 'italic'], ['tap.', 'normal']], 'Hop Along: "What\'s on" italic, "tap." heavy');
+    } finally { await ctx.close(); }
+  });
+}
+test('fonts: the page loads Syne 800 and Instrument Serif italic', () => {
+  const html = fs.readFileSync(path.join(ROOT, 'preview/services/websites/index.html'), 'utf8');
+  const href = (html.match(/<link rel="stylesheet" href="(https:\/\/fonts\.googleapis\.com[^"]+)"/) || [])[1] || '';
+  assert.match(href, /family=Syne:wght@[\d;]*800/, 'Syne 800');
+  assert.match(href, /family=Instrument\+Serif:ital@0;1/, 'Instrument Serif with its italic');
+});
 
 test('stylesheet uses no CSS gradients as surfaces', () => {
   const css = fs.readFileSync(path.join(ROOT, 'preview/services/websites/websites.css'), 'utf8');
