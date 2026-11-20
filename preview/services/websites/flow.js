@@ -65,7 +65,7 @@ function buildPhone(S){
   const start=top(h0.top)+Math.min(200,h0.height*.25);
   const bookEl=S[S.length-1].querySelector('a.btn'),book=bookEl&&bookEl.getBoundingClientRect();
   const end=book?top(book.top)+book.height/2:top(S[S.length-1].getBoundingClientRect().top)+200;
-  const txt=boxes(TEXT,true),all=txt.concat(boxes(OBJECTS,false));
+  const screens=boxes('.phone .view',false),txt=boxes(TEXT,true).concat(screens),all=txt.concat(boxes(OBJECTS,false));
   // gaps: stretches with no text or picture anywhere across the width
   const P=6,iv=all.map(b=>[b.T-P,b.B+P]).filter(v=>v[1]>start&&v[0]<end-70).sort((a,b)=>a[0]-b[0]),gaps=[];
   let cur=start;for(const [a,b] of iv){if(a-cur>=20)gaps.push([cur,a]);cur=Math.max(cur,b);}
@@ -80,7 +80,12 @@ function buildPhone(S){
   // the register: the line comes in to Sold out from the gutter on its side
   const soldEl=document.querySelector('[data-act="soldout"]'),sr=soldEl&&soldEl.getBoundingClientRect();
   let sold=null;if(sr&&sr.width){const my=top(sr.top)+sr.height/2,right=sr.left+sr.width/2>W/2,g=right?XR:XL,run=runs.find(o=>o.a<=my-38&&o.b>=my+38);
-    if(run&&run.lanes.includes(g)){run.lanes=[g];sold={my,x:right?sr.right+7:sr.left-7};}}
+    if(run&&run.lanes.includes(g)){run.lanes=[g];
+      // straight in to its side, or, when a phone screen sits beside it, in under the button once the screen has ended
+      const tx=right?sr.right+7:sr.left-7,lo=Math.min(tx,g),hi=Math.max(tx,g),bot=top(sr.bottom);
+      const sc=screens.filter(v=>v.L<hi&&v.R>lo&&v.T<my+38&&v.B>my-38);
+      if(!sc.length)sold={ys:my-38,tx,ty:my};
+      else{const ty=bot+5,ys=Math.max(ty-34,...sc.map(v=>v.B+4));if(ty-ys>=6)sold={ys,tx:right?sr.right-12:sr.left+12,ty};}}}
   // choose lanes run by run, with as many full-width sweeps as the gaps allow (a tall gap can take two, out and back)
   const moves=(xa,xb,h)=>{const out=[],far=Math.abs(xb-xa)>=W*.5;
     if(xa===xb){out.push({k:0,s:0});if(h>=220&&(xa===XL||xa===XR))out.push({k:2,s:20});}
@@ -95,8 +100,8 @@ function buildPhone(S){
   // draw: straight runs in a lane, S-curves across the gaps, a small detour in to Sold out, and in beside the Book button
   let x=fin.first,y=start,d=`M${x.toFixed(1)} ${start.toFixed(1)}`;tapY=null;
   const f=n=>n.toFixed(1),curve=(xb,yb)=>{const h=yb-y;d+=` C${f(x)} ${f(y+h*.5)} ${f(xb)} ${f(yb-h*.5)} ${f(xb)} ${f(yb)}`;x=xb;y=yb;};
-  const run=to=>{if(sold&&sold.my>y&&sold.my<=to){const t=sold.my,g=x;
-      d+=` L${f(g)} ${f(t-38)} C${f(g)} ${f(t-20)} ${f(sold.x)} ${f(t-14)} ${f(sold.x)} ${f(t)} C${f(sold.x)} ${f(t+14)} ${f(g)} ${f(t+20)} ${f(g)} ${f(t+38)}`;y=t+38;tapY=t;}
+  const run=to=>{if(sold&&sold.ty>y&&sold.ty<=to){const {ys,tx,ty}=sold,g=x,h=ty-ys;
+      d+=` L${f(g)} ${f(ys)} C${f(g)} ${f(ys+h*.5)} ${f(tx)} ${f(ty-h*.4)} ${f(tx)} ${f(ty)} C${f(tx)} ${f(ty+14)} ${f(g)} ${f(ty+20)} ${f(g)} ${f(ty+38)}`;y=ty+38;tapY=ty;}
     if(to>y){d+=` L${f(x)} ${f(to)}`;y=to;}};
   gaps.forEach(([a,b],i)=>{const [k,xa,xb]=fin.plan[i]||[0];
     // a full-width sweep keeps a little more air above and below it than a short jog does

@@ -83,7 +83,9 @@ for (const w of [360, 390]) {
         .map(e => { const r = e.getBoundingClientRect(); let L = r.left, T = r.top, R = r.right, B = r.bottom;
           for (let p = e.parentElement; p && p !== document.body; p = p.parentElement) { const c = getComputedStyle(p);
             if (c.overflowX !== 'visible' || c.overflowY !== 'visible') { const q = p.getBoundingClientRect(); L = Math.max(L, q.left); T = Math.max(T, q.top); R = Math.min(R, q.right); B = Math.min(B, q.bottom); } }
-          return { t: e.textContent.trim().slice(0, 24), L, T: T + scrollY, R, B: B + scrollY }; }).filter(b => b.R - b.L > 0 && b.B - b.T > 0));
+          return { t: e.textContent.trim().slice(0, 24), L, T: T + scrollY, R, B: B + scrollY }; }).filter(b => b.R - b.L > 0 && b.B - b.T > 0)
+        // the phone screens are a live page full of text
+        .concat([...document.querySelectorAll('.phone .view')].map(v => { const r = v.getBoundingClientRect(); return { t: 'phone screen', L: r.left, T: r.top + scrollY, R: r.right, B: r.bottom + scrollY }; }).filter(b => b.R > b.L)));
       const half = 1.5, hits = [];
       for (const [x, y] of pts) for (const b of boxes) if (x + half > b.L && x - half < b.R && y + half > b.T && y - half < b.B) { hits.push(`「${b.t}」 at ${x.toFixed(0)},${y.toFixed(0)}`); break; }
       assert.deepEqual([...new Set(hits.map(h => h.split(' at ')[0]))].slice(0, 6), [], 'the line crosses text');
