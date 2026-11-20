@@ -14,8 +14,9 @@ window.SOG_SHOP = {
   thanks: '/preview/shop/thanks/',
   demoCheckout: '/preview/shop/checkout/',
   book: 'https://cal.com/sea-of-grass',
-  // Founding five (paid, 2026-11-19): the first five shops pay $50 a month from day one, locked for two years, with a free
-  // photo shoot, nothing owed if they back out at the hookup, and an honest review in return. No free month.
+  // Founding five (2026-11-20): the first five shops get the Site Plan at $50 a month (half the usual $100), locked for
+  // 24 months, with a free photo shoot and nothing owed if they back out at the hookup. In return: a short case study and
+  // permission to show their site and photos on our site. NEVER a review in return: Google bans rewarded reviews.
   // Lower `left` by hand when a shop signs. Never fake it.
   founding: { total: 5, left: 5 },
 
@@ -31,6 +32,12 @@ window.SOG_SHOP = {
       price: 50, from: false, interval: 'month', maxQty: 1, pay: 'monthly', // PLACEHOLDER price
       blurb: 'We look after the site so you don’t have to.',
       lines: ['Hosting and security updates', 'Your hours and menu changed when you text us', 'One person to text', 'Cancel any month'] // PLACEHOLDER inclusions
+    },
+    'site-plan': {
+      name: 'Site Plan',
+      price: 100, from: false, interval: 'month', term: 12, maxQty: 1, pay: 'plan', // Tristan's main plan, 2026-11-20
+      blurb: 'A starter site with Care included: $100 a month, nothing up front, and the site is yours after 12 months.',
+      lines: ['A starter site in a Bunny World look, built for you', 'Care included: hosting, security and up to an hour of small changes a month', 'Nothing up front; the first month is due when you approve the first draft', '12-month minimum, then month to month, and the site is yours']
     },
     starter: {
       name: 'Starter site',
@@ -94,11 +101,12 @@ window.SOG_SHOP = {
    after:         a fix is paid once it's done and the owner has checked it; nothing up front.
    deposit:       sites: nothing to start, 30% once the owner has seen the first draft and wants to go ahead, the rest at launch.
    draft-monthly: the monthly starter: 12 payments billed monthly, the first at the first draft.
+   plan:          the Site Plan: billed monthly from the first draft, 12-month minimum, then month to month.
    monthly:       care: billed monthly, cancel any month.
    now:           paid at checkout (the kickoff). */
 (function(S){
   var money = function(n){ return '$' + Math.round(n).toLocaleString('en-US'); };
-  S.how = function(id){ var p = S.products[id]; return ({after: 'paid when it’s done', deposit: 'paid in two parts', 'draft-monthly': 'billed monthly', monthly: 'billed monthly', now: 'paid today'})[p && p.pay] || 'paid once'; };
+  S.how = function(id){ var p = S.products[id]; return ({after: 'paid when it’s done', deposit: 'paid in two parts', 'draft-monthly': 'billed monthly', plan: 'billed monthly', monthly: 'billed monthly', now: 'paid today'})[p && p.pay] || 'paid once'; };
   S.payNow = function(id, q){ var p = S.products[id]; return p && p.pay === 'now' ? p.price * (q || 1) : 0; };
   S.when = function(id, q){ var p = S.products[id]; if (!p) return ''; q = q || 1;
     var t = p.price * q, from = p.from ? 'from ' : '';
@@ -106,6 +114,7 @@ window.SOG_SHOP = {
       case 'after': return 'Paid after it’s done and you’ve checked it: ' + from + money(t) + '. Nothing up front.';
       case 'deposit': return 'Nothing to start. 30% (' + from + money(t * 0.3) + ') once you’ve seen the first draft and want to go ahead, ' + (p.from ? 'the rest' : money(t * 0.7)) + ' at launch.';
       case 'draft-monthly': return p.term + ' payments of ' + money(p.price) + ', billed monthly. The first is due at the first draft.';
+      case 'plan': return money(p.price) + ' a month, billed monthly. Nothing up front: the first month is due when you approve the first draft. ' + p.term + '-month minimum, then month to month.';
       case 'monthly': return money(p.price) + ' a month, billed monthly. Cancel any month.';
       default: return 'Paid today: ' + money(t) + '.';
     }

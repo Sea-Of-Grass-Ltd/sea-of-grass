@@ -36,6 +36,7 @@ test('the paid founding offer everywhere: no free month left in Hermes', () => {
     const src = fs.readFileSync(path.join(ROOT, 'hermes', f), 'utf8');
     assert.doesNotMatch(src, /free month|first month (is )?free|month free/i, f);
     assert.doesNotMatch(src, /transform your business/i, f);
+    assert.doesNotMatch(src, /honest review|ask is an? (honest )?review|review in return|in return,? an? (honest )?review|a review and a photo/i, `${f}: never trade the deal for a review (Google bans rewarded reviews)`);
   }
 });
 
@@ -66,9 +67,12 @@ for (const w of [360, 390]) {
     assert.match(front0(await page.innerText('#v-script .card-front ol > li:nth-child(3)')), /more orders, or fewer phone calls and your menu and hours showing right when people search/);
     assert.match(await page.innerText('#v-script .card-front ol > li:nth-child(5)'), /then close.*put you down as one of the five/s);
     const front = await page.innerText('#v-script .card-front');
-    assert.match(front, /locked at \$50 a month for two years/);
+    assert.match(front, /normal plan is \$100 a month with nothing up front/);
+    assert.match(front, /half that, \$50 a month locked for two years/);
     assert.match(front, /photograph your food or shop for free/);
-    assert.match(front, /All we ask is an honest review/);
+    assert.match(front, /short case study about you and show your site on ours/);
+    assert.doesNotMatch(await page.innerText('#v-script .card-front ol > li:nth-child(4)'), /review/i, 'the offer never asks for a review');
+    assert.match(front, /ask every client for a Google review with nothing given in return/);
     assert.doesNotMatch(front, /free month|month free|for a year/i);
     assert.match(front, /Bunny World/);
     assert.match(front, /Never push past a no/);
@@ -79,8 +83,8 @@ for (const w of [360, 390]) {
       ['I have Facebook.', 'Keep it. This is what shows up when people search.'],
       ["Don't need more business.", 'Then we keep it simple: menu and hours, or ordering you switch off when busy.'],
       ['Nervous about my register.', "You tap Connect on Square's own page, with no password shared. Change your mind and you owe nothing."],
-      ['Too expensive.', '$1,200 is about $23 a week for a year, roughly what a couple of online orders bring in. Or start at $50 a month.'],
-      ["What's the catch?", 'None. $50 a month from day one, cancel any time.'],
+      ['Too expensive.', "There's nothing up front. As a founding shop it's $50 a month, about $12 a week, which is roughly one online order."],
+      ["What's the catch?", 'None. Nothing up front, $50 a month for at least a year, and after twelve months the site is yours. If you back out at the hookup, you owe nothing.'],
       ['Not right now.', 'Fair. Can I leave a card and check back next week?'],
     ], 'the back matches the printed card');
 
