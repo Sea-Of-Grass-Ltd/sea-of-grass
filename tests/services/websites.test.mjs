@@ -243,8 +243,10 @@ test('every colour is a custom property, set once in :root', () => {
 
 // The approved palette, "Night meadow with poppies" (Tristan, 2026-11-19; PALETTE.md in the shared notes), retuned on his
 // next note: grounds recede (quiet, close, lifted), focal things pop ("saturation as well as value").
-const PALETTE = { '--ground': '#2E3042', '--navy': '#363A4D', '--navy-line': '#4A5175', '--moss': '#343B41', '--grass': '#4F7A5F', '--sage': '#93A893',
-  '--plum': '#3A3647', '--plum-mute': '#7A5C74', '--poppy': '#EE7656', '--poppy-deep': '#D35B3E', '--gold': '#CDB680', '--soft': '#ACA8C0', '--text': '#E9E2DD' };
+// Then (2026-11-19): "it seems like you just washed the colors out more". The grounds keep their lifted value but get their
+// colour back: deep ultramarine, a blue-lit night-meadow teal, and violet plum, never grey.
+const PALETTE = { '--ground': '#202546', '--navy': '#2A3158', '--navy-line': '#4A5175', '--moss': '#1E3D4A', '--grass': '#4F7A5F', '--sage': '#8DB88D',
+  '--plum': '#352E55', '--plum-mute': '#7A5C74', '--poppy': '#EE7656', '--poppy-deep': '#D35B3E', '--gold': '#CDB680', '--soft': '#ACA8C0', '--text': '#E9E2DD' };
 const hexRgb = h => `rgb(${parseInt(h.slice(1, 3), 16)}, ${parseInt(h.slice(3, 5), 16)}, ${parseInt(h.slice(5, 7), 16)})`;
 const SKY = /509DFC|7DB5FF|0058D6|6DA7FF|A7CAFF|80,\s*157,\s*252|0,\s*88,\s*214|150,\s*190,\s*255|120,\s*170,\s*255/i;
 test('palette: the exact approved tokens, and no sky blue left in the page files', () => {
@@ -295,20 +297,21 @@ for (const w of WIDTHS) {
         const secs = [...document.querySelectorAll('body > section, main > section')];
         const g = secs.map(s => ok(getComputedStyle(s).backgroundColor));
         const chroma = v => Math.hypot(v[1], v[2]);
-        const hard = g.slice(1).filter((v, i) => Math.hypot(v[0] - g[i][0], v[1] - g[i][1], v[2] - g[i][2]) > 0.03).length;
+        const seams = g.slice(1).map((v, i) => Math.hypot(v[0] - g[i][0], v[1] - g[i][1], v[2] - g[i][2]));
         const ctas = [...document.querySelectorAll('.btn.pill, header.top a.book')].map(b => chroma(ok(getComputedStyle(b).backgroundColor)));
         const bounds = secs.slice(1).map(s => s.getBoundingClientRect().top + scrollY);
         const crossers = [...document.querySelectorAll('[data-cross]')].filter(e => { const b = e.getBoundingClientRect(), t = b.top + scrollY, bo = b.bottom + scrollY; return bounds.some(y => t < y - 8 && bo > y + 8); }).length;
         const L = sel => ok(getComputedStyle(document.querySelector(sel)).color)[0];
         const filt = sel => getComputedStyle(document.querySelector(sel)).filter;
-        return { maxChroma: Math.max(...g.map(chroma)), Ls: g.map(v => v[0]), hard, ctas, crossers,
+        return { minChroma: Math.min(...g.map(chroma)), maxChroma: Math.max(...g.map(chroma)), Ls: g.map(v => v[0]), seams, ctas, crossers,
           price: L('.plan .amt'), flap: L('.flap-w'), tick: filt('.ticket img'), phone: filt('#calls [data-embed-slot] img') };
       }, OKLAB);
-      assert.ok(r.maxChroma <= 0.04, `section grounds are quiet (max chroma ${r.maxChroma.toFixed(3)}, ≤ 0.04)`);
+      assert.ok(r.minChroma >= 0.04, `every ground has real colour, none washed to grey (min chroma ${r.minChroma.toFixed(3)}, ≥ 0.04)`);
+      assert.ok(r.maxChroma <= 0.08, `rich, not neon (max chroma ${r.maxChroma.toFixed(3)}, ≤ 0.08)`);
       const span = Math.max(...r.Ls) - Math.min(...r.Ls);
-      assert.ok(span <= 0.025, `grounds sit near one value (lightness spread ${span.toFixed(3)}, ≤ 0.025)`);
-      assert.ok(Math.min(...r.Ls) >= 0.33, `lifted out of the murk (darkest ground L ${Math.min(...r.Ls).toFixed(3)}, ≥ 0.33)`);
-      assert.ok(r.hard <= 2, `no more than 2 hard full-width ground changes (${r.hard})`);
+      assert.ok(span <= 0.03, `grounds sit near one value (lightness spread ${span.toFixed(3)}, ≤ 0.03)`);
+      assert.ok(Math.min(...r.Ls) >= 0.32, `lifted out of the murk (darkest ground L ${Math.min(...r.Ls).toFixed(3)}, ≥ 0.32)`);
+      assert.ok(r.seams.every(d => d <= 0.075), `neighbouring grounds stay in one night family (seams ${r.seams.map(d => d.toFixed(3)).join(', ')}, ≤ 0.075)`);
       assert.ok(r.crossers >= 2, `art crosses at least 2 section seams (${r.crossers})`);
       assert.ok(r.ctas.length >= 4 && r.ctas.every(c => c >= 0.14), `CTAs pop with real saturation (chroma ${r.ctas.map(c => c.toFixed(3)).join(', ')}, ≥ 0.14)`);
       assert.ok(r.price >= 0.9, `price numbers stand forward (L ${r.price.toFixed(3)})`);
@@ -353,7 +356,7 @@ for (const w of WIDTHS) {
       assert.ok(r.minY <= r.first + 260, 'it starts in the top section');
       assert.ok(r.seamsCovered, 'it runs straight across every section seam');
       assert.ok(r.monotonic, 'it always travels down the page');
-      assert.ok(r.maxX <= r.textLeft - 3, `it stays in the margin, clear of the text (path x ≤ ${r.maxX.toFixed(0)}, text from ${r.textLeft.toFixed(0)})`);
+      if (w >= 981) assert.ok(r.maxX <= r.textLeft - 3, `wide screens: it stays in the margin, clear of the text (path x ≤ ${r.maxX.toFixed(0)}, text from ${r.textLeft.toFixed(0)})`);
       await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight * .45)); await page.waitForTimeout(400);
       const onPath = await page.evaluate(() => {
         const t = document.querySelector('[data-traveller]').getBoundingClientRect(), cx = t.left + t.width / 2, cy = t.top + t.height / 2 + scrollY;
@@ -463,6 +466,89 @@ for (const w of [360, 390, 800, 1024, 1440]) {
       assert.equal(r.opacity, 1, 'fully opaque');
       assert.equal(r.overlap, 0, `the receipt covers none of the phone screen (${Math.round(r.overlap)} px² overlap)`);
     } finally { await ctx.close(); }
+  });
+}
+
+// Tristan (2026-11-19) on the flap board: "the effect on this text could be refined some, it triggers before you get to it".
+// Each row waits, dimmed, until it has come up to the middle of the screen; then its letters spin through the alphabet like a
+// real split-flap and land one after another, left to right, slowly enough to watch. Reduced motion: the words simply sit there.
+test('1440px · the flap board plays row by row only once each row reaches the middle of the screen', async () => {
+  const { ctx, page } = await site.open(PAGE, 1440);
+  try {
+    const rows = page.locator('.flapboard .flap');
+    const word = i => rows.nth(i).locator('.flap-w').evaluate(e => e.textContent.replace(/\s/g, ''));
+    const state = () => rows.evaluateAll(rs => rs.map(r => r.dataset.flap || ''));
+    const toRow = async (i, frac) => { await page.evaluate(([i, frac]) => { const r = document.querySelectorAll('.flapboard .flap')[i]; scrollTo(0, r.getBoundingClientRect().top + scrollY - innerHeight * frac); }, [i, frac]); await page.waitForTimeout(250); };
+    assert.deepEqual(await state(), ['wait', 'wait', 'wait', 'wait'], 'on landing every row is waiting');
+    await toRow(0, .85);
+    assert.deepEqual(await state(), ['wait', 'wait', 'wait', 'wait'], 'a row low on the screen has not started yet');
+    await toRow(0, .5);
+    const s1 = await state();
+    assert.notEqual(s1[0], 'wait', 'the first row plays once it reaches the middle');
+    assert.equal(s1[3], 'wait', 'the last row is still waiting below');
+    const early = await word(0);
+    assert.notEqual(early, 'HOSTING', `it spins before landing, it does not just snap in (${early})`);
+    await page.waitForFunction(() => document.querySelector('.flapboard .flap').dataset.flap === 'done', null, { timeout: 4000 });
+    assert.equal(await word(0), 'HOSTING', 'and lands on the exact word');
+    await toRow(3, .45); await page.waitForFunction(() => [...document.querySelectorAll('.flapboard .flap')].every(r => r.dataset.flap === 'done'), null, { timeout: 5000 });
+    assert.deepEqual(await rows.locator('.flap-w').evaluateAll(es => es.map(e => e.textContent.replace(/\s/g, ''))), ['HOSTING', 'CHANGES', 'ORDERS', 'HOURS'], 'every row lands on its word');
+  } finally { await ctx.close(); }
+  const rm = await site.open(PAGE, 1440, { reducedMotion: 'reduce' });
+  try {
+    const st = await rm.page.locator('.flapboard .flap').evaluateAll(rs => rs.map(r => [r.dataset.flap || '', getComputedStyle(r.querySelector('.flap-w')).opacity]));
+    assert.ok(st.every(([f, o]) => f !== 'wait' && +o === 1), 'reduced motion: the words sit there, plain and full strength');
+  } finally { await rm.ctx.close(); }
+});
+
+// Tristan (2026-11-19): "on mobile it just scrolls on the side of the phone, on actual professionally made websites, an effect
+// like that is far more engaging". On phones the line weaves: it sweeps right across the screen through the gaps between
+// sections, never over text or pictures, draws itself in behind the seed as you scroll, and lights a stop at each crossing.
+const OBSTACLES = 'h1,h2,h3,p,li,dt,dd,summary,a,button,label,img,iframe,.flap,.ticket,.register,.phone,.amt,.badge';
+for (const w of [360, 390]) {
+  test(`${w}px · mobile path: weaves across the screen between sections, draws in as you scroll, lights its stops`, async () => {
+    const { ctx, page } = await site.open(PAGE, w);
+    try {
+      await page.waitForFunction(() => document.querySelector('[data-through] path')?.getTotalLength() > 0, null, { timeout: 5000 });
+      await page.waitForTimeout(600);
+      const geo = await page.evaluate(sel => {
+        const path = document.querySelector('[data-through] path'), len = path.getTotalLength(), W = document.documentElement.clientWidth;
+        const svg = path.ownerSVGElement.getBoundingClientRect(), ox = svg.left + scrollX, oy = svg.top + scrollY;
+        const pts = Array.from({ length: 1500 }, (_, i) => { const q = path.getPointAtLength(len * i / 1499); return [q.x + ox, q.y + oy]; });
+        // crossings: count sweeps from one edge to the other
+        let side = pts[0][0] < W / 2 ? 'L' : 'R', sweeps = 0;
+        for (const [x] of pts) { if (side === 'L' && x > W - 40) { side = 'R'; sweeps++; } else if (side === 'R' && x < 40) { side = 'L'; sweeps++; } }
+        const obs = [...document.querySelectorAll(sel)].filter(e => !e.closest('[aria-hidden="true"],[hidden],.more,footer,[data-through],header,nav,.topbar') && getComputedStyle(e).visibility !== 'hidden')
+          .map(e => { const r = e.getBoundingClientRect(); return { e, l: r.left + scrollX, r: r.right + scrollX, t: r.top + scrollY, b: r.bottom + scrollY }; })
+          .filter(o => o.r - o.l > 0 && o.b - o.t > 0);
+        const hits = [];
+        for (const [x, y] of pts) for (const o of obs) if (!o.e.closest('[data-over-line]') && x > o.l + 1 && x < o.r - 1 && y > o.t + 1 && y < o.b - 1) { hits.push(`${o.e.tagName}.${o.e.className}「${(o.e.textContent || o.e.alt || '').trim().slice(0, 16)}」 at ${x.toFixed(0)},${y.toFixed(0)}`); break; }
+        const rail = document.querySelector('.tickets'), rz = getComputedStyle(rail);
+        return { railAbove: rail.hasAttribute('data-over-line') && rz.position !== 'static' && +rz.zIndex > +getComputedStyle(document.querySelector('[data-through]')).zIndex, sweeps, hits: [...new Set(hits)].slice(0, 5), stops: document.querySelectorAll('[data-through] .stop').length };
+      }, OBSTACLES);
+      assert.ok(geo.sweeps >= 4, `the line sweeps right across the screen at least 4 times (${geo.sweeps})`);
+      assert.deepEqual(geo.hits, [], 'it never runs over text or pictures');
+      assert.ok(geo.railAbove, 'where it meets the edge-to-edge ticket rail it threads behind the photos');
+      assert.ok(geo.stops >= 4, `a stop at each crossing (${geo.stops})`);
+      const at = async f => { await page.evaluate(f => scrollTo(0, (document.documentElement.scrollHeight - innerHeight) * f), f); await page.waitForTimeout(350);
+        return page.evaluate(() => {
+          const drawn = document.querySelector('[data-through] .drawn'), path = document.querySelector('[data-through] path');
+          const len = path.getTotalLength(), shown = len - parseFloat(getComputedStyle(drawn).strokeDashoffset);
+          const end = path.getPointAtLength(Math.max(0, shown)), svg = path.ownerSVGElement.getBoundingClientRect();
+          const t = document.querySelector('[data-traveller]').getBoundingClientRect();
+          const stops = [...document.querySelectorAll('[data-through] .stop')].map(c => ({ y: +c.getAttribute('cy') + svg.top, lit: c.classList.contains('lit') }));
+          return { shown, gap: Math.hypot(end.x + svg.left - (t.left + t.width / 2), end.y + svg.top - (t.top + t.height / 2)), seedY: t.top + t.height / 2, stops };
+        }); };
+      const a = await at(.3), b = await at(.65);
+      assert.ok(b.shown > a.shown + 200, `the line draws itself in as you scroll (${a.shown.toFixed(0)} → ${b.shown.toFixed(0)} px drawn)`);
+      assert.ok(b.gap <= 8, `the drawn line ends at the seed (${b.gap.toFixed(1)}px)`);
+      assert.ok(b.stops.every(s => s.lit === (s.y < b.seedY)), 'stops behind the seed are lit, stops ahead are not');
+    } finally { await ctx.close(); }
+    const rm = await site.open(PAGE, w, { reducedMotion: 'reduce' });
+    try {
+      await rm.page.waitForTimeout(500);
+      const r = await rm.page.evaluate(() => ({ seed: !document.querySelector('[data-traveller]').hidden, off: parseFloat(getComputedStyle(document.querySelector('[data-through] .drawn')).strokeDashoffset) }));
+      assert.ok(!r.seed && r.off <= 1, 'reduced motion: the whole line sits there drawn, no seed');
+    } finally { await rm.ctx.close(); }
   });
 }
 

@@ -8,10 +8,10 @@
      next note so the grounds recede (quiet, close, lifted) and the focal things pop ("saturation as well as value"). Every colour is
      mixed with the sky's ultramarine and a breath of poppy. Sections take turns navy / moss / plum; poppy is the only CTA
      colour; gold only on small eyebrow labels; each section borrows 2-4 single touches of the others on real elements. */
-  --ground:#2E3042;--navy:#363A4D;--navy-line:#4A5175;--moss:#343B41;--grass:#4F7A5F;--sage:#93A893;
-  --plum:#3A3647;--plum-mute:#7A5C74;--poppy:#EE7656;--poppy-deep:#D35B3E;--gold:#CDB680;--soft:#ACA8C0;--text:#E9E2DD;
+  --ground:#202546;--navy:#2A3158;--navy-line:#4A5175;--moss:#1E3D4A;--grass:#4F7A5F;--sage:#8DB88D;
+  --plum:#352E55;--plum-mute:#7A5C74;--poppy:#EE7656;--poppy-deep:#D35B3E;--gold:#CDB680;--soft:#ACA8C0;--text:#E9E2DD;
   --meadow:#4A7A3C;--pop:#F7F1EC;
-  --text-rgb:233,226,221;--shade-rgb:0,0,0;--sage-rgb:147,168,147;--plum-mute-rgb:122,92,116;
+  --text-rgb:233,226,221;--shade-rgb:0,0,0;--sage-rgb:141,184,141;--plum-mute-rgb:122,92,116;
   /* roles, built only from the palette */
   --canvas:var(--ground);--fg:var(--text);--fg-rgb:var(--text-rgb);--ink-rgb:var(--text-rgb);--mute:var(--soft);
   --rule:rgba(var(--text-rgb),.12);--rule2:rgba(var(--text-rgb),.24);
@@ -109,9 +109,9 @@ body.book-in-page .top nav a.book{visibility:hidden;opacity:0}
 .flap-w{display:flex;gap:.18em;font:500 clamp(28px,5vw,72px)/1 var(--mono);text-transform:uppercase;transform:translateY(.06em)}
 .flap-w i{font-style:normal;display:inline-block;transform-origin:50% 50%}
 .flap-a{font:400 clamp(24px,3vw,44px)/1 var(--mono);color:var(--blue2);position:relative;z-index:1}
-.flap.go .flap-w i{animation:flip .5s cubic-bezier(.3,.7,.3,1) both}
-@keyframes flip{0%{transform:rotateX(90deg);opacity:.2}60%{transform:rotateX(-12deg);opacity:1}100%{transform:none}}
-@media (prefers-reduced-motion:reduce){.flap.go .flap-w i{animation:none}}
+.flap-w i{min-width:.62em;text-align:center}
+.flap[data-flap="wait"] .flap-w{opacity:.22;transition:opacity .3s}
+.flap[data-flap="spin"] .flap-w,.flap[data-flap="done"] .flap-w{opacity:1;transition:opacity .25s}
 
 /* 3 Bunny World: photo ticket rail + the open stage */
 .bw-head{display:flex;align-items:center;gap:14px 20px;margin-bottom:14px}
@@ -326,6 +326,16 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .through{position:absolute;left:0;top:0;z-index:4;pointer-events:none;overflow:visible}
 .through path{fill:none;stroke:rgba(var(--text-rgb),.34);stroke-width:1.5;stroke-dasharray:5 7;stroke-linecap:round}
 .through text{font:500 10px/1 var(--mono);letter-spacing:.16em;fill:var(--soft)}
+/* the drawn part of the line: solid sage behind the seed; on wide screens it simply traces the dashed path */
+.through path.drawn{stroke:var(--sage);stroke-width:1.5;stroke-dasharray:none;opacity:.55}
+.through:not(.weave) path.drawn{display:none}
+.through.weave path:not(.drawn){stroke:rgba(var(--text-rgb),.22)}
+.through.weave path.drawn{stroke-width:2.5;opacity:1}
+/* the line threads behind the ticket photos where the rail runs edge to edge */
+.tickets[data-over-line]{position:relative;z-index:5}
+.through .stop{fill:var(--canvas);stroke:rgba(var(--text-rgb),.35);stroke-width:1.5;transform-box:fill-box;transform-origin:center;transition:fill .3s,stroke .3s,transform .35s cubic-bezier(.3,1.6,.5,1)}
+.through .stop.lit{fill:var(--poppy);stroke:var(--poppy);transform:scale(1.35)}
+@media (prefers-reduced-motion:reduce){.through .stop{transition:none}}
 .traveller{position:absolute;left:0;top:0;z-index:5;width:14px;height:20px;color:var(--pop);pointer-events:none;will-change:transform;filter:drop-shadow(0 0 6px rgba(var(--text-rgb),.45))}
 .traveller svg{width:100%;height:100%;display:block}
 .traveller[hidden]{display:none}
