@@ -1,0 +1,21 @@
+{
+ "rest": {
+  "overlaps": [],
+  "cord_self": 0
+ },
+ "sweeps": {
+  "handset_lift": {
+   "steps": 51,
+   "bad_steps": []
+  },
+  "dial": {
+   "steps": 51,
+   "bad_steps": []
+  },
+  "ring": {
+   "steps": 51,
+   "bad_steps": []
+  }
+ },
+ "ok": true
+}
