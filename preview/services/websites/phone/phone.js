@@ -17,8 +17,12 @@ sog-phone[data-state=live] picture{visibility:hidden}
 
 // night meadow (PALETTE.md, approved 2026-11-19): the counter and grass sit dull and cool, close to the section's
 // navy ground; the phone is the warm white pop; a couple of poppies are the only accent
-const COL = { counterTop: 0x2a2e48, counterSide: 0x20233a,
+const COL = { counterTop: 0x2a2e48, counterSide: 0x20233a, counterLip: 0x353a58,
   grass: [0x4a6a5e, 0x40595a, 0x384d52, 0x55705f], flowers: [0xd17c66, 0xd17c66, 0x7f917f], phone: 0xf1e8d8 };
+
+// staging: counter top level at y = 0, front edge at z = front, back edge at z = back; the camera looks down `pitch`
+// degrees, square to the front edge, and frames fitW metres across (portrait) or fitH tall (landscape)
+const STAGE = { front: 0.22, back: -0.30, phoneZ: -0.03, phoneYaw: 0.32, lookY: 0.075, pitch: 20, fitW: 0.44, fitH: 0.40, drop: 0.11 };
 
 function webglOK() {
   try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch { return false; }
@@ -78,19 +82,26 @@ class SogPhone extends HTMLElement {
     // meadow light: cool sky fill, a soft moon key from the front left, a green rim from the meadow behind
     scene.add(new T.HemisphereLight(0x6a7398, 0x1f1f35, 1.0));
     const key = new T.DirectionalLight(0xfff0da, 2.5);                  // warm, so the phone pops off the cool ground
-    key.position.set(-0.6, 1.1, 0.9); key.castShadow = true;
-    key.shadow.mapSize.set(1024, 1024); key.shadow.radius = 4; key.shadow.bias = -0.0004;
-    Object.assign(key.shadow.camera, { left: -0.4, right: 0.4, top: 0.4, bottom: -0.4, near: 0.1, far: 3 });
+    key.position.set(-0.5, 1.2, 0.8); key.castShadow = true;
+    key.shadow.mapSize.set(1024, 1024); key.shadow.radius = 5; key.shadow.bias = -0.0005; key.shadow.normalBias = 0.002;
+    Object.assign(key.shadow.camera, { left: -0.35, right: 0.35, top: 0.35, bottom: -0.35, near: 0.5, far: 2.5 });
     scene.add(key);
     const rim = new T.DirectionalLight(0x9aa89a, 0.9); rim.position.set(0.5, 0.6, -0.9); scene.add(rim);
 
-    // the counter (top at y = 0)
+    // staging (2026-11-20): one long counter, its top level at y = 0 and its front edge square to the view, so it
+    // reads as the thing the phone stands on; the meadow grows up from the ground behind its back edge
+    scene.fog = new T.Fog(0x22263f, 1.5, 3.6);                       // the meadow fades into the page's navy
     const ctr = new T.Group();
-    const top = new T.Mesh(new T.BoxGeometry(0.72, 0.035, 0.42), new T.MeshStandardMaterial({ color: COL.counterTop, roughness: 0.95, envMapIntensity: 0.2 }));
-    top.position.set(0.08, -0.0175, -0.02); top.receiveShadow = true; ctr.add(top);
-    const body = new T.Mesh(new T.BoxGeometry(0.66, 0.6, 0.38), new T.MeshStandardMaterial({ color: COL.counterSide, roughness: 0.95, envMapIntensity: 0.2 }));
-    body.position.set(0.08, -0.335, -0.03); ctr.add(body);
+    const matTop = new T.MeshStandardMaterial({ color: COL.counterTop, roughness: 0.95, envMapIntensity: 0.2 });
+    const matSide = new T.MeshStandardMaterial({ color: COL.counterSide, roughness: 0.95, envMapIntensity: 0.2 });
+    const top = new T.Mesh(new T.BoxGeometry(3.2, 0.04, STAGE.back * -1 + STAGE.front), matTop);
+    top.position.set(0, -0.02, (STAGE.front + STAGE.back) / 2); top.receiveShadow = true; ctr.add(top);
+    const lip = new T.Mesh(new T.BoxGeometry(3.2, 0.012, 0.012), new T.MeshStandardMaterial({ color: COL.counterLip, roughness: 0.8, envMapIntensity: 0.3 }));
+    lip.position.set(0, -0.006, STAGE.front - 0.006); ctr.add(lip);  // the worn front edge catches a little light
+    const body = new T.Mesh(new T.BoxGeometry(3.2, 0.9, STAGE.back * -1 + STAGE.front - 0.03), matSide);
+    body.position.set(0, -0.49, (STAGE.front - 0.03 + STAGE.back) / 2); ctr.add(body);
     scene.add(ctr);
+    this._counter = ctr;
 
     // grass and a few flowers growing up behind and beside the counter, swaying
     this._grass = this.meadow(T, scene);
@@ -102,7 +113,15 @@ class SogPhone extends HTMLElement {
       o.castShadow = true; o.receiveShadow = true; o.frustumCulled = false;
       if (/cream/.test(o.material?.name || '')) o.material.color.set(COL.phone);   // warm white on the page
     });
-    scene.add(phone);
+    const pivot = new T.Group();
+    pivot.position.set(0, 0, STAGE.phoneZ); pivot.rotation.y = STAGE.phoneYaw;   // turned to show the cord side
+    pivot.add(phone); scene.add(pivot);
+    // a soft contact shadow under the base, so it sits on the counter rather than hovering
+    const blobTex = (() => { const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d');
+      const gr = x.createRadialGradient(64, 64, 8, 64, 64, 62); gr.addColorStop(0, 'rgba(10,10,24,0.55)'); gr.addColorStop(0.6, 'rgba(10,10,24,0.25)'); gr.addColorStop(1, 'rgba(10,10,24,0)');
+      x.fillStyle = gr; x.fillRect(0, 0, 128, 128); return new T.CanvasTexture(c); })();
+    const blob = new T.Mesh(new T.PlaneGeometry(0.30, 0.29), new T.MeshBasicMaterial({ map: blobTex, transparent: true, depthWrite: false }));
+    blob.rotation.x = -Math.PI / 2; blob.position.set(0, 0.0008, 0); pivot.add(blob);
     const mixer = new T.AnimationMixer(phone);
     const act = {};
     for (const clip of gltf.animations) {
@@ -121,34 +140,32 @@ class SogPhone extends HTMLElement {
       if (/finger_wheel|number_plate|centre_label|digit_marks|label_band/.test(n)) wheel.push(o);
     });
 
-    const camera = new T.PerspectiveCamera(28, 1, 0.01, 10);
+    const camera = new T.PerspectiveCamera(30, 1, 0.05, 12);
     const ray = new T.Raycaster(), ndc = new T.Vector2();
     this.append(canvas);
-
+    const look = new T.Vector3(0, STAGE.lookY, STAGE.phoneZ);
     const frame = () => {
       const w = this.clientWidth, h = this.clientHeight;
       renderer.setSize(w, h, false);
       camera.aspect = w / h;
-      // keep the phone about 78% of the width (portrait) and sitting low, like the illustration
-      const dir = new T.Vector3(-0.32, 0.5, 1).normalize();
-      const look = new T.Vector3(0.0, 0.085, 0.0);
-      const fitW = 0.40 / (2 * Math.tan(T.MathUtils.degToRad(camera.fov) / 2) * camera.aspect);
-      const fitH = 0.30 / (2 * Math.tan(T.MathUtils.degToRad(camera.fov) / 2));
-      const dist = Math.max(fitW, fitH);
-      camera.position.copy(look).addScaledVector(dir, dist);
+      // eye a little above the counter, looking down STAGE.pitch degrees, square to its front edge
+      const p = T.MathUtils.degToRad(STAGE.pitch), half = Math.tan(T.MathUtils.degToRad(camera.fov) / 2);
+      const dist = Math.max(STAGE.fitW / (2 * half * camera.aspect), STAGE.fitH / (2 * half));
+      camera.position.set(look.x, look.y + Math.sin(p) * dist, look.z + Math.cos(p) * dist);
       camera.lookAt(look);
-      // nudge the phone toward the lower third on tall boxes
-      if (camera.aspect < 0.8) camera.setViewOffset(w, h, 0, -h * 0.16, w, h); else camera.clearViewOffset();
+      camera.setViewOffset(w, h, 0, -h * STAGE.drop, w, h);           // the phone sits a touch below the middle
       camera.updateProjectionMatrix();
     };
     this._ro = new ResizeObserver(frame); this._ro.observe(this); frame();
 
     // dial geometry from the model's extras (Blender Z-up -> glTF Y-up)
     const v3 = a => a ? new T.Vector3(a[0], a[2], -a[1]) : null;
-    const dialC = v3(meta.dial_center), dialN = v3(meta.dial_normal)?.normalize(), dialX = v3(meta.dial_x)?.normalize();
+    pivot.updateMatrixWorld(true);
+    const W = v => v && pivot.localToWorld(v), Wd = v => v && v.transformDirection(pivot.matrixWorld);
+    const dialC = W(v3(meta.dial_center)), dialN = Wd(v3(meta.dial_normal)), dialX = Wd(v3(meta.dial_x));
     const dialMax = meta.dial_max_deg || 312, holeR = meta.hole_ring || 0.0335, hole0 = T.MathUtils.degToRad(meta.hole0_deg ?? 290);
     const dialY = dialN && dialX ? new T.Vector3().crossVectors(dialN, dialX) : null;
-    const handsetC = v3(meta.handset_center);
+    const handsetC = W(v3(meta.handset_center));
     const handsetBone = phone.getObjectByName('handset');   // follows the lift
     const hsOffset = handsetC && handsetBone ? (() => { phone.updateMatrixWorld(true); return handsetC.clone().sub(handsetBone.getWorldPosition(new T.Vector3())); })() : null;
 
@@ -162,6 +179,33 @@ class SogPhone extends HTMLElement {
       if (name === 'dial' && dialC) return toScreen(dialC);
       if (name === 'dial-hole' && dialC) return toScreen(dialC.clone().addScaledVector(dialX, holeR * Math.cos(hole0)).addScaledVector(dialY, holeR * Math.sin(hole0)));
       return null;
+    };
+
+    // where things land on the canvas, as fractions (for the staging tests)
+    this.staging = () => {
+      const r = canvas.getBoundingClientRect(), f = q => { const v = q.clone().project(camera); return { x: (v.x + 1) / 2, y: (1 - v.y) / 2 }; };
+      const box = { l: 1, r: 0, t: 1, b: 0 }, v = new T.Vector3();
+      phone.updateMatrixWorld(true);
+      phone.traverse(o => {
+        if (!o.isMesh) return;
+        const n = o.geometry.attributes.position.count;
+        for (let i = 0; i < n; i += 3) { o.getVertexPosition(i, v); const q = f(o.localToWorld(v)); box.l = Math.min(box.l, q.x); box.r = Math.max(box.r, q.x); box.t = Math.min(box.t, q.y); box.b = Math.max(box.b, q.y); }
+      });
+      const e1 = f(new T.Vector3(-0.3, 0, STAGE.front)), e2 = f(new T.Vector3(0.3, 0, STAGE.front));
+      const dir = new T.Vector3(); camera.getWorldDirection(dir);
+      let grassTop = 1, hidden = true;
+      const counterMeshes = []; this._counter.traverse(o => o.isMesh && counterMeshes.push(o));
+      for (const b of this._grass.blades) {
+        const tip = f(new T.Vector3(b.x, b.base + b.h, b.z));
+        if (tip.x > 0 && tip.x < 1) grassTop = Math.min(grassTop, Math.max(0, tip.y));
+        const root = new T.Vector3(b.x, b.base, b.z), toRoot = root.clone().sub(camera.position);
+        const rf = f(root); if (rf.x < 0 || rf.x > 1) continue;
+        ray.set(camera.position, toRoot.clone().normalize()); ray.far = toRoot.length();
+        if (!ray.intersectObjects(counterMeshes, false).length) hidden = false;
+      }
+      ray.far = Infinity;
+      return { phone: box, edgeY: (e1.y + e2.y) / 2, edgeTiltDeg: Math.atan2((e2.y - e1.y) * r.height, (e2.x - e1.x) * r.width) * 180 / Math.PI,
+        lookDownDeg: Math.round(-Math.asin(dir.y) * 180 / Math.PI), grassTop, grassRootsHidden: hidden, contactShadow: !!blob.parent && renderer.shadowMap.enabled };
     };
 
     // ---- interaction
@@ -267,21 +311,20 @@ class SogPhone extends HTMLElement {
     const uniforms = { uTime: { value: 0 } };
     const blades = [], rnd = (s => () => (s = (s * 16807) % 2147483647) / 2147483647)(7);
     const add = (x, z, h, lean, w) => blades.push({ x, z, h, lean, w });
-    for (let i = 0; i < 90; i++) {                          // behind the counter
-      const x = -0.42 + rnd() * 0.95, z = -0.18 - rnd() * 0.32;
-      add(x, z, 0.12 + rnd() * 0.24, (rnd() - 0.5) * 0.5, 0.006 + rnd() * 0.006);
-    }
-    for (let i = 0; i < 24; i++) {                          // up the left side, where the cord is
-      add(-0.3 - rnd() * 0.15, -0.15 + rnd() * 0.3, 0.12 + rnd() * 0.22, -0.2 - rnd() * 0.3, 0.006 + rnd() * 0.005);
+    const GROUND = -0.9;                                     // the meadow floor, out of sight behind the counter
+    for (let i = 0; i < 230; i++) {                          // rows behind the back edge, taller further back
+      const z = STAGE.back - 0.06 - rnd() * 1.2, x = (rnd() - 0.5) * (1.0 + (STAGE.back - z) * 0.9);
+      const reach = 0.95 + rnd() * 0.55 + (STAGE.back - z) * 0.25;
+      add(x, z, reach, (rnd() - 0.5) * 0.35, 0.010 + rnd() * 0.012);
     }
     // two poppies and a sage bud, each on its own stem (a stem is a thin blade that ends at the flower)
-    const spots = [[-0.30, 0.12, -0.25, 0], [0.30, 0.15, -0.36, 1], [0.38, 0.07, -0.12, 2]];
-    for (const [x, y, z] of spots) blades.push({ x, z, h: y + 0.12, lean: 0, w: 0.0022, stem: true });
+    const spots = [[-0.15, 0.22, STAGE.back - 0.14, 0], [0.17, 0.31, STAGE.back - 0.30, 1], [0.03, 0.17, STAGE.back - 0.10, 2]];
+    for (const [x, y, z] of spots) blades.push({ x, z, h: y - GROUND, lean: 0, w: 0.003, stem: true });
     const pos = [], col = [], sway = [];
     const c = new T.Color();
     blades.forEach((b, i) => {
       c.setHex(COL.grass[i % COL.grass.length]);
-      const seg = 5, base = -0.12;
+      const seg = 6, base = GROUND; b.base = base;
       for (let s = 0; s < seg; s++) {
         const t0 = s / seg, t1 = (s + 1) / seg;
         const P = t => [b.x + b.lean * t * t * b.h, base + t * b.h, b.z];
@@ -300,7 +343,7 @@ class SogPhone extends HTMLElement {
     m.onBeforeCompile = sh => {
       sh.uniforms.uTime = uniforms.uTime;
       sh.vertexShader = 'uniform float uTime;\nattribute vec2 sway;\n' + sh.vertexShader.replace('#include <begin_vertex>',
-        '#include <begin_vertex>\nfloat k = sway.x * sway.x;\ntransformed.x += k * 0.018 * sin(uTime * 1.1 + sway.y);\ntransformed.z += k * 0.008 * cos(uTime * 0.8 + sway.y * 1.3);');
+        '#include <begin_vertex>\nfloat k = sway.x * sway.x;\ntransformed.x += k * 0.035 * sin(uTime * 1.1 + sway.y);\ntransformed.z += k * 0.014 * cos(uTime * 0.8 + sway.y * 1.3);');
     };
     scene.add(new T.Mesh(g, m));
     // flowers on a few of the taller stems: cornflower, buttercup, daisy (as drawn)
@@ -310,7 +353,7 @@ class SogPhone extends HTMLElement {
       const ctr = new T.Mesh(new T.CircleGeometry(0.0045, 8), new T.MeshLambertMaterial({ color: 0x332739 }));
       ctr.position.copy(f.position); ctr.quaternion.copy(f.quaternion); ctr.translateZ(0.001); scene.add(ctr);
     }
-    return { uniforms };
+    return { uniforms, blades };
   }
 }
 
