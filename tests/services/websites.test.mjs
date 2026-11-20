@@ -88,6 +88,7 @@ for (const w of WIDTHS) {
       assert.ok(rows.some(r => /Sites/.test(r) && /\$1,200/.test(r)), 'Sites from $1,200 row');
       assert.match(await text(plans), /custom from \$2,000/i, 'custom from $2,000 beneath');
       const cfg = await page.evaluate(() => window.SOG_SHOP.founding);
+      assert.match(await text(plans.locator('.plan.care .badge')), /Recommended/, 'Care is the highlighted, recommended plan (Acuity 0bc4bbb5)');
       const strip = plans.locator('.plan.care .founding');
       assert.ok(await strip.count() === 1, 'the founding strip is attached to Care');
       const f = await text(strip);
