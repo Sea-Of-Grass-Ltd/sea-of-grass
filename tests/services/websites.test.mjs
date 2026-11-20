@@ -10,6 +10,7 @@ const PAGE = '/preview/services/websites/';
 const WIDTHS = [360, 390, 1440];
 const LINES = ['run itself from your register', 'Tap Sold out', 'one less call', 'Nine shops we built', '$50 a month', 'first five shops'];
 const SAFETY = "$50 a month, locked for two years, and a free photo shoot. You tap Connect on Square's own page, one click undoes it, and if you back out there you owe nothing.";
+const FOUND = 'A real website linked to your Google listing helps more people find you in the first place.';
 const WEEK = '$1,200 works out to about $23 a week for a year, roughly what a couple of online orders bring in.';
 const HYPE = /\b(transform\w*|revolution\w*|next level|grow your|growth|skyrocket\w*|supercharg\w*|boost\w*|game.chang\w*|unlock\w*|empower\w*|dominat\w*|explod\w*|10x|level up|cutting.edge|world.class)\b/gi;
 
@@ -153,10 +154,6 @@ for (const w of WIDTHS) {
       const pr = page.locator('#short .beat[data-beat="5"]');
       const p = await text(pr);
       for (const x of ['$250', '$1,200', '$2,000']) assert.ok(p.includes(x), `card 5 shows ${x}`);
-      assert.ok(!(await pr.locator('[data-week]').isVisible()), 'the $23 line waits for the tap');
-      await pr.locator('button', { hasText: '$1,200' }).click(); await settle(page);
-      assert.equal(await current(page), 5, 'tapping $1,200 does not move the card');
-      assert.equal(await text(pr.locator('[data-week]')), WEEK, 'tapping $1,200 shows the $23-a-week line exactly');
       assert.doesNotMatch(await text(pr), /profit|pays for itself/i, 'no profit or pays-for-itself claims');
 
       await next(page);
@@ -195,6 +192,125 @@ for (const w of WIDTHS) {
       assert.match(body, /less call|fewer calls/i, 'speaks to fewer calls');
       assert.match(body, /never log in/i, 'speaks to less work');
       assert.deepEqual(errors, [], 'no console errors');
+    } finally { await ctx.close(); }
+  });
+}
+
+// Six mini games (Tristan, 2026-11-19: "I'd like for all 6 of these cards to feel like their own mini game"). One verb each,
+// instant with a finger, and every card skippable. Touch drags use CDP touch events so phones are tested the way they're used.
+async function touchDrag(page, x0, y0, x1, y1, steps = 12) {
+  const c = await page.context().newCDPSession(page);
+  await c.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: Math.round(x0), y: Math.round(y0) }] });
+  for (let i = 1; i <= steps; i++) await c.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: Math.round(x0 + (x1 - x0) * i / steps), y: Math.round(y0 + (y1 - y0) * i / steps) }] });
+  await c.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+}
+for (const w of WIDTHS) {
+  test(`${w}px · games 1–3: knock the grass, restock the horchata, answer the calls`, async () => {
+    const { ctx, page, errors, h } = await open(w);
+    try {
+      // 1 KNOCK: sweeping through the meadow (finger or mouse) pops the shop pin out of the grass
+      const b1 = page.locator('#short .beat[data-beat="1"]'), zone = b1.locator('[data-game="knock"]');
+      assert.ok(!(await b1.locator('[data-pin]').isVisible()), 'pin hidden in the grass at first');
+      const z = await zone.boundingBox();
+      for (let i = 0; i < 3; i++) {
+        if (w < 900) await touchDrag(page, z.x + 10, z.y + z.height * .7, z.x + z.width - 10, z.y + z.height * .72);
+        else { await page.mouse.move(z.x + 10, z.y + z.height * .7); await page.mouse.move(z.x + z.width - 10, z.y + z.height * .72, { steps: 14 }); }
+      }
+      await settle(page);
+      assert.equal(await current(page), 1, 'knocking the grass does not move the card');
+      assert.ok(await b1.locator('[data-pin]').isVisible(), 'the shop pin pops up');
+      assert.equal(await text(b1.locator('[data-found]')), FOUND, 'the find-you line, exactly');
+      assert.doesNotMatch(await text(b1), /rank|#1|guarantee/i, 'no ranking promises');
+
+      // 2 TAP: Sold out, then tap again to restock
+      await goTo(page, 2);
+      const b2 = page.locator('#short .beat[data-beat="2"]');
+      await page.waitForFunction(() => document.querySelector('[data-beat="2"] iframe')?.contentDocument?.querySelector('button[data-add="Horchata, large"]'), null, { timeout: 8000 });
+      const shop = await (await b2.locator('iframe').elementHandle()).contentFrame();
+      const out = b2.locator('[data-act="soldout"]');
+      await out.click(); await settle(page);
+      assert.match(await shop.locator('button[data-add="Horchata, large"]').textContent(), /Sold out/i, 'sold out');
+      await out.click(); await settle(page);
+      assert.match(await shop.locator('button[data-add="Horchata, large"]').textContent(), /\$4\.00/, 'tapping again restocks it');
+      assert.ok(!(await shop.locator('button[data-add="Horchata, large"]').isDisabled()), 'restocked button works again');
+      assert.equal(await current(page), 2, 'still on card 2');
+
+      // 3 TAP: answer the three calls; the website answers each, and all three bloom the meadow
+      await next(page);
+      const b3 = page.locator('#short .beat[data-beat="3"]');
+      assert.ok(await b3.locator('img[src*="card3-phone"], source[srcset*="card3-phone"]').count() >= 1, 'the approved phone image is the art');
+      const calls = b3.locator('.call');
+      assert.equal(await calls.count(), 3, 'three calls');
+      assert.ok(!(await b3.locator('[data-calls-done]').isVisible()), 'no bloom before they are answered');
+      for (let i = 0; i < 3; i++) {
+        await calls.nth(i).click(); await page.waitForTimeout(120);
+        assert.ok(await calls.nth(i).evaluate(e => e.classList.contains('answered')), `call ${i + 1} answered`);
+        assert.ok((await text(calls.nth(i).locator('[data-a]'))).length > 8, `call ${i + 1} shows the website's answer`);
+        const cb = await calls.nth(i).boundingBox();
+        assert.ok(cb.height >= 44 && cb.y >= 0 && cb.y + cb.height <= h, `call ${i + 1} is a full-size target on screen`);
+      }
+      await settle(page);
+      assert.ok(await b3.locator('[data-calls-done]').isVisible(), 'all three answered: the meadow blooms');
+      assert.equal(await current(page), 3, 'answering calls does not move the card');
+      assert.deepEqual(errors, [], 'no console errors');
+    } finally { await ctx.close(); }
+  });
+
+  test(`${w}px · games 4–6: swipe the nine shops, drag the year, bloom a spot`, async () => {
+    const { ctx, page, errors } = await open(w);
+    try {
+      // 4 SWIPE: to the ninth shop, which says "Yours could be next."
+      await goTo(page, 4);
+      const b4 = page.locator('#short .beat[data-beat="4"]'), rail = b4.locator('.rail');
+      assert.ok(!(await b4.locator('[data-rail-end]').isVisible()), 'the end note waits for the last shop');
+      if (w < 900) { const r = await rail.boundingBox(); for (let i = 0; i < 10; i++) { await touchDrag(page, r.x + r.width * .85, r.y + r.height * .5, r.x + r.width * .15, r.y + r.height * .52, 8); await page.waitForTimeout(250); } }
+      else await rail.evaluate(r => r.scrollTo({ left: r.scrollWidth, behavior: 'auto' }));
+      await page.waitForTimeout(700);
+      assert.equal(await text(b4.locator('[data-rail-count]')), '9 of 9', 'count reaches 9 of 9');
+      assert.ok(await b4.locator('[data-rail-end]').isVisible(), 'the last shop says yours could be next');
+      assert.equal(await current(page), 4, 'swiping the shops does not move the card');
+
+      // 5 DRAG: slide $1,200 across a year to $23 a week, landing on the exact line
+      await next(page);
+      const b5 = page.locator('#short .beat[data-beat="5"]'), range = b5.locator('input[type="range"][data-weeks]');
+      assert.ok(!(await b5.locator('[data-week]').isVisible()), 'the $23 line waits for the drag');
+      const rb = await range.boundingBox();
+      await page.mouse.move(rb.x + 4, rb.y + rb.height / 2); await page.mouse.down();
+      await page.mouse.move(rb.x + rb.width - 2, rb.y + rb.height / 2, { steps: 16 }); await page.mouse.up();
+      await settle(page);
+      assert.equal(await range.evaluate(r => r.value), '52', 'dragged across the whole year');
+      assert.match(await text(b5.locator('[data-weekly]')), /\$23 a week/, 'the readout lands on $23 a week');
+      assert.equal(await text(b5.locator('[data-week]')), WEEK, 'the $23-a-week line, exactly');
+      assert.equal(await current(page), 5, 'dragging does not move the card');
+      assert.ok(rb.height >= 40, 'the slider is a full-size target');
+
+      // 6 BLOOM: tap an open flower; the real count never changes
+      await next(page);
+      const b6 = page.locator('#short .beat[data-beat="6"]');
+      const cfg = await page.evaluate(() => window.SOG_SHOP.founding);
+      const before = await text(b6.locator('.spots'));
+      await b6.locator('.flower.open').first().click(); await settle(page);
+      assert.ok(await b6.locator('.flower.picked').count() === 1, 'the tapped flower blooms');
+      assert.ok(await b6.locator('[data-yours]').isVisible(), '"This spot could be yours" appears');
+      assert.equal(await text(b6.locator('.spots')), before, 'the spots count does not change');
+      assert.equal(await b6.locator('.flower.open').count(), cfg.left, 'open flowers still match the real count');
+      assert.equal(await current(page), 6, 'blooming does not move the card');
+      assert.deepEqual(errors, [], 'no console errors');
+    } finally { await ctx.close(); }
+  });
+
+  test(`${w}px · every card can be skipped in one tap`, async () => {
+    const { ctx, page } = await open(w);
+    try {
+      for (let n = 1; n <= 5; n++) {
+        const skip = page.locator(`#short .beat[data-beat="${n}"] .skip`);
+        assert.ok(await skip.isVisible(), `card ${n} has a Skip`);
+        const sb = await skip.boundingBox();
+        assert.ok(sb.height >= 44, `card ${n} Skip is a full-size target`);
+        await skip.click(); await settle(page);
+        assert.equal(await current(page), n + 1, `Skip on card ${n} → ${n + 1}`);
+      }
+      assert.ok(await page.locator('#short .beat[data-beat="6"] .more-link').isVisible(), 'the last card moves on through Read the details');
     } finally { await ctx.close(); }
   });
 }
