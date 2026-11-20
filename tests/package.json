@@ -4,8 +4,8 @@
   "type": "module",
   "description": "Browser tests for the shop pages: user journey first, then the build. Uses the system Chrome.",
   "scripts": {
-    "test": "node --test --test-concurrency=1 \"unit/*.test.mjs\" \"bunnyworld/*.test.mjs\" \"copy/*.test.mjs\" \"hermes/*.test.mjs\" \"services/*.test.mjs\"",
-    "test:hermes": "node --test \"hermes/*.test.mjs\" \"services/*.test.mjs\"",
+    "test": "node --test --test-concurrency=1 \"unit/*.test.mjs\" \"bunnyworld/*.test.mjs\" \"copy/*.test.mjs\" \"hermes/*.test.mjs\" \"services/*.test.mjs\" \"home/*.test.mjs\"",
+    "test:hermes": "node --test \"hermes/*.test.mjs\" \"services/*.test.mjs\" \"home/*.test.mjs\"",
     "test:unit": "node --test \"unit/*.test.mjs\"",
     "test:audit": "node --test bunnyworld/audit.test.mjs",
     "test:hopwell": "node --test bunnyworld/hopwell.test.mjs",
