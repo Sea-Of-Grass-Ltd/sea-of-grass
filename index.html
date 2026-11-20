@@ -1711,7 +1711,12 @@ function lay(){const o=window.sogOpening;{const bc=open.querySelector('#brand .c
   if(g){wc.classList.add('cb-snap');const lf=document.querySelector('main.cb .lf');if(lf)wc.style.color=getComputedStyle(lf).getPropertyValue('--lf-ink').trim();const pad=parseFloat(getComputedStyle(wc.parentElement).paddingLeft)||0;Object.assign(wc.style,{top:g.y+'px',marginLeft:(g.x-pad)+'px',width:g.w+'px',height:g.h+'px'});}
   else{wc.classList.remove('cb-snap');wc.style.top=wc.style.marginLeft=wc.style.width=wc.style.height='';}}
 addEventListener('resize',()=>requestAnimationFrame(lay));addEventListener('load',lay);setTimeout(lay,300);['sog-theme','sog-scheme'].forEach(ev=>document.addEventListener(ev,()=>setTimeout(lay,60)));   // a new style brings a new ink for the open cards
-function upd(){ticking=false;const vh=innerHeight,y=-open.getBoundingClientRect().top/vh;   // screens scrolled into the track
+// the pinned meadow trails a whole screen past its section once it lets go (100vh tall, margin-bottom:-100vh), grass heaped on its
+// bottom edge; on tall screens that edge showed through the see-through bands after the work list. Clip it at the foot of the stage,
+// the last band meant to sit on the meadow (the bands after it cover it anyway), so it can never paint below there.
+const lfBox=open.querySelector('.lf'),stage=open.nextElementSibling;
+function clipLf(){if(!lfBox||!stage)return;const cut=Math.max(0,Math.ceil(lfBox.getBoundingClientRect().bottom-stage.getBoundingClientRect().bottom)),v=cut?`inset(0px 0px ${cut}px 0px)`:'';if(lfBox.style.clipPath!==v)lfBox.style.clipPath=v;}
+function upd(){ticking=false;clipLf();const vh=innerHeight,y=-open.getBoundingClientRect().top/vh;   // screens scrolled into the track
   const out=sm((y-.28)/.32),inn=sm((y-.5)/.3);
   // each chapter calls up its harmony as it arrives and lets it go as it leaves
   let best=null,bm=0;for(const ch of chs){const r=ch.getBoundingClientRect(),m=Math.min(sm((vh-r.top)/(vh*.75)),sm((r.bottom-vh*.35)/(vh*.75)));if(m>bm){bm=m;best=ch;}}
@@ -1722,7 +1727,7 @@ function upd(){ticking=false;const vh=innerHeight,y=-open.getBoundingClientRect(
   const gone=chs[0]?sm((vh-chs[0].getBoundingClientRect().top)/(vh*.6)):0;   // "Three things" steps aside as the first chapter comes
   t2.style.opacity=String(inn*(1-gone));t2.style.transform=`translateY(${(1-inn)*24-gone*40}px)`;}
 addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(upd);}},{passive:true});
-addEventListener('resize',upd);addEventListener('load',upd);upd();
+addEventListener('resize',upd);addEventListener('load',upd);upd();if(document.fonts)document.fonts.ready.then(upd);if(window.ResizeObserver)new ResizeObserver(()=>requestAnimationFrame(upd)).observe(document.querySelector('main.cb'));   // late fonts and images change the bands' heights
 })();
 </script>
 <script>/* the Creative tech controller (after tristan.design's): Mode, Shape, Color and Effect tabs that play the visualizer in the grass */
