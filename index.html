@@ -1325,8 +1325,6 @@ html[data-theme="glass"]:not([data-scheme]) .lf{--lf-night:1;--lf-star:#F1E8D2;-
 html[data-theme="glass"]:not([data-scheme]):not([data-scheme]) .lf{--lf-mark-fill:outline}
 html[data-theme="glass"]:not([data-scheme]) main.cb .lf-night{display:block;position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;opacity:var(--scene,1)}
 html[data-theme="glass"]:not([data-scheme]) main.cb .lf-sky img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-html[data-theme="glass"]:not([data-scheme]) main.cb .lf-skygl{position:absolute;inset:0;width:100%;height:100%;display:none}
-html[data-theme="glass"]:not([data-scheme]) main.cb .lf-night.gl .lf-skygl{display:block}html[data-theme="glass"]:not([data-scheme]) main.cb .lf-night.gl .lf-sky{display:none}
 html[data-theme="glass"]:not([data-scheme]) main.cb .lf-stars{position:absolute;left:50%;top:2%;height:70%;width:max(100%,1440px);transform:translate(-50%,var(--n-stars,0px))}
 html[data-theme="glass"]:not([data-scheme]) main.cb .lf-starc{position:absolute;inset:0;width:100%;height:100%;display:block}
 </style>
@@ -1374,7 +1372,6 @@ apply(get());})();
     <div class="lf-title" aria-hidden="true"><p class="cb-h">Three things, done properly.</p></div>
     <div class="lf-night" aria-hidden="true"><!-- the painted night (approved in Tristan's demo): sky, stars; the ridges, S, words and meadow are drawn on the canvas -->
       <picture class="lf-sky"><source media="(max-aspect-ratio: 4/5)" srcset="/preview/assets/night/sky-tall.webp"><img src="/preview/assets/night/sky-wide.webp" alt="" decoding="async" fetchpriority="high"></picture>
-      <canvas class="lf-skygl"></canvas>
       <div class="lf-stars"><canvas class="lf-starc"></canvas></div>
     </div>
     <canvas id="lf-cv" aria-label="The headline and the Sea of Grass S over a heap of grass. Move your pointer or finger sideways through it: the S gets knocked and springs back, and the grass is scooped up and settles again. Press to throw more grass."></canvas>
@@ -1835,59 +1832,15 @@ function riffle(){words.forEach((b,wi)=>{[...b.querySelectorAll('.fl')].forEach(
 const io=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){io.disconnect();riffle();}},{threshold:.5});io.observe(document.querySelector('main.cb .cb-steps ol'));})();
 </script>
 <script>
-/* the painted night's sky and stars (approved in Tristan's demo, 2026-11-19)
-   sky: the real painting in a WebGL2 feedback pass; the cursor smears last frame's paint (small brush, no swirl) and it heals
-   about 4% a frame, so a second or two. No WebGL2, or reduced motion: the painting as a still image.
+/* the painted night's stars (approved in Tristan's demo, 2026-11-19); the sky is the still painting behind them (the cursor
+   liquify was taken out the same night: "Remove the liquify effect from this").
    stars: his six- and five-point stars as filled vectors where the painting's specks were. Still until a swipe hits one: it
    spins with the swipe, morphs toward the other shape while spinning, then slows and settles. Redrawn only while one moves. */
 (function(){const SEC=document.getElementById('opening'),box=SEC&&SEC.querySelector('.lf-night');if(!box)return;
 const on=()=>getComputedStyle(SEC).getPropertyValue('--lf-night').trim()==='1';if(!on())return;
 const still=matchMedia('(prefers-reduced-motion: reduce)').matches,tall=()=>matchMedia('(max-aspect-ratio: 4/5)').matches;
-const I={ready:false,sky:'image',stars:0,orange:0,starsMoving:false,smear:0,still};
-let visible=true,scene=()=>parseFloat(SEC.style.getPropertyValue('--scene')||'1');
-new IntersectionObserver(es=>{visible=es[0].isIntersecting;if(visible){kickSky();}}).observe(SEC);
-// ---------- sky ----------
-const cv=box.querySelector('.lf-skygl');let kickSky=()=>{};
-(function sky(){if(still)return;const gl=cv.getContext('webgl2',{alpha:false,antialias:false,preserveDrawingBuffer:false});if(!gl)return;
-  const VS=`#version 300 es
-in vec2 p;void main(){gl_Position=vec4(p,0.,1.);}`;
-  const SIM=`#version 300 es
-precision highp float;uniform sampler2D prev,img;uniform vec2 r,m,mv,isz;uniform float asp,first;out vec4 o;
-void main(){vec2 px=gl_FragCoord.xy,uv=px/r,uvp=vec2(uv.x,1.-uv.y);
- float ia=isz.x/isz.y;vec2 tu=uvp;if(asp>ia){tu.y=(tu.y-.5)*ia/asp+.5;}else{tu.x=(tu.x-.5)*asp/ia+.5;}
- tu.y=tu.y*.92+.05;vec3 base=texture(img,tu).rgb;
- if(first>.5){o=vec4(base,1.);return;}
- vec2 d=uv-m;d.x*=asp;float k=exp(-dot(d,d)/.006);
- vec3 smeared=texture(prev,uv-mv*k*.35).rgb;
- o=vec4(mix(smeared,base,.04),1.);}`;
-  const SHOW=`#version 300 es
-precision highp float;uniform sampler2D tex;uniform vec2 r;out vec4 o;void main(){o=texture(tex,gl_FragCoord.xy/r);}`;
-  function prog(fs){const p=gl.createProgram();for(const[t,src]of[[gl.VERTEX_SHADER,VS],[gl.FRAGMENT_SHADER,fs]]){const sh=gl.createShader(t);gl.shaderSource(sh,src);gl.compileShader(sh);if(!gl.getShaderParameter(sh,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(sh));gl.attachShader(p,sh);}
-    gl.bindAttribLocation(p,0,'p');gl.linkProgram(p);if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(p));const u={};for(let i=0,n=gl.getProgramParameter(p,gl.ACTIVE_UNIFORMS);i<n;i++){const nm=gl.getActiveUniform(p,i).name;u[nm]=gl.getUniformLocation(p,nm);}return{p,u};}
-  let sim,show;try{sim=prog(SIM);show=prog(SHOW);}catch(e){return;}
-  const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,2,gl.FLOAT,false,0,0);
-  const ext=gl.getExtension('EXT_color_buffer_float');let W=0,H=0,tex=[],fb=[],cur=0,first=1,loaded=false,run=false;
-  const param=()=>{gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);};
-  function mk(){const t=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,t);gl.texImage2D(gl.TEXTURE_2D,0,ext?gl.RGBA16F:gl.RGBA8,W,H,0,gl.RGBA,ext?gl.HALF_FLOAT:gl.UNSIGNED_BYTE,null);param();const f=gl.createFramebuffer();gl.bindFramebuffer(gl.FRAMEBUFFER,f);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,t,0);return[t,f];}
-  function size(){if(!cv.clientWidth)return;const d=Math.min(devicePixelRatio||1,1.25),w=Math.max(2,cv.clientWidth*d|0),h=Math.max(2,cv.clientHeight*d|0);if(w===W&&h===H)return;W=w;H=h;cv.width=W;cv.height=H;
-    tex.forEach(t=>gl.deleteTexture(t));fb.forEach(f=>gl.deleteFramebuffer(f));tex=[];fb=[];for(let i=0;i<2;i++){const[t,f]=mk();tex.push(t);fb.push(f);}first=1;kick();}
-  const itex=gl.createTexture();let iw=4,ih=3;gl.bindTexture(gl.TEXTURE_2D,itex);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,1,1,0,gl.RGBA,gl.UNSIGNED_BYTE,new Uint8Array([15,22,60,255]));
-  let src='';function load(){const want=tall()?'/preview/assets/night/sky-tall.webp':'/preview/assets/night/sky-wide.webp';if(want===src)return;src=want;const im=new Image();im.decoding='async';
-    im.onload=()=>{gl.bindTexture(gl.TEXTURE_2D,itex);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,im);param();iw=im.width;ih=im.height;first=1;loaded=true;box.classList.add('gl');I.sky='webgl2';size();kick();};im.src=want;}   // size once the canvas is shown (hidden, it measures 0)
-  let m=[.5,.5],pm=null,mv=[0,0];
-  SEC.addEventListener('pointermove',e=>{const r=cv.getBoundingClientRect();m=[(e.clientX-r.left)/r.width,1-(e.clientY-r.top)/r.height];if(!pm)pm=m.slice();kick();},{passive:true});
-  SEC.addEventListener('pointerleave',()=>{pm=null;});
-  function frame(){run=false;if(!loaded||!W)return;const p=pm||m;mv=[(m[0]-p[0])*.9+mv[0]*.1,(m[1]-p[1])*.9+mv[1]*.1];if(pm)pm=m.slice();
-    I.smear=I.smear*.96+Math.hypot(mv[0],mv[1]);   // paint pushed, healing at the shader's 4% a frame
-    gl.viewport(0,0,W,H);gl.useProgram(sim.p);gl.bindFramebuffer(gl.FRAMEBUFFER,fb[1-cur]);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,tex[cur]);gl.uniform1i(sim.u.prev,0);
-    gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,itex);gl.uniform1i(sim.u.img,1);gl.activeTexture(gl.TEXTURE0);
-    gl.uniform2f(sim.u.isz,iw,ih);gl.uniform2f(sim.u.r,W,H);gl.uniform2f(sim.u.m,m[0],m[1]);gl.uniform2f(sim.u.mv,mv[0],mv[1]);gl.uniform1f(sim.u.asp,W/H);gl.uniform1f(sim.u.first,first);
-    gl.drawArrays(gl.TRIANGLES,0,3);cur=1-cur;first=0;
-    gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.useProgram(show.p);gl.bindTexture(gl.TEXTURE_2D,tex[cur]);gl.uniform1i(show.u.tex,0);gl.uniform2f(show.u.r,W,H);gl.drawArrays(gl.TRIANGLES,0,3);
-    if(I.smear>1e-4||Math.hypot(mv[0],mv[1])>1e-6)kick();else I.smear=0;}   // idle once the paint has healed: no frames spent on a still sky
-  function kick(){if(!run&&visible&&scene()>.01){run=true;requestAnimationFrame(frame);}}
-  kickSky=kick;addEventListener('resize',()=>{load();size();});if(window.ResizeObserver)new ResizeObserver(()=>{if(loaded)size();}).observe(cv);load();
-  cv.addEventListener('webglcontextlost',e=>{e.preventDefault();box.classList.remove('gl');I.sky='image';loaded=false;});})();
+const I={ready:false,sky:'image',stars:0,orange:0,starsMoving:false,still};
+let scene=()=>parseFloat(SEC.style.getPropertyValue('--scene')||'1');
 // ---------- stars ----------
 const sc=box.querySelector('.lf-starc'),x=sc.getContext('2d');let D=null,S=[],scale=1,ox=0,oy=0,dpr=1,moving=false;
 const NP=60;function starR(th,tips){for(let i=0;i<tips.length;i++){let[a,L]=tips[i],[a2,L2]=tips[(i+1)%tips.length];a*=Math.PI/180;let b=a2*Math.PI/180;if(b<=a)b+=2*Math.PI;let t=th;while(t<a)t+=2*Math.PI;while(t>=a+2*Math.PI)t-=2*Math.PI;

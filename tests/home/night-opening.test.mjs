@@ -1,12 +1,11 @@
 // Home opening: the painted night Tristan approved in the demo (2026-11-19, "Put this night scene into the real home page").
 // Back to front:
-//   - sky: the real painted sky in a WebGL2 feedback shader; the cursor smears the paint with a small brush (no swirl) and it
-//     heals in a second or two. Without WebGL2: the same painting as a still image.
+//   - sky: the real painted sky, still (Tristan, later the same night: "Remove the liquify effect from this").
 //   - stars: his star family as filled vectors (inked six-point, painted five-point), cream with about 1 in 20 orange, 559 of
 //     them where the painting's specks were. They sit still; a cursor hit spins one with the swipe, it morphs toward the other
 //     shape while spinning, then settles. Redrawn only while something moves.
 //   - the far and near ridges rise as you scroll (near faster); the S is a still, fully opaque cream outline; the live meadow.
-// Reduced motion: everything drawn once, no liquify, no spin.
+// Reduced motion: everything drawn once, no spin.
 // Run:  cd tests && npm install && node --test home/night-opening.test.mjs
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
@@ -45,7 +44,7 @@ for (const w of [1440, 390]) {
     try {
       await ready(page);
       const n = await info(page);
-      assert.equal(n.sky, 'image', 'without WebGL2 the painted sky shows as a still image');
+      assert.equal(n.sky, 'image', 'the painted sky is a still image');
       const sky = await page.evaluate(() => { const i = document.querySelector('.lf .lf-sky img'); return i && getComputedStyle(i.closest('.lf-sky')).display !== 'none' && i.complete && i.naturalWidth > 0 ? i.currentSrc : null; });
       assert.match(sky || '', w < 900 ? /sky-tall\.webp/ : /sky-wide\.webp/, 'the sky crop fits the screen');
       assert.equal(n.stars, 559, 'all 559 stars are drawn');
@@ -116,35 +115,29 @@ for (const w of [1440, 390]) {
     } finally { await ctx.close(); }
   });
 
-  test(`${w} · with WebGL2 the sky is the live painting and the cursor smears it`, async () => {
+  test(`${w} · the sky is the still painting even where WebGL works: no liquify`, async () => {
     const { ctx, page, errors } = await gl.open('/', w);
     try {
       await ready(page);
       const n = await info(page);
-      assert.equal(n.sky, 'webgl2', 'the sky runs in WebGL2');
-      const vis = await page.evaluate(() => ({ c: getComputedStyle(document.querySelector('.lf .lf-skygl')).display !== 'none', img: getComputedStyle(document.querySelector('.lf .lf-sky')).display !== 'none' }));
-      assert.ok(vis.c && !vis.img, 'the live canvas replaces the still image');
-      const dpr = await page.evaluate(() => { const c = document.querySelector('.lf .lf-skygl'); return c.width / c.clientWidth; });
-      assert.ok(dpr <= 1.26, `the sky canvas is capped at 1.25x (${dpr})`);
-      assert.ok(dpr >= .99, `the sky canvas is drawn at full size, not a few stretched pixels (${dpr})`);
+      assert.equal(n.sky, 'image', 'the sky is the painted image');
+      const d = await page.evaluate(() => ({ gl: !!document.querySelector('.lf .lf-skygl'), shader: [...document.scripts].some(s => /webgl2/.test(s.textContent)) }));
+      assert.equal(d.gl, false, 'no sky canvas');
+      assert.equal(d.shader, false, 'no WebGL shader on the page');
       const p = await page.evaluate(() => ({ x: innerWidth * .5, y: innerHeight * .2 }));
       await page.mouse.move(p.x - 80, p.y); await page.mouse.move(p.x + 80, p.y, { steps: 8 });
-      await page.waitForTimeout(60);
-      const smear = await page.evaluate(() => sogOpening.nightInfo().smear);
-      assert.ok(smear > 0, `the cursor smears the paint (${smear})`);
-      await page.waitForTimeout(2500);
-      assert.ok((await page.evaluate(() => sogOpening.nightInfo().smear)) < smear * .1, 'and it heals back');
+      assert.equal(n.smear, undefined, 'nothing smears');
       assert.deepEqual(errors, []);
     } finally { await ctx.close(); }
   });
 
-  test(`${w} · reduced motion draws it all once: no liquify, no spin`, async () => {
+  test(`${w} · reduced motion draws it all once: no spin`, async () => {
     const { ctx, page, errors } = await gl.open('/', w, { reducedMotion: 'reduce' });
     try {
       await ready(page);
       const n = await info(page);
       assert.equal(n.still, true);
-      assert.notEqual(n.sky, 'webgl2', 'no live sky');
+      assert.equal(n.sky, 'image', 'the still painting');
       assert.equal(n.stars, 559, 'the stars are still drawn');
       assert.ok(n.ridges, 'the ridges are drawn, at rest');
       const t = await page.evaluate(() => sogOpening.starTarget());
