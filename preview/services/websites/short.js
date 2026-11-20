@@ -6,6 +6,7 @@
 const short=document.getElementById('short');if(!short)return;
 const track=short.querySelector('.track'),beats=[...short.querySelectorAll('.beat')],bars=[...document.querySelectorAll('.progress i')];
 const details=document.getElementById('details'),readBtn=short.querySelector('.more-link');
+const countEl=document.querySelector('[data-count]'),line=document.querySelector('[data-meadow-line]');
 const N=beats.length,reduce=matchMedia('(prefers-reduced-motion: reduce)');
 let cur=1,open=false;
 
@@ -14,6 +15,7 @@ function goTo(n){
   n=Math.max(1,Math.min(N,n));if(n===cur)return;cur=n;
   short.dataset.current=String(n);document.body.dataset.beat=String(n);
   bars.forEach((b,i)=>b.classList.toggle('on',i<n));
+  if(countEl)countEl.textContent=`${n} / ${N}`;if(line)line.style.setProperty('--p',(n/N).toFixed(4));
   beats.forEach((b,i)=>{const on=i===n-1;b.inert=!on;b.setAttribute('aria-hidden',String(!on));
     if(on){b.classList.remove('is-in');void b.offsetWidth;b.classList.add('is-in');}else b.classList.remove('is-in');});
   place();

@@ -33,10 +33,12 @@
 <link rel="stylesheet" href="/preview/assets/shop/cart.css">
 </head>
 <body class="short-mode">
-<!-- The Websites page as a Short: eleven one-line beats, one per screen (storyboard approved 2026-11-19).
+<!-- The Websites page in six full-screen cards that move one at a time (boards approved 2026-11-19). It flows like a reel
+     without the Stories chrome: progress is a meadow line up the left edge and a small count.
      References (Refero): WhatsApp story viewer 54e7fe29 and TikTok story b9591f63 for the segmented bar over a full-screen beat;
      Elvina Prasad 5df2af07 and Josephmark 8325ac5f for very large type with very little text per screen. -->
-<div class="progress" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+<div class="meadow-line" data-meadow-line aria-hidden="true" style="--p:0.1667"><i></i></div>
+<p class="count" data-count aria-live="polite">1 / 6</p>
 <div class="top-wrap">
     <header class="top">
       <a class="home" href="/"><img src="/preview/assets/logo.svg" alt="" width="34" height="25"><span>Sea of Grass</span></a>
@@ -57,7 +59,7 @@
         <div class="live-grass" data-live-grass aria-hidden="true"></div>
         <svg class="pin" data-pin hidden viewBox="0 0 48 64" aria-hidden="true"><path d="M24 2C12.4 2 3 11.2 3 22.6 3 38 24 62 24 62s21-24 21-39.4C45 11.2 35.6 2 24 2z" fill="#509DFC" stroke="#EEF1EA" stroke-width="2"/><circle cx="24" cy="22" r="8" fill="#EEF1EA"/></svg>
       </div>
-      <button type="button" class="skip" data-skip>Skip &darr;</button>
+      <button type="button" class="skip" data-skip aria-label="Skip to the next card">Next &darr;</button>
     </section>
     <section class="beat b2" data-beat="2" aria-label="2 of 6">
       <picture class="bg" data-art aria-hidden="true"><source type="image/webp" srcset="/preview/assets/work/bunny-world/burritos-hero-860.webp 860w, /preview/assets/work/bunny-world/burritos-hero-1290.webp 1290w" sizes="100vw"><img src="/preview/assets/work/bunny-world/burritos-hero-1100.jpg" alt="" width="1100" height="825"></picture>
@@ -72,7 +74,7 @@
         </div>
         <div class="reg-shop"><div class="phone"><div class="view" data-w="390"><iframe title="Bunny Burritos, the demo shop the register is connected to" tabindex="-1" data-lazy="/bunnyworld/bunny-burritos/"></iframe></div></div></div>
       </div>
-      <button type="button" class="skip" data-skip>Skip &darr;</button>
+      <button type="button" class="skip" data-skip aria-label="Skip to the next card">Next &darr;</button>
     </section>
     <section class="beat b3" data-beat="3" aria-label="3 of 6">
       <picture class="bg phone-art" data-art aria-hidden="true"><source type="image/webp" srcset="/preview/assets/work/websites/card3-phone-720.webp 720w, /preview/assets/work/websites/card3-phone-1080.webp 1080w" sizes="(min-width:900px) 48vw, 100vw"><img src="/preview/assets/work/websites/card3-phone-1080.jpg" alt="" width="1080" height="1935"></picture>
@@ -87,7 +89,7 @@
         <button type="button" class="ask own" data-ask="business" hidden><span class="q">&ldquo;But I don&rsquo;t need more business.&rdquo;</span><span class="a" data-a>Then we keep it simple: menu and hours, or ordering you switch off when busy.</span></button>
       </div>
       <div class="live-grass bloom" data-live-grass="fall" hidden aria-hidden="true"></div>
-      <button type="button" class="skip" data-skip>Skip &darr;</button>
+      <button type="button" class="skip" data-skip aria-label="Skip to the next card">Next &darr;</button>
     </section>
     <section class="beat b4" data-beat="4" aria-label="4 of 6">
       <div class="beat-in bw-play">
@@ -106,7 +108,7 @@
         </div>
         <p class="bw-foot"><a href="/bunnyworld/">Walk into Bunny World &rarr;</a> <span>These are demo shops, with no real business behind them.</span></p>
       </div>
-      <button type="button" class="skip" data-skip>Skip &darr;</button>
+      <button type="button" class="skip" data-skip aria-label="Skip to the next card">Next &darr;</button>
     </section>
     <section class="beat b5" data-beat="5" aria-label="5 of 6">
       <div class="beat-in">
@@ -122,7 +124,7 @@
         <button type="button" class="ask" data-ask="catch"><span class="q">&ldquo;What&rsquo;s the catch?&rdquo;</span><span class="a" data-a>None. $50 a month from day one, cancel any time.</span></button>
       </div>
       <div class="live-grass mid" data-live-grass data-art aria-hidden="true"></div>
-      <button type="button" class="skip" data-skip>Skip &darr;</button>
+      <button type="button" class="skip" data-skip aria-label="Skip to the next card">Next &darr;</button>
     </section>
     <section class="beat b6" data-beat="6" aria-label="6 of 6">
       <picture class="bg" data-art aria-hidden="true"><source type="image/webp" srcset="/preview/assets/work/bunny-world/burritos-tacos-640.webp 640w, /preview/assets/work/bunny-world/burritos-tacos-1280.webp 1280w" sizes="100vw"><img src="/preview/assets/work/bunny-world/burritos-tacos-900.jpg" alt="" width="900" height="672"></picture>

@@ -462,3 +462,19 @@ body[data-beat="6"] .top-wrap a.book{visibility:hidden}
   .b5 .beat-in>[data-line]{grid-column:1;grid-row:1 / span 6;align-self:center}
   .b5 .beat-in>:not([data-line]){grid-column:2}
 }
+
+/* ======== Quiet progress (Bryce and Tristan, 2026-11-19): moves like a reel, doesn't look like one ======== */
+.progress{display:none}
+.meadow-line{position:fixed;z-index:30;left:0;top:0;bottom:0;width:3px;background:rgba(238,241,234,.07);pointer-events:none}
+.meadow-line i{position:absolute;left:0;right:0;bottom:0;height:calc(var(--p,0)*100%);background:#5E9A4A;transition:height .45s cubic-bezier(.2,.9,.25,1)}
+.count{position:fixed;z-index:30;left:14px;bottom:max(18px,env(safe-area-inset-bottom,0px));margin:0;font:500 12px/1 var(--mono);letter-spacing:.08em;color:rgba(238,241,234,.62);pointer-events:none}
+.short-ready body.details-open .count,.short-ready body.details-open .meadow-line{opacity:0;transition:opacity .3s}
+.beat{padding-top:76px;padding-bottom:max(64px,env(safe-area-inset-bottom,0px))}
+.skip{background:none;border:0;border-radius:0;padding:0 4px;font:500 14px/1 var(--body);letter-spacing:0;text-transform:none;color:var(--soft);bottom:max(8px,env(safe-area-inset-bottom,0px))}
+.skip:hover{color:var(--fg);text-decoration:underline;text-underline-offset:3px}
+@media (prefers-reduced-motion:reduce){.meadow-line i{transition:none}}
+/* after looking: the count reads on plain navy under the logo, not over the grass */
+.count{top:calc(max(10px,env(safe-area-inset-top,0px)) + 62px);bottom:auto;left:var(--side)}
+@media (min-width:861px){.count{left:max(var(--side),calc((100vw - var(--max))/2 + var(--side)))}}
+.beat{padding-top:96px}
+.skip{color:rgba(238,241,234,.9);text-shadow:0 1px 10px rgba(0,0,0,.9),0 0 2px rgba(0,0,0,.8)}
