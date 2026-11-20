@@ -446,3 +446,7 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
   .hero .plan.care .stub.pop{animation:stub-peel .9s cubic-bezier(.3,1.4,.5,1)}
   @keyframes stub-peel{45%{transform:rotate(1.8deg) translateY(5px)}}
 }
+/* the founding five's split-flap title and count: each letter a flap, like the Care board */
+#founding .flipw i,#founding .flipn{display:inline-block;font-style:normal;transform-origin:50% 50%;backface-visibility:hidden}
+
+#founding .f-head{perspective:300px}
