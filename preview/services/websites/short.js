@@ -75,7 +75,7 @@ addEventListener('touchend',e=>{
 
 // tap: right side forward, left side back, except on the things you play with
 short.addEventListener('click',e=>{
-  if(e.target.closest('a,button,input,label,summary,.register,.rail,.phone'))return;
+  if(e.target.closest('a,button,input,label,summary,.register,.rail,.phone,[data-game]'))return;
   if(String(getSelection()).length)return;
   e.clientX>=innerWidth*.4?next():prev();
 });
@@ -113,8 +113,52 @@ if(rail){
   let tick=0;rail.addEventListener('scroll',()=>{cancelAnimationFrame(tick);tick=requestAnimationFrame(()=>{
     const left=rail.scrollLeft;let best=0,bd=1e9;
     shops.forEach((s,i)=>{const d=Math.abs(s.offsetLeft-rail.offsetLeft-left);if(d<bd){bd=d;best=i;}});
+    if(left+rail.clientWidth>=rail.scrollWidth-4)best=shops.length-1;          // scrolled to the end: the last shop is in view
+    const end=short.querySelector('[data-rail-end]');if(end&&best===shops.length-1)end.hidden=false;
     if(count)count.textContent=`${best+1} of ${shops.length}`;});},{passive:true});
 }
+
+
+// ---- the six mini games: one verb each, instant with a finger, and every card has Skip ----
+short.querySelectorAll('[data-skip]').forEach(b=>b.addEventListener('click',next));
+
+// 1 KNOCK: sweep through the meadow; enough knocking pops the shop pin out of the grass
+(()=>{const zone=short.querySelector('[data-game="knock"]');if(!zone)return;
+  const pin=zone.querySelector('[data-pin]'),found=short.querySelector('[data-found]'),hint=short.querySelector('.b1 .hint');
+  let dist=0,lx=null,ly=null,done=false;
+  const reveal=()=>{if(done)return;done=true;pin.removeAttribute("hidden");requestAnimationFrame(()=>pin.classList.add('up'));
+    if(found)found.hidden=false;if(hint)hint.hidden=true;};
+  const add=d=>{dist+=d;if(dist>=Math.min(700,zone.clientWidth*1.6))reveal();};
+  zone.addEventListener('pointerdown',e=>{lx=e.clientX;ly=e.clientY;add(120);});
+  zone.addEventListener('pointermove',e=>{if(lx!==null)add(Math.hypot(e.clientX-lx,e.clientY-ly));lx=e.clientX;ly=e.clientY;},{passive:true});
+  const lift=()=>{lx=ly=null;};
+  zone.addEventListener('pointerleave',lift);zone.addEventListener('pointercancel',lift);
+  zone.addEventListener('pointerup',e=>{if(e.pointerType!=='mouse')lift();});
+})();
+
+// 3 TAP: each call gets the website's answer; all three answered blooms the meadow
+(()=>{const calls=[...short.querySelectorAll('.call')];if(!calls.length)return;
+  const done=short.querySelector('[data-calls-done]'),bloom=short.querySelector('.b3 .live-grass.bloom');
+  calls.forEach(c=>c.addEventListener('click',()=>{if(c.classList.contains('answered'))return;c.classList.add('answered');
+    c.setAttribute('aria-label',c.querySelector('.q').textContent+' Answered: '+c.querySelector('.a').textContent);
+    if(calls.every(x=>x.classList.contains('answered'))){if(done)done.hidden=false;if(bloom)bloom.hidden=false;}}));
+})();
+
+// 5 DRAG: spread $1,200 across a year; at 52 weeks it lands on the exact line
+(()=>{const r=short.querySelector('[data-weeks]');if(!r)return;
+  const out=short.querySelector('[data-weekly]'),week=short.querySelector('[data-week]');
+  const draw=()=>{const n=+r.value;r.style.setProperty('--fill',(n/52*100)+'%');
+    out.textContent=n===0?'$1,200 up front':n===52?'$23 a week for a year':`$${Math.round(1200/n).toLocaleString('en-US')} a week for ${n} week${n>1?'s':''}`;
+    if(n===52&&week)week.hidden=false;};
+  r.addEventListener('input',draw);draw();
+})();
+
+// 6 BLOOM: tap an open flower to see it bloom; the real spots count never changes
+(()=>{const fl=[...short.querySelectorAll('.flower')],yours=short.querySelector('[data-yours]'),btn=short.querySelector('.b6 .btn');
+  fl.forEach(f=>{if(!f.classList.contains('open')){f.disabled=true;f.setAttribute('aria-label','Founding spot, taken');return;}
+    f.addEventListener('click',()=>{fl.forEach(x=>x.classList.toggle('picked',x===f));if(yours)yours.hidden=false;
+      if(btn){btn.classList.remove('lit');void btn.offsetWidth;btn.classList.add('lit');}});});
+})();
 
 // first beat: everything else inert
 beats.forEach((b,i)=>{if(i){b.inert=true;b.setAttribute('aria-hidden','true');}});

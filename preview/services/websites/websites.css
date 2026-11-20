@@ -378,3 +378,65 @@ body[data-beat="6"] .top-wrap a.book{visibility:hidden}
 
 .beat.is-in .cap.week,.beat .cap.week{animation-delay:0s!important}
 .shop .view{background:#141922}
+
+/* ======== Six mini games (approved 2026-11-19) ======== */
+.skip{all:unset;box-sizing:border-box;position:absolute;z-index:6;right:var(--side);bottom:max(14px,env(safe-area-inset-bottom,0px));min-height:44px;display:inline-flex;align-items:center;padding:0 16px;border-radius:999px;cursor:pointer;
+  background:rgba(5,8,18,.6);border:1px solid var(--rule2);color:var(--soft);font:500 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase}
+.skip:hover{color:var(--fg)}.skip:focus-visible{outline:2px solid var(--blue2);outline-offset:3px}
+[hidden]{display:none!important}
+/* 1 knock */
+.knock{position:absolute;z-index:0;left:0;right:0;bottom:0;height:58%;touch-action:none;cursor:grab;color:var(--grass)}
+.knock .live-grass{position:absolute;inset:0;color:var(--grass);overflow:hidden;pointer-events:none}
+.pin{position:absolute;z-index:2;left:50%;bottom:22%;width:54px;height:72px;transform:translate(-50%,60px) scale(.6);opacity:0;transition:transform .55s cubic-bezier(.3,1.6,.5,1),opacity .2s;pointer-events:none;filter:drop-shadow(0 10px 18px rgba(0,0,0,.45))}
+.pin.up{transform:translate(-50%,0) scale(1);opacity:1}
+.found{font:500 clamp(18px,2vw,24px)/1.3 var(--head);letter-spacing:-.01em;max-width:30ch;color:var(--fg);border-left:2px solid var(--blue);padding-left:12px;animation:rise .4s cubic-bezier(.2,.9,.25,1) both}
+/* 3 calls over the phone picture */
+.b3{background:#122337}
+.b3 .bg.phone-art img{object-position:50% 100%}
+.calls{display:grid;gap:10px;justify-items:start;margin-top:6px}
+.call{all:unset;box-sizing:border-box;cursor:pointer;min-height:48px;padding:10px 16px;border-radius:18px 18px 18px 4px;background:#EEF1EA;color:#0A0C11;font:600 16px/1.25 var(--body);display:grid;gap:2px;max-width:min(320px,86vw);box-shadow:0 10px 24px rgba(0,0,0,.35);transition:transform .25s cubic-bezier(.3,1.5,.5,1),background .2s}
+.call:nth-child(2){justify-self:center}.call:nth-child(3){justify-self:end}
+.call:active{transform:scale(.96)}
+.call .a{display:none;font-weight:500;color:#0A0C11}
+.call.answered{background:var(--blue);transform:translateY(4px)}
+.call.answered .q{text-decoration:line-through;opacity:.55;font-weight:500;font-size:13px}
+.call.answered .a{display:block;animation:rise .3s cubic-bezier(.2,.9,.25,1) both}
+.call:focus-visible{outline:2px solid var(--blue2);outline-offset:3px}
+.b3 .live-grass.bloom{position:absolute;z-index:1;left:0;right:0;bottom:0;height:34%;color:var(--grass);pointer-events:none;overflow:hidden}
+.calls-done{color:var(--fg)!important;font-weight:500}
+@media (min-width:900px){.b3 .bg.phone-art{left:auto;width:min(46vw,62vh)}.b3 .beat-in{padding-right:min(48vw,64vh)}.calls{justify-items:start}.call:nth-child(2){justify-self:start;margin-left:40px}.call:nth-child(3){justify-self:start;margin-left:80px}}
+/* 4 rail end note */
+.rail-end{justify-self:start;font:500 13px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#0A0C11;background:var(--blue);border-radius:999px;padding:8px 12px;animation:pop .45s cubic-bezier(.2,.9,.25,1) both}
+.bw-foot{padding-right:110px}
+/* 5 drag the year */
+.year{display:grid;gap:10px;max-width:560px;margin-top:6px}
+.year label{font:500 12px/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--soft)}
+.year input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:44px;background:transparent;margin:0;cursor:pointer;touch-action:pan-y;--fill:0%}
+.year input[type=range]::-webkit-slider-runnable-track{height:10px;border-radius:999px;background:rgba(238,241,234,.22)}
+.year input[type=range]::-moz-range-track{height:10px;border-radius:999px;background:rgba(238,241,234,.18)}
+.year input[type=range]::-moz-range-progress{height:10px;border-radius:999px;background:var(--blue)}
+.year input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:34px;height:34px;margin-top:-12px;border-radius:50%;background:#EEF1EA;border:3px solid var(--blue);box-shadow:0 6px 16px rgba(0,0,0,.4)}
+.year input[type=range]::-moz-range-thumb{width:30px;height:30px;border-radius:50%;background:#EEF1EA;border:3px solid var(--blue)}
+.year input[type=range]:focus-visible{outline:2px solid var(--blue2);outline-offset:4px;border-radius:8px}
+.weekly{font:500 clamp(22px,2.4vw,30px)/1.1 var(--head);letter-spacing:-.02em;color:var(--fg)}
+/* 6 bloom */
+.flowers .flower{all:unset;box-sizing:border-box;cursor:pointer;width:44px;height:44px;display:grid;place-items:center}
+.flowers .flower svg{width:34px;height:34px;transform:scale(.45);opacity:.45;transition:transform .4s cubic-bezier(.3,1.5,.5,1),opacity .3s}
+.flowers .flower g{fill:#4A7A3C}.flowers .flower .mid{fill:#2D4A25}
+.flowers .flower.open g{fill:#F3E7B0}.flowers .flower.open .mid{fill:#E8C34A}
+.flowers .flower.open:nth-child(2) g{fill:#7FA3D6}.flowers .flower.open:nth-child(3) g{fill:#F7F2E4}.flowers .flower.open:nth-child(4) g{fill:#C0603F}.flowers .flower.open:nth-child(5) g{fill:#E8C34A}.flowers .flower.open:nth-child(5) .mid{fill:#F3E7B0}
+.beat.is-in .flowers .flower.open svg{transform:scale(1);opacity:1}
+.beat.is-in .flowers .flower.open:nth-child(2) svg{transition-delay:.12s}.beat.is-in .flowers .flower.open:nth-child(3) svg{transition-delay:.24s}.beat.is-in .flowers .flower.open:nth-child(4) svg{transition-delay:.36s}.beat.is-in .flowers .flower.open:nth-child(5) svg{transition-delay:.48s}
+.beat.is-in .flowers .flower.picked svg{transform:scale(1.55) rotate(36deg);transition-delay:0s}
+.flowers .flower:focus-visible{outline:2px solid var(--blue2);outline-offset:2px;border-radius:50%}
+.yours{font:500 15px/1.3 var(--body);color:var(--fg);animation:rise .3s cubic-bezier(.2,.9,.25,1) both}
+@keyframes lit{0%{box-shadow:0 0 0 0 rgba(80,157,252,.7)}100%{box-shadow:0 0 0 18px rgba(80,157,252,0)}}
+.b6 .btn.lit{animation:lit .9s ease-out 2}
+@media (prefers-reduced-motion:reduce){.pin,.call,.flowers .flower svg{transition:none}.b6 .btn.lit{animation:none}}
+/* fixes after looking: card 1's grass sits at the foot of its zone, under the text; card 3's closing line gets a backing */
+.knock{height:46%}
+.b1 .knock .live-grass{top:auto;bottom:0;height:62%}
+.pin{bottom:30%}
+.b1 .beat-in{margin-bottom:34vh}
+.calls-done{justify-self:start;background:rgba(10,18,32,.86);border-radius:12px;padding:10px 14px;border-left:2px solid var(--blue)}
+@media (min-width:900px){.b1 .beat-in{margin-bottom:30vh}}

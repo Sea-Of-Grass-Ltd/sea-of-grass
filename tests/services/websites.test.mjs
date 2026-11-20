@@ -283,6 +283,7 @@ for (const w of WIDTHS) {
       assert.equal(await text(b5.locator('[data-week]')), WEEK, 'the $23-a-week line, exactly');
       assert.equal(await current(page), 5, 'dragging does not move the card');
       assert.ok(rb.height >= 40, 'the slider is a full-size target');
+      await page.evaluate(() => document.activeElement && document.activeElement.blur()); // arrow keys belong to a focused slider
 
       // 6 BLOOM: tap an open flower; the real count never changes
       await next(page);
