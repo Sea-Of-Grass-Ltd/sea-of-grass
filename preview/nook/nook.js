@@ -95,7 +95,7 @@ function paintRoom1(){const Wr=room1.clientWidth,Hr=room1.clientHeight,phone=Wr<
   far.style.zIndex='-1';far.style.position='absolute';farG=svgEl('g',{},far);
   // the poppy stands in the meadow over the left margin; its long root runs straight down that margin, past the heading and the
   // first column, so it never crosses a word
-  const xg=Math.max(10,Math.min(side*.42,60)),xp=xg+(phone?8:14),yTop=cut*.45,yEnd=cb.t+cb.h*.62;
+  const xg=Math.max(10,Math.min(side*.42,60)),xp=Math.max(xg+(phone?8:14),phone?24:0),yTop=cut*.45,yEnd=cb.t+cb.h*.62;
   const path=`M${xp} ${yTop}C${xp} ${yTop+40} ${xg} ${yTop+60} ${xg} ${yTop+110}C${xg+4} ${yTop+(yEnd-yTop)*.45} ${xg-4} ${yTop+(yEnd-yTop)*.75} ${xg+1} ${yEnd}`;
   // the other roots: long in the side margins, short over the words (they stop well above the heading)
   const clearY=hb.t-14;for(let i=0,n=Math.round(Wr/(phone?60:85));i<n;i++){const x=(i+.3+r()*.4)/n*Wr;if(x<side+(phone?10:30))continue;
