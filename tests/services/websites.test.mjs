@@ -344,7 +344,8 @@ for (const w of WIDTHS) {
       assert.ok(r.minY <= r.first + 260, 'it starts in the top section');
       assert.ok(r.seamsCovered, 'it runs straight across every section seam');
       assert.ok(r.monotonic, 'it always travels down the page');
-      assert.ok(r.maxX <= r.textLeft - 3, `it stays in the margin, clear of the text (path x ≤ ${r.maxX.toFixed(0)}, text from ${r.textLeft.toFixed(0)})`);
+      // phones have no margin: there the line lives in the side gutter and swings across the gaps (websites-phone-line.test.mjs)
+      if (w >= 768) assert.ok(r.maxX <= r.textLeft - 3, `it stays in the margin, clear of the text (path x ≤ ${r.maxX.toFixed(0)}, text from ${r.textLeft.toFixed(0)})`);
       await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight * .45)); await page.waitForTimeout(400);
       const onPath = await page.evaluate(() => {
         const t = document.querySelector('[data-traveller]').getBoundingClientRect(), cx = t.left + t.width / 2, cy = t.top + t.height / 2 + scrollY;
