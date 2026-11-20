@@ -1,7 +1,8 @@
 // Websites page: the plan cards take the register receipt's glass. Tristan (2026-11-20), looking at the Site Plan card and the
-// REGISTER receipt in the Bunny Burritos demo: "I like the way that this glass looks more." So the Site Plan card, and the
-// Pay once card beside it so the pair match, get the receipt's own material: its translucent fill, backdrop blur, faint top
-// highlight and drop shadow, from the same CSS values. Notches, the dashed tear, the RECOMMENDED badge, layout and text stay.
+// REGISTER receipt in the Bunny Burritos demo: "I like the way that this glass looks more." So the Site Plan card gets the
+// receipt's own material: its translucent fill, backdrop blur, faint top highlight and drop shadow, from the same CSS values.
+// Notches, the dashed tear, the RECOMMENDED badge, layout and text stay. Pay once beside it stays open type (no box), the
+// page's standing rule (websites.test.mjs: "Sites is open type, not another box").
 // Every word on the glass still passes AA; the receipt itself is untouched.
 // Run:  cd tests && npm install && node --test services/websites-plan-glass.test.mjs
 import { test, before, after } from 'node:test';
@@ -14,7 +15,7 @@ before(async () => { site = await startSite(); });
 after(async () => { await site?.close(); });
 
 for (const w of [1440, 390]) {
-  test(`${w}px · both plan cards are the register receipt's glass, and every word on them passes AA`, async () => {
+  test(`${w}px · the Site Plan card is the register receipt's glass, and every word on them passes AA`, async () => {
     const { ctx, page, errors } = await site.open(PAGE, w);
     try {
       await page.waitForTimeout(500);
@@ -38,15 +39,18 @@ for (const w of [1440, 390]) {
           }
           const st = p.querySelector('.stub');
           return { cls: p.className, ...mat(c), radius: c.borderTopLeftRadius, low,
-            notch: st ? css(st, '::before').width : null, tear: st ? css(st).borderTopStyle : null, badge: !!p.querySelector('.badge') };
+            notch: st ? getComputedStyle(st, '::before').width : null, tear: st ? css(st).borderTopStyle : null, badge: !!p.querySelector('.badge') };
         });
         return { reg: mat(reg), regRadius: reg.borderTopLeftRadius, cards };
       });
       // the receipt is as it was
       assert.equal(r.reg.bg, 'rgba(218, 209, 205, 0.13)', 'the receipt keeps its fill');
       assert.equal(r.reg.blur, 'blur(14px)', 'and its blur');
-      assert.equal(r.cards.length, 2, 'two plan cards');
-      for (const c of r.cards) {
+      assert.equal(r.cards.length, 2, 'two plans');
+      const open = r.cards.find(c => !c.badge);
+      assert.equal(open.bg, 'rgba(0, 0, 0, 0)', 'Pay once stays open type');
+      assert.deepEqual(open.low, [], 'and its words still pass AA');
+      for (const c of r.cards.filter(c => c.badge)) {
         assert.equal(c.bg, r.reg.bg, `${c.cls}: the receipt's fill`);
         assert.equal(c.blur, r.reg.blur, `${c.cls}: the receipt's blur`);
         assert.equal(c.shadow, r.reg.shadow, `${c.cls}: the receipt's top highlight and shadow`);
