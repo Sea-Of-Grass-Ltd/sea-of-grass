@@ -56,6 +56,7 @@ for (const w of WIDTHS) {
       assert.match(small, /Fix/); assert.match(small, /\$250/); assert.match(small, /custom from \$2,000/i);
       assert.ok(await plans.locator('.also [data-add="fix"]').count() === 1, 'the fix can be bought from the small line');
       assert.equal(await page.locator('[data-add]').count(), await plans.locator('[data-add]').count(), 'Buy lives only in the plans');
+      assert.equal(await page.locator('[data-add="starter-monthly"]').count(), 0, 'no $100-a-month option until Tristan confirms it');
       const unsure = page.locator('a', { hasText: 'Not sure yet? Watch it work' });
       assert.ok(await unsure.count() === 1 && (await unsure.getAttribute('href')) === '#demo', 'the unsure path');
       assert.ok(await page.evaluate(inkOf, '.hero [data-live-grass]') > 1000, 'the live meadow at the foot of the top');
@@ -117,6 +118,10 @@ for (const w of WIDTHS) {
       await demo.locator('[data-act="soldout"]').click(); await page.waitForTimeout(300);
       assert.match(await shop.locator('button[data-add="Horchata, large"]').textContent(), /Sold out/i, 'the live shop flips');
       assert.equal(await text(demo.locator('[data-caption]')), "That's the whole job. You never log in to anything.", 'the after-tap caption');
+      const panel = demo.locator('.panel');
+      assert.ok(await panel.locator('img[src*="burritos-hero"], source[srcset*="burritos-hero"]').count() >= 1, 'the burrito photo as a big rounded panel');
+      assert.ok(await panel.locator('.phone iframe').count() === 1 && await panel.locator('.register').count() === 1, 'the live phone and the register sit on the panel');
+      assert.ok(await panel.evaluate(e => parseFloat(getComputedStyle(e.querySelector('picture')).borderTopLeftRadius) >= 24), 'rounded panel corners');
 
       const calls = page.locator('#calls');
       assert.equal(await text(calls.locator('h2')), "One less call asking what's left.", 'the calls heading');
