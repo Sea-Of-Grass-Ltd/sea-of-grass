@@ -95,4 +95,8 @@ const flipIn=(quick)=>{
 if(coupon&&'IntersectionObserver' in window){const co=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){co.disconnect();coupon.classList.add('pop');flipIn(false);
   coupon.addEventListener('animationend',()=>coupon.classList.remove('pop'),{once:true});}},{threshold:.6});co.observe(coupon);
   coupon.addEventListener('mouseenter',()=>flipIn(true));}
+ // the shop screens around the Site Plan drift a little as you scroll (reduced motion: still)
+const planStage=document.querySelector('[data-planStage]');
+if(planStage&&!matchMedia('(prefers-reduced-motion: reduce)').matches){let t=0;const drift=()=>{t=0;const r=planStage.getBoundingClientRect(),p=((r.top+r.height/2)-innerHeight/2)/innerHeight;
+  planStage.style.setProperty('--py',Math.max(-1,Math.min(1,p)).toFixed(3));};addEventListener('scroll',()=>{if(!t)t=requestAnimationFrame(drift);},{passive:true});drift();}
 })();
