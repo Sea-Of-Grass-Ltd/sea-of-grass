@@ -75,7 +75,7 @@ addEventListener('touchend',e=>{
 
 // tap: right side forward, left side back, except on the things you play with
 short.addEventListener('click',e=>{
-  if(e.target.closest('a,button,input,label,summary,.register,.rail,.phone,[data-game]'))return;
+  if(e.target.closest('a,button,input,label,summary,.register,.rail,.phone,[data-game],.ask'))return;
   if(String(getSelection()).length)return;
   e.clientX>=innerWidth*.4?next():prev();
 });
@@ -127,7 +127,7 @@ short.querySelectorAll('[data-skip]').forEach(b=>b.addEventListener('click',next
   const pin=zone.querySelector('[data-pin]'),found=short.querySelector('[data-found]'),hint=short.querySelector('.b1 .hint');
   let dist=0,lx=null,ly=null,done=false;
   const reveal=()=>{if(done)return;done=true;pin.removeAttribute("hidden");requestAnimationFrame(()=>pin.classList.add('up'));
-    if(found)found.hidden=false;if(hint)hint.hidden=true;};
+    if(found)found.hidden=false;if(hint)hint.hidden=true;const fb=short.querySelector('[data-ask="facebook"]');if(fb)fb.hidden=false;};
   const add=d=>{dist+=d;if(dist>=Math.min(700,zone.clientWidth*1.6))reveal();};
   zone.addEventListener('pointerdown',e=>{lx=e.clientX;ly=e.clientY;add(120);});
   zone.addEventListener('pointermove',e=>{if(lx!==null)add(Math.hypot(e.clientX-lx,e.clientY-ly));lx=e.clientX;ly=e.clientY;},{passive:true});
@@ -141,7 +141,8 @@ short.querySelectorAll('[data-skip]').forEach(b=>b.addEventListener('click',next
   const done=short.querySelector('[data-calls-done]'),bloom=short.querySelector('.b3 .live-grass.bloom');
   calls.forEach(c=>c.addEventListener('click',()=>{if(c.classList.contains('answered'))return;c.classList.add('answered');
     c.setAttribute('aria-label',c.querySelector('.q').textContent+' Answered: '+c.querySelector('.a').textContent);
-    if(calls.every(x=>x.classList.contains('answered'))){if(done)done.hidden=false;if(bloom)bloom.hidden=false;}}));
+    if(calls.every(x=>x.classList.contains('answered'))){if(done)done.hidden=false;if(bloom)bloom.hidden=false;
+      const own=short.querySelector('[data-ask="business"]');if(own)own.hidden=false;}}));
 })();
 
 // 5 DRAG: spread $1,200 across a year; at 52 weeks it lands on the exact line
@@ -149,7 +150,7 @@ short.querySelectorAll('[data-skip]').forEach(b=>b.addEventListener('click',next
   const out=short.querySelector('[data-weekly]'),week=short.querySelector('[data-week]');
   const draw=()=>{const n=+r.value;r.style.setProperty('--fill',(n/52*100)+'%');
     out.textContent=n===0?'$1,200 up front':n===52?'$23 a week for a year':`$${Math.round(1200/n).toLocaleString('en-US')} a week for ${n} week${n>1?'s':''}`;
-    if(n===52&&week)week.hidden=false;};
+    if(n===52&&week){week.hidden=false;const or=short.querySelector('[data-or]');if(or)or.hidden=false;}};
   r.addEventListener('input',draw);draw();
 })();
 
@@ -159,6 +160,20 @@ short.querySelectorAll('[data-skip]').forEach(b=>b.addEventListener('click',next
     f.addEventListener('click',()=>{fl.forEach(x=>x.classList.toggle('picked',x===f));if(yours)yours.hidden=false;
       if(btn){btn.classList.remove('lit');void btn.offsetWidth;btn.classList.add('lit');}});});
 })();
+
+
+// the walk-in card's answers: owner doubts that answer themselves on a tap
+short.querySelectorAll('.ask').forEach(b=>b.addEventListener('click',()=>{if(b.classList.contains('answered'))return;b.classList.add('answered');
+  b.setAttribute('aria-label',b.querySelector('.q').textContent+' '+b.querySelector('.a').textContent);}));
+
+// "Not yet? Save this for later": the phone's share sheet where there is one, otherwise the link copied
+(()=>{const b=short.querySelector('[data-later]'),msg=short.querySelector('[data-later-msg]');if(!b)return;
+  const url=location.origin+location.pathname,say=t=>{if(msg)msg.textContent=t;};
+  b.addEventListener('click',async()=>{
+    if(navigator.share){try{await navigator.share({title:'Sea of Grass websites',url});say('Saved. Come back any time.');return;}catch(e){if(e&&e.name==='AbortError')return;}}
+    try{await navigator.clipboard.writeText(url);say('Link copied. Come back any time.');}
+    catch{say('Save this link for later: '+url);}
+  });})();
 
 // first beat: everything else inert
 beats.forEach((b,i)=>{if(i){b.inert=true;b.setAttribute('aria-hidden','true');}});

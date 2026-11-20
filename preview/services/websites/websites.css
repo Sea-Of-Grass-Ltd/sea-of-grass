@@ -440,3 +440,25 @@ body[data-beat="6"] .top-wrap a.book{visibility:hidden}
 .b1 .beat-in{margin-bottom:34vh}
 .calls-done{justify-self:start;background:rgba(10,18,32,.86);border-radius:12px;padding:10px 14px;border-left:2px solid var(--blue)}
 @media (min-width:900px){.b1 .beat-in{margin-bottom:30vh}}
+
+/* the walk-in card's answers, as bubbles inside play */
+.ask{all:unset;box-sizing:border-box;cursor:pointer;justify-self:start;min-height:48px;padding:10px 16px;border-radius:18px 18px 4px 18px;background:rgba(238,241,234,.12);border:1px solid var(--rule2);color:var(--fg);
+  font:600 15px/1.3 var(--body);display:grid;gap:3px;max-width:min(360px,86vw);animation:pop .45s cubic-bezier(.2,.9,.25,1) both}
+.ask .a{display:none;font-weight:500}
+.ask.answered{background:var(--blue);color:#0A0C11;border-color:var(--blue)}
+.ask.answered .q{text-decoration:line-through;opacity:.55;font-weight:500;font-size:13px}
+.ask.answered .a{display:block;animation:rise .3s cubic-bezier(.2,.9,.25,1) both}
+.ask:focus-visible{outline:2px solid var(--blue2);outline-offset:3px}
+.ask.own{justify-self:end;background:rgba(10,18,32,.86)}
+.ask.own.answered{background:var(--blue)}
+.cap.or{color:var(--fg);font-weight:500}
+.end-links{display:flex;flex-wrap:wrap;gap:4px 22px;align-items:center}
+.later{all:unset;cursor:pointer;font:500 15px/1 var(--body);color:var(--soft);padding:12px 0;text-decoration:underline;text-underline-offset:3px}
+.later:hover{color:var(--fg)}.later:focus-visible{outline:2px solid var(--blue2);outline-offset:3px;border-radius:6px}
+.later-msg{font-size:14px;color:var(--fg);min-height:1em;overflow-wrap:anywhere}
+/* card 5 on wide screens: the price on the left, the year and the answers on the right */
+@media (min-width:900px){
+  .b5 .beat-in{grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:clamp(32px,5vw,80px);align-content:center;align-self:center;margin:0 0 14vh}
+  .b5 .beat-in>[data-line]{grid-column:1;grid-row:1 / span 6;align-self:center}
+  .b5 .beat-in>:not([data-line]){grid-column:2}
+}

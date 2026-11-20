@@ -50,6 +50,7 @@
         <p class="kick">Your website, fixed and looked after</p>
         <h1 data-line>Your website can <em>run itself</em> from your register.</h1>
         <p class="found" data-found hidden>A real website linked to your Google listing helps more people find you in the first place.</p>
+        <button type="button" class="ask" data-ask="facebook" hidden><span class="q">&ldquo;We already have a Facebook page.&rdquo;</span><span class="a" data-a>Keep it. This is what shows up when people search.</span></button>
         <span class="hint"><span class="t-touch">Sweep the grass</span><span class="t-desk">Sweep the grass with your mouse</span></span>
       </div>
       <div class="knock" data-game="knock" data-art aria-label="Meadow: sweep through the grass">
@@ -67,7 +68,7 @@
             <div class="reg-top"><span>Register</span><span class="reg-live" aria-hidden="true">Connected</span></div>
             <div class="reg-row" data-item="Horchata, large" data-price="4"><span class="reg-name">Horchata</span><span class="reg-price" aria-live="polite">$4.00</span><button type="button" class="reg-out" data-act="soldout" aria-pressed="false">Sold out</button></div>
           </div>
-          <p class="cap" data-caption data-after="That&rsquo;s the whole job. You never log in to anything." aria-live="polite">This is a real page from one of our demo shops, connected to that register.</p>
+          <p class="cap" data-caption data-after="That&rsquo;s the whole job. We do the rest, and you never log in to anything." aria-live="polite">This is a real page from one of our demo shops, connected to that register.</p>
         </div>
         <div class="reg-shop"><div class="phone"><div class="view" data-w="390"><iframe title="Bunny Burritos, the demo shop the register is connected to" tabindex="-1" data-lazy="/bunnyworld/bunny-burritos/"></iframe></div></div></div>
       </div>
@@ -83,6 +84,7 @@
           <button type="button" class="call"><span class="q">&ldquo;Can I order ahead?&rdquo;</span><span class="a" data-a>Yes, order for pickup on the site.</span></button>
         </div>
         <p class="cap calls-done" data-calls-done hidden>All three answered, and nobody had to pick up the phone.</p>
+        <button type="button" class="ask own" data-ask="business" hidden><span class="q">&ldquo;But I don&rsquo;t need more business.&rdquo;</span><span class="a" data-a>Then we keep it simple: menu and hours, or ordering you switch off when busy.</span></button>
       </div>
       <div class="live-grass bloom" data-live-grass="fall" hidden aria-hidden="true"></div>
       <button type="button" class="skip" data-skip>Skip &darr;</button>
@@ -116,6 +118,8 @@
           <span class="weekly" data-weekly aria-live="polite">$1,200 up front</span>
         </div>
         <p class="cap week" id="week" data-week hidden>$1,200 works out to about $23 a week for a year, roughly what a couple of online orders bring in.</p>
+        <p class="cap or" data-or hidden>Or start at $50 a month.</p>
+        <button type="button" class="ask" data-ask="catch"><span class="q">&ldquo;What&rsquo;s the catch?&rdquo;</span><span class="a" data-a>None. $50 a month from day one, cancel any time.</span></button>
       </div>
       <div class="live-grass mid" data-live-grass data-art aria-hidden="true"></div>
       <button type="button" class="skip" data-skip>Skip &darr;</button>
@@ -130,7 +134,8 @@
         <div class="acts"><a class="btn" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book 15 minutes with Tristan or Bryce</a></div>
         <p class="phone-line">Or call us directly on 303.775.1333.</p>
         <p class="safety" data-safety>$50 a month, locked for two years, and a free photo shoot. You tap Connect on Square&rsquo;s own page, one click undoes it, and if you back out there you owe nothing.</p>
-        <button type="button" class="more-link" data-open-details="top" aria-expanded="false" aria-controls="details">Read the details &darr;</button>
+        <div class="end-links"><button type="button" class="more-link" data-open-details="top" aria-expanded="false" aria-controls="details">Read the details &darr;</button><button type="button" class="later" data-later>Not yet? Save this for later</button></div>
+        <span class="later-msg" data-later-msg aria-live="polite"></span>
       </div>
       <span class="photo-cap">Photo: a Bunny World demo photo</span>
     </section>
@@ -185,6 +190,10 @@
 <section class="band" id="faq" aria-labelledby="h-faq"><div class="in faq">
   <div class="side"><p class="kick">Questions</p><h2 id="h-faq">Before you buy</h2><p>Is there anything else you want to know? You can <a href="mailto:hello@seaofgrass.studio">email us</a> or call us on 303.775.1333.</p></div>
   <div class="qs">
+    <details><summary>I don&rsquo;t have time for this.</summary><p>That&rsquo;s the point. We do the work, and the hookup takes about two minutes with one of us sitting beside you.</p></details>
+    <details><summary>We already have a Facebook page.</summary><p>Keep it. A real website is what shows up when people search for you, and we can link the two together.</p></details>
+    <details><summary>I don&rsquo;t need more business.</summary><p>Then we keep it simple: your menu and hours kept right, or online ordering you can switch off whenever you&rsquo;re busy.</p></details>
+    <details><summary>What&rsquo;s the catch?</summary><p>There isn&rsquo;t one. It&rsquo;s $50 a month from day one, and you can cancel any time.</p></details>
     <details><summary>Which registers do you work with?</summary><p>Square is ready today, and we&rsquo;ve tested it from the menu all the way to the checkout. Shopify and Clover work too, and we set them up for each shop after checking your plan, because a few plans don&rsquo;t allow it.</p></details>
     <details><summary>Does connecting Square cost anything?</summary><p>We don&rsquo;t charge for the hookup itself. Square takes its usual card fee on online orders, much like the one you already pay at the counter, and your Square Dashboard shows the exact rate.</p></details>
     <details><summary>What if I switch registers later?</summary><p>Tell us and we&rsquo;ll move the site over to the new one. The site, the domain and the files are yours either way.</p></details>
