@@ -104,17 +104,13 @@ body.book-in-page .top nav a.book{visibility:hidden;opacity:0}
 .flapboard{padding:clamp(40px,6vw,80px) 0}
 .flapboard .in{display:grid;gap:16px}
 .flapboard .kick{margin:0 0 6px}
-.flap{position:relative;display:flex;justify-content:space-between;align-items:center;height:clamp(64px,7vw,100px);padding:0 clamp(16px,2vw,28px);border-radius:8px;background:var(--flap-face);box-shadow:inset 0 0 0 1px rgba(var(--ink-rgb),.12);perspective:420px;overflow:hidden}
-/* a real split flap: the hairline edge is an inset shadow (not a border) so the hinge gap can run edge to edge; the bottom leaf
-   sits a touch darker under the letters; the gap is a solid dark cut through everything on the card, letters and arrow alike */
-.flap::before{content:"";position:absolute;left:0;right:0;top:50%;bottom:0;background:rgba(var(--shade-rgb),.14)}
-.flap::after{content:"";position:absolute;z-index:2;left:0;right:0;top:50%;height:2px;margin-top:-1px;background:color-mix(in srgb,var(--flap-face) 45%,rgb(var(--shade-rgb)))}
+.flap{position:relative;display:flex;justify-content:space-between;align-items:center;height:clamp(64px,7vw,100px);padding:0 clamp(16px,2vw,28px);border-radius:8px;background:var(--flap-face);border:1px solid rgba(var(--ink-rgb),.12);perspective:420px;overflow:hidden}
+.flap::after{content:"";position:absolute;left:0;right:0;top:50%;height:2px;margin-top:-1px;background:var(--canvas)}
 .flap-w{display:flex;gap:.18em;font:500 clamp(28px,5vw,72px)/1 var(--mono);text-transform:uppercase;transform:translateY(.06em)}
 .flap-w i{font-style:normal;display:inline-block;transform-origin:50% 50%}
 .flap-a{font:400 clamp(24px,3vw,44px)/1 var(--mono);color:var(--blue2);position:relative;z-index:1}
-.flap.go .flap-w i{animation:flip .5s cubic-bezier(.3,.7,.3,1) both}
-@keyframes flip{0%{transform:rotateX(90deg);opacity:.2}60%{transform:rotateX(-12deg);opacity:1}100%{transform:none}}
-@media (prefers-reduced-motion:reduce){.flap.go .flap-w i{animation:none}}
+/* a row stays blank until page.js flips it in (only with motion allowed; without script the words simply stand) */
+.flap.wait .flap-w i{visibility:hidden}
 
 /* 3 Bunny World: photo ticket rail + the open stage */
 .bw-head{display:flex;align-items:center;gap:14px 20px;margin-bottom:14px}
@@ -279,7 +275,8 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 :is(a,button,summary):focus-visible{outline-color:var(--sage)}
 /* the Care ticket: plum-mute glass on the navy ground, no glow */
 .ticket-shape{background:rgba(var(--plum-mute-rgb),.55);box-shadow:inset 0 .5px 0 rgba(var(--text-rgb),.45),inset -.5px 0 0 rgba(var(--text-rgb),.55),inset 0 -.5px 0 rgba(var(--text-rgb),.2),inset .5px 0 0 rgba(var(--text-rgb),.15)}
-.flap{background:var(--ground);box-shadow:inset 0 0 0 1px rgba(var(--text-rgb),.1)}
+.flap{background:var(--ground);border-color:rgba(var(--text-rgb),.1)}
+.flap::after{background:var(--moss)}
 .stub::before,.stub::after{background:var(--navy)}
 .ticket::before{background:var(--plum);box-shadow:min(78vw,423px) 0 0 var(--plum)}
 @media (max-width:700px){.ticket::before{box-shadow:78vw 0 0 var(--plum)}}
