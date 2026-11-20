@@ -12,7 +12,7 @@ let cur=1,open=false;
 function place(){track.style.transform=`translate3d(0,${-(cur-1)*short.clientHeight}px,0)`;}
 function goTo(n){
   n=Math.max(1,Math.min(N,n));if(n===cur)return;cur=n;
-  short.dataset.current=String(n);
+  short.dataset.current=String(n);document.body.dataset.beat=String(n);
   bars.forEach((b,i)=>b.classList.toggle('on',i<n));
   beats.forEach((b,i)=>{const on=i===n-1;b.inert=!on;b.setAttribute('aria-hidden',String(!on));
     if(on){b.classList.remove('is-in');void b.offsetWidth;b.classList.add('is-in');}else b.classList.remove('is-in');});
@@ -80,6 +80,15 @@ short.addEventListener('click',e=>{
   e.clientX>=innerWidth*.4?next():prev();
 });
 
+// the price card: tapping $1,200 shows what it works out to each week
+short.querySelectorAll('[data-week-toggle]').forEach(b=>b.addEventListener('click',()=>{
+  const w=document.getElementById(b.getAttribute('aria-controls')),on=b.getAttribute('aria-expanded')!=='true';
+  b.setAttribute('aria-expanded',String(on));if(w)w.hidden=!on;}));
+
+// the first five: one flower per founding spot, open for each spot still free (from SOG_SHOP.founding, never faked)
+(()=>{const f=window.SOG_SHOP&&SOG_SHOP.founding,fl=[...short.querySelectorAll('.flower')];if(!f||!fl.length)return;
+  fl.forEach((x,i)=>{x.style.display=i<f.total?'':'none';x.classList.toggle('open',i<f.left);});})();
+
 // buttons and links that open the details
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-open-details]');if(b){e.preventDefault();openDetails(b.dataset.openDetails);return;}
@@ -97,13 +106,19 @@ const load=f=>{if(f&&!f.getAttribute('src'))f.src=f.dataset.lazy;};
 if(rail){
   const frames=[...rail.querySelectorAll('iframe')];
   const ro=new ResizeObserver(es=>es.forEach(e=>fitView(e.target)));rail.querySelectorAll('.view').forEach(v=>ro.observe(v));
-  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting&&cur>=5)load(e.target.querySelector('iframe'));}),{root:rail,rootMargin:'0px 60% 0px 60%'});
-  document.addEventListener('short:beat',e=>{if(e.detail>=5){frames.slice(0,2).forEach(load);rail.querySelectorAll('.shop').forEach(s=>io.observe(s));}});
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting&&cur>=3)load(e.target.querySelector('iframe'));}),{root:rail,rootMargin:'0px 60% 0px 60%'});
+  const shops=[...rail.querySelectorAll('.shop')],count=short.querySelector('[data-rail-count]');
+  document.addEventListener('short:beat',e=>{if(e.detail>=3){frames.slice(0,2).forEach(load);shops.forEach(s=>io.observe(s));}});
+  // the "1 of 9" count follows the first shop in view at the rail's left edge
+  let tick=0;rail.addEventListener('scroll',()=>{cancelAnimationFrame(tick);tick=requestAnimationFrame(()=>{
+    const left=rail.scrollLeft;let best=0,bd=1e9;
+    shops.forEach((s,i)=>{const d=Math.abs(s.offsetLeft-rail.offsetLeft-left);if(d<bd){bd=d;best=i;}});
+    if(count)count.textContent=`${best+1} of ${shops.length}`;});},{passive:true});
 }
 
 // first beat: everything else inert
 beats.forEach((b,i)=>{if(i){b.inert=true;b.setAttribute('aria-hidden','true');}});
-bars[0]&&bars[0].classList.add('on');
+bars[0]&&bars[0].classList.add('on');document.body.dataset.beat='1';
 new ResizeObserver(place).observe(short);place();
 document.documentElement.classList.add('short-ready');
 })();
