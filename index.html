@@ -1321,19 +1321,14 @@ html[data-theme="glass"]:not([data-scheme]) body main.cb .cb-steps li b .fl.flip
    order. Layer offsets come from the opening's script (--n-sky, --n-stars, in px); --scene fades the painting for the chapters.
    Reduced motion: one still composite. Colours stay in tokens (the palette is still being chosen). ---- */
 main.cb .lf-night{display:none}
-html[data-theme="glass"]:not([data-scheme]) .lf{--lf-night:1;--lf-star:#F3EAD2;--lf-star-glow:rgba(243,234,210,.5);--lf-mark:#EFE5CB;--lf-mark-rim:rgba(255,248,228,.75)}
-html[data-theme="glass"]:not([data-scheme]):not([data-scheme]) .lf{--lf-mark-fill:moon}
+html[data-theme="glass"]:not([data-scheme]) .lf{--lf-night:1;--lf-star:#F1E8D2;--lf-star-warm:#E8913A;--lf-mark:#F1E8D2}
+html[data-theme="glass"]:not([data-scheme]):not([data-scheme]) .lf{--lf-mark-fill:outline}
 html[data-theme="glass"]:not([data-scheme]) main.cb .lf-night{display:block;position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;opacity:var(--scene,1)}
-html[data-theme="glass"]:not([data-scheme]) main.cb .lf-sky img,html[data-theme="glass"]:not([data-scheme]) main.cb .lf-still img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-html[data-theme="glass"]:not([data-scheme]) main.cb .lf-sky img{transform:translateY(var(--n-sky,0px))}
-html[data-theme="glass"]:not([data-scheme]) main.cb .lf-stars{position:absolute;left:50%;top:0;height:64%;aspect-ratio:2400/1340;min-width:100%;transform:translate(-50%,var(--n-stars,0px))}
-html[data-theme="glass"]:not([data-scheme]) main.cb .lf-starfield{position:absolute;inset:0;animation:lf-drift 90s ease-in-out infinite alternate}
-html[data-theme="glass"]:not([data-scheme]) main.cb .lf-starfield img{position:absolute;inset:0;width:100%;height:100%;display:block}
-html[data-theme="glass"]:not([data-scheme]) main.cb .lf-twinkle{position:absolute;left:var(--x);top:var(--y);width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border-radius:50%;background:var(--lf-star);box-shadow:0 0 8px 3px var(--lf-star-glow);opacity:0;animation:lf-tw 4.8s ease-in-out var(--d) infinite}
-html[data-theme="glass"]:not([data-scheme]) main.cb .lf-still{display:none}
-@keyframes lf-drift{from{transform:translateX(-.6%)}to{transform:translateX(.6%)}}
-@keyframes lf-tw{0%,100%{opacity:0;transform:scale(.5)}50%{opacity:.9;transform:scale(1.1)}}
-@media (prefers-reduced-motion:reduce){html[data-theme="glass"]:not([data-scheme]) main.cb :is(.lf-sky,.lf-stars){display:none}html[data-theme="glass"]:not([data-scheme]) main.cb .lf-still{display:block}html[data-theme="glass"]:not([data-scheme]) main.cb :is(.lf-starfield,.lf-twinkle){animation:none}}
+html[data-theme="glass"]:not([data-scheme]) main.cb .lf-sky img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+html[data-theme="glass"]:not([data-scheme]) main.cb .lf-skygl{position:absolute;inset:0;width:100%;height:100%;display:none}
+html[data-theme="glass"]:not([data-scheme]) main.cb .lf-night.gl .lf-skygl{display:block}html[data-theme="glass"]:not([data-scheme]) main.cb .lf-night.gl .lf-sky{display:none}
+html[data-theme="glass"]:not([data-scheme]) main.cb .lf-stars{position:absolute;left:50%;top:2%;height:70%;width:max(100%,1440px);transform:translate(-50%,var(--n-stars,0px))}
+html[data-theme="glass"]:not([data-scheme]) main.cb .lf-starc{position:absolute;inset:0;width:100%;height:100%;display:block}
 </style>
 <script>
 (function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#120607',glass:'#EEF1F8',neu:'#EFE6D8',brutal:'#FFFDF5',simple:'#F4F1EA',editorial:'#f3f1ea'};
@@ -1377,10 +1372,10 @@ apply(get());})();
       <svg class="lf-cloud" style="--cx:80%;--cy:24%;--cw:17%;--from:45vw" viewBox="100 260 520 170"><rect x="110" y="330" width="500" height="92" rx="46"/><rect x="250" y="268" width="300" height="92" rx="46"/></svg>
     </div>
     <div class="lf-title" aria-hidden="true"><p class="cb-h">Three things, done properly.</p></div>
-    <div class="lf-night" aria-hidden="true"><!-- the painted night, back to front (the S, ridges and meadow are drawn on the canvas) -->
+    <div class="lf-night" aria-hidden="true"><!-- the painted night (approved in Tristan's demo): sky, stars; the ridges, S, words and meadow are drawn on the canvas -->
       <picture class="lf-sky"><source media="(max-aspect-ratio: 4/5)" srcset="/preview/assets/night/sky-tall.webp"><img src="/preview/assets/night/sky-wide.webp" alt="" decoding="async" fetchpriority="high"></picture>
-      <div class="lf-stars"><div class="lf-starfield"><img src="/preview/assets/night/stars-2400.webp" srcset="/preview/assets/night/stars-1400.webp 1400w, /preview/assets/night/stars-2400.webp 2400w" sizes="max(100vw, 115vh)" alt="" decoding="async"><i class="lf-twinkle" style="--x:65.6%;--y:18.4%;--d:0s"></i><i class="lf-twinkle" style="--x:41.8%;--y:6.5%;--d:1.3s"></i><i class="lf-twinkle" style="--x:92.3%;--y:9.3%;--d:2.9s"></i><i class="lf-twinkle" style="--x:70.6%;--y:39.6%;--d:0.7s"></i><i class="lf-twinkle" style="--x:72.8%;--y:27.0%;--d:3.6s"></i><i class="lf-twinkle" style="--x:34.9%;--y:26.0%;--d:2.2s"></i><i class="lf-twinkle" style="--x:71.2%;--y:59.9%;--d:4.1s"></i><i class="lf-twinkle" style="--x:68.1%;--y:46.8%;--d:1.8s"></i><i class="lf-twinkle" style="--x:37.4%;--y:14.8%;--d:3.1s"></i><i class="lf-twinkle" style="--x:11.7%;--y:33.2%;--d:0.4s"></i><i class="lf-twinkle" style="--x:86.4%;--y:57.2%;--d:2.6s"></i></div></div>
-      <picture class="lf-still"><source media="(max-aspect-ratio: 4/5)" srcset="/preview/assets/night/still-tall.webp"><img src="/preview/assets/night/still-wide.webp" alt="" decoding="async" loading="lazy"></picture>
+      <canvas class="lf-skygl"></canvas>
+      <div class="lf-stars"><canvas class="lf-starc"></canvas></div>
     </div>
     <canvas id="lf-cv" aria-label="The headline and the Sea of Grass S over a heap of grass. Move your pointer or finger sideways through it: the S gets knocked and springs back, and the grass is scooped up and settles again. Press to throw more grass."></canvas>
   </section>
@@ -1564,25 +1559,25 @@ function lockup(phone,add,S){ // 'A design and / technology studio / for the Fro
   lines.forEach((l,li)=>{let x=x0;const by=y0+fs*.85+li*lh,w0=x;
     for(const[t,v]of l){c.font=font(v,fs);const w=c.measureText(t).width;add('w',x+w/2,by-fs*.28,Math.max(w,fs*.5)*.55,{ch:t,fs,font:font(v,fs),line:li});x+=w+gap;}
     });
-  const blockH=lh*3;HEADB=y0+blockH;HEADX=[x0,x0+lw(fs)];if(phone){const mh=Math.min(H*.17,W*.42);S(W*.5,y0+blockH+mh*.75,mh);}else if(NIGHT){const mh=Math.min(blockH*1.15,W*.24,H*.3);S(W*.76,H*.33,mh);}else{const mh=Math.min(blockH*1.15,W*.26);S(W*.76,y0+blockH*.5,mh);}}
+  const blockH=lh*3;HEADB=y0+blockH;HEADX=[x0,x0+lw(fs)];if(NIGHT){const mw=phone?W*.44:Math.min(W*.26,340,(W-HEADX[1])*.8),mh=mw*259/351;if(phone)S(W*.5,Math.max(HEADB+mh*.7,H*.6-mh/2),mh);else S(W*.92-mw/2,y0+mh/2,mh);}else if(phone){const mh=Math.min(H*.17,W*.42);S(W*.5,y0+blockH+mh*.75,mh);}else{const mh=Math.min(blockH*1.15,W*.26);S(W*.76,y0+blockH*.5,mh);}}
 function rnd(s){return()=>{s=(s*16807)%2147483647;return(s-1)/2147483646;};}
 function size(){const r=SEC.getBoundingClientRect(),bar=document.querySelector('header.bar');DPR=Math.min(W<600?1.5:2,devicePixelRatio||1);W=Math.round(r.width);H=Math.round(r.height);
   TOP=bar&&getComputedStyle(bar).position==='fixed'?Math.max(0,bar.getBoundingClientRect().height):0;SEC.style.setProperty('--lf-top',TOP+'px');cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);build();nightLayout();}
 // ---- the painted night: ridges on the canvas between the moon and the meadow; the sky and stars are layers behind it
 // LAY: where each ridge's picture sits at the end of the rise (share of the opening's height); K: how much lower it starts
-let HEADX=[0,0],HEADB=0,RISE=still?1:0,SCENE=1,CROP='';const RID={far:{},near:{}},LAY={wide:{far:.34,near:.45},tall:{far:.40,near:.47}},K={sky:.012,stars:.04,moon:.09,far:.05,near:.12};
+let HEADX=[0,0],HEADB=0,RISE=still?1:0,SCENE=1,CROP='';const RID={far:{},near:{}},LAY={wide:{far:.34,near:.45},tall:{far:.40,near:.47}},K={sky:0,stars:.05,moon:0,far:.12,near:.24};
 const isS=p=>p.kind==='p1'||p.kind==='p2'||p.kind==='dot';
 function ridgeScale(k){const r=RID[k];if(!r.img||!r.img.complete||!r.img.naturalWidth||!W)return;const h=Math.round(W*r.img.naturalHeight/r.img.naturalWidth),o=r.off||(r.off=document.createElement('canvas'));
   o.width=Math.round(W*DPR);o.height=Math.round(h*DPR);const x=o.getContext('2d');x.drawImage(r.img,0,0,o.width,o.height);r.h=h;
   const a=x.getImageData(0,0,o.width,o.height).data,ow=o.width;let top=0;find:for(let y=0;y<o.height;y++)for(let i=0;i<ow;i+=4)if(a[(y*ow+i)*4+3]>128){top=y;break find;}   // the highest crest
   r.crest=top/DPR;const B=64;r.cols=new Array(B).fill(1e9);for(let b=0;b<B;b++){const x0=Math.floor(b*ow/B),x1=Math.floor((b+1)*ow/B);col:for(let y=0;y<o.height;y++)for(let xx=x0;xx<x1;xx+=2)if(a[(y*ow+xx)*4+3]>128){r.cols[b]=y/DPR;break col;}}const f=x.getImageData(Math.floor(ow/2),o.height-2,1,1).data;r.foot=`rgb(${f[0]},${f[1]},${f[2]})`;r.ok=true;}
-function nightLayout(){if(!NIGHT||still)return;const crop=W/H<=.8?'tall':'wide';
-  if(crop!==CROP){CROP=crop;for(const k of ['far','near']){const r=RID[k];r.ok=false;r.img=new Image();r.img.decoding='async';r.img.onload=()=>{ridgeScale(k);if(still)draw();};r.img.src=`/preview/assets/night/ridge-${k}-${crop}.webp`;}}
+function nightLayout(){if(!NIGHT)return;const crop=W/H<=.8?'tall':'wide';
+  if(crop!==CROP){CROP=crop;for(const k of ['far','near']){const r=RID[k];r.ok=false;r.img=new Image();r.img.decoding='async';r.img.onload=()=>{ridgeScale(k);draw();};r.img.src=`/preview/assets/night/ridge-${k}-${crop}.webp`;}}
   else{ridgeScale('far');ridgeScale('near');}nightMoon();}
 function nightMoon(){if(!NIGHT)return;const d=(1-RISE)*K.moon*H;for(const p of pieces){if(!isS(p))continue;if(p.hy0===undefined)p.hy0=p.hy;p.hy=p.hy0+d;if(still)p.y=p.hy;}}
 const ridgeTop=k=>(LAY[CROP||'wide'][k]+(1-RISE)*K[k])*H;
 const crestUnder=(k,x0,x1)=>{const r=RID[k];if(!r.cols||!W)return ridgeTop(k)+(r.crest||0);const B=r.cols.length;let m=1e9;for(let b=Math.max(0,Math.floor(x0/W*B));b<=Math.min(B-1,Math.floor(x1/W*B));b++)m=Math.min(m,r.cols[b]);return ridgeTop(k)+m;};
-function drawRidges(){if(!NIGHT||still||SCENE<.01)return;c.save();c.setTransform(DPR,0,0,DPR,0,0);c.globalAlpha=SCENE;
+function drawRidges(){if(!NIGHT||SCENE<.01)return;c.save();c.setTransform(DPR,0,0,DPR,0,0);c.globalAlpha=SCENE;
   for(const k of ['far','near']){const r=RID[k];if(!r.ok)continue;const y=ridgeTop(k);c.drawImage(r.off,0,y,W,r.h);if(y+r.h<H){c.fillStyle=r.foot;c.fillRect(0,y+r.h-1,W,H-y-r.h+1);}}
   c.restore();}
 // ---- physics: the pointer is a moving body; pieces are knocked by its speed and pulled home by a spring
@@ -1652,7 +1647,7 @@ const shades=(col)=>{col=col.trim();const hx=/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.tes
 // the S's fill: each style can ask for flat ink (default), glass, rising blue light, or a meadow (set --lf-mark-fill on .lf)
 let MFILL='',RIM='';
 function markFill(path,key){const m=MFILL;
-  if(m==='moon'){c.fillStyle=MARKC;c.fill(path);c.lineWidth=2;c.strokeStyle=RIM||MARKC;c.stroke(path);}
+  if(m==='outline'){const t=c.getTransform();c.lineWidth=5*DPR/Math.hypot(t.a,t.b);c.lineJoin='round';c.strokeStyle=MARKC;c.stroke(path);}   // the night's S: a cream outline, 5px at any size
   else if(m==='glass'){const gr=c.createLinearGradient(0,40,0,310);gr.addColorStop(0,'rgba(255,255,255,.22)');gr.addColorStop(.45,'rgba(255,255,255,.08)');gr.addColorStop(1,'rgba(255,255,255,.03)');
     c.fillStyle=gr;c.fill(path);c.lineWidth=3;c.strokeStyle=RIM||'rgba(167,202,255,.95)';c.stroke(path);c.lineWidth=1.2;c.strokeStyle='rgba(255,255,255,.55)';c.save();c.translate(0,-1.5);c.stroke(path);c.restore();}
   else if(m==='light'){const gr=c.createLinearGradient(0,40,0,310);gr.addColorStop(0,'#030A1C');gr.addColorStop(.35,'#00358A');gr.addColorStop(.7,'#0068F0');gr.addColorStop(1,'#7DB8FF');
@@ -1730,15 +1725,14 @@ function withField(fn){ // draw the blades part-way (or all the way) into the fi
   fn();g.x.set(sx);g.y.set(sy);g.a.set(sa);}
 let TITLE=1;function draw(){c.setTransform(DPR,0,0,DPR,0,0);if(VZ.trails&&FIELD==='viz'&&FM>.9){c.globalCompositeOperation='destination-out';c.fillStyle='rgba(0,0,0,.16)';c.fillRect(0,0,W,H);c.globalCompositeOperation='source-over';}else c.clearRect(0,0,W,H);   // trails: last frames fade instead of vanishing
   c.fillStyle=INK;c.strokeStyle=INK;
-  for(const pass of NIGHT?[1,2]:[0]){if(pass===2)drawRidges();   // the night scene: the S (moon) first, the ridges in front of it, then the words
-  for(const p of pieces){if(TITLE<.01)break;if(pass===1&&!isS(p)||pass===2&&isS(p))continue;c.save();c.globalAlpha=TITLE;c.translate(p.x,p.y);c.rotate(p.a);
+  if(NIGHT){drawRidges();for(const p of pieces)if(isS(p)){p.x=p.hx;p.y=p.hy;p.a=0;p.vx=p.vy=p.va=0;}}   // the night: ridges behind the words and the S; the S stays still
+  {for(const p of pieces){if(TITLE<.01)break;c.save();c.globalAlpha=TITLE;c.translate(p.x,p.y);c.rotate(p.a);
     if(p.kind==='p2'){c.setTransform(DPR,0,0,DPR,0,0);c.translate(p.x,p.y);c.rotate(p.a);c.scale(p.sc,p.sc);c.translate(-219,-174+36.26);markFill(P2,'p2');c.fillStyle=INK;}
     else if(p.kind==='p1'){c.setTransform(DPR,0,0,DPR,0,0);c.translate(p.x,p.y);c.rotate(p.a);c.scale(p.sc,p.sc);c.translate(-219,-174-36.26);markFill(P1,'p1');c.fillStyle=INK;}
     else if(p.kind==='dot'){c.setTransform(DPR,0,0,DPR,0,0);c.translate(p.x,p.y);c.rotate(p.a);c.scale(p.sc,p.sc);c.translate(-357.983,-86.686);markFill(DOT);c.fillStyle=INK;}
     else if(p.kind==='ch'||p.kind==='w'){c.font=p.font;c.textAlign='center';c.textBaseline='alphabetic';c.fillText(p.ch,0,p.fs*(p.kind==='w'?.28:.36));}
     else if(p.kind==='rule'){const v=RULE[p.line];if(v>.02){c.globalAlpha=v*TITLE;c.fillRect(-p.w/2,-p.h/2,p.w*v,p.h);}}
     c.restore();}}
-  if(NIGHT&&TITLE<.01)drawRidges();
   const g=grass;if(ready<15)return;c.fillStyle=GRASS;c.strokeStyle=GRASS;c.strokeStyle=GRASS;c.beginPath();
   c.lineCap="round";withField(()=>pieceDraw(c,g,FIELD==='viz'&&FM>.002?vizColor():GRASS,FIELD==='viz'&&FM>.5?[`hsl(${VZ.hue2|0} 80% 66%)`,`hsl(${(VZ.hue2+40)|0} 80% 72%)`]:(getComputedStyle(SEC).getPropertyValue('--lf-flowers').trim()||'#F3E7B0,#E8C34A,#6F8FB8,#B8553A').split(',').map(x=>x.trim())));}
 function frame(now){const dt=last?Math.min(.033,(now-last)/1000):.016;last=now;ptr.vx*=.85;ptr.vy*=.85;
@@ -1761,7 +1755,7 @@ size();if(still){for(let k=0;k<90;k++)fluid(grass,1/120,0);ready=15;draw();}else
 new IntersectionObserver(es=>{const v=es[0].isIntersecting;if(v&&!visible&&!still&&!running){visible=true;running=true;requestAnimationFrame(frame);}visible=v;}).observe(SEC);
 window.sogOpening={night:(r,sc)=>{if(!NIGHT)return;r=still?1:Math.max(0,Math.min(1,r));sc=Math.max(0,Math.min(1,sc));if(Math.abs(r-RISE)<.001&&Math.abs(sc-SCENE)<.001)return;RISE=r;SCENE=sc;
     SEC.style.setProperty('--n-sky',((1-r)*K.sky*H).toFixed(1)+'px');SEC.style.setProperty('--n-stars',((1-r)*K.stars*H).toFixed(1)+'px');SEC.style.setProperty('--scene',sc.toFixed(3));nightMoon();if(still)draw();},
-  nightInfo:()=>{const S=pieces.filter(p=>p.kind==='p1'||p.kind==='p2'),o=k=>(1-RISE)*K[k]*H;return{ready:NIGHT&&(still||RID.far.ok&&RID.near.ok),crop:CROP,still,ridges:NIGHT&&!still&&!!RID.far.ok&&!!RID.near.ok,scene:SCENE,rise:RISE,
+  nightInfo:()=>{const S=pieces.filter(p=>p.kind==='p1'||p.kind==='p2'),SA=pieces.filter(isS),o=k=>(1-RISE)*K[k]*H,L=window.sogNightLayers?sogNightLayers.info():{},bx=SA.length?{x0:Math.round(Math.min(...SA.map(p=>p.x-p.r))),x1:Math.round(Math.max(...SA.map(p=>p.x+p.r))),y0:Math.round(Math.min(...SA.map(p=>p.y-p.r))),y1:Math.round(Math.max(...SA.map(p=>p.y+p.r)))}:null;return{...L,mark:MFILL,markAlpha:TITLE,markBox:bx,moonX:S.length?S.reduce((a,p)=>a+p.hx,0)/S.length:0,headRight:HEADX[1],ready:NIGHT&&!!L.ready&&RID.far.ok&&RID.near.ok,crop:CROP,still,ridges:NIGHT&&!!RID.far.ok&&!!RID.near.ok,scene:SCENE,rise:RISE,
     off:{sky:o('sky'),stars:o('stars'),moon:o('moon'),far:o('far'),near:o('near')},headBottom:HEADB,moonY:S.length?S.reduce((a,p)=>a+p.hy,0)/S.length:0,farCrest:crestUnder('far',HEADX[0],HEADX[1]),nearCrest:(()=>{const xs=S.map(p=>p.hx);return S.length?crestUnder('near',Math.min(...xs)-20,Math.max(...xs)+20):ridgeTop('near');})()};},
   viz:VZ,vizFree:(r)=>{VZ.free=r;},markFree:(r)=>{if(MF&&r&&Math.abs(MF.x-r.x)<2&&Math.abs(MF.w-r.w)<2)return;MF=r;delete FTS.mark;if(FIELD==='mark')fT=null;},gridRect:()=>{if(W)plotRect();return GRECT;},field:(name,m)=>{if(name&&name!==FIELD){FIELD=name;fT=null;}m=Math.max(0,Math.min(1,m));if(Math.abs(m-FM)<.002)return;FM=m;if(m>0&&!fT&&grass)fieldTargets();if(still)draw();},title:(a)=>{if(Math.abs(a-TITLE)<.002)return;TITLE=a;if(still)draw();},grassLine:(n)=>{const g=grass,out=new Array(n).fill(1e9);if(!g||ready<15)return out;const cols=Array.from({length:n},()=>[]);for(let i=0;i<g.n;i++){if(Math.abs(g.y[i]-g.py[i])>.6||Math.abs(g.x[i]-g.px[i])>.6)continue;const k=Math.min(n-1,Math.max(0,Math.floor(g.x[i]/W*n)));cols[k].push(g.y[i]-g.len[i]*.6);}return cols.map(a=>{if(a.length<12)return 1e9;a.sort((x,y)=>x-y);return a[Math.min(a.length-1,10)];});},fit:()=>{if(!W)return;KEEPG=H;size();KEEPG=0;if(still)draw();},wake:()=>{if(!still&&!running){running=true;requestAnimationFrame(frame);}},poke:(x,y,vx,vy)=>{ptr.x=x;ptr.y=y;ptr.vx=vx;ptr.vy=vy;ptr.on=true;},
   // for the settle check: how far the furthest piece is from home, in px and degrees
@@ -1839,6 +1833,91 @@ if(!dew()||matchMedia('(prefers-reduced-motion: reduce)').matches||!window.Inter
 function riffle(){words.forEach((b,wi)=>{[...b.querySelectorAll('.fl')].forEach((f,li)=>{const end=f.textContent,i=f.firstChild;let n=6+wi*2+li*3+Math.floor(Math.random()*3),k=AZ.indexOf(end.toUpperCase())-n;
   const step=()=>{f.classList.remove('flip');void f.offsetWidth;f.classList.add('flip');i.textContent=n>0?AZ[(k%26+26)%26]:end;k++;if(n-->0)setTimeout(step,70);};step();});});}
 const io=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){io.disconnect();riffle();}},{threshold:.5});io.observe(document.querySelector('main.cb .cb-steps ol'));})();
+</script>
+<script>
+/* the painted night's sky and stars (approved in Tristan's demo, 2026-11-19)
+   sky: the real painting in a WebGL2 feedback pass; the cursor smears last frame's paint (small brush, no swirl) and it heals
+   about 4% a frame, so a second or two. No WebGL2, or reduced motion: the painting as a still image.
+   stars: his six- and five-point stars as filled vectors where the painting's specks were. Still until a swipe hits one: it
+   spins with the swipe, morphs toward the other shape while spinning, then slows and settles. Redrawn only while one moves. */
+(function(){const SEC=document.getElementById('opening'),box=SEC&&SEC.querySelector('.lf-night');if(!box)return;
+const on=()=>getComputedStyle(SEC).getPropertyValue('--lf-night').trim()==='1';if(!on())return;
+const still=matchMedia('(prefers-reduced-motion: reduce)').matches,tall=()=>matchMedia('(max-aspect-ratio: 4/5)').matches;
+const I={ready:false,sky:'image',stars:0,orange:0,starsMoving:false,smear:0,still};
+let visible=true,scene=()=>parseFloat(SEC.style.getPropertyValue('--scene')||'1');
+new IntersectionObserver(es=>{visible=es[0].isIntersecting;if(visible){kickSky();}}).observe(SEC);
+// ---------- sky ----------
+const cv=box.querySelector('.lf-skygl');let kickSky=()=>{};
+(function sky(){if(still)return;const gl=cv.getContext('webgl2',{alpha:false,antialias:false,preserveDrawingBuffer:false});if(!gl)return;
+  const VS=`#version 300 es
+in vec2 p;void main(){gl_Position=vec4(p,0.,1.);}`;
+  const SIM=`#version 300 es
+precision highp float;uniform sampler2D prev,img;uniform vec2 r,m,mv,isz;uniform float asp,first;out vec4 o;
+void main(){vec2 px=gl_FragCoord.xy,uv=px/r,uvp=vec2(uv.x,1.-uv.y);
+ float ia=isz.x/isz.y;vec2 tu=uvp;if(asp>ia){tu.y=(tu.y-.5)*ia/asp+.5;}else{tu.x=(tu.x-.5)*asp/ia+.5;}
+ tu.y=tu.y*.92+.05;vec3 base=texture(img,tu).rgb;
+ if(first>.5){o=vec4(base,1.);return;}
+ vec2 d=uv-m;d.x*=asp;float k=exp(-dot(d,d)/.006);
+ vec3 smeared=texture(prev,uv-mv*k*.35).rgb;
+ o=vec4(mix(smeared,base,.04),1.);}`;
+  const SHOW=`#version 300 es
+precision highp float;uniform sampler2D tex;uniform vec2 r;out vec4 o;void main(){o=texture(tex,gl_FragCoord.xy/r);}`;
+  function prog(fs){const p=gl.createProgram();for(const[t,src]of[[gl.VERTEX_SHADER,VS],[gl.FRAGMENT_SHADER,fs]]){const sh=gl.createShader(t);gl.shaderSource(sh,src);gl.compileShader(sh);if(!gl.getShaderParameter(sh,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(sh));gl.attachShader(p,sh);}
+    gl.bindAttribLocation(p,0,'p');gl.linkProgram(p);if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(p));const u={};for(let i=0,n=gl.getProgramParameter(p,gl.ACTIVE_UNIFORMS);i<n;i++){const nm=gl.getActiveUniform(p,i).name;u[nm]=gl.getUniformLocation(p,nm);}return{p,u};}
+  let sim,show;try{sim=prog(SIM);show=prog(SHOW);}catch(e){return;}
+  const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,2,gl.FLOAT,false,0,0);
+  const ext=gl.getExtension('EXT_color_buffer_float');let W=0,H=0,tex=[],fb=[],cur=0,first=1,loaded=false,run=false;
+  const param=()=>{gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);};
+  function mk(){const t=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,t);gl.texImage2D(gl.TEXTURE_2D,0,ext?gl.RGBA16F:gl.RGBA8,W,H,0,gl.RGBA,ext?gl.HALF_FLOAT:gl.UNSIGNED_BYTE,null);param();const f=gl.createFramebuffer();gl.bindFramebuffer(gl.FRAMEBUFFER,f);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,t,0);return[t,f];}
+  function size(){if(!cv.clientWidth)return;const d=Math.min(devicePixelRatio||1,1.25),w=Math.max(2,cv.clientWidth*d|0),h=Math.max(2,cv.clientHeight*d|0);if(w===W&&h===H)return;W=w;H=h;cv.width=W;cv.height=H;
+    tex.forEach(t=>gl.deleteTexture(t));fb.forEach(f=>gl.deleteFramebuffer(f));tex=[];fb=[];for(let i=0;i<2;i++){const[t,f]=mk();tex.push(t);fb.push(f);}first=1;kick();}
+  const itex=gl.createTexture();let iw=4,ih=3;gl.bindTexture(gl.TEXTURE_2D,itex);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,1,1,0,gl.RGBA,gl.UNSIGNED_BYTE,new Uint8Array([15,22,60,255]));
+  let src='';function load(){const want=tall()?'/preview/assets/night/sky-tall.webp':'/preview/assets/night/sky-wide.webp';if(want===src)return;src=want;const im=new Image();im.decoding='async';
+    im.onload=()=>{gl.bindTexture(gl.TEXTURE_2D,itex);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,im);param();iw=im.width;ih=im.height;first=1;loaded=true;box.classList.add('gl');I.sky='webgl2';size();kick();};im.src=want;}   // size once the canvas is shown (hidden, it measures 0)
+  let m=[.5,.5],pm=null,mv=[0,0];
+  SEC.addEventListener('pointermove',e=>{const r=cv.getBoundingClientRect();m=[(e.clientX-r.left)/r.width,1-(e.clientY-r.top)/r.height];if(!pm)pm=m.slice();kick();},{passive:true});
+  SEC.addEventListener('pointerleave',()=>{pm=null;});
+  function frame(){run=false;if(!loaded||!W)return;const p=pm||m;mv=[(m[0]-p[0])*.9+mv[0]*.1,(m[1]-p[1])*.9+mv[1]*.1];if(pm)pm=m.slice();
+    I.smear=I.smear*.96+Math.hypot(mv[0],mv[1]);   // paint pushed, healing at the shader's 4% a frame
+    gl.viewport(0,0,W,H);gl.useProgram(sim.p);gl.bindFramebuffer(gl.FRAMEBUFFER,fb[1-cur]);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,tex[cur]);gl.uniform1i(sim.u.prev,0);
+    gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,itex);gl.uniform1i(sim.u.img,1);gl.activeTexture(gl.TEXTURE0);
+    gl.uniform2f(sim.u.isz,iw,ih);gl.uniform2f(sim.u.r,W,H);gl.uniform2f(sim.u.m,m[0],m[1]);gl.uniform2f(sim.u.mv,mv[0],mv[1]);gl.uniform1f(sim.u.asp,W/H);gl.uniform1f(sim.u.first,first);
+    gl.drawArrays(gl.TRIANGLES,0,3);cur=1-cur;first=0;
+    gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.useProgram(show.p);gl.bindTexture(gl.TEXTURE_2D,tex[cur]);gl.uniform1i(show.u.tex,0);gl.uniform2f(show.u.r,W,H);gl.drawArrays(gl.TRIANGLES,0,3);
+    if(I.smear>1e-4||Math.hypot(mv[0],mv[1])>1e-6)kick();else I.smear=0;}   // idle once the paint has healed: no frames spent on a still sky
+  function kick(){if(!run&&visible&&scene()>.01){run=true;requestAnimationFrame(frame);}}
+  kickSky=kick;addEventListener('resize',()=>{load();size();});if(window.ResizeObserver)new ResizeObserver(()=>{if(loaded)size();}).observe(cv);load();
+  cv.addEventListener('webglcontextlost',e=>{e.preventDefault();box.classList.remove('gl');I.sky='image';loaded=false;});})();
+// ---------- stars ----------
+const sc=box.querySelector('.lf-starc'),x=sc.getContext('2d');let D=null,S=[],scale=1,ox=0,oy=0,dpr=1,moving=false;
+const NP=60;function starR(th,tips){for(let i=0;i<tips.length;i++){let[a,L]=tips[i],[a2,L2]=tips[(i+1)%tips.length];a*=Math.PI/180;let b=a2*Math.PI/180;if(b<=a)b+=2*Math.PI;let t=th;while(t<a)t+=2*Math.PI;while(t>=a+2*Math.PI)t-=2*Math.PI;
+  if(t<=b){const u=(t-a)/(b-a),ri=.2;if(u<.5){const k=u/.5;return L+(ri-L)*(1-Math.pow(1-k,2.2));}const k=(1-u)/.5;return L2+(ri-L2)*(1-Math.pow(1-k,2.2));}}return .2;}
+const six=[[-90,1],[-30,.6],[30,.6],[90,1],[150,.6],[210,.6]],five=[0,1,2,3,4].map(i=>[-90+72*i,.95]),R6=[],R5=[];   // his inked six-point (long top and bottom rays) and painted five-point
+for(let i=0;i<NP;i++){const th=2*Math.PI*i/NP-Math.PI/2;R6.push(starR(th,six));R5.push(starR(th,five));}
+const css=n=>getComputedStyle(SEC).getPropertyValue(n).trim();let CREAM='#F1E8D2',WARM='#E8913A';
+function ssize(){if(!D)return;dpr=Math.min(devicePixelRatio||1,2);const w=sc.clientWidth,h=sc.clientHeight;sc.width=Math.round(w*dpr);sc.height=Math.round(h*dpr);scale=Math.max(w/D.vw,h/D.vh);ox=(w-D.vw*scale)/2;oy=(h-D.vh*scale)/2;CREAM=css('--lf-star')||CREAM;WARM=css('--lf-star-warm')||WARM;sdraw();}
+function shape(s){const own=s.k===6?R6:R5,oth=s.k===6?R5:R6;x.beginPath();for(let i=0;i<NP;i++){const r=own[i]+(oth[i]-own[i])*s.m,th=2*Math.PI*i/NP-Math.PI/2+s.a,px=Math.cos(th)*r,py=Math.sin(th)*r;i?x.lineTo(px,py):x.moveTo(px,py);}x.closePath();}
+function sdraw(){x.setTransform(1,0,0,1,0,0);x.clearRect(0,0,sc.width,sc.height);let n=0,o=0;for(const s of S){const X=(ox+s.x*scale)*dpr,Y=(oy+s.y*scale)*dpr,z=s.sc*scale*dpr;x.setTransform(z,0,0,z,X,Y);x.fillStyle=s.o?WARM:CREAM;shape(s);x.fill();n++;if(s.o)o++;}I.stars=n;I.orange=o;}
+let tl=0;function tick(now){const f=tl?Math.min(4,(now-tl)/16.67):1;tl=now;let any=false;   // timed in 60 fps frames, so a slow device settles in the same time
+  for(const s of S){if(Math.abs(s.w)>.0005){s.a+=s.w*f;s.w*=Math.pow(.955,f);s.m=Math.min(1,Math.abs(s.w)*6);any=true;}else if(s.m>0){s.w=0;s.m=Math.max(0,s.m-.04*f);any=true;}else s.w=0;}
+  sdraw();moving=any;I.starsMoving=any;if(any)requestAnimationFrame(tick);else tl=0;}
+let lx=null,ly=null;
+if(!still)SEC.addEventListener('pointermove',e=>{if(!D||scene()<.05)return;const r=sc.getBoundingClientRect(),px=e.clientX-r.left,py=e.clientY-r.top;
+  if(lx!==null){const vx=px-lx,vy=py-ly,sp=Math.hypot(vx,vy);if(sp>0){let hit=false;for(const s of S){const X=ox+s.x*scale,Y=oy+s.y*scale,rad=Math.max(10,s.sc*scale*1.1),dx=px-X,dy=py-Y;
+    if(dx*dx+dy*dy<rad*rad){s.w+=Math.sign(dx*vy-dy*vx||1)*Math.min(.45,sp*.012);hit=true;}}if(hit&&!moving){moving=true;I.starsMoving=true;requestAnimationFrame(tick);}}}lx=px;ly=py;},{passive:true});
+SEC.addEventListener('pointerleave',()=>{lx=ly=null;});
+fetch('/preview/assets/night/stars.json').then(r=>r.json()).then(d=>{D=d;S=d.s.map(([X,Y,r,s2,o,k])=>({x:X,y:Y,a:r*Math.PI/180,sc:s2,o,k,w:0,m:0}));ssize();I.ready=true;}).catch(()=>{I.ready=true;});
+addEventListener('resize',()=>requestAnimationFrame(ssize));
+// ---------- for the page and its tests ----------
+const pos=s=>{const r=sc.getBoundingClientRect();return{x:r.left+ox+s.x*scale,y:r.top+oy+s.y*scale,rad:Math.max(10,s.sc*scale*1.1)};};
+window.sogNightLayers={info:()=>({...I}),
+  star:i=>({spin:S[i].w,morph:S[i].m,angle:S[i].a}),
+  starTarget:()=>{const n=window.sogOpening.nightInfo(),mb=n.markBox||{x0:0,x1:0,y0:0,y1:0},top=parseFloat(getComputedStyle(document.querySelector('header.bar')||document.body).height)||70;
+    for(let i=0;i<S.length;i++){const p=pos(S[i]);if(p.x<70||p.x>innerWidth-70||p.y<top+30||p.y>Math.min(n.farCrest,innerHeight)-40)continue;
+      if(p.y<n.headBottom+30&&p.x<n.headRight+80)continue;if(p.x>mb.x0-90&&p.x<mb.x1+90&&p.y>mb.y0-30&&p.y<mb.y1+30)continue;
+      if(S.some((q,j)=>j!==i&&Math.abs(pos(q).y-p.y)<pos(q).rad+p.rad+4&&Math.abs(pos(q).x-p.x)<62))continue;return{i,x:p.x,y:p.y};}return null;}};
+const hook=()=>{if(window.sogOpening){sogOpening.starTarget=sogNightLayers.starTarget;sogOpening.star=sogNightLayers.star;}};hook();addEventListener('load',hook);
+})();
 </script>
 </body>
 </html>
