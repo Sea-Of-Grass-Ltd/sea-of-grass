@@ -99,4 +99,7 @@ if(coupon&&'IntersectionObserver' in window){const co=new IntersectionObserver(e
 const planStage=document.querySelector('[data-planStage]');
 if(planStage&&!matchMedia('(prefers-reduced-motion: reduce)').matches){let t=0;const drift=()=>{t=0;const r=planStage.getBoundingClientRect(),p=((r.top+r.height/2)-innerHeight/2)/innerHeight;
   planStage.style.setProperty('--py',Math.max(-1,Math.min(1,p)).toFixed(3));};addEventListener('scroll',()=>{if(!t)t=requestAnimationFrame(drift);},{passive:true});drift();}
+ // the far ridge drifts slower than the page and its grass (reduced motion: still)
+const range=document.querySelector('[data-range]');
+if(range&&!matchMedia('(prefers-reduced-motion: reduce)').matches){let rt=0;const ridge=()=>{rt=0;const y=Math.min(scrollY,innerHeight*1.5);range.style.setProperty('--ry',(y*.09).toFixed(1)+'px');};addEventListener('scroll',()=>{if(!rt)rt=requestAnimationFrame(ridge);},{passive:true});ridge();}
 })();

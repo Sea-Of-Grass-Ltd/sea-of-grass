@@ -9,7 +9,7 @@
      mixed with the sky's ultramarine and a breath of poppy. Sections take turns navy / moss / plum; poppy is the only CTA
      colour; gold only on small eyebrow labels; each section borrows 2-4 single touches of the others on real elements. */
   --ground:#1F1F35;--navy:#272C4B;--navy-line:#39406A;--moss:#263535;--grass:#3F6550;--sage:#7F917F;
-  --plum:#332739;--plan-card:#473A54;--plum-mute:#61465C;--poppy:#D17C66;--poppy-deep:#A8564D;--gold:#C8B27B;--soft:#9B97B1;--text:#DAD1CD;
+  --plum:#332739;--ridge-far:#3B4472;--ridge-near:#2E355E;--plan-card:#473A54;--plum-mute:#61465C;--poppy:#D17C66;--poppy-deep:#A8564D;--gold:#C8B27B;--soft:#9B97B1;--text:#DAD1CD;
   --meadow:#4A7A3C;--pop:var(--text);
   --text-rgb:218,209,205;--shade-rgb:0,0,0;--sage-rgb:127,145,127;--plum-mute-rgb:97,70,92;
   /* roles, built only from the palette */
@@ -487,3 +487,13 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
   .fan .f3{right:4%;left:auto;top:-92px;--r:9deg}
   .fan .f5{left:calc(50% - 50px);top:-104px;width:100px;--r:2deg}
 }
+/* the backdrop behind the plans (Tristan: "with Higgsfield they're using the Miami vibe ... Here in Colorado, something similar
+   happens with mountain views"; the one view we allow): the Front Range seen west from the plains at Berthoud, a low dusk-blue
+   line on the horizon with Longs Peak's flat block and Mount Meeker as the one bump, a faint warm glow above it, and the
+   page's own live grass in front, so the ticket sits out on the prairie. Flat colours; the ridge drifts slower than the page. */
+.hero>.range{position:absolute;z-index:-2;left:0;right:0;bottom:calc(clamp(150px,16vw,210px) * .5 + 50px);height:clamp(170px,22vw,320px);pointer-events:none;transform:translateY(var(--ry,0px))}
+.range svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.range .far{fill:var(--ridge-far)}
+.range .near{fill:var(--ridge-near)}
+.hero>.range::after{content:"";position:absolute;left:0;right:0;top:calc(100% - 1px);height:110px;background:var(--ridge-near)}
+.range-glow{position:absolute;left:30%;right:18%;top:12%;height:40%;border-radius:50%;background:var(--poppy);opacity:.16;filter:blur(60px)}
