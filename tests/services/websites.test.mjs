@@ -19,7 +19,7 @@ const WIDTHS = [360, 390, 1440];
 const WEEK = '$1,200 works out to about $23 a week for a year, roughly what a couple of online orders bring in.';
 const HYPE = /\b(transform\w*|revolution\w*|next level|grow your|growth|skyrocket\w*|supercharg\w*|boost\w*|game.chang\w*|unlock\w*|empower\w*|dominat\w*|explod\w*|10x|level up|cutting.edge|world.class)\b/gi;
 const STYLE_FACES = /Syne|Instrument Serif|Libre Caslon Display|Archivo|Bricolage Grotesque/;
-const WORDS_BEFORE = 1152, WORD_LIMIT = 620; // was 600; +20 on 2026-11-20 for the approved research prices (60-day fix credit, Launch Setup, custom $200/mo)
+const WORDS_BEFORE = 1152, WORD_LIMIT = 634; // was 600; +20 on 2026-11-20 for the approved research prices (60-day fix credit, Launch Setup, custom $200/mo); +14 the same day for the $23-a-week line under the Site Plan (Tristan: "Yes, add it under the Site Plan")
 
 let site;
 before(async () => { site = await startSite(); });
