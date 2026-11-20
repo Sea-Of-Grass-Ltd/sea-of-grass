@@ -26,7 +26,7 @@ for (const w of [1440, 390]) {
     try {
       const d = await page.evaluate(() => {
         const sec = document.querySelector('main.cb #services'), r = sec && sec.getBoundingClientRect(), y = scrollY;
-        const cols = sec ? [...sec.querySelectorAll('.cb-col')].map(c => { const b = c.getBoundingClientRect(); return { id: c.id, name: c.querySelector('h3')?.textContent.trim(), line: c.querySelector('h3 + p')?.textContent.trim(), price: c.querySelector('.cb-price')?.textContent.replace(/\s+/g, ' ').trim(), links: [...c.querySelectorAll('.cb-more a')].map(a => a.getAttribute('href')), top: b.top + y, left: b.left, h: b.height }; }) : [];
+        const cols = sec ? [...sec.querySelectorAll('.cb-cols > .cb-col, .cbx-stage > .cb-col')].map(c => { const b = c.getBoundingClientRect(); return { id: c.id, name: c.querySelector('h3')?.textContent.trim(), line: c.querySelector('h3 + p')?.textContent.trim(), price: c.querySelector('.cb-price')?.textContent.replace(/\s+/g, ' ').trim(), links: [...c.querySelectorAll('.cb-more a')].map(a => a.getAttribute('href')), top: c.querySelector('h3').getBoundingClientRect().top + y, left: b.left, h: b.height }; }) : [];
         const h2 = sec && sec.querySelector('h2'), pr = sec && sec.querySelector('.cb-promise'), work = document.getElementById('work');
         return { found: !!sec, h2: h2 && h2.textContent.trim(), h2vis: h2 && h2.getBoundingClientRect().height > 20 && getComputedStyle(h2).clipPath === 'none',
           cols, promise: pr && pr.textContent.trim(), promiseLast: pr && cols.length && pr.getBoundingClientRect().top >= Math.max(...[...sec.querySelectorAll('.cb-col')].map(c => c.getBoundingClientRect().bottom)) - 1,
@@ -35,7 +35,7 @@ for (const w of [1440, 390]) {
       assert.ok(d.found, 'the section is there (#services, where the menu points)');
       assert.equal(d.h2, 'Three things, done properly.', 'the heading');
       assert.ok(d.h2vis, 'the heading is a real, visible heading');
-      assert.deepEqual(d.cols.map(c => c.name), ['Websites', 'Brand', 'Creative tech'], 'three columns in order');
+      assert.deepEqual(d.cols.map(c => c.name), ['Websites', 'Branding', 'Creative tech'], 'three columns in order');
       assert.match(d.cols[0].line, /fix sites, build new ones and host them/);
       assert.match(d.cols[0].price, /\$250.*\$50/, 'Websites keeps its $250 and $50');
       assert.match(d.cols[1].price, /Fixed quote/); assert.match(d.cols[2].price, /Fixed quote/);
