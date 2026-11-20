@@ -323,16 +323,6 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .traveller{position:absolute;left:0;top:0;z-index:5;width:14px;height:20px;color:var(--pop);pointer-events:none;will-change:transform;filter:drop-shadow(0 0 6px rgba(var(--text-rgb),.45))}
 .traveller svg{width:100%;height:100%;display:block}
 .traveller[hidden]{display:none}
-.through path.drawn{display:none}
-/* phones: the line is a confident sage stroke in the side gutter, swinging across the width between sections; behind the
-   seed it is drawn in solid, and the meadow at the foot of the top stands in front of it, so it dips through the grass */
-@media (max-width:767px){
-  .through path{stroke:var(--sage);stroke-width:2.5;stroke-dasharray:10 7}
-  .through path.drawn{display:block;stroke-width:3;stroke-dasharray:none}
-  .traveller{width:10px;height:14px}
-  .hero{isolation:auto;z-index:auto}
-  .hero>.live-grass{z-index:5}
-}
 /* the pinned register scene (wide screens, motion allowed) */
 .pin{position:relative}
 .open-stage{position:relative}
