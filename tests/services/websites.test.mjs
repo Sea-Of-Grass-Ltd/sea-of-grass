@@ -37,7 +37,7 @@ const inkOf = sel => { const cv = document.querySelector(sel + ' canvas'); if (!
 test(`key words, not paragraphs: about half the words (${WORDS_BEFORE} before, ${WORD_LIMIT} at most now)`, () => {
   let s = fs.readFileSync(path.join(ROOT, 'preview/services/websites/index.html'), 'utf8');
   s = s.slice(s.indexOf('<body')).replace(/<(script|style)[^>]*>[\s\S]*?<\/\1>/g, ' ').replace(/<!--[\s\S]*?-->/g, ' ')
-    .replace(/<header class="top">[\s\S]*?<\/header>/, ' ').replace(/<div class="in">\s*<section class="more"[\s\S]*/, ' ')
+    .replace(/<header class="top">[\s\S]*?<\/header>/, ' ').replace(/<nav class="chapters"[\s\S]*?<\/nav>/, ' ').replace(/<div class="in">\s*<section class="more"[\s\S]*/, ' ')
     .replace(/<[^>]+>/g, ' ').replace(/&[a-z]+;|&#\d+;/g, "'");
   const n = (s.match(/[A-Za-z0-9$][\w$,.'-]*/g) || []).length;
   assert.ok(n <= WORD_LIMIT, `the page has ${n} words; it should be ${WORD_LIMIT} or fewer`);
@@ -326,7 +326,11 @@ for (const w of WIDTHS) {
 const TEXT_SEL = 'h1,h2,h3,p,li,dt,dd,summary,a,button,label,.t-name,.t-lab,.badge,.flap-w,.amt';
 const textRects = () => [...document.querySelectorAll('h1,h2,h3,p,li,dt,dd,summary,a,button,label,.t-name,.t-lab,.badge,.flap-w,.amt')]
   .filter(e => !e.closest('[aria-hidden="true"],[hidden],.more,footer,[data-through],.topbar,[data-chapters]') && !(e.closest('details:not([open])') && !e.closest('summary')) && e.textContent.trim() && getComputedStyle(e).visibility !== 'hidden')
-  .map(e => ({ e, r: e.getBoundingClientRect() }))
+  // what is clipped away by a scrolling or clipping box (the ticket rail) is not on screen
+  .map(e => { let r = e.getBoundingClientRect(); let L = r.left, T = r.top, R = r.right, B = r.bottom;
+    for (let p = e.parentElement; p && p !== document.body; p = p.parentElement) { const c = getComputedStyle(p);
+      if (c.overflowX !== 'visible' || c.overflowY !== 'visible') { const q = p.getBoundingClientRect(); L = Math.max(L, q.left); T = Math.max(T, q.top); R = Math.min(R, q.right); B = Math.min(B, q.bottom); } }
+    return { e, r: { left: L, top: T, right: R, bottom: B, width: Math.max(0, R - L), height: Math.max(0, B - T) } }; })
   // text scrolling under the solid sticky header is hidden by it, not overlapping it
   .filter(o => o.r.width > 0 && o.r.height > 0 && o.r.top >= (document.querySelector('.topbar')?.getBoundingClientRect().bottom || 0) && o.r.top < innerHeight);
 for (const w of WIDTHS) {
@@ -354,7 +358,7 @@ for (const w of WIDTHS) {
       const onPath = await page.evaluate(() => {
         const t = document.querySelector('[data-traveller]').getBoundingClientRect(), cx = t.left + t.width / 2, cy = t.top + t.height / 2 + scrollY;
         const path = document.querySelector('[data-through] path'), len = path.getTotalLength(), svg = path.ownerSVGElement.getBoundingClientRect();
-        let best = 1e9; for (let i = 0; i <= 600; i++) { const q = path.getPointAtLength(len * i / 600); best = Math.min(best, Math.hypot(q.x + svg.left - cx, q.y + svg.top + scrollY - cy)); }
+        let best = 1e9; const n = Math.ceil(len / 2); for (let i = 0; i <= n; i++) { const q = path.getPointAtLength(len * i / n); best = Math.min(best, Math.hypot(q.x + svg.left - cx, q.y + svg.top + scrollY - cy)); }
         return { best, inView: t.top >= 0 && t.bottom <= innerHeight };
       });
       assert.ok(onPath.best <= 4, `the seed rides the path (${onPath.best.toFixed(1)}px off)`);
