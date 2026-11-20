@@ -85,9 +85,9 @@ for (const w of WIDTHS) {
     assert.equal(await untilLive(page), 'live');
     const p = await pointOf(page, 'handset');
     assert.ok(p, 'handset has a point on screen');
-    if (mobile) await page.touchscreen.tap(p.x, p.y); else await page.mouse.move(p.x, p.y);
+    if (mobile) await page.touchscreen.tap(p.x, p.y); else await page.mouse.click(p.x, p.y);   // click or tap picks it up (2026-11-20)
     assert.ok(await waitFor(page, () => +document.querySelector('sog-phone').dataset.lift > 0.95), 'lifted');
-    if (mobile) { const q = await pointOf(page, 'handset'); await page.touchscreen.tap(q.x, q.y); } else await page.mouse.move(5, 5);
+    { const q = await pointOf(page, 'handset'); if (mobile) await page.touchscreen.tap(q.x, q.y); else await page.mouse.click(q.x, q.y); }   // and again hangs up
     assert.ok(await waitFor(page, () => +document.querySelector('sog-phone').dataset.lift < 0.05), 'settled back');
     assert.deepEqual(errors, []);
     await ctx.close();

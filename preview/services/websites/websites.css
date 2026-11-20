@@ -162,12 +162,20 @@ body.book-in-page .top nav a.book{visibility:hidden;opacity:0}
 .open-stage.other .register{display:none}
 .bw-foot{margin-top:22px}.bw-foot a{color:var(--blue2);font-weight:600;text-decoration:none}.bw-foot a:hover{text-decoration:underline}
 
-/* 4 calls: words left, picture slot right (ready for the 3D rotary phone) */
+/* 4 calls: words left, a big free-standing 3D phone right that you can play with (Tristan 2026-11-20: no frame) */
 .alt-in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px clamp(32px,6vw,96px);align-items:center}
 .alt-in.flip .visual{order:2}
 .alt .words{display:grid;gap:16px;align-content:center}
 .alt .words .kick{margin:0}
 .calls-band .visual{justify-self:center;width:min(100%,420px);border-radius:24px;overflow:hidden}
+#calls sog-phone.visual{justify-self:end;align-self:end;width:min(100%,600px);aspect-ratio:1/1;border-radius:0;overflow:visible;box-shadow:none;margin-right:calc(-1 * clamp(0px,3vw,56px))}
+#calls sog-phone picture{width:100%;height:100%}
+#calls sog-phone img{width:100%;height:100%;object-fit:cover;object-position:50% 74%;border-radius:24px}
+/* while the phone is live, the answers wait for the handset: each question lights up with its answer in turn */
+#calls dl.calls.playing>div{opacity:.72;transition:opacity .4s ease}
+#calls dl.calls.playing>div dd{opacity:.5;transition:opacity .4s ease,color .4s ease}
+#calls dl.calls.playing>div.lit{opacity:1}
+#calls dl.calls.playing>div.lit dd{opacity:1;color:var(--fg)}
 .calls-band .visual img{width:100%;height:auto;display:block}
 .calls{display:grid;gap:12px;margin:4px 0 0}
 .calls div{display:grid;gap:2px}
@@ -224,6 +232,7 @@ footer.foot a{color:var(--soft)}
 @media (max-width:980px){
   .plans,.open-stage,.alt-in,.faq{grid-template-columns:1fr}
   .alt-in.flip .visual{order:0}
+  #calls sog-phone.visual{order:2;justify-self:center;margin-right:0}   /* on phones: a big phone under the text */
   .open-words{order:-1}
   .benefits{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
@@ -311,7 +320,7 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .hero>.live-grass{bottom:calc(-1 * clamp(56px,6vw,80px))}
 .flapboard{position:relative;z-index:1;padding-top:clamp(84px,9vw,120px)}
 .calls-band{position:relative;z-index:2}
-.calls-band .visual.phone-art{position:relative;margin-bottom:calc(-1 * clamp(110px,12vw,170px));box-shadow:0 30px 60px rgba(var(--shade-rgb),.35)}
+.calls-band .visual.phone-art{position:relative;margin-bottom:calc(-1 * clamp(110px,12vw,170px))}   /* the big phone's base crosses the seam */
 #hookup{position:relative;z-index:1;padding-top:clamp(150px,16vw,220px)}
 @media (max-width:980px){.calls-band .visual.phone-art{margin-bottom:calc(-1 * 120px)}#hookup{padding-top:170px}}
 
