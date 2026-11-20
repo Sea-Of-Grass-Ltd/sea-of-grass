@@ -17,7 +17,8 @@ let site;
 before(async () => { site = await startSite(); });
 after(async () => { await site?.close(); });
 
-const text = loc => loc.evaluate(e => e.textContent.replace(/\s+/g, ' ').trim());
+// typographic apostrophes on the page read the same as straight ones in the exact-wording checks
+const text = loc => loc.evaluate(e => e.textContent.replace(/\s+/g, ' ').replace(/\u2019/g, "'").trim());
 const current = page => page.evaluate(() => +document.getElementById('short')?.dataset.current || 0);
 const filled = page => page.locator('.progress i.on').count();
 const settle = page => page.waitForTimeout(450);

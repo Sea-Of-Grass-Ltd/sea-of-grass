@@ -25,13 +25,14 @@ function apply(row,show){const b=shopButton(row.dataset.item);if(!b)return;
 
 rows.forEach(row=>{
   const price=row.querySelector('.reg-price'),out=row.querySelector('[data-act="soldout"]');
-  row.querySelectorAll('[data-act="up"],[data-act="down"]').forEach(btn=>btn.addEventListener('click',()=>{
+  if(price)row.querySelectorAll('[data-act="up"],[data-act="down"]').forEach(btn=>btn.addEventListener('click',()=>{
     const p=Math.max(.5,Math.round((+row.dataset.price+(btn.dataset.act==='up'?.5:-.5))*100)/100);
     row.dataset.price=String(p);price.textContent=money(p);
     price.animate?.([{transform:'scale(1.25)'},{transform:'scale(1)'}],{duration:220,easing:'ease-out'});
     apply(row,true);}));
   out.addEventListener('click',()=>{const on=out.getAttribute('aria-pressed')!=='true';
-    out.setAttribute('aria-pressed',String(on));row.classList.toggle('is-out',on);apply(row,true);});
+    out.setAttribute('aria-pressed',String(on));row.classList.toggle('is-out',on);apply(row,true);
+    const cap=play.querySelector('[data-caption]');if(on&&cap&&cap.dataset.after){cap.textContent=cap.dataset.after;cap.classList.add('swapped');}});
 });
 
 frame.addEventListener('load',()=>{rows.forEach(r=>apply(r,false));
@@ -39,6 +40,6 @@ frame.addEventListener('load',()=>{rows.forEach(r=>apply(r,false));
   if(first){const win=frame.contentWindow;win.scrollTo(0,win.scrollY+first.getBoundingClientRect().top-win.innerHeight/3);}});
 
 const load=()=>{if(!frame.getAttribute('src'))frame.src=frame.dataset.lazy;};
-if(document.getElementById('short'))document.addEventListener('short:beat',e=>{if(e.detail>=3)load();});else load();
+load(); // preloaded with the page, so the demo is ready the moment you reach it
 new ResizeObserver(fit).observe(view);fit();
 })();
