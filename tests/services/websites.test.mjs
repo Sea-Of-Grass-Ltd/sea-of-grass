@@ -319,6 +319,125 @@ for (const w of WIDTHS) {
   });
 }
 
+// Flow (Tristan: "Whenever you scroll on that cyber security website, it just flows in unique ways"), in our own words:
+// a meadow seed rides one dashed path from "register" down to "your website", direct, through every section; the register
+// demo is a pinned scene that plays while you scroll and then hands off; a small fixed chapter index lights up as you go.
+// A few things done well; reduced motion turns the movement off.
+const TEXT_SEL = 'h1,h2,h3,p,li,dt,dd,summary,a,button,label,.t-name,.t-lab,.badge,.flap-w,.amt';
+const textRects = () => [...document.querySelectorAll('h1,h2,h3,p,li,dt,dd,summary,a,button,label,.t-name,.t-lab,.badge,.flap-w,.amt')]
+  .filter(e => !e.closest('[aria-hidden="true"],[hidden],.more,footer,[data-through],.topbar,[data-chapters]') && !(e.closest('details:not([open])') && !e.closest('summary')) && e.textContent.trim() && getComputedStyle(e).visibility !== 'hidden')
+  .map(e => ({ e, r: e.getBoundingClientRect() }))
+  // text scrolling under the solid sticky header is hidden by it, not overlapping it
+  .filter(o => o.r.width > 0 && o.r.height > 0 && o.r.top >= (document.querySelector('.topbar')?.getBoundingClientRect().bottom || 0) && o.r.top < innerHeight);
+for (const w of WIDTHS) {
+  test(`${w}px · flow: one continuous path through every section, in the margin, with the seed riding it`, async () => {
+    const { ctx, page } = await site.open(PAGE, w);
+    try {
+      await page.waitForFunction(() => document.querySelector('[data-through] path')?.getTotalLength() > 0, null, { timeout: 5000 });
+      const r = await page.evaluate(() => {
+        const path = document.querySelector('[data-through] path'), d = path.getAttribute('d'), len = path.getTotalLength();
+        const svg = path.ownerSVGElement.getBoundingClientRect(), oy = svg.top + scrollY, ox = svg.left;
+        const pts = Array.from({ length: 400 }, (_, i) => { const q = path.getPointAtLength(len * i / 399); return [q.x + ox, q.y + oy]; });
+        const secs = [...document.querySelectorAll('body > section, main > section')];
+        const seams = secs.slice(1).map(s => s.getBoundingClientRect().top + scrollY);
+        const col = document.querySelector('.hero .in').getBoundingClientRect(), padL = parseFloat(getComputedStyle(document.querySelector('.hero .in')).paddingLeft);
+        return { moves: (d.match(/M/gi) || []).length, minY: Math.min(...pts.map(p => p[1])), maxY: Math.max(...pts.map(p => p[1])), first: secs[0].getBoundingClientRect().top + scrollY,
+          seamsCovered: seams.every(y => pts.some((p, i) => i && (pts[i - 1][1] - y) * (p[1] - y) <= 0)), maxX: Math.max(...pts.map(p => p[0])), textLeft: col.left + padL,
+          monotonic: pts.every((p, i) => !i || p[1] >= pts[i - 1][1] - .5) };
+      });
+      assert.equal(r.moves, 1, 'one unbroken path');
+      assert.ok(r.minY <= r.first + 260, 'it starts in the top section');
+      assert.ok(r.seamsCovered, 'it runs straight across every section seam');
+      assert.ok(r.monotonic, 'it always travels down the page');
+      assert.ok(r.maxX <= r.textLeft - 3, `it stays in the margin, clear of the text (path x ≤ ${r.maxX.toFixed(0)}, text from ${r.textLeft.toFixed(0)})`);
+      await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight * .45)); await page.waitForTimeout(400);
+      const onPath = await page.evaluate(() => {
+        const t = document.querySelector('[data-traveller]').getBoundingClientRect(), cx = t.left + t.width / 2, cy = t.top + t.height / 2 + scrollY;
+        const path = document.querySelector('[data-through] path'), len = path.getTotalLength(), svg = path.ownerSVGElement.getBoundingClientRect();
+        let best = 1e9; for (let i = 0; i <= 600; i++) { const q = path.getPointAtLength(len * i / 600); best = Math.min(best, Math.hypot(q.x + svg.left - cx, q.y + svg.top + scrollY - cy)); }
+        return { best, inView: t.top >= 0 && t.bottom <= innerHeight };
+      });
+      assert.ok(onPath.best <= 4, `the seed rides the path (${onPath.best.toFixed(1)}px off)`);
+      assert.ok(onPath.inView, 'the seed travels with you, on screen');
+    } finally { await ctx.close(); }
+    const rm = await site.open(PAGE, w, { reducedMotion: 'reduce' });
+    try {
+      assert.ok(!(await rm.page.locator('[data-traveller]').isVisible()), 'reduced motion: the seed stays still and out of the way');
+    } finally { await rm.ctx.close(); }
+  });
+
+  test(`${w}px · flow: no text overlaps anything at any scroll position`, async () => {
+    const { ctx, page } = await site.open(PAGE, w);
+    try {
+      const H = await page.evaluate(() => document.documentElement.scrollHeight - innerHeight), step = Math.round((w < 900 ? 844 : 900) * .45);
+      for (let y = 0; y <= H + step; y += step) {
+        await page.evaluate(y => scrollTo(0, y), Math.min(y, H)); await page.waitForTimeout(160);
+        const bad = await page.evaluate(src => { const textRects = eval(src); // eslint-disable-line no-eval
+          const T = textRects(), hit = (a, b) => Math.min(a.right, b.right) - Math.max(a.left, b.left) > 2 && Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top) > 2;
+          const out = [];
+          for (let i = 0; i < T.length; i++) for (let j = i + 1; j < T.length; j++) {
+            const A = T[i], B = T[j]; if (A.e.contains(B.e) || B.e.contains(A.e)) continue;
+            if (hit(A.r, B.r)) out.push(`${A.e.tagName}.${A.e.className}「${A.e.textContent.trim().slice(0, 18)}」 × ${B.e.tagName}.${B.e.className}「${B.e.textContent.trim().slice(0, 18)}」`);
+          }
+          for (const c of document.querySelectorAll('[data-traveller], [data-chapters], [data-through] text'))
+            { const cr = c.getBoundingClientRect(); if (cr.width && getComputedStyle(c).visibility !== 'hidden') for (const t of T) if (!c.contains(t.e) && hit(cr, t.r)) out.push(`${c.className?.baseVal ?? c.className} × 「${t.e.textContent.trim().slice(0, 18)}」`); }
+          return out.slice(0, 4);
+        }, textRects.toString());
+        assert.deepEqual(bad, [], `nothing overlaps at scroll ${y}`);
+      }
+    } finally { await ctx.close(); }
+  });
+}
+
+test('1440px · flow: the chapter index lights up as you scroll, and hides on phones', async () => {
+  const { ctx, page } = await site.open(PAGE, 1440);
+  try {
+    const nav = page.locator('nav[data-chapters]');
+    assert.ok(await nav.isVisible(), 'a small fixed chapter index');
+    assert.equal(await nav.evaluate(n => getComputedStyle(n).position), 'fixed', 'it stays put');
+    const links = nav.locator('a');
+    assert.equal(await links.count(), 7, 'seven chapters');
+    for (const [id, n] of [['#faq', 6], ['#bunny-world', 3]]) {
+      await page.locator(id).scrollIntoViewIfNeeded(); await page.evaluate(sel => { const e = document.querySelector(sel); scrollTo(0, e.getBoundingClientRect().top + scrollY - 80); }, id); await page.waitForTimeout(400);
+      assert.equal(await nav.locator('a[aria-current="true"]').getAttribute('href'), id, `chapter ${n} lights up at ${id}`);
+    }
+  } finally { await ctx.close(); }
+  const phone = await site.open(PAGE, 390);
+  try { assert.ok(!(await phone.page.locator('nav[data-chapters]').isVisible()), 'hidden on phones'); } finally { await phone.ctx.close(); }
+});
+
+test('1440px · flow: the register scene pins, plays Sold out, then releases cleanly', async () => {
+  const { ctx, page } = await site.open(PAGE, 1440);
+  try {
+    const pin = page.locator('[data-pin]');
+    assert.equal(await pin.count(), 1, 'one pinned scene');
+    await page.waitForFunction(() => document.querySelector('#bunny-world .open-stage iframe')?.getAttribute('src'), null, { timeout: 2000 }).catch(() => {});
+    const geo = await pin.evaluate(p => { const r = p.getBoundingClientRect(); return { top: r.top + scrollY, h: r.height }; });
+    const stageTop = async y => { await page.evaluate(y => scrollTo(0, y), y); await page.waitForTimeout(250); return page.locator('[data-pin] .open-stage').evaluate(s => s.getBoundingClientRect().top); };
+    await page.evaluate(() => scrollTo(0, document.querySelector('[data-pin]').getBoundingClientRect().top + scrollY - 200)); await page.waitForTimeout(400);
+    await page.waitForFunction(() => document.querySelector('[data-pin] iframe')?.contentDocument?.querySelector('button[data-add="Horchata, large"]'), null, { timeout: 8000 });
+    const a = await stageTop(geo.top + geo.h * .2), b = await stageTop(geo.top + geo.h * .45);
+    assert.ok(geo.h > 1.3 * 900, 'the scene has room to play');
+    assert.ok(Math.abs(a - b) <= 2, `it holds in place while you scroll (${a.toFixed(0)} → ${b.toFixed(0)})`);
+    await stageTop(geo.top + geo.h * .7);
+    assert.equal(await page.locator('[data-pin] [data-act="soldout"]').getAttribute('aria-pressed'), 'true', 'scrolling plays Sold out');
+    assert.equal(await text(page.locator('[data-pin] [data-caption]')), "That's the whole job. You never log in to anything.", 'and the caption lands');
+    const shop = await (await page.locator('[data-pin] iframe').elementHandle()).contentFrame();
+    assert.match(await shop.locator('button[data-add="Horchata, large"]').textContent(), /Sold out/i, 'on the live shop too');
+    const after = await stageTop(geo.top + geo.h + 300);
+    assert.ok(after < b - 200, 'then it releases and scrolls away');
+    const gap = await page.evaluate(() => document.querySelector('#calls').getBoundingClientRect().top - document.querySelector('[data-pin] .open-stage').getBoundingClientRect().bottom);
+    assert.ok(gap >= 0, `the next section never runs under it (${gap.toFixed(0)}px)`);
+  } finally { await ctx.close(); }
+  for (const opts of [{ w: 390, o: {} }, { w: 1440, o: { reducedMotion: 'reduce' } }]) {
+    const x = await site.open(PAGE, opts.w, opts.o);
+    try {
+      const pinned = await x.page.locator('[data-pin] .open-stage').evaluate(s => getComputedStyle(s).position === 'sticky');
+      assert.ok(!pinned, `${opts.w}px${opts.o.reducedMotion ? ' with reduced motion' : ''}: no pin, it simply scrolls`);
+    } finally { await x.ctx.close(); }
+  }
+});
+
 test('stylesheet uses no CSS gradients as surfaces', () => {
   const css = fs.readFileSync(path.join(ROOT, 'preview/services/websites/websites.css'), 'utf8');
   assert.doesNotMatch(css, /(linear|radial|conic)-gradient\(/, 'gradient found in websites.css');
