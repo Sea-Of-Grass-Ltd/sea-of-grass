@@ -9,7 +9,7 @@
      mixed with the sky's ultramarine and a breath of poppy. Sections take turns navy / moss / plum; poppy is the only CTA
      colour; gold only on small eyebrow labels; each section borrows 2-4 single touches of the others on real elements. */
   --ground:#1F1F35;--navy:#272C4B;--navy-line:#39406A;--moss:#263535;--grass:#3F6550;--sage:#7F917F;
-  --plum:#332739;--plum-mute:#61465C;--poppy:#D17C66;--poppy-deep:#A8564D;--gold:#C8B27B;--soft:#9B97B1;--text:#DAD1CD;
+  --plum:#332739;--plan-card:#473A54;--plum-mute:#61465C;--poppy:#D17C66;--poppy-deep:#A8564D;--gold:#C8B27B;--soft:#9B97B1;--text:#DAD1CD;
   --meadow:#4A7A3C;--pop:var(--text);
   --text-rgb:218,209,205;--shade-rgb:0,0,0;--sage-rgb:127,145,127;--plum-mute-rgb:97,70,92;
   /* roles, built only from the palette */
@@ -456,3 +456,34 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 #founding .flipw i,#founding .flipn{display:inline-block;font-style:normal;transform-origin:50% 50%;backface-visibility:hidden}
 
 #founding .f-head{perspective:300px}
+/* the plan stage, after Higgsfield's pricing (Tristan: "make the pricing sexy like that"; Refero: 1Password gift cards
+   45b918ce, product cards overlapping a hero card; Deezer offers af258d0b, one lit plan on a dark stage): real Bunny World
+   shop screens fanned behind the Site Plan, a warm glow under it, a little grain in its body; Pay once steps back */
+.stage{position:relative;isolation:isolate;--py:0}
+.stage::before{content:"";position:absolute;z-index:-2;inset:6% 4%;border-radius:40px;background:var(--poppy);opacity:.55;filter:blur(80px);pointer-events:none}
+.fan{position:absolute;inset:0;z-index:-1;pointer-events:none}
+.fan img{position:absolute;width:clamp(120px,11vw,160px);height:auto;border-radius:16px;box-shadow:0 18px 40px rgba(var(--shade-rgb),.55),0 0 0 1px rgba(var(--text-rgb),.12);
+  transform:translateY(calc(var(--py) * var(--d,20px))) rotate(var(--r))}
+.fan .f1{left:-15%;top:5%;--r:-13deg;--d:34px}
+.fan .f2{left:-10%;bottom:-3%;--r:-6deg;--d:-22px}
+.fan .f3{right:-6%;top:-4%;--r:9deg;--d:28px}
+.fan .f4{right:-5%;bottom:4%;--r:5deg;--d:-30px}
+.fan .f5{left:42%;top:-22px;--r:3deg;--d:10px;width:clamp(110px,9vw,140px)}
+.hero .stage .plan.care{background:var(--plan-card);backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:inset 0 .5px 0 rgba(var(--text-rgb),.5),0 30px 60px rgba(var(--shade-rgb),.5)}
+.hero .stage .plan.care::after{content:"";position:absolute;inset:0;border-radius:inherit;background:url(/preview/assets/work/bunny-world/burritos-grain.webp) center/320px;opacity:.12;mix-blend-mode:overlay;pointer-events:none}
+.hero .stage .plan.care>*{position:relative;z-index:1}
+.hero .stage .plan.care>.badge{position:absolute}
+/* the deal's pill sits on its button, like a sale tag */
+#founding .f-btn{position:relative;overflow:visible}
+.off-pill{position:absolute;top:-11px;right:-14px;font:600 10.5px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ground);background:var(--sage);padding:5px 8px;border-radius:999px;transform:rotate(6deg)}
+/* Pay once steps back beside the hero */
+.hero .plan.sites .amt{font-size:clamp(52px,5vw,76px)}
+.hero .plan.sites .save{font-weight:500}
+@media (max-width:980px){
+  .stage{margin-top:112px}
+  .fan .f2,.fan .f4{display:none}
+  .fan img{width:96px}
+  .fan .f1{left:4%;top:-88px;--r:-10deg}
+  .fan .f3{right:4%;left:auto;top:-92px;--r:9deg}
+  .fan .f5{left:calc(50% - 50px);top:-104px;width:100px;--r:2deg}
+}
