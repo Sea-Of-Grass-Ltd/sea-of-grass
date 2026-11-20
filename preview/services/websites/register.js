@@ -21,7 +21,7 @@ function apply(row,show){const b=shopButton(row.dataset.item);if(!b)return;
   li.style.opacity=out?'.5':'';
   if(show){const win=frame.contentWindow,r=li.getBoundingClientRect();
     win.scrollTo({top:win.scrollY+r.top-win.innerHeight/2+r.height/2,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
-    li.animate?.([{background:'rgba(80,157,252,.35)'},{background:'transparent'}],{duration:900,easing:'ease-out'});}}
+    const hl=(getComputedStyle(document.documentElement).getPropertyValue('--sage')||'').trim();li.animate?.([{background:hl?hl+'59':'transparent'},{background:'transparent'}],{duration:900,easing:'ease-out'});}}
 
 rows.forEach(row=>{
   const price=row.querySelector('.reg-price'),out=row.querySelector('[data-act="soldout"]');

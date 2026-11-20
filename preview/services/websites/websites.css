@@ -4,13 +4,18 @@
    fills or CSS gradients. Glass appears only in distinctive shapes (the notched Care ticket, pills, the receipt), never as a
    page of identical rounded boxes. Physical objects carry the character: a split-flap board and a photo ticket rail. */
 :root{
-  /* PALETTE: every colour on the page is set here, so a new palette is one edit. The accent values below are the old sky
-     blue, kept only until Tristan picks the Refero-sourced palette ("Remove the blue color absolutely"). */
-  --ground:#090909;--ground-rgb:9,9,9;--fg:#F2F4EF;--fg-rgb:242,244,239;--soft:#C4C6C8;--mute:#8E9298;
-  --ink-rgb:255,255,255;--shade-rgb:0,0,0;--rule:rgba(242,244,239,.12);--rule2:rgba(242,244,239,.24);
-  --accent:#509DFC;--accent-rgb:80,157,252;--accent-2:#7DB5FF;--accent-ink:#0A0C11;--card-tint-rgb:0,88,214;
-  --device:#141922;--flap-face:#121212;--ok:#8FD57A;--grass:#4A7A3C;
-  --canvas:var(--ground);--blue:var(--accent);--blue2:var(--accent-2);
+  /* PALETTE: "Night meadow with poppies", approved by Tristan 2026-11-19 (PALETTE.md in the shared notes). Every colour is
+     mixed with the sky's ultramarine and a breath of poppy. Sections take turns navy / moss / plum; poppy is the only CTA
+     colour; gold only on small eyebrow labels; each section borrows 2-4 single touches of the others on real elements. */
+  --ground:#1F1F35;--navy:#272C4B;--navy-line:#39406A;--moss:#263535;--grass:#3F6550;--sage:#7F917F;
+  --plum:#332739;--plum-mute:#61465C;--poppy:#D17C66;--poppy-deep:#A8564D;--gold:#C8B27B;--soft:#9B97B1;--text:#DAD1CD;
+  --meadow:#4A7A3C;
+  --text-rgb:218,209,205;--shade-rgb:0,0,0;--sage-rgb:127,145,127;--plum-mute-rgb:97,70,92;
+  /* roles, built only from the palette */
+  --canvas:var(--ground);--fg:var(--text);--fg-rgb:var(--text-rgb);--ink-rgb:var(--text-rgb);--mute:var(--soft);
+  --rule:rgba(var(--text-rgb),.12);--rule2:rgba(var(--text-rgb),.24);
+  --accent:var(--poppy);--accent-2:var(--sage);--accent-rgb:var(--sage-rgb);--accent-ink:var(--ground);--card-tint-rgb:var(--plum-mute-rgb);
+  --device:var(--ground);--flap-face:var(--ground);--ok:var(--sage);--blue:var(--accent);--blue2:var(--accent-2);
   --side:max(16px,4vw);--max:1240px;--display:Syne,"Space Grotesk",sans-serif;--head:"Bricolage Grotesque",Inter,sans-serif;
   --body:Inter,system-ui,sans-serif;--mono:"IBM Plex Mono",Menlo,monospace;color-scheme:dark}
 *{box-sizing:border-box}
@@ -230,3 +235,69 @@ footer.foot a{color:var(--soft)}
   .open-stage .reg-shop .phone{height:420px}
   .register{width:88%}
 }
+
+
+/* ======== Palette: Night meadow with poppies ======== */
+html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text);--shop-soft:var(--soft);--shop-mute:var(--soft);--shop-blue:var(--poppy);--shop-blue2:var(--sage);--shop-ring:var(--sage)}
+.hero>.live-grass,.close>.live-grass{color:var(--meadow)}
+/* sections take turns: navy, moss, plum */
+.hero{background:var(--navy)}
+.flapboard{background:var(--moss)}
+.bw-band{background:var(--plum)}
+.calls-band{background:var(--navy)}
+#hookup{background:var(--moss)}
+.benefits-band{background:var(--plum);border-color:transparent}
+#faq{background:var(--navy)}
+.close{background:var(--moss)}
+.band+.band,.benefits-band+.band{border-top:0}
+/* the topbar sits on the ground */
+.topbar{background:var(--ground);border-bottom-color:var(--navy-line)}
+/* poppy: the only CTA colour */
+.btn.pill,.btn.pill.big,.btn.pill.quiet,.ticket-shape .btn.pill{background:var(--poppy);color:var(--ground);font-weight:600;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+.btn.pill:hover,.ticket-shape .btn.pill:hover{background:var(--poppy-deep);color:var(--text);box-shadow:none}
+.top nav a.book{background:var(--poppy);color:var(--ground)}
+.top nav a.book:hover{background:var(--poppy-deep);color:var(--text)}
+.reg-out[aria-pressed="true"]{background:var(--poppy);border-color:var(--poppy);color:var(--ground)}
+/* gold: small eyebrow labels only */
+.kick,.kick b,.f-head .kick{color:var(--gold)}
+/* links and quiet marks */
+.link,.jump a,.unsure,.open-shop,.bw-foot a,details.more summary{color:var(--text);text-decoration:underline;text-decoration-color:var(--sage);text-decoration-thickness:1.5px;text-underline-offset:3px}
+.faq .side a{color:var(--text)}
+.ticks svg{color:var(--sage)}
+.ticket-shape .ticks svg{color:var(--text)}
+.ticket[aria-pressed="true"]{box-shadow:inset 0 0 0 .5px rgba(var(--text-rgb),.3),0 0 0 2px var(--sage)}
+.points li::before{color:var(--soft)}
+.week{border-left-color:var(--plum-mute)}
+.plan.sites{border-top-color:var(--navy-line)}
+.stub{border-top-color:rgba(var(--text-rgb),.45)}
+.badge{background:var(--navy);color:var(--text);border-color:var(--text)}
+.reg-live{color:var(--sage)}.reg-live::before{background:var(--sage)}
+:is(a,button,summary):focus-visible{outline-color:var(--sage)}
+/* the Care ticket: plum-mute glass on the navy ground, no glow */
+.ticket-shape{background:rgba(var(--plum-mute-rgb),.55);box-shadow:inset 0 .5px 0 rgba(var(--text-rgb),.45),inset -.5px 0 0 rgba(var(--text-rgb),.55),inset 0 -.5px 0 rgba(var(--text-rgb),.2),inset .5px 0 0 rgba(var(--text-rgb),.15)}
+.flap{background:var(--ground);border-color:rgba(var(--text-rgb),.1)}
+.flap::after{background:var(--moss)}
+.stub::before,.stub::after{background:var(--navy)}
+.ticket::before{background:var(--plum);box-shadow:min(78vw,423px) 0 0 var(--plum)}
+@media (max-width:700px){.ticket::before{box-shadow:78vw 0 0 var(--plum)}}
+.benefits svg{stroke:var(--soft)}
+
+/* borrowed touches: 2-4 per section, each a single mark on a real element, in another section's colour */
+.touch.u{text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:.2em}
+.hero .plan.sites.touch{border-top:2px solid var(--sage)}
+.hero .week.touch{border-left-color:var(--plum-mute)}
+.flapboard .flap-a.touch.t-soft{color:var(--soft)}
+.flapboard .flap-a.touch.t-plum{color:var(--plum-mute)}
+.bw-band .bw-word.touch{text-decoration-color:var(--sage)}
+.bw-band .reg-live.touch{color:var(--sage)}
+.bw-band .bw-foot a.touch{text-decoration-color:var(--grass);text-decoration-thickness:2px}
+#calls .own.touch{border-left-color:var(--sage)}
+#calls h2.touch{text-decoration-color:var(--plum-mute)}
+#hookup .points.touch li::before{color:var(--soft)}
+#hookup .promise.touch{text-decoration-color:var(--plum-mute)}
+.benefits li.touch.t-sage svg{stroke:var(--sage)}
+.benefits li.touch.t-soft svg{stroke:var(--soft)}
+#faq h2.touch{text-decoration-color:var(--sage)}
+#faq summary.touch::after{color:var(--plum-mute)}
+.close h2.touch{text-decoration-color:var(--plum-mute)}
+.close .call-us.touch{text-decoration:underline;text-decoration-color:var(--navy-line);text-decoration-thickness:2px;text-underline-offset:4px}
