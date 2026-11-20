@@ -392,6 +392,33 @@ for (const w of WIDTHS) {
   });
 }
 
+// HQ on a live phone (2026-11-19): "SWEEP THE GRASS" crowded the last line of card 1's headline at 375, and the meadow
+// wasn't showing at first. The hint keeps clear of the headline's descenders, and every meadow draws.
+const inkOf = sel => document.querySelector(sel + ' canvas') ? (() => { const cv = document.querySelector(sel + ' canvas'); const d = cv.getContext('2d').getImageData(0, 0, cv.width, cv.height).data; let n = 0; for (let i = 3; i < d.length; i += 4) if (d[i]) n++; return n; })() : -1;
+for (const w of [360, 375, 390, 1440]) {
+  test(`${w}px · card 1: the hint clears the headline, and the meadow draws on load`, async () => {
+    const { ctx, page } = await open(w);
+    try {
+      const g = await page.evaluate(() => { const l = document.querySelector('.b1 [data-line]'), h = document.querySelector('.b1 .hint');
+        return { gap: h.getBoundingClientRect().top - l.getBoundingClientRect().bottom, fs: parseFloat(getComputedStyle(l).fontSize) }; });
+      assert.ok(g.gap >= g.fs * .4, `hint sits clear of the headline's descenders (gap ${Math.round(g.gap)}px, needs ${Math.round(g.fs * .4)}px)`);
+      assert.ok(await page.evaluate(inkOf, '.b1 .knock'), 'the card 1 meadow has drawn');
+      assert.ok(await page.evaluate(inkOf, '.b1 .knock') > 1000, 'the card 1 meadow is really there');
+    } finally { await ctx.close(); }
+  });
+}
+for (const w of WIDTHS) {
+  test(`${w}px · card 3: the meadow really blooms when the calls are answered`, async () => {
+    const { ctx, page } = await open(w);
+    try {
+      await goTo(page, 3);
+      for (let i = 0; i < 3; i++) await page.locator('#short .beat[data-beat="3"] .call').nth(i).click();
+      await page.waitForTimeout(900);
+      assert.ok(await page.evaluate(inkOf, '.b3 .live-grass.bloom') > 500, 'the bloom meadow draws once it is shown');
+    } finally { await ctx.close(); }
+  });
+}
+
 test('stylesheet uses no CSS gradients as surfaces', () => {
   const css = fs.readFileSync(path.join(ROOT, 'preview/services/websites/websites.css'), 'utf8');
   assert.doesNotMatch(css, /(linear|radial|conic)-gradient\(/, 'gradient found in websites.css');
