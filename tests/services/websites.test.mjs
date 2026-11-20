@@ -241,9 +241,10 @@ test('every colour is a custom property, set once in :root', () => {
   assert.deepEqual(html.match(/style="[^"]*(#[0-9a-f]{3,8}|rgba?\()[^"]*"/gi) || [], [], 'no inline colours in the page');
 });
 
-// The approved palette, "Night meadow with poppies" (Tristan, 2026-11-19; PALETTE.md in the shared notes). Colour only.
-const PALETTE = { '--ground': '#1F1F35', '--navy': '#272C4B', '--navy-line': '#39406A', '--moss': '#263535', '--grass': '#3F6550', '--sage': '#7F917F',
-  '--plum': '#332739', '--plum-mute': '#61465C', '--poppy': '#D17C66', '--poppy-deep': '#A8564D', '--gold': '#C8B27B', '--soft': '#9B97B1', '--text': '#DAD1CD' };
+// The approved palette, "Night meadow with poppies" (Tristan, 2026-11-19; PALETTE.md in the shared notes), retuned on his
+// next note: grounds recede (quiet, close, lifted), focal things pop ("saturation as well as value").
+const PALETTE = { '--ground': '#2E3042', '--navy': '#363A4D', '--navy-line': '#4A5175', '--moss': '#343B41', '--grass': '#4F7A5F', '--sage': '#93A893',
+  '--plum': '#3A3647', '--plum-mute': '#7A5C74', '--poppy': '#EE7656', '--poppy-deep': '#D35B3E', '--gold': '#CDB680', '--soft': '#ACA8C0', '--text': '#E9E2DD' };
 const hexRgb = h => `rgb(${parseInt(h.slice(1, 3), 16)}, ${parseInt(h.slice(3, 5), 16)}, ${parseInt(h.slice(5, 7), 16)})`;
 const SKY = /509DFC|7DB5FF|0058D6|6DA7FF|A7CAFF|80,\s*157,\s*252|0,\s*88,\s*214|150,\s*190,\s*255|120,\s*170,\s*255/i;
 test('palette: the exact approved tokens, and no sky blue left in the page files', () => {
@@ -275,6 +276,45 @@ for (const w of WIDTHS) {
         const n = await sec.$$eval('.touch', ts => ts.filter(t => t.getBoundingClientRect().width > 0).length);
         assert.ok(n >= 2 && n <= 4, `${name} borrows 2–4 touches from the others (${n})`);
       }
+    } finally { await ctx.close(); }
+  });
+}
+
+// Recede and pop (Tristan on the live page, 2026-11-19): "large rectangles stacked" and "all the colour is too dark". Like a
+// painter: the grounds recede into one continuous night field (quiet, close in hue and value, a little lighter), colour shifts
+// between sections are carried by the art crossing the seams, and only the focal things pop with real saturation and light.
+const OKLAB = `(s=>{const lin=c=>{c/=255;return c<=0.04045?c/12.92:((c+0.055)/1.055)**2.4};
+  const m=s.match(/[\\d.]+/g).map(Number);const [r,g,b]=m.slice(0,3).map(lin);
+    const l=Math.cbrt(0.4122214708*r+0.5363325363*g+0.0514459929*b),mm=Math.cbrt(0.2119034982*r+0.6806995451*g+0.1073969566*b),q=Math.cbrt(0.0883024619*r+0.2817188376*g+0.6299787005*b);
+    return [0.2104542553*l+0.7936177850*mm-0.0040720468*q,1.9779984951*l-2.4285922050*mm+0.4505937099*q,0.0259040371*l+0.7827717662*mm-0.8086757660*q]})`;
+for (const w of WIDTHS) {
+  test(`${w}px · recede and pop: one quiet night field, soft seams carried by art, saturated focal points`, async () => {
+    const { ctx, page } = await site.open(PAGE, w, { reducedMotion: 'reduce' });
+    try {
+      const r = await page.evaluate(src => { const ok = eval(src); // eslint-disable-line no-eval
+        const secs = [...document.querySelectorAll('body > section, main > section')];
+        const g = secs.map(s => ok(getComputedStyle(s).backgroundColor));
+        const chroma = v => Math.hypot(v[1], v[2]);
+        const hard = g.slice(1).filter((v, i) => Math.hypot(v[0] - g[i][0], v[1] - g[i][1], v[2] - g[i][2]) > 0.03).length;
+        const ctas = [...document.querySelectorAll('.btn.pill, header.top a.book')].map(b => chroma(ok(getComputedStyle(b).backgroundColor)));
+        const bounds = secs.slice(1).map(s => s.getBoundingClientRect().top + scrollY);
+        const crossers = [...document.querySelectorAll('[data-cross]')].filter(e => { const b = e.getBoundingClientRect(), t = b.top + scrollY, bo = b.bottom + scrollY; return bounds.some(y => t < y - 8 && bo > y + 8); }).length;
+        const L = sel => ok(getComputedStyle(document.querySelector(sel)).color)[0];
+        const filt = sel => getComputedStyle(document.querySelector(sel)).filter;
+        return { maxChroma: Math.max(...g.map(chroma)), Ls: g.map(v => v[0]), hard, ctas, crossers,
+          price: L('.plan .amt'), flap: L('.flap-w'), tick: filt('.ticket img'), phone: filt('#calls [data-embed-slot] img') };
+      }, OKLAB);
+      assert.ok(r.maxChroma <= 0.04, `section grounds are quiet (max chroma ${r.maxChroma.toFixed(3)}, ≤ 0.04)`);
+      const span = Math.max(...r.Ls) - Math.min(...r.Ls);
+      assert.ok(span <= 0.025, `grounds sit near one value (lightness spread ${span.toFixed(3)}, ≤ 0.025)`);
+      assert.ok(Math.min(...r.Ls) >= 0.33, `lifted out of the murk (darkest ground L ${Math.min(...r.Ls).toFixed(3)}, ≥ 0.33)`);
+      assert.ok(r.hard <= 2, `no more than 2 hard full-width ground changes (${r.hard})`);
+      assert.ok(r.crossers >= 2, `art crosses at least 2 section seams (${r.crossers})`);
+      assert.ok(r.ctas.length >= 4 && r.ctas.every(c => c >= 0.14), `CTAs pop with real saturation (chroma ${r.ctas.map(c => c.toFixed(3)).join(', ')}, ≥ 0.14)`);
+      assert.ok(r.price >= 0.9, `price numbers stand forward (L ${r.price.toFixed(3)})`);
+      assert.ok(r.flap >= 0.9, `flap letters stand forward (L ${r.flap.toFixed(3)})`);
+      assert.match(r.tick, /saturate\(/, 'the Bunny World ticket photos are saturated up');
+      assert.match(r.phone, /saturate\(/, 'the phone illustration is saturated up');
     } finally { await ctx.close(); }
   });
 }
