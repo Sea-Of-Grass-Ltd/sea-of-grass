@@ -1,4 +1,6 @@
-// Websites page as a Short: journey + page rules. Written from websites.journey.md before the build (storyboard approved 2026-11-19).
+// Websites page, two paths (Fable's plan, approved 2026-11-19: "Approved, build Fable's page").
+// A normal, naturally scrolling page: decided buyers buy or book straight away and can read the fine print;
+// unsure visitors get an optional pitch below. Written from websites.journey.md before the build.
 // Run:  cd tests && npm install && node --test services/websites.test.mjs
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
@@ -8,386 +10,191 @@ import { startSite, ROOT } from '../lib/site.mjs';
 
 const PAGE = '/preview/services/websites/';
 const WIDTHS = [360, 390, 1440];
-const LINES = ['run itself from your register', 'Tap Sold out', 'one less call', 'Nine shops we built', '$50 a month', 'first five shops'];
-const SAFETY = "$50 a month, locked for two years, and a free photo shoot. You tap Connect on Square's own page, one click undoes it, and if you back out there you owe nothing.";
-const FOUND = 'A real website linked to your Google listing helps more people find you in the first place.';
 const WEEK = '$1,200 works out to about $23 a week for a year, roughly what a couple of online orders bring in.';
+const BUSINESS = "Don't need more business? Then we keep it simple: menu and hours, or ordering you switch off when busy.";
 const HYPE = /\b(transform\w*|revolution\w*|next level|grow your|growth|skyrocket\w*|supercharg\w*|boost\w*|game.chang\w*|unlock\w*|empower\w*|dominat\w*|explod\w*|10x|level up|cutting.edge|world.class)\b/gi;
+const STYLE_FACES = /Syne|Instrument Serif|Libre Caslon Display|Archivo|Bricolage Grotesque/;
 
 let site;
 before(async () => { site = await startSite(); });
 after(async () => { await site?.close(); });
 
-// typographic apostrophes on the page read the same as straight ones in the exact-wording checks
-const text = loc => loc.evaluate(e => e.textContent.replace(/\s+/g, ' ').replace(/\u2019/g, "'").trim());
-const current = page => page.evaluate(() => +document.getElementById('short')?.dataset.current || 0);
-// progress (Bryce and Tristan, 2026-11-19): flows like a reel without looking like one. No segmented Stories bar;
-// a small "n / 6" and a thin meadow line along the edge that grows with each card.
-const filled = page => page.evaluate(() => { const m = (document.querySelector('[data-count]')?.textContent || '').match(/(\d+)\s*\/\s*6/); return m ? +m[1] : 0; });
-const settle = page => page.waitForTimeout(450);
-
-// open with touch available at every width, so the swipe test runs on desktop too
-async function open(w, opts = {}) {
-  const mobile = w < 900;
-  const ctx = await site.browser.newContext({ viewport: { width: w, height: mobile ? 844 : 900 }, isMobile: mobile, hasTouch: true,
-    reducedMotion: opts.motion ? 'no-preference' : 'reduce', deviceScaleFactor: 1 });
-  await ctx.route(u => !u.href.startsWith(site.base), r => r.abort());
-  if (opts.init) await ctx.addInitScript(opts.init);
-  const page = await ctx.newPage();
-  const errors = [];
-  page.on('pageerror', e => errors.push('pageerror: ' + e.message));
-  page.on('console', m => { if (m.type() === 'error' && (m.location().url || '').startsWith(site.base) && !/Failed to load resource/.test(m.text())) errors.push(m.text()); });
-  await page.goto(site.base + PAGE, { waitUntil: 'load' });
-  await page.waitForTimeout(400);
-  return { ctx, page, errors, w, h: mobile ? 844 : 900 };
-}
-async function next(page) { await page.keyboard.press('ArrowDown'); await settle(page); }
-async function goTo(page, n) {
-  for (let i = 0; i < 12 && await current(page) < n; i++) await next(page);
-  assert.equal(await current(page), n, `reached beat ${n}`);
-}
-async function swipe(page, w, h, dir) {
-  const c = await page.context().newCDPSession(page);
-  const x = Math.round(w / 2), a = Math.round(h * (dir === 'up' ? .72 : .28)), b = Math.round(h * (dir === 'up' ? .28 : .72));
-  await c.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y: a }] });
-  for (let i = 1; i <= 6; i++) await c.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: Math.round(a + (b - a) * i / 6) }] });
-  await c.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
-  await settle(page);
-}
+// typographic apostrophes read the same as straight ones in the exact-wording checks
+const text = loc => loc.evaluate(e => e.textContent.replace(/\s+/g, ' ').replace(/’/g, "'").trim());
+const inView = loc => loc.evaluate(e => { const r = e.getBoundingClientRect(), s = getComputedStyle(e);
+  return r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < innerHeight && s.visibility !== 'hidden' && +s.opacity > .05; });
+const fam = (page, sel) => page.evaluate(s => getComputedStyle(document.querySelector(s)).fontFamily, sel);
+// how many Book buttons a visitor can see right now
+const booksInView = page => page.evaluate(() => [...document.querySelectorAll('a')].filter(a => /^Book/.test(a.textContent.trim())).filter(a => {
+  const r = a.getBoundingClientRect(), s = getComputedStyle(a); let v = s.visibility !== 'hidden' && +s.opacity > .05;
+  for (let p = a.parentElement; p && v; p = p.parentElement) { const ps = getComputedStyle(p); if (ps.visibility === 'hidden' || +ps.opacity <= .05 || ps.display === 'none') v = false; }
+  return v && r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < innerHeight; }).length);
+const inkOf = sel => { const cv = document.querySelector(sel + ' canvas'); if (!cv) return -1; const d = cv.getContext('2d').getImageData(0, 0, cv.width, cv.height).data; let n = 0; for (let i = 3; i < d.length; i += 4) if (d[i]) n++; return n; };
 
 for (const w of WIDTHS) {
-  test(`${w}px · six cards: one line each, art on every card, bar fills`, async () => {
-    const { ctx, page, errors, h } = await open(w);
+  test(`${w}px · land: the promise, every price and both paths, with nothing to tap first`, async () => {
+    const { ctx, page, errors } = await site.open(PAGE, w, { reducedMotion: 'reduce' });
     try {
-      assert.equal(await page.locator('#short .beat').count(), 6, '6 cards');
-      assert.equal(await page.locator('.progress i').count(), 0, 'no segmented Stories bar');
-      assert.equal(await page.locator('.hint .t-touch', { hasText: /swipe up/i }).count(), 0, 'no "Swipe up" label');
-      assert.ok(await page.locator('[data-count]').isVisible(), 'a small card count');
-      assert.ok(await page.locator('[data-meadow-line]').isVisible(), 'a thin meadow line along the edge');
-      assert.equal(await current(page), 1, 'lands on card 1');
-      assert.match(await text(page.locator('#short .beat[data-beat="1"]')), /fixed and looked after/i, 'card 1 keeps "fixed and looked after" as its kicker');
-      for (let n = 1; n <= 6; n++) {
-        if (n > 1) await next(page);
-        assert.equal(await current(page), n, `on card ${n}`);
-        assert.equal(await filled(page), n, `count reads ${n} / 6`);
-        const frac = await page.evaluate(() => { const l = document.querySelector('[data-meadow-line]'); return +getComputedStyle(l).getPropertyValue('--p'); });
-        assert.ok(Math.abs(frac - n / 6) < .01, `meadow line grown to ${n}/6`);
-        const beat = page.locator(`#short .beat[data-beat="${n}"]`);
-        assert.equal(await beat.locator('[data-line]').count(), 1, `card ${n} has exactly one line`);
-        const line = beat.locator('[data-line]'), t = await text(line);
-        assert.ok(t.includes(LINES[n - 1]), `card ${n} line says "${LINES[n - 1]}" (got "${t}")`);
-        assert.ok(t.split(/\s+/).length <= 15, `card ${n} line is 15 words or fewer`);
-        const r = await line.boundingBox();
-        assert.ok(r && r.y >= 0 && r.y + r.height <= h && r.x >= 0 && r.x + r.width <= w, `card ${n} line fits on screen`);
-        const art = beat.locator('[data-art]');
-        assert.ok(await art.count() >= 1, `card ${n} has art`);
-        const ab = await art.first().boundingBox();
-        assert.ok(ab && ab.width * ab.height >= w * h * .25, `card ${n} art covers at least a quarter of the screen`);
-        const tabbable = await page.evaluate(n => [...document.querySelectorAll('#short .beat')].filter(b => +b.dataset.beat !== n)
-          .flatMap(b => [...b.querySelectorAll('a,button,iframe,[tabindex]')]).filter(e => !e.closest('[inert]') && e.tabIndex >= 0).length, n);
-        assert.equal(tabbable, 0, `card ${n}: other cards can't be tabbed into`);
-      }
+      assert.equal(await text(page.locator('h1')), 'Your website can run itself from your register.', 'the hero line');
+      const prices = page.locator('.hero [data-prices]');
+      assert.ok(await inView(prices), 'the price line is on the first screen');
+      assert.equal(await text(prices), 'Fixes $250 · care $50 a month · sites from $1,200', 'the price line, exactly');
+      const buy = page.locator('.hero a', { hasText: 'See prices and buy' });
+      assert.ok(await inView(buy), '"See prices and buy" on the first screen');
+      assert.equal(await buy.getAttribute('href'), '#plans', 'it jumps to the plans');
+      assert.ok(await inView(page.locator('.hero a', { hasText: 'Book 15 minutes' })), '"Book 15 minutes" on the first screen');
+      const unsure = page.locator('.hero a', { hasText: 'Not sure yet? Watch it work' });
+      assert.ok(await unsure.count() === 1 && (await unsure.getAttribute('href')) === '#demo', 'the unsure path starts at the demo');
+      assert.equal(await page.locator('.hero .hint').count(), 0, 'no hint text in the hero');
+      assert.ok(await page.evaluate(inkOf, '.hero [data-live-grass]') > 1000, 'the meadow along the hero foot has drawn');
+      const g = await page.evaluate(() => { const h = document.querySelector('h1').getBoundingClientRect(), p = document.querySelector('.hero [data-prices]').getBoundingClientRect(); return p.top - h.bottom; });
+      assert.ok(g >= 8, 'the price line sits clear of the headline');
+      assert.equal(await booksInView(page), 1, 'one Book button in view on landing');
       assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'no sideways scroll');
       assert.deepEqual(errors, [], 'no console errors');
     } finally { await ctx.close(); }
   });
 
-  test(`${w}px · move one card at a time by keyboard, tap, wheel and swipe`, async () => {
-    const { ctx, page, errors, h } = await open(w, { motion: true });
+  test(`${w}px · a decided buyer reaches Buy in one tap; the page scrolls like a page`, async () => {
+    const { ctx, page, errors } = await site.open(PAGE, w, { reducedMotion: 'reduce' });
     try {
-      await page.mouse.click(Math.round(w * .88), Math.round(h * .3)); await settle(page);
-      assert.equal(await current(page), 2, 'tap right side on card 1 → 2');
-      await page.keyboard.press('Space'); await settle(page);
-      assert.equal(await current(page), 3, 'Space → 3');
-      await page.keyboard.press('PageDown'); await settle(page);
-      assert.equal(await current(page), 4, 'PageDown → 4');
-      await page.keyboard.press('ArrowUp'); await settle(page);
-      assert.equal(await current(page), 3, 'ArrowUp → 3');
-      await page.mouse.click(Math.round(w * .1), Math.round(h * .3)); await settle(page);
-      assert.equal(await current(page), 2, 'tap left side on card 3 → 2');
-      await page.keyboard.press('ArrowDown'); await settle(page);
-      assert.equal(await current(page), 3, 'ArrowDown → 3');
-      await page.keyboard.press('PageUp'); await settle(page);
-      assert.equal(await current(page), 2, 'PageUp → 2');
-      await page.mouse.move(Math.round(w / 2), Math.round(h * .15));
-      await page.mouse.wheel(0, 400); await page.waitForTimeout(900);
-      assert.equal(await current(page), 3, 'one wheel flick down → exactly one card');
-      await page.mouse.wheel(0, -400); await page.waitForTimeout(900);
-      assert.equal(await current(page), 2, 'one wheel flick up → back one card');
-      await swipe(page, w, h, 'up');
-      assert.equal(await current(page), 3, 'swipe up → 3');
-      await swipe(page, w, h, 'down');
-      assert.equal(await current(page), 2, 'swipe down → 2');
-      assert.equal(await filled(page), 2, 'bar matches after all that');
+      for (const gone of ['#short', '.track', '.progress', '[data-count]', '[data-meadow-line]', '.skip', '[inert]', '[data-weeks]', '.flower', '.ask', '[data-later]'])
+        assert.equal(await page.locator(gone).count(), 0, `no ${gone} left from the Short`);
+      await page.locator('.hero a', { hasText: 'See prices and buy' }).click();
+      await page.waitForTimeout(400);
+      const adds = page.locator('#plans [data-add]');
+      assert.ok(await adds.count() >= 3, 'a Buy button on each plan row');
+      assert.ok(await inView(adds.first()), 'one tap from landing, a Buy button is on screen');
+      assert.equal(await page.locator('[data-add]').count(), await adds.count(), 'Buy lives only in the plan rows');
+      await page.evaluate(() => scrollTo(0, 0));
+      await page.mouse.move(Math.round(w / 2), 300);
+      await page.mouse.wheel(0, 700); await page.waitForTimeout(400);
+      const y1 = await page.evaluate(() => scrollY);
+      assert.ok(y1 > 400, `the wheel scrolls the page itself (scrollY ${y1})`);
+      await page.keyboard.press('PageDown'); await page.waitForTimeout(400);
+      assert.ok(await page.evaluate(() => scrollY) > y1, 'Page Down scrolls the page too');
       assert.deepEqual(errors, [], 'no console errors');
     } finally { await ctx.close(); }
   });
 
-  test(`${w}px · play: tap Sold out, swipe the nine shops`, async () => {
-    const { ctx, page, errors, h } = await open(w);
+  test(`${w}px · plans: every price out in the open, founding five on Care, the $23 line`, async () => {
+    const { ctx, page } = await site.open(PAGE, w, { reducedMotion: 'reduce' });
     try {
-      assert.ok(await page.locator('[data-beat="2"] iframe').getAttribute('src'), 'the shop is preloaded on card 1');
-      await goTo(page, 2);
-      const beat = page.locator('#short .beat[data-beat="2"]');
-      await page.waitForFunction(() => document.querySelector('[data-beat="2"] iframe')?.contentDocument?.querySelector('button[data-add="Horchata, large"]'), null, { timeout: 8000 });
-      const shop = await (await beat.locator('iframe').elementHandle()).contentFrame();
-      await beat.locator('[data-item="Horchata, large"] [data-act="soldout"]').click(); await settle(page);
-      assert.equal(await current(page), 2, 'tapping the register does not move the card');
-      assert.match(await shop.locator('button[data-add="Horchata, large"]').textContent(), /Sold out/i, 'live shop shows Sold out');
-      assert.ok(await shop.locator('button[data-add="Horchata, large"]').isDisabled(), 'live shop button disabled');
-      assert.equal(await text(beat.locator('[data-caption]')), "That's the whole job. We do the rest, and you never log in to anything.", 'caption swaps after the tap');
-      const rb = await beat.locator('.register').boundingBox(), fb = await beat.locator('.phone').boundingBox();
-      assert.ok(rb.y + rb.height <= h + 1 && fb.y + fb.height <= h + 1, 'register and shop both fit on the screen');
-
-      await goTo(page, 4);
-      const bw = page.locator('#short .beat[data-beat="4"]');
-      assert.equal(await bw.locator('.rail .shop').count(), 9, 'all nine shops');
-      assert.equal(await bw.locator('.rail .shop iframe').count(), 9, 'each shop is a live page');
-      assert.equal(await text(bw.locator('[data-rail-count]')), '1 of 9', 'count starts at 1 of 9');
-      await page.waitForFunction(() => document.querySelector('[data-beat="4"] .rail .shop iframe')?.contentDocument?.body?.children.length, null, { timeout: 8000 });
-      await bw.locator('.rail').evaluate(r => r.scrollTo({ left: r.querySelectorAll('.shop')[1].offsetLeft - r.offsetLeft, behavior: 'auto' }));
-      await page.waitForTimeout(500);
-      assert.equal(await text(bw.locator('[data-rail-count]')), '2 of 9', 'count follows the rail');
-      const rail = await bw.locator('.rail').boundingBox();
-      await page.mouse.click(Math.round(rail.x + rail.width * .9), Math.round(rail.y + rail.height / 2)); await settle(page);
-      assert.equal(await current(page), 4, 'touching the rail does not move the card');
-      assert.deepEqual(errors, [], 'no console errors');
-    } finally { await ctx.close(); }
-  });
-
-  test(`${w}px · the price, the first five, one button, and the details`, async () => {
-    const { ctx, page, errors, h } = await open(w);
-    try {
-      await goTo(page, 5);
-      const pr = page.locator('#short .beat[data-beat="5"]');
-      const p = await text(pr);
-      for (const x of ['$250', '$1,200', '$2,000']) assert.ok(p.includes(x), `card 5 shows ${x}`);
-      assert.doesNotMatch(await text(pr), /profit|pays for itself/i, 'no profit or pays-for-itself claims');
-
-      await next(page);
-      const fin = page.locator('#short .beat[data-beat="6"]');
+      const plans = page.locator('#plans');
+      assert.equal(await text(plans.locator('h2')), 'Every price, out in the open.', 'the plans heading');
+      const rows = await plans.locator('.plan').allTextContents();
+      assert.ok(rows.some(r => /Fix/.test(r) && /\$250/.test(r)), 'Fix $250 row');
+      assert.ok(rows.some(r => /Care/.test(r) && /\$50/.test(r)), 'Care $50 a month row');
+      assert.ok(rows.some(r => /Sites/.test(r) && /\$1,200/.test(r)), 'Sites from $1,200 row');
+      assert.match(await text(plans), /custom from \$2,000/i, 'custom from $2,000 beneath');
       const cfg = await page.evaluate(() => window.SOG_SHOP.founding);
-      assert.match(await text(fin), new RegExp(`${cfg.left} of ${cfg.total}`), 'honest spots count');
-      assert.equal(await fin.locator('.flower').count(), cfg.total, 'one flower per founding spot');
-      assert.equal(await fin.locator('.flower.open').count(), cfg.left, 'open flowers match the spots left');
-      const ctas = fin.locator('a.btn, button.btn');
-      assert.equal(await ctas.count(), 1, 'one button only');
-      assert.match(await text(ctas.first()), /Book 15 minutes with Tristan or Bryce/, 'the one button');
-      assert.ok((await text(fin)).includes('303.775.1333'), 'phone number beneath');
-      assert.equal(await text(fin.locator('[data-safety]')), SAFETY, 'the safety line, exactly');
-      assert.match(await text(fin), /a Bunny World demo photo/i, 'photo captioned honestly');
-      assert.ok(!(await page.locator('.top-wrap a.book').isVisible()), "header's Book button hidden on the last card");
+      const strip = plans.locator('.plan.care .founding');
+      assert.ok(await strip.count() === 1, 'the founding strip is attached to Care');
+      const f = await text(strip);
+      assert.match(f, new RegExp(`${cfg.left} of ${cfg.total}`), 'the real spots count');
+      for (const re of [/\$50 a month from day one/i, /locked for two years/i, /free photo shoot/i, /owe nothing/i, /honest review/i]) assert.match(f, re, `founding terms: ${re}`);
+      const week = plans.locator('[data-week]');
+      assert.ok(await week.isVisible(), 'the $23 line shows without any interaction');
+      assert.equal(await text(week), WEEK, 'the $23 line, exactly');
+      const jump = plans.locator('.jump');
+      assert.match(await text(jump), /Hookup · Questions/, 'the fine-print jump link');
+      assert.ok(await jump.locator('a[href="#hookup"]').count() === 1 && await jump.locator('a[href="#faq"]').count() === 1, 'jumps to the hookup and the questions');
+      assert.doesNotMatch(await text(plans), /profit|pays for itself/i, 'no profit claims');
+    } finally { await ctx.close(); }
+  });
 
-      const details = page.locator('#details');
-      assert.ok(!(await details.isVisible()), 'details closed until asked for');
-      const read = fin.locator('.more-link');
-      await read.click(); await settle(page);
-      assert.equal(await read.getAttribute('aria-expanded'), 'true', 'Read the details shows expanded');
-      assert.ok(await details.isVisible(), 'details open');
-      await page.locator('#details #buy .shop-cards').scrollIntoViewIfNeeded();
-      await page.waitForFunction(() => /\$\s?\d/.test(document.querySelector('#details #buy .shop-cards')?.textContent || ''), null, { timeout: 5000 });
-      const buy = await text(page.locator('#details #buy'));
-      assert.equal((buy.match(/\$\d[\d,]*/g) || [])[0], '$2,000', 'full prices, biggest first');
-      for (const x of ['$1,200', '$100 a month', '$250', '$50']) assert.ok(buy.includes(x), `full prices show ${x}`);
-      assert.match(await text(page.locator('#details')), /hello@seaofgrass\.studio/, 'email lives in the details');
-      assert.match(await text(page.locator('#details #founding')), /free photo shoot/i, 'founding offer in the details');
-      assert.match(await text(page.locator('#details #hookup')), /Square Dashboard/, 'hookup explained, with the undo');
-      const qs = await page.locator('#details #faq summary').allTextContents();
-      assert.ok(qs.length >= 8 && qs.filter(q => /register|Square/i.test(q)).length >= 2, 'every question, register ones included');
+  test(`${w}px · the pitch: the live demo, the calls as plain text, all nine shops`, async () => {
+    const { ctx, page, errors } = await site.open(PAGE, w, { reducedMotion: 'reduce' });
+    try {
+      const demo = page.locator('#demo');
+      assert.equal(await text(demo.locator('h2')), 'Go on. Tap Sold out.', 'the demo heading');
+      await demo.scrollIntoViewIfNeeded();
+      await page.waitForFunction(() => document.querySelector('#demo iframe')?.contentDocument?.querySelector('button[data-add="Horchata, large"]'), null, { timeout: 8000 });
+      const shop = await (await demo.locator('iframe').elementHandle()).contentFrame();
+      await demo.locator('[data-act="soldout"]').click(); await page.waitForTimeout(300);
+      assert.match(await shop.locator('button[data-add="Horchata, large"]').textContent(), /Sold out/i, 'the live shop flips to Sold out');
+      assert.equal(await text(demo.locator('[data-caption]')), "That's the whole job. We do the rest, and you never log in to anything.", 'the after-tap caption');
+      await demo.locator('[data-act="soldout"]').click(); await page.waitForTimeout(300);
+      assert.match(await shop.locator('button[data-add="Horchata, large"]').textContent(), /\$4\.00/, 'tap again to restock');
+
+      const calls = page.locator('#calls');
+      assert.equal(await text(calls.locator('h2')), "That's one less call asking what's left.", 'the calls heading');
+      assert.ok(await calls.locator('img[src*="card3-phone"], source[srcset*="card3-phone"]').count() >= 1, 'the counter-phone picture');
+      assert.equal(await calls.locator('button').count(), 0, 'nothing to tap: the calls are plain text');
+      const ct = await text(calls);
+      for (const s of ['Are you open?', 'Open today until 9 pm.', 'Any horchata left?', 'Sold out today, back tomorrow.', 'Can I order ahead?', 'Yes, order for pickup on the site.']) assert.ok(ct.includes(s), `reads: ${s}`);
+      assert.ok(ct.includes(BUSINESS), 'the more-business answer, exactly');
+
+      const bw = page.locator('#bunny-world');
+      assert.equal(await text(bw.locator('h2')), 'Nine shops we built to show you.', 'the Bunny World heading');
+      assert.equal(await bw.locator('.rail .shop').count(), 9, 'all nine shops');
+      assert.equal(await bw.locator('.rail .shop iframe').count(), 9, 'each one a live page');
+      assert.ok(await bw.locator('.rail').evaluate(r => r.scrollWidth > r.clientWidth + 20), 'the rail scrolls sideways');
+      assert.match(await text(bw), /demo shops/i, 'the demo-shops note');
+      assert.ok(await bw.locator('a[href="/bunnyworld/"]').count() >= 1, 'a link into Bunny World');
+      const faces = await bw.locator('.shop-name b').evaluateAll(bs => bs.map(b => getComputedStyle(b).fontFamily.split(',')[0].replace(/"/g, '').trim()));
+      assert.ok(new Set(faces).size >= 6, `each shop is labelled in its own face (${[...new Set(faces)].join(', ')})`);
+      assert.deepEqual(errors, [], 'no console errors');
+    } finally { await ctx.close(); }
+  });
+
+  test(`${w}px · fine print: the hookup, every answer as text, the close`, async () => {
+    const { ctx, page } = await site.open(PAGE, w, { reducedMotion: 'reduce' });
+    try {
+      const hook = page.locator('#hookup');
+      const heads = (await hook.locator('h3').allTextContents()).join(' | ');
+      for (const h of ['What it involves', 'What changes for you', 'How to undo it']) assert.ok(heads.includes(h), `hookup: "${h}"`);
+      const ht = await text(hook);
+      assert.match(ht, /can see/i, 'what we can see'); assert.match(ht, /never see/i, 'what we never see');
+      assert.ok(ht.includes('Change your mind at the hookup, and you owe nothing.'), 'the owe-nothing line');
+
+      const faq = page.locator('#faq');
+      const qs = (await faq.locator('summary').allTextContents()).join(' | ').replace(/’/g, "'");
+      for (const q of ["What's the catch?", 'We already have a Facebook page.', "I don't have time for this."]) assert.ok(qs.includes(q), `the questions include "${q}"`);
+      await page.evaluate(() => document.querySelectorAll('#faq details').forEach(d => d.open = true));
+      const at = await text(faq);
+      for (const a of ['None. $50 a month from day one, cancel any time.', 'This is what shows up when people search', 'We do the work, and the hookup takes about two minutes'])
+        assert.ok(at.includes(a), `answer readable as text: "${a}"`);
+
+      const close = page.locator('#start');
+      assert.equal(await text(close.locator('h2')), 'Talk to Tristan or Bryce.', 'the close');
+      assert.equal(await close.locator('a', { hasText: /^Book/ }).count(), 1, 'one Book button in the close');
+      assert.ok((await text(close)).includes('303.775.1333'), 'the phone number as text');
+      assert.equal(await close.locator('a[href^="tel:"]').count() + await close.locator('button').count(), 0, 'the number is plain text, with no second button');
+      await close.scrollIntoViewIfNeeded(); await page.waitForTimeout(500);
+      assert.ok(await page.evaluate(inkOf, '#start [data-live-grass]') > 500, 'the meadow again at the close');
+
       const body = await page.evaluate(() => document.body.innerText.replace(/\s+/g, ' '));
       assert.doesNotMatch(body, /first month (is )?free|free (first )?month|month (is )?free|free trial/i, 'no free month anywhere');
       assert.deepEqual(body.match(HYPE) || [], [], 'no oversell words');
-      assert.match(body, /less call|fewer calls/i, 'speaks to fewer calls');
-      assert.match(body, /never log in/i, 'speaks to less work');
-      assert.deepEqual(errors, [], 'no console errors');
     } finally { await ctx.close(); }
   });
-}
 
-// Six mini games (Tristan, 2026-11-19: "I'd like for all 6 of these cards to feel like their own mini game"). One verb each,
-// instant with a finger, and every card skippable. Touch drags use CDP touch events so phones are tested the way they're used.
-async function touchDrag(page, x0, y0, x1, y1, steps = 12) {
-  const c = await page.context().newCDPSession(page);
-  await c.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: Math.round(x0), y: Math.round(y0) }] });
-  for (let i = 1; i <= steps; i++) await c.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: Math.round(x0 + (x1 - x0) * i / steps), y: Math.round(y0 + (y1 - y0) * i / steps) }] });
-  await c.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
-}
-for (const w of WIDTHS) {
-  test(`${w}px · games 1–3: knock the grass, restock the horchata, answer the calls`, async () => {
-    const { ctx, page, errors, h } = await open(w);
+  test(`${w}px · never two Book buttons in one view; the header Book comes in on scroll`, async () => {
+    const { ctx, page } = await site.open(PAGE, w, { reducedMotion: 'reduce' });
     try {
-      // 1 KNOCK: sweeping through the meadow (finger or mouse) pops the shop pin out of the grass
-      const b1 = page.locator('#short .beat[data-beat="1"]'), zone = b1.locator('[data-game="knock"]');
-      assert.ok(!(await b1.locator('[data-pin]').isVisible()), 'pin hidden in the grass at first');
-      const z = await zone.boundingBox();
-      for (let i = 0; i < 3; i++) {
-        if (w < 900) await touchDrag(page, z.x + 10, z.y + z.height * .7, z.x + z.width - 10, z.y + z.height * .72);
-        else { await page.mouse.move(z.x + 10, z.y + z.height * .7); await page.mouse.move(z.x + z.width - 10, z.y + z.height * .72, { steps: 14 }); }
+      const H = await page.evaluate(() => document.documentElement.scrollHeight - innerHeight);
+      let headerSeen = false;
+      for (let y = 0; y <= H; y += Math.round((w < 900 ? 844 : 900) * .45)) {
+        await page.evaluate(y => scrollTo(0, y), y); await page.waitForTimeout(250);
+        const n = await booksInView(page);
+        assert.ok(n <= 1, `at scroll ${y}: ${n} Book buttons in view`);
+        if (y > 1200 && await page.locator('header.top a.book').evaluate(a => getComputedStyle(a).visibility !== 'hidden' && a.getBoundingClientRect().bottom > 0)) headerSeen = true;
       }
-      await settle(page);
-      assert.equal(await current(page), 1, 'knocking the grass does not move the card');
-      assert.ok(await b1.locator('[data-pin]').isVisible(), 'the shop pin pops up');
-      assert.equal(await text(b1.locator('[data-found]')), FOUND, 'the find-you line, exactly');
-      assert.doesNotMatch(await text(b1), /rank|#1|guarantee/i, 'no ranking promises');
-
-      // 2 TAP: Sold out, then tap again to restock
-      await goTo(page, 2);
-      const b2 = page.locator('#short .beat[data-beat="2"]');
-      await page.waitForFunction(() => document.querySelector('[data-beat="2"] iframe')?.contentDocument?.querySelector('button[data-add="Horchata, large"]'), null, { timeout: 8000 });
-      const shop = await (await b2.locator('iframe').elementHandle()).contentFrame();
-      const out = b2.locator('[data-act="soldout"]');
-      await out.click(); await settle(page);
-      assert.match(await shop.locator('button[data-add="Horchata, large"]').textContent(), /Sold out/i, 'sold out');
-      await out.click(); await settle(page);
-      assert.match(await shop.locator('button[data-add="Horchata, large"]').textContent(), /\$4\.00/, 'tapping again restocks it');
-      assert.ok(!(await shop.locator('button[data-add="Horchata, large"]').isDisabled()), 'restocked button works again');
-      assert.equal(await current(page), 2, 'still on card 2');
-
-      // 3 TAP: answer the three calls; the website answers each, and all three bloom the meadow
-      await next(page);
-      const b3 = page.locator('#short .beat[data-beat="3"]');
-      assert.ok(await b3.locator('img[src*="card3-phone"], source[srcset*="card3-phone"]').count() >= 1, 'the approved phone image is the art');
-      const calls = b3.locator('.call');
-      assert.equal(await calls.count(), 3, 'three calls');
-      assert.ok(!(await b3.locator('[data-calls-done]').isVisible()), 'no bloom before they are answered');
-      for (let i = 0; i < 3; i++) {
-        await calls.nth(i).click(); await page.waitForTimeout(120);
-        assert.ok(await calls.nth(i).evaluate(e => e.classList.contains('answered')), `call ${i + 1} answered`);
-        assert.ok((await text(calls.nth(i).locator('[data-a]'))).length > 8, `call ${i + 1} shows the website's answer`);
-        const cb = await calls.nth(i).boundingBox();
-        assert.ok(cb.height >= 44 && cb.y >= 0 && cb.y + cb.height <= h, `call ${i + 1} is a full-size target on screen`);
-      }
-      await settle(page);
-      assert.ok(await b3.locator('[data-calls-done]').isVisible(), 'all three answered: the meadow blooms');
-      assert.equal(await current(page), 3, 'answering calls does not move the card');
-      assert.deepEqual(errors, [], 'no console errors');
+      await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight)); await page.waitForTimeout(300);
+      assert.ok(await booksInView(page) <= 1, 'at the very bottom: one Book');
+      assert.ok(headerSeen, 'the header Book shows once you scroll into the page');
     } finally { await ctx.close(); }
   });
 
-  test(`${w}px · games 4–6: swipe the nine shops, drag the year, bloom a spot`, async () => {
-    const { ctx, page, errors } = await open(w);
+  test(`${w}px · section faces: Dew's Manrope for the buying path, the site's style faces for the pitch`, async () => {
+    const { ctx, page } = await site.open(PAGE, w, { reducedMotion: 'reduce' });
     try {
-      // 4 SWIPE: to the ninth shop, which says "Yours could be next."
-      await goTo(page, 4);
-      const b4 = page.locator('#short .beat[data-beat="4"]'), rail = b4.locator('.rail');
-      assert.ok(!(await b4.locator('[data-rail-end]').isVisible()), 'the end note waits for the last shop');
-      if (w < 900) { const r = await rail.boundingBox(); for (let i = 0; i < 10; i++) { await touchDrag(page, r.x + r.width * .85, r.y + r.height * .5, r.x + r.width * .15, r.y + r.height * .52, 8); await page.waitForTimeout(250); } }
-      else await rail.evaluate(r => r.scrollTo({ left: r.scrollWidth, behavior: 'auto' }));
-      await page.waitForTimeout(700);
-      assert.equal(await text(b4.locator('[data-rail-count]')), '9 of 9', 'count reaches 9 of 9');
-      assert.ok(await b4.locator('[data-rail-end]').isVisible(), 'the last shop says yours could be next');
-      assert.equal(await current(page), 4, 'swiping the shops does not move the card');
-
-      // 5 DRAG: slide $1,200 across a year to $23 a week, landing on the exact line
-      await next(page);
-      const b5 = page.locator('#short .beat[data-beat="5"]'), range = b5.locator('input[type="range"][data-weeks]');
-      assert.ok(!(await b5.locator('[data-week]').isVisible()), 'the $23 line waits for the drag');
-      const rb = await range.boundingBox();
-      await page.mouse.move(rb.x + 4, rb.y + rb.height / 2); await page.mouse.down();
-      await page.mouse.move(rb.x + rb.width - 2, rb.y + rb.height / 2, { steps: 16 }); await page.mouse.up();
-      await settle(page);
-      assert.equal(await range.evaluate(r => r.value), '52', 'dragged across the whole year');
-      assert.match(await text(b5.locator('[data-weekly]')), /\$23 a week/, 'the readout lands on $23 a week');
-      assert.equal(await text(b5.locator('[data-week]')), WEEK, 'the $23-a-week line, exactly');
-      assert.equal(await current(page), 5, 'dragging does not move the card');
-      assert.ok(rb.height >= 40, 'the slider is a full-size target');
-      await page.evaluate(() => document.activeElement && document.activeElement.blur()); // arrow keys belong to a focused slider
-
-      // 6 BLOOM: tap an open flower; the real count never changes
-      await next(page);
-      const b6 = page.locator('#short .beat[data-beat="6"]');
-      const cfg = await page.evaluate(() => window.SOG_SHOP.founding);
-      const before = await text(b6.locator('.spots'));
-      await b6.locator('.flower.open').first().click(); await settle(page);
-      assert.ok(await b6.locator('.flower.picked').count() === 1, 'the tapped flower blooms');
-      assert.ok(await b6.locator('[data-yours]').isVisible(), '"This spot could be yours" appears');
-      assert.equal(await text(b6.locator('.spots')), before, 'the spots count does not change');
-      assert.equal(await b6.locator('.flower.open').count(), cfg.left, 'open flowers still match the real count');
-      assert.equal(await current(page), 6, 'blooming does not move the card');
-      assert.deepEqual(errors, [], 'no console errors');
-    } finally { await ctx.close(); }
-  });
-
-  test(`${w}px · every card can be skipped in one tap`, async () => {
-    const { ctx, page } = await open(w);
-    try {
-      for (let n = 1; n <= 5; n++) {
-        const skip = page.locator(`#short .beat[data-beat="${n}"] .skip`);
-        assert.ok(await skip.isVisible(), `card ${n} has a Skip`);
-        const sb = await skip.boundingBox();
-        assert.ok(sb.height >= 44, `card ${n} Skip is a full-size target`);
-        await skip.click(); await settle(page);
-        assert.equal(await current(page), n + 1, `Skip on card ${n} → ${n + 1}`);
-      }
-      assert.ok(await page.locator('#short .beat[data-beat="6"] .more-link').isVisible(), 'the last card moves on through Read the details');
-    } finally { await ctx.close(); }
-  });
-}
-
-// The walk-in card's answers, folded into play (Tristan, 2026-11-19: "incorporated into the cards somehow without it being obvious")
-const CARD = {
-  facebook: 'Keep it. This is what shows up when people search.',
-  business: 'Then we keep it simple: menu and hours, or ordering you switch off when busy.',
-  catch: 'None. $50 a month from day one, cancel any time.',
-};
-for (const w of WIDTHS) {
-  test(`${w}px · the walk-in card's answers live inside the games`, async () => {
-    const init = () => { try { delete Navigator.prototype.share; } catch {} Object.defineProperty(navigator, 'clipboard', { value: { writeText: () => Promise.resolve() }, configurable: true }); };
-    const { ctx, page, errors } = await open(w, { init });
-    try {
-      // card 1: once the pin is up, "We already have Facebook" answers itself on a tap
-      const b1 = page.locator('#short .beat[data-beat="1"]');
-      assert.ok(!(await b1.locator('[data-ask="facebook"]').isVisible()), 'the Facebook bubble waits for the pin');
-      const z = await b1.locator('[data-game="knock"]').boundingBox();
-      for (let i = 0; i < 3; i++) { await page.mouse.move(z.x + 10, z.y + z.height * .7); await page.mouse.move(z.x + z.width - 10, z.y + z.height * .72, { steps: 14 }); }
-      await settle(page);
-      const fb = b1.locator('[data-ask="facebook"]');
-      assert.ok(await fb.isVisible(), 'Facebook bubble appears with the pin');
-      assert.match(await text(fb), /Facebook/, 'it asks about Facebook');
-      await fb.click(); await settle(page);
-      assert.equal(await text(fb.locator('[data-a]')), CARD.facebook, 'Facebook answer, word for word');
-      assert.equal(await current(page), 1, 'still on card 1');
-
-      // card 3: after the three calls, the owner's own doubt: "I don't need more business"
-      await goTo(page, 3);
-      const b3 = page.locator('#short .beat[data-beat="3"]');
-      const own = b3.locator('[data-ask="business"]');
-      assert.ok(!(await own.isVisible()), 'the owner bubble waits for the calls');
-      for (let i = 0; i < 3; i++) await b3.locator('.call').nth(i).click();
-      await settle(page);
-      assert.ok(await own.isVisible(), 'the owner bubble appears after the calls');
-      await own.click(); await settle(page);
-      assert.equal(await text(own.locator('[data-a]')), CARD.business, 'more-business answer, word for word');
-
-      // card 5: the drag answers "too expensive" and offers $50 a month; the catch answers itself on a tap
-      await goTo(page, 5);
-      const b5 = page.locator('#short .beat[data-beat="5"]');
-      await b5.locator('[data-weeks]').evaluate(r => { r.value = '52'; r.dispatchEvent(new Event('input', { bubbles: true })); });
-      await settle(page);
-      assert.equal(await text(b5.locator('[data-or]')), 'Or start at $50 a month.', 'the $50-a-month way in');
-      const ct = b5.locator('[data-ask="catch"]');
-      await ct.click(); await settle(page);
-      assert.equal(await text(ct.locator('[data-a]')), CARD.catch, 'the catch, word for word');
-      assert.equal(await current(page), 5, 'still on card 5');
-      await page.evaluate(() => document.activeElement && document.activeElement.blur());
-
-      // card 6: the safety line answers the nervous owner; "Not yet?" saves the page for later
-      await next(page);
-      const b6 = page.locator('#short .beat[data-beat="6"]'), safe = await text(b6.locator('[data-safety]'));
-      assert.match(safe, /Connect on Square's own page/, 'nervous: you tap Connect on Square\'s own page');
-      assert.match(safe, /owe nothing/, 'nervous: you owe nothing');
-      const later = b6.locator('button', { hasText: 'Not yet? Save this for later' });
-      assert.ok(await later.isVisible(), 'a soft "Not yet" link');
-      assert.equal(await b6.locator('a.btn, button.btn').count(), 1, 'still one button only');
-      await later.click(); await settle(page);
-      assert.match(await text(b6.locator('[data-later-msg]')), /saved|copied|link/i, 'Not yet leaves them a way back');
-      assert.equal(await current(page), 6, 'still on card 6');
-
-      // the full answers still live in the details
-      await b6.locator('.more-link').click(); await settle(page);
-      const qs = (await page.locator('#details #faq summary').allTextContents()).join(' | ');
-      for (const q of [/Facebook/, /more business/i, /time/i]) assert.match(qs, q, `details FAQ covers ${q}`);
-      assert.deepEqual(errors, [], 'no console errors');
+      for (const s of ['h1', '#plans h2', '#start h2']) assert.match(await fam(page, s), /Manrope/, `${s} in Manrope`);
+      const pitch = await Promise.all(['#demo h2', '#calls h2', '#bunny-world h2', '#hookup h2'].map(s => fam(page, s)));
+      assert.ok(pitch.every(f => STYLE_FACES.test(f)), `pitch sections use the site's own style faces (${pitch.map(f => f.split(',')[0]).join(', ')})`);
+      assert.ok(new Set(pitch.map(f => f.split(',')[0])).size >= 3, 'the pitch sections differ from each other');
+      assert.match(await fam(page, '.kick'), /Plex Mono/, 'mono only for the small labels');
     } finally { await ctx.close(); }
   });
 }
