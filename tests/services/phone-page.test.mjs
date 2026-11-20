@@ -86,6 +86,36 @@ for (const w of WIDTHS) {
   });
 }
 
+for (const w of WIDTHS) {
+  // Staging (Tristan 2026-11-20: "the way that it's positioned in the space doesn't make sense"): a real object on a
+  // real counter. el.staging() reports where things land on the canvas, as fractions of its width and height.
+  test(`${w}px · staged like a real phone on a real counter`, async () => {
+    const { ctx, page } = await open(w);
+    await bringIn(page);
+    const st = async () => page.evaluate(() => document.querySelector('#calls sog-phone').staging());
+    const rest = await st();
+    const inFrame = (b, label) => {
+      assert.ok(b.l > 0.04 && b.r < 0.96 && b.t > 0.04 && b.b < 0.96, `${label}: phone fully in frame ${JSON.stringify(b)}`);
+    };
+    inFrame(rest.phone, 'at rest');
+    const cx = (rest.phone.l + rest.phone.r) / 2, cy = (rest.phone.t + rest.phone.b) / 2;
+    assert.ok(cx > 0.38 && cx < 0.62, `roughly centred across (${cx.toFixed(2)})`);
+    assert.ok(cy > 0.35 && cy < 0.72, `roughly centred down (${cy.toFixed(2)})`);
+    assert.ok(rest.phone.r - rest.phone.l > 0.55, `phone fills the card's width sensibly (${(rest.phone.r - rest.phone.l).toFixed(2)})`);
+    assert.ok(Math.abs(rest.edgeTiltDeg) < 0.5, `counter front edge is level (${rest.edgeTiltDeg.toFixed(2)} deg)`);
+    assert.ok(rest.edgeY > rest.phone.b - 0.02 && rest.edgeY < 0.97, `the counter's front edge is in view below the phone (${rest.edgeY.toFixed(2)})`);
+    assert.ok(rest.lookDownDeg >= 15 && rest.lookDownDeg <= 25, `eye height looks down 15-25 deg (${rest.lookDownDeg})`);
+    assert.ok(rest.grassTop < 0.12, `grass fills up to near the top, no empty void (${rest.grassTop.toFixed(2)})`);
+    assert.ok(rest.grassRootsHidden, 'grass grows from behind the counter: every root is hidden by it');
+    assert.ok(rest.contactShadow, 'the phone has a contact shadow on the counter');
+    // the moves stay in frame
+    await page.locator('#calls dl.calls > div').nth(1).dispatchEvent('click');
+    await page.waitForFunction(() => +document.querySelector('#calls sog-phone').dataset.lift > 0.97, null, { timeout: 3000 });
+    inFrame((await st()).phone, 'handset lifted');
+    await ctx.close();
+  });
+}
+
 test('reduced motion · the picture, no 3D downloaded', async () => {
   const { ctx, page, requests } = await open(390, { reduce: true });
   await page.evaluate(() => document.querySelector('#calls sog-phone').scrollIntoView({ block: 'center' }));
