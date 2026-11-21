@@ -9,7 +9,7 @@
      mixed with the sky's ultramarine and a breath of poppy. Sections take turns navy / moss / plum; poppy is the only CTA
      colour; gold only on small eyebrow labels; each section borrows 2-4 single touches of the others on real elements. */
   --ground:#1F1F35;--navy:#272C4B;--navy-line:#39406A;--moss:#263535;--grass:#3F6550;--sage:#7F917F;
-  --plum:#332739;--plan-card:#473A54;--plum-mute:#61465C;--poppy:#D17C66;--poppy-deep:#A8564D;--gold:#C8B27B;--soft:#9B97B1;--text:#DAD1CD;
+  --plum:#332739;--cream:#FFF6E9;--sale:#D93A3F;--card-ink:#1A1530;--plan-card:#473A54;--plum-mute:#61465C;--poppy:#D17C66;--poppy-deep:#A8564D;--gold:#C8B27B;--soft:#9B97B1;--text:#DAD1CD;
   --meadow:#4A7A3C;--pop:var(--text);
   --text-rgb:218,209,205;--shade-rgb:0,0,0;--sage-rgb:127,145,127;--plum-mute-rgb:97,70,92;
   /* roles, built only from the palette */
@@ -487,4 +487,94 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
   .fan .f1{left:4%;top:-88px;--r:-10deg}
   .fan .f3{right:4%;left:auto;top:-92px;--r:9deg}
   .fan .f5{left:calc(50% - 50px);top:-104px;width:100px;--r:2deg}
+}
+/* ======== the pricing stage (Tristan approved the render pricing-header-nb-3; the card after Higgsfield's Ultra card) ========
+   six real Bunny World sites mirrored down both sides, one warm dark grade; the headline and the plan card in the centre lane;
+   the card is the one bright object: the Front Range plants art (as on Bunny Burritos) baked into an alpenglow tritone inside, the plan switcher, a huge price, a near-white button. */
+.stage-hero{min-height:min(900px,100vh);display:flex;align-items:center;padding:clamp(56px,6vw,96px) 0 clamp(190px,17vw,240px)}
+.stage-hero>.in.hero-in{position:relative;z-index:1;width:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,3.6vw,60px);align-items:center;
+  max-width:min(var(--max),calc(100vw - 2 * clamp(190px,18.5vw,340px)))}
+.stage-hero h1{font-size:clamp(38px,3.7vw,56px);max-width:none;text-wrap:balance}
+/* three lines set on purpose on wide screens: "Your website / can run itself / from your register." */
+@media (min-width:1180px){
+  .stage-hero>.in.hero-in{padding-left:0;padding-right:0}
+  .stage-hero .hero-words{container-type:inline-size}
+  .stage-hero h1{font-size:min(60px,12.2cqi)}
+  .stage-hero h1 .hl{display:block;white-space:nowrap}
+}
+.stage-hero .hero-words .kick{white-space:nowrap}
+.stage-hero .sub{max-width:24ch}
+.stage-hero .hero-links{margin-top:22px}
+.stage-hero .plans{display:block;margin:0}
+/* the small print sits in one quiet line under the Care board, out of the hero */
+.extras{margin-top:6px;font-size:14px;color:var(--soft)}
+.extras .also,.extras .jump{margin:0;display:inline}
+.extras .jump{margin-left:10px}
+/* the wall */
+.shop-wall{position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none;--py:0}
+.shop-wall .sw{position:absolute;width:clamp(230px,23vw,410px);height:auto;aspect-ratio:4/3;object-fit:cover;object-position:50% 0;border-radius:14px;border:5px solid var(--card-ink);
+  box-shadow:0 24px 50px rgba(var(--shade-rgb),.55),0 0 0 1px rgba(var(--text-rgb),.12);filter:sepia(.32) saturate(.85) brightness(.66) contrast(1.06) hue-rotate(-12deg);
+  transform:translateY(calc(var(--py) * var(--d,24px))) rotate(var(--r))}
+.shop-wall .l2,.shop-wall .r2{width:clamp(170px,16vw,290px)}
+.shop-wall .l1{left:-2%;top:-13%;--r:-6deg;--d:30px}
+.shop-wall .l2{left:1%;top:37%;--r:5deg;--d:-16px}
+.shop-wall .l3{left:-2%;bottom:-9%;--r:-4deg;--d:26px}
+.shop-wall .r1{right:-2%;top:-13%;--r:6deg;--d:30px}
+.shop-wall .r2{right:1%;top:37%;--r:-5deg;--d:-16px}
+.shop-wall .r3{right:-2%;bottom:-9%;--r:4deg;--d:26px}
+/* the card */
+.u-card{position:relative;isolation:isolate;width:min(100%,520px);margin-left:auto;border-radius:24px;color:var(--cream);overflow:hidden;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Ccircle cx='1' cy='1' r='1'/%3E%3C/svg%3E") -20px 64%/40px 40px no-repeat,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Ccircle cx='1' cy='1' r='1'/%3E%3C/svg%3E") calc(100% + 20px) 64%/40px 40px no-repeat,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2' preserveAspectRatio='none'%3E%3Crect width='2' height='2'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat;-webkit-mask-composite:xor;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Ccircle cx='1' cy='1' r='1'/%3E%3C/svg%3E") -20px 64%/40px 40px no-repeat exclude,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Ccircle cx='1' cy='1' r='1'/%3E%3C/svg%3E") calc(100% + 20px) 64%/40px 40px no-repeat exclude,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2' preserveAspectRatio='none'%3E%3Crect width='2' height='2'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat}
+.stage-hero .plans{position:relative}
+.stage-hero .plans::before{content:"";position:absolute;z-index:-1;left:calc(100% - min(100%,520px) - 7%);right:-7%;top:-7%;bottom:-7%;border-radius:60px;background:var(--poppy);opacity:.7;filter:blur(56px);pointer-events:none}
+.u-scene{position:absolute;inset:0;z-index:-2}
+.u-scene img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%;display:block}
+/* the Bunny Burritos film grain on top of the baked alpenglow plants */
+.u-scene::before{content:"";position:absolute;inset:0;z-index:1;background:url(/preview/assets/work/bunny-world/burritos-grain.webp) 0 0/256px 256px;opacity:.4;pointer-events:none}
+.u-scene::after{content:"";position:absolute;inset:0;z-index:2;background:rgba(26,21,48,.4)}
+.u-body{display:grid;gap:18px;padding:clamp(26px,2.8vw,36px)}
+.u-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.u-title{margin:0;font:600 clamp(30px,2.8vw,40px)/1 var(--head);letter-spacing:-.02em;color:var(--cream)}
+.u-tabs{display:flex;flex-wrap:nowrap;gap:2px;padding:4px;border-radius:999px;background:rgba(26,21,48,.62);box-shadow:inset 0 0 0 1px rgba(var(--text-rgb),.18)}
+.u-tabs button{all:unset;cursor:pointer;position:relative;display:inline-flex;align-items:center;gap:6px;padding:8px clamp(8px,.8vw,12px);white-space:nowrap;border-radius:999px;font:600 13px/1 var(--body);color:var(--cream)}
+.u-tabs button[aria-selected="true"]{background:var(--cream);color:var(--card-ink)}
+.u-tabs button:focus-visible{outline:2px solid var(--cream);outline-offset:2px}
+.u-off{font:700 10.5px/1 var(--mono);color:var(--cream);background:var(--sale);padding:4px 6px;border-radius:999px;letter-spacing:.02em}
+.u-panel{display:grid;gap:12px}
+.u-panel[hidden]{display:none}
+.u-amt{margin:6px 0 0;font:700 clamp(64px,7vw,104px)/.9 var(--head);letter-spacing:-.05em;color:var(--cream)}
+.u-amt small{font:500 18px/1 var(--body);letter-spacing:0;color:var(--cream)}
+.u-amt s{font-size:.38em;font-weight:600;letter-spacing:-.02em;vertical-align:.9em;margin-right:.15em;color:var(--cream);opacity:.8;text-decoration-thickness:3px}
+.u-note{margin:0;font-size:16px;line-height:1.4;color:var(--cream)}
+.u-note b{font-weight:700}
+.u-btn{all:unset;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:4px;padding:8px 8px 8px 22px;min-height:44px;border-radius:999px;
+  background:var(--cream);color:var(--card-ink);font:700 17px/1 var(--body);box-shadow:0 10px 24px rgba(var(--shade-rgb),.35)}
+.u-btn:hover{background:var(--text)}
+.u-btn:focus-visible{outline:2px solid var(--cream);outline-offset:3px}
+.u-pill{font:700 13px/1 var(--body);background:var(--poppy);color:var(--card-ink);padding:10px 14px;border-radius:999px}
+.u-foot{display:flex;align-items:center;gap:8px;margin:2px 0 0;font-size:13px;color:var(--cream)}
+.u-foot svg{width:15px;height:15px;flex:none}
+@media (min-width:1180px) and (max-width:1380px){
+  .u-tabs{width:100%;justify-content:space-between}
+  .u-tabs button{padding:8px 8px;font-size:12.5px}
+}
+/* narrower screens: the words, then the card with three of the shops peeking above it */
+@media (max-width:1179px){
+  .stage-hero{display:block;min-height:0}
+  .stage-hero>.in.hero-in{grid-template-columns:1fr;max-width:var(--max)}
+  .u-card{margin:0 auto}
+  .stage-hero .plans{padding-top:calc(min(29vw,220px) * .75 + 70px)}
+  .stage-hero .plans::before{left:max(6%,calc(50% - 280px));right:max(6%,calc(50% - 280px));top:190px;height:min(480px,62%);opacity:.36}
+  .shop-wall{inset:auto 0 auto 0;top:var(--wall-top,0);height:200px}
+  .shop-wall .l1,.shop-wall .l3,.shop-wall .r3{display:none}
+  .shop-wall .sw{width:min(29vw,220px);border-width:3px;border-radius:10px}
+  .shop-wall .l2{left:calc(50% - min(29vw,220px) * 1.5 - 14px);top:30px;--r:-6deg}
+  .shop-wall .r2{right:auto;left:calc(50% - min(29vw,220px) / 2);top:10px;--r:2deg}
+  .shop-wall .r1{right:auto;left:calc(50% + min(29vw,220px) / 2 + 14px);top:30px;--r:6deg}
+}
+@media (max-width:520px){
+  .u-tabs{flex-wrap:nowrap;width:100%;justify-content:space-between}
+  .u-tabs button{padding:8px 9px;font-size:12px;gap:4px}
+  .u-off{padding:3px 5px;font-size:9.5px}
 }
