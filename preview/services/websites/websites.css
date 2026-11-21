@@ -495,6 +495,13 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .stage-hero>.in.hero-in{position:relative;z-index:1;width:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,3.6vw,60px);align-items:center;
   max-width:min(var(--max),calc(100vw - 2 * clamp(190px,18.5vw,340px)))}
 .stage-hero h1{font-size:clamp(38px,3.7vw,56px);max-width:none;text-wrap:balance}
+/* three lines set on purpose on wide screens: "Your website / can run itself / from your register." */
+@media (min-width:1180px){
+  .stage-hero>.in.hero-in{padding-left:0;padding-right:0}
+  .stage-hero .hero-words{container-type:inline-size}
+  .stage-hero h1{font-size:min(60px,12.2cqi)}
+  .stage-hero h1 .hl{display:block;white-space:nowrap}
+}
 .stage-hero .hero-words .kick{white-space:nowrap}
 .stage-hero .sub{max-width:24ch}
 .stage-hero .hero-links{margin-top:22px}
@@ -509,10 +516,10 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
   box-shadow:0 24px 50px rgba(var(--shade-rgb),.55),0 0 0 1px rgba(var(--text-rgb),.12);filter:sepia(.32) saturate(.85) brightness(.66) contrast(1.06) hue-rotate(-12deg);
   transform:translateY(calc(var(--py) * var(--d,24px))) rotate(var(--r))}
 .shop-wall .l2,.shop-wall .r2{width:clamp(170px,16vw,290px)}
-.shop-wall .l1{left:-2%;top:-7%;--r:-6deg;--d:30px}
+.shop-wall .l1{left:-2%;top:-13%;--r:-6deg;--d:30px}
 .shop-wall .l2{left:1%;top:37%;--r:5deg;--d:-16px}
 .shop-wall .l3{left:-2%;bottom:-9%;--r:-4deg;--d:26px}
-.shop-wall .r1{right:-2%;top:-7%;--r:6deg;--d:30px}
+.shop-wall .r1{right:-2%;top:-13%;--r:6deg;--d:30px}
 .shop-wall .r2{right:1%;top:37%;--r:-5deg;--d:-16px}
 .shop-wall .r3{right:-2%;bottom:-9%;--r:4deg;--d:26px}
 /* the card */
@@ -549,7 +556,6 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .u-foot{display:flex;align-items:center;gap:8px;margin:2px 0 0;font-size:13px;color:var(--cream)}
 .u-foot svg{width:15px;height:15px;flex:none}
 @media (min-width:1180px) and (max-width:1380px){
-  .stage-hero>.in.hero-in{grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr)}
   .u-tabs{width:100%;justify-content:space-between}
   .u-tabs button{padding:8px 8px;font-size:12.5px}
 }
