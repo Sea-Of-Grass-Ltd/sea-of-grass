@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Old Town Marketplace · 332 Main St, Longmont</title>
+<meta name="description" content="Small shops under one old roof on Main Street in Longmont. Find a shop on the floor map, see what's open, and grab an empanada.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<p class="draft">Demo by Sea of Grass for Old Town Marketplace. Anything with a dashed line is a placeholder to check.</p>
+
+<header class="top wrap">
+  <a class="mark" href="#top" aria-label="Old Town Marketplace, back to the top">
+    <span class="badge" aria-hidden="true"><i class="b1"></i><i class="b2"></i><i class="b3"></i></span>
+    <span class="name">Old Town<br>Marketplace</span>
+  </a>
+  <span class="addr mono">332 Main St · Longmont</span>
+</header>
+
+<main id="top">
+  <section class="hero wrap">
+    <h1>Small shops under one old roof.</h1>
+    <div class="open" data-open aria-live="polite">
+      <span class="dot" aria-hidden="true"></span>
+      <div><strong data-open-head>Checking the clock…</strong><span data-open-sub>Every shop sets its own hours, so a few may keep shorter ones.</span></div>
+    </div>
+  </section>
+
+  <section class="map wrap" data-map aria-labelledby="map-h">
+    <h2 id="map-h" class="sr">Floor map</h2>
+    <div class="tabs" role="tablist" aria-label="Levels" data-tabs></div>
+    <div class="plan" data-plan></div>
+    <div class="legend" data-legend></div>
+    <p class="note">The map is drawn as a guide and is not to scale. Unit spots are still to be confirmed with the marketplace.</p>
+  </section>
+
+  <section class="dir wrap" id="shops" aria-labelledby="dir-h">
+    <h2 id="dir-h">Every shop inside</h2>
+    <div class="chips" data-chips aria-label="Show only"></div>
+    <ul class="list" data-directory></ul>
+  </section>
+
+  <section class="food band" id="food" aria-labelledby="food-h">
+    <div class="wrap">
+      <h2 id="food-h">Hungry while you browse?</h2>
+      <div class="kitchens">
+        <article class="kitchen k-abuelitas">
+          <h3>Abuelita's Empanadas</h3>
+          <p>Mirella and David have been baking empanadas here for ten years. Order ahead on their page and pick them up hot, or grab a table and eat in.</p>
+          <a class="btn" href="../abuelitas/#order">Order empanadas for pickup</a>
+        </article>
+        <article class="kitchen k-dumplings">
+          <h3>Colorado Dumplings</h3>
+          <p>The dumpling cafe shares the dining room, so you can order at their counter and sit right down.</p>
+          <p class="tbc">Online ordering for the dumplings can be added the same way whenever they want it.</p>
+        </article>
+      </div>
+      <p class="soon">Space B5 is being turned into a place to eat and sing, so karaoke night is coming.</p>
+    </div>
+  </section>
+
+  <section class="events wrap" id="events" aria-labelledby="ev-h">
+    <h2 id="ev-h">What's on</h2>
+    <ul class="ev" data-events></ul>
+    <a class="more" data-calendar href="#">See the full marketplace calendar</a>
+  </section>
+
+  <section class="visit band" id="visit" aria-labelledby="visit-h">
+    <div class="wrap">
+      <h2 id="visit-h">Come on in</h2>
+      <dl class="rows">
+        <div><dt>Where</dt><dd>332 Main St, Longmont, CO 80501, in the Creative District</dd></div>
+        <div><dt>When</dt><dd><span class="tbc">11 am to 7 pm, every day of the week.</span> Each shop keeps its own hours inside that.</dd></div>
+        <div><dt>Parking</dt><dd>Park free for two hours on Main Street. <span class="tbc">A public garage just east of the building opens off Kimbark Street.</span></dd></div>
+        <div><dt>Call</dt><dd><a href="tel:+17206800557">(720) 680-0557</a></dd></div>
+      </dl>
+      <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=332+Main+St+Longmont+CO+80501" target="_blank" rel="noopener">Get directions</a>
+    </div>
+  </section>
+
+  <section class="lease wrap" id="lease" aria-labelledby="lease-h">
+    <h2 id="lease-h">Thinking of opening a shop here?</h2>
+    <p class="lede">The marketplace has always been a first home for new shops and studios. The rent is among the most reasonable in Boulder County, with heat and electric included.</p>
+    <form data-lease novalidate>
+      <div class="q" data-q="sell">
+        <label for="sell" class="ask">What would you sell or make here?</label>
+        <textarea id="sell" name="sell" rows="2" required></textarea>
+        <p class="err" hidden>Tell us a little about it first, even one line is plenty.</p>
+        <button type="button" class="btn" data-next>Next</button>
+      </div>
+      <div class="q" data-q="size" hidden>
+        <p class="ask" id="size-ask">How much room do you need?</p>
+        <div class="opts" role="radiogroup" aria-labelledby="size-ask">
+          <label><input type="radio" name="size" value="A small studio"> A small studio</label>
+          <label><input type="radio" name="size" value="A full shop front"> A full shop front</label>
+          <label><input type="radio" name="size" value="Not sure yet"> Not sure yet</label>
+        </div>
+        <p class="err" hidden>Pick the one that fits best, and you can change it later.</p>
+        <button type="button" class="btn" data-next>Next</button>
+        <button type="button" class="back" data-back>Back</button>
+      </div>
+      <div class="q" data-q="who" hidden>
+        <p class="ask">Who should the marketplace get back to?</p>
+        <label for="name" class="small">Your name</label>
+        <input id="name" name="name" autocomplete="name" required>
+        <label for="reach" class="small">Phone or email</label>
+        <input id="reach" name="reach" autocomplete="email" required>
+        <p class="err" hidden>We need a name and a way to reach you to answer.</p>
+        <button type="button" class="btn" data-next>Next</button>
+        <button type="button" class="back" data-back>Back</button>
+      </div>
+      <div class="q" data-q="review" hidden>
+        <p class="ask">Here is everything you told us so far.</p>
+        <dl class="sum" data-sum></dl>
+        <p class="demo-note">This is a demo, so nothing is sent yet. To ask about a space today, call the marketplace at <a href="tel:+17206800557">(720) 680-0557</a>.</p>
+        <button type="button" class="back" data-back>Change something</button>
+      </div>
+    </form>
+  </section>
+</main>
+
+<footer class="foot wrap">
+  <p>Old Town Marketplace is an indoor mini mall on Main Street in Longmont, Colorado.</p>
+  <p class="credit">Site by Sea of Grass</p>
+</footer>
+
+<dialog class="card" data-card aria-labelledby="card-h">
+  <button type="button" class="x" data-card-close aria-label="Close">×</button>
+  <div data-card-body></div>
+</dialog>
+
+<script src="otm.js"></script>
+</body>
+</html>
