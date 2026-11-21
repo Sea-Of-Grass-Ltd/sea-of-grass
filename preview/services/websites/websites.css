@@ -723,3 +723,10 @@ main{overflow-x:clip}
    the phone lands, and must not swallow taps meant for the real phone (Tristan 2026-11-21: "you used to be able to answer it") */
 .scroll-stage,.scroll-stage .stage-pin,.scroll-stage sog-stage,.scroll-stage sog-stage canvas{pointer-events:none}
 .scroll-stage .stage-board a,.scroll-stage .stage-board button{pointer-events:auto}
+
+/* the Site Plan sits plain (no glow, its scene dimmed) until the thread from the Care board reaches it, then lights up
+   (Tristan 2026-11-21); with no thread (phones, reduced motion) it is simply lit */
+.price-band .plans::before{transition:opacity .9s ease}
+.price-band .u-scene img{transition:filter .9s ease}
+.price-band:not(.lit) .plans::before{opacity:0}
+.price-band:not(.lit) .u-scene img{filter:grayscale(.85) brightness(.5)}

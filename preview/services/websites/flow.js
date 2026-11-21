@@ -30,13 +30,14 @@ const sprout=document.createElement('span');sprout.className='sprout';sprout.set
 sprout.innerHTML='<svg viewBox="0 0 26 36"><path class="stem" d="M13 35.5C13 28 13.6 21 13 14"/><path class="leaf" d="M13 21C7.6 21.4 2.6 18.4 1.6 11.6 7.8 11.2 12.4 15 13 21z"/><path class="leaf" d="M13 15.6C13.2 8.6 17.2 2.8 24.4 1.6 25 8.8 20.2 14.6 13 15.6z"/></svg>';
 document.body.append(svg,seed,sprout);
 let len=0,startY=0,landY=0,table=null,shown=0,goal=0,anim=0,tiles=[];
+const priceBand=document.querySelector('.price-band');
 function build(){
   // Bunny World now comes before the Care board (Tristan 2026-11-21), so the seed lands on the next thing down: the plan card,
   // where a sprout comes up from its top edge
   const flaps=[...document.querySelectorAll('#care .flap')],card=document.querySelector('.price-band .u-card');
   const off=phone.matches||flaps.length<1||!card;
   svg.style.display=off?'none':'';sprout.hidden=off;
-  if(off){len=0;seed.hidden=true;return;}
+  if(off){len=0;seed.hidden=true;priceBand&&priceBand.classList.add('lit');return;}   // no thread on phones: the card is simply lit
   const H=document.documentElement.scrollHeight,W=document.documentElement.clientWidth,Y=y=>y+scrollY;
   svg.setAttribute('width',W);svg.setAttribute('height',H);svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
   ['x','y'].forEach(a=>mask.setAttribute(a,0));mask.setAttribute('width',W);mask.setAttribute('height',H);
@@ -45,10 +46,13 @@ function build(){
   const pitch=seams.length>1?seams[1]-seams[0]:R0.height+16;
   const k=Math.max(14,Math.min(56,L-10,W-R-10));                 // how far a turn swings outside the rows
   const c=k/.75;                                                  // a cubic with both handles out c reaches k
-  const kick=document.querySelector('#care .kick'),kr=kick?kick.getBoundingClientRect():null;
+  // the words themselves, not the label's full-width box
+  const kick=document.querySelector('#care .kick'),kr=kick?(()=>{const g=document.createRange();g.selectNodeContents(kick);return g.getBoundingClientRect();})():null;
   const f=n=>n.toFixed(1);
+  // the thread comes out of the words "Care includes" themselves (Tristan 2026-11-21), curls down and runs into the first seam
   startY=kr?Y(kr.top+kr.height/2):seams[0]-pitch*.8;
-  let d=`M${f(L-k)} ${f(startY)} C${f(L-k)} ${f(seams[0]-4)} ${f(L-k*.45)} ${f(seams[0])} ${f(L)} ${f(seams[0])}`;
+  const sx=kr?kr.right+8:L+20,ex=sx+Math.min(70,(seams[0]-startY)*.9);
+  let d=`M${f(sx)} ${f(startY)} C${f(sx+28)} ${f(startY)} ${f(ex-30)} ${f(seams[0])} ${f(ex)} ${f(seams[0])}`;
   seams.forEach((s,i)=>{const ltr=i%2===0,to=ltr?R:L;d+=` L${f(to)} ${f(s)}`;
     if(i<seams.length-1){const out=ltr?to+c:to-c,n=seams[i+1];d+=` C${f(out)} ${f(s)} ${f(out)} ${f(n)} ${f(to)} ${f(n)}`;}});
   // out of the last row, round into the margin, down past the board's end, across above the Bunny World heading, and down beside its name
@@ -83,6 +87,7 @@ function paint(){
   const still=reduce.matches,s=still?len:lengthAt(shown);
   reveal.style.strokeDashoffset=String(len+2-s);svg.dataset.drawn=s.toFixed(1);
   const landed=still||shown>=.999;sprout.classList.toggle('up',landed);sprout.classList.toggle('still',still);
+  priceBand&&priceBand.classList.toggle('lit',landed);                        // the Site Plan lights up only when the thread reaches it
   if(still){seed.hidden=true;return;}
   seed.hidden=false;seed.classList.toggle('landed',landed);
   const q=path.getPointAtLength(s);seed.classList.toggle('under',tiles.some(t=>q.x>t.x&&q.x<t.x+t.w&&q.y>t.y&&q.y<t.y+t.h));
