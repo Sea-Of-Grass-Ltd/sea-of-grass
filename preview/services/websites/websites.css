@@ -616,3 +616,35 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .care-hook{display:grid;gap:14px;margin-top:clamp(28px,3vw,44px);max-width:720px}
 .care-hook .kick{margin:0}
 .price-band .u-card{margin:0 auto}
+
+/* ======== the opening stage (stage/stage.js; Tristan 2026-11-20): a night book-nook stage in 3D, the h1 laid on its board.
+   The hero is a scroll track; its last screen has "Tired of annoying calls?" tucked under it, so the phone can land there. */
+.scroll-stage{height:300svh;padding:0;display:block;min-height:0;background:transparent}
+/* navy behind the stage everywhere but its last screen, where "Tired of annoying calls?" rises underneath */
+.scroll-stage::before{content:"";position:absolute;z-index:-1;left:0;right:0;top:0;height:calc(100% - 100svh);background:var(--navy)}
+.scroll-stage .stage-pin{position:sticky;top:0;height:100svh;overflow:hidden;
+  --bx:39.5vw;--by:20.5svh;--bw:39.4vw;--bh:38.6svh}
+/* everything on the board (Tristan 2026-11-20): the line, the promise, the price and both buttons, sized to the board */
+.scroll-stage .stage-board{position:absolute;z-index:2;left:var(--bx);top:var(--by);width:var(--bw);height:var(--bh);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#efe8d8;opacity:var(--h1-o,1);
+  font-size:var(--bw);pointer-events:none}
+.scroll-stage .stage-board h1{margin:0;max-width:none;font:700 .074em/.95 var(--display);letter-spacing:-.04em}
+.scroll-stage .stage-board h1 .hl{display:block;white-space:nowrap}
+.scroll-stage .stage-board .sub{margin:.55em 0 0;max-width:24ch;font:600 .034em/1.25 var(--head);letter-spacing:-.01em}
+.scroll-stage .stage-board .hero-price{margin:.7em 0 0;font:600 .024em/1.3 var(--head)}
+.scroll-stage .stage-board .hero-links{margin-top:1.1em;font-size:.022em;gap:.6em 1.4em;justify-content:center;pointer-events:auto}
+.scroll-stage .stage-board .hero-links .btn{font-size:1em;padding:.7em 1.4em}
+.scroll-stage .stage-pin.stage-done .stage-board{visibility:hidden}
+.scroll-stage .stage-pin.stage-tall .stage-board h1{font-size:.117em}
+.scroll-stage .stage-pin.stage-tall .stage-board .sub{font-size:.058em;max-width:20ch}
+.scroll-stage .stage-pin.stage-tall .stage-board .hero-price{font-size:.044em}
+.scroll-stage .stage-pin.stage-tall .stage-board .hero-links{font-size:.042em;flex-direction:column}
+#calls{position:relative;z-index:1}
+html:not(.stage-still) .scroll-stage+main>#calls,html:not(.stage-still) .scroll-stage~main #calls:first-child{margin-top:-100svh}
+/* tall screens: the board fills the width up top, the words sit on the counter front below */
+@media (max-aspect-ratio:4/5){
+  .scroll-stage .stage-pin{--bx:6vw;--by:24svh;--bw:88vw;--bh:28svh}
+}
+/* reduced motion, no WebGL or a failed load: the stage is a still, one screen tall */
+html.stage-still .scroll-stage{height:100svh;background:var(--navy)}
+@media (prefers-reduced-motion:reduce){.scroll-stage{height:100svh}html .scroll-stage~main #calls:first-child{margin-top:0}}

@@ -48,27 +48,18 @@
   <a href="#calls" aria-label="01 Calls" title="Calls"><b>01</b></a><a href="#bunny-world" aria-label="02 Bunny World" title="Bunny World"><b>02</b></a><a href="#care" aria-label="03 Care" title="Care"><b>03</b></a><a href="#plans" aria-label="04 Prices" title="Prices"><b>04</b></a><a href="#faq" aria-label="05 Questions" title="Questions"><b>05</b></a><a href="#start" aria-label="06 Talk" title="Talk"><b>06</b></a>
 </nav>
 
-<!-- 1 Top: the line, a one-line price hint and the soft button (the full plan card is section 5) -->
-<section class="hero stage-hero" aria-labelledby="h1">
-  <!-- the shop wall: six real Bunny World sites, mirrored left and right, graded into one warm dark palette -->
-  <div class="shop-wall" data-stage aria-hidden="true">
-    <img class="sw l1" src="/preview/assets/work/bunny-world/hero-bunny-burritos-960.webp" srcset="/preview/assets/work/bunny-world/hero-bunny-burritos-960.webp 960w, /preview/assets/work/bunny-world/hero-bunny-burritos-1440.webp 1440w" sizes="(min-width:1180px) 26vw, 46vw" alt="" width="960" height="720" loading="eager" decoding="async">
-    <img class="sw l2" src="/preview/assets/work/bunny-world/hero-hare-today-960.webp" srcset="/preview/assets/work/bunny-world/hero-hare-today-960.webp 960w, /preview/assets/work/bunny-world/hero-hare-today-1440.webp 1440w" sizes="(min-width:1180px) 26vw, 46vw" alt="" width="960" height="720" loading="eager" decoding="async">
-    <img class="sw l3" src="/preview/assets/work/bunny-world/hero-hopwell-chiro-960.webp" srcset="/preview/assets/work/bunny-world/hero-hopwell-chiro-960.webp 960w, /preview/assets/work/bunny-world/hero-hopwell-chiro-1440.webp 1440w" sizes="(min-width:1180px) 26vw, 46vw" alt="" width="960" height="720" loading="eager" decoding="async">
-    <img class="sw r1" src="/preview/assets/work/bunny-world/hero-cottontail-farm-960.webp" srcset="/preview/assets/work/bunny-world/hero-cottontail-farm-960.webp 960w, /preview/assets/work/bunny-world/hero-cottontail-farm-1440.webp 1440w" sizes="(min-width:1180px) 26vw, 46vw" alt="" width="960" height="720" loading="eager" decoding="async">
-    <img class="sw r2" src="/preview/assets/work/bunny-world/hero-hop-along-960.webp" srcset="/preview/assets/work/bunny-world/hero-hop-along-960.webp 960w, /preview/assets/work/bunny-world/hero-hop-along-1440.webp 1440w" sizes="(min-width:1180px) 26vw, 46vw" alt="" width="960" height="720" loading="eager" decoding="async">
-    <img class="sw r3" src="/preview/assets/work/bunny-world/hero-warren-bakehouse-960.webp" srcset="/preview/assets/work/bunny-world/hero-warren-bakehouse-960.webp 960w, /preview/assets/work/bunny-world/hero-warren-bakehouse-1440.webp 1440w" sizes="(min-width:1180px) 26vw, 46vw" alt="" width="960" height="720" loading="eager" decoding="async">
-  </div>
-  <div class="in hero-in">
-    <div class="hero-words">
-      <p class="kick">Websites and hosting &middot; <b>Sea of Grass</b></p>
+<!-- 1 Top: the night stage in real 3D (stage/stage.js): the line on the board, a one-line price hint and the soft button.
+     Scrolling is one shot: the register leaps, turns into the rotary phone in the air and lands in "Tired of annoying calls?" -->
+<section class="hero scroll-stage" aria-labelledby="h1" data-stage-track>
+  <div class="stage-pin">
+    <sog-stage aria-hidden="true"><picture><source type="image/webp" srcset="/preview/assets/work/websites/stage-hero-960.webp 960w, /preview/assets/work/websites/stage-hero-1600.webp 1600w" sizes="100vw"><img src="/preview/assets/work/websites/stage-hero-1600.webp" alt="" width="1600" height="900" decoding="async"></picture></sog-stage><script>/* decide before the first paint: if the live stage will run, its picture never shows */(function(e){try{var c=navigator.connection,lp=(c&&c.saveData)||(navigator.hardwareConcurrency||8)<=2||(navigator.deviceMemory&&navigator.deviceMemory<2),v=document.createElement("canvas"),g=v.getContext("webgl2")||v.getContext("webgl");if(g&&g.getExtension("WEBGL_lose_context"))g.getExtension("WEBGL_lose_context").loseContext();if(g&&!lp){e.setAttribute("data-pending","")}else document.documentElement.classList.add("stage-still");if(matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("stage-still")}catch(x){}})(document.currentScript.previousElementSibling)</script>
+    <div class="stage-board">
       <h1 id="h1"><span class="hl">Your website</span> <span class="hl">can run itself</span> <span class="hl">from your&nbsp;register.</span></h1>
       <p class="sub">We build it, host it and keep it right, and you never log in.</p>
       <p class="hero-price">From $100 a month, nothing up front.</p>
       <div class="hero-links"><a class="unsure" href="#bunny-world">Not sure yet? Watch it work &darr;</a><a class="btn pill quiet" data-book href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book 15 minutes</a></div>
     </div>
   </div>
-  <div class="live-grass" data-live-grass data-cross aria-hidden="true"></div>
 </section>
 
 <main>
@@ -224,6 +215,7 @@
 <script src="/preview/services/websites/page.js" defer></script>
 <script src="/preview/assets/bunny-card.js" defer></script>
 <script src="/preview/services/websites/flow.js" defer></script>
+<script type="module" src="/preview/services/websites/stage/stage.js"></script>
 <script type="module" src="/preview/services/websites/phone/phone.js"></script>
 <script type="module" src="/preview/services/websites/phone/calls.js"></script>
 
