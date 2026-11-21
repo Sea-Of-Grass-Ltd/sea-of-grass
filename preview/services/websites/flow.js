@@ -31,8 +31,10 @@ sprout.innerHTML='<svg viewBox="0 0 26 36"><path class="stem" d="M13 35.5C13 28 
 document.body.append(svg,seed,sprout);
 let len=0,startY=0,landY=0,table=null,shown=0,goal=0,anim=0,tiles=[];
 function build(){
-  const flaps=[...document.querySelectorAll('#care .flap')],word=document.querySelector('#bunny-world .bw-word'),head=document.querySelector('#bunny-world .bw-head');
-  const off=phone.matches||flaps.length<1||!word;
+  // Bunny World now comes before the Care board (Tristan 2026-11-21), so the seed lands on the next thing down: the plan card,
+  // where a sprout comes up from its top edge
+  const flaps=[...document.querySelectorAll('#care .flap')],card=document.querySelector('.price-band .u-card');
+  const off=phone.matches||flaps.length<1||!card;
   svg.style.display=off?'none':'';sprout.hidden=off;
   if(off){len=0;seed.hidden=true;return;}
   const H=document.documentElement.scrollHeight,W=document.documentElement.clientWidth,Y=y=>y+scrollY;
@@ -51,10 +53,8 @@ function build(){
     if(i<seams.length-1){const out=ltr?to+c:to-c,n=seams[i+1];d+=` C${f(out)} ${f(s)} ${f(out)} ${f(n)} ${f(to)} ${f(n)}`;}});
   // out of the last row, round into the margin, down past the board's end, across above the Bunny World heading, and down beside its name
   const last=seams[seams.length-1],side=seams.length%2?R:L,dir=seams.length%2?1:-1,mx=side+dir*k,y1=last+pitch*.5;
-  // the heading sits in the Bunny World block that holds in place while its row runs: measure it where it rests, not where it is held
-  const st=head.closest('.bw-stick'),lift=st?st.getBoundingClientRect().top-st.parentElement.getBoundingClientRect().top:0;
-  const wr=word.getBoundingClientRect(),hr=head.getBoundingClientRect(),lx=Math.min(W-20,wr.right+16);
-  landY=Y(wr.bottom-lift)+2;const endY=landY-12,yh=Y(hr.top-lift)-6,ym=(y1+yh)/2;
+  const cr=card.getBoundingClientRect(),lx=Math.min(W-20,cr.left+44);
+  landY=Y(cr.top);const endY=landY-2,yh=landY-34,ym=(y1+yh)/2;
   d+=` C${f(side+dir*k*.55)} ${f(last)} ${f(mx)} ${f(last+pitch*.22)} ${f(mx)} ${f(y1)}`;
   d+=` C${f(mx)} ${f(ym)} ${f(lx)} ${f(ym)} ${f(lx)} ${f(yh)} L${f(lx)} ${f(endY)}`;
   path.setAttribute('d',d);reveal.setAttribute('d',d);len=path.getTotalLength();
@@ -69,8 +69,9 @@ function build(){
   for(let i=1;i<=N;i++){const q=path.getPointAtLength(len*i/N);acc+=Math.abs(q.x-prev.x)*.4+Math.abs(q.y-prev.y)*1.8;table[i]=acc;prev=q;}
   for(let i=1;i<=N;i++)table[i]/=acc;
   // the sprout grows in the heading itself, so it stays beside the name while the block is held
-  if(sprout.parentElement!==head)head.appendChild(sprout);
-  sprout.style.transform=`translate(${f(lx-hr.left-13)}px,${f(wr.bottom+2-hr.top-36)}px)`;
+  const host=card.parentElement,pr=host.getBoundingClientRect();if(getComputedStyle(host).position==='static')host.style.position='relative';
+  if(sprout.parentElement!==host)host.appendChild(sprout);                       // outside the card, which clips its edges
+  sprout.style.transform=`translate(${f(lx-pr.left-13)}px,${f(cr.top-pr.top-34)}px)`;
   if(reduce.matches){shown=goal=1;}
   ride(true);
 }
