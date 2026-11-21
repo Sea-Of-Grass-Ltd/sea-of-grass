@@ -622,14 +622,17 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 
 /* ======== the opening stage (stage/stage.js; Tristan 2026-11-20): a night book-nook stage in 3D, the h1 laid on its board.
    The hero is a scroll track; its last screen has "Tired of annoying calls?" tucked under it, so the phone can land there. */
-.scroll-stage{position:relative;height:250svh;padding:0;display:block;min-height:0;background:transparent}
+.scroll-stage{position:relative;overflow-x:clip;height:250svh;padding:0;display:block;min-height:0;background:transparent}
 /* navy behind the stage everywhere but its last screen, where "Tired of annoying calls?" rises underneath */
 .scroll-stage::before{content:"";position:absolute;z-index:-1;left:0;right:0;top:0;height:calc(100% - 100svh);background:var(--navy)}
 .scroll-stage .stage-pin{position:sticky;top:0;height:100svh;overflow:hidden}
 .scroll-stage{--bx:39.5vw;--by:20.5svh;--bw:39.4vw;--bh:38.6svh}
 /* the words: a sticky frame that holds them while the register crouches (36.4svh of scroll), then lets them scroll away as
    plain page content. Pure CSS (Tristan 2026-11-21: scripted sliding ghosted on a real phone) */
-.scroll-stage .stage-words{position:absolute;z-index:3;left:0;right:0;top:0;height:calc(100svh + 36.4svh);pointer-events:none}
+.scroll-stage .stage-words{position:absolute;z-index:3;left:0;right:0;top:0;height:calc(100svh + var(--hold,36.4svh));pointer-events:none}
+/* phones: a shorter run, so "Tired of annoying calls?" is already rising as the words leave (no empty beat); the hold is the
+   same share of the run (the crouch, .2424 of it) */
+.scroll-stage.stage-tall{height:210svh;--hold:26.7svh}
 .scroll-stage .stage-frame{position:sticky;top:0;height:100svh}
 /* the lock-up on a modern lit sign (Tristan 2026-11-21: the chalkboard menu "feels old"): the line big and left with
    "register" in the sky's star gold; beside it, past a thin gold rule, the promise and the price as two clean lines */
@@ -674,7 +677,10 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .scroll-stage.stage-bare:not(.stage-tall) .stage-board .board-side{grid-column:1;margin-top:.03em;border-left:0;padding:0;display:flex;align-items:baseline;gap:.04em;flex-wrap:wrap}
 .scroll-stage.stage-bare:not(.stage-tall) .stage-board .sub{max-width:26ch;font-size:.022em}
 .scroll-stage.stage-bare:not(.stage-tall) .stage-board .hero-price{margin:0;padding-left:.9em;border-left:.12em solid rgba(232,185,74,.6)}
-.scroll-stage.stage-bare.stage-tall .stage-board{--bw:92vw;top:calc(56px + 2svh);bottom:auto;transform:translateX(-50%);grid-template-rows:none;align-content:start}   /* 56px: clear of the header bar */
+/* phones: the header bar stays on screen, so the stage and the words' frame both start under it and fill what is left;
+   nothing shifts as the page starts to scroll, and there's no empty band above the words */
+.scroll-stage.stage-tall .stage-pin,.scroll-stage.stage-tall .stage-frame{top:56px;height:calc(100svh - 56px)}
+.scroll-stage.stage-bare.stage-tall .stage-board{--bw:92vw;top:3svh;bottom:auto;transform:translateX(-50%);grid-template-rows:none;align-content:start}   /* 56px: clear of the header bar */
 /* phones (Tristan 2026-11-21): the words compact at the top, the register big underneath; in the calls the phone is on
    top and the words below, so the register's leap is one clean path up into the phone */
 .scroll-stage.stage-bare.stage-tall .stage-board h1{font-size:.08em}
@@ -684,7 +690,7 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .scroll-stage.stage-bare.stage-tall .stage-board .sub{font-size:.034em;max-width:none;width:100%}
 .scroll-stage.stage-bare.stage-tall .stage-board .hero-price{font-size:.031em;margin:.25em 0 0;display:flex;align-items:baseline;gap:.4em}
 .scroll-stage.stage-bare.stage-tall .stage-board .hero-price b{display:inline;font-size:1.55em;margin:0}
-.scroll-stage.stage-bare.stage-tall .stage-board .hero-links{font-size:.031em;margin-top:.75em;gap:.4em .9em;flex-direction:row;flex-wrap:nowrap}
+.scroll-stage.stage-bare.stage-tall .stage-board .hero-links{font-size:.031em;margin-top:.75em;gap:.6em .9em;flex-direction:row;flex-wrap:wrap}   /* wraps on narrow phones: never wider than the screen */
 .scroll-stage.stage-bare.stage-tall .stage-board .hero-links .btn{padding:.55em .6em .55em 1.1em;font-size:1em;gap:.5em;white-space:nowrap}
 .scroll-stage.stage-bare.stage-tall .stage-board .hero-links .btn .go{width:1.5em;height:1.5em}
 .scroll-stage.stage-bare.stage-tall .stage-board .hero-links .unsure{gap:.45em;white-space:nowrap}
@@ -698,3 +704,7 @@ html:not(.stage-still) .scroll-stage+main>#calls,html:not(.stage-still) .scroll-
 /* reduced motion, no WebGL or a failed load: the stage is a still, one screen tall */
 html.stage-still .scroll-stage{height:100svh;background:var(--navy)}
 @media (prefers-reduced-motion:reduce){.scroll-stage{height:100svh}html .scroll-stage~main #calls:first-child{margin-top:0}}
+
+/* nothing may widen the page on a phone (Tristan 2026-11-21: the glows behind the price card and the closing buttons spilled
+   past the edge, so phones laid the whole page out wider and zoomed it out). clip, not hidden: sticky still works */
+main{overflow-x:clip}

@@ -348,11 +348,10 @@ class SogStage extends HTMLElement {
       // and a fit taken with the words scrolled away blew the register up over them (Tristan's phone, 2026-11-21)
       const frame = board.closest('.stage-frame') || pin;
       const bandTop = board.getBoundingClientRect().bottom - frame.getBoundingClientRect().top + 12;
-      const hd = document.querySelector('header.top'), hdH = hd && getComputedStyle(hd).position === 'static' ? hd.offsetHeight : 0;
-      const bandBot = H - hdH - 14;                                   // the stage sits under the header when the page opens
-      fitK = Math.max((bot - top) / Math.max(60, bandBot - bandTop), (r - l) / (0.86 * W));
+      const bandBot = H - 16;                                        // the stage starts under the header bar on phones (css)
+      fitK = Math.max((bot - top) / Math.max(60, bandBot - bandTop), (r - l) / (0.9 * W));
       const t2 = H / 2 + (top - H / 2) / fitK, b2 = H / 2 + (bot - H / 2) / fitK;
-      fitS = (bandTop + bandBot) / 2 - (t2 + b2) / 2;
+      fitS = bandTop - t2;                                          // seated right under the words, one group with them; any spare room falls below
       this._dbg.fit = { fitK, fitS, bandTop, bandBot };
     };
     // the camera with the fit applied, for a w x h box: zoom out by widening the lens, then slide the picture down
@@ -422,7 +421,9 @@ class SogStage extends HTMLElement {
         const cr = canvas.getBoundingClientRect(), r = el.getBoundingClientRect(), rise = calls ? Math.max(0, calls.getBoundingClientRect().top - cr.top) : 0;
         // where the section stacks the phone under its words (narrow screens), its spot isn't on this screen when the
         // section arrives: then the phone drops toward its live spot below and the page carries on to it
-        const lands = r.top - cr.top - rise + r.height * 0.5 < H;
+        // phones (Tristan 2026-11-21, "the gap shouldn't be this large"): the phone drops into its spot where the spot is NOW,
+        // in the rising section, and rides up with the words, rather than waiting up top over an empty band
+        const lands = !(BARE && W / H < 0.8) && r.top - cr.top - rise + r.height * 0.5 < H;
         const ex = r.left - cr.left, ey = r.top - cr.top - (lands ? rise : 0), ew = Math.max(1, r.width), eh = Math.max(1, r.height);
         const d = dockCam(el, ew, eh);
         { const k = 1 + (1 / HERO - 1) * dock; phRig.scale.multiplyScalar(k); phRig.updateMatrixWorld(true); }
