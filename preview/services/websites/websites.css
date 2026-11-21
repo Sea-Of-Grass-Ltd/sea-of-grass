@@ -742,5 +742,17 @@ main{overflow-x:clip}
 .info-hook .promise{margin:0;font:600 18px/1.3 var(--head)}
 .info-hook .info-plan{margin:0;font-size:15px;color:var(--soft)}
 @media (max-width:980px){.info-hook,.info-see,.info-faq{grid-column:auto;grid-row:auto}}
-.price-band .extras{width:min(100%,760px);margin:clamp(28px,3vw,40px) auto 0}
-.price-band .extras>.kick{margin:0 0 6px}
+/* the other ways to start fold out of the Site Plan card itself (Tristan 2026-11-21), so they don't break the page's flow */
+.u-more{border-top:1px solid rgba(255,246,233,.22);padding-top:12px;margin-top:2px}
+.u-more summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font:600 15px/1.3 var(--head);color:var(--cream)}
+.u-more summary::-webkit-details-marker{display:none}
+.u-more summary::after{content:"+";font:500 20px/1 var(--head);transition:transform .25s ease}
+.u-more[open] summary::after{transform:rotate(45deg)}
+.u-more .also{display:grid;margin-top:6px}
+.u-more .opt{display:grid;grid-template-columns:1fr auto;column-gap:12px;row-gap:2px;align-items:center;padding:10px 0;border-top:1px solid rgba(255,246,233,.14)}
+.u-more .opt:first-child{border-top:0}
+.u-more .opt b{font:600 15px/1.3 var(--head);color:var(--cream)}
+.u-more .opt span{grid-column:1;font-size:13px;line-height:1.4;color:rgba(255,246,233,.72)}
+.u-more .opt .link{grid-column:2;grid-row:1/span 2;white-space:nowrap;color:var(--cream)}
+.u-more .u-fine{margin:8px 0 0;font-size:13px;color:rgba(255,246,233,.72)}
+.u-more .u-fine a{color:var(--cream)}
