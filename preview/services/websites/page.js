@@ -109,4 +109,26 @@ if(uTabs.length){const pickTab=(t,focus)=>{uTabs.forEach(x=>{const on=x===t;x.se
 const uCard=document.querySelector('.u-card'),wall=document.querySelector('.shop-wall');
 if(uCard&&wall){const place=()=>{const h=wall.parentElement.getBoundingClientRect(),c=uCard.getBoundingClientRect();const tall=Math.max(0,...[...wall.querySelectorAll('.sw')].filter(e=>getComputedStyle(e).display!=='none').map(e=>e.offsetHeight+e.offsetTop));wall.style.setProperty('--wall-top',Math.round(c.top-h.top-tall-28)+'px');};
   place();addEventListener('resize',place);addEventListener('load',place);document.fonts&&document.fonts.ready.then(place);}
+// scrolling into the plan: on wide screens with motion, a portal the size of the plan card grows to fill the screen as you
+// scroll from the hero to the Care board, its alpenglow the same as the board's own backdrop, then fades so the flap rows
+// land as what's inside the plan; scrolling back reverses it. Phones: the board simply scrolls in; reduced motion: a plain cut.
+const pCard=document.querySelector('.u-card'),pCare=document.querySelector('#care'),pWall=document.querySelector('.shop-wall');
+if(pCard&&pCare&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+  const portal=document.createElement('div');portal.className='plan-portal';portal.setAttribute('aria-hidden','true');portal.hidden=true;document.body.append(portal);
+  const wideMQ=matchMedia('(min-width: 981px)'),ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;let pt=0;
+  const open=()=>{pt=0;
+    if(!wideMQ.matches){portal.hidden=true;pWall&&pWall.style.removeProperty('--out');return;}
+    const careTop=pCare.getBoundingClientRect().top+scrollY,start=Math.max(0,pCard.getBoundingClientRect().top+scrollY-innerHeight*.35),end=careTop;
+    const p=Math.min(1,Math.max(0,(scrollY-start)/Math.max(1,end-start)));
+    pWall&&pWall.style.setProperty('--out',ease(Math.min(1,p*1.4)).toFixed(3));
+    if(p<=0||p>=1){portal.hidden=true;return;}
+    const c=pCard.getBoundingClientRect(),e=ease(p),W=innerWidth,H=innerHeight;
+    const l=c.left*(1-e),t=c.top*(1-e),r=c.right+(W-c.right)*e,b=c.bottom+(H-c.bottom)*e;
+    portal.hidden=false;
+    Object.assign(portal.style,{left:l+'px',top:t+'px',width:(r-l)+'px',height:(b-t)+'px',borderRadius:(24*(1-e)).toFixed(1)+'px',
+      opacity:String(Math.min(1,p/.18)*(p>.9?Math.max(0,(1-p)/.1):1))});
+    portal.style.setProperty('--scrim',(.4+.2*e).toFixed(3));
+  };
+  addEventListener('scroll',()=>{if(!pt)pt=requestAnimationFrame(open);},{passive:true});addEventListener('resize',open);open();
+}
 })();
