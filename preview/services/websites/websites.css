@@ -659,7 +659,15 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .scroll-stage .stage-pin.stage-tall .stage-board .hero-price{font-size:.032em}
 .scroll-stage .stage-pin.stage-tall .stage-board .hero-links{font-size:.038em;margin-top:1em}
 /* just the register (Tristan 2026-11-21): no sign to sit on, so the words stand on the navy above the register */
-.scroll-stage .stage-pin.stage-bare .stage-board{--bw:min(86vw,1000px);left:50%;top:calc(64px + 2svh);height:auto;transform:translateX(-50%)}
+.scroll-stage .stage-pin.stage-bare .stage-board{--bw:min(86vw,1000px);left:50%;top:calc(64px + 2svh);height:auto;opacity:1;
+  transform:translate(-50%,calc(-1 * var(--lift,0px)))}   /* the words scroll away like page text: no fade */
+/* desktop (Tristan 2026-11-21): the words on the left, the register big on the right where the phone will land */
+.scroll-stage .stage-pin.stage-bare:not(.stage-tall) .stage-board{left:6vw;width:min(46vw,640px);--bw:min(86vw,1000px);top:50%;
+  transform:translate(0,calc(-50% - var(--lift,0px)));grid-template-columns:1fr;padding:0}
+.scroll-stage .stage-pin.stage-bare:not(.stage-tall) .stage-board h1{font-size:.066em}
+.scroll-stage .stage-pin.stage-bare:not(.stage-tall) .stage-board .board-side{grid-column:1;margin-top:.03em;border-left:0;padding:0;display:flex;align-items:baseline;gap:.04em;flex-wrap:wrap}
+.scroll-stage .stage-pin.stage-bare:not(.stage-tall) .stage-board .sub{max-width:26ch;font-size:.022em}
+.scroll-stage .stage-pin.stage-bare:not(.stage-tall) .stage-board .hero-price{margin:0;padding-left:.9em;border-left:.12em solid rgba(232,185,74,.6)}
 .scroll-stage .stage-pin.stage-bare.stage-tall .stage-board{--bw:92vw;top:calc(64px + 2svh)}
 #calls{position:relative;z-index:1}
 html:not(.stage-still) .scroll-stage+main>#calls,html:not(.stage-still) .scroll-stage~main #calls:first-child{margin-top:-100svh}

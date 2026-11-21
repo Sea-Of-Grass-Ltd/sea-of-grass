@@ -212,7 +212,7 @@ class SogStage extends HTMLElement {
         if (t <= t1) { const u = ease(t1 > t0 ? (t - t0) / (t1 - t0) : 1); h = h0 + (h1 - h0) * u; sz = s0 + (s1 - s0) * u; r = r0 + (r1 - r0) * u; break; }
       }
       const sxy = 1 / Math.sqrt(sz), q = new T.Quaternion().setFromAxisAngle(new T.Vector3(0, 1, 0), T.MathUtils.degToRad(r)).multiply(restQ);
-      for (const rig of [regRig, phRig]) { rig.position.set(pivot.x, pivot.y + h, pivot.z); rig.quaternion.copy(q); rig.scale.set(sxy * HERO, sz * HERO, sxy * HERO); }
+      for (const rig of [regRig, phRig]) { rig.position.set(pivot.x, pivot.y + h * (BARE ? 0.45 : 1), pivot.z); rig.quaternion.copy(q); rig.scale.set(sxy * HERO, sz * HERO, sxy * HERO); }
       regRig.visible = t < SWAP; phRig.visible = t >= SWAP;
       regLamp.visible = regFill.visible = t < SWAP;
       ghost.position.copy(regRig.position); ghost.quaternion.copy(regRig.quaternion); ghost.scale.copy(regRig.scale); ghost.visible = regRig.visible;
@@ -306,7 +306,7 @@ class SogStage extends HTMLElement {
     // the opening shot fills the screen with the stage; the second holds the register with room above it for the leap
     const shots = BARE
       ? (aspect => aspect >= 1
-        ? { a: pose([0, -0.04, 0.89], 2.0, 1.56, 8, aspect), b: pose([0, -0.04, 0.68], 1.3, 0.95, 8, aspect) }
+        ? { a: pose([-0.36, -0.04, 0.62], 1.2, 0.86, 8, aspect), b: pose([-0.36, -0.04, 0.62], 1.2, 0.86, 8, aspect) }   // desktop: the register big on the right, the words on the left
         : { a: pose([0, -0.04, 0.92], 1.0, 1.6, 8, aspect), b: pose([0, -0.04, 0.68], 0.8, 1.1, 8, aspect) })
       : (aspect => aspect >= 1
         ? { a: pose([0, 0, 0.80], 2.1, 1.48, 6, aspect), b: pose([0, -0.04, 0.68], 1.3, 1.0, 6, aspect) }
@@ -340,10 +340,18 @@ class SogStage extends HTMLElement {
       // the score, in scroll progress: hold, glide to the register, the jump-morph (the stage fades while it flies), the
       // landing on <sog-phone>'s spot, a wait while the section arrives, then the real phone takes over
       // timed so the phone lands just as "Tired of annoying calls?" finishes rising (Tristan 2026-11-21: no dead gap)
-      const glide = span(p, 0.03, 0.24);
-      const t = clamp((p - 0.162) / 1.383);
+      // bare (Tristan 2026-11-21, "awkward motion"): one continuous move. The words scroll away like page text while the
+      // register holds still; it crouches as they clear (p .33), and from the swap the phone flies straight into its
+      // spot while "Tired of annoying calls?" rises under it, landing as the section settles (p .95)
+      const glide = BARE ? 0 : span(p, 0.03, 0.24);
+      const t = BARE ? clamp(0.10 + p * 0.495) : clamp((p - 0.162) / 1.383);     // bare: the crouch starts with the first scroll
       const gone = span(t, 0.26, 0.46);
-      const dock = span(t, 0.34, 0.57);
+      const dock = BARE ? span(t, SWAP, 0.57) : span(t, 0.34, 0.57);
+      // the words hold while the register crouches, and scroll away from the moment it leaps (t .22, p ~.24)
+      if (BARE && track) {
+        const scrolled = Math.max(0, -track.getBoundingClientRect().top), range = track.offsetHeight - pin.clientHeight;
+        pin.style.setProperty('--lift', Math.max(0, scrolled - range * (0.22 - 0.10) / 0.495).toFixed(1) + 'px');
+      }
       const handed = p >= 0.995;
       this.dataset.p = p.toFixed(3); this.dataset.t = t.toFixed(3);
       morph(t);
@@ -386,7 +394,7 @@ class SogStage extends HTMLElement {
         const d = dockCam(el, ew, eh);
         { const k = 1 + (1 / HERO - 1) * dock; phRig.scale.multiplyScalar(k); phRig.updateMatrixWorld(true); }
         const vx = ex * dock, vy = ey * dock, vw = W + (ew - W) * dock, vh = H + (eh - H) * dock;
-        renderer.setViewport(vx, H - vy - vh, vw, vh);
+        renderer.setViewport(vx, H - vy - vh, vw, vh); this._dbg.vp = [vx, vy, vw, vh];
         cam.position.copy(sp).lerp(d.pos, dock); cam.quaternion.copy(sq).slerp(d.q, dock);
         cam.fov = 30 + (PHONE.fov - 30) * dock; cam.aspect = vw / vh;
         cam.setViewOffset(vw, vh, 0, -vh * d.drop * dock, vw, vh);
