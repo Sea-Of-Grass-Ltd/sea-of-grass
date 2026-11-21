@@ -492,9 +492,9 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
    six real Bunny World sites mirrored down both sides, one warm dark grade; the headline and the plan card in the centre lane;
    the card is the one bright object: the Front Range plants art (as on Bunny Burritos) baked into an alpenglow tritone inside, the plan switcher, a huge price, a near-white button. */
 .stage-hero{min-height:min(900px,100vh);display:flex;align-items:center;padding:clamp(56px,6vw,96px) 0 clamp(190px,17vw,240px)}
-.stage-hero>.in.hero-in{position:relative;z-index:1;width:100%;display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:clamp(32px,4.5vw,72px);align-items:center;
-  max-width:min(var(--max),calc(100vw - 2 * clamp(210px,21.5vw,380px)))}
-.stage-hero h1{font-size:clamp(40px,4.2vw,64px);max-width:12ch}
+.stage-hero>.in.hero-in{position:relative;z-index:1;width:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,3.6vw,60px);align-items:center;
+  max-width:min(var(--max),calc(100vw - 2 * clamp(190px,18.5vw,340px)))}
+.stage-hero h1{font-size:clamp(38px,3.7vw,56px);max-width:none;text-wrap:balance}
 .stage-hero .hero-words .kick{white-space:nowrap}
 .stage-hero .sub{max-width:24ch}
 .stage-hero .hero-links{margin-top:22px}
@@ -509,12 +509,12 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
   box-shadow:0 24px 50px rgba(var(--shade-rgb),.55),0 0 0 1px rgba(var(--text-rgb),.12);filter:sepia(.32) saturate(.85) brightness(.66) contrast(1.06) hue-rotate(-12deg);
   transform:translateY(calc(var(--py) * var(--d,24px))) rotate(var(--r))}
 .shop-wall .l2,.shop-wall .r2{width:clamp(170px,16vw,290px)}
-.shop-wall .l1{left:1%;top:-7%;--r:-6deg;--d:30px}
-.shop-wall .l2{left:4%;top:37%;--r:5deg;--d:-16px}
-.shop-wall .l3{left:1%;bottom:-9%;--r:-4deg;--d:26px}
-.shop-wall .r1{right:1%;top:-7%;--r:6deg;--d:30px}
-.shop-wall .r2{right:4%;top:37%;--r:-5deg;--d:-16px}
-.shop-wall .r3{right:1%;bottom:-9%;--r:4deg;--d:26px}
+.shop-wall .l1{left:-2%;top:-7%;--r:-6deg;--d:30px}
+.shop-wall .l2{left:1%;top:37%;--r:5deg;--d:-16px}
+.shop-wall .l3{left:-2%;bottom:-9%;--r:-4deg;--d:26px}
+.shop-wall .r1{right:-2%;top:-7%;--r:6deg;--d:30px}
+.shop-wall .r2{right:1%;top:37%;--r:-5deg;--d:-16px}
+.shop-wall .r3{right:-2%;bottom:-9%;--r:4deg;--d:26px}
 /* the card */
 .u-card{position:relative;isolation:isolate;width:min(100%,520px);margin-left:auto;border-radius:24px;color:var(--cream);overflow:hidden;
   -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Ccircle cx='1' cy='1' r='1'/%3E%3C/svg%3E") -20px 64%/40px 40px no-repeat,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Ccircle cx='1' cy='1' r='1'/%3E%3C/svg%3E") calc(100% + 20px) 64%/40px 40px no-repeat,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2' preserveAspectRatio='none'%3E%3Crect width='2' height='2'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat;-webkit-mask-composite:xor;
@@ -548,6 +548,11 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .u-pill{font:700 13px/1 var(--body);background:var(--poppy);color:var(--card-ink);padding:10px 14px;border-radius:999px}
 .u-foot{display:flex;align-items:center;gap:8px;margin:2px 0 0;font-size:13px;color:var(--cream)}
 .u-foot svg{width:15px;height:15px;flex:none}
+@media (min-width:1180px) and (max-width:1380px){
+  .stage-hero>.in.hero-in{grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr)}
+  .u-tabs{width:100%;justify-content:space-between}
+  .u-tabs button{padding:8px 8px;font-size:12.5px}
+}
 /* narrower screens: the words, then the card with three of the shops peeking above it */
 @media (max-width:1179px){
   .stage-hero{display:block;min-height:0}
