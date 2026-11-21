@@ -339,8 +339,9 @@ class SogStage extends HTMLElement {
       const p = progress();
       // the score, in scroll progress: hold, glide to the register, the jump-morph (the stage fades while it flies), the
       // landing on <sog-phone>'s spot, a wait while the section arrives, then the real phone takes over
-      const glide = span(p, 0.04, 0.34);
-      const t = clamp((p - 0.30) / 0.50);
+      // timed so the phone lands just as "Tired of annoying calls?" finishes rising (Tristan 2026-11-21: no dead gap)
+      const glide = span(p, 0.03, 0.24);
+      const t = clamp((p - 0.162) / 1.383);
       const gone = span(t, 0.26, 0.46);
       const dock = span(t, 0.34, 0.57);
       const handed = p >= 0.995;

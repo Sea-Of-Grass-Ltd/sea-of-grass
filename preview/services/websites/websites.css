@@ -619,7 +619,7 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 
 /* ======== the opening stage (stage/stage.js; Tristan 2026-11-20): a night book-nook stage in 3D, the h1 laid on its board.
    The hero is a scroll track; its last screen has "Tired of annoying calls?" tucked under it, so the phone can land there. */
-.scroll-stage{height:300svh;padding:0;display:block;min-height:0;background:transparent}
+.scroll-stage{height:250svh;padding:0;display:block;min-height:0;background:transparent}
 /* navy behind the stage everywhere but its last screen, where "Tired of annoying calls?" rises underneath */
 .scroll-stage::before{content:"";position:absolute;z-index:-1;left:0;right:0;top:0;height:calc(100% - 100svh);background:var(--navy)}
 .scroll-stage .stage-pin{position:sticky;top:0;height:100svh;overflow:hidden;
