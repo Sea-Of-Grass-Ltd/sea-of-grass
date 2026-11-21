@@ -109,26 +109,49 @@ if(uTabs.length){const pickTab=(t,focus)=>{uTabs.forEach(x=>{const on=x===t;x.se
 const uCard=document.querySelector('.u-card'),wall=document.querySelector('.shop-wall');
 if(uCard&&wall){const place=()=>{const h=wall.parentElement.getBoundingClientRect(),c=uCard.getBoundingClientRect();const tall=Math.max(0,...[...wall.querySelectorAll('.sw')].filter(e=>getComputedStyle(e).display!=='none').map(e=>e.offsetHeight+e.offsetTop));wall.style.setProperty('--wall-top',Math.round(c.top-h.top-tall-28)+'px');};
   place();addEventListener('resize',place);addEventListener('load',place);document.fonts&&document.fonts.ready.then(place);}
-// scrolling into the plan: on wide screens with motion, a portal the size of the plan card grows to fill the screen as you
-// scroll from the hero to the Care board, its alpenglow the same as the board's own backdrop, then fades so the flap rows
-// land as what's inside the plan; scrolling back reverses it. Phones: the board simply scrolls in; reduced motion: a plain cut.
-const pCard=document.querySelector('.u-card'),pCare=document.querySelector('#care'),pWall=document.querySelector('.shop-wall');
-if(pCard&&pCare&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
-  const portal=document.createElement('div');portal.className='plan-portal';portal.setAttribute('aria-hidden','true');portal.hidden=true;document.body.append(portal);
-  const wideMQ=matchMedia('(min-width: 981px)'),ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;let pt=0;
-  const open=()=>{pt=0;
-    if(!wideMQ.matches){portal.hidden=true;pWall&&pWall.style.removeProperty('--out');return;}
-    const careTop=pCare.getBoundingClientRect().top+scrollY,start=Math.max(0,pCard.getBoundingClientRect().top+scrollY-innerHeight*.35),end=careTop;
-    const p=Math.min(1,Math.max(0,(scrollY-start)/Math.max(1,end-start)));
-    pWall&&pWall.style.setProperty('--out',ease(Math.min(1,p*1.4)).toFixed(3));
-    if(p<=0||p>=1){portal.hidden=true;return;}
-    const c=pCard.getBoundingClientRect(),e=ease(p),W=innerWidth,H=innerHeight;
-    const l=c.left*(1-e),t=c.top*(1-e),r=c.right+(W-c.right)*e,b=c.bottom+(H-c.bottom)*e;
-    portal.hidden=false;
-    Object.assign(portal.style,{left:l+'px',top:t+'px',width:(r-l)+'px',height:(b-t)+'px',borderRadius:(24*(1-e)).toFixed(1)+'px',
-      opacity:String(Math.min(1,p/.18)*(p>.9?Math.max(0,(1-p)/.1):1))});
-    portal.style.setProperty('--scrim',(.4+.2*e).toFixed(3));
+// the push into the plan: on wide screens with motion the hero pins for a stretch of scroll and the whole scene (headline,
+// shop screenshots, card) scales about one fixed point, chosen so the card ends centred and covering the screen edge to edge:
+// a single camera push, eased, with the scale growing geometrically so it reads as steady forward motion. The card turns from
+// violet to the Care board's green as it fills; then the Care boards rise in over it and the page carries on. Scrolling back
+// plays it in reverse. Phones and reduced motion: no push, the page simply scrolls.
+const track=document.querySelector('[data-push]'),pCard=document.querySelector('.u-card'),pCare=document.querySelector('#care');
+if(track&&pCard&&pCare&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+  const root=document.documentElement,hero=track.querySelector('.stage-hero'),inner=hero.querySelector('.hero-in'),pWall=hero.querySelector('.shop-wall');
+  const wideMQ=matchMedia('(min-width: 981px)'),clamp=v=>Math.min(1,Math.max(0,v)),smooth=t=>t*t*(3-2*t);
+  const FILL=.5,ENTER=.38;   // the card covers the screen at half the push; the Care board starts rising (unseen) a little before
+  let g=null,pt=0;
+  const reset=()=>{[inner,pWall].forEach(el=>el&&(el.style.transform='',el.style.transformOrigin=''));
+    ['--s','--green','--body-o','--glow-o','--words-o'].forEach(k=>{pCard.style.removeProperty(k);hero.style.removeProperty(k);});pCare.style.removeProperty('--fill');};
+  const layout=()=>{
+    reset();
+    if(!wideMQ.matches){root.classList.remove('push-on','pushing','push-in');track.style.height='';root.style.removeProperty('--push-pull');g=null;return;}
+    root.classList.add('push-on');
+    pCard.querySelectorAll('.u-scene source,.u-scene img').forEach(el=>el.setAttribute('sizes','100vw'));   // the large wash, since it is scaled up
+    const W=innerWidth,H=innerHeight,top=document.querySelector('.topbar').offsetHeight;
+    const hr=hero.getBoundingClientRect(),cr=pCard.getBoundingClientRect(),heroH=hr.height;
+    const D=Math.round((H-top)/(1-ENTER));
+    track.style.height=(heroH+D)+'px';root.style.setProperty('--push-pull',-(heroH-top)+'px');
+    // the card's place on the pinned screen, and the scale that covers it (notches and corners pushed off the edges)
+    const x=cr.left,y=cr.top-hr.top,w=cr.width,h=cr.height,S=Math.max(W/(w-100),H/(h-60))*1.02;
+    const fx=(S*(x+w/2)-W/2)/(S-1),fy=(S*(y+h/2)-H/2)/(S-1);
+    const ir=inner.getBoundingClientRect(),wr=pWall.getBoundingClientRect();
+    g={start:track.getBoundingClientRect().top+scrollY,D,S,fx,fy,cardO:[fx-x,fy-y],innerO:[fx-ir.left,fy-(ir.top-hr.top)],wallO:[fx-wr.left,fy-(wr.top-hr.top)]};
+    inner.style.transformOrigin=g.innerO[0]+'px '+g.innerO[1]+'px';pWall.style.transformOrigin=g.wallO[0]+'px '+g.wallO[1]+'px';
+    frame();
   };
-  addEventListener('scroll',()=>{if(!pt)pt=requestAnimationFrame(open);},{passive:true});addEventListener('resize',open);open();
+  const frame=()=>{pt=0;if(!g)return;
+    const p=clamp((scrollY-g.start)/g.D),e=smooth(clamp(p/FILL)),s=Math.pow(g.S,e);
+    inner.style.transform=e>0?'scale('+s.toFixed(4)+')':'';
+    pWall.style.transform=e>0?'scale('+Math.pow(g.S,e*.8).toFixed(4)+')':'';   // the screenshots sit a little farther back
+    pCard.style.setProperty('--s',s.toFixed(4));
+    pCard.style.setProperty('--green',smooth(clamp((p-.12)/(FILL-.12))).toFixed(3));
+    pCard.style.setProperty('--body-o',(1-smooth(clamp((p-.08)/.24))).toFixed(3));
+    hero.style.setProperty('--glow-o',(1-clamp(p/.25)).toFixed(3));
+    hero.style.setProperty('--words-o',(1-smooth(clamp((p-.1)/.25))).toFixed(3));
+    root.classList.toggle('pushing',p>0&&p<1);root.classList.toggle('push-in',p>0);
+    pCare.style.setProperty('--fill',smooth(clamp((p-.44)/.2)).toFixed(3));
+  };
+  addEventListener('scroll',()=>{if(!pt)pt=requestAnimationFrame(frame);},{passive:true});
+  addEventListener('resize',layout);addEventListener('load',layout);document.fonts&&document.fonts.ready.then(layout);layout();
 }
 })();

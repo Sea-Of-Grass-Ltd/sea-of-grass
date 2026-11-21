@@ -578,23 +578,22 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
   .u-tabs button{padding:8px 9px;font-size:12px;gap:4px}
   .u-off{padding:3px 5px;font-size:9.5px}
 }
-/* ======== scrolling into the plan (Tristan: "it feels like you're scrolling into the plan, you know?") ========
-   the Care board sits on the plan card's own alpenglow, so what the card opens onto is what's inside the plan; on wide
-   screens with motion a fixed "portal" grows from the card to the whole screen as you scroll, then fades into the Care board */
-.flapboard{background:var(--card-ink) url(/preview/assets/work/bunny-world/plan-alpenglow-1040.webp) 50% 40%/cover no-repeat fixed;isolation:isolate}
-.flapboard::before{content:"";position:absolute;inset:0;z-index:-1;background:url(/preview/assets/work/bunny-world/burritos-grain.webp) 0 0/256px 256px;opacity:.4;pointer-events:none}
-.flapboard::after{content:"";position:absolute;inset:0;z-index:-1;background:rgba(26,21,48,.6);pointer-events:none}
-.flapboard .kick{color:var(--cream)}
-.flapboard .extras{color:var(--text)}
-@media (max-width:980px){.flapboard{background-attachment:scroll}}
-.plan-portal{position:fixed;z-index:15;left:0;top:0;pointer-events:none;overflow:hidden;opacity:0;
-  background:var(--card-ink) url(/preview/assets/work/bunny-world/plan-alpenglow-1040.webp) 50% 40%/cover no-repeat}
-.plan-portal::before{content:"";position:absolute;inset:0;background:url(/preview/assets/work/bunny-world/burritos-grain.webp) 0 0/256px 256px;opacity:.4}
-.plan-portal::after{content:"";position:absolute;inset:0;background:rgba(26,21,48,var(--scrim,.4))}
-.plan-portal[hidden]{display:none}
-/* the shop cards drift out to the sides as the plan opens */
-.shop-wall .sw{translate:calc(var(--out,0) * var(--side-dir,-1) * 34vw) 0}
-.shop-wall .r1,.shop-wall .r2,.shop-wall .r3{--side-dir:1}
+/* ======== the push into the plan (Tristan: "like a video would"): one continuous camera push, tied to the scroll ========
+   on wide screens with motion the hero pins and the whole scene scales about one point inside the card, so the headline and
+   the shop screenshots slide out past the camera while the card (the real one, scaled, not a copy) comes forward to fill the
+   screen; its violet turns to the Care board's green on the way, and the boards rise in over it. Phones and reduced motion:
+   the page simply scrolls. The Care board keeps its own green (--moss) everywhere. */
+.push-on .stage-hero{position:sticky;top:0;min-height:100vh;box-sizing:border-box}
+.push-in .stage-hero{z-index:0;overflow:clip}   /* once the push starts the Care board rides above the hero */
+.push-on main{margin-top:var(--push-pull,0)}
+.push-on .u-card::after{content:"";position:absolute;inset:0;z-index:-1;background:var(--moss);opacity:var(--green,0);pointer-events:none}
+.push-on .u-scene::before{background-size:calc(256px / var(--s,1)) calc(256px / var(--s,1))}
+.push-on .u-body{opacity:var(--body-o,1)}
+.push-on .stage-hero .plans::before{opacity:calc(.7 * var(--glow-o,1))}
+.push-on .stage-hero .hero-words{opacity:var(--words-o,1)}
+.pushing .chapters{visibility:hidden}
+.pushing .flapboard{background:transparent}
+.pushing .flapboard>*{opacity:var(--fill,0)}
 /* ======== one screen of plain facts (Tristan: dense, like a bento): the four promises across the top, the hookup and what
    we can and never see on the left, the questions on the right, matched in height; it stacks on phones ======== */
 #hookup.info{padding-bottom:clamp(48px,5vw,72px)}   /* the top keeps its room for the Calls phone's base crossing the seam */
