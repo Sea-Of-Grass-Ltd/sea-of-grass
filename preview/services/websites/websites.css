@@ -278,7 +278,7 @@ footer.foot a{color:var(--soft)}
 @media (max-width:980px){
   .plans,.open-stage,.alt-in,.faq{grid-template-columns:1fr}
   .alt-in.flip .visual{order:0}
-  #calls .phone-stage{order:2;justify-self:center;margin-right:0}   /* on phones: a big phone under the text */
+  #calls .phone-stage{order:-1;justify-self:center;margin-right:0}  /* on phones: the phone on top, where the register lands it (Tristan 2026-11-21), the words below */
   #calls .calls-mute{right:8px}
   .open-words{order:-1}
   .benefits{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -616,3 +616,65 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .care-hook{display:grid;gap:14px;margin-top:clamp(28px,3vw,44px);max-width:720px}
 .care-hook .kick{margin:0}
 .price-band .u-card{margin:0 auto}
+
+/* ======== the opening stage (stage/stage.js; Tristan 2026-11-20): a night book-nook stage in 3D, the h1 laid on its board.
+   The hero is a scroll track; its last screen has "Tired of annoying calls?" tucked under it, so the phone can land there. */
+.scroll-stage{height:250svh;padding:0;display:block;min-height:0;background:transparent}
+/* navy behind the stage everywhere but its last screen, where "Tired of annoying calls?" rises underneath */
+.scroll-stage::before{content:"";position:absolute;z-index:-1;left:0;right:0;top:0;height:calc(100% - 100svh);background:var(--navy)}
+.scroll-stage .stage-pin{position:sticky;top:0;height:100svh;overflow:hidden;
+  --bx:39.5vw;--by:20.5svh;--bw:39.4vw;--bh:38.6svh}
+/* the lock-up on a modern lit sign (Tristan 2026-11-21: the chalkboard menu "feels old"): the line big and left with
+   "register" in the sky's star gold; beside it, past a thin gold rule, the promise and the price as two clean lines */
+.scroll-stage .stage-board{position:absolute;z-index:2;left:var(--bx);top:var(--by);width:var(--bw);height:var(--bh);
+  --gold:#e8b94a;--ink:#f1ece2;
+  display:grid;grid-template-columns:auto 1fr;grid-template-rows:1fr auto;column-gap:.045em;align-content:center;
+  padding:.04em .05em;box-sizing:border-box;color:var(--ink);opacity:var(--h1-o,1);font-size:var(--bw);pointer-events:none}
+.scroll-stage .stage-board h1{grid-column:1;align-self:center;margin:0;max-width:none;font:700 .063em/.92 var(--display);letter-spacing:-.045em;text-align:left}
+.scroll-stage .stage-board h1 .hl{display:block;white-space:nowrap}
+.scroll-stage .stage-board h1 em{font-style:normal;color:var(--gold)}
+.scroll-stage .stage-board .board-side{grid-column:2;align-self:center;border-left:.0025em solid rgba(232,185,74,.6);padding-left:.04em}
+.scroll-stage .stage-board .sub{margin:0;max-width:19ch;font:500 .024em/1.35 var(--head);letter-spacing:-.005em;color:rgba(241,236,226,.86)}
+.scroll-stage .stage-board .hero-price{margin:.9em 0 0;font:500 .018em/1.3 var(--head);color:rgba(241,236,226,.7)}
+.scroll-stage .stage-board .hero-price b{display:block;font:700 2.9em/1 var(--display);letter-spacing:-.04em;color:var(--ink);margin-bottom:.15em}
+.scroll-stage .stage-board .hero-links{grid-column:1/-1;margin-top:1.2em;font-size:.019em;gap:.6em 1.6em;justify-content:flex-start;align-items:center;pointer-events:auto}
+/* the two actions (Tristan 2026-11-21, "make that part better"): one solid button with an arrow that leads, and a
+   quiet second path with a gold ring holding its arrow; no stray underline in a second colour */
+.scroll-stage .stage-board .hero-links .btn{order:-1;display:inline-flex;align-items:center;gap:.7em;font-size:1.05em;font-weight:700;
+  padding:.85em .95em .85em 1.5em;letter-spacing:-.005em}
+.scroll-stage .stage-board .hero-links .btn .go{display:grid;place-items:center;width:1.7em;height:1.7em;border-radius:50%;
+  background:rgba(31,31,53,.14);font-size:.95em;transition:transform .2s ease}
+.scroll-stage .stage-board .hero-links .btn:hover .go{transform:translateX(.18em)}
+.scroll-stage .stage-board .hero-links .unsure{display:inline-flex;align-items:center;gap:.65em;text-decoration:none;color:rgba(241,236,226,.82);font-weight:600}
+.scroll-stage .stage-board .hero-links .unsure .ring{display:grid;place-items:center;width:1.9em;height:1.9em;border-radius:50%;
+  border:.09em solid rgba(232,185,74,.7);color:var(--gold);font-size:.9em;transition:transform .2s ease}
+.scroll-stage .stage-board .hero-links .unsure:hover{color:var(--ink)}
+.scroll-stage .stage-board .hero-links .unsure:hover .ring{transform:translateY(.15em)}
+.scroll-stage .stage-pin.stage-done .stage-board{visibility:hidden}
+/* tall screens: one column, the line, then the promise and price, then the buttons */
+.scroll-stage .stage-pin.stage-tall .stage-board{grid-template-columns:1fr;grid-template-rows:auto;padding:.06em .07em}
+.scroll-stage .stage-pin.stage-tall .stage-board h1{font-size:.097em}
+.scroll-stage .stage-pin.stage-tall .stage-board .board-side{grid-column:1;margin-top:.06em;border-left:0;border-top:.004em solid rgba(232,185,74,.6);padding:.05em 0 0}
+.scroll-stage .stage-pin.stage-tall .stage-board .sub{font-size:.042em;max-width:none}
+.scroll-stage .stage-pin.stage-tall .stage-board .hero-price{font-size:.032em}
+.scroll-stage .stage-pin.stage-tall .stage-board .hero-links{font-size:.038em;margin-top:1em}
+/* just the register (Tristan 2026-11-21): no sign to sit on, so the words stand on the navy above the register */
+.scroll-stage .stage-pin.stage-bare .stage-board{--bw:min(86vw,1000px);left:50%;top:calc(64px + 2svh);height:auto;opacity:1;
+  transform:translate(-50%,calc(-1 * var(--lift,0px)))}   /* the words scroll away like page text: no fade */
+/* desktop (Tristan 2026-11-21): the words on the left, the register big on the right where the phone will land */
+.scroll-stage .stage-pin.stage-bare:not(.stage-tall) .stage-board{left:6vw;width:min(46vw,640px);--bw:min(86vw,1000px);top:50%;
+  transform:translate(0,calc(-50% - var(--lift,0px)));grid-template-columns:1fr;padding:0}
+.scroll-stage .stage-pin.stage-bare:not(.stage-tall) .stage-board h1{font-size:.066em}
+.scroll-stage .stage-pin.stage-bare:not(.stage-tall) .stage-board .board-side{grid-column:1;margin-top:.03em;border-left:0;padding:0;display:flex;align-items:baseline;gap:.04em;flex-wrap:wrap}
+.scroll-stage .stage-pin.stage-bare:not(.stage-tall) .stage-board .sub{max-width:26ch;font-size:.022em}
+.scroll-stage .stage-pin.stage-bare:not(.stage-tall) .stage-board .hero-price{margin:0;padding-left:.9em;border-left:.12em solid rgba(232,185,74,.6)}
+.scroll-stage .stage-pin.stage-bare.stage-tall .stage-board{--bw:92vw;top:calc(64px + 2svh)}
+#calls{position:relative;z-index:1}
+html:not(.stage-still) .scroll-stage+main>#calls,html:not(.stage-still) .scroll-stage~main #calls:first-child{margin-top:-100svh}
+/* tall screens: the board fills the width up top, the words sit on the counter front below */
+@media (max-aspect-ratio:4/5){
+  .scroll-stage .stage-pin{--bx:6vw;--by:24svh;--bw:88vw;--bh:28svh}
+}
+/* reduced motion, no WebGL or a failed load: the stage is a still, one screen tall */
+html.stage-still .scroll-stage{height:100svh;background:var(--navy)}
+@media (prefers-reduced-motion:reduce){.scroll-stage{height:100svh}html .scroll-stage~main #calls:first-child{margin-top:0}}

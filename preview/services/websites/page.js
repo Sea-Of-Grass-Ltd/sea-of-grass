@@ -1,7 +1,6 @@
 /* Websites page: a normal page that scrolls on its own. This file does five small things:
    1 the header's Book button shows only when no other Book button is on screen (never two in one view);
-   2 the Bunny World ticket rail: tapping a ticket opens that shop's live page on the stage below; Bunny Burritos keeps the
-     register and the Sold out demo, the other shops show their own page and a way in;
+   2 the Bunny Burritos stage: its live page scaled to fit the phone, beside the register and the Sold out demo;
    3 the split-flap board flips each row in once the visitor can really see it, one row after another (still under reduced motion);
    4 meadows measured before the page settled are measured again once fonts and images are in;
    5 the founding count comes from SOG_SHOP.founding (checkout-links.js), never typed into the page. */
@@ -16,26 +15,13 @@ if(headerBook&&pageBooks.length&&'IntersectionObserver' in window){
   document.body.classList.add('book-in-page');
 }
 
-// 2 the ticket rail and its stage
-const stage=document.querySelector('.open-stage'),tickets=[...document.querySelectorAll('.ticket')];
-if(stage&&tickets.length){
+// 2 the Bunny Burritos stage (its own section after the calls since 2026-11-21; the Bunny World tickets are plain links
+//   to each shop now): the shop's live page is drawn at phone width and scaled to fit the phone
+const stage=document.querySelector('.open-stage');
+if(stage){
   const frame=stage.querySelector('iframe'),view=stage.querySelector('.view');
-  const kick=stage.querySelector('[data-stage-kick]'),h=stage.querySelector('[data-stage-h]'),cap=stage.querySelector('[data-caption]'),open=stage.querySelector('[data-stage-open]');
-  const capFirst=cap.textContent;
   const fit=()=>{const w=view.clientWidth,hh=view.clientHeight;if(!w)return;const s=w/390;frame.style.width='390px';frame.style.height=Math.ceil(hh/s)+'px';frame.style.transform=`scale(${s})`;};
   new ResizeObserver(fit).observe(view);
-  const pick=t=>{
-    tickets.forEach(x=>x.setAttribute('aria-pressed',String(x===t)));
-    const slug=t.dataset.shop,name=t.dataset.name,i=tickets.indexOf(t)+1,burritos=slug==='bunny-burritos',url='/bunnyworld/'+slug+'/';
-    stage.classList.toggle('other',!burritos);
-    kick.innerHTML=String(i).padStart(2,'0')+' &middot; '+name;
-    h.innerHTML=t.dataset.line;
-    cap.hidden=!burritos;open.hidden=burritos;open.href=url;open.innerHTML='Open '+name+' &rarr;';
-    frame.title=name+', a Bunny World demo shop';frame.dataset.lazy=url;
-    if(frame.getAttribute('src')!==url)frame.src=url;
-    if(burritos&&!cap.classList.contains('swapped'))cap.textContent=capFirst;
-  };
-  tickets.forEach(t=>t.addEventListener('click',()=>pick(t)));
 }
 
 // 3 the split-flap board: a row flips through letters only once the visitor can really see it (its middle above about 70% of
