@@ -595,3 +595,36 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 /* the shop cards drift out to the sides as the plan opens */
 .shop-wall .sw{translate:calc(var(--out,0) * var(--side-dir,-1) * 34vw) 0}
 .shop-wall .r1,.shop-wall .r2,.shop-wall .r3{--side-dir:1}
+/* ======== one screen of plain facts (Tristan: dense, like a bento): the four promises across the top, the hookup and what
+   we can and never see on the left, the questions on the right, matched in height; it stacks on phones ======== */
+#hookup.info{padding-bottom:clamp(48px,5vw,72px)}   /* the top keeps its room for the Calls phone's base crossing the seam */
+.info-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);grid-template-rows:auto 1fr auto;gap:16px}
+.info .tile{border-radius:20px;background:rgba(var(--text-rgb),.05);box-shadow:inset 0 0 0 1px rgba(var(--text-rgb),.12);padding:clamp(20px,2vw,28px)}
+.info .kick{margin:0 0 10px}
+.info-promises{grid-column:1/-1;margin:0;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.info-promises li{display:flex;align-items:center;justify-content:flex-start;gap:12px;text-align:left;padding:16px 18px;border-radius:16px;background:rgba(var(--text-rgb),.05);box-shadow:inset 0 0 0 1px rgba(var(--text-rgb),.12);font:600 16px/1.25 var(--head)}
+.info-promises svg{width:24px;height:24px;flex:none}
+.info-hook{grid-column:1;grid-row:2;display:grid;align-content:start;gap:14px}
+#hookup .info-hook h2,#faq.info-faq h2{margin:0;font-size:clamp(28px,2.6vw,40px);line-height:1}
+#faq.info-faq{background:rgba(var(--text-rgb),.05)}
+#hookup .info-hook .points{margin:0;gap:8px}
+#hookup .info-hook .points li{font-size:clamp(17px,1.4vw,20px)}
+#hookup .info-hook .promise{margin:4px 0 0;font-size:clamp(18px,1.6vw,23px)}
+.info-plan{margin:0;font-size:15px;color:var(--text)}
+.info-see{grid-column:1;grid-row:3;display:grid;gap:8px}
+.info-see p:not(.kick){margin:0;font-size:15px}
+.info-faq{grid-column:2;grid-row:2/span 2;display:grid;align-content:start}
+.info-faq h2{margin-bottom:12px}
+.info-faq .qs summary{padding:13px 0;font-size:16.5px}
+.info-faq .qs details p{padding-bottom:13px;font-size:15px}
+@media (max-width:980px){
+  .info-grid{grid-template-columns:1fr;grid-template-rows:none}
+  .info-promises{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .info-hook,.info-see,.info-faq{grid-column:auto;grid-row:auto}
+}
+/* ======== the close: one warm line, the plan's own button under the hero card's glow, and Book 15 minutes ======== */
+.close-in h2{font-size:clamp(44px,6vw,88px);line-height:.95;letter-spacing:-.03em;margin:0}
+.close-sub{margin:0;max-width:38ch;font-size:clamp(17px,1.5vw,20px);color:var(--text)}
+.close-acts{position:relative;isolation:isolate;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:14px;margin-top:8px}
+.close-acts::before{content:"";position:absolute;z-index:-1;inset:-40px -60px;border-radius:60px;background:var(--poppy);opacity:.55;filter:blur(56px);pointer-events:none}
+.close-start{min-width:260px}
