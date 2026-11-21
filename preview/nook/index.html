@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="theme-color" content="#1F1F35" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Book nook · Sea of Grass (prototype)</title>
+<meta name="robots" content="noindex" />
+<link rel="icon" href="/preview/assets/favicon.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+<link rel="stylesheet" href="/preview/nook/base.css" />
+<link rel="stylesheet" href="/preview/nook/nook.css" />
+<script>
+(function(){var K='sog-theme',OK={dusk:1,glass:1,neu:1,brutal:1,simple:1,editorial:1},BG={dusk:'#120607',glass:'#EEF1F8',neu:'#EFE6D8',brutal:'#FFFDF5',simple:'#F4F1EA',editorial:'#f3f1ea'};
+function get(){var v=document.documentElement.getAttribute('data-theme');return OK[v]?v:'glass';}
+var FONT={"dusk": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Anton&family=Inter+Tight:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "glass": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=Inter+Tight:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap", "neu": "https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;700&family=Fraunces:opsz,wght@9..144,900&family=Inter:wght@500&family=IBM+Plex+Mono:wght@400;500&display=swap", "brutal": "https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700;900&family=Space+Mono:wght@400;700&display=swap", "simple": "https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap", "editorial": "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter+Tight:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap", "letters": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Cormorant+Garamond:wght@300&family=Anybody:wdth,wght@125,800&family=Syne:wght@800&family=Inter+Tight:wght@300;700&family=IBM+Plex+Mono:wght@400;500&display=swap"};function font(k){if(!FONT[k]||document.getElementById('sog-f-'+k))return;var l=document.createElement('link');l.rel='stylesheet';l.id='sog-f-'+k;l.href=FONT[k];document.head.appendChild(l);}
+window.sogFonts={letters:function(){font('letters');}};
+function apply(t){if(!OK[t])t='glass';font(t);var r=document.documentElement,m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',BG[t]);if(r.getAttribute('data-theme')===t)return;r.setAttribute('data-theme',t);
+  document.dispatchEvent(new CustomEvent('sog-theme',{detail:t}));}
+window.sogTheme={get:get,apply:apply};
+apply(get());})();
+(function(){var K='sog-scheme',OK={"dusk": 1, "prairie": 1, "ink": 1, "terra": 1, "pastel": 1, "teal": 1, "riso": 1};function get(){var v=document.documentElement.getAttribute('data-scheme');return OK[v]?v:'own';}
+function apply(s){if(!OK[s])s='own';var r=document.documentElement;if((r.getAttribute('data-scheme')||'own')===s)return;
+  if(s==='own')r.removeAttribute('data-scheme');else r.setAttribute('data-scheme',s);document.dispatchEvent(new CustomEvent('sog-scheme',{detail:s}));}
+window.sogScheme={get:get,apply:apply};
+apply(get());})();
+</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@800&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=DM+Sans:wght@400;500;700&family=Libre+Caslon+Display&family=Libre+Franklin:wght@400;600&family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&family=Inter+Tight:wght@200;300;400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Instrument+Serif:ital@0;1&display=swap">
+</head>
+<body>
+<header class="bar wrap">
+  <a class="brand" href="#cbtop" aria-label="Sea of Grass, top of the page"><svg aria-hidden="true" viewBox="43.63 44.56 350.94 258.56" fill="currentColor" aria-hidden="true">
+    <path d="M 60.1360,299.5890 C 40.8560,283.5000 37.9720,248.8600 54.1230,229.1250 C 61.9590,219.4780 73.2066,213.0913 85.9080,212.4050 L 279.9170,212.3880 C 292.7328,211.6894 302.2259,200.5242 302.6140,188.1740 C 303.0171,175.3461 294.1087,163.3937 280.9850,162.4350 L 160.3860,162.3770 C 155.6830,162.3750 152.4580,158.1300 152.2660,154.1930 C 152.0640,150.0420 155.5000,145.5160 160.3230,145.5160 L 323.2740,145.5180 C 363.5090,146.7569 394.2264,180.5210 394.5670,220.2810 C 394.9023,259.4236 360.4620,297.7100 320.2520,299.1580 C 320.2520,299.1580 69.9310,307.7640 60.1360,299.5890 Z"/>
+    <path d="M 365.1390,47.9780 C 360.1170,47.5130 354.1470,47.1080 347.4230,46.7550 C 274.7440,42.9430 114.0820,45.2510 114.0820,45.2510 C 73.9994,46.9759 43.7290,80.8860 43.6260,120.3040 C 43.5230,159.4680 73.5199,193.9418 113.3820,195.4730 L 277.3270,195.8440 C 282.2870,195.8440 285.7460,192.0070 285.9600,187.6500 C 286.1670,183.4310 282.8680,178.9500 277.9760,178.9480 L 158.2750,178.9140 C 145.3037,178.2644 135.8119,166.8014 135.6040,154.2420 C 135.3960,141.6768 144.3477,129.9059 157.2620,128.9900 L 350.1640,128.8050 C 352.3160,128.8030 354.4280,128.6110 356.4990,128.2740 C 366.7370,126.6070 375.8830,121.0490 382.8160,113.4590 C 390.0330,105.5580 394.4238,95.7293 394.5320,85.6870 C 394.7250,67.7708 381.6430,52.8390 365.1390,47.9780 Z"/>
+  </svg><span>Sea of Grass</span></a>
+  <nav aria-label="Main"><a href="#services">Services</a><a href="#work">Work</a><a href="#about">About</a><a href="#contact">Contact</a><a class="client" href="/preview/client/">Client login</a><a class="book" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a meeting</a></nav>
+</header>
+
+<main class="cb nk" id="cbtop">
+  <!-- the opening: the faceted night. Pinned for half a screen while its planes recede (sky, ranges) and pop (the S, the words) -->
+  <div class="nk-open" id="nk-open">
+    <section class="nk-night" id="opening" aria-labelledby="nk-h1">
+      <div class="nk-plane nk-sky" data-plane="sky" aria-hidden="true"></div>
+      <div class="nk-plane nk-far" data-plane="far" aria-hidden="true"></div>
+      <div class="nk-mark" aria-hidden="true"><svg viewBox="30 30 390 300"><defs><path id="nk-s1" d="M 60.1360,299.5890 C 40.8560,283.5000 37.9720,248.8600 54.1230,229.1250 C 61.9590,219.4780 73.2066,213.0913 85.9080,212.4050 L 279.9170,212.3880 C 292.7328,211.6894 302.2259,200.5242 302.6140,188.1740 C 303.0171,175.3461 294.1087,163.3937 280.9850,162.4350 L 160.3860,162.3770 C 155.6830,162.3750 152.4580,158.1300 152.2660,154.1930 C 152.0640,150.0420 155.5000,145.5160 160.3230,145.5160 L 323.2740,145.5180 C 363.5090,146.7569 394.2264,180.5210 394.5670,220.2810 C 394.9023,259.4236 360.4620,297.7100 320.2520,299.1580 C 320.2520,299.1580 69.9310,307.7640 60.1360,299.5890 Z"/><path id="nk-s2" d="M 365.1390,47.9780 C 360.1170,47.5130 354.1470,47.1080 347.4230,46.7550 C 274.7440,42.9430 114.0820,45.2510 114.0820,45.2510 C 73.9994,46.9759 43.7290,80.8860 43.6260,120.3040 C 43.5230,159.4680 73.5199,193.9418 113.3820,195.4730 L 277.3270,195.8440 C 282.2870,195.8440 285.7460,192.0070 285.9600,187.6500 C 286.1670,183.4310 282.8680,178.9500 277.9760,178.9480 L 158.2750,178.9140 C 145.3037,178.2644 135.8119,166.8014 135.6040,154.2420 C 135.3960,141.6768 144.3477,129.9059 157.2620,128.9900 L 350.1640,128.8050 C 352.3160,128.8030 354.4280,128.6110 356.4990,128.2740 C 366.7370,126.6070 375.8830,121.0490 382.8160,113.4590 C 390.0330,105.5580 394.4238,95.7293 394.5320,85.6870 C 394.7250,67.7708 381.6430,52.8390 365.1390,47.9780 Z"/></defs><g id="nk-sx"></g><g class="nk-sface"></g></svg></div>
+      <div class="nk-plane nk-near" data-plane="near" aria-hidden="true"></div>
+      <div class="nk-plane nk-hill" data-plane="hill" aria-hidden="true"></div>
+      <h1 class="nk-headline" id="nk-h1"><span class="l"><em>A</em> design <em>and</em></span><span class="l">technology <span class="nk-ser">studio</span></span><span class="l"><em>for the</em> Front Range.</span></h1>
+      <div class="live-grass nk-grass" data-live-grass aria-hidden="true"></div>
+    </section>
+  </div>
+
+  <!-- under the meadow: soil and roots; the poppy's root runs down past Three things to the lamp in the hollow -->
+  <div class="nk-under" id="nk-under">
+    <div class="nk-soil" id="nk-soil" aria-hidden="true"></div>
+    <div class="nk-roots" id="nk-roots" aria-hidden="true"></div>
+    <div class="nk-poppy" id="nk-poppy" aria-hidden="true"></div>
+    <div class="nk-room1" id="nk-room1">
+    <section class="cb-band cb-stage cb-three" id="services" aria-labelledby="cb-svc-h">
+    <h2 class="cb-h cb-pair" id="cb-svc-h"><b>Three things,</b> <em>done properly.</em></h2>
+    <div class="cb-cols">
+      <div class="cbx-stage" data-mode="syne" data-shape="open" data-color="night" data-fx="off"><!-- the two columns the Creative tech controller plays -->
+      <article class="cb-col" id="websites">
+        <h3><a href="/preview/services/websites/">Websites</a></h3>
+        <p>We fix sites, build new ones and host them.</p>
+        <p class="cb-price cb-tiers"><span class="cb-tier"><i>Fixes</i><span class="cb-amt"><b>$250</b><em>from, once</em></span><span>Small jobs and repairs on the site you have.</span></span><span class="cb-tier"><i>Care</i><span class="cb-amt"><b>$50</b><em>a month</em></span><span>We look after the hosting, the security and up to 30 minutes of small changes a month.</span></span></p><p class="cb-note">Starter sites are $1,200, or $100 a month for 12 months, and new sites start at $2,000.</p>
+        <p class="cb-more"><a href="/preview/services/websites/#buy">Buy without a call</a><a href="/preview/services/websites/">Websites and hosting</a><a href="/preview/services/apps/">Apps</a></p>
+      </article>
+      <article class="cb-col" id="brand">
+        <h3><a href="/preview/services/brand/">Branding</a></h3>
+        <p>One look for your sign, menu, site and cards.</p>
+        <p class="cb-price cb-tiers"><span class="cb-tier"><i>Price</i><span class="cb-amt"><b>Fixed quote</b></span><span>Priced after a free call and written down before work starts.</span></span></p>
+        <p class="cb-more"><a href="/preview/services/brand/#buy">Start with a Kickoff</a><a href="/preview/services/brand/">Brand and identity</a><a href="/preview/services/illustration/">Illustration</a></p>
+      </article>
+        <div class="cbx-fx" aria-hidden="true"><div class="live-grass cbx-grass" data-live-grass></div><canvas class="cbx-stars"></canvas></div>
+      </div>
+      <article class="cb-col cbx-col" id="creative-tech">
+        <h3><a href="/preview/services/live-visuals/">Creative tech</a></h3>
+        <p>Play with it: this is what we build.</p>
+        <div class="vzd cbx" role="group" aria-label="Controller: restyle the Websites and Branding columns">
+          <div class="vzd-tabs" role="tablist"><button type="button" role="tab" aria-selected="true" data-tab="mode">Mode</button><button type="button" role="tab" aria-selected="false" data-tab="shape">Shape</button><button type="button" role="tab" aria-selected="false" data-tab="color">Color</button><button type="button" role="tab" aria-selected="false" data-tab="fx">Effect</button></div>
+          <div class="vzd-p" data-p="mode"><button type="button" class="vzd-b" data-step="-1" aria-label="Previous typeface">&lsaquo;</button><span class="vzd-name" aria-live="polite"><b>Syne</b><small>1 of 3</small></span><button type="button" class="vzd-b" data-step="1" aria-label="Next typeface">&rsaquo;</button></div>
+          <div class="vzd-p" data-p="shape" hidden><button type="button" class="vzd-b" data-step="-1" aria-label="Previous shape">&lsaquo;</button><span class="vzd-name" aria-live="polite"><b>Open</b><small>1 of 4</small></span><button type="button" class="vzd-b" data-step="1" aria-label="Next shape">&rsaquo;</button></div>
+          <div class="vzd-p" data-p="color" hidden><button type="button" class="vzd-b" data-step="-1" aria-label="Previous palette">&lsaquo;</button><span class="vzd-name" aria-live="polite"><b>Night</b><small>1 of 4</small></span><button type="button" class="vzd-b" data-step="1" aria-label="Next palette">&rsaquo;</button></div>
+          <div class="vzd-p" data-p="fx" hidden><button type="button" class="vzd-b" data-step="-1" aria-label="Previous effect">&lsaquo;</button><span class="vzd-name" aria-live="polite"><b>Off</b><small>1 of 3</small></span><button type="button" class="vzd-b" data-step="1" aria-label="Next effect">&rsaquo;</button></div>
+          <button type="button" class="cbx-reset">Reset</button>
+        </div>
+        <p class="cb-price cb-tiers"><span class="cb-tier"><i>Price</i><span class="cb-amt"><b>Fixed quote</b></span><span>Priced after a free call and written down before work starts.</span></span></p>
+        <p class="cb-more"><a href="/preview/services/live-visuals/">Live visuals</a><a href="/preview/services/characters/">3D characters</a></p>
+      </article>
+    </div>
+    <p class="cb-promise">Nothing goes live until you&rsquo;ve said yes.</p>
+  </section>
+    </section>
+    </div>
+    <section class="nk-hollow" id="work" aria-labelledby="cb-work-h">
+      <div class="nk-hart nk-back" id="nk-hollow-back" aria-hidden="true"></div>
+      <div class="nk-workhead"><h2 class="cb-kick" id="cb-work-h">Work</h2></div>
+      <div class="nk-shelf" tabindex="0" aria-label="Work, on a shelf">
+        <div class="nk-shelf-in nk-pop" id="nk-shelf"><div class="nk-ledge" id="nk-ledge" aria-hidden="true"></div></div>
+        <div class="nk-shelf-pad" aria-hidden="true"></div>
+      </div>
+      <div class="nk-hart nk-front" id="nk-hollow-front" aria-hidden="true"></div>
+    </section>
+  </div>
+
+  <footer class="cb-band cb-foot">
+    <b>Sea of Grass, Berthoud, Colorado</b>
+    <a href="/preview/lab/">The Lab</a>
+    <a href="/preview/client/">Client login</a>
+  </footer>
+</main>
+
+<!-- the work list: one entry per card. Add an entry and the shelf grows by one card. -->
+<script type="application/json" id="nk-work">[
+  {"title":"Bunny World","num":"01","type":"Web demos","line":"Nine bunny-run shops, each a working site in its own style.","href":"/bunnyworld/","art":"bunny","big":true,"tick":"#7F917F"},
+  {"title":"Mau’s Catnip Soda","type":"Brand and identity · case study","line":"The case study is coming soon.","img":"/preview/assets/work/mau-logo.webp","contain":true,"tick":"#D17C66"},
+  {"title":"Fantasmagoria","type":"App","line":"Our tool for live visuals, played like an instrument.","href":"https://fantasmagoria.app/","img":"/preview/assets/home/lumi.webp","contain":true,"tick":"#61465C","dark":true},
+  {"title":"Packfold","type":"Web tool","line":"Fold a carton on screen, then export the cut file.","href":"/preview/studies/packfold/","img":"/preview/assets/work/packfold.webp","tick":"#39406A"}
+]</script>
+<template id="nk-art-bunny">
+<svg class="bw-card" viewBox="0 0 1560 1040" role="img" aria-label="The Bunny World bunny bouncing as the globe in its head turns into each shop&rsquo;s icon" data-state="idle" data-frames="0"><defs><mask id="bwc-cut" maskUnits="userSpaceOnUse" x="-90" y="-260" width="180" height="340"><rect x="-90" y="-260" width="180" height="340" fill="#fff"/><circle r="46.67" fill="none" stroke="#000" stroke-width="6.67"/><g data-lines fill="none" stroke="#000" stroke-width="6.67" stroke-linecap="round" stroke-linejoin="round"><path d="M-39.4 -25H39.4"/><path d="M-46.67 0H46.67"/><path d="M-39.4 25H39.4"/><path d="M0 -46.67V46.67"/><path d="M0 -46.67A70 70 0 0 0 0 46.67"/><path d="M0 -46.67A70 70 0 0 1 0 46.67"/></g></mask><clipPath id="bwc-feet"><rect x="-85" y="-82" width="170" height="155"/></clipPath></defs><g transform="translate(780 689) scale(2.94)"><g data-body><g mask="url(#bwc-cut)" fill="#1E1A3A"><path data-sil d="M-15.02 -151.06 L-15.32 -154.75 L-16.02 -158.38 L-17.10 -161.93 L-18.16 -164.54 L-19.88 -167.82 L-21.72 -170.62 L-24.05 -173.49 L-26.03 -175.50 L-28.86 -177.89 L-31.62 -179.79 L-34.87 -181.56 L-37.46 -182.68 L-40.64 -183.73 L-44.26 -184.52 L-47.06 -184.88 L-50.76 -184.99 L-54.10 -184.76 L-57.75 -184.13 L-61.31 -183.12 L-63.94 -182.10 L-67.26 -180.45 L-70.09 -178.66 L-73.00 -176.38 L-75.66 -173.80 L-77.49 -171.66 L-79.63 -168.63 L-81.43 -165.40 L-82.76 -162.32 L-83.64 -159.64 L-84.47 -156.04 L-84.89 -152.71 L-84.98 -149.01 L-84.68 -145.32 L-84.44 -143.75 L-83.95 -141.51 L-60.39 -47.24 L-58.36 -49.72 L-56.49 -51.83 L-54.54 -53.88 L-52.52 -55.85 L-50.43 -57.74 L-48.27 -59.56 L-46.05 -61.30 L-43.71 -62.99 L-64.67 -146.88 L-64.92 -148.44 L-65.00 -150.03 L-64.85 -152.14 L-64.54 -153.69 L-64.06 -155.21 L-63.66 -156.19 L-62.93 -157.60 L-62.36 -158.49 L-61.40 -159.75 L-60.68 -160.53 L-59.91 -161.25 L-58.67 -162.24 L-57.79 -162.82 L-56.39 -163.57 L-55.42 -163.99 L-53.91 -164.48 L-52.36 -164.81 L-51.31 -164.94 L-50.25 -165.00 L-48.66 -164.94 L-47.61 -164.81 L-46.06 -164.47 L-45.05 -164.16 L-43.59 -163.56 L-42.65 -163.07 L-41.31 -162.22 L-39.67 -160.88 L-38.58 -159.73 L-37.93 -158.90 L-37.05 -157.57 L-36.55 -156.64 L-35.93 -155.18 L-35.59 -154.18 L-35.23 -152.63 L-35.09 -151.58 L-35.00 -149.91 L-35.00 -66.14 L-35.14 -64.45 L-35.50 -63.04 L-36.05 -61.69 L-36.79 -60.43 L-37.71 -59.30 L-38.97 -58.16 L-41.68 -56.24 L-44.05 -54.40 L-46.03 -52.74 L-48.25 -50.72 L-50.38 -48.60 L-52.71 -46.07 L-54.63 -43.76 L-56.46 -41.37 L-58.19 -38.91 L-59.58 -36.74 L-60.89 -34.53 L-62.32 -31.88 L-63.63 -29.17 L-64.66 -26.81 L-65.60 -24.41 L-66.59 -21.57 L-67.46 -18.70 L-68.20 -15.78 L-68.89 -12.42 L-69.36 -9.45 L-69.70 -6.46 L-69.91 -3.46 L-70.00 -0.03 L-69.94 2.98 L-69.71 6.41 L-69.37 9.39 L-68.90 12.36 L-68.30 15.31 L-67.58 18.23 L-66.74 21.11 L-65.77 23.96 L-64.52 27.16 L-63.47 29.52 L-62.15 32.21 L-60.71 34.85 L-59.38 37.06 L-57.98 39.22 L-56.24 41.68 L-54.67 43.72 L-52.74 46.03 L-51.01 47.94 L-48.91 50.08 L-46.71 52.14 L-44.76 53.82 L-42.41 55.69 L-40.33 57.22 L-37.83 58.89 L-35.64 60.25 L-33.40 61.52 L-30.73 62.90 L-28.39 63.98 L-25.62 65.14 L-22.80 66.18 L-20.35 66.98 L-17.87 67.68 L-14.94 68.39 L-12.42 68.89 L-9.45 69.36 L-4.32 69.87 L-1.74 69.98 L1.26 69.99 L4.27 69.87 L6.83 69.67 L9.82 69.31 L12.79 68.82 L15.73 68.21 L18.64 67.47 L21.11 66.74 L23.96 65.77 L26.76 64.68 L29.52 63.47 L32.21 62.15 L34.85 60.71 L37.06 59.38 L39.58 57.74 L42.02 55.98 L44.39 54.13 L46.67 52.17 L48.87 50.12 L50.97 47.98 L52.99 45.74 L54.90 43.43 L56.72 41.03 L58.43 38.55 L60.03 36.01 L61.52 33.40 L62.71 31.11 L63.98 28.39 L64.99 26.02 L66.04 23.20 L66.98 20.35 L67.79 17.45 L68.48 14.52 L69.04 11.57 L69.42 9.02 L69.87 4.32 L69.99 -0.83 L69.74 -5.98 L69.18 -10.67 L68.21 -15.73 L66.99 -20.29 L65.32 -25.17 L63.47 -29.52 L61.54 -33.35 L59.38 -37.06 L56.75 -40.98 L54.13 -44.39 L50.72 -48.25 L47.03 -51.85 L43.76 -54.63 L41.37 -56.46 L38.97 -58.17 L37.71 -59.30 L36.79 -60.44 L36.05 -61.69 L35.49 -63.04 L35.19 -64.21 L35.00 -66.14 L35.00 -149.91 L35.04 -151.06 L35.23 -152.63 L35.46 -153.67 L35.93 -155.18 L36.33 -156.16 L37.05 -157.57 L38.25 -159.32 L39.67 -160.88 L40.47 -161.58 L41.74 -162.52 L43.59 -163.56 L45.05 -164.16 L46.06 -164.47 L47.61 -164.81 L48.66 -164.94 L50.78 -164.98 L52.88 -164.72 L54.42 -164.33 L55.42 -163.99 L56.86 -163.34 L57.79 -162.82 L59.10 -161.93 L59.91 -161.25 L61.40 -159.75 L62.06 -158.92 L62.93 -157.60 L63.87 -155.70 L64.40 -154.21 L64.66 -153.18 L64.96 -151.09 L64.99 -149.50 L64.85 -147.92 L64.53 -146.28 L43.71 -62.99 L46.05 -61.30 L48.27 -59.56 L50.43 -57.74 L52.52 -55.85 L54.54 -53.88 L56.49 -51.83 L58.36 -49.72 L60.39 -47.24 L84.20 -142.54 L84.68 -145.32 L84.93 -147.78 L84.98 -151.13 L84.81 -153.59 L84.47 -156.04 L83.96 -158.45 L83.28 -160.82 L82.30 -163.47 L81.27 -165.71 L80.09 -167.88 L78.75 -169.96 L77.27 -171.93 L75.66 -173.80 L73.92 -175.55 L72.06 -177.17 L70.09 -178.66 L68.02 -180.00 L65.86 -181.20 L63.62 -182.24 L61.31 -183.12 L58.95 -183.84 L56.54 -184.38 L54.10 -184.76 L51.64 -184.96 L49.17 -184.99 L46.71 -184.84 L44.26 -184.52 L41.84 -184.03 L39.46 -183.37 L37.13 -182.55 L34.87 -181.56 L32.68 -180.42 L30.58 -179.12 L28.58 -177.68 L26.68 -176.10 L24.90 -174.39 L22.68 -171.88 L21.01 -169.61 L19.70 -167.52 L18.16 -164.54 L17.10 -161.93 L16.11 -158.73 L15.51 -155.97 L15.18 -153.52 L15.00 -150.00 L15.00 -79.84 L14.81 -77.91 L14.34 -76.27 L13.60 -74.73 L12.60 -73.35 L11.39 -72.15 L9.99 -71.18 L8.44 -70.46 L7.04 -70.05 L5.35 -69.85 L0.03 -70.00 L-5.31 -69.85 L-7.03 -70.07 L-8.45 -70.48 L-9.58 -70.99 L-10.63 -71.62 L-11.60 -72.39 L-12.47 -73.27 L-13.22 -74.24 L-13.85 -75.31 L-14.34 -76.44 L-14.63 -77.38 L-14.86 -78.60 L-14.94 -79.83 L-15.02 -151.06Z"/><circle r="50"/><g data-ears fill="none" stroke="#1E1A3A" stroke-width="20" stroke-linejoin="round"></g></g></g></g></svg>
+</template>
+<script>
+/* the shelf: one card per entry in the list above */
+(function(){const list=JSON.parse(document.getElementById('nk-work').textContent),row=document.getElementById('nk-shelf'),plank=row.querySelector('.nk-ledge');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+for(const w of list){const a=document.createElement(w.href?'a':'div');a.className='nk-card'+(w.big?' nk-big':'')+(w.dark?' nk-dark':'');
+  if(w.href){a.href=w.href;if(/^https?:/.test(w.href)){a.target='_blank';a.rel='noopener';}}else{a.setAttribute('aria-disabled','true');a.setAttribute('aria-label',w.title+', coming soon');}
+  a.style.setProperty('--tick',w.tick||'#D17C66');
+  const art=w.art==='bunny'?document.getElementById('nk-art-bunny').innerHTML:`<img${w.contain?' class="nk-contain"':''} src="${esc(w.img)}" alt="" loading="lazy">`;
+  a.innerHTML=`<span class="nk-art">${art}</span><span class="nk-txt"><b>${esc(w.title)}</b><span class="nk-type">${esc(w.type)}</span><span class="nk-line">${esc(w.line)}</span></span>`;
+  row.insertBefore(a,plank);}})();
+</script>
+<script src="/preview/assets/field-shapes.js"></script>
+<script src="/preview/assets/bunny-card.js" defer></script>
+<script src="/preview/nook/controller.js"></script>
+<script src="/preview/assets/live-grass.js" defer></script>
+<script src="/preview/nook/nook.js"></script>
+</body>
+</html>
