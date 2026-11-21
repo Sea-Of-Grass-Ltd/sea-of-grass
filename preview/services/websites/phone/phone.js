@@ -37,19 +37,19 @@ class SogPhone extends HTMLElement {
       const s = document.createElement('style'); s.id = 'sog-phone-css'; s.textContent = css; document.head.append(s);
     }
     Object.assign(this.dataset, { state: this.dataset.state || 'still', lift: '0', dial: '0' });
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches || lowPower()) return;   // the picture stays
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches || lowPower()) { this.removeAttribute('data-pending'); return; }   // the picture stays
     this._io = new IntersectionObserver(es => {
       for (const e of es) {
         this._visible = e.isIntersecting;
         if (e.isIntersecting && this.dataset.state === 'still') this.boot();
       }
-    }, { rootMargin: '200px 0px' });
+    }, { rootMargin: '100% 0px' });                 // start loading about a screen before it arrives
     this._io.observe(this);
   }
   disconnectedCallback() { this._io?.disconnect(); this._ro?.disconnect(); cancelAnimationFrame(this._raf); this._renderer?.dispose(); }
 
   async boot() {
-    if (!webglOK()) return;                       // stays 'still'
+    if (!webglOK()) { this.removeAttribute('data-pending'); return; }   // stays 'still': the picture shows
     this.dataset.state = 'loading';
     try {
       const [THREE, { GLTFLoader }, { RoomEnvironment }] = await Promise.all([
@@ -60,6 +60,7 @@ class SogPhone extends HTMLElement {
       this.build(THREE, gltf, RoomEnvironment);
     } catch (err) {
       this.dataset.state = 'failed';
+      this.removeAttribute('data-pending');           // the picture is the fallback
       this._canvas?.remove();
     }
   }
