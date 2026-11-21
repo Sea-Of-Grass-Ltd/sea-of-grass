@@ -41,10 +41,14 @@ class SogPhone extends HTMLElement {
     this._io = new IntersectionObserver(es => {
       for (const e of es) {
         this._visible = e.isIntersecting;
-        if (e.isIntersecting && this.dataset.state === 'still') this.boot();
+        if (e.isIntersecting && this.dataset.state === 'still') this.boot();   // in case it scrolls in before the page is idle
       }
-    }, { rootMargin: '100% 0px' });                 // start loading about a screen before it arrives
+    }, { rootMargin: '100% 0px' });
     this._io.observe(this);
+    // start loading as soon as the page is idle, so the phone is ready before anyone scrolls to it
+    const early = () => { if (this.dataset.state === 'still') this.boot(); };
+    const idle = () => ('requestIdleCallback' in window ? requestIdleCallback(early, { timeout: 3000 }) : setTimeout(early, 1200));
+    if (document.readyState === 'complete') idle(); else addEventListener('load', idle, { once: true });
   }
   disconnectedCallback() { this._io?.disconnect(); this._ro?.disconnect(); cancelAnimationFrame(this._raf); this._renderer?.dispose(); }
 
@@ -52,10 +56,10 @@ class SogPhone extends HTMLElement {
     if (!webglOK()) { this.removeAttribute('data-pending'); return; }   // stays 'still': the picture shows
     this.dataset.state = 'loading';
     try {
-      const [THREE, { GLTFLoader }, { RoomEnvironment }] = await Promise.all([
+      const [THREE, { GLTFLoader }, { RoomEnvironment }, { MeshoptDecoder }] = await Promise.all([
         import(HERE + 'vendor/three.module.min.js'), import(HERE + 'vendor/loaders/GLTFLoader.js'),
-        import(HERE + 'vendor/environments/RoomEnvironment.js')]);
-      const loader = new GLTFLoader();
+        import(HERE + 'vendor/environments/RoomEnvironment.js'), import(HERE + 'vendor/libs/meshopt_decoder.module.js')]);
+      const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);   // phone.glb is meshopt-compressed
       const gltf = await loader.loadAsync(this.dataset.glb || HERE + 'phone.glb');
       this.build(THREE, gltf, RoomEnvironment);
     } catch (err) {
