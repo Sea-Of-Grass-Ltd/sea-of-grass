@@ -730,3 +730,17 @@ main{overflow-x:clip}
 .price-band .u-scene img{transition:filter .9s ease}
 .price-band:not(.lit) .plans::before{opacity:0}
 .price-band:not(.lit) .u-scene img{filter:grayscale(.85) brightness(.5)}
+
+/* Hooking up lives with the questions (an answer to a worry), the other ways to start sit right under the Site Plan
+   (Tristan 2026-11-21: between the Care board and the price they felt "random and out of place") */
+.info-grid{grid-template-rows:auto auto 1fr}
+.info-hook{grid-column:1;grid-row:2;display:grid;align-content:start;gap:12px}
+.info-see{grid-row:3}
+.info-faq{grid-row:2 / span 2}
+.info-hook .kick{margin:0}
+.info-hook .points li{font-size:17px}
+.info-hook .promise{margin:0;font:600 18px/1.3 var(--head)}
+.info-hook .info-plan{margin:0;font-size:15px;color:var(--soft)}
+@media (max-width:980px){.info-hook,.info-see,.info-faq{grid-column:auto;grid-row:auto}}
+.price-band .extras{width:min(100%,760px);margin:clamp(28px,3vw,40px) auto 0}
+.price-band .extras>.kick{margin:0 0 6px}
