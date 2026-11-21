@@ -215,7 +215,7 @@ body.book-in-page .top nav a.book{visibility:hidden;opacity:0}
   #calls .phone-stage{justify-self:start;align-self:center;width:min(calc(50vw - 10px),860px);margin-left:calc(-1 * clamp(0px,3vw,44px));margin-right:0;margin-bottom:0}
   #calls sog-phone{aspect-ratio:5/4;--phone-drop:0;--phone-fit-w:.40}
   #calls .calls-mute{top:12%;right:10%}
-  section#hookup{padding-top:clamp(64px,8vw,112px)}
+  section#facts{padding-top:clamp(64px,8vw,112px)}
 }
 #calls .calls-mute{position:absolute;top:8px;right:clamp(8px,3vw,56px);width:40px;height:40px;display:grid;place-items:center;border-radius:50%;border:1px solid var(--navy-line);background:var(--navy);color:var(--fg);cursor:pointer;z-index:2}
 #calls .calls-mute svg{width:20px;height:20px}
@@ -301,7 +301,7 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .flapboard{background:var(--moss)}
 .bw-band{background:var(--plum)}
 .calls-band{background:var(--navy)}
-#hookup{background:var(--moss)}
+#facts{background:var(--moss)}
 .benefits-band{background:var(--plum);border-color:transparent}
 #faq{background:var(--navy)}
 .close{background:var(--moss)}
@@ -367,9 +367,7 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .hero>.live-grass{bottom:calc(-1 * clamp(56px,6vw,80px))}
 .flapboard{position:relative;z-index:1;padding-top:clamp(84px,9vw,120px)}
 .calls-band{position:relative;z-index:2}
-.calls-band .visual.phone-art{position:relative;margin-bottom:calc(-1 * clamp(110px,12vw,170px))}   /* the big phone's base crosses the seam */
-#hookup{position:relative;z-index:1;padding-top:clamp(150px,16vw,220px)}
-@media (max-width:980px){.calls-band .visual.phone-art{margin-bottom:calc(-1 * 120px)}#hookup{padding-top:170px}}
+.calls-band .visual.phone-art{position:relative}   /* the phone stays in its own band: Bunny World follows it untouched */
 
 
 /* ======== Flow: one through-line, one pinned scene, one chapter index (dope.security's flow, in our own motif) ======== */
@@ -505,7 +503,7 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .stage-hero .hero-words .kick{white-space:nowrap}
 .stage-hero .sub{max-width:24ch}
 .stage-hero .hero-links{margin-top:22px}
-.stage-hero .plans{display:block;margin:0}
+.price-band .plans{display:block;margin:0}
 /* the small print sits in one quiet line under the Care board, out of the hero */
 .extras{margin-top:6px;font-size:14px;color:var(--soft)}
 .extras .also,.extras .jump{margin:0;display:inline}
@@ -526,8 +524,8 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .u-card{position:relative;isolation:isolate;width:min(100%,520px);margin-left:auto;border-radius:24px;color:var(--cream);overflow:hidden;
   -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Ccircle cx='1' cy='1' r='1'/%3E%3C/svg%3E") -20px 64%/40px 40px no-repeat,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Ccircle cx='1' cy='1' r='1'/%3E%3C/svg%3E") calc(100% + 20px) 64%/40px 40px no-repeat,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2' preserveAspectRatio='none'%3E%3Crect width='2' height='2'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat;-webkit-mask-composite:xor;
   mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Ccircle cx='1' cy='1' r='1'/%3E%3C/svg%3E") -20px 64%/40px 40px no-repeat exclude,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Ccircle cx='1' cy='1' r='1'/%3E%3C/svg%3E") calc(100% + 20px) 64%/40px 40px no-repeat exclude,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2' preserveAspectRatio='none'%3E%3Crect width='2' height='2'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat}
-.stage-hero .plans{position:relative}
-.stage-hero .plans::before{content:"";position:absolute;z-index:-1;left:calc(100% - min(100%,520px) - 7%);right:-7%;top:-7%;bottom:-7%;border-radius:60px;background:var(--poppy);opacity:.7;filter:blur(56px);pointer-events:none}
+.price-band .plans{position:relative;isolation:isolate}
+.price-band .plans::before{content:"";position:absolute;z-index:-1;left:calc(50% - min(100%,520px) / 2 - 7%);right:calc(50% - min(100%,520px) / 2 - 7%);top:-7%;bottom:-7%;border-radius:60px;background:var(--poppy);opacity:.7;filter:blur(56px);pointer-events:none}
 .u-scene{position:absolute;inset:0;z-index:-2}
 .u-scene img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%;display:block}
 /* the Bunny Burritos film grain on top of the baked alpenglow plants */
@@ -559,13 +557,12 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
   .u-tabs{width:100%;justify-content:space-between}
   .u-tabs button{padding:8px 8px;font-size:12.5px}
 }
-/* narrower screens: the words, then the card with three of the shops peeking above it */
+/* narrower screens: the words, then three of the shops peeking up under them */
 @media (max-width:1179px){
   .stage-hero{display:block;min-height:0}
   .stage-hero>.in.hero-in{grid-template-columns:1fr;max-width:var(--max)}
-  .u-card{margin:0 auto}
-  .stage-hero .plans{padding-top:calc(min(29vw,220px) * .75 + 70px)}
-  .stage-hero .plans::before{left:max(6%,calc(50% - 280px));right:max(6%,calc(50% - 280px));top:190px;height:min(480px,62%);opacity:.36}
+  .stage-hero .hero-words{padding-bottom:calc(min(29vw,220px) * .75 + 60px)}
+  .price-band .plans::before{opacity:.36}
   .shop-wall{inset:auto 0 auto 0;top:var(--wall-top,0);height:200px}
   .shop-wall .l1,.shop-wall .l3,.shop-wall .r3{display:none}
   .shop-wall .sw{width:min(29vw,220px);border-width:3px;border-radius:10px}
@@ -578,50 +575,30 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
   .u-tabs button{padding:8px 9px;font-size:12px;gap:4px}
   .u-off{padding:3px 5px;font-size:9.5px}
 }
-/* ======== scrolling into the plan (Tristan: "it feels like you're scrolling into the plan, you know?") ========
-   on wide screens with motion a fixed "portal" grows from the card to the whole screen as you scroll, turning to the Care
-   board's green, and the Care rows rise in over it */
-/* the Care board keeps its own green (--moss); the portal turns from the card's violet to that green as it fills */
-.plan-portal{position:fixed;z-index:15;left:0;top:0;pointer-events:none;overflow:hidden;opacity:0;
-  background:var(--card-ink) url(/preview/assets/work/bunny-world/plan-alpenglow-1040.webp) 50% 40%/cover no-repeat}
-.plan-portal::before{content:"";position:absolute;inset:0;background:url(/preview/assets/work/bunny-world/burritos-grain.webp) 0 0/256px 256px;opacity:.4}
-.plan-portal::after{content:"";position:absolute;inset:0;background:rgba(26,21,48,var(--scrim,.4))}
-.plan-portal[hidden]{display:none}
-.plan-portal>i{position:absolute;inset:0;z-index:1;background:var(--moss);opacity:var(--green,0)}
-/* while the portal covers the screen: no section dots, and the Care board rides above it on the portal's backdrop */
-.portal-on .chapters{visibility:hidden}
-.portal-on .flapboard{z-index:16;background:transparent}
-.portal-on .flapboard::before,.portal-on .flapboard::after{display:none}
-.portal-on .flapboard>*{opacity:var(--fill,0)}
-/* the shop cards drift out to the sides as the plan opens */
-.shop-wall .sw{translate:calc(var(--out,0) * var(--side-dir,-1) * 34vw) 0}
-.shop-wall .r1,.shop-wall .r2,.shop-wall .r3{--side-dir:1}
 /* ======== one screen of plain facts (Tristan: dense, like a bento): the four promises across the top, the hookup and what
    we can and never see on the left, the questions on the right, matched in height; it stacks on phones ======== */
-#hookup.info{padding-bottom:clamp(48px,5vw,72px)}   /* the top keeps its room for the Calls phone's base crossing the seam */
-.info-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);grid-template-rows:auto 1fr auto;gap:16px}
+.info-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);grid-template-rows:auto 1fr;gap:16px}
 .info .tile{border-radius:20px;background:rgba(var(--text-rgb),.05);box-shadow:inset 0 0 0 1px rgba(var(--text-rgb),.12);padding:clamp(20px,2vw,28px)}
 .info .kick{margin:0 0 10px}
 .info-promises{grid-column:1/-1;margin:0;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
 .info-promises li{display:flex;align-items:center;justify-content:flex-start;gap:12px;text-align:left;padding:16px 18px;border-radius:16px;background:rgba(var(--text-rgb),.05);box-shadow:inset 0 0 0 1px rgba(var(--text-rgb),.12);font:600 16px/1.25 var(--head)}
 .info-promises svg{width:24px;height:24px;flex:none}
-.info-hook{grid-column:1;grid-row:2;display:grid;align-content:start;gap:14px}
-#hookup .info-hook h2,#faq.info-faq h2{margin:0;font-size:clamp(28px,2.6vw,40px);line-height:1}
+#hookup h2,#faq.info-faq h2{margin:0;font-size:clamp(28px,2.6vw,40px);line-height:1}
 #faq.info-faq{background:rgba(var(--text-rgb),.05)}
-#hookup .info-hook .points{margin:0;gap:8px}
-#hookup .info-hook .points li{font-size:clamp(17px,1.4vw,20px)}
-#hookup .info-hook .promise{margin:4px 0 0;font-size:clamp(18px,1.6vw,23px)}
+#hookup .points{margin:0;gap:8px}
+#hookup .points li{font-size:clamp(17px,1.4vw,20px)}
+#hookup .promise{margin:4px 0 0;font-size:clamp(18px,1.6vw,23px)}
 .info-plan{margin:0;font-size:15px;color:var(--text)}
-.info-see{grid-column:1;grid-row:3;display:grid;gap:8px}
+.info-see{grid-column:1;grid-row:2;display:grid;align-content:start;gap:8px}
 .info-see p:not(.kick){margin:0;font-size:15px}
-.info-faq{grid-column:2;grid-row:2/span 2;display:grid;align-content:start}
+.info-faq{grid-column:2;grid-row:2;display:grid;align-content:start}
 .info-faq h2{margin-bottom:12px}
 .info-faq .qs summary{padding:13px 0;font-size:16.5px}
 .info-faq .qs details p{padding-bottom:13px;font-size:15px}
 @media (max-width:980px){
   .info-grid{grid-template-columns:1fr;grid-template-rows:none}
   .info-promises{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .info-hook,.info-see,.info-faq{grid-column:auto;grid-row:auto}
+  .info-see,.info-faq{grid-column:auto;grid-row:auto}
 }
 /* ======== the close: one warm line, the plan's own button under the hero card's glow, and Book 15 minutes ======== */
 .close-in h2{font-size:clamp(44px,6vw,88px);line-height:.95;letter-spacing:-.03em;margin:0}
@@ -629,3 +606,13 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .close-acts{position:relative;isolation:isolate;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:14px;margin-top:8px}
 .close-acts::before{content:"";position:absolute;z-index:-1;inset:-40px -60px;border-radius:60px;background:var(--poppy);opacity:.55;filter:blur(56px);pointer-events:none}
 .close-start{min-width:260px}
+/* ======== the new order (Tristan, after Quin: show the product before the price tag) ========
+   the hero carries a one-line price hint and no card; the hookup steps sit in the Care board; the Site Plan ticket has
+   its own band after Care, the facts and the questions follow it */
+@media (min-width:1180px){.stage-hero>.in.hero-in{grid-template-columns:minmax(0,1fr);text-align:center}
+  .stage-hero .sub{margin-left:auto;margin-right:auto}
+  .stage-hero .hero-links{justify-content:center}}
+.hero-price{margin:14px 0 0;font:600 clamp(16px,1.3vw,19px)/1.3 var(--head);color:var(--cream)}
+.care-hook{display:grid;gap:14px;margin-top:clamp(28px,3vw,44px);max-width:720px}
+.care-hook .kick{margin:0}
+.price-band .u-card{margin:0 auto}
