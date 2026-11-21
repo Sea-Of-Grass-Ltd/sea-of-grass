@@ -344,9 +344,12 @@ class SogStage extends HTMLElement {
       for (let i = 0; i < 8; i++) { const v = new T.Vector3(i & 1 ? b.max.x : b.min.x, i & 2 ? b.max.y : b.min.y, i & 4 ? b.max.z : b.min.z).project(c);
         const y = (1 - v.y) / 2 * H, x = (v.x + 1) / 2 * W; top = Math.min(top, y); bot = Math.max(bot, y); l = Math.min(l, x); r = Math.max(r, x); }
       // the band: under the words, down to the bottom of the screen as first seen (the header pushes the stage down by its height)
-      const pr = pin.getBoundingClientRect();
-      const bandTop = board.getBoundingClientRect().bottom - pr.top + 12;
-      const bandBot = H - Math.max(0, pr.top) - 14;
+      // measured against the words' own sticky frame, never the scroll position: iPhone fires resizes mid-scroll (the toolbar),
+      // and a fit taken with the words scrolled away blew the register up over them (Tristan's phone, 2026-11-21)
+      const frame = board.closest('.stage-frame') || pin;
+      const bandTop = board.getBoundingClientRect().bottom - frame.getBoundingClientRect().top + 12;
+      const hd = document.querySelector('header.top'), hdH = hd && getComputedStyle(hd).position === 'static' ? hd.offsetHeight : 0;
+      const bandBot = H - hdH - 14;                                   // the stage sits under the header when the page opens
       fitK = Math.max((bot - top) / Math.max(60, bandBot - bandTop), (r - l) / (0.86 * W));
       const t2 = H / 2 + (top - H / 2) / fitK, b2 = H / 2 + (bot - H / 2) / fitK;
       fitS = (bandTop + bandBot) / 2 - (t2 + b2) / 2;
