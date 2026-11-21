@@ -291,6 +291,7 @@ class SogStage extends HTMLElement {
     const cam = new T.PerspectiveCamera(30, 1, 0.05, 30);
     const pin = this.closest('.stage-pin') || this.parentElement;
     const track = this.closest('[data-stage-track]');
+    const host = track || pin;                                      // classes and board vars live on the track: the words sit outside the pin
     const target = () => document.querySelector('#calls sog-phone');
     const calls = document.getElementById('calls');
 
@@ -326,7 +327,40 @@ class SogStage extends HTMLElement {
     };
 
     let W = 1, H = 1;
-    const size = () => { W = pin.clientWidth; H = pin.clientHeight; renderer.setSize(W, H, false); fitSky(W / H); shapeBoard(W / H < 0.8 ? 1.9 : 1); pin.classList.toggle('stage-tall', W / H < 0.8); pin.classList.toggle('stage-bare', BARE); ask(); };
+    // tall screens, register only: the register must start below the words, whatever the phone's height (Tristan 2026-11-21,
+    // it rode up into the buttons on a shorter phone). fitK zooms the shot out, fitS moves it down, in screen pixels
+    let fitK = 1, fitS = 0;
+    const fit = () => {
+      fitK = 1; fitS = 0;
+      const board = host.querySelector('.stage-board');
+      if (!BARE || !board || W / H >= 0.8) return;
+      // phones (Tristan 2026-11-21): the register big in the band under the words, as big as the phone
+      // it becomes, centred in that band; k < 1 zooms in, k > 1 zooms out
+      const s0 = shots(W / H).a, c = new T.PerspectiveCamera(30, W / H, 0.05, 30);
+      c.position.copy(s0.pos); c.quaternion.copy(s0.q); c.updateProjectionMatrix(); c.updateMatrixWorld();
+      morph(0.10); actor.updateMatrixWorld(true);
+      const b = new T.Box3().setFromObject(regRig);
+      let top = 1e9, bot = -1e9, l = 1e9, r = -1e9;
+      for (let i = 0; i < 8; i++) { const v = new T.Vector3(i & 1 ? b.max.x : b.min.x, i & 2 ? b.max.y : b.min.y, i & 4 ? b.max.z : b.min.z).project(c);
+        const y = (1 - v.y) / 2 * H, x = (v.x + 1) / 2 * W; top = Math.min(top, y); bot = Math.max(bot, y); l = Math.min(l, x); r = Math.max(r, x); }
+      // the band: under the words, down to the bottom of the screen as first seen (the header pushes the stage down by its height)
+      const pr = pin.getBoundingClientRect();
+      const bandTop = board.getBoundingClientRect().bottom - pr.top + 12;
+      const bandBot = H - Math.max(0, pr.top) - 14;
+      fitK = Math.max((bot - top) / Math.max(60, bandBot - bandTop), (r - l) / (0.86 * W));
+      const t2 = H / 2 + (top - H / 2) / fitK, b2 = H / 2 + (bot - H / 2) / fitK;
+      fitS = (bandTop + bandBot) / 2 - (t2 + b2) / 2;
+      this._dbg.fit = { fitK, fitS, bandTop, bandBot };
+    };
+    // the camera with the fit applied, for a w x h box: zoom out by widening the lens, then slide the picture down
+    // (share s: 1 at rest, 0 once docked); extraY is the dock's own drop
+    const applyFit = (w, h, s, extraY) => {
+      const k = 1 + (fitK - 1) * s;
+      if (k !== 1) cam.fov = T.MathUtils.radToDeg(2 * Math.atan(Math.tan(T.MathUtils.degToRad(cam.fov / 2)) * k));
+      const dy = -fitS * s * (h / H) + (extraY || 0);
+      if (dy) cam.setViewOffset(w, h, 0, dy, w, h); else cam.clearViewOffset();
+    };
+    const size = () => { W = pin.clientWidth; H = pin.clientHeight; renderer.setSize(W, H, false); fitSky(W / H); shapeBoard(W / H < 0.8 ? 1.9 : 1); host.classList.toggle('stage-tall', W / H < 0.8); host.classList.toggle('stage-bare', BARE); fit(); ask(); };
     const progress = () => {
       if (this.still || !track) return 0;
       const r = track.getBoundingClientRect(), range = track.offsetHeight - pin.clientHeight;
@@ -343,15 +377,11 @@ class SogStage extends HTMLElement {
       // bare (Tristan 2026-11-21, "awkward motion"): one continuous move. The words scroll away like page text while the
       // register holds still; it crouches as they clear (p .33), and from the swap the phone flies straight into its
       // spot while "Tired of annoying calls?" rises under it, landing as the section settles (p .95)
+      if (BARE) { const bb = host.querySelector('.stage-board')?.getBoundingClientRect().height || 0; if (Math.abs(bb - (this._bh || 0)) > 1) { this._bh = bb; fit(); } }
       const glide = BARE ? 0 : span(p, 0.03, 0.24);
       const t = BARE ? clamp(0.10 + p * 0.495) : clamp((p - 0.162) / 1.383);     // bare: the crouch starts with the first scroll
       const gone = span(t, 0.26, 0.46);
       const dock = BARE ? span(t, SWAP, 0.57) : span(t, 0.34, 0.57);
-      // the words hold while the register crouches, and scroll away from the moment it leaps (t .22, p ~.24)
-      if (BARE && track) {
-        const scrolled = Math.max(0, -track.getBoundingClientRect().top), range = track.offsetHeight - pin.clientHeight;
-        pin.style.setProperty('--lift', Math.max(0, scrolled - range * (0.22 - 0.10) / 0.495).toFixed(1) + 'px');
-      }
       const handed = p >= 0.995;
       this.dataset.p = p.toFixed(3); this.dataset.t = t.toFixed(3);
       morph(t);
@@ -361,15 +391,15 @@ class SogStage extends HTMLElement {
       const sp = s.a.pos.clone().lerp(s.b.pos, glide), sq = s.a.q.clone().slerp(s.b.q, glide);
 
       // the words: the h1 sits on the board, the rest fade as the camera leaves
-      cam.position.copy(sp); cam.quaternion.copy(sq); cam.fov = 30; cam.aspect = aspect; cam.clearViewOffset(); cam.updateProjectionMatrix(); cam.updateMatrixWorld();
+      cam.position.copy(sp); cam.quaternion.copy(sq); cam.fov = 30; cam.aspect = aspect; applyFit(W, H, 1, 0); cam.updateProjectionMatrix(); cam.updateMatrixWorld();
       let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
       for (const q of bPts) { v.copy(q).project(cam); const x = (v.x + 1) / 2 * W, y = (1 - v.y) / 2 * H; x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
       const pad = (x1 - x0) * 0.045;
-      pin.style.setProperty('--bx', (x0 + pad).toFixed(1) + 'px'); pin.style.setProperty('--by', (y0 + pad).toFixed(1) + 'px');
-      pin.style.setProperty('--bw', (x1 - x0 - 2 * pad).toFixed(1) + 'px'); pin.style.setProperty('--bh', (y1 - y0 - 2 * pad).toFixed(1) + 'px');
-      pin.style.setProperty('--words-o', (1 - span(p, 0.06, 0.18)).toFixed(3));
-      pin.style.setProperty('--h1-o', (1 - span(p, 0.1, 0.26)).toFixed(3));
-      pin.classList.toggle('stage-done', handed);
+      host.style.setProperty('--bx', (x0 + pad).toFixed(1) + 'px'); host.style.setProperty('--by', (y0 + pad).toFixed(1) + 'px');
+      host.style.setProperty('--bw', (x1 - x0 - 2 * pad).toFixed(1) + 'px'); host.style.setProperty('--bh', (y1 - y0 - 2 * pad).toFixed(1) + 'px');
+      host.style.setProperty('--words-o', (1 - span(p, 0.06, 0.18)).toFixed(3));
+      host.style.setProperty('--h1-o', (1 - span(p, 0.1, 0.26)).toFixed(3));
+      host.classList.toggle('stage-done', handed);
       if (this.dataset.handed !== (handed ? '1' : '0')) this.handOver(handed);         // (also on the first frame)
 
       renderer.setViewport(0, 0, W, H);
@@ -397,7 +427,7 @@ class SogStage extends HTMLElement {
         renderer.setViewport(vx, H - vy - vh, vw, vh); this._dbg.vp = [vx, vy, vw, vh];
         cam.position.copy(sp).lerp(d.pos, dock); cam.quaternion.copy(sq).slerp(d.q, dock);
         cam.fov = 30 + (PHONE.fov - 30) * dock; cam.aspect = vw / vh;
-        cam.setViewOffset(vw, vh, 0, -vh * d.drop * dock, vw, vh);
+        applyFit(vw, vh, 1 - dock, -vh * d.drop * dock);
         cam.updateProjectionMatrix();
         blobMat.opacity = span(t, 0.55, 0.62);
       } else blobMat.opacity = 0;
@@ -408,6 +438,7 @@ class SogStage extends HTMLElement {
     this._onScroll = ask;
     if (!this.still) addEventListener('scroll', ask, { passive: true });
     this._ro = new ResizeObserver(size); this._ro.observe(pin);
+    { const b = host.querySelector(".stage-board"); if (b) this._ro.observe(b); }       // the words settle once the fonts are in
     size(); draw();
     this.dataset.state = 'live'; this.removeAttribute('data-pending');
     requestAnimationFrame(() => this.classList.add('shown'));
