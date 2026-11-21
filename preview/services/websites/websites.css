@@ -624,21 +624,29 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .scroll-stage::before{content:"";position:absolute;z-index:-1;left:0;right:0;top:0;height:calc(100% - 100svh);background:var(--navy)}
 .scroll-stage .stage-pin{position:sticky;top:0;height:100svh;overflow:hidden;
   --bx:39.5vw;--by:20.5svh;--bw:39.4vw;--bh:38.6svh}
-/* everything on the board (Tristan 2026-11-20): the line, the promise, the price and both buttons, sized to the board */
+/* the lock-up on a modern lit sign (Tristan 2026-11-21: the chalkboard menu "feels old"): the line big and left with
+   "register" in the sky's star gold; beside it, past a thin gold rule, the promise and the price as two clean lines */
 .scroll-stage .stage-board{position:absolute;z-index:2;left:var(--bx);top:var(--by);width:var(--bw);height:var(--bh);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#efe8d8;opacity:var(--h1-o,1);
-  font-size:var(--bw);pointer-events:none}
-.scroll-stage .stage-board h1{margin:0;max-width:none;font:700 .074em/.95 var(--display);letter-spacing:-.04em}
+  --gold:#e8b94a;--ink:#f1ece2;
+  display:grid;grid-template-columns:auto 1fr;grid-template-rows:1fr auto;column-gap:.045em;align-content:center;
+  padding:.04em .05em;box-sizing:border-box;color:var(--ink);opacity:var(--h1-o,1);font-size:var(--bw);pointer-events:none}
+.scroll-stage .stage-board h1{grid-column:1;align-self:center;margin:0;max-width:none;font:700 .063em/.92 var(--display);letter-spacing:-.045em;text-align:left}
 .scroll-stage .stage-board h1 .hl{display:block;white-space:nowrap}
-.scroll-stage .stage-board .sub{margin:.55em 0 0;max-width:24ch;font:600 .034em/1.25 var(--head);letter-spacing:-.01em}
-.scroll-stage .stage-board .hero-price{margin:.7em 0 0;font:600 .024em/1.3 var(--head)}
-.scroll-stage .stage-board .hero-links{margin-top:1.1em;font-size:.022em;gap:.6em 1.4em;justify-content:center;pointer-events:auto}
-.scroll-stage .stage-board .hero-links .btn{font-size:1em;padding:.7em 1.4em}
+.scroll-stage .stage-board h1 em{font-style:normal;color:var(--gold)}
+.scroll-stage .stage-board .board-side{grid-column:2;align-self:center;border-left:.0025em solid rgba(232,185,74,.6);padding-left:.04em}
+.scroll-stage .stage-board .sub{margin:0;max-width:19ch;font:500 .024em/1.35 var(--head);letter-spacing:-.005em;color:rgba(241,236,226,.86)}
+.scroll-stage .stage-board .hero-price{margin:.9em 0 0;font:500 .018em/1.3 var(--head);color:rgba(241,236,226,.7)}
+.scroll-stage .stage-board .hero-price b{display:block;font:700 2.9em/1 var(--display);letter-spacing:-.04em;color:var(--ink);margin-bottom:.15em}
+.scroll-stage .stage-board .hero-links{grid-column:1/-1;margin-top:1.2em;font-size:.019em;gap:.6em 1.6em;justify-content:flex-start;align-items:center;pointer-events:auto}
+.scroll-stage .stage-board .hero-links .btn{font-size:1em;padding:.7em 1.4em;order:-1}
 .scroll-stage .stage-pin.stage-done .stage-board{visibility:hidden}
-.scroll-stage .stage-pin.stage-tall .stage-board h1{font-size:.117em}
-.scroll-stage .stage-pin.stage-tall .stage-board .sub{font-size:.058em;max-width:20ch}
-.scroll-stage .stage-pin.stage-tall .stage-board .hero-price{font-size:.044em}
-.scroll-stage .stage-pin.stage-tall .stage-board .hero-links{font-size:.042em;flex-direction:column}
+/* tall screens: one column, the line, then the promise and price, then the buttons */
+.scroll-stage .stage-pin.stage-tall .stage-board{grid-template-columns:1fr;grid-template-rows:auto;padding:.06em .07em}
+.scroll-stage .stage-pin.stage-tall .stage-board h1{font-size:.097em}
+.scroll-stage .stage-pin.stage-tall .stage-board .board-side{grid-column:1;margin-top:.06em;border-left:0;border-top:.004em solid rgba(232,185,74,.6);padding:.05em 0 0}
+.scroll-stage .stage-pin.stage-tall .stage-board .sub{font-size:.042em;max-width:none}
+.scroll-stage .stage-pin.stage-tall .stage-board .hero-price{font-size:.032em}
+.scroll-stage .stage-pin.stage-tall .stage-board .hero-links{font-size:.038em;margin-top:1em}
 #calls{position:relative;z-index:1}
 html:not(.stage-still) .scroll-stage+main>#calls,html:not(.stage-still) .scroll-stage~main #calls:first-child{margin-top:-100svh}
 /* tall screens: the board fills the width up top, the words sit on the counter front below */

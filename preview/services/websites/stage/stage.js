@@ -92,13 +92,22 @@ class SogStage extends HTMLElement {
     const stage = new T.Scene(), actor = new T.Scene();
     actor.environment = env; actor.environmentIntensity = 0.5;
     stage.environment = env; stage.environmentIntensity = 0.22;
-    actor.add(new T.HemisphereLight(0x6a7398, 0x1f1f35, 1.0));
-    const key = new T.DirectionalLight(0xfff0da, 2.5); key.position.set(-0.5, 1.2, 0.8); actor.add(key);
-    const rim = new T.DirectionalLight(0x9aa89a, 0.9); rim.position.set(0.5, 0.6, -0.9); actor.add(rim);
-    stage.add(new T.HemisphereLight(0x5a6390, 0x15152a, 0.55));
-    const lamp = new T.SpotLight(0xffd9b0, 9, 0, 0.62, 0.8, 1.2); lamp.position.set(-0.3, 2.4, 1.6); lamp.target.position.set(0, 0.42, 0);
-    stage.add(lamp, lamp.target);                                  // the warm pool on the counter and the board
-    const fill = new T.DirectionalLight(0x8f9ccc, 0.35); fill.position.set(0.8, 1.0, 1.0); stage.add(fill);
+    // light (Tristan 2026-11-21: the scene was flat for lack of shading): one warm lamp overhead, a little in front, that
+    // casts real shadows and falls off into the dark; a cool moon light from behind on the right for rims; low fill
+    renderer.shadowMap.enabled = true; renderer.shadowMap.type = T.PCFSoftShadowMap;
+    const LAMP = [-0.25, 2.1, 0.75], MOON = [1.6, 2.0, -1.6];
+    actor.add(new T.HemisphereLight(0x55608c, 0x1a1a2e, 0.55));
+    const key = new T.DirectionalLight(0xffe2bd, 3.0); key.position.set(...LAMP); actor.add(key);
+    const rim = new T.DirectionalLight(0xb4c2ff, 1.6); rim.position.set(...MOON); actor.add(rim);
+    stage.add(new T.HemisphereLight(0x46507e, 0x101022, 0.32));
+    const lamp = new T.SpotLight(0xffd6a8, 26, 0, 0.75, 0.9, 1.6); lamp.position.set(...LAMP); lamp.target.position.set(-0.05, 0.3, 0.05);
+    lamp.castShadow = true; lamp.shadow.mapSize.set(2048, 2048); lamp.shadow.bias = -0.0004; lamp.shadow.normalBias = 0.01; lamp.shadow.radius = 4;
+    lamp.shadow.camera.near = 0.5; lamp.shadow.camera.far = 6;
+    stage.add(lamp, lamp.target);                                  // the warm pool on the counter and the board, dark beyond it
+    const moon = new T.DirectionalLight(0x9fb0ff, 0.9); moon.position.set(...MOON); moon.castShadow = true;
+    moon.shadow.mapSize.set(2048, 2048); moon.shadow.bias = -0.0005; moon.shadow.normalBias = 0.01; moon.shadow.radius = 6;
+    Object.assign(moon.shadow.camera, { left: -2, right: 2, top: 2, bottom: -2, near: 0.1, far: 8 });
+    stage.add(moon);
 
     const root = gltf.scene;
     const regRig = root.getObjectByName('register_rig'), phRig = root.getObjectByName('phone_rig');
@@ -109,26 +118,90 @@ class SogStage extends HTMLElement {
     // flat and simple (Tristan 2026-11-20): the sky one flat blue, the ground one flat green, no grass or flowers
     const css = getComputedStyle(document.documentElement);
     const skyMat = new T.MeshBasicMaterial({ toneMapped: false }); skyMat.color.setStyle(css.getPropertyValue('--navy').trim() || '#272C4B');
-    const groundMat = new T.MeshBasicMaterial({ toneMapped: false }); groundMat.color.setStyle(css.getPropertyValue('--grass').trim() || '#3F6550');
-    const hide = [];
+    // the ground is lit (it takes the lamp's pool and the shadows); its colour is lifted so the pool reads as the page green
+    const groundMat = new T.MeshStandardMaterial({ roughness: 1, metalness: 0, envMapIntensity: 0 });
+    groundMat.color.setStyle(css.getPropertyValue('--grass').trim() || '#3F6550');
+    const hide = [], nightGrass = new Map();
     root.traverse(o => {
       if (!o.isMesh) return;
       o.frustumCulled = false;
+      o.castShadow = o.receiveShadow = true;
       const n = o.name || '';
-      if (/^sky_/.test(n)) {                                       // runs up past any camera
-        o.material = skyMat;
-        o.position.y *= 1.7; o.scale.y *= 1.7;                     // (meshopt keeps a node scale: stretch it, about the floor)
-      } else if (/^(grass|flowers|meadow_humps)/.test(n)) hide.push(o);
+      if (/^(sky_|moon|star)/.test(n)) hide.push(o);              // the painted sky below has its own stars (2026-11-21)
+      else if (/^flowers/.test(n)) hide.push(o);                  // the grass is back (Tristan 2026-11-21); flowers stay off
+      else if (/^(grass|meadow_humps)/.test(n)) {                  // a night green, not the lamp-bleached day green
+        const mats = Array.isArray(o.material) ? o.material : [o.material];
+        const night = mats.map(m => { if (!nightGrass.has(m)) { const c = m.clone(); c.color.multiplyScalar(0.36); c.color.lerp(new T.Color(0x16303d), 0.2); if (c.emissive) c.emissive.setHex(0); c.envMapIntensity = 0.3; nightGrass.set(m, c); } return nightGrass.get(m); });
+        o.material = Array.isArray(o.material) ? night : night[0];
+      }
       else if (/^(meadow_bed|side_felt|stage_floor)/.test(n)) o.material = groundMat;
     });
     for (const o of hide) o.visible = false;
-    // the ground runs out to the front, so a tall screen never sees past its edge
-    const apron = new T.Mesh(new T.PlaneGeometry(12, 12), groundMat); apron.rotation.x = -Math.PI / 2; apron.position.set(0, -0.002, 5.6); stage.add(apron);
+    // the ground runs out to the front, so a tall screen never sees past its edge, and back to the sky
+    const apron = new T.Mesh(new T.PlaneGeometry(12, 12), groundMat); apron.rotation.x = -Math.PI / 2; apron.position.set(0, -0.002, 5.6); apron.receiveShadow = true; stage.add(apron);
+    const backland = new T.Mesh(new T.PlaneGeometry(14, 4.5), groundMat); backland.rotation.x = -Math.PI / 2; backland.position.set(0, -0.003, -1.85); backland.receiveShadow = true; stage.add(backland);
+    stage.fog = new T.Fog(0x0e1226, 2.6, 7.5);                                     // the far meadow fades into the night
+    // the meadow all the way back (Tristan 2026-11-21): the front strip of grass laid again as tiles behind and beside
+    // the counter, out to the sky; tiles share the strip's geometry, alternate turned round so the rows don't read as copies
+    {
+      const strip = [];
+      root.traverse(o => { if (o.isMesh && /^(grass|meadow_humps)/.test(o.name)) strip.push(o); });
+      const DZ = 0.40, DX = 2.7;
+      for (let row = 0; row < 12; row++) for (const col of [-1, 0, 1]) {
+        if (row === 0 && col === 0) continue;                                            // the original strip
+        const g = new T.Group(); g.position.set(col * DX, 0, 0.39 - row * DZ);
+        if ((row + col) & 1) g.rotation.y = Math.PI;
+        for (const o of strip) {
+          if (row >= 5 && !/^grass_[ab]/.test(o.name)) continue;                    // far rows: half the blades, the fog hides it
+          const c = o.clone(); c.position.x -= 0; c.position.z -= 0.39; c.castShadow = false; c.receiveShadow = true; g.add(c); }
+        stage.add(g);
+      }
+    }
+    // the register lives in the actor scene, so the stage gets an invisible stand-in of it that only casts its shadow
+    const ghostMat = new T.MeshBasicMaterial({ colorWrite: false, depthWrite: false });
+    const ghost = regRig.clone(true); ghost.traverse(o => { if (o.isMesh) { o.material = ghostMat; o.castShadow = true; o.receiveShadow = false; } });
+    stage.add(ghost);
+    actor.traverse(o => { if (o.isMesh) o.castShadow = o.receiveShadow = true; });
     renderer.setClearColor(skyMat.color, 0);
+    // the sky (Tristan 2026-11-21): gold stars over a black-to-navy gradient, a painted image filling the screen behind
+    // the stage like a cover-fit backdrop; it fades away with the stage
+    const sky = new T.TextureLoader().load(HERE + 'sky.webp', () => ask());
+    sky.colorSpace = T.SRGBColorSpace; stage.background = sky;
+    const fitSky = aspect => {
+      const img = 1376 / 768;
+      if (aspect > img) { sky.repeat.set(1, img / aspect); sky.offset.set(0, 1 - img / aspect); }   // wider than the image: keep its top (the big stars)
+      else { sky.repeat.set(aspect / img, 1); sky.offset.set((1 - aspect / img) / 2, 0); }
+    };
 
+    // the register is the hero (Tristan 2026-11-21): centred on the counter and half again as big, the sign lifted on
+    // taller posts above it, so the words read first and the register stands right under them
+    const HERO = +(new URLSearchParams(location.search).get("hero") || 1.5);
+    for (const rig of [regRig, phRig]) rig.position.set(0, 0.4, 0.04);
+    {
+      const signNames = ['sign_board', 'sign_frame', 'sign_post', 'sign_post001', 'sign_foot', 'sign_foot001'];
+      const LIFT = 0.40, DX = -0.25;
+      for (const n of signNames) { const o = root.getObjectByName(n); if (o) o.position.x += DX; }
+      for (const n of ['sign_board', 'sign_frame']) { const o = root.getObjectByName(n); if (o) o.position.y += LIFT; }
+      root.updateMatrixWorld(true);
+      const boardMin = new T.Box3().setFromObject(root.getObjectByName('sign_frame')).min.y;
+      for (const n of ['sign_post', 'sign_post001']) {
+        const o = root.getObjectByName(n); if (!o) continue;
+        const b0 = new T.Box3().setFromObject(o), h0 = b0.max.y - b0.min.y;
+        o.scale.y *= (boardMin + 0.02 - b0.min.y) / h0; o.updateMatrixWorld(true);
+        const b1 = new T.Box3().setFromObject(o); o.position.y += b0.min.y - b1.min.y;
+      }
+      root.updateMatrixWorld(true);
+    }
+    this._dbg = { T, root, regRig, phRig, stage, actor };
     const pivot = regRig.position.clone(), restQ = regRig.quaternion.clone();
+    // the register's own warm light (Tristan 2026-11-21): an amber lamp just above and in front, so the wood glows warm
+    // against the night; it goes out at the swap, so the landed phone keeps <sog-phone>'s light
+    const regLamp = new T.PointLight(0xff9a40, 1.6, 1.3, 1.6); regLamp.position.copy(pivot).add(new T.Vector3(-0.18, 0.39, 0.36)); actor.add(regLamp);
+    const regFill = new T.PointLight(0xff7a3a, 0.55, 0.9, 2); regFill.position.copy(pivot).add(new T.Vector3(0.24, 0.09, 0.27)); actor.add(regFill);
     actor.updateMatrixWorld(true);
-    const phRest = phRig.matrixWorld.clone();                      // the landing spot: the dock camera hangs off this, not the jumping rig
+    // the landing spot: the dock camera hangs off this, not the jumping rig; at the phone's own size (it shrinks from
+    // the hero size back to 1 as it docks, so it lands exactly as big as <sog-phone> draws it)
+    const phRest = phRig.matrixWorld.clone();                      // (taken before the first morph, so at scale 1)
     const morph = t => {
       let h = 0, sz = 1, r = 360;
       for (let i = 0; i < JUMP.length - 1; i++) {
@@ -136,8 +209,10 @@ class SogStage extends HTMLElement {
         if (t <= t1) { const u = ease(t1 > t0 ? (t - t0) / (t1 - t0) : 1); h = h0 + (h1 - h0) * u; sz = s0 + (s1 - s0) * u; r = r0 + (r1 - r0) * u; break; }
       }
       const sxy = 1 / Math.sqrt(sz), q = new T.Quaternion().setFromAxisAngle(new T.Vector3(0, 1, 0), T.MathUtils.degToRad(r)).multiply(restQ);
-      for (const rig of [regRig, phRig]) { rig.position.set(pivot.x, pivot.y + h, pivot.z); rig.quaternion.copy(q); rig.scale.set(sxy, sz, sxy); }
+      for (const rig of [regRig, phRig]) { rig.position.set(pivot.x, pivot.y + h, pivot.z); rig.quaternion.copy(q); rig.scale.set(sxy * HERO, sz * HERO, sxy * HERO); }
       regRig.visible = t < SWAP; phRig.visible = t >= SWAP;
+      regLamp.visible = regFill.visible = t < SWAP;
+      ghost.position.copy(regRig.position); ghost.quaternion.copy(regRig.quaternion); ghost.scale.copy(regRig.scale); ghost.visible = regRig.visible;
     };
 
     // the board, for laying the real <h1> over it
@@ -145,12 +220,48 @@ class SogStage extends HTMLElement {
     const boardParts = ['sign_board', 'sign_frame'].map(n => root.getObjectByName(n)).filter(Boolean);
     const boardBase = new T.Box3().setFromObject(root.getObjectByName('sign_frame') || boardParts[0]).min.y;
     const base0 = boardParts.map(o => ({ o, py: o.position.y, sy: o.scale.y }));
+    // a modern lit sign (Tristan 2026-11-21, the chalkboard "feels old"): a dark navy panel glowing from within, a thin
+    // squared gold edge, slim dark-metal posts; the old rounded coral frame is hidden (it still sets the board's base)
+    const frameOld = root.getObjectByName('sign_frame'); if (frameOld) frameOld.visible = false;
+    const face = root.getObjectByName('sign_board');
+    if (face) face.material = new T.MeshStandardMaterial({ color: 0x0b0d1f, roughness: 0.9, metalness: 0, emissive: 0x161b3c, emissiveIntensity: 0.5 });
+    const gold = new T.MeshStandardMaterial({ color: 0xe8b94a, metalness: 0.85, roughness: 0.28, emissive: 0x8a6418, emissiveIntensity: 0.35 });
+    const edge = [0, 1, 2, 3].map(() => { const m = new T.Mesh(new T.BoxGeometry(1, 1, 1), gold); m.castShadow = true; stage.add(m); return m; });
+    const metal = new T.MeshStandardMaterial({ color: 0x23263a, metalness: 0.7, roughness: 0.35 });
+    root.traverse(o => { if (o.isMesh && /^sign_(post|foot)/.test(o.name)) { o.material = metal; o.scale.x *= 0.55; o.scale.z *= 0.55; } });
+    const glow = new T.Object3D();                     // (the sign's spill light made a blue blob on the counter: dropped)
+    // the counter to match the sign (2026-11-21): a deep ink-navy body, a warm oak top for the wooden register to sit
+    // on, and a thin gold strip under the top's front edge, the sign's gold
+    const ink = new T.MeshStandardMaterial({ color: 0x0e1020, roughness: 0.6, metalness: 0.1, envMapIntensity: 0.2 });
+    const oak = new T.MeshStandardMaterial({ color: 0x3a2618, roughness: 0.62, metalness: 0, envMapIntensity: 0.25 });
+    root.traverse(o => {
+      if (!o.isMesh) return;
+      if (o.name === 'counter_top') o.material = oak;
+      else if (/^counter_(body|base)/.test(o.name)) o.material = ink;
+    });
+    {
+      const top = root.getObjectByName('counter_top'), body = root.getObjectByName('counter_body');
+      if (top && body) {
+        root.updateMatrixWorld(true);
+        const tb = new T.Box3().setFromObject(top), bb = new T.Box3().setFromObject(body), t = 0.009;
+        const strip = new T.Mesh(new T.BoxGeometry(tb.max.x - tb.min.x, t, 0.004), gold);
+        strip.position.set((tb.min.x + tb.max.x) / 2, tb.min.y + t / 2, tb.max.z + 0.002); stage.add(strip);
+      }
+    }
     let bPts = [], tallK = 0;
     const shapeBoard = k => {
       if (k === tallK) return; tallK = k;
       for (const { o, py, sy } of base0) { o.position.y = boardBase + (py - boardBase) * k; o.scale.y = sy * k; }
       root.updateMatrixWorld(true);
       const bBox = new T.Box3().setFromObject(root.getObjectByName('sign_board'));
+      {
+        const c = bBox.getCenter(new T.Vector3()), s = bBox.getSize(new T.Vector3()), t = 0.007, d = s.z + 0.006;
+        edge[0].scale.set(s.x + 2 * t, t, d); edge[0].position.set(c.x, bBox.max.y + t / 2, c.z);
+        edge[1].scale.set(s.x + 2 * t, t, d); edge[1].position.set(c.x, bBox.min.y - t / 2, c.z);
+        edge[2].scale.set(t, s.y, d); edge[2].position.set(bBox.min.x - t / 2, c.y, c.z);
+        edge[3].scale.set(t, s.y, d); edge[3].position.set(bBox.max.x + t / 2, c.y, c.z);
+        glow.position.set(c.x, bBox.min.y - 0.03, bBox.max.z + 0.10);
+      }
       bPts = [0, 1, 2, 3, 4, 5, 6, 7].map(i => new T.Vector3(i & 1 ? bBox.max.x : bBox.min.x, i & 2 ? bBox.max.y : bBox.min.y, i & 4 ? bBox.max.z : bBox.min.z));
     };
     shapeBoard(1);
@@ -187,8 +298,8 @@ class SogStage extends HTMLElement {
     };
     // the opening shot fills the screen with the stage; the second holds the register with room above it for the leap
     const shots = aspect => aspect >= 1
-      ? { a: pose([0.06, 0, 0.60], 2.3, 1.22, 6, aspect), b: pose([-0.56, -0.02, 0.66], 1.05, 0.78, 6, aspect) }
-      : { a: pose([0.25, 0, 0.92], 1.18, 1.25, 6, aspect), b: pose([-0.56, -0.02, 0.66], 0.62, 0.9, 6, aspect) };
+      ? { a: pose([0, 0, 0.80], 2.1, 1.48, 6, aspect), b: pose([0, -0.04, 0.68], 1.3, 1.0, 6, aspect) }
+      : { a: pose([0, 0, 1.02], 1.12, 1.55, 6, aspect), b: pose([0, -0.04, 0.68], 0.8, 1.1, 6, aspect) };
 
     // <sog-phone>'s own camera for a box w x h, in the landing spot's frame (its pivot turns the phone by phoneYaw)
     const dockCam = (el, w, h) => {
@@ -204,7 +315,7 @@ class SogStage extends HTMLElement {
     };
 
     let W = 1, H = 1;
-    const size = () => { W = pin.clientWidth; H = pin.clientHeight; renderer.setSize(W, H, false); shapeBoard(W / H < 0.8 ? 1.9 : 1); pin.classList.toggle('stage-tall', W / H < 0.8); ask(); };
+    const size = () => { W = pin.clientWidth; H = pin.clientHeight; renderer.setSize(W, H, false); fitSky(W / H); shapeBoard(W / H < 0.8 ? 1.9 : 1); pin.classList.toggle('stage-tall', W / H < 0.8); ask(); };
     const progress = () => {
       if (this.still || !track) return 0;
       const r = track.getBoundingClientRect(), range = track.offsetHeight - pin.clientHeight;
@@ -239,7 +350,7 @@ class SogStage extends HTMLElement {
       pin.style.setProperty('--words-o', (1 - span(p, 0.06, 0.18)).toFixed(3));
       pin.style.setProperty('--h1-o', (1 - span(p, 0.1, 0.26)).toFixed(3));
       pin.classList.toggle('stage-done', handed);
-      if ((this.dataset.handed === '1') !== handed) this.handOver(handed);
+      if (this.dataset.handed !== (handed ? '1' : '0')) this.handOver(handed);         // (also on the first frame)
 
       renderer.setViewport(0, 0, W, H);
       renderer.clear();
@@ -261,6 +372,7 @@ class SogStage extends HTMLElement {
         const lands = r.top - cr.top - rise + r.height * 0.5 < H;
         const ex = r.left - cr.left, ey = r.top - cr.top - (lands ? rise : 0), ew = Math.max(1, r.width), eh = Math.max(1, r.height);
         const d = dockCam(el, ew, eh);
+        { const k = 1 + (1 / HERO - 1) * dock; phRig.scale.multiplyScalar(k); phRig.updateMatrixWorld(true); }
         const vx = ex * dock, vy = ey * dock, vw = W + (ew - W) * dock, vh = H + (eh - H) * dock;
         renderer.setViewport(vx, H - vy - vh, vw, vh);
         cam.position.copy(sp).lerp(d.pos, dock); cam.quaternion.copy(sq).slerp(d.q, dock);
@@ -272,6 +384,7 @@ class SogStage extends HTMLElement {
       renderer.render(actor, cam);
     };
     const ask = () => { if (!this._raf) this._raf = requestAnimationFrame(draw); };
+    this._dbg.draw = draw; this._dbg.cam = cam;
     this._onScroll = ask;
     if (!this.still) addEventListener('scroll', ask, { passive: true });
     this._ro = new ResizeObserver(size); this._ro.observe(pin);
