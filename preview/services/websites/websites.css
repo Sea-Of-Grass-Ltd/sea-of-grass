@@ -279,6 +279,9 @@ footer.foot a{color:var(--soft)}
   .plans,.open-stage,.alt-in,.faq{grid-template-columns:1fr}
   .alt-in.flip .visual{order:0}
   #calls .phone-stage{order:-1;justify-self:center;margin-right:0}  /* on phones: the phone on top, where the register lands it (Tristan 2026-11-21), the words below */
+  #calls .alt-in{row-gap:0}                                       /* tight (Tristan 2026-11-21): the words sit right under the phone */
+  #calls .phone-stage{margin-bottom:-26px}
+  #calls .calls-sub{margin:4px 0 16px}
   #calls .calls-mute{right:8px}
   .open-words{order:-1}
   .benefits{grid-template-columns:repeat(2,minmax(0,1fr))}
