@@ -107,6 +107,6 @@ if(uTabs.length){const pickTab=(t,focus)=>{uTabs.forEach(x=>{const on=x===t;x.se
     t.addEventListener('keydown',e=>{const d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;if(d){e.preventDefault();pickTab(uTabs[(n+d+uTabs.length)%uTabs.length],true);}});});}
 // on narrow screens the shop wall sits just above the card, so three shops peek over it
 const uCard=document.querySelector('.u-card'),wall=document.querySelector('.shop-wall');
-if(uCard&&wall){const place=()=>{const h=wall.parentElement.getBoundingClientRect(),c=uCard.getBoundingClientRect();wall.style.setProperty('--wall-top',Math.round(c.top-h.top-170)+'px');};
+if(uCard&&wall){const place=()=>{const h=wall.parentElement.getBoundingClientRect(),c=uCard.getBoundingClientRect();const tall=Math.max(0,...[...wall.querySelectorAll('.sw')].filter(e=>getComputedStyle(e).display!=='none').map(e=>e.offsetHeight+e.offsetTop));wall.style.setProperty('--wall-top',Math.round(c.top-h.top-tall-28)+'px');};
   place();addEventListener('resize',place);addEventListener('load',place);document.fonts&&document.fonts.ready.then(place);}
 })();

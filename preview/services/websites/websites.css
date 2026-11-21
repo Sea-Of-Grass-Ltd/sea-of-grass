@@ -492,7 +492,7 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
    six real Bunny World sites mirrored down both sides, one warm dark grade; the headline and the plan card in the centre lane;
    the card is the one bright object: the Front Range plants art (as on Bunny Burritos) baked into an alpenglow tritone inside, the plan switcher, a huge price, a near-white button. */
 .stage-hero{min-height:min(900px,100vh);display:flex;align-items:center;padding:clamp(56px,6vw,96px) 0 clamp(190px,17vw,240px)}
-.stage-hero>.in.hero-in{position:relative;z-index:1;width:100%;display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:clamp(24px,3vw,48px);align-items:center;
+.stage-hero>.in.hero-in{position:relative;z-index:1;width:100%;display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:clamp(32px,4.5vw,72px);align-items:center;
   max-width:min(var(--max),calc(100vw - 2 * clamp(210px,21.5vw,380px)))}
 .stage-hero h1{font-size:clamp(40px,4.2vw,64px);max-width:12ch}
 .stage-hero .hero-words .kick{white-space:nowrap}
@@ -526,7 +526,7 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 /* the Bunny Burritos film grain on top of the baked alpenglow plants */
 .u-scene::before{content:"";position:absolute;inset:0;z-index:1;background:url(/preview/assets/work/bunny-world/burritos-grain.webp) 0 0/256px 256px;opacity:.4;pointer-events:none}
 .u-scene::after{content:"";position:absolute;inset:0;z-index:2;background:rgba(26,21,48,.4)}
-.u-body{display:grid;gap:14px;padding:clamp(22px,2.4vw,30px)}
+.u-body{display:grid;gap:18px;padding:clamp(26px,2.8vw,36px)}
 .u-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
 .u-title{margin:0;font:600 clamp(30px,2.8vw,40px)/1 var(--head);letter-spacing:-.02em;color:var(--cream)}
 .u-tabs{display:flex;flex-wrap:nowrap;gap:2px;padding:4px;border-radius:999px;background:rgba(26,21,48,.62);box-shadow:inset 0 0 0 1px rgba(var(--text-rgb),.18)}
@@ -539,7 +539,7 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .u-amt{margin:6px 0 0;font:700 clamp(64px,7vw,104px)/.9 var(--head);letter-spacing:-.05em;color:var(--cream)}
 .u-amt small{font:500 18px/1 var(--body);letter-spacing:0;color:var(--cream)}
 .u-amt s{font-size:.38em;font-weight:600;letter-spacing:-.02em;vertical-align:.9em;margin-right:.15em;color:var(--cream);opacity:.8;text-decoration-thickness:3px}
-.u-note{margin:0;font-size:15px;line-height:1.45;color:var(--cream);max-width:40ch}
+.u-note{margin:0;font-size:16px;line-height:1.4;color:var(--cream)}
 .u-note b{font-weight:700}
 .u-btn{all:unset;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:4px;padding:8px 8px 8px 22px;min-height:44px;border-radius:999px;
   background:var(--cream);color:var(--card-ink);font:700 17px/1 var(--body);box-shadow:0 10px 24px rgba(var(--shade-rgb),.35)}
@@ -553,14 +553,14 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
   .stage-hero{display:block;min-height:0}
   .stage-hero>.in.hero-in{grid-template-columns:1fr;max-width:var(--max)}
   .u-card{margin:0 auto}
-  .stage-hero .plans{padding-top:150px}
+  .stage-hero .plans{padding-top:calc(min(29vw,220px) * .75 + 70px)}
   .stage-hero .plans::before{left:max(6%,calc(50% - 280px));right:max(6%,calc(50% - 280px));top:190px;height:min(480px,62%);opacity:.36}
   .shop-wall{inset:auto 0 auto 0;top:var(--wall-top,0);height:200px}
   .shop-wall .l1,.shop-wall .l3,.shop-wall .r3{display:none}
-  .shop-wall .sw{width:min(44vw,240px)}
-  .shop-wall .l2{left:4%;top:24px;width:min(38vw,200px);--r:-6deg}
-  .shop-wall .r1{right:4%;top:14px;--r:6deg}
-  .shop-wall .r2{right:auto;left:calc(50% - min(19vw,100px));top:0;width:min(38vw,200px);--r:2deg}
+  .shop-wall .sw{width:min(29vw,220px);border-width:3px;border-radius:10px}
+  .shop-wall .l2{left:calc(50% - min(29vw,220px) * 1.5 - 14px);top:30px;--r:-6deg}
+  .shop-wall .r2{right:auto;left:calc(50% - min(29vw,220px) / 2);top:10px;--r:2deg}
+  .shop-wall .r1{right:auto;left:calc(50% + min(29vw,220px) / 2 + 14px);top:30px;--r:6deg}
 }
 @media (max-width:520px){
   .u-tabs{flex-wrap:nowrap;width:100%;justify-content:space-between}
