@@ -579,19 +579,15 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
   .u-off{padding:3px 5px;font-size:9.5px}
 }
 /* ======== scrolling into the plan (Tristan: "it feels like you're scrolling into the plan, you know?") ========
-   the Care board sits on the plan card's own alpenglow, so what the card opens onto is what's inside the plan; on wide
-   screens with motion a fixed "portal" grows from the card to the whole screen as you scroll, then fades into the Care board */
-.flapboard{background:var(--card-ink) url(/preview/assets/work/bunny-world/plan-alpenglow-1040.webp) 50% 40%/cover no-repeat fixed;isolation:isolate}
-.flapboard::before{content:"";position:absolute;inset:0;z-index:-1;background:url(/preview/assets/work/bunny-world/burritos-grain.webp) 0 0/256px 256px;opacity:.4;pointer-events:none}
-.flapboard::after{content:"";position:absolute;inset:0;z-index:-1;background:rgba(26,21,48,.6);pointer-events:none}
-.flapboard .kick{color:var(--cream)}
-.flapboard .extras{color:var(--text)}
-@media (max-width:980px){.flapboard{background-attachment:scroll}}
+   on wide screens with motion a fixed "portal" grows from the card to the whole screen as you scroll, turning to the Care
+   board's green, and the Care rows rise in over it */
+/* the Care board keeps its own green (--moss); the portal turns from the card's violet to that green as it fills */
 .plan-portal{position:fixed;z-index:15;left:0;top:0;pointer-events:none;overflow:hidden;opacity:0;
   background:var(--card-ink) url(/preview/assets/work/bunny-world/plan-alpenglow-1040.webp) 50% 40%/cover no-repeat}
 .plan-portal::before{content:"";position:absolute;inset:0;background:url(/preview/assets/work/bunny-world/burritos-grain.webp) 0 0/256px 256px;opacity:.4}
 .plan-portal::after{content:"";position:absolute;inset:0;background:rgba(26,21,48,var(--scrim,.4))}
 .plan-portal[hidden]{display:none}
+.plan-portal>i{position:absolute;inset:0;z-index:1;background:var(--moss);opacity:var(--green,0)}
 /* while the portal covers the screen: no section dots, and the Care board rides above it on the portal's backdrop */
 .portal-on .chapters{visibility:hidden}
 .portal-on .flapboard{z-index:16;background:transparent}
