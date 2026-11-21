@@ -399,7 +399,7 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .ghost{position:absolute;z-index:0;left:50%;top:50%;font:700 clamp(120px,16vw,240px)/.8 var(--display);letter-spacing:-.05em;white-space:nowrap;color:rgba(var(--text-rgb),.06);
   transform:translate(calc(-30% - var(--p,0) * 40%),-50%);pointer-events:none;user-select:none}
 .open-stage>.stack,.open-stage>.open-words{position:relative;z-index:1}
-@media (min-width:981px) and (prefers-reduced-motion:no-preference){
+@media (prefers-reduced-motion:no-preference){
   .pin{height:240vh;overflow-x:clip}
   .pin .open-stage{position:sticky;top:96px}
   .pin .register{transform:translateY(calc((1 - min(1, var(--p,0) * 3.4)) * 46px));opacity:calc(.35 + min(1, var(--p,0) * 3.4) * .65)}
@@ -756,3 +756,7 @@ main{overflow-x:clip}
 .u-more .opt .link{grid-column:2;grid-row:1/span 2;white-space:nowrap;color:var(--cream)}
 .u-more .u-fine{margin:8px 0 0;font-size:13px;color:rgba(255,246,233,.72)}
 .u-more .u-fine a{color:var(--cream)}
+
+/* phones: the Sold out demo holds just under the header bar, so it fits a shorter screen (Tristan 2026-11-21: same flow as desktop) */
+@media (max-width:980px) and (prefers-reduced-motion:no-preference){.pin .open-stage{top:60px}
+  .pin .open-stage .reg-shop .phone{height:min(420px,calc(100svh - 300px))}.pin .open-stage .stack{min-height:calc(min(420px,calc(100svh - 300px)) + 50px)}}

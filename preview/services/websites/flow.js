@@ -12,7 +12,8 @@
      about 1.25 screens, then the page carries on; scrolling back runs it back. While it runs, the section takes on each shop's
      colour in turn ("the background would do something like shift hues as it happens"). Phones and reduced motion: the plain
      swipe row on the purple.
-   Phones (≤ 767 px) have no line, seed or sprout at all (Tristan: "Remove the line that cuts through the mobile version").
+   Phones now get the same flow as desktop (Tristan 2026-11-21, superseding the earlier "remove the line on mobile"): the
+   thread, the held Sold out demo and the running ticket row. The chapter index stays wide-screen only.
    Reduced motion: the trail is a still drawing with the sprout already up; the seed and the pin are off. */
 (()=>{
 const reduce=matchMedia('(prefers-reduced-motion: reduce)');
@@ -35,7 +36,7 @@ function build(){
   // Bunny World now comes before the Care board (Tristan 2026-11-21), so the seed lands on the next thing down: the plan card,
   // where a sprout comes up from its top edge
   const flaps=[...document.querySelectorAll('#care .flap')],card=document.querySelector('.price-band .u-card');
-  const off=phone.matches||flaps.length<1||!card;
+  const off=flaps.length<1||!card;                                 // phones too now (Tristan 2026-11-21: the same flow as desktop)
   svg.style.display=off?'none':'';sprout.hidden=off;
   if(off){len=0;seed.hidden=true;priceBand&&priceBand.classList.add('lit');return;}   // no thread on phones: the card is simply lit
   const H=document.documentElement.scrollHeight,W=document.documentElement.clientWidth,Y=y=>y+scrollY;
@@ -105,7 +106,7 @@ function ride(now){
 
 // ---- 2 the pinned register scene ----
 const pin=document.querySelector('[data-pin]'),stage=pin&&pin.querySelector('.open-stage');
-const pinned=()=>wide.matches&&!reduce.matches;
+const pinned=()=>!reduce.matches;                               // every width now, phones included
 function play(){
   if(!pin||!pinned()){stage&&stage.style.removeProperty('--p');return;}
   const r=pin.getBoundingClientRect(),stickTop=parseFloat(getComputedStyle(stage).top)||0,run=r.height-stage.offsetHeight;
@@ -163,7 +164,7 @@ function railBuild(){
   const bar=document.querySelector('.topbar'),barH=bar?bar.getBoundingClientRect().height:0;
   const h=stick.offsetHeight,room=innerHeight-barH;                // the same whether held or not, so nothing is undone to measure
   travel=row.scrollWidth-row.clientWidth;
-  railOn=!phone.matches&&!reduce.matches&&travel>0&&h<=room-16;
+  railOn=!reduce.matches&&travel>0&&h<=room-16;
   if(!railOn){rail.classList.remove('on');row.scrollLeft=0;drive(0);return;}
   run=Math.round(innerHeight*1.25);
   rail.style.setProperty('--rail-h',(h+run)+'px');
