@@ -592,6 +592,11 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .plan-portal::before{content:"";position:absolute;inset:0;background:url(/preview/assets/work/bunny-world/burritos-grain.webp) 0 0/256px 256px;opacity:.4}
 .plan-portal::after{content:"";position:absolute;inset:0;background:rgba(26,21,48,var(--scrim,.4))}
 .plan-portal[hidden]{display:none}
+/* while the portal covers the screen: no section dots, and the Care board rides above it on the portal's backdrop */
+.portal-on .chapters{visibility:hidden}
+.portal-on .flapboard{z-index:16;background:transparent}
+.portal-on .flapboard::before,.portal-on .flapboard::after{display:none}
+.portal-on .flapboard>*{opacity:var(--fill,0)}
 /* the shop cards drift out to the sides as the plan opens */
 .shop-wall .sw{translate:calc(var(--out,0) * var(--side-dir,-1) * 34vw) 0}
 .shop-wall .r1,.shop-wall .r2,.shop-wall .r3{--side-dir:1}
