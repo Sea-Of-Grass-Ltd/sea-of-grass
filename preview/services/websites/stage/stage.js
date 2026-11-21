@@ -176,6 +176,9 @@ class SogStage extends HTMLElement {
     // the register is the hero (Tristan 2026-11-21): centred on the counter and half again as big, the sign lifted on
     // taller posts above it, so the words read first and the register stands right under them
     const HERO = +(new URLSearchParams(location.search).get("hero") || 1.5);
+    // just the register (Tristan 2026-11-21): no counter, sign, meadow or sky, the register alone on the page's navy
+    // with the words above it; ?scene=1 brings the full stage back
+    const BARE = new URLSearchParams(location.search).get('scene') !== '1';
     for (const rig of [regRig, phRig]) rig.position.set(0, 0.4, 0.04);
     {
       const signNames = ['sign_board', 'sign_frame', 'sign_post', 'sign_post001', 'sign_foot', 'sign_foot001'];
@@ -280,6 +283,10 @@ class SogStage extends HTMLElement {
     const blobMat = new T.MeshBasicMaterial({ map: blobTex, transparent: true, depthWrite: false, opacity: 0 });
     const blob = new T.Mesh(new T.PlaneGeometry(0.30, 0.29), blobMat);
     blob.rotation.set(-Math.PI / 2, 0, 0); blob.position.set(0, 0.0008, 0); phRig.add(blob);
+    // bare: a soft shadow under the register too, so it stands on something
+    const regBlobMat = blobMat.clone(); regBlobMat.opacity = BARE ? 0.9 : 0;
+    const regBlob = new T.Mesh(new T.PlaneGeometry(0.34, 0.30), regBlobMat);
+    regBlob.rotation.set(-Math.PI / 2, 0, 0); regBlob.position.set(0, 0.0008, 0); regRig.add(regBlob);
 
     const cam = new T.PerspectiveCamera(30, 1, 0.05, 30);
     const pin = this.closest('.stage-pin') || this.parentElement;
@@ -297,9 +304,13 @@ class SogStage extends HTMLElement {
       return { pos, q };
     };
     // the opening shot fills the screen with the stage; the second holds the register with room above it for the leap
-    const shots = aspect => aspect >= 1
-      ? { a: pose([0, 0, 0.80], 2.1, 1.48, 6, aspect), b: pose([0, -0.04, 0.68], 1.3, 1.0, 6, aspect) }
-      : { a: pose([0, 0, 1.02], 1.12, 1.55, 6, aspect), b: pose([0, -0.04, 0.68], 0.8, 1.1, 6, aspect) };
+    const shots = BARE
+      ? (aspect => aspect >= 1
+        ? { a: pose([0, -0.04, 0.89], 2.0, 1.56, 8, aspect), b: pose([0, -0.04, 0.68], 1.3, 0.95, 8, aspect) }
+        : { a: pose([0, -0.04, 0.92], 1.0, 1.6, 8, aspect), b: pose([0, -0.04, 0.68], 0.8, 1.1, 8, aspect) })
+      : (aspect => aspect >= 1
+        ? { a: pose([0, 0, 0.80], 2.1, 1.48, 6, aspect), b: pose([0, -0.04, 0.68], 1.3, 1.0, 6, aspect) }
+        : { a: pose([0, 0, 1.02], 1.12, 1.55, 6, aspect), b: pose([0, -0.04, 0.68], 0.8, 1.1, 6, aspect) });
 
     // <sog-phone>'s own camera for a box w x h, in the landing spot's frame (its pivot turns the phone by phoneYaw)
     const dockCam = (el, w, h) => {
@@ -315,7 +326,7 @@ class SogStage extends HTMLElement {
     };
 
     let W = 1, H = 1;
-    const size = () => { W = pin.clientWidth; H = pin.clientHeight; renderer.setSize(W, H, false); fitSky(W / H); shapeBoard(W / H < 0.8 ? 1.9 : 1); pin.classList.toggle('stage-tall', W / H < 0.8); ask(); };
+    const size = () => { W = pin.clientWidth; H = pin.clientHeight; renderer.setSize(W, H, false); fitSky(W / H); shapeBoard(W / H < 0.8 ? 1.9 : 1); pin.classList.toggle('stage-tall', W / H < 0.8); pin.classList.toggle('stage-bare', BARE); ask(); };
     const progress = () => {
       if (this.still || !track) return 0;
       const r = track.getBoundingClientRect(), range = track.offsetHeight - pin.clientHeight;
@@ -354,7 +365,7 @@ class SogStage extends HTMLElement {
 
       renderer.setViewport(0, 0, W, H);
       renderer.clear();
-      if (gone < 1) {
+      if (gone < 1 && !BARE) {
         renderer.render(stage, cam);
         fadeMat.opacity = gone;
         if (gone > 0) renderer.render(fade, flat);

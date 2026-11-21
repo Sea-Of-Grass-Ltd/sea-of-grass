@@ -638,7 +638,18 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .scroll-stage .stage-board .hero-price{margin:.9em 0 0;font:500 .018em/1.3 var(--head);color:rgba(241,236,226,.7)}
 .scroll-stage .stage-board .hero-price b{display:block;font:700 2.9em/1 var(--display);letter-spacing:-.04em;color:var(--ink);margin-bottom:.15em}
 .scroll-stage .stage-board .hero-links{grid-column:1/-1;margin-top:1.2em;font-size:.019em;gap:.6em 1.6em;justify-content:flex-start;align-items:center;pointer-events:auto}
-.scroll-stage .stage-board .hero-links .btn{font-size:1em;padding:.7em 1.4em;order:-1}
+/* the two actions (Tristan 2026-11-21, "make that part better"): one solid button with an arrow that leads, and a
+   quiet second path with a gold ring holding its arrow; no stray underline in a second colour */
+.scroll-stage .stage-board .hero-links .btn{order:-1;display:inline-flex;align-items:center;gap:.7em;font-size:1.05em;font-weight:700;
+  padding:.85em .95em .85em 1.5em;letter-spacing:-.005em}
+.scroll-stage .stage-board .hero-links .btn .go{display:grid;place-items:center;width:1.7em;height:1.7em;border-radius:50%;
+  background:rgba(31,31,53,.14);font-size:.95em;transition:transform .2s ease}
+.scroll-stage .stage-board .hero-links .btn:hover .go{transform:translateX(.18em)}
+.scroll-stage .stage-board .hero-links .unsure{display:inline-flex;align-items:center;gap:.65em;text-decoration:none;color:rgba(241,236,226,.82);font-weight:600}
+.scroll-stage .stage-board .hero-links .unsure .ring{display:grid;place-items:center;width:1.9em;height:1.9em;border-radius:50%;
+  border:.09em solid rgba(232,185,74,.7);color:var(--gold);font-size:.9em;transition:transform .2s ease}
+.scroll-stage .stage-board .hero-links .unsure:hover{color:var(--ink)}
+.scroll-stage .stage-board .hero-links .unsure:hover .ring{transform:translateY(.15em)}
 .scroll-stage .stage-pin.stage-done .stage-board{visibility:hidden}
 /* tall screens: one column, the line, then the promise and price, then the buttons */
 .scroll-stage .stage-pin.stage-tall .stage-board{grid-template-columns:1fr;grid-template-rows:auto;padding:.06em .07em}
@@ -647,6 +658,9 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .scroll-stage .stage-pin.stage-tall .stage-board .sub{font-size:.042em;max-width:none}
 .scroll-stage .stage-pin.stage-tall .stage-board .hero-price{font-size:.032em}
 .scroll-stage .stage-pin.stage-tall .stage-board .hero-links{font-size:.038em;margin-top:1em}
+/* just the register (Tristan 2026-11-21): no sign to sit on, so the words stand on the navy above the register */
+.scroll-stage .stage-pin.stage-bare .stage-board{--bw:min(86vw,1000px);left:50%;top:calc(64px + 2svh);height:auto;transform:translateX(-50%)}
+.scroll-stage .stage-pin.stage-bare.stage-tall .stage-board{--bw:92vw;top:calc(64px + 2svh)}
 #calls{position:relative;z-index:1}
 html:not(.stage-still) .scroll-stage+main>#calls,html:not(.stage-still) .scroll-stage~main #calls:first-child{margin-top:-100svh}
 /* tall screens: the board fills the width up top, the words sit on the counter front below */
