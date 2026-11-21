@@ -37,29 +37,34 @@ class SogPhone extends HTMLElement {
       const s = document.createElement('style'); s.id = 'sog-phone-css'; s.textContent = css; document.head.append(s);
     }
     Object.assign(this.dataset, { state: this.dataset.state || 'still', lift: '0', dial: '0' });
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches || lowPower()) return;   // the picture stays
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches || lowPower()) { this.removeAttribute('data-pending'); return; }   // the picture stays
     this._io = new IntersectionObserver(es => {
       for (const e of es) {
         this._visible = e.isIntersecting;
-        if (e.isIntersecting && this.dataset.state === 'still') this.boot();
+        if (e.isIntersecting && this.dataset.state === 'still') this.boot();   // in case it scrolls in before the page is idle
       }
-    }, { rootMargin: '200px 0px' });
+    }, { rootMargin: '100% 0px' });
     this._io.observe(this);
+    // start loading as soon as the page is idle, so the phone is ready before anyone scrolls to it
+    const early = () => { if (this.dataset.state === 'still') this.boot(); };
+    const idle = () => ('requestIdleCallback' in window ? requestIdleCallback(early, { timeout: 3000 }) : setTimeout(early, 1200));
+    if (document.readyState === 'complete') idle(); else addEventListener('load', idle, { once: true });
   }
   disconnectedCallback() { this._io?.disconnect(); this._ro?.disconnect(); cancelAnimationFrame(this._raf); this._renderer?.dispose(); }
 
   async boot() {
-    if (!webglOK()) return;                       // stays 'still'
+    if (!webglOK()) { this.removeAttribute('data-pending'); return; }   // stays 'still': the picture shows
     this.dataset.state = 'loading';
     try {
-      const [THREE, { GLTFLoader }, { RoomEnvironment }] = await Promise.all([
+      const [THREE, { GLTFLoader }, { RoomEnvironment }, { MeshoptDecoder }] = await Promise.all([
         import(HERE + 'vendor/three.module.min.js'), import(HERE + 'vendor/loaders/GLTFLoader.js'),
-        import(HERE + 'vendor/environments/RoomEnvironment.js')]);
-      const loader = new GLTFLoader();
+        import(HERE + 'vendor/environments/RoomEnvironment.js'), import(HERE + 'vendor/libs/meshopt_decoder.module.js')]);
+      const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);   // phone.glb is meshopt-compressed
       const gltf = await loader.loadAsync(this.dataset.glb || HERE + 'phone.glb');
       this.build(THREE, gltf, RoomEnvironment);
     } catch (err) {
       this.dataset.state = 'failed';
+      this.removeAttribute('data-pending');           // the picture is the fallback
       this._canvas?.remove();
     }
   }
