@@ -708,3 +708,6 @@ html.stage-still .scroll-stage{height:100svh;background:var(--navy)}
 /* nothing may widen the page on a phone (Tristan 2026-11-21: the glows behind the price card and the closing buttons spilled
    past the edge, so phones laid the whole page out wider and zoomed it out). clip, not hidden: sticky still works */
 main{overflow-x:clip}
+
+/* the Try it out demo keeps the plum it had inside Bunny World (Tristan 2026-11-21) */
+.demo-band{background:var(--plum)}
