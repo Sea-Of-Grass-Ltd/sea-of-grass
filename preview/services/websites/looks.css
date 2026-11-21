@@ -1,0 +1,65 @@
+/* Plan-area looks (?look=a … e, looks.js). Nothing here applies without html[data-look]. Flat colours, blur for light;
+   no CSS gradients. Reduced motion: still. */
+
+/* the picker */
+.look-picker{position:fixed;z-index:30;left:16px;bottom:16px;display:flex;align-items:center;gap:4px;padding:6px;border-radius:999px;background:var(--ground);
+  box-shadow:0 0 0 1px rgba(var(--text-rgb),.25),0 12px 30px rgba(var(--shade-rgb),.5);font:500 12px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase}
+.look-picker span{padding:0 8px;color:var(--soft)}
+.look-picker a{display:grid;place-items:center;min-width:34px;height:34px;padding:0 8px;border-radius:999px;color:var(--text);text-decoration:none}
+.look-picker a:hover{background:rgba(var(--text-rgb),.12)}
+.look-picker a[aria-current]{background:var(--poppy);color:var(--ground)}
+
+/* a window onto a shop at the top of the ticket (A, B); the price and button sit over it on a dark scrim, so words keep AA */
+html[data-look] .hero .stage .plan.care>.look-window{position:absolute;z-index:0;left:0;right:0;top:0;height:var(--win-h,58%);border-radius:22px 22px 0 0;overflow:hidden;background:var(--ground)}
+.look-window img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 0;opacity:0;transition:opacity .9s ease}
+.look-window img.on{opacity:1}
+.look-window::after{content:"";position:absolute;inset:0;background:rgba(31,31,53,.76)}
+.look-window .lw-name{position:absolute;z-index:1;right:14px;bottom:12px;font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--text);background:var(--ground);padding:6px 9px;border-radius:999px}
+html[data-look] .hero .stage .plan.care .amt,html[data-look] .hero .stage .plan.care .plan-h{text-shadow:0 1px 14px rgba(var(--shade-rgb),.6)}
+@media (prefers-reduced-motion:reduce){.look-window img{transition:none}}
+
+/* B: the shop's colour carries to the ticket's accents */
+html[data-look="b"] .plan.care[data-shop]{box-shadow:inset 0 0 0 1.5px var(--shop),0 30px 60px rgba(var(--shade-rgb),.5)}
+html[data-look="b"] .plan.care[data-shop] .week{border-left-color:var(--shop)}
+html[data-look="b"] .plan.care[data-shop] .ticks svg{color:var(--shop)}
+html[data-look="b"] .plan.care[data-shop]>.btn.pill{background:var(--shop);color:var(--ground)}
+html[data-look="b"] .fan{display:none}
+html[data-look="b"] .stage{padding-bottom:300px}
+.look-hand{position:absolute;left:50%;bottom:0;width:0;height:270px;touch-action:pan-y;cursor:grab;user-select:none}
+.look-hand:active{cursor:grabbing}
+.look-hand .card{all:unset;position:absolute;left:-62px;top:0;width:124px;aspect-ratio:390/844;border-radius:14px;overflow:hidden;cursor:pointer;transform-origin:50% 120%;
+  box-shadow:0 14px 30px rgba(var(--shade-rgb),.55),0 0 0 1px rgba(var(--text-rgb),.14);transition:opacity .25s}
+.look-hand .card img{width:100%;height:100%;object-fit:cover;pointer-events:none;display:block}
+.look-hand .card:focus-visible{outline:2px solid var(--blue2);outline-offset:3px}
+.look-fly{position:fixed;z-index:40;object-fit:cover;pointer-events:none}
+
+/* C: the holo ticket; tilts toward the cursor, a foil sheen slides as it tilts, the screens behind go the other way */
+html[data-look="c"] .stage{perspective:1100px;--tx:0;--ty:0}
+html[data-look="c"] .hero .stage .plan.care{transform:rotateY(calc(var(--tx) * 9deg)) rotateX(calc(var(--ty) * -7deg));transform-style:preserve-3d;overflow:hidden}
+html[data-look="c"] .fan{transform:translate(calc(var(--tx) * -18px),calc(var(--ty) * -12px))}
+html[data-look="c"] .hero .stage .plan.care>.look-sheen{position:absolute;z-index:2;top:-40%;left:calc(30% + var(--tx) * 40%);width:34%;height:180%;background:rgba(var(--text-rgb),.16);
+  filter:blur(26px);mix-blend-mode:screen;transform:rotate(18deg);pointer-events:none;opacity:calc(.35 + (var(--tx) * var(--tx) + var(--ty) * var(--ty)) * .5)}
+@media (prefers-reduced-motion:reduce){html[data-look="c"] .look-sheen{display:none}}
+
+/* D: pick your look; swatches and a small live site preview inside the ticket */
+.look-try{display:grid;gap:10px;margin:4px 0 2px}
+.look-try .lt-kick{margin:0;font:500 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--text)}
+.lt-sw{display:flex;gap:8px;flex-wrap:wrap}
+.lt-chip{all:unset;cursor:pointer;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--g);box-shadow:inset 0 0 0 2px var(--c);color:var(--c);font-size:20px}
+.lt-chip i{font-style:normal}
+.lt-chip[aria-checked="true"]{box-shadow:inset 0 0 0 2px var(--c),0 0 0 3px var(--ground),0 0 0 5px var(--c)}
+.lt-chip:focus-visible{outline:2px solid var(--blue2);outline-offset:4px}
+.lt-site{display:grid;grid-template-columns:1fr auto;align-items:center;gap:4px 12px;padding:14px 16px;border-radius:14px;background:var(--g);box-shadow:inset 0 0 0 1px rgba(var(--text-rgb),.15)}
+.lt-logo{font-size:24px;line-height:1;color:var(--c)}
+.lt-line{grid-column:1;font-size:14px;color:var(--text)}
+.lt-btn{grid-column:2;grid-row:1/span 2;font:600 13px/1 var(--body);color:var(--g);background:var(--c);padding:9px 12px;border-radius:999px}
+
+/* E: alpenglow; Longs Peak from the plains warmed to pink behind the plans, a slow shimmer over the lit range, the live grass in front */
+html[data-look="e"] .hero>.look-alpen{position:absolute;z-index:-2;left:0;right:0;top:28%;bottom:0;overflow:hidden;pointer-events:none}
+.look-alpen img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 72%;filter:saturate(1.35) contrast(1.08) hue-rotate(-28deg) brightness(.9)}
+.look-alpen .la-tint{position:absolute;inset:0;background:var(--poppy);mix-blend-mode:soft-light;opacity:.7}
+.look-alpen .la-dim{position:absolute;inset:0;background:rgba(31,31,53,.38)}
+.look-alpen .la-shimmer{position:absolute;top:44%;height:26%;left:-30%;width:26%;background:rgba(var(--text-rgb),.5);filter:blur(34px);mix-blend-mode:screen;opacity:0;animation:la-sweep 8s ease-in-out infinite}
+@keyframes la-sweep{0%{transform:translateX(0);opacity:0}15%{opacity:.6}55%{opacity:.6}70%,100%{transform:translateX(560%);opacity:0}}
+@media (prefers-reduced-motion:reduce){.look-alpen .la-shimmer{display:none}}
+html[data-look="e"] .stage::before{opacity:.25}
