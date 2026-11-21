@@ -99,4 +99,14 @@ if(coupon&&'IntersectionObserver' in window){const co=new IntersectionObserver(e
 const planStage=document.querySelector('[data-planStage]');
 if(planStage&&!matchMedia('(prefers-reduced-motion: reduce)').matches){let t=0;const drift=()=>{t=0;const r=planStage.getBoundingClientRect(),p=((r.top+r.height/2)-innerHeight/2)/innerHeight;
   planStage.style.setProperty('--py',Math.max(-1,Math.min(1,p)).toFixed(3));};addEventListener('scroll',()=>{if(!t)t=requestAnimationFrame(drift);},{passive:true});drift();}
+// the plan card's switcher: Monthly · Pay once · Founding five (a tablist; arrows move between tabs)
+const uTabs=[...document.querySelectorAll('.u-tabs [role="tab"]')];
+if(uTabs.length){const pickTab=(t,focus)=>{uTabs.forEach(x=>{const on=x===t;x.setAttribute('aria-selected',String(on));x.tabIndex=on?0:-1;
+    document.getElementById(x.getAttribute('aria-controls')).hidden=!on;});if(focus)t.focus();};
+  uTabs.forEach((t,n)=>{t.addEventListener('click',()=>pickTab(t));
+    t.addEventListener('keydown',e=>{const d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;if(d){e.preventDefault();pickTab(uTabs[(n+d+uTabs.length)%uTabs.length],true);}});});}
+// on narrow screens the shop wall sits just above the card, so three shops peek over it
+const uCard=document.querySelector('.u-card'),wall=document.querySelector('.shop-wall');
+if(uCard&&wall){const place=()=>{const h=wall.parentElement.getBoundingClientRect(),c=uCard.getBoundingClientRect();wall.style.setProperty('--wall-top',Math.round(c.top-h.top-170)+'px');};
+  place();addEventListener('resize',place);addEventListener('load',place);document.fonts&&document.fonts.ready.then(place);}
 })();

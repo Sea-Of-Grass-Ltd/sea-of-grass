@@ -48,39 +48,59 @@
 </nav>
 
 <!-- 1 Top: the line and the two plans -->
-<section class="hero" aria-labelledby="h1">
-  <div class="in">
-    <p class="kick">Websites and hosting &middot; <b>Sea of Grass</b></p>
-    <h1 id="h1">Your website can run itself from your register.</h1>
-    <p class="sub">We build it, host it and keep it right, and you never log in.</p>
+<section class="hero stage-hero" aria-labelledby="h1">
+  <!-- the shop wall: six real Bunny World sites, mirrored left and right, graded into one warm dark palette -->
+  <div class="shop-wall" data-stage aria-hidden="true">
+    <img class="sw l1" src="/preview/assets/work/bunny-world/shot-bunny-burritos-960.webp" alt="" width="960" height="720" loading="eager" decoding="async">
+    <img class="sw l2" src="/preview/assets/work/bunny-world/shot-hare-today-960.webp" alt="" width="960" height="720" loading="eager" decoding="async">
+    <img class="sw l3" src="/preview/assets/work/bunny-world/shot-hopwell-chiro-960.webp" alt="" width="960" height="720" loading="eager" decoding="async">
+    <img class="sw r1" src="/preview/assets/work/bunny-world/shot-cottontail-farm-960.webp" alt="" width="960" height="720" loading="eager" decoding="async">
+    <img class="sw r2" src="/preview/assets/work/bunny-world/shot-hop-along-960.webp" alt="" width="960" height="720" loading="eager" decoding="async">
+    <img class="sw r3" src="/preview/assets/work/bunny-world/shot-warren-bakehouse-960.webp" alt="" width="960" height="720" loading="eager" decoding="async">
+  </div>
+  <div class="in hero-in">
+    <div class="hero-words">
+      <p class="kick">Websites and hosting &middot; <b>Sea of Grass</b></p>
+      <h1 id="h1">Your website can run itself from your register.</h1>
+      <p class="sub">We build it, host it and keep it right, and you never log in.</p>
+      <div class="hero-links"><a class="unsure" href="#bunny-world">Not sure yet? Watch it work &darr;</a><a class="btn pill quiet" data-book href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book 15 minutes</a></div>
+    </div>
     <div class="plans" id="plans"><span id="buy"></span>
-      <div class="stage" data-stage>
-      <div class="fan" aria-hidden="true"><img class="f1" src="/preview/assets/work/bunny-world/poster-bunny-burritos-phone.webp" alt="" width="390" height="844" loading="lazy" decoding="async"><img class="f2" src="/preview/assets/work/bunny-world/poster-hare-today-phone.webp" alt="" width="390" height="844" loading="lazy" decoding="async"><img class="f3" src="/preview/assets/work/bunny-world/poster-hop-along-phone.webp" alt="" width="390" height="844" loading="lazy" decoding="async"><img class="f4" src="/preview/assets/work/bunny-world/poster-cottontail-farm-phone.webp" alt="" width="390" height="844" loading="lazy" decoding="async"><img class="f5" src="/preview/assets/work/bunny-world/poster-long-ears-phone.webp" alt="" width="390" height="844" loading="lazy" decoding="async"></div>
-      <article class="plan care ticket-shape">
-        <p class="badge">Recommended</p>
-        <h2 class="plan-h">Site Plan</h2><p class="amt">$100<small> a month</small></p>
-        <p class="week touch">That&rsquo;s about $23 a week, roughly what a couple of online orders bring in.</p>
-        <button type="button" class="btn pill" data-add="site-plan">Start the plan &rarr;</button>
-        <ul class="ticks"><li><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Nothing up front</li><li><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Care included</li><li><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Yours after 12 months</li></ul>
-        <div class="stub founding" id="founding">
-          <p class="f-head"><span class="kick"><span class="c-sr">Founding five</span><span class="flipw" aria-hidden="true">Founding five</span></span><span class="f-spots"><b class="c-sr" data-spots-left>5 of 5</b><b class="flipn" aria-hidden="true">5 of 5</b> spots left</span></p>
-          <p class="c-price"><span class="c-sr">Was $100, now $50 a month, locked for two years.</span><span class="c-show" aria-hidden="true"><s>$100</s> <b class="c-now">$50</b> <small>a month, locked for two years</small></span></p>
-          <p class="f-line">A free photo shoot, too. In return, a short case study, and you owe nothing if you back out at the hookup.</p>
-          <button type="button" class="btn pill f-btn" data-add="site-plan" data-founding>Claim a founding spot &rarr;<span class="off-pill" aria-hidden="true">Half off</span></button>
+      <!-- the plan card, on the model of Higgsfield's Ultra card: a lit scene inside, the plan switcher, a huge price -->
+      <article class="u-card" data-plan>
+        <div class="u-scene" aria-hidden="true"><svg viewBox="0 0 600 400" preserveAspectRatio="xMidYMax slice"><defs><filter id="u-soft" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="22"/></filter><filter id="u-haze"><feGaussianBlur stdDeviation="1.6"/></filter></defs>
+          <g filter="url(#u-soft)"><rect x="-60" y="-60" width="720" height="150" fill="#4B2F86"/><rect x="-60" y="80" width="720" height="70" fill="#7B3A9C"/><rect x="-60" y="140" width="720" height="60" fill="#C2479A"/><rect x="-60" y="192" width="720" height="50" fill="#EC6A93"/><rect x="-60" y="236" width="720" height="40" fill="#F58E86"/><rect x="-60" y="270" width="720" height="60" fill="#F7B38A"/></g>
+          <g filter="url(#u-haze)"><path d="M0 400V318L80 312L160 306L240 298L320 300L380 290L460 286L540 282L600 290V400Z" fill="#9A4E9A"/><path d="M0 400V334L70 330L130 333L190 324L240 327L290 318L330 320L360 304L380 290L392 284L404 287L414 280L424 270L456 269L466 274L484 288L520 302L560 312L600 316V400Z" fill="#5A3479"/><rect x="0" y="352" width="600" height="60" fill="#3A2558"/></g></svg></div>
+        <div class="u-body">
+          <div class="u-top">
+            <h2 class="u-title">Site Plan</h2>
+            <div class="u-tabs" role="tablist" aria-label="How to pay">
+              <button type="button" role="tab" id="ut-month" aria-controls="up-month" aria-selected="true">Monthly</button>
+              <button type="button" role="tab" id="ut-once" aria-controls="up-once" aria-selected="false" tabindex="-1">Pay once</button>
+              <button type="button" role="tab" id="ut-found" aria-controls="up-found" aria-selected="false" tabindex="-1">Founding five <span class="u-off">&minus;50%</span></button>
+            </div>
+          </div>
+          <div class="u-panel" role="tabpanel" id="up-month" aria-labelledby="ut-month">
+            <p class="u-amt">$100<small> a month</small></p>
+            <p class="u-note">That&rsquo;s about $23 a week, roughly what a couple of online orders bring in. Nothing up front, care included, and the site is yours after 12 months.</p>
+            <button type="button" class="u-btn" data-add="site-plan">Start the plan <span class="u-pill" aria-hidden="true">&rarr;</span></button>
+          </div>
+          <div class="u-panel" role="tabpanel" id="up-once" aria-labelledby="ut-once" hidden>
+            <p class="u-amt">$1,000<small> once</small></p>
+            <p class="u-note">The first year of care is included, then $50 a month. Paying up front saves you $200 against the plan.</p>
+            <button type="button" class="u-btn" data-add="starter">Buy a starter site <span class="u-pill" aria-hidden="true">&rarr;</span></button>
+          </div>
+          <div class="u-panel" role="tabpanel" id="up-found" aria-labelledby="ut-found" hidden>
+            <p class="u-amt"><s aria-label="was $100">$100</s> $50<small> a month</small></p>
+            <p class="u-note">Locked for two years, with a free photo shoot, for the first five shops. <b data-spots-left>5 of 5</b> spots left.</p>
+            <button type="button" class="u-btn" data-add="site-plan" data-founding>Claim a founding spot <span class="u-pill">Half off</span></button>
+          </div>
+          <p class="u-foot"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8 7v4.2M8 4.6v.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Owe nothing if you back out at the hookup.</p>
         </div>
-      </article>
-      </div>
-      <article class="plan sites touch">
-        <h2 class="plan-h">Pay once</h2><p class="amt">$1,000</p>
-        <p class="save">$1,000 once, with the first year of care included. Paying up front saves you $200.</p>
-        <button type="button" class="btn pill" data-add="starter">Buy a starter site &rarr;</button>
-        <ul class="ticks"><li><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>One page in a Bunny World look</li><li><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Menu, hours, map and ordering</li><li><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Care included for the first year, then $50 a month</li></ul>
-        <p class="week touch" data-week>$1,000 works out to about $19 a week for a year, roughly what a couple of online orders bring in.</p>
       </article>
       <div class="also"><span>Fix one thing &middot; $250, credited to a site you start within 60&nbsp;days</span> <button type="button" class="link" data-add="fix">Buy a fix</button> <span>&middot; Care alone &middot; $50&nbsp;a&nbsp;month</span> <button type="button" class="link" data-add="care">Start care</button> <span>&middot; Launch Setup &middot; $250 with our site, $450 without</span> <span>&middot; Your own look: custom from $2,500, or $200&nbsp;a&nbsp;month</span></div>
       <div class="jump"><span class="kick">Fine print</span> <a href="#hookup">Hookup</a> &middot; <a href="#faq">Questions</a></div>
     </div>
-    <div class="hero-links"><a class="unsure" href="#bunny-world">Not sure yet? Watch it work &darr;</a><a class="btn pill quiet" data-book href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book 15 minutes</a></div>
   </div>
   <div class="live-grass" data-live-grass data-cross aria-hidden="true"></div>
 </section>
