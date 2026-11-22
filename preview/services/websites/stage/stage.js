@@ -266,7 +266,7 @@ class SogStage extends HTMLElement {
       });
       const body = list.find(p => /^body_shell/.test(p.u.name));
       if (body) for (const p of list) if (p !== body && glued.test(p.u.name)) { p.off = body.off; p.spin = new T.Vector3(); p.withBody = true; }
-      if (body) for (const p of list) if (p.withBody) p.spin = body.spin;   // (a glued part shares the body's turn, about its own origin)
+      if (body) { body.spin = new T.Vector3(); for (const p of list) if (p.withBody) p.spin = body.spin; }   // they turn about different origins, so the body and its details fly without spinning
       return list;
     };
     const tillParts = wind ? partsOf(regRig) : [], phoneParts = wind ? partsOf(phRig) : [];
