@@ -760,3 +760,14 @@ main{overflow-x:clip}
 /* phones: the Sold out demo holds just under the header bar, so it fits a shorter screen (Tristan 2026-11-21: same flow as desktop) */
 @media (max-width:980px) and (prefers-reduced-motion:no-preference){.pin .open-stage{top:60px}
   .pin .open-stage .reg-shop .phone{height:min(420px,calc(100svh - 300px))}.pin .open-stage .stack{min-height:calc(min(420px,calc(100svh - 300px)) + 50px)}}
+
+/* ======== the plain facts tuck under the close (HQ 11-22): one quiet line with a +, opens in place ======== */
+#facts.close-more{background:none;width:100%;max-width:1080px;margin-top:clamp(18px,3vw,36px);text-align:left}
+.close-more>summary{list-style:none;cursor:pointer;display:flex;justify-content:center;align-items:center;gap:10px;width:max-content;max-width:100%;margin:0 auto;padding:10px 4px;font:600 16px/1.3 var(--head);color:var(--soft)}
+.close-more>summary::-webkit-details-marker{display:none}
+.close-more>summary:hover{color:var(--text)}
+.close-more .cm-plus{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(var(--text-rgb),.28);font:300 20px/1 var(--body);transition:transform .2s}
+.close-more[open] .cm-plus{transform:rotate(45deg)}
+.close-more>.info-grid{margin-top:18px}
+.close-more h2{text-align:left}
+@media (prefers-reduced-motion:reduce){.close-more .cm-plus{transition:none}}

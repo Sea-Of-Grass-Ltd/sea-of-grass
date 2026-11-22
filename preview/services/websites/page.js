@@ -96,3 +96,14 @@ const hWords=document.querySelector('.stage-hero .hero-links'),wall=document.que
 if(hWords&&wall){const place=()=>{const h=wall.parentElement.getBoundingClientRect(),c=hWords.getBoundingClientRect();wall.style.setProperty('--wall-top',Math.round(c.bottom-h.top+36)+'px');};
   place();addEventListener('resize',place);addEventListener('load',place);document.fonts&&document.fonts.ready.then(place);}
 })();
+
+// the facts panel under the close: links to #faq / #hookup / #facts open it first, then scroll to the spot
+{
+  const more=document.getElementById('facts');
+  if(more){
+    const ids=['facts','faq','hookup'];
+    const go=(id)=>{if(!ids.includes(id))return false;more.open=true;const el=document.getElementById(id);requestAnimationFrame(()=>el.scrollIntoView({block:'start'}));return true;};
+    document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(a&&go(a.getAttribute('href').slice(1))){e.preventDefault();history.replaceState(null,'','#'+a.getAttribute('href').slice(1));}});
+    if(location.hash)go(location.hash.slice(1));
+  }
+}
