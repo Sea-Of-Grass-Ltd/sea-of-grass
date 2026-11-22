@@ -277,7 +277,7 @@ class SogStage extends HTMLElement {
     const cord = phRig.getObjectByName('coiled_cord');
     const burst = (parts, e) => { for (const p of parts) { p.u.position.copy(p.p0).addScaledVector(p.off, e);
       p.u.rotation.set(p.r0.x + p.spin.x * e, p.r0.y + p.spin.y * e, p.r0.z + p.spin.z * e); } };
-    // the light the beams pour in: the till's metal parts warm from inside as it fills
+    // the gust's charge: the till's metal parts warm from inside as it fills (no beams any more: the light is its own)
     // the charge (Tristan 2026-11-22: "the register would glow with color before it explodes"; his reference glows from
     // inside with a bright rim hugging its outline): the smoked glass fills with straw light that heats toward lamp white, and a
     // fresnel rim on the glass's own outline brightens with it, with a second, slightly larger shell giving a short
