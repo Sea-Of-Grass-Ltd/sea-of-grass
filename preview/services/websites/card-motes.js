@@ -26,7 +26,7 @@
     const top = Math.random() < 0.6, u = Math.random();
     const x = top ? cw * (0.15 + 0.85 * u) : cw, y = top ? OUT : OUT + ch * (0.05 + 0.6 * u);
     motes.push({ x, y, vx: top ? (Math.random() - 0.3) * 6 : 6 + Math.random() * 10, vy: -(10 + Math.random() * 16),
-      r: 1.6 + Math.random() * 2.6, life: 1.1 + Math.random() * 1.3, age: 0, hue: Math.random(), wob: Math.random() * 6.28 });
+      r: 2.2 + Math.random() * 2.8, life: 1.1 + Math.random() * 1.3, age: 0, hue: Math.random(), wob: Math.random() * 6.28 });
   };
   let raf = 0, last = 0, acc = 0, on = false, seen = false;
   const step = now => {
@@ -38,7 +38,7 @@
       const m = motes[i]; m.age += dt; const k = m.age / m.life;
       if (k >= 1) { motes.splice(i, 1); continue; }
       m.x += (m.vx + Math.sin(m.age * 3 + m.wob) * 4) * dt; m.y += m.vy * dt;
-      const a = Math.sin(Math.PI * Math.min(1, k * 1.2)) * 0.85, c = GLOW.map((g, j) => Math.round(g + (HOT[j] - g) * m.hue));
+      const a = Math.sin(Math.PI * Math.min(1, k * 1.2)) * 0.95, c = GLOW.map((g, j) => Math.round(g + (HOT[j] - g) * m.hue));
       const rr = m.r * (1 - 0.35 * k) * 3, g = ctx.createRadialGradient(m.x, m.y, 0, m.x, m.y, rr);
       g.addColorStop(0, `rgba(${c[0]},${c[1]},${c[2]},${a})`); g.addColorStop(0.35, `rgba(${c[0]},${c[1]},${c[2]},${a * 0.45})`); g.addColorStop(1, `rgba(${c[0]},${c[1]},${c[2]},0)`);
       ctx.fillStyle = g; ctx.beginPath(); ctx.arc(m.x, m.y, rr, 0, Math.PI * 2); ctx.fill();
