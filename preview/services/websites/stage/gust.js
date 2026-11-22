@@ -27,14 +27,14 @@ void main(){
   float a = smoothstep(0.0, 0.45, s) * smoothstep(1.0, 0.82, s) * (1.0 - vV * vV);
   vec3 c = mix(uPale, mix(uRose, uGold, s), uCharge);
   float band = uCharge * exp(-pow((vU - uBand) / uBandW, 2.0));
-  c = mix(c, vec3(1.0, 0.93, 0.84), band * 0.7);
+  c = mix(c, vec3(1.0, 0.94, 0.92), band * 0.6);
   gl_FragColor = vec4(c, clamp(a * uAlpha * (1.0 + band * 1.6), 0.0, 1.0));
 }`;
 
 export function makeGust(T, scene, P, S, lift = 1) {
   // P: the till's resting base (world), S: the hero scale. The gust's frame: x across the screen, y up, z toward you.
   const at = (x, y, z) => new T.Vector3(P.x + x * S, P.y + y * S * lift + y * S * (1 - lift) * 0.6, P.z + z * S);
-  const pale = new T.Color(0xece6ee), gold = new T.Color(0xe8b94a), rose = new T.Color(0xd8928a);
+  const pale = new T.Color(0xece6ee), gold = new T.Color(0xf0d9a2), rose = new T.Color(0xe7aaa2)   // champagne gold and the site rose: never orange;
 
   function ribbon(pts, width, front) {
     const curve = new T.CatmullRomCurve3(pts), N = 96, pos = [], u = [], v = [], idx = [];
@@ -81,18 +81,18 @@ export function makeGust(T, scene, P, S, lift = 1) {
   const crestU = 0.5;                                     // the till sits mid-line
   // a soft rose-gold bloom under the crest, so the swap is never seen bare
   const glowTex = (() => { const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d');
-    const g = x.createRadialGradient(64, 64, 0, 64, 64, 64); g.addColorStop(0, 'rgba(255,236,214,1)'); g.addColorStop(0.35, 'rgba(232,185,74,0.55)');
-    g.addColorStop(0.7, 'rgba(216,146,138,0.18)'); g.addColorStop(1, 'rgba(216,146,138,0)'); x.fillStyle = g; x.fillRect(0, 0, 128, 128);
+    const g = x.createRadialGradient(64, 64, 0, 64, 64, 64); g.addColorStop(0, 'rgba(255,240,232,0.85)'); g.addColorStop(0.3, 'rgba(240,217,162,0.38)');
+    g.addColorStop(0.65, 'rgba(231,170,162,0.12)'); g.addColorStop(1, 'rgba(216,146,138,0)'); x.fillStyle = g; x.fillRect(0, 0, 128, 128);
     return new T.CanvasTexture(c); })();
   const glowMat = new T.SpriteMaterial({ map: glowTex, blending: T.AdditiveBlending, depthWrite: false, depthTest: false, transparent: true, opacity: 0 });
-  const glow = new T.Sprite(glowMat); glow.renderOrder = 9; glow.scale.set(0.62 * S, 0.62 * S, 1); scene.add(glow);
+  const glow = new T.Sprite(glowMat); glow.renderOrder = 9; glow.scale.set(0.42 * S, 0.42 * S, 1); scene.add(glow);
 
   // debris: blades (thin tapered curved strips) and blue grama heads (the eyelash: a curved spine, bristles on one side)
   const bladeGeo = (() => { const pos = [], idx = [], N = 6;
-    for (let i = 0; i <= N; i++) { const k = i / N, w = 0.0028 * (1 - k * 0.92), y = k * 0.075, x = 0.012 * k * k;
+    for (let i = 0; i <= N; i++) { const k = i / N, w = 0.0042 * (1 - k * 0.92), y = k * 0.11, x = 0.018 * k * k;
       pos.push(x - w, y, 0, x + w, y, 0); if (i < N) { const a = i * 2; idx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2); } }
     const g = new T.BufferGeometry(); g.setAttribute('position', new T.Float32BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals();
-    g.translate(0, -0.037, 0); return g; })();
+    g.translate(0, -0.055, 0); return g; })();
   const gramaTex = (() => { const c = document.createElement('canvas'); c.width = 256; c.height = 96; const x = c.getContext('2d');
     x.strokeStyle = '#e9dccd'; x.lineCap = 'round';
     x.lineWidth = 5; x.beginPath(); x.moveTo(20, 70); x.quadraticCurveTo(120, 20, 236, 34); x.stroke();
@@ -102,7 +102,7 @@ export function makeGust(T, scene, P, S, lift = 1) {
     const t = new T.CanvasTexture(c); t.colorSpace = T.SRGBColorSpace; return t; })();
   const bladeMats = [0x8ea38c, 0x6f8a72, 0xa9b89a].map(c => new T.MeshStandardMaterial({ color: c, roughness: 0.8, side: T.DoubleSide }));
   const gramaMat = new T.MeshBasicMaterial({ map: gramaTex, transparent: true, alphaTest: 0.3, side: T.DoubleSide, depthWrite: false });
-  const gramaGeo = new T.PlaneGeometry(0.075, 0.028);
+  const gramaGeo = new T.PlaneGeometry(0.10, 0.0375);
   const pieces = [];
   const fly = (mesh, t0, t1, a, c, b, spin, fall) => { mesh.visible = false; mesh.frustumCulled = false; scene.add(mesh);
     pieces.push({ mesh, t0, t1, a, b, c, spin, fall, ph: rnd(0, 6.28) }); };
@@ -140,7 +140,7 @@ export function makeGust(T, scene, P, S, lift = 1) {
     cu.uBand.value = crestU - 0.07 + 0.14 * clamp((t - 0.30) / 0.06); cu.uBandW.value = 0.085;
     crest.mesh.visible = cu.uAlpha.value > 0;
     glow.position.copy(at(0, 0.17, 0.26));
-    glowMat.opacity = 0.95 * bell(t, 0.295, 0.33, 0.37); glow.visible = glowMat.opacity > 0.002;
+    glowMat.opacity = 0.7 * bell(t, 0.30, 0.33, 0.36); glow.visible = glowMat.opacity > 0.002;
     // the debris on their paths, tumbling; the calm pieces sway as they fall and rest a beat, then go
     for (const d of pieces) {
       const k = (t - d.t0) / (d.t1 - d.t0);

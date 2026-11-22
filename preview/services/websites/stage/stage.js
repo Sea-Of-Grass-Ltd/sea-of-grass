@@ -124,8 +124,8 @@ class SogStage extends HTMLElement {
       if (tr) {
         for (const c of [...regRig.children]) regRig.remove(c);
         for (const c of [...tr.children]) regRig.add(c);
-        const glass = new T.MeshPhysicalMaterial({ color: 0x0b0a10, metalness: 0, roughness: 0.06, transparent: true, opacity: 0.58,
-          clearcoat: 1, clearcoatRoughness: 0.04, envMapIntensity: 1.6, depthWrite: false, side: T.DoubleSide });
+        const glass = new T.MeshPhysicalMaterial({ color: 0x07060b, metalness: 0, roughness: 0.06, transparent: true, opacity: 0.66,
+          clearcoat: 1, clearcoatRoughness: 0.04, envMapIntensity: 0.9, depthWrite: false, side: T.DoubleSide });
         const window_ = glass.clone(); window_.opacity = 0.3;
         regRig.traverse(o => {
           if (!o.isMesh) return;
@@ -133,6 +133,11 @@ class SogStage extends HTMLElement {
           if (n === 'tl_glass') { o.material = glass; o.renderOrder = 2; }
           else if (n === 'tl_window') { o.material = window_; o.renderOrder = 3; }
           else if (n === 'tl_rose') { o.material = new T.MeshBasicMaterial({ color: 0xffc4bb, toneMapped: false }); }
+          else if (o.material && 'envMapIntensity' in o.material) {   // the room light blew the metals out to white: tame it
+            const k = { tl_keytop: 0.45, tl_alu: 0.6, tl_satin: 0.35, tl_graphite: 0.5, tl_flag: 0.4, tl_gold: 0.8 }[n];
+            if (k !== undefined) o.material.envMapIntensity = k;
+            if (n === 'tl_satin') o.material.color.multiplyScalar(0.7);
+          }
         });
       }
     }
