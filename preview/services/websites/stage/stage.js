@@ -522,7 +522,8 @@ class SogStage extends HTMLElement {
     const dockCam = (el, w, h) => {
       const aspect = w / h, half = Math.tan(T.MathUtils.degToRad(PHONE.fov / 2)), p = T.MathUtils.degToRad(PHONE.pitch);
       const cs = getComputedStyle(el), drop = parseFloat(cs.getPropertyValue('--phone-drop')), fitW = parseFloat(cs.getPropertyValue('--phone-fit-w'));
-      const dist = aspect > 1 && fitW ? fitW / (2 * half * aspect) : PHONE.fit / (2 * half * Math.min(1, aspect));
+      const fitV = parseFloat(cs.getPropertyValue('--phone-fit')), fit = isNaN(fitV) ? PHONE.fit : fitV;   // the same --phone-fit as <sog-phone>
+      const dist = aspect > 1 && fitW ? fitW / (2 * half * aspect) : fit / (2 * half * Math.min(1, aspect));
       const look = new T.Vector3(PHONE.lookX, PHONE.lookY, 0);
       const pos = new T.Vector3(look.x, look.y + Math.sin(p) * dist, look.z + Math.cos(p) * dist);
       const m = new T.Matrix4().lookAt(pos, look, new T.Vector3(0, 1, 0)).setPosition(pos);

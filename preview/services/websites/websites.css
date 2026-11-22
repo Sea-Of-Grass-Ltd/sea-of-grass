@@ -788,3 +788,7 @@ main{overflow-x:clip}
 
 /* the card's motes canvas (card-motes.js): above the card's edge light, never catching a tap */
 .card-motes{position:absolute;z-index:4;pointer-events:none}
+
+/* narrow screens: the phone's square box framed a little wider, so its cord never touches or leaves the left edge
+   (Tristan 11-22: the cord was cut off). Read by <sog-phone> and by the flying 3D phone, so the hand-over still matches */
+@media (max-width:980px){#calls sog-phone{--phone-fit:.44}}
