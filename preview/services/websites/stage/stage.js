@@ -256,7 +256,7 @@ class SogStage extends HTMLElement {
       return units.filter(u => !u.isSkinnedMesh).map((u, i) => {
         const bb = new T.Box3().setFromObject(u).applyMatrix4(inv), c = bb.getCenter(new T.Vector3());
         const dir = c.clone().sub(mid); dir.y *= 0.8; if (dir.lengthSq() < 1e-6) dir.set(0, 1, 0);
-        dir.normalize().multiplyScalar(0.10 + 0.05 * ((i * 37) % 7) / 7);
+        dir.normalize().multiplyScalar(0.06 + 0.035 * ((i * 37) % 7) / 7);
         // the offset in the part's own parent's frame (the phone's parts hang off a 'root' group)
         const pq = u.parent === rig ? new T.Quaternion() : u.parent.quaternion.clone().invert(), ps = u.parent === rig ? 1 : 1 / u.parent.scale.x;
         return { u, p0: u.position.clone(), r0: u.rotation.clone(), off: dir.applyQuaternion(pq).multiplyScalar(ps),
@@ -268,8 +268,8 @@ class SogStage extends HTMLElement {
     const burst = (parts, e) => { for (const p of parts) { p.u.position.copy(p.p0).addScaledVector(p.off, e);
       p.u.rotation.set(p.r0.x + p.spin.x * e, p.r0.y + p.spin.y * e, p.r0.z + p.spin.z * e); } };
     // the light the beams pour in: the till's metal parts warm from inside as it fills
-    const lit = []; if (wind) regRig.traverse(o => { if (o.isMesh && o.material?.emissive && /^tl_(alu|keytop|gold|satin)$/.test(o.material.name)) lit.push(o.material); });
-    for (const m of new Set(lit)) m.emissive.set(0xf3d6c4);
+    const lit = []; if (wind) regRig.traverse(o => { if (o.isMesh && o.material?.emissive && /^tl_(alu|keytop|gold)$/.test(o.material.name)) lit.push(o.material); });
+    for (const m of new Set(lit)) m.emissive.set(0xe9b8ad);
     const fadeTo = (rig, f) => rig.traverse(o => { if (!o.isMesh) return; for (const m of [].concat(o.material)) {
       if (m.userData.o0 === undefined) { m.userData.o0 = m.opacity; m.userData.tr0 = m.transparent; }
       m.opacity = m.userData.o0 * f; m.transparent = f < 1 || m.userData.tr0; } });
@@ -297,7 +297,7 @@ class SogStage extends HTMLElement {
         wind(t);
         // filled with light, it bursts mid-spin; the till's parts fade as the phone's fly back together through them
         const glow = span(t, 0.14, 0.285) * (1 - span(t, 0.30, 0.33));
-        for (const m of new Set(lit)) m.emissiveIntensity = 0.9 * glow;
+        for (const m of new Set(lit)) m.emissiveIntensity = 0.55 * glow;
         const eT = span(t, 0.285, 0.322), eP = 1 - span(t, 0.33, 0.385);
         burst(tillParts, eT); burst(phoneParts, eP);
         // on top of the burst: the keys rattle and the flags flutter while the gust blows
