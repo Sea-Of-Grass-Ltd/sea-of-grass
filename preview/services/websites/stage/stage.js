@@ -18,12 +18,16 @@ sog-stage.shown canvas{opacity:1}
 `;
 const PHONE = { phoneYaw: 0.42, lookX: -0.028, lookY: 0.072, pitch: 22, fit: 0.375, drop: 0.09, fov: 30 };   // <sog-phone>'s camera
 const COL = { phone: 0xf1e8d8 };
-// the jump-morph (tools/rotary-phone/build_transform.py, same table): (t, height m, vertical stretch, turn deg):
-// crouch, spring up stretching, swap at the fastest point, fly, land, squash, settle
-const JUMP = [[0, 0, 1, 0], [0.10, 0, 1, 0], [0.22, 0, 0.72, 0], [0.27, 0.05, 1.28, 10], [0.3125, 0.15, 1.34, 60], [0.38, 0.27, 1.06, 170],
-  [0.44, 0.30, 0.95, 250], [0.51, 0.21, 1.12, 330], [0.57, 0, 1.18, 360], [0.61, 0, 0.74, 360], [0.67, 0, 1.08, 360], [0.72, 0, 0.97, 360],
-  [0.78, 0, 1, 360], [1, 0, 1, 360]];
-const SWAP = 0.3125;
+// the jump-morph as a Front Range gust (Tristan 2026-11-22: the old spin "isn't believable", its swap cut at 60 deg with the
+// till still facing you). (t, height m, vertical stretch, turn deg, tilt back deg about the back foot):
+// the gust arrives and the till rocks back twice and digs in, the gust lifts and spins it, the swap under the magic crest
+// at 180 (its back to you), then the wind calms and the phone lands, squashes and settles
+const JUMP = [[0, 0, 1, 0, 0], [0.10, 0, 1, 0, 0], [0.13, 0, 0.97, 0, 4], [0.155, 0, 0.94, 0, 0], [0.18, 0, 0.96, 0, 6],
+  [0.205, 0, 0.86, 0, 0], [0.22, 0, 0.76, 0, 0], [0.27, 0.06, 1.22, 30, 0], [0.30, 0.16, 1.32, 120, 0], [0.33, 0.23, 1.18, 180, 0],
+  [0.36, 0.27, 1.06, 215, 0], [0.44, 0.30, 0.95, 280, 0], [0.51, 0.21, 1.10, 335, 0], [0.57, 0, 1.18, 360, 0], [0.61, 0, 0.74, 360, 0],
+  [0.67, 0, 1.08, 360, 0], [0.72, 0, 0.97, 360, 0], [0.78, 0, 1, 360, 0], [1, 0, 1, 360, 0]];
+const SWAP = 0.33;
+const BACK_FOOT = 0.092;                                         // the till's back edge, from its centre (m, before HERO)
 const B = (T, x, y, z) => new T.Vector3(x, z, -y);              // Blender Z-up -> glTF Y-up
 const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
 const ease = x => x * x * (3 - 2 * x);
@@ -64,9 +68,10 @@ class SogStage extends HTMLElement {
   async boot() {
     this.dataset.state = 'loading';
     try {
-      const [THREE, { GLTFLoader }, { RoomEnvironment }, { MeshoptDecoder }] = await Promise.all([
+      const [THREE, { GLTFLoader }, { RoomEnvironment }, { MeshoptDecoder }, { makeGust }] = await Promise.all([
         import(VENDOR + 'three.module.min.js'), import(VENDOR + 'loaders/GLTFLoader.js'),
-        import(VENDOR + 'environments/RoomEnvironment.js'), import(VENDOR + 'libs/meshopt_decoder.module.js')]);
+        import(VENDOR + 'environments/RoomEnvironment.js'), import(VENDOR + 'libs/meshopt_decoder.module.js'), import(HERE + 'gust.js')]);
+      this._makeGust = makeGust;
       const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
       const [gltf, till] = await Promise.all([loader.loadAsync(HERE + 'stage.glb'), loader.loadAsync(HERE + 'till.glb')]);
       this.build(THREE, gltf, RoomEnvironment, till);
@@ -222,20 +227,29 @@ class SogStage extends HTMLElement {
     // the till (2026-11-22): a cool white key light for the glass and aluminium, and the one rose light (#d8928a), no amber
     const regLamp = new T.PointLight(0xfff4f0, 1.6, 1.3, 1.6); regLamp.position.copy(pivot).add(new T.Vector3(-0.18, 0.39, 0.36)); actor.add(regLamp);
     const regFill = new T.PointLight(0xd8928a, 0.7, 0.9, 2); regFill.position.copy(pivot).add(new T.Vector3(0.24, 0.09, 0.27)); actor.add(regFill);
+    // the magic gust (gust.js): reduced motion keeps the still till, so no wind is built
+    const wind = this.still || !this._makeGust ? null : this._makeGust(T, actor, pivot.clone(), HERO, BARE ? 0.45 : 1);
     actor.updateMatrixWorld(true);
     // the landing spot: the dock camera hangs off this, not the jumping rig; at the phone's own size (it shrinks from
     // the hero size back to 1 as it docks, so it lands exactly as big as <sog-phone> draws it)
     const phRest = phRig.matrixWorld.clone();                      // (taken before the first morph, so at scale 1)
     const morph = t => {
-      let h = 0, sz = 1, r = 360;
+      let h = 0, sz = 1, r = 360, tl = 0;
       for (let i = 0; i < JUMP.length - 1; i++) {
-        const [t0, h0, s0, r0] = JUMP[i], [t1, h1, s1, r1] = JUMP[i + 1];
-        if (t <= t1) { const u = ease(t1 > t0 ? (t - t0) / (t1 - t0) : 1); h = h0 + (h1 - h0) * u; sz = s0 + (s1 - s0) * u; r = r0 + (r1 - r0) * u; break; }
+        const [t0, h0, s0, r0, k0] = JUMP[i], [t1, h1, s1, r1, k1] = JUMP[i + 1];
+        if (t <= t1) { const u = ease(t1 > t0 ? (t - t0) / (t1 - t0) : 1); h = h0 + (h1 - h0) * u; sz = s0 + (s1 - s0) * u; r = r0 + (r1 - r0) * u; tl = k0 + (k1 - k0) * u; break; }
       }
       const sxy = 1 / Math.sqrt(sz), q = new T.Quaternion().setFromAxisAngle(new T.Vector3(0, 1, 0), T.MathUtils.degToRad(r)).multiply(restQ);
-      for (const rig of [regRig, phRig]) { rig.position.set(pivot.x, pivot.y + h * (BARE ? 0.45 : 1), pivot.z); rig.quaternion.copy(q); rig.scale.set(sxy * HERO, sz * HERO, sxy * HERO); }
+      // the rock: tipped back about the back foot, so the front lifts and the back edge stays planted
+      const qt = new T.Quaternion().setFromAxisAngle(new T.Vector3(1, 0, 0), -T.MathUtils.degToRad(tl));
+      const foot = new T.Vector3(0, 0, -BACK_FOOT * HERO * sxy), lift = foot.clone().sub(foot.clone().applyQuaternion(qt));
+      q.multiply(qt);
+      for (const rig of [regRig, phRig]) { rig.position.set(pivot.x + lift.x, pivot.y + h * (BARE ? 0.45 : 1) + lift.y, pivot.z + lift.z); rig.quaternion.copy(q); rig.scale.set(sxy * HERO, sz * HERO, sxy * HERO); }
       regRig.visible = t < SWAP; phRig.visible = t >= SWAP;
-      regLamp.visible = regFill.visible = t < SWAP;
+      // the lamps fade across the crest instead of cutting at the swap
+      const lamp = 1 - span(t, 0.30, 0.36);
+      regLamp.intensity = 1.6 * lamp; regFill.intensity = 0.7 * lamp; regLamp.visible = regFill.visible = lamp > 0;
+      if (wind) wind(t);
       ghost.position.copy(regRig.position); ghost.quaternion.copy(regRig.quaternion); ghost.scale.copy(regRig.scale); ghost.visible = regRig.visible;
     };
 
