@@ -254,7 +254,7 @@ class SogStage extends HTMLElement {
       }
       const all = new T.Box3().setFromObject(rig).applyMatrix4(inv), mid = all.getCenter(new T.Vector3());
       // details glued to a body (the phone's reliefs, labels, plates, feet) fly with that body, not on their own
-      const glued = /^(relief|label|centre_label|digit_marks|number_plate|dial_bezel|feet|cradle|finger_stop)/;
+      const glued = /^(relief|label|centre_label|digit_marks|number_plate|dial_bezel|feet|cradle|finger_stop|base_plate)/;
       const list = units.filter(u => !u.isSkinnedMesh).map((u, i) => {
         const bb = new T.Box3().setFromObject(u).applyMatrix4(inv), c = bb.getCenter(new T.Vector3());
         const dir = c.clone().sub(mid); dir.y *= 0.8; if (dir.lengthSq() < 1e-6) dir.set(0, 1, 0);
