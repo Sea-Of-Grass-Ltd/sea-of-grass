@@ -335,12 +335,12 @@ class SogStage extends HTMLElement {
         wind(t);
         // filled with light, it bursts mid-spin; the till's parts fade as the phone's fly back together through them
         const glow = span(t, 0.14, 0.285) * (1 - span(t, 0.30, 0.33));
-        for (const m of new Set(lit)) m.emissiveIntensity = 0.55 * glow;
+        for (const m of new Set(lit)) m.emissiveIntensity = 0.9 * glow;
         // the charge: up from 0.18, peaking as it bursts at 0.30, cornflower brightening to its pale peak; gone with the till
         // the charge builds over 0.18-0.30, peaks at lamp right before the burst, and is gone the instant the case bursts
         const build = span(t, 0.18, 0.30), charge = build * (1 - span(t, 0.298, 0.306));
         rimCol.copy(ROSE).lerp(GOLDW, span(t, 0.22, 0.30));
-        for (const m of glassMats) { m.emissive.copy(TILL); m.emissiveIntensity = 2.6 * Math.pow(charge, 1.15); }   // the glass lit from within, in the body blue (the pale peak is the rim's)
+        for (const m of glassMats) { m.emissive.copy(TILL); m.emissiveIntensity = 1.15 * Math.pow(charge, 1.1); m.toneMapped = charge < 0.02; }   // untonemapped while lit: film tone mapping bleached the blue toward white   // the glass lit from within, in the body blue (the pale peak is the rim's)
         innerLamp.color.copy(TILL); innerLamp.intensity = 7 * charge;
         const trimOn = 1 - span(t, 0.299, 0.307);                    // the edges go with the light as the case bursts: no wireframe left flying
         for (let i = 0; i < trimMats.length; i++) { const m = trimMats[i]; m.color.copy(trimBase[i]).lerp(rimCol, Math.min(1, build * 1.6));   // never bare white
