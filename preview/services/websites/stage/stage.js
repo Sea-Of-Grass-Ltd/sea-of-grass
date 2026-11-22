@@ -345,7 +345,7 @@ class SogStage extends HTMLElement {
       const pts = new T.Points(g, m); pts.frustumCulled = false; pts.renderOrder = 9; actor.add(pts);
       const w = new T.Vector3(), nw = new T.Vector3(), c = new T.Color();
       return { m, update(t, H) {
-        m.uniforms.uScale.value = H * 0.018 * renderer.getPixelRatio();   // a mote's size in px follows the canvas height
+        m.uniforms.uScale.value = H * 0.055 * renderer.getPixelRatio();   // a mote's size in px follows the canvas height
         regRig.updateMatrixWorld(true); phRig.updateMatrixWorld(true);
         const top = new T.Vector3(0, 0.30, 0).applyMatrix4(regRig.matrixWorld).y;   // the ceiling: just over the till's top
         list.forEach((d, i) => {
