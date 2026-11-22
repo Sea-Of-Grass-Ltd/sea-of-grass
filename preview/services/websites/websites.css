@@ -771,3 +771,8 @@ main{overflow-x:clip}
 .close-more>.info-grid{margin-top:18px}
 .close-more h2{text-align:left}
 @media (prefers-reduced-motion:reduce){.close-more .cm-plus{transition:none}}
+.close-more .cm-text{display:grid;gap:4px;text-align:left}
+.close-more .cm-line{font:600 18px/1.3 var(--head);color:var(--text)}
+.close-more .cm-sub{font:400 14.5px/1.4 var(--body);color:var(--soft)}
+.close-more>summary{gap:14px;padding:12px 4px}
+.close-more .cm-plus{width:32px;height:32px;font-size:24px;flex:none;color:var(--text);box-shadow:inset 0 0 0 1.5px rgba(var(--text-rgb),.5)}
