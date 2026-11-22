@@ -280,11 +280,11 @@ class SogStage extends HTMLElement {
         const ft = 1 - span(t, 0.318, 0.334), fp = span(t, 0.326, 0.342);
         regRig.visible = ft > 0.01; phRig.visible = fp > 0.01; fadeTo(regRig, ft); fadeTo(phRig, fp);
         const trail = (list, rig, f) => list.forEach((e, i) => {
-          const o = smear * f * (0.16 - i * 0.035); e.visible = o > 0.004 && rig.visible !== undefined; if (!e.visible) return;
+          const o = smear * f * (0.12 - i * 0.026); e.visible = o > 0.004 && rig.visible !== undefined; if (!e.visible) return;
           e.position.copy(rig.position); e.scale.copy(rig.scale);
           e.quaternion.setFromAxisAngle(new T.Vector3(0, 1, 0), -T.MathUtils.degToRad(9 * (i + 1))).multiply(rig.quaternion);
           e.traverse(m => { if (m.isMesh) m.material.opacity = o; }); });
-        trail(tillEchoes, regRig, Math.max(ft, 0.35)); trail(phoneEchoes, phRig, Math.max(fp, 0.35));
+        trail(tillEchoes, regRig, ft); trail(phoneEchoes, phRig, fp);
       }
       ghost.position.copy(regRig.position); ghost.quaternion.copy(regRig.quaternion); ghost.scale.copy(regRig.scale); ghost.visible = regRig.visible;
     };
