@@ -228,11 +228,7 @@ class SogStage extends HTMLElement {
     }
     this._dbg = { T, root, regRig, phRig, stage, actor };
     const pivot = regRig.position.clone(), restQ = regRig.quaternion.clone();
-    // the register's own warm light (Tristan 2026-11-21): an amber lamp just above and in front, so the wood glows warm
-    // against the night; it goes out at the swap, so the landed phone keeps <sog-phone>'s light
-    // the till (2026-11-22): a cool white key light for the glass and aluminium, and the one rose light (#d8928a), no amber
-    const regLamp = new T.PointLight(0xfff4f0, 1.6, 1.3, 1.6); regLamp.position.copy(pivot).add(new T.Vector3(-0.18, 0.39, 0.36)); actor.add(regLamp);
-    const regFill = new T.PointLight(0xd8928a, 0.7, 0.9, 2); regFill.position.copy(pivot).add(new T.Vector3(0.24, 0.09, 0.27)); actor.add(regFill);
+    // no lamps of its own any more (Tristan 2026-11-22, glows vs Dope Security): the overhead key is the one warm light
     // the magic gust (gust.js): reduced motion keeps the still till, so no wind is built
     const wind = this.still || !this._makeGust ? null : this._makeGust(T, actor, pivot.clone(), HERO, BARE ? 0.45 : 1);
     // the wipe under the crest: the till keeps what the band hasn't reached, the phone what it has
@@ -259,9 +255,6 @@ class SogStage extends HTMLElement {
       q.multiply(qt);
       for (const rig of [regRig, phRig]) { rig.position.set(pivot.x + lift.x, pivot.y + h * (BARE ? 0.45 : 1) + lift.y, pivot.z + lift.z); rig.quaternion.copy(q); rig.scale.set(sxy * HERO, sz * HERO, sxy * HERO); }
       regRig.visible = t < SWAP; phRig.visible = t >= SWAP;
-      // the lamps fade across the crest instead of cutting at the swap
-      const lamp = 1 - span(t, 0.30, 0.36);
-      regLamp.intensity = 1.6 * lamp; regFill.intensity = 0.7 * lamp; regLamp.visible = regFill.visible = lamp > 0;
       if (wind) {
         wind(t);
         if (wind.wipe === 1) { regRig.visible = phRig.visible = true; tillCut.constant = -wind.cutX; phoneCut.constant = wind.cutX; }
