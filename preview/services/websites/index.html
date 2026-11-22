@@ -45,7 +45,7 @@
     </header>
 </div>
 <nav class="chapters" data-chapters aria-label="Page chapters">
-  <a href="#calls" aria-label="01 Calls" title="Calls"><b>01</b></a><a href="#demo" aria-label="02 Sold out" title="Sold out"><b>02</b></a><a href="#bunny-world" aria-label="03 Bunny World" title="Bunny World"><b>03</b></a><a href="#care" aria-label="04 Care" title="Care"><b>04</b></a><a href="#plans" aria-label="05 Prices" title="Prices"><b>05</b></a><a href="#faq" aria-label="06 Questions" title="Questions"><b>06</b></a><a href="#start" aria-label="07 Talk" title="Talk"><b>07</b></a>
+  <a href="#calls" aria-label="01 Calls" title="Calls"><b>01</b></a><a href="#demo" aria-label="02 Sold out" title="Sold out"><b>02</b></a><a href="#bunny-world" aria-label="03 Bunny World" title="Bunny World"><b>03</b></a><a href="#care" aria-label="04 Care" title="Care"><b>04</b></a><a href="#plans" aria-label="05 Prices" title="Prices"><b>05</b></a><a href="#start" aria-label="06 Talk" title="Talk"><b>06</b></a>
 </nav>
 
 <!-- 1 Top: the night stage in real 3D (stage/stage.js): the line on the board, a one-line price hint and the soft button.
@@ -169,8 +169,18 @@
   </div>
 </div></section>
 
-<!-- 6 Right after the price: the promises, what we can and never see, and the questions -->
-<section class="band info" id="facts" aria-labelledby="h-faq"><div class="in info-grid">
+<!-- 7 Close: a light, large line and a glass pill over the meadow -->
+<section class="close" id="start" aria-labelledby="h-start"><div class="in close-in">
+  <h2 id="h-start">Ready when you are.</h2>
+  <p class="close-sub">Start the Site Plan today, or book 15 minutes with Tristan or Bryce and we&rsquo;ll talk it through.</p>
+  <div class="close-acts">
+    <button type="button" class="u-btn close-start" data-add="site-plan">Start the plan <span class="u-pill" aria-hidden="true">&rarr;</span></button>
+    <a class="btn pill quiet close-book" data-book href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book 15 minutes</a>
+  </div>
+  <span class="call-us touch">or call 303.775.1333</span>
+  <details class="close-more info" id="facts">
+  <summary><span class="cm-text"><span class="cm-line">Questions before you start?</span><span class="cm-sub">Cancelling, the contract, who owns the site, what we see in your register.</span></span><span class="cm-plus" aria-hidden="true">+</span></summary>
+  <div class="info-grid">
   <ul class="benefits info-promises" aria-label="What you can count on">
     <li class="touch t-sage"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Two-minute hookup</li><li class="touch t-soft"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7H4V2"/><path d="M4 7a9 9 0 1 1-1 6"/></svg>Owe nothing if you back out</li><li class="touch t-sage"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l4 4v16H6z"/><path d="M9 13l2 2 4-4"/></svg>Fixed price in writing</li><li class="touch t-soft"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>Yours after 12 months</li>
   </ul>
@@ -201,20 +211,8 @@
     </details>
     </div>
   </div>
-</div></section>
-
-
-
-
-<!-- 7 Close: a light, large line and a glass pill over the meadow -->
-<section class="close" id="start" aria-labelledby="h-start"><div class="in close-in">
-  <h2 id="h-start">Ready when you are.</h2>
-  <p class="close-sub">Start the Site Plan today, or book 15 minutes with Tristan or Bryce and we&rsquo;ll talk it through.</p>
-  <div class="close-acts">
-    <button type="button" class="u-btn close-start" data-add="site-plan">Start the plan <span class="u-pill" aria-hidden="true">&rarr;</span></button>
-    <a class="btn pill quiet close-book" data-book href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book 15 minutes</a>
-  </div>
-  <span class="call-us touch">or call 303.775.1333</span>
+</div>
+  </details>
   </div>
   <div class="live-grass" data-live-grass aria-hidden="true"></div>
 </section>
