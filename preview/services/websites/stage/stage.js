@@ -49,9 +49,8 @@ class SogStage extends HTMLElement {
     this.dataset.state = this.dataset.state || 'still';
     this.still = matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (lowPower() || !webglOK()) { this.giveUp(); return; }
-    const go = () => { if (this.dataset.state === 'still') this.boot(); };
-    const idle = () => ('requestIdleCallback' in window ? requestIdleCallback(go, { timeout: 1500 }) : setTimeout(go, 600));
-    if (document.readyState === 'complete') idle(); else addEventListener('load', idle, { once: true });
+    // straight away (Tristan 11-22: the register must load immediately), not after the page's load and an idle wait
+    if (this.dataset.state === 'still') this.boot();
   }
   disconnectedCallback() { this._ro?.disconnect(); removeEventListener('scroll', this._onScroll); cancelAnimationFrame(this._raf); this._renderer?.dispose(); }
   giveUp() {
