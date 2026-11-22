@@ -782,3 +782,6 @@ main{overflow-x:clip}
   box-shadow:inset -1.5px 1.5px 0 var(--glow),inset -6px 6px 12px -9px color-mix(in srgb,var(--glow-fade) 70%,transparent);opacity:0;transition:opacity .9s ease}
 .price-band.lit .u-card::after{opacity:1}
 .price-band .u-scene img{object-position:50% 0%}
+
+/* the card's motes canvas (card-motes.js): above the card's edge light, never catching a tap */
+.card-motes{position:absolute;z-index:4;pointer-events:none}
