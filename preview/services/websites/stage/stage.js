@@ -18,12 +18,16 @@ sog-stage.shown canvas{opacity:1}
 `;
 const PHONE = { phoneYaw: 0.42, lookX: -0.028, lookY: 0.072, pitch: 22, fit: 0.375, drop: 0.09, fov: 30 };   // <sog-phone>'s camera
 const COL = { phone: 0xf1e8d8 };
-// the jump-morph (tools/rotary-phone/build_transform.py, same table): (t, height m, vertical stretch, turn deg):
-// crouch, spring up stretching, swap at the fastest point, fly, land, squash, settle
-const JUMP = [[0, 0, 1, 0], [0.10, 0, 1, 0], [0.22, 0, 0.72, 0], [0.27, 0.05, 1.28, 10], [0.3125, 0.15, 1.34, 60], [0.38, 0.27, 1.06, 170],
-  [0.44, 0.30, 0.95, 250], [0.51, 0.21, 1.12, 330], [0.57, 0, 1.18, 360], [0.61, 0, 0.74, 360], [0.67, 0, 1.08, 360], [0.72, 0, 0.97, 360],
-  [0.78, 0, 1, 360], [1, 0, 1, 360]];
-const SWAP = 0.3125;
+// the jump-morph as a Front Range gust (Tristan 2026-11-22: the old spin "isn't believable"; the first gust drew lines over
+// it and he said it didn't look good, so now the wind shows in the till itself). (t, height m, vertical stretch, turn deg,
+// lean deg away from the wind): the gust shoves it over twice and it digs in while beams of light pour into it, it lifts,
+// bursts into its parts at the turn, the phone's parts fly back together out of the burst, and it lands and settles
+const JUMP = [[0, 0, 1, 0, 0], [0.10, 0, 1, 0, 0], [0.125, 0, 0.98, 0, 9], [0.145, 0, 0.97, 0, 3], [0.17, 0, 0.96, 0, 14],
+  [0.19, 0, 0.94, 0, 5], [0.205, 0, 0.86, 0, 8], [0.22, 0, 0.76, 0, 0], [0.27, 0.06, 1.22, 20, -6], [0.30, 0.12, 1.28, 80, -4],
+  [0.33, 0.18, 1.16, 180, 0], [0.36, 0.25, 1.06, 280, 0], [0.44, 0.30, 0.95, 330, 0], [0.51, 0.21, 1.10, 350, 0], [0.57, 0, 1.18, 360, 0],
+  [0.61, 0, 0.74, 360, 0], [0.67, 0, 1.08, 360, 0], [0.72, 0, 0.97, 360, 0], [0.78, 0, 1, 360, 0], [1, 0, 1, 360, 0]];
+const SWAP = 0.33;
+const SIDE_FOOT = 0.118;                                         // the till's side edge, from its centre (m, before HERO)
 const B = (T, x, y, z) => new T.Vector3(x, z, -y);              // Blender Z-up -> glTF Y-up
 const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
 const ease = x => x * x * (3 - 2 * x);
@@ -45,9 +49,8 @@ class SogStage extends HTMLElement {
     this.dataset.state = this.dataset.state || 'still';
     this.still = matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (lowPower() || !webglOK()) { this.giveUp(); return; }
-    const go = () => { if (this.dataset.state === 'still') this.boot(); };
-    const idle = () => ('requestIdleCallback' in window ? requestIdleCallback(go, { timeout: 1500 }) : setTimeout(go, 600));
-    if (document.readyState === 'complete') idle(); else addEventListener('load', idle, { once: true });
+    // straight away (Tristan 11-22: the register must load immediately), not after the page's load and an idle wait
+    if (this.dataset.state === 'still') this.boot();
   }
   disconnectedCallback() { this._ro?.disconnect(); removeEventListener('scroll', this._onScroll); cancelAnimationFrame(this._raf); this._renderer?.dispose(); }
   giveUp() {
@@ -64,18 +67,23 @@ class SogStage extends HTMLElement {
   async boot() {
     this.dataset.state = 'loading';
     try {
-      const [THREE, { GLTFLoader }, { RoomEnvironment }, { MeshoptDecoder }] = await Promise.all([
+      const [THREE, { GLTFLoader }, { RoomEnvironment }, { MeshoptDecoder }, { makeGust }] = await Promise.all([
         import(VENDOR + 'three.module.min.js'), import(VENDOR + 'loaders/GLTFLoader.js'),
-        import(VENDOR + 'environments/RoomEnvironment.js'), import(VENDOR + 'libs/meshopt_decoder.module.js')]);
-      const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(HERE + 'stage.glb');
-      this.build(THREE, gltf, RoomEnvironment);
+        import(VENDOR + 'environments/RoomEnvironment.js'), import(VENDOR + 'libs/meshopt_decoder.module.js'), import(HERE + 'gust.js')]);
+      this._makeGust = makeGust;
+      const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
+      // the bare page (the live one) needs only the rigs, the sign and the counter: stage-bare.glb is stage.glb without its
+      // meadow, sky and old toy register (192 KB, not 892), built by tools/rotary-phone/make_stage_bare.mjs; ?scene=1 keeps the full stage
+      const bare = new URLSearchParams(location.search).get('scene') !== '1';
+      const [gltf, till] = await Promise.all([loader.loadAsync(HERE + (bare ? 'stage-bare.glb' : 'stage.glb')), loader.loadAsync(HERE + 'till.glb')]);
+      this.build(THREE, gltf, RoomEnvironment, till);
     } catch (err) {
       console.warn('sog-stage:', err);
       this.dataset.state = 'failed'; this._canvas?.remove(); this.giveUp();
     }
   }
 
-  build(T, gltf, RoomEnvironment) {
+  build(T, gltf, RoomEnvironment, till) {
     const canvas = this._canvas = document.createElement('canvas');
     canvas.setAttribute('aria-hidden', 'true');
     this.append(canvas);
@@ -111,6 +119,33 @@ class SogStage extends HTMLElement {
 
     const root = gltf.scene;
     const regRig = root.getObjectByName('register_rig'), phRig = root.getObjectByName('phone_rig');
+    // the light colour comes from the page (--glow, --glow-hot on :root), so it changes in one place
+    const rootCss = getComputedStyle(document.documentElement), GLOW = new T.Color(rootCss.getPropertyValue('--glow').trim() || '#D4B26A'), GLOW_HOT = new T.Color(rootCss.getPropertyValue('--glow-hot').trim() || '#F2DFAE'), GLOW_FADE = new T.Color(rootCss.getPropertyValue('--glow-fade').trim() || '#8E7340');
+    // the Smoked-Glass Till (Tristan 2026-11-22: the wooden toy read as clipart; "everybody likes the effect, just not the
+    // register"): its parts go into the register's rig, in the same local frame, so the crouch, leap and morph carry over
+    if (till) {
+      const tr = till.scene.getObjectByName('till_rig');
+      if (tr) {
+        for (const c of [...regRig.children]) regRig.remove(c);
+        for (const c of [...tr.children]) regRig.add(c);
+        const glass = new T.MeshPhysicalMaterial({ color: 0x07060b, metalness: 0, roughness: 0.06, transparent: true, opacity: 0.66,
+          clearcoat: 1, clearcoatRoughness: 0.04, envMapIntensity: 0.9, depthWrite: false, side: T.DoubleSide });
+        const window_ = glass.clone(); window_.opacity = 0.3;
+        regRig.traverse(o => {
+          if (!o.isMesh) return;
+          const n = o.material?.name || '';
+          if (n === 'tl_glass') { o.material = glass; o.renderOrder = 2; }
+          else if (n === 'tl_window') { o.material = window_; o.renderOrder = 3; }
+          else if (n === 'tl_rose') { o.material = new T.MeshBasicMaterial({ color: GLOW.clone().lerp(new T.Color(0xffffff), 0.45), toneMapped: false }); }
+          else if (o.material && 'envMapIntensity' in o.material) {   // the room light blew the metals out to white: tame it
+            const k = { tl_keytop: 0.45, tl_alu: 0.6, tl_satin: 0.35, tl_graphite: 0.5, tl_flag: 0.4, tl_gold: 0.8 }[n];
+            if (k !== undefined) o.material.envMapIntensity = k;
+            if (o.material.anisotropy) o.material.anisotropy = 0;     // exported without tangents, it drew the brushed metal flat white
+            if (n === 'tl_satin') o.material.color.multiplyScalar(0.7);
+          }
+        });
+      }
+    }
     root.updateMatrixWorld(true);
     stage.add(root);
     for (const rig of [regRig, phRig]) actor.attach(rig);   // keep their world placement
@@ -197,24 +232,127 @@ class SogStage extends HTMLElement {
     }
     this._dbg = { T, root, regRig, phRig, stage, actor };
     const pivot = regRig.position.clone(), restQ = regRig.quaternion.clone();
-    // the register's own warm light (Tristan 2026-11-21): an amber lamp just above and in front, so the wood glows warm
-    // against the night; it goes out at the swap, so the landed phone keeps <sog-phone>'s light
-    const regLamp = new T.PointLight(0xff9a40, 1.6, 1.3, 1.6); regLamp.position.copy(pivot).add(new T.Vector3(-0.18, 0.39, 0.36)); actor.add(regLamp);
-    const regFill = new T.PointLight(0xff7a3a, 0.55, 0.9, 2); regFill.position.copy(pivot).add(new T.Vector3(0.24, 0.09, 0.27)); actor.add(regFill);
+    // no lamps of its own any more (Tristan 2026-11-22, glows vs Dope Security): the overhead key is the one warm light
+    // the magic gust (gust.js): reduced motion keeps the still till, so no wind is built
+    const wind = this.still || !this._makeGust ? null : this._makeGust(T, actor, pivot.clone(), HERO, GLOW, GLOW_HOT);
+    // the till's loose parts for the gust: its keys rattle and its price flags flutter on a hinge at their foot
+    const keys = [], flags = new T.Group();
+    if (wind) {
+      regRig.traverse(o => { if (o.isMesh && /^(key_|total_key)/.test(o.name)) keys.push({ o, y: o.position.y, k: keys.length }); });
+      const fl = []; regRig.traverse(o => { if (o.isMesh && /^price/.test(o.name)) fl.push(o); });
+      if (fl.length) {
+        regRig.updateMatrixWorld(true);
+        const bb = new T.Box3(); for (const o of fl) { o.geometry.computeBoundingBox(); bb.union(o.geometry.boundingBox.clone().applyMatrix4(o.matrix)); }
+        flags.position.set((bb.min.x + bb.max.x) / 2, bb.min.y, (bb.min.z + bb.max.z) / 2); regRig.add(flags);
+        for (const o of fl) { o.position.sub(flags.position); flags.add(o); }
+      }
+    }
+    // the burst (Tristan 2026-11-22: "glowing light beams that went inside of the register and then the register
+    // exploded into parts and did the transformation thing"): each rig comes apart into its parts, flung out from its
+    // centre with a spin, and the phone's parts fly back together out of the till's burst. Measured at rest.
+    const partsOf = rig => {
+      rig.updateMatrixWorld(true);
+      const inv = rig.matrixWorld.clone().invert(), units = [];
+      for (const c of rig.children) {
+        if (c.name === 'root' && !c.isMesh) units.push(...c.children); else if (c.isMesh || c.isGroup) units.push(c);
+      }
+      const all = new T.Box3().setFromObject(rig).applyMatrix4(inv), mid = all.getCenter(new T.Vector3());
+      // details glued to a body (the phone's reliefs, labels, plates, feet) fly with that body, not on their own
+      const glued = /^(relief|label|centre_label|digit_marks|number_plate|dial_bezel|feet|cradle|finger_stop|base_plate)/;
+      const list = units.filter(u => !u.isSkinnedMesh).map((u, i) => {
+        const bb = new T.Box3().setFromObject(u).applyMatrix4(inv), c = bb.getCenter(new T.Vector3());
+        const dir = c.clone().sub(mid); dir.y *= 0.8; if (dir.lengthSq() < 1e-6) dir.set(0, 1, 0);
+        dir.normalize().multiplyScalar(0.06 + 0.035 * ((i * 37) % 7) / 7);
+        // the offset in the part's own parent's frame (the phone's parts hang off a 'root' group)
+        const pq = u.parent === rig ? new T.Quaternion() : u.parent.quaternion.clone().invert(), ps = u.parent === rig ? 1 : 1 / u.parent.scale.x;
+        return { u, p0: u.position.clone(), r0: u.rotation.clone(), off: dir.applyQuaternion(pq).multiplyScalar(ps),
+          spin: new T.Vector3(((i * 13) % 5 - 2) * 0.35, ((i * 7) % 5 - 2) * 0.45, ((i * 11) % 5 - 2) * 0.3) };
+      });
+      const body = list.find(p => /^body_shell/.test(p.u.name));
+      if (body) for (const p of list) if (p !== body && glued.test(p.u.name)) { p.off = body.off; p.spin = new T.Vector3(); p.withBody = true; }
+      if (body) { body.spin = new T.Vector3(); for (const p of list) if (p.withBody) p.spin = body.spin; }   // they turn about different origins, so the body and its details fly without spinning
+      return list;
+    };
+    const tillParts = wind ? partsOf(regRig) : [], phoneParts = wind ? partsOf(phRig) : [];
+    const cord = phRig.getObjectByName('coiled_cord');
+    const burst = (parts, e) => { for (const p of parts) { p.u.position.copy(p.p0).addScaledVector(p.off, e);
+      p.u.rotation.set(p.r0.x + p.spin.x * e, p.r0.y + p.spin.y * e, p.r0.z + p.spin.z * e); } };
+    // the light the beams pour in: the till's metal parts warm from inside as it fills
+    // the charge (Tristan 2026-11-22: "the register would glow with color before it explodes"; his reference glows from
+    // inside with a bright rim hugging its outline): the smoked glass fills with straw light that heats toward lamp white, and a
+    // fresnel rim on the glass's own outline brightens with it, with a second, slightly larger shell giving a short
+    // falloff just outside the edge (a few px, never a blob). Light from the object itself, all in WebGL.
+    // (a fresnel rim can't work on the till's flat-faced glass: every face gets one value and tints whole; its outline is
+    // already modelled as the aluminium edge trim, so the trim is the rim)
+    const RIM_V = `uniform float uPush; void main(){ vec3 p = position + normal * uPush; gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0); }`;
+    const RIM_F = `uniform vec3 uCol; uniform float uI; void main(){ gl_FragColor = vec4(uCol, uI); }`;
+    const rimCol = new T.Color(), ROSE = GLOW, GOLDW = GLOW_HOT;
+    const rims = [], glassMats = new Set(), trimMats = [], trimBase = [];
+    const innerLamp = new T.PointLight(0xffffff, 0, 0.5, 2);       // always present (a light appearing would recompile the shaders), dark until the charge
+    if (wind) {
+      regRig.traverse(o => { if (o.isMesh && o.material?.transmission !== undefined && o.material.transparent && o.material.depthWrite === false) glassMats.add(o.material); });
+      const trim = []; regRig.traverse(o => { if (o.isMesh && /^shell_trim/.test(o.name)) trim.push(o); });
+      // the trim gets its own metal, so it can take the light's colour while it charges (bare white aluminium edges read
+      // as a wireframe at the burst, Tristan 11-22)
+      for (const o of trim) { o.material = o.material.clone(); trimMats.push(o.material); trimBase.push(o.material.color.clone()); }
+      // the light inside: a straw lamp in the middle of the case, so the internals are lit from within as it charges
+      innerLamp.position.set(0, 0.12, 0.0); regRig.add(innerLamp);
+      for (const o of trim) for (const [push, k] of [[0, 1.0], [0.0016, 0.45], [0.0032, 0.22]]) {   // the hot edge, then a short falloff a few px out, in dusk straw
+        const m = new T.ShaderMaterial({ vertexShader: RIM_V, fragmentShader: RIM_F, transparent: true, depthWrite: false, depthTest: push === 0,
+          blending: T.AdditiveBlending, uniforms: { uCol: { value: push ? GLOW_FADE : rimCol }, uI: { value: 0 }, uPush: { value: push } } });
+        const r = new T.Mesh(o.geometry, m); r.renderOrder = 5; r.frustumCulled = false; r.visible = false; o.add(r); rims.push({ r, m, k });
+      }
+    }
+    const lit = []; if (wind) regRig.traverse(o => { if (o.isMesh && o.material?.emissive && /^tl_(alu|keytop|gold)$/.test(o.material.name)) lit.push(o.material); });
+    for (const m of new Set(lit)) m.emissive.copy(GLOW);
+    const fadeTo = (rig, f) => rig.traverse(o => { if (!o.isMesh) return; for (const m of [].concat(o.material)) {
+      if (m.userData.o0 === undefined) { m.userData.o0 = m.opacity; m.userData.tr0 = m.transparent; }
+      m.opacity = m.userData.o0 * f; m.transparent = f < 1 || m.userData.tr0; } });
     actor.updateMatrixWorld(true);
     // the landing spot: the dock camera hangs off this, not the jumping rig; at the phone's own size (it shrinks from
     // the hero size back to 1 as it docks, so it lands exactly as big as <sog-phone> draws it)
     const phRest = phRig.matrixWorld.clone();                      // (taken before the first morph, so at scale 1)
     const morph = t => {
-      let h = 0, sz = 1, r = 360;
+      let h = 0, sz = 1, r = 360, tl = 0;
       for (let i = 0; i < JUMP.length - 1; i++) {
-        const [t0, h0, s0, r0] = JUMP[i], [t1, h1, s1, r1] = JUMP[i + 1];
-        if (t <= t1) { const u = ease(t1 > t0 ? (t - t0) / (t1 - t0) : 1); h = h0 + (h1 - h0) * u; sz = s0 + (s1 - s0) * u; r = r0 + (r1 - r0) * u; break; }
+        const [t0, h0, s0, r0, k0] = JUMP[i], [t1, h1, s1, r1, k1] = JUMP[i + 1];
+        if (t <= t1) { const u = ease(t1 > t0 ? (t - t0) / (t1 - t0) : 1); h = h0 + (h1 - h0) * u; sz = s0 + (s1 - s0) * u; r = r0 + (r1 - r0) * u; tl = k0 + (k1 - k0) * u; break; }
       }
       const sxy = 1 / Math.sqrt(sz), q = new T.Quaternion().setFromAxisAngle(new T.Vector3(0, 1, 0), T.MathUtils.degToRad(r)).multiply(restQ);
-      for (const rig of [regRig, phRig]) { rig.position.set(pivot.x, pivot.y + h * (BARE ? 0.45 : 1), pivot.z); rig.quaternion.copy(q); rig.scale.set(sxy * HERO, sz * HERO, sxy * HERO); }
+      // the push: leaning away from the wind about the far foot, with a shudder while the gust blows (scroll-keyed, so a
+      // parked scroll holds still)
+      const gust = wind ? span(t, 0.105, 0.14) * (1 - span(t, 0.27, 0.31)) : 0;
+      const lean = tl + gust * 1.3 * Math.sin(t * 2600) + gust * 0.6 * Math.sin(t * 4100 + 1);
+      const ql = new T.Quaternion().setFromAxisAngle(new T.Vector3(0, 0, 1), -T.MathUtils.degToRad(lean));
+      const foot = new T.Vector3((lean >= 0 ? 1 : -1) * SIDE_FOOT * HERO * sxy, 0, 0), lift = foot.clone().sub(foot.clone().applyQuaternion(ql));
+      q.multiply(ql);
+      for (const rig of [regRig, phRig]) { rig.position.set(pivot.x + lift.x, pivot.y + h * (BARE ? 0.45 : 1) + lift.y, pivot.z + lift.z); rig.quaternion.copy(q); rig.scale.set(sxy * HERO, sz * HERO, sxy * HERO); }
       regRig.visible = t < SWAP; phRig.visible = t >= SWAP;
-      regLamp.visible = regFill.visible = t < SWAP;
+      if (wind) {
+        wind(t);
+        // filled with light, it bursts mid-spin; the till's parts fade as the phone's fly back together through them
+        const glow = span(t, 0.14, 0.285) * (1 - span(t, 0.30, 0.33));
+        for (const m of new Set(lit)) m.emissiveIntensity = 0.55 * glow;
+        // the charge: up from 0.18, peaking as it bursts at 0.30, straw heating to lamp; gone with the till
+        // the charge builds over 0.18-0.30, peaks at lamp right before the burst, and is gone the instant the case bursts
+        const build = span(t, 0.18, 0.30), charge = build * (1 - span(t, 0.298, 0.306));
+        rimCol.copy(ROSE).lerp(GOLDW, span(t, 0.22, 0.30));
+        for (const m of glassMats) { m.emissive.copy(rimCol); m.emissiveIntensity = 1.7 * Math.pow(charge, 1.3); }   // the glass lit from within
+        innerLamp.color.copy(rimCol); innerLamp.intensity = 3.5 * charge;
+        const trimOn = 1 - span(t, 0.299, 0.307);                    // the edges go with the light as the case bursts: no wireframe left flying
+        for (let i = 0; i < trimMats.length; i++) { const m = trimMats[i]; m.color.copy(trimBase[i]).lerp(rimCol, Math.min(1, build * 1.6));   // never bare white
+          m.transparent = true; m.opacity = trimOn; m.visible = trimOn > 0.01; }
+        // the rim: its core in the light colour (straw toward lamp, never pure white), tightening onto the edge
+        for (const x of rims) { x.m.uniforms.uI.value = Math.min(0.85, (0.3 + 0.7 * charge) * charge) * x.k; x.r.visible = charge > 0.01; }
+        const eT = span(t, 0.285, 0.322), eP = 1 - span(t, 0.33, 0.385);
+        burst(tillParts, eT); burst(phoneParts, eP);
+        // on top of the burst: the keys rattle and the flags flutter while the gust blows
+        for (const k of keys) k.o.position.y += gust * 0.0016 * Math.sin(t * 3100 + k.k * 1.7);
+        flags.rotation.x += gust * 0.32 * Math.sin(t * 1900) + span(t, 0.27, 0.33) * 0.5;
+        const ft = 1 - span(t, 0.316, 0.333), fp = span(t, 0.322, 0.338);
+        regRig.visible = ft > 0.01; phRig.visible = fp > 0.01; fadeTo(regRig, ft); fadeTo(phRig, fp);
+        if (cord) cord.visible = eP < 0.04;                        // the skinned cord can't fly apart: it appears as the phone closes
+      }
       ghost.position.copy(regRig.position); ghost.quaternion.copy(regRig.quaternion); ghost.scale.copy(regRig.scale); ghost.visible = regRig.visible;
     };
 
