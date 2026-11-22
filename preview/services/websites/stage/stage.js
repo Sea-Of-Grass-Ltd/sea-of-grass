@@ -67,15 +67,16 @@ class SogStage extends HTMLElement {
       const [THREE, { GLTFLoader }, { RoomEnvironment }, { MeshoptDecoder }] = await Promise.all([
         import(VENDOR + 'three.module.min.js'), import(VENDOR + 'loaders/GLTFLoader.js'),
         import(VENDOR + 'environments/RoomEnvironment.js'), import(VENDOR + 'libs/meshopt_decoder.module.js')]);
-      const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(HERE + 'stage.glb');
-      this.build(THREE, gltf, RoomEnvironment);
+      const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
+      const [gltf, till] = await Promise.all([loader.loadAsync(HERE + 'stage.glb'), loader.loadAsync(HERE + 'till.glb')]);
+      this.build(THREE, gltf, RoomEnvironment, till);
     } catch (err) {
       console.warn('sog-stage:', err);
       this.dataset.state = 'failed'; this._canvas?.remove(); this.giveUp();
     }
   }
 
-  build(T, gltf, RoomEnvironment) {
+  build(T, gltf, RoomEnvironment, till) {
     const canvas = this._canvas = document.createElement('canvas');
     canvas.setAttribute('aria-hidden', 'true');
     this.append(canvas);
@@ -111,6 +112,25 @@ class SogStage extends HTMLElement {
 
     const root = gltf.scene;
     const regRig = root.getObjectByName('register_rig'), phRig = root.getObjectByName('phone_rig');
+    // the Smoked-Glass Till (Tristan 2026-11-22: the wooden toy read as clipart; "everybody likes the effect, just not the
+    // register"): its parts go into the register's rig, in the same local frame, so the crouch, leap and morph carry over
+    if (till) {
+      const tr = till.scene.getObjectByName('till_rig');
+      if (tr) {
+        for (const c of [...regRig.children]) regRig.remove(c);
+        for (const c of [...tr.children]) regRig.add(c);
+        const glass = new T.MeshPhysicalMaterial({ color: 0x0b0a10, metalness: 0, roughness: 0.06, transparent: true, opacity: 0.58,
+          clearcoat: 1, clearcoatRoughness: 0.04, envMapIntensity: 1.6, depthWrite: false, side: T.DoubleSide });
+        const window_ = glass.clone(); window_.opacity = 0.3;
+        regRig.traverse(o => {
+          if (!o.isMesh) return;
+          const n = o.material?.name || '';
+          if (n === 'tl_glass') { o.material = glass; o.renderOrder = 2; }
+          else if (n === 'tl_window') { o.material = window_; o.renderOrder = 3; }
+          else if (n === 'tl_rose') { o.material = new T.MeshBasicMaterial({ color: 0xffc4bb, toneMapped: false }); }
+        });
+      }
+    }
     root.updateMatrixWorld(true);
     stage.add(root);
     for (const rig of [regRig, phRig]) actor.attach(rig);   // keep their world placement
@@ -199,8 +219,9 @@ class SogStage extends HTMLElement {
     const pivot = regRig.position.clone(), restQ = regRig.quaternion.clone();
     // the register's own warm light (Tristan 2026-11-21): an amber lamp just above and in front, so the wood glows warm
     // against the night; it goes out at the swap, so the landed phone keeps <sog-phone>'s light
-    const regLamp = new T.PointLight(0xff9a40, 1.6, 1.3, 1.6); regLamp.position.copy(pivot).add(new T.Vector3(-0.18, 0.39, 0.36)); actor.add(regLamp);
-    const regFill = new T.PointLight(0xff7a3a, 0.55, 0.9, 2); regFill.position.copy(pivot).add(new T.Vector3(0.24, 0.09, 0.27)); actor.add(regFill);
+    // the till (2026-11-22): a cool white key light for the glass and aluminium, and the one rose light (#d8928a), no amber
+    const regLamp = new T.PointLight(0xfff4f0, 1.6, 1.3, 1.6); regLamp.position.copy(pivot).add(new T.Vector3(-0.18, 0.39, 0.36)); actor.add(regLamp);
+    const regFill = new T.PointLight(0xd8928a, 0.7, 0.9, 2); regFill.position.copy(pivot).add(new T.Vector3(0.24, 0.09, 0.27)); actor.add(regFill);
     actor.updateMatrixWorld(true);
     // the landing spot: the dock camera hangs off this, not the jumping rig; at the phone's own size (it shrinks from
     // the hero size back to 1 as it docks, so it lands exactly as big as <sog-phone> draws it)
