@@ -306,6 +306,69 @@ class SogStage extends HTMLElement {
         const r = new T.Mesh(o.geometry, m); r.renderOrder = 5; r.frustumCulled = false; r.visible = false; o.add(r); rims.push({ r, m, k });
       }
     }
+    // the magic motes (Tristan 11-22: "and have magical particles emitting"): soft points of blue light lifting off the
+    // till's glass as it charges, thickening to the peak, flung outward as it bursts, a last few settling on the phone.
+    // Each its own size, hue, life and drift, all keyed to the scroll's t, so a parked scroll holds still. GPU points,
+    // drawn after the glass. They rise no higher than just over the till's top, so never into the words. None under
+    // reduced motion (no wind is built there).
+    const motes = (() => {
+      if (!wind) return null;
+      let sd = 11; const rnd = (a = 0, b = 1) => { sd = (sd * 16807) % 2147483647; return a + (b - a) * (sd / 2147483647); };
+      const N = 88, list = [];
+      const box = () => {                                         // a point on the till's glass (its local frame), and its outward normal
+        const f = rnd(); let p, n;
+        if (f < 0.34) { p = [rnd(-0.11, 0.11), rnd(0.03, 0.17), 0.092]; n = [0, 0.3, 1]; }          // the front and deck
+        else if (f < 0.58) { const sx = rnd() < 0.5 ? -1 : 1; p = [0.112 * sx, rnd(0.03, 0.17), rnd(-0.08, 0.08)]; n = [sx, 0.3, 0]; }   // the sides
+        else if (f < 0.82) { p = [rnd(-0.09, 0.09), 0.172, rnd(-0.08, 0.08)]; n = [0, 1, 0]; }         // the top
+        else { p = [rnd(-0.09, 0.09), rnd(0.18, 0.23), rnd(0.035, 0.08)]; n = [0, 0.6, 0.6]; }         // the flag hood
+        return { p: new T.Vector3(...p), n: new T.Vector3(...n).normalize() };
+      };
+      for (let i = 0; i < N; i++) {
+        const kind = i < 56 ? 'charge' : i < 80 ? 'burst' : 'settle';
+        const b = box();
+        const t0 = kind === 'charge' ? 0.17 + 0.135 * Math.sqrt(rnd()) : kind === 'burst' ? rnd(0.298, 0.312) : rnd(0.49, 0.53);
+        const life = kind === 'charge' ? rnd(0.018, 0.045) : kind === 'burst' ? rnd(0.025, 0.05) : rnd(0.05, 0.08);
+        list.push({ kind, p: b.p, n: b.n, t0, life, size: rnd(0.6, 1.6) * (kind === 'burst' ? 1.2 : 1), hue: rnd(),
+          rise: rnd(0.025, 0.06), out: kind === 'burst' ? rnd(0.10, 0.2) : rnd(0.006, 0.02), wob: rnd(0, 6.28), sway: rnd(0.002, 0.008) });
+      }
+      const pos = new Float32Array(N * 3), col = new Float32Array(N * 3), size = new Float32Array(N), alpha = new Float32Array(N);
+      const g = new T.BufferGeometry();
+      g.setAttribute('position', new T.BufferAttribute(pos, 3)); g.setAttribute('color', new T.BufferAttribute(col, 3));
+      g.setAttribute('aSize', new T.BufferAttribute(size, 1)); g.setAttribute('aAlpha', new T.BufferAttribute(alpha, 1));
+      const m = new T.ShaderMaterial({ transparent: true, depthWrite: false, blending: T.AdditiveBlending, toneMapped: false,
+        uniforms: { uScale: { value: 1 } },
+        vertexShader: `attribute float aSize; attribute float aAlpha; attribute vec3 color; varying vec3 vC; varying float vA; uniform float uScale;
+          void main(){ vC = color; vA = aAlpha; vec4 mv = modelViewMatrix * vec4(position, 1.0); gl_Position = projectionMatrix * mv;
+            gl_PointSize = aSize * uScale / -mv.z; }`,
+        fragmentShader: `varying vec3 vC; varying float vA; void main(){ vec2 d = gl_PointCoord - 0.5; float r = length(d) * 2.0;
+          float core = smoothstep(1.0, 0.0, r); float a = core * core * vA; if (a < 0.004) discard; gl_FragColor = vec4(mix(vC, vec3(1.0), core * core * core * 0.6), a); }` });
+      const pts = new T.Points(g, m); pts.frustumCulled = false; pts.renderOrder = 9; actor.add(pts);
+      const w = new T.Vector3(), nw = new T.Vector3(), c = new T.Color();
+      return { m, update(t, H) {
+        m.uniforms.uScale.value = H * 0.018 * renderer.getPixelRatio();   // a mote's size in px follows the canvas height
+        regRig.updateMatrixWorld(true); phRig.updateMatrixWorld(true);
+        const top = new T.Vector3(0, 0.30, 0).applyMatrix4(regRig.matrixWorld).y;   // the ceiling: just over the till's top
+        list.forEach((d, i) => {
+          const k = (t - d.t0) / d.life;
+          if (k <= 0 || k >= 1) { alpha[i] = 0; return; }
+          const rig = d.kind === 'settle' ? phRig : regRig, e = ease(k);
+          if (d.kind === 'settle') { w.set(d.p.x * 0.9, 0.30 - 0.12 * e, d.p.z).applyMatrix4(rig.matrixWorld); }   // drifting down onto the phone
+          else {
+            w.copy(d.p).applyMatrix4(rig.matrixWorld);
+            nw.copy(d.n).transformDirection(rig.matrixWorld);
+            w.addScaledVector(nw, d.out * HERO * e);
+            w.y += d.rise * HERO * e * (d.kind === 'burst' ? 0.6 : 1);
+            w.x += Math.sin(k * 7 + d.wob) * d.sway * HERO;
+            if (d.kind !== 'burst') w.y = Math.min(w.y, top);
+          }
+          pos[i * 3] = w.x; pos[i * 3 + 1] = w.y; pos[i * 3 + 2] = w.z;
+          c.copy(TILL).lerp(TILL_HOT, 0.25 + 0.6 * d.hue); col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b;
+          size[i] = d.size * (d.kind === 'settle' ? 0.8 : 1) * (1 - 0.4 * k);
+          alpha[i] = Math.sin(Math.PI * Math.min(1, k * 1.25)) * (d.kind === 'settle' ? 0.6 : 0.95);
+        });
+        g.attributes.position.needsUpdate = g.attributes.color.needsUpdate = g.attributes.aSize.needsUpdate = g.attributes.aAlpha.needsUpdate = true;
+      } };
+    })();
     const lit = []; if (wind) regRig.traverse(o => { if (o.isMesh && o.material?.emissive && /^tl_(alu|keytop|gold)$/.test(o.material.name)) lit.push(o.material); });
     for (const m of new Set(lit)) m.emissive.copy(TILL);
     const fadeTo = (rig, f) => rig.traverse(o => { if (!o.isMesh) return; for (const m of [].concat(o.material)) {
@@ -347,6 +410,7 @@ class SogStage extends HTMLElement {
           m.transparent = true; m.opacity = trimOn; m.visible = trimOn > 0.01; }
         // the rim: its core in the light colour (straw toward lamp, never pure white), tightening onto the edge
         for (const x of rims) { x.m.uniforms.uI.value = Math.min(1, (0.55 + 0.9 * charge) * charge) * x.k; x.r.visible = charge > 0.01; }
+        if (motes) motes.update(t, H || 800);
         const eT = span(t, 0.285, 0.322), eP = 1 - span(t, 0.33, 0.385);
         burst(tillParts, eT); burst(phoneParts, eP);
         // on top of the burst: the keys rattle and the flags flutter while the gust blows
