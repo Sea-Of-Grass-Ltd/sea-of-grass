@@ -335,9 +335,11 @@ class SogStage extends HTMLElement {
         // the charge builds over 0.18-0.30, peaks at lamp right before the burst, and is gone the instant the case bursts
         const build = span(t, 0.18, 0.30), charge = build * (1 - span(t, 0.298, 0.306));
         rimCol.copy(ROSE).lerp(GOLDW, span(t, 0.22, 0.30));
-        for (const m of glassMats) { m.emissive.copy(rimCol); m.emissiveIntensity = 2.4 * Math.pow(charge, 1.3); }   // the glass lit from within
+        for (const m of glassMats) { m.emissive.copy(rimCol); m.emissiveIntensity = 1.7 * Math.pow(charge, 1.3); }   // the glass lit from within
         innerLamp.color.copy(rimCol); innerLamp.intensity = 3.5 * charge;
-        for (let i = 0; i < trimMats.length; i++) trimMats[i].color.copy(trimBase[i]).lerp(rimCol, Math.min(1, build * 1.6));   // never bare white
+        const trimOn = 1 - span(t, 0.299, 0.307);                    // the edges go with the light as the case bursts: no wireframe left flying
+        for (let i = 0; i < trimMats.length; i++) { const m = trimMats[i]; m.color.copy(trimBase[i]).lerp(rimCol, Math.min(1, build * 1.6));   // never bare white
+          m.transparent = true; m.opacity = trimOn; m.visible = trimOn > 0.01; }
         // the rim: its core in the light colour (straw toward lamp, never pure white), tightening onto the edge
         for (const x of rims) { x.m.uniforms.uI.value = Math.min(0.85, (0.3 + 0.7 * charge) * charge) * x.k; x.r.visible = charge > 0.01; }
         const eT = span(t, 0.285, 0.322), eP = 1 - span(t, 0.33, 0.385);
