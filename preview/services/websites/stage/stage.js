@@ -253,7 +253,9 @@ class SogStage extends HTMLElement {
         if (c.name === 'root' && !c.isMesh) units.push(...c.children); else if (c.isMesh || c.isGroup) units.push(c);
       }
       const all = new T.Box3().setFromObject(rig).applyMatrix4(inv), mid = all.getCenter(new T.Vector3());
-      return units.filter(u => !u.isSkinnedMesh).map((u, i) => {
+      // details glued to a body (the phone's reliefs, labels, plates, feet) fly with that body, not on their own
+      const glued = /^(relief|label|centre_label|digit_marks|number_plate|dial_bezel|feet|cradle|finger_stop)/;
+      const list = units.filter(u => !u.isSkinnedMesh).map((u, i) => {
         const bb = new T.Box3().setFromObject(u).applyMatrix4(inv), c = bb.getCenter(new T.Vector3());
         const dir = c.clone().sub(mid); dir.y *= 0.8; if (dir.lengthSq() < 1e-6) dir.set(0, 1, 0);
         dir.normalize().multiplyScalar(0.06 + 0.035 * ((i * 37) % 7) / 7);
@@ -262,6 +264,10 @@ class SogStage extends HTMLElement {
         return { u, p0: u.position.clone(), r0: u.rotation.clone(), off: dir.applyQuaternion(pq).multiplyScalar(ps),
           spin: new T.Vector3(((i * 13) % 5 - 2) * 0.35, ((i * 7) % 5 - 2) * 0.45, ((i * 11) % 5 - 2) * 0.3) };
       });
+      const body = list.find(p => /^body_shell/.test(p.u.name));
+      if (body) for (const p of list) if (p !== body && glued.test(p.u.name)) { p.off = body.off; p.spin = new T.Vector3(); p.withBody = true; }
+      if (body) for (const p of list) if (p.withBody) p.spin = body.spin;   // (a glued part shares the body's turn, about its own origin)
+      return list;
     };
     const tillParts = wind ? partsOf(regRig) : [], phoneParts = wind ? partsOf(phRig) : [];
     const cord = phRig.getObjectByName('coiled_cord');

@@ -16,7 +16,7 @@ void main(){
   if (vU > uHead) discard;
   float across = 1.0 - abs(vV);
   float head = smoothstep(uHead - 0.18, uHead, vU);          // brightest where it is driving in
-  float a = (0.55 + 0.45 * head) * smoothstep(0.0, 0.08, vU) * (0.25 * across + 0.75 * pow(across, 4.0));
+  float a = (0.6 + 0.4 * head) * smoothstep(0.0, 0.08, vU) * (0.45 * across + 0.9 * pow(across, 3.0));
   vec3 c = mix(uEdge, uCore, smoothstep(0.2, 0.9, across));
   gl_FragColor = vec4(c, a * uAlpha);
 }`;
@@ -48,7 +48,7 @@ export function makeGust(T, scene, P, S) {
     [[-1.4, 0.62, 0.10], [-0.50, 0.38, 0.06], [0.01, 0.22, 0.04], 0.175],    // into the flags
     [[-1.5, 0.26, 0.42], [-0.62, 0.20, 0.28], [0.04, 0.12, 0.02], 0.200],    // into the keys
     [[-1.4, 0.50, 0.26], [-0.48, 0.32, 0.16], [0.03, 0.18, -0.02], 0.225],   // into the flag rods
-  ].map(([a, b, c, t0]) => ({ ...beam(path(a, b, c), 0.013 * S), t0 }));
+  ].map(([a, b, c, t0]) => ({ ...beam(path(a, b, c), 0.020 * S), t0 }));
   const TRAVEL = 0.035;
   return t => {
     const out = 1 - span(t, 0.285, 0.31);                     // they go out as the till bursts
