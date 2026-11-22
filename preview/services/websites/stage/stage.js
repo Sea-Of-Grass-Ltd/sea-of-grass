@@ -123,7 +123,7 @@ class SogStage extends HTMLElement {
     const rootCss = getComputedStyle(document.documentElement), GLOW = new T.Color(rootCss.getPropertyValue('--glow').trim() || '#D4B26A'), GLOW_HOT = new T.Color(rootCss.getPropertyValue('--glow-hot').trim() || '#F2DFAE'), GLOW_FADE = new T.Color(rootCss.getPropertyValue('--glow-fade').trim() || '#8E7340');
     // the till's charge has its own colour (cornflower blue), apart from the page's straw
     const tv = (n, d) => new T.Color(rootCss.getPropertyValue(n).trim() || d);
-    const TILL = tv('--till-glow', '#8FA3D3'), TILL_HOT = tv('--till-glow-hot', '#C9D4EE'), TILL_FADE = tv('--till-glow-fade', '#56658F');
+    const TILL = tv('--till-glow', '#7FA0F0'), TILL_HOT = tv('--till-glow-hot', '#DCE6FF'), TILL_FADE = tv('--till-glow-fade', '#4A63B8');
     // the Smoked-Glass Till (Tristan 2026-11-22: the wooden toy read as clipart; "everybody likes the effect, just not the
     // register"): its parts go into the register's rig, in the same local frame, so the crouch, leap and morph carry over
     if (till) {
@@ -300,7 +300,7 @@ class SogStage extends HTMLElement {
       for (const o of trim) { o.material = o.material.clone(); trimMats.push(o.material); trimBase.push(o.material.color.clone()); }
       // the light inside: a straw lamp in the middle of the case, so the internals are lit from within as it charges
       innerLamp.position.set(0, 0.12, 0.0); regRig.add(innerLamp);
-      for (const o of trim) for (const [push, k] of [[0, 1.0], [0.0016, 0.45], [0.0032, 0.22]]) {   // the hot edge, then a short falloff a few px out, in dusk straw
+      for (const o of trim) for (const [push, k] of [[0, 1.0], [0.0014, 0.7], [0.003, 0.42], [0.0048, 0.2]]) {   // the hot edge, then a short falloff a few px out, in dusk straw
         const m = new T.ShaderMaterial({ vertexShader: RIM_V, fragmentShader: RIM_F, transparent: true, depthWrite: false, depthTest: push === 0,
           blending: T.AdditiveBlending, uniforms: { uCol: { value: push ? TILL_FADE : rimCol }, uI: { value: 0 }, uPush: { value: push } } });
         const r = new T.Mesh(o.geometry, m); r.renderOrder = 5; r.frustumCulled = false; r.visible = false; o.add(r); rims.push({ r, m, k });
@@ -340,13 +340,13 @@ class SogStage extends HTMLElement {
         // the charge builds over 0.18-0.30, peaks at lamp right before the burst, and is gone the instant the case bursts
         const build = span(t, 0.18, 0.30), charge = build * (1 - span(t, 0.298, 0.306));
         rimCol.copy(ROSE).lerp(GOLDW, span(t, 0.22, 0.30));
-        for (const m of glassMats) { m.emissive.copy(TILL); m.emissiveIntensity = 1.25 * Math.pow(charge, 1.3); }   // the glass lit from within, in the body blue (the pale peak is the rim's)
-        innerLamp.color.copy(TILL); innerLamp.intensity = 3.5 * charge;
+        for (const m of glassMats) { m.emissive.copy(TILL); m.emissiveIntensity = 2.6 * Math.pow(charge, 1.15); }   // the glass lit from within, in the body blue (the pale peak is the rim's)
+        innerLamp.color.copy(TILL); innerLamp.intensity = 7 * charge;
         const trimOn = 1 - span(t, 0.299, 0.307);                    // the edges go with the light as the case bursts: no wireframe left flying
         for (let i = 0; i < trimMats.length; i++) { const m = trimMats[i]; m.color.copy(trimBase[i]).lerp(rimCol, Math.min(1, build * 1.6));   // never bare white
           m.transparent = true; m.opacity = trimOn; m.visible = trimOn > 0.01; }
         // the rim: its core in the light colour (straw toward lamp, never pure white), tightening onto the edge
-        for (const x of rims) { x.m.uniforms.uI.value = Math.min(0.85, (0.3 + 0.7 * charge) * charge) * x.k; x.r.visible = charge > 0.01; }
+        for (const x of rims) { x.m.uniforms.uI.value = Math.min(1, (0.55 + 0.9 * charge) * charge) * x.k; x.r.visible = charge > 0.01; }
         const eT = span(t, 0.285, 0.322), eP = 1 - span(t, 0.33, 0.385);
         burst(tillParts, eT); burst(phoneParts, eP);
         // on top of the burst: the keys rattle and the flags flutter while the gust blows
