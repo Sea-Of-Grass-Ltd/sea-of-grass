@@ -39,9 +39,7 @@ function build(){
   const off=flaps.length<1||!card;                                 // phones too now (Tristan 2026-11-21: the same flow as desktop)
   svg.style.display=off?'none':'';sprout.hidden=off;
   if(off){len=0;seed.hidden=true;priceBand&&priceBand.classList.add('lit');return;}   // no thread on phones: the card is simply lit
-  const H=document.documentElement.scrollHeight,W=document.documentElement.clientWidth,Y=y=>y+scrollY;
-  svg.setAttribute('width',W);svg.setAttribute('height',H);svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
-  ['x','y'].forEach(a=>mask.setAttribute(a,0));mask.setAttribute('width',W);mask.setAttribute('height',H);
+  const W=document.documentElement.clientWidth,Y=y=>y+scrollY;
   const R0=flaps[0].getBoundingClientRect(),L=R0.left,R=R0.right;
   const seams=flaps.map(f=>{const r=f.getBoundingClientRect();return Y(r.top+r.height/2);});
   const pitch=seams.length>1?seams[1]-seams[0]:R0.height+16;
@@ -60,6 +58,11 @@ function build(){
   const last=seams[seams.length-1],side=seams.length%2?R:L,dir=seams.length%2?1:-1,mx=side+dir*k,y1=last+pitch*.5;
   const cr=card.getBoundingClientRect(),lx=Math.min(W-20,cr.left+44);
   landY=Y(cr.top);const endY=landY-2,yh=landY-34,ym=(y1+yh)/2;
+  // the drawing only reaches the card, where the thread ends: sized to that, never to the page's scroll height (it was
+  // part of that height itself, so it never shrank and left ~640 px of empty navy under the footer, HQ 2026-11-22)
+  const H=Math.ceil(landY+24);
+  svg.setAttribute('width',W);svg.setAttribute('height',H);svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  ['x','y'].forEach(a=>mask.setAttribute(a,0));mask.setAttribute('width',W);mask.setAttribute('height',H);
   d+=` C${f(side+dir*k*.55)} ${f(last)} ${f(mx)} ${f(last+pitch*.22)} ${f(mx)} ${f(y1)}`;
   d+=` C${f(mx)} ${f(ym)} ${f(lx)} ${f(ym)} ${f(lx)} ${f(yh)} L${f(lx)} ${f(endY)}`;
   path.setAttribute('d',d);reveal.setAttribute('d',d);len=path.getTotalLength();
