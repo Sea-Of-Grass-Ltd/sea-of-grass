@@ -4,6 +4,9 @@
    fills or CSS gradients. Glass appears only in distinctive shapes (the notched Care ticket, pills, the receipt), never as a
    page of identical rounded boxes. Physical objects carry the character: a split-flap board and a photo ticket rail. */
 :root{
+  /* the page's one light colour (glow, crest, card edge), in one place while the accent is being chosen (Tristan 11-22) */
+  --glow:#D4B26A;--glow-hot:#F2DFAE;--glow-fade:#8E7340;   /* straw, lamp, dusk straw (Tristan 11-22: "Go with straw for the glows"); fade only where light falls off, never a fill */
+
   /* PALETTE: "Night meadow with poppies", approved by Tristan 2026-11-19 (PALETTE.md in the shared notes), and restored on
      his later note ("this color scheme was better"). Every colour is
      mixed with the sky's ultramarine and a breath of poppy. Sections take turns navy / moss / plum; poppy is the only CTA
@@ -376,7 +379,7 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 /* ======== Flow: one through-line, one pinned scene, one chapter index (dope.security's flow, in our own motif) ======== */
 .through{position:absolute;left:0;top:0;z-index:4;pointer-events:none;overflow:visible}
 .through .trail{fill:none;stroke:rgba(var(--text-rgb),.62);stroke-width:1.6;stroke-dasharray:5 6;stroke-linecap:round}
-.traveller{position:absolute;left:0;top:0;z-index:5;width:14px;height:20px;color:var(--pop);pointer-events:none;will-change:transform;filter:drop-shadow(0 0 6px rgba(var(--text-rgb),.45));transition:opacity .35s ease}
+.traveller{position:absolute;left:0;top:0;z-index:5;width:14px;height:20px;color:var(--pop);pointer-events:none;will-change:transform;transition:opacity .35s ease}
 .traveller svg{width:100%;height:100%;display:block}
 .traveller.landed,.traveller.under{opacity:0}
 .traveller.under{transition-duration:.12s}
@@ -463,7 +466,6 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
    45b918ce, product cards overlapping a hero card; Deezer offers af258d0b, one lit plan on a dark stage): real Bunny World
    shop screens fanned behind the Site Plan, a warm glow under it, a little grain in its body; Pay once steps back */
 .stage{position:relative;isolation:isolate;--py:0}
-.stage::before{content:"";position:absolute;z-index:-2;inset:6% 4%;border-radius:40px;background:var(--poppy);opacity:.55;filter:blur(80px);pointer-events:none}
 .fan{position:absolute;inset:0;z-index:-1;pointer-events:none}
 .fan img{position:absolute;width:clamp(120px,11vw,160px);height:auto;border-radius:16px;box-shadow:0 18px 40px rgba(var(--shade-rgb),.55),0 0 0 1px rgba(var(--text-rgb),.12);
   transform:translateY(calc(var(--py) * var(--d,20px))) rotate(var(--r))}
@@ -473,7 +475,6 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .fan .f4{right:-5%;bottom:4%;--r:5deg;--d:-30px}
 .fan .f5{left:42%;top:-22px;--r:3deg;--d:10px;width:clamp(110px,9vw,140px)}
 .hero .stage .plan.care{background:var(--plan-card);backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:inset 0 .5px 0 rgba(var(--text-rgb),.5),0 30px 60px rgba(var(--shade-rgb),.5)}
-.hero .stage .plan.care::after{content:"";position:absolute;inset:0;border-radius:inherit;background:url(/preview/assets/work/bunny-world/burritos-grain.webp) center/320px;opacity:.12;mix-blend-mode:overlay;pointer-events:none}
 .hero .stage .plan.care>*{position:relative;z-index:1}
 .hero .stage .plan.care>.badge{position:absolute}
 /* the deal's pill sits on its button, like a sale tag */
@@ -536,11 +537,9 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
   -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Ccircle cx='1' cy='1' r='1'/%3E%3C/svg%3E") -20px 64%/40px 40px no-repeat,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Ccircle cx='1' cy='1' r='1'/%3E%3C/svg%3E") calc(100% + 20px) 64%/40px 40px no-repeat,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2' preserveAspectRatio='none'%3E%3Crect width='2' height='2'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat;-webkit-mask-composite:xor;
   mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Ccircle cx='1' cy='1' r='1'/%3E%3C/svg%3E") -20px 64%/40px 40px no-repeat exclude,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'%3E%3Ccircle cx='1' cy='1' r='1'/%3E%3C/svg%3E") calc(100% + 20px) 64%/40px 40px no-repeat exclude,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2' preserveAspectRatio='none'%3E%3Crect width='2' height='2'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat}
 .price-band .plans{position:relative;isolation:isolate}
-.price-band .plans::before{content:"";position:absolute;z-index:-1;left:calc(50% - min(100%,520px) / 2 - 7%);right:calc(50% - min(100%,520px) / 2 - 7%);top:-7%;bottom:-7%;border-radius:60px;background:var(--poppy);opacity:.7;filter:blur(56px);pointer-events:none}
 .u-scene{position:absolute;inset:0;z-index:-2}
 .u-scene img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%;display:block}
 /* the Bunny Burritos film grain on top of the baked alpenglow plants */
-.u-scene::before{content:"";position:absolute;inset:0;z-index:1;background:url(/preview/assets/work/bunny-world/burritos-grain.webp) 0 0/256px 256px;opacity:.4;pointer-events:none}
 .u-scene::after{content:"";position:absolute;inset:0;z-index:2;background:rgba(26,21,48,.4)}
 .u-body{display:grid;gap:18px;padding:clamp(26px,2.8vw,36px)}
 .u-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
@@ -573,7 +572,6 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
   .stage-hero{display:block;min-height:0}
   .stage-hero>.in.hero-in{grid-template-columns:1fr;max-width:var(--max)}
   .stage-hero .hero-words{padding-bottom:calc(min(29vw,220px) * .75 + 60px)}
-  .price-band .plans::before{opacity:.36}
   .shop-wall{inset:auto 0 auto 0;top:var(--wall-top,0);height:200px}
   .shop-wall .l1,.shop-wall .l3,.shop-wall .r3{display:none}
   .shop-wall .sw{width:min(29vw,220px);border-width:3px;border-radius:10px}
@@ -615,7 +613,6 @@ html:root{--shop-bg:var(--ground);--shop-panel:var(--navy);--shop-fg:var(--text)
 .close-in h2{font-size:clamp(44px,6vw,88px);line-height:.95;letter-spacing:-.03em;margin:0}
 .close-sub{margin:0;max-width:38ch;font-size:clamp(17px,1.5vw,20px);color:var(--text)}
 .close-acts{position:relative;isolation:isolate;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:14px;margin-top:8px}
-.close-acts::before{content:"";position:absolute;z-index:-1;inset:-40px -60px;border-radius:60px;background:var(--poppy);opacity:.55;filter:blur(56px);pointer-events:none}
 .close-start{min-width:260px}
 /* ======== the new order (Tristan, after Quin: show the product before the price tag) ========
    the hero carries a one-line price hint and no card; the hookup steps sit in the Care board; the Site Plan ticket has
@@ -727,9 +724,7 @@ main{overflow-x:clip}
 
 /* the Site Plan sits plain (no glow, its scene dimmed) until the thread from the Care board reaches it, then lights up
    (Tristan 2026-11-21); with no thread (phones, reduced motion) it is simply lit */
-.price-band .plans::before{transition:opacity .9s ease}
 .price-band .u-scene img{transition:filter .9s ease}
-.price-band:not(.lit) .plans::before{opacity:0}
 .price-band:not(.lit) .u-scene img{filter:grayscale(.85) brightness(.5)}
 
 /* Hooking up lives with the questions (an answer to a worry), the other ways to start sit right under the Site Plan
@@ -779,3 +774,11 @@ main{overflow-x:clip}
 .close-more .cm-plus{width:32px;height:32px;font-size:24px;flex:none;color:var(--text);box-shadow:inset 0 0 0 1.5px rgba(var(--text-rgb),.5)}
 .close-more>summary{width:auto;max-width:min(100%,520px);display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center}
 .close-more .cm-text{min-width:0}
+
+/* the Site Plan card art: a flat prairie at dusk, plum sky over foothills and a rose-gold field (HQ 11-22).
+   Light lives in two places only, the 3D stage and this card (Tristan 11-22, glows vs Dope Security): no blurred halo;
+   when the thread reaches the card, its own dusk lights its top and right edges with a thin rose-gold line */
+.price-band .u-card::after{content:"";position:absolute;inset:0;z-index:3;border-radius:inherit;pointer-events:none;
+  box-shadow:inset -1.5px 1.5px 0 var(--glow),inset -6px 6px 12px -9px color-mix(in srgb,var(--glow-fade) 70%,transparent);opacity:0;transition:opacity .9s ease}
+.price-band.lit .u-card::after{opacity:1}
+.price-band .u-scene img{object-position:50% 0%}
