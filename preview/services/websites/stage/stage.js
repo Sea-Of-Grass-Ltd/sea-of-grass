@@ -235,6 +235,13 @@ class SogStage extends HTMLElement {
     const regFill = new T.PointLight(0xd8928a, 0.7, 0.9, 2); regFill.position.copy(pivot).add(new T.Vector3(0.24, 0.09, 0.27)); actor.add(regFill);
     // the magic gust (gust.js): reduced motion keeps the still till, so no wind is built
     const wind = this.still || !this._makeGust ? null : this._makeGust(T, actor, pivot.clone(), HERO, BARE ? 0.45 : 1);
+    // the wipe under the crest: the till keeps what the band hasn't reached, the phone what it has
+    const tillCut = new T.Plane(new T.Vector3(1, 0, 0), 0), phoneCut = new T.Plane(new T.Vector3(-1, 0, 0), 0);
+    if (wind) {
+      renderer.localClippingEnabled = true;
+      regRig.traverse(o => { if (o.isMesh) for (const m of [].concat(o.material)) m.clippingPlanes = [tillCut]; });
+      phRig.traverse(o => { if (o.isMesh) for (const m of [].concat(o.material)) m.clippingPlanes = [phoneCut]; });
+    }
     actor.updateMatrixWorld(true);
     // the landing spot: the dock camera hangs off this, not the jumping rig; at the phone's own size (it shrinks from
     // the hero size back to 1 as it docks, so it lands exactly as big as <sog-phone> draws it)
@@ -255,7 +262,12 @@ class SogStage extends HTMLElement {
       // the lamps fade across the crest instead of cutting at the swap
       const lamp = 1 - span(t, 0.30, 0.36);
       regLamp.intensity = 1.6 * lamp; regFill.intensity = 0.7 * lamp; regLamp.visible = regFill.visible = lamp > 0;
-      if (wind) wind(t);
+      if (wind) {
+        wind(t);
+        if (wind.wipe === 1) { regRig.visible = phRig.visible = true; tillCut.constant = -wind.cutX; phoneCut.constant = wind.cutX; }
+        else { tillCut.constant = phoneCut.constant = 1e3; regRig.visible = wind.wipe === 0; phRig.visible = wind.wipe === 2; }
+        ghost.visible = regRig.visible;
+      }
       ghost.position.copy(regRig.position); ghost.quaternion.copy(regRig.quaternion); ghost.scale.copy(regRig.scale); ghost.visible = regRig.visible;
     };
 

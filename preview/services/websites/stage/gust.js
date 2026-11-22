@@ -78,8 +78,7 @@ export function makeGust(T, scene, P, S, lift = 1) {
   const crestPts = [];
   for (let i = 0; i <= 8; i++) { const k = i / 8, x = -1.25 + 2.5 * k; crestPts.push(at(x, 0.10 + 0.20 * ease(k) + 0.02 * Math.sin(k * 6), 0.24)); }
   const crest = ribbon(crestPts, 0.018 * S, true); crest.mesh.renderOrder = 8;
-  const crestU = 0.5;                                     // the till sits mid-line
-  // a soft rose-gold bloom under the crest, so the swap is never seen bare
+    // a soft rose-gold bloom under the crest, so the swap is never seen bare
   const glowTex = (() => { const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d');
     const g = x.createRadialGradient(64, 64, 0, 64, 64, 64); g.addColorStop(0, 'rgba(255,240,232,0.85)'); g.addColorStop(0.3, 'rgba(240,217,162,0.38)');
     g.addColorStop(0.65, 'rgba(231,170,162,0.12)'); g.addColorStop(1, 'rgba(216,146,138,0)'); x.fillStyle = g; x.fillRect(0, 0, 128, 128);
@@ -125,7 +124,11 @@ export function makeGust(T, scene, P, S, lift = 1) {
   fly(new T.Mesh(gramaGeo, gramaMat), 0.38, 0.55, at(-0.15, 0.8, 0.25), at(0.15, 0.45, 0.28), at(0.42, 0.04, 0.3), new T.Vector3(0.6, 1.5, 0.8), true);
 
   const q = new T.Vector3();
-  return t => {
+  // the swap rides the crest: the band sweeps across the till from t WIPE0 to WIPE1, and where it has passed the till is
+  // gone and the phone stands (stage.js clips the two rigs at cutX), so a parked scroll shows the change happening under
+  // a line of light, never a cut
+  const WIPE0 = 0.31, WIPE1 = 0.35, U0 = 0.40, U1 = 0.60;
+  const update = t => {
     for (const r of [...R, ...calm]) {
       const k = (t - r.t0) / r.dur;
       r.m.uniforms.uLen.value = r.len; r.m.uniforms.uHead.value = k * (1 + r.len);
@@ -137,7 +140,9 @@ export function makeGust(T, scene, P, S, lift = 1) {
     const cu = crest.m.uniforms;
     cu.uLen.value = 0.75; cu.uHead.value = 0.25 + 1.5 * span(t, 0.255, 0.40);
     cu.uAlpha.value = 0.5 * span(t, 0.255, 0.28) * (1 - span(t, 0.37, 0.40)); cu.uCharge.value = ch;
-    cu.uBand.value = crestU - 0.07 + 0.14 * clamp((t - 0.30) / 0.06); cu.uBandW.value = 0.085;
+    const wu = U0 + (U1 - U0) * clamp((t - WIPE0) / (WIPE1 - WIPE0));
+    cu.uBand.value = wu; cu.uBandW.value = 0.03;
+    update.cutX = P.x + S * (-1.25 + 2.5 * wu); update.wipe = t < WIPE0 ? 0 : t > WIPE1 ? 2 : 1;
     crest.mesh.visible = cu.uAlpha.value > 0;
     glow.position.copy(at(0, 0.17, 0.26));
     glow.visible = false;                                   // no soft blob (Tristan 2026-11-22: glows felt cheap next to Dope Security)
@@ -155,4 +160,5 @@ export function makeGust(T, scene, P, S, lift = 1) {
       d.mesh.scale.setScalar(S * (d.fall ? 1 - span(t, 0.585, 0.60) : 1));
     }
   };
+  return update;
 }
