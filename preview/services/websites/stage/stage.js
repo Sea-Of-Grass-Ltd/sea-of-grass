@@ -136,6 +136,7 @@ class SogStage extends HTMLElement {
           else if (o.material && 'envMapIntensity' in o.material) {   // the room light blew the metals out to white: tame it
             const k = { tl_keytop: 0.45, tl_alu: 0.6, tl_satin: 0.35, tl_graphite: 0.5, tl_flag: 0.4, tl_gold: 0.8 }[n];
             if (k !== undefined) o.material.envMapIntensity = k;
+            if (o.material.anisotropy) o.material.anisotropy = 0;     // exported without tangents, it drew the brushed metal flat white
             if (n === 'tl_satin') o.material.color.multiplyScalar(0.7);
           }
         });
