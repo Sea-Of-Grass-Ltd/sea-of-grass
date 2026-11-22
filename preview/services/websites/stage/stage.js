@@ -285,10 +285,16 @@ class SogStage extends HTMLElement {
     const RIM_V = `uniform float uPush; void main(){ vec3 p = position + normal * uPush; gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0); }`;
     const RIM_F = `uniform vec3 uCol; uniform float uI; void main(){ gl_FragColor = vec4(uCol, uI); }`;
     const rimCol = new T.Color(), ROSE = GLOW, GOLDW = GLOW_HOT;
-    const rims = [], glassMats = new Set();
+    const rims = [], glassMats = new Set(), trimMats = [], trimBase = [];
+    const innerLamp = new T.PointLight(0xffffff, 0, 0.5, 2);       // always present (a light appearing would recompile the shaders), dark until the charge
     if (wind) {
       regRig.traverse(o => { if (o.isMesh && o.material?.transmission !== undefined && o.material.transparent && o.material.depthWrite === false) glassMats.add(o.material); });
       const trim = []; regRig.traverse(o => { if (o.isMesh && /^shell_trim/.test(o.name)) trim.push(o); });
+      // the trim gets its own metal, so it can take the light's colour while it charges (bare white aluminium edges read
+      // as a wireframe at the burst, Tristan 11-22)
+      for (const o of trim) { o.material = o.material.clone(); trimMats.push(o.material); trimBase.push(o.material.color.clone()); }
+      // the light inside: a straw lamp in the middle of the case, so the internals are lit from within as it charges
+      innerLamp.position.set(0, 0.12, 0.0); regRig.add(innerLamp);
       for (const o of trim) for (const [push, k] of [[0, 1.0], [0.0016, 0.45], [0.0032, 0.22]]) {   // the hot edge, then a short falloff a few px out, in dusk straw
         const m = new T.ShaderMaterial({ vertexShader: RIM_V, fragmentShader: RIM_F, transparent: true, depthWrite: false, depthTest: push === 0,
           blending: T.AdditiveBlending, uniforms: { uCol: { value: push ? GLOW_FADE : rimCol }, uI: { value: 0 }, uPush: { value: push } } });
@@ -326,10 +332,14 @@ class SogStage extends HTMLElement {
         const glow = span(t, 0.14, 0.285) * (1 - span(t, 0.30, 0.33));
         for (const m of new Set(lit)) m.emissiveIntensity = 0.55 * glow;
         // the charge: up from 0.18, peaking as it bursts at 0.30, straw heating to lamp; gone with the till
-        const charge = span(t, 0.18, 0.30) * (1 - span(t, 0.305, 0.325));
-        rimCol.copy(ROSE).lerp(GOLDW, span(t, 0.24, 0.30));
-        for (const m of glassMats) { m.emissive.copy(rimCol); m.emissiveIntensity = 0.38 * charge; }
-        for (const x of rims) { x.m.uniforms.uI.value = Math.min(1, (0.25 + 0.95 * charge) * charge) * x.k; x.r.visible = charge > 0.01; }
+        // the charge builds over 0.18-0.30, peaks at lamp right before the burst, and is gone the instant the case bursts
+        const build = span(t, 0.18, 0.30), charge = build * (1 - span(t, 0.298, 0.306));
+        rimCol.copy(ROSE).lerp(GOLDW, span(t, 0.22, 0.30));
+        for (const m of glassMats) { m.emissive.copy(rimCol); m.emissiveIntensity = 2.4 * Math.pow(charge, 1.3); }   // the glass lit from within
+        innerLamp.color.copy(rimCol); innerLamp.intensity = 3.5 * charge;
+        for (let i = 0; i < trimMats.length; i++) trimMats[i].color.copy(trimBase[i]).lerp(rimCol, Math.min(1, build * 1.6));   // never bare white
+        // the rim: its core in the light colour (straw toward lamp, never pure white), tightening onto the edge
+        for (const x of rims) { x.m.uniforms.uI.value = Math.min(0.85, (0.3 + 0.7 * charge) * charge) * x.k; x.r.visible = charge > 0.01; }
         const eT = span(t, 0.285, 0.322), eP = 1 - span(t, 0.33, 0.385);
         burst(tillParts, eT); burst(phoneParts, eP);
         // on top of the burst: the keys rattle and the flags flutter while the gust blows
