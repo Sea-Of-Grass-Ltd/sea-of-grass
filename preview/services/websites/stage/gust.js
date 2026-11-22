@@ -130,7 +130,7 @@ export function makeGust(T, scene, P, S, lift = 1) {
   const WIPE0 = 0.31, WIPE1 = 0.35, U0 = 0.40, U1 = 0.60;
   // the seam: a hairline of rose-gold light standing on the cut edge, where the crest meets the till
   const seamMat = new T.MeshBasicMaterial({ color: 0xf6dccb, transparent: true, opacity: 0, blending: T.AdditiveBlending, depthWrite: false, depthTest: false, toneMapped: false });
-  const seam = new T.Mesh(new T.PlaneGeometry(0.0022 * S, 0.40 * S), seamMat); seam.renderOrder = 9; seam.frustumCulled = false; scene.add(seam);
+  const seam = new T.Mesh(new T.PlaneGeometry(0.0022 * S, 0.27 * S), seamMat); seam.renderOrder = 9; seam.frustumCulled = false; scene.add(seam);
   const update = t => {
     for (const r of [...R, ...calm]) {
       const k = (t - r.t0) / r.dur;
@@ -146,8 +146,8 @@ export function makeGust(T, scene, P, S, lift = 1) {
     const wu = U0 + (U1 - U0) * clamp((t - WIPE0) / (WIPE1 - WIPE0));
     cu.uBand.value = wu; cu.uBandW.value = 0.03;
     update.cutX = P.x + S * (-1.25 + 2.5 * wu); update.wipe = t < WIPE0 ? 0 : t > WIPE1 ? 2 : 1;
-    seam.position.set(update.cutX, P.y + 0.20 * S * lift + 0.20 * S * (1 - lift) * 0.6 + 0.06 * S, P.z + 0.05 * S);
-    seamMat.opacity = update.wipe === 1 ? 0.85 * Math.sin(Math.PI * clamp((t - WIPE0) / (WIPE1 - WIPE0))) : 0; seam.visible = seamMat.opacity > 0.01;
+    seam.position.set(update.cutX, P.y + 0.06 * S + 0.155 * S, P.z + 0.05 * S);   // the till's height, lifted as it flies
+    seamMat.opacity = update.wipe === 1 ? 0.7 * Math.sin(Math.PI * clamp((t - WIPE0) / (WIPE1 - WIPE0))) : 0; seam.visible = seamMat.opacity > 0.01;
     crest.mesh.visible = cu.uAlpha.value > 0;
     glow.position.copy(at(0, 0.17, 0.26));
     glow.visible = false;                                   // no soft blob (Tristan 2026-11-22: glows felt cheap next to Dope Security)
