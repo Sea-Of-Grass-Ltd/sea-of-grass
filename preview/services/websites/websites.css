@@ -5,7 +5,7 @@
    page of identical rounded boxes. Physical objects carry the character: a split-flap board and a photo ticket rail. */
 :root{
   /* the page's one light colour (glow, crest, card edge), in one place while the accent is being chosen (Tristan 11-22) */
-  --glow:#d8928a;--glow-hot:#f1c98a;
+  --glow:#D4B26A;--glow-hot:#F2DFAE;--glow-fade:#8E7340;   /* straw, lamp, dusk straw (Tristan 11-22: "Go with straw for the glows"); fade only where light falls off, never a fill */
 
   /* PALETTE: "Night meadow with poppies", approved by Tristan 2026-11-19 (PALETTE.md in the shared notes), and restored on
      his later note ("this color scheme was better"). Every colour is
@@ -778,6 +778,6 @@ main{overflow-x:clip}
    Light lives in two places only, the 3D stage and this card (Tristan 11-22, glows vs Dope Security): no blurred halo;
    when the thread reaches the card, its own dusk lights its top and right edges with a thin rose-gold line */
 .price-band .u-card::after{content:"";position:absolute;inset:0;z-index:3;border-radius:inherit;pointer-events:none;
-  box-shadow:inset -1.5px 1.5px 0 color-mix(in srgb,var(--glow) 80%,#fff),inset -6px 6px 12px -9px color-mix(in srgb,var(--glow) 55%,transparent);opacity:0;transition:opacity .9s ease}
+  box-shadow:inset -1.5px 1.5px 0 var(--glow),inset -6px 6px 12px -9px color-mix(in srgb,var(--glow-fade) 70%,transparent);opacity:0;transition:opacity .9s ease}
 .price-band.lit .u-card::after{opacity:1}
 .price-band .u-scene img{object-position:50% 0%}
