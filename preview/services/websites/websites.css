@@ -781,3 +781,6 @@ main{overflow-x:clip}
 
 /* the Site Plan card art: blue grama backlit at dusk (HQ 11-22); the halo takes the picture's rose-gold backlight */
 .price-band .plans::before{background:#d8928a}
+/* placed so no seed head sits behind the title, tabs, price, button or small print (measured at 1440 and 390) */
+.price-band .u-scene img{object-position:50% 18%}
+@media (max-width:600px){.price-band .u-scene img{width:145%;right:auto;object-position:0 60%}}
