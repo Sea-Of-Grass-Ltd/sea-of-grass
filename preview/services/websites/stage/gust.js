@@ -2,8 +2,8 @@
 // and then the register exploded into parts and did the transformation thing"). Five thin beams come in from off-frame
 // left, one after another, and drive into the till through its glass, each stopping inside it (at the linkage, the
 // flags, the drawer); they hold while it fills with their light (stage.js warms its metal parts), then go out as it
-// bursts. Light with a source and a target, thin and sharp: no blobs, no blur, no dots. Near-white at the core,
-// the page's --glow at the edges.
+// bursts. Light with a source and a target, thin and sharp: no blobs, no blur, no dots. Lamp (--glow-hot) at the core,
+// straw (--glow) at the edges.
 
 const ease = x => x * x * (3 - 2 * x);
 const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
@@ -21,9 +21,9 @@ void main(){
   gl_FragColor = vec4(c, a * uAlpha);
 }`;
 
-export function makeGust(T, scene, P, S, glow) {
+export function makeGust(T, scene, P, S, glow, hot) {
   const at = (x, y, z) => new T.Vector3(P.x + x * S, P.y + y * S, P.z + z * S);
-  const core = new T.Color(0xfff6f0), edge = glow ? glow.clone() : new T.Color(0xd8928a);   // edge: the page's --glow
+  const core = hot ? hot.clone() : new T.Color(0xF2DFAE), edge = glow ? glow.clone() : new T.Color(0xD4B26A);   // core --glow-hot, edge --glow
   const beam = (pts, width) => {
     const curve = new T.CatmullRomCurve3(pts), N = 90, pos = [], u = [], v = [], idx = [], zf = new T.Vector3(0, 0, 1);
     for (let i = 0; i <= N; i++) {

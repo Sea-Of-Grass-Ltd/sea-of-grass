@@ -118,7 +118,7 @@ class SogStage extends HTMLElement {
     const root = gltf.scene;
     const regRig = root.getObjectByName('register_rig'), phRig = root.getObjectByName('phone_rig');
     // the light colour comes from the page (--glow, --glow-hot on :root), so it changes in one place
-    const rootCss = getComputedStyle(document.documentElement), GLOW = new T.Color(rootCss.getPropertyValue('--glow').trim() || '#d8928a'), GLOW_HOT = new T.Color(rootCss.getPropertyValue('--glow-hot').trim() || '#f1c98a');
+    const rootCss = getComputedStyle(document.documentElement), GLOW = new T.Color(rootCss.getPropertyValue('--glow').trim() || '#D4B26A'), GLOW_HOT = new T.Color(rootCss.getPropertyValue('--glow-hot').trim() || '#F2DFAE'), GLOW_FADE = new T.Color(rootCss.getPropertyValue('--glow-fade').trim() || '#8E7340');
     // the Smoked-Glass Till (Tristan 2026-11-22: the wooden toy read as clipart; "everybody likes the effect, just not the
     // register"): its parts go into the register's rig, in the same local frame, so the crouch, leap and morph carry over
     if (till) {
@@ -232,7 +232,7 @@ class SogStage extends HTMLElement {
     const pivot = regRig.position.clone(), restQ = regRig.quaternion.clone();
     // no lamps of its own any more (Tristan 2026-11-22, glows vs Dope Security): the overhead key is the one warm light
     // the magic gust (gust.js): reduced motion keeps the still till, so no wind is built
-    const wind = this.still || !this._makeGust ? null : this._makeGust(T, actor, pivot.clone(), HERO, GLOW);
+    const wind = this.still || !this._makeGust ? null : this._makeGust(T, actor, pivot.clone(), HERO, GLOW, GLOW_HOT);
     // the till's loose parts for the gust: its keys rattle and its price flags flutter on a hinge at their foot
     const keys = [], flags = new T.Group();
     if (wind) {
@@ -277,7 +277,7 @@ class SogStage extends HTMLElement {
       p.u.rotation.set(p.r0.x + p.spin.x * e, p.r0.y + p.spin.y * e, p.r0.z + p.spin.z * e); } };
     // the light the beams pour in: the till's metal parts warm from inside as it fills
     // the charge (Tristan 2026-11-22: "the register would glow with color before it explodes"; his reference glows from
-    // inside with a bright rim hugging its outline): the smoked glass fills with rose light that warms toward gold, and a
+    // inside with a bright rim hugging its outline): the smoked glass fills with straw light that heats toward lamp white, and a
     // fresnel rim on the glass's own outline brightens with it, with a second, slightly larger shell giving a short
     // falloff just outside the edge (a few px, never a blob). Light from the object itself, all in WebGL.
     // (a fresnel rim can't work on the till's flat-faced glass: every face gets one value and tints whole; its outline is
@@ -289,14 +289,14 @@ class SogStage extends HTMLElement {
     if (wind) {
       regRig.traverse(o => { if (o.isMesh && o.material?.transmission !== undefined && o.material.transparent && o.material.depthWrite === false) glassMats.add(o.material); });
       const trim = []; regRig.traverse(o => { if (o.isMesh && /^shell_trim/.test(o.name)) trim.push(o); });
-      for (const o of trim) for (const [push, k] of [[0, 1.0], [0.0016, 0.28], [0.0032, 0.12]]) {   // the hot edge, then a short falloff a few px out
+      for (const o of trim) for (const [push, k] of [[0, 1.0], [0.0016, 0.45], [0.0032, 0.22]]) {   // the hot edge, then a short falloff a few px out, in dusk straw
         const m = new T.ShaderMaterial({ vertexShader: RIM_V, fragmentShader: RIM_F, transparent: true, depthWrite: false, depthTest: push === 0,
-          blending: T.AdditiveBlending, uniforms: { uCol: { value: rimCol }, uI: { value: 0 }, uPush: { value: push } } });
+          blending: T.AdditiveBlending, uniforms: { uCol: { value: push ? GLOW_FADE : rimCol }, uI: { value: 0 }, uPush: { value: push } } });
         const r = new T.Mesh(o.geometry, m); r.renderOrder = 5; r.frustumCulled = false; r.visible = false; o.add(r); rims.push({ r, m, k });
       }
     }
     const lit = []; if (wind) regRig.traverse(o => { if (o.isMesh && o.material?.emissive && /^tl_(alu|keytop|gold)$/.test(o.material.name)) lit.push(o.material); });
-    for (const m of new Set(lit)) m.emissive.set(0xe9b8ad);
+    for (const m of new Set(lit)) m.emissive.copy(GLOW);
     const fadeTo = (rig, f) => rig.traverse(o => { if (!o.isMesh) return; for (const m of [].concat(o.material)) {
       if (m.userData.o0 === undefined) { m.userData.o0 = m.opacity; m.userData.tr0 = m.transparent; }
       m.opacity = m.userData.o0 * f; m.transparent = f < 1 || m.userData.tr0; } });
@@ -325,7 +325,7 @@ class SogStage extends HTMLElement {
         // filled with light, it bursts mid-spin; the till's parts fade as the phone's fly back together through them
         const glow = span(t, 0.14, 0.285) * (1 - span(t, 0.30, 0.33));
         for (const m of new Set(lit)) m.emissiveIntensity = 0.55 * glow;
-        // the charge: up from 0.18, peaking as it bursts at 0.30, rose warming to gold; gone with the till
+        // the charge: up from 0.18, peaking as it bursts at 0.30, straw heating to lamp; gone with the till
         const charge = span(t, 0.18, 0.30) * (1 - span(t, 0.305, 0.325));
         rimCol.copy(ROSE).lerp(GOLDW, span(t, 0.24, 0.30));
         for (const m of glassMats) { m.emissive.copy(rimCol); m.emissiveIntensity = 0.38 * charge; }

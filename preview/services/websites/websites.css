@@ -5,7 +5,7 @@
    page of identical rounded boxes. Physical objects carry the character: a split-flap board and a photo ticket rail. */
 :root{
   /* the page's one light colour (glow, crest, card edge), in one place while the accent is being chosen (Tristan 11-22) */
-  --glow:#d8928a;--glow-hot:#f1c98a;
+  --glow:#D4B26A;--glow-hot:#F2DFAE;--glow-fade:#8E7340;   /* straw, lamp, dusk straw (Tristan 11-22: "Go with straw for the glows"); fade only where light falls off, never a fill */
 
   /* PALETTE: "Night meadow with poppies", approved by Tristan 2026-11-19 (PALETTE.md in the shared notes), and restored on
      his later note ("this color scheme was better"). Every colour is
