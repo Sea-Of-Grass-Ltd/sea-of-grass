@@ -20,15 +20,14 @@ const PHONE = { phoneYaw: 0.42, lookX: -0.028, lookY: 0.072, pitch: 22, fit: 0.3
 const COL = { phone: 0xf1e8d8 };
 // the jump-morph as a Front Range gust (Tristan 2026-11-22: the old spin "isn't believable"; the first gust drew lines over
 // it and he said it didn't look good, so now the wind shows in the till itself). (t, height m, vertical stretch, turn deg,
-// lean deg away from the wind): the gust shoves it over twice and it digs in, the gust lifts it, it whips round through
-// 180 (the swap hides in the whip's smear), then it settles as the phone and lands, squashes and settles
+// lean deg away from the wind): the gust shoves it over twice and it digs in while beams of light pour into it, it lifts,
+// bursts into its parts at the turn, the phone's parts fly back together out of the burst, and it lands and settles
 const JUMP = [[0, 0, 1, 0, 0], [0.10, 0, 1, 0, 0], [0.125, 0, 0.98, 0, 9], [0.145, 0, 0.97, 0, 3], [0.17, 0, 0.96, 0, 14],
   [0.19, 0, 0.94, 0, 5], [0.205, 0, 0.86, 0, 8], [0.22, 0, 0.76, 0, 0], [0.27, 0.06, 1.22, 20, -6], [0.30, 0.12, 1.28, 80, -4],
   [0.33, 0.18, 1.16, 180, 0], [0.36, 0.25, 1.06, 280, 0], [0.44, 0.30, 0.95, 330, 0], [0.51, 0.21, 1.10, 350, 0], [0.57, 0, 1.18, 360, 0],
   [0.61, 0, 0.74, 360, 0], [0.67, 0, 1.08, 360, 0], [0.72, 0, 0.97, 360, 0], [0.78, 0, 1, 360, 0], [1, 0, 1, 360, 0]];
 const SWAP = 0.33;
 const SIDE_FOOT = 0.118;                                         // the till's side edge, from its centre (m, before HERO)
-const WIPE = [0.305, 0.355];                                     // the fast stretch of the spin, where the smear shows
 const B = (T, x, y, z) => new T.Vector3(x, z, -y);              // Blender Z-up -> glTF Y-up
 const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
 const ease = x => x * x * (3 - 2 * x);
@@ -244,13 +243,36 @@ class SogStage extends HTMLElement {
         for (const o of fl) { o.position.sub(flags.position); flags.add(o); }
       }
     }
-    // the whip's smear: a few pale echoes of whichever rig is showing, trailing its turn, and a crossfade under them
-    const echoMat = new T.MeshBasicMaterial({ color: 0xd9dbe6, transparent: true, opacity: 0, depthWrite: false });
-    const echoes = (rig) => [0, 1, 2, 3].map(i => { const e = rig.clone(true); e.traverse(o => { if (o.isMesh) { o.material = echoMat.clone(); o.castShadow = false; } }); e.visible = false; actor.add(e); return e; });
-    const tillEchoes = wind ? echoes(regRig) : [], phoneEchoes = wind ? echoes(phRig) : [];
+    // the burst (Tristan 2026-11-22: "glowing light beams that went inside of the register and then the register
+    // exploded into parts and did the transformation thing"): each rig comes apart into its parts, flung out from its
+    // centre with a spin, and the phone's parts fly back together out of the till's burst. Measured at rest.
+    const partsOf = rig => {
+      rig.updateMatrixWorld(true);
+      const inv = rig.matrixWorld.clone().invert(), units = [];
+      for (const c of rig.children) {
+        if (c.name === 'root' && !c.isMesh) units.push(...c.children); else if (c.isMesh || c.isGroup) units.push(c);
+      }
+      const all = new T.Box3().setFromObject(rig).applyMatrix4(inv), mid = all.getCenter(new T.Vector3());
+      return units.filter(u => !u.isSkinnedMesh).map((u, i) => {
+        const bb = new T.Box3().setFromObject(u).applyMatrix4(inv), c = bb.getCenter(new T.Vector3());
+        const dir = c.clone().sub(mid); dir.y *= 0.8; if (dir.lengthSq() < 1e-6) dir.set(0, 1, 0);
+        dir.normalize().multiplyScalar(0.10 + 0.05 * ((i * 37) % 7) / 7);
+        // the offset in the part's own parent's frame (the phone's parts hang off a 'root' group)
+        const pq = u.parent === rig ? new T.Quaternion() : u.parent.quaternion.clone().invert(), ps = u.parent === rig ? 1 : 1 / u.parent.scale.x;
+        return { u, p0: u.position.clone(), r0: u.rotation.clone(), off: dir.applyQuaternion(pq).multiplyScalar(ps),
+          spin: new T.Vector3(((i * 13) % 5 - 2) * 0.35, ((i * 7) % 5 - 2) * 0.45, ((i * 11) % 5 - 2) * 0.3) };
+      });
+    };
+    const tillParts = wind ? partsOf(regRig) : [], phoneParts = wind ? partsOf(phRig) : [];
+    const cord = phRig.getObjectByName('coiled_cord');
+    const burst = (parts, e) => { for (const p of parts) { p.u.position.copy(p.p0).addScaledVector(p.off, e);
+      p.u.rotation.set(p.r0.x + p.spin.x * e, p.r0.y + p.spin.y * e, p.r0.z + p.spin.z * e); } };
+    // the light the beams pour in: the till's metal parts warm from inside as it fills
+    const lit = []; if (wind) regRig.traverse(o => { if (o.isMesh && o.material?.emissive && /^tl_(alu|keytop|gold|satin)$/.test(o.material.name)) lit.push(o.material); });
+    for (const m of new Set(lit)) m.emissive.set(0xf3d6c4);
     const fadeTo = (rig, f) => rig.traverse(o => { if (!o.isMesh) return; for (const m of [].concat(o.material)) {
       if (m.userData.o0 === undefined) { m.userData.o0 = m.opacity; m.userData.tr0 = m.transparent; }
-      m.opacity = m.userData.o0 * f; m.transparent = f < 1 || m.userData.tr0; m.depthWrite = f >= 1 && !m.userData.tr0 ? true : m.depthWrite; } });
+      m.opacity = m.userData.o0 * f; m.transparent = f < 1 || m.userData.tr0; } });
     actor.updateMatrixWorld(true);
     // the landing spot: the dock camera hangs off this, not the jumping rig; at the phone's own size (it shrinks from
     // the hero size back to 1 as it docks, so it lands exactly as big as <sog-phone> draws it)
@@ -273,18 +295,17 @@ class SogStage extends HTMLElement {
       regRig.visible = t < SWAP; phRig.visible = t >= SWAP;
       if (wind) {
         wind(t);
-        for (const k of keys) k.o.position.y = k.y + gust * 0.0016 * Math.sin(t * 3100 + k.k * 1.7);
-        flags.rotation.x = gust * 0.32 * Math.sin(t * 1900) + span(t, 0.27, 0.33) * 0.5;
-        // the whip: the till fades out and the phone in across 180, both trailed by echoes at the turn they just left
-        const smear = span(t, WIPE[0], 0.325) * (1 - span(t, 0.335, WIPE[1]));
-        const ft = 1 - span(t, 0.318, 0.334), fp = span(t, 0.326, 0.342);
+        // filled with light, it bursts mid-spin; the till's parts fade as the phone's fly back together through them
+        const glow = span(t, 0.14, 0.285) * (1 - span(t, 0.30, 0.33));
+        for (const m of new Set(lit)) m.emissiveIntensity = 0.9 * glow;
+        const eT = span(t, 0.285, 0.322), eP = 1 - span(t, 0.33, 0.385);
+        burst(tillParts, eT); burst(phoneParts, eP);
+        // on top of the burst: the keys rattle and the flags flutter while the gust blows
+        for (const k of keys) k.o.position.y += gust * 0.0016 * Math.sin(t * 3100 + k.k * 1.7);
+        flags.rotation.x += gust * 0.32 * Math.sin(t * 1900) + span(t, 0.27, 0.33) * 0.5;
+        const ft = 1 - span(t, 0.316, 0.333), fp = span(t, 0.322, 0.338);
         regRig.visible = ft > 0.01; phRig.visible = fp > 0.01; fadeTo(regRig, ft); fadeTo(phRig, fp);
-        const trail = (list, rig, f) => list.forEach((e, i) => {
-          const o = smear * f * (0.12 - i * 0.026); e.visible = o > 0.004 && rig.visible !== undefined; if (!e.visible) return;
-          e.position.copy(rig.position); e.scale.copy(rig.scale);
-          e.quaternion.setFromAxisAngle(new T.Vector3(0, 1, 0), -T.MathUtils.degToRad(9 * (i + 1))).multiply(rig.quaternion);
-          e.traverse(m => { if (m.isMesh) m.material.opacity = o; }); });
-        trail(tillEchoes, regRig, ft); trail(phoneEchoes, phRig, fp);
+        if (cord) cord.visible = eP < 0.04;                        // the skinned cord can't fly apart: it appears as the phone closes
       }
       ghost.position.copy(regRig.position); ghost.quaternion.copy(regRig.quaternion); ghost.scale.copy(regRig.scale); ghost.visible = regRig.visible;
     };
