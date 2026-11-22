@@ -278,24 +278,19 @@ class SogStage extends HTMLElement {
     // inside with a bright rim hugging its outline): the smoked glass fills with rose light that warms toward gold, and a
     // fresnel rim on the glass's own outline brightens with it, with a second, slightly larger shell giving a short
     // falloff just outside the edge (a few px, never a blob). Light from the object itself, all in WebGL.
-    const RIM_V = `varying vec3 vN; varying vec3 vV; void main(){ vec4 mv = modelViewMatrix * vec4(position, 1.0);
-      vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz); gl_Position = projectionMatrix * mv; }`;
-    const RIM_F = `uniform vec3 uCol; uniform float uI, uPow; varying vec3 vN; varying vec3 vV;
-      void main(){ float f = pow(1.0 - abs(dot(normalize(vN), normalize(vV))), uPow); gl_FragColor = vec4(uCol, f * uI); }`;
+    // (a fresnel rim can't work on the till's flat-faced glass: every face gets one value and tints whole; its outline is
+    // already modelled as the aluminium edge trim, so the trim is the rim)
+    const RIM_V = `uniform float uPush; void main(){ vec3 p = position + normal * uPush; gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0); }`;
+    const RIM_F = `uniform vec3 uCol; uniform float uI; void main(){ gl_FragColor = vec4(uCol, uI); }`;
     const rimCol = new T.Color(), ROSE = new T.Color(0xd8928a), GOLDW = new T.Color(0xf1c98a);
     const rims = [], glassMats = new Set();
     if (wind) {
-      const shells = []; regRig.traverse(o => { if (o.isMesh && o.material?.transmission !== undefined && o.material.transparent && o.material.depthWrite === false) shells.push(o); });
-      for (const o of shells) {
-        glassMats.add(o.material);
-        for (const [sc, pw, k] of [[1.0, 2.6, 1.0], [1.035, 1.4, 0.35]]) {        // the rim on the edge, then the short falloff outside it
-          const m = new T.ShaderMaterial({ vertexShader: RIM_V, fragmentShader: RIM_F, transparent: true, depthWrite: false,
-            blending: T.AdditiveBlending, side: sc > 1 ? T.BackSide : T.FrontSide, uniforms: { uCol: { value: rimCol }, uI: { value: 0 }, uPow: { value: pw } } });
-          const r = new T.Mesh(o.geometry, m); r.renderOrder = 5; r.frustumCulled = false; r.visible = false;
-          o.geometry.computeBoundingBox(); const c = o.geometry.boundingBox.getCenter(new T.Vector3());
-          r.position.copy(c).multiplyScalar(1 - sc); r.scale.setScalar(sc);           // grown about the shell's own centre
-          o.add(r); rims.push({ r, m, k });
-        }
+      regRig.traverse(o => { if (o.isMesh && o.material?.transmission !== undefined && o.material.transparent && o.material.depthWrite === false) glassMats.add(o.material); });
+      const trim = []; regRig.traverse(o => { if (o.isMesh && /^shell_trim/.test(o.name)) trim.push(o); });
+      for (const o of trim) for (const [push, k] of [[0, 1.0], [0.0016, 0.28], [0.0032, 0.12]]) {   // the hot edge, then a short falloff a few px out
+        const m = new T.ShaderMaterial({ vertexShader: RIM_V, fragmentShader: RIM_F, transparent: true, depthWrite: false, depthTest: push === 0,
+          blending: T.AdditiveBlending, uniforms: { uCol: { value: rimCol }, uI: { value: 0 }, uPush: { value: push } } });
+        const r = new T.Mesh(o.geometry, m); r.renderOrder = 5; r.frustumCulled = false; r.visible = false; o.add(r); rims.push({ r, m, k });
       }
     }
     const lit = []; if (wind) regRig.traverse(o => { if (o.isMesh && o.material?.emissive && /^tl_(alu|keytop|gold)$/.test(o.material.name)) lit.push(o.material); });
@@ -331,8 +326,8 @@ class SogStage extends HTMLElement {
         // the charge: up from 0.18, peaking as it bursts at 0.30, rose warming to gold; gone with the till
         const charge = span(t, 0.18, 0.30) * (1 - span(t, 0.305, 0.325));
         rimCol.copy(ROSE).lerp(GOLDW, span(t, 0.24, 0.30));
-        for (const m of glassMats) { m.emissive.copy(rimCol); m.emissiveIntensity = 0.9 * charge; }
-        for (const x of rims) { x.m.uniforms.uI.value = (0.3 + 1.1 * charge) * charge * x.k; x.r.visible = charge > 0.01; }
+        for (const m of glassMats) { m.emissive.copy(rimCol); m.emissiveIntensity = 0.38 * charge; }
+        for (const x of rims) { x.m.uniforms.uI.value = Math.min(1, (0.25 + 0.95 * charge) * charge) * x.k; x.r.visible = charge > 0.01; }
         const eT = span(t, 0.285, 0.322), eP = 1 - span(t, 0.33, 0.385);
         burst(tillParts, eT); burst(phoneParts, eP);
         // on top of the burst: the keys rattle and the flags flutter while the gust blows
