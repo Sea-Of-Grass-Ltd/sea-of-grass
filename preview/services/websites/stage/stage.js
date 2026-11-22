@@ -117,6 +117,8 @@ class SogStage extends HTMLElement {
 
     const root = gltf.scene;
     const regRig = root.getObjectByName('register_rig'), phRig = root.getObjectByName('phone_rig');
+    // the light colour comes from the page (--glow, --glow-hot on :root), so it changes in one place
+    const rootCss = getComputedStyle(document.documentElement), GLOW = new T.Color(rootCss.getPropertyValue('--glow').trim() || '#d8928a'), GLOW_HOT = new T.Color(rootCss.getPropertyValue('--glow-hot').trim() || '#f1c98a');
     // the Smoked-Glass Till (Tristan 2026-11-22: the wooden toy read as clipart; "everybody likes the effect, just not the
     // register"): its parts go into the register's rig, in the same local frame, so the crouch, leap and morph carry over
     if (till) {
@@ -132,7 +134,7 @@ class SogStage extends HTMLElement {
           const n = o.material?.name || '';
           if (n === 'tl_glass') { o.material = glass; o.renderOrder = 2; }
           else if (n === 'tl_window') { o.material = window_; o.renderOrder = 3; }
-          else if (n === 'tl_rose') { o.material = new T.MeshBasicMaterial({ color: 0xffc4bb, toneMapped: false }); }
+          else if (n === 'tl_rose') { o.material = new T.MeshBasicMaterial({ color: GLOW.clone().lerp(new T.Color(0xffffff), 0.45), toneMapped: false }); }
           else if (o.material && 'envMapIntensity' in o.material) {   // the room light blew the metals out to white: tame it
             const k = { tl_keytop: 0.45, tl_alu: 0.6, tl_satin: 0.35, tl_graphite: 0.5, tl_flag: 0.4, tl_gold: 0.8 }[n];
             if (k !== undefined) o.material.envMapIntensity = k;
@@ -230,7 +232,7 @@ class SogStage extends HTMLElement {
     const pivot = regRig.position.clone(), restQ = regRig.quaternion.clone();
     // no lamps of its own any more (Tristan 2026-11-22, glows vs Dope Security): the overhead key is the one warm light
     // the magic gust (gust.js): reduced motion keeps the still till, so no wind is built
-    const wind = this.still || !this._makeGust ? null : this._makeGust(T, actor, pivot.clone(), HERO, BARE ? 0.45 : 1);
+    const wind = this.still || !this._makeGust ? null : this._makeGust(T, actor, pivot.clone(), HERO, GLOW);
     // the till's loose parts for the gust: its keys rattle and its price flags flutter on a hinge at their foot
     const keys = [], flags = new T.Group();
     if (wind) {
@@ -282,7 +284,7 @@ class SogStage extends HTMLElement {
     // already modelled as the aluminium edge trim, so the trim is the rim)
     const RIM_V = `uniform float uPush; void main(){ vec3 p = position + normal * uPush; gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0); }`;
     const RIM_F = `uniform vec3 uCol; uniform float uI; void main(){ gl_FragColor = vec4(uCol, uI); }`;
-    const rimCol = new T.Color(), ROSE = new T.Color(0xd8928a), GOLDW = new T.Color(0xf1c98a);
+    const rimCol = new T.Color(), ROSE = GLOW, GOLDW = GLOW_HOT;
     const rims = [], glassMats = new Set();
     if (wind) {
       regRig.traverse(o => { if (o.isMesh && o.material?.transmission !== undefined && o.material.transparent && o.material.depthWrite === false) glassMats.add(o.material); });

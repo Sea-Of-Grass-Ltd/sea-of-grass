@@ -4,6 +4,9 @@
    fills or CSS gradients. Glass appears only in distinctive shapes (the notched Care ticket, pills, the receipt), never as a
    page of identical rounded boxes. Physical objects carry the character: a split-flap board and a photo ticket rail. */
 :root{
+  /* the page's one light colour (glow, crest, card edge), in one place while the accent is being chosen (Tristan 11-22) */
+  --glow:#d8928a;--glow-hot:#f1c98a;
+
   /* PALETTE: "Night meadow with poppies", approved by Tristan 2026-11-19 (PALETTE.md in the shared notes), and restored on
      his later note ("this color scheme was better"). Every colour is
      mixed with the sky's ultramarine and a breath of poppy. Sections take turns navy / moss / plum; poppy is the only CTA
