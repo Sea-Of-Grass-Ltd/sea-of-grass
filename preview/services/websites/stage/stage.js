@@ -340,8 +340,8 @@ class SogStage extends HTMLElement {
         // the charge builds over 0.18-0.30, peaks at lamp right before the burst, and is gone the instant the case bursts
         const build = span(t, 0.18, 0.30), charge = build * (1 - span(t, 0.298, 0.306));
         rimCol.copy(ROSE).lerp(GOLDW, span(t, 0.22, 0.30));
-        for (const m of glassMats) { m.emissive.copy(rimCol); m.emissiveIntensity = 1.7 * Math.pow(charge, 1.3); }   // the glass lit from within
-        innerLamp.color.copy(rimCol); innerLamp.intensity = 3.5 * charge;
+        for (const m of glassMats) { m.emissive.copy(TILL); m.emissiveIntensity = 1.25 * Math.pow(charge, 1.3); }   // the glass lit from within, in the body blue (the pale peak is the rim's)
+        innerLamp.color.copy(TILL); innerLamp.intensity = 3.5 * charge;
         const trimOn = 1 - span(t, 0.299, 0.307);                    // the edges go with the light as the case bursts: no wireframe left flying
         for (let i = 0; i < trimMats.length; i++) { const m = trimMats[i]; m.color.copy(trimBase[i]).lerp(rimCol, Math.min(1, build * 1.6));   // never bare white
           m.transparent = true; m.opacity = trimOn; m.visible = trimOn > 0.01; }
