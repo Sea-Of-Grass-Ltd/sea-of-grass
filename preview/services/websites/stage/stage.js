@@ -326,8 +326,8 @@ class SogStage extends HTMLElement {
       for (let i = 0; i < N; i++) {
         const kind = i < 56 ? 'charge' : i < 80 ? 'burst' : 'settle';
         const b = box();
-        const t0 = kind === 'charge' ? 0.17 + 0.135 * Math.sqrt(rnd()) : kind === 'burst' ? rnd(0.298, 0.312) : rnd(0.49, 0.53);
-        const life = kind === 'charge' ? rnd(0.018, 0.045) : kind === 'burst' ? rnd(0.025, 0.05) : rnd(0.05, 0.08);
+        const t0 = kind === 'charge' ? 0.17 + 0.135 * Math.sqrt(rnd()) : kind === 'burst' ? rnd(0.298, 0.312) : rnd(0.47, 0.50);
+        const life = kind === 'charge' ? rnd(0.018, 0.045) : kind === 'burst' ? rnd(0.025, 0.05) : rnd(0.04, 0.055);   // the settling ones are all gone by 0.555, before the landing
         list.push({ kind, p: b.p, n: b.n, t0, life, size: rnd(0.6, 1.6) * (kind === 'burst' ? 1.2 : 1), hue: rnd(),
           rise: rnd(0.025, 0.06), out: kind === 'burst' ? rnd(0.10, 0.2) : rnd(0.006, 0.02), wob: rnd(0, 6.28), sway: rnd(0.002, 0.008) });
       }
@@ -522,7 +522,8 @@ class SogStage extends HTMLElement {
     const dockCam = (el, w, h) => {
       const aspect = w / h, half = Math.tan(T.MathUtils.degToRad(PHONE.fov / 2)), p = T.MathUtils.degToRad(PHONE.pitch);
       const cs = getComputedStyle(el), drop = parseFloat(cs.getPropertyValue('--phone-drop')), fitW = parseFloat(cs.getPropertyValue('--phone-fit-w'));
-      const dist = aspect > 1 && fitW ? fitW / (2 * half * aspect) : PHONE.fit / (2 * half * Math.min(1, aspect));
+      const fitV = parseFloat(cs.getPropertyValue('--phone-fit')), fit = isNaN(fitV) ? PHONE.fit : fitV;   // the same --phone-fit as <sog-phone>
+      const dist = aspect > 1 && fitW ? fitW / (2 * half * aspect) : fit / (2 * half * Math.min(1, aspect));
       const look = new T.Vector3(PHONE.lookX, PHONE.lookY, 0);
       const pos = new T.Vector3(look.x, look.y + Math.sin(p) * dist, look.z + Math.cos(p) * dist);
       const m = new T.Matrix4().lookAt(pos, look, new T.Vector3(0, 1, 0)).setPosition(pos);

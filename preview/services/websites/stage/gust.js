@@ -39,21 +39,22 @@ export function makeGust(T, scene, P, S) {
   fly(bladeGeo, bladeMats[0], 0.195, 0.290, [-0.23, 0.01, -0.04], [0.00, 0.24, -0.22], [0.34, 0.24, -0.16], [4, 7, 3], false);
   fly(gramaGeo, gramaMat, 0.215, 0.300, [-0.24, 0.02, -0.16], [0.04, 0.24, -0.24], [0.36, 0.24, -0.14], [3, 2, 5], false);
   fly(bladeGeo, bladeMats[1], 0.235, 0.300, [-0.21, 0.00, 0.04], [0.04, 0.24, 0.10], [0.37, 0.24, 0.00], [7, 4, 6], false);
-  // the calm: two grama heads and a blade drift down around where the phone settles
-  fly(gramaGeo, gramaMat, 0.37, 0.55, [-0.10, 0.62, 0.06], [0.06, 0.36, 0.10], [0.16, 0.01, 0.12], [0.6, 1.5, 0.8], true);
-  fly(bladeGeo, bladeMats[2], 0.40, 0.57, [0.20, 0.66, -0.06], [0.10, 0.34, -0.02], [0.02, 0.0, 0.04], [1, 2, 1.5], true);
+  // the calm: a grama head and a blade drift down beside the phone's spot and fade out in the air, well above it and well
+  // before it lands (one used to land under the phone and stay parked there, Tristan 11-22: "what's up with these parts")
+  fly(gramaGeo, gramaMat, 0.37, 0.50, [-0.10, 0.62, 0.06], [-0.02, 0.48, 0.12], [-0.20, 0.34, 0.16], [0.6, 1.5, 0.8], true);
+  fly(bladeGeo, bladeMats[2], 0.39, 0.52, [0.24, 0.66, -0.06], [0.30, 0.50, -0.02], [0.36, 0.36, 0.04], [1, 2, 1.5], true);
   const q = new T.Vector3();
   return t => {
     for (const d of pieces) {
-      const k = (t - d.t0) / (d.t1 - d.t0), on = d.fall ? k > 0 && t < 0.60 : k > 0 && k < 1;
+      const k = (t - d.t0) / (d.t1 - d.t0), on = k > 0 && k < 1;   // every piece is gone at the end of its own path: nothing stays parked
       d.m.visible = on; if (!on) continue;
       const u = d.fall ? ease(clamp(k)) : clamp(k), w = 1 - u;
       q.copy(d.a).multiplyScalar(w * w).addScaledVector(d.c, 2 * w * u).addScaledVector(d.b, u * u);
       if (d.fall && k < 1) q.x += 0.025 * S * Math.sin(k * 9 + d.ph);
       d.m.position.copy(q);
       const sp = Math.min(k, 1);
-      d.m.rotation.set(d.spin.x * sp + d.ph, d.spin.y * sp, d.spin.z * sp + (d.fall && k >= 1 ? Math.PI / 2 : 0));
-      d.m.scale.setScalar(S * (d.fall ? 1 - span(t, 0.585, 0.60) : 1));
+      d.m.rotation.set(d.spin.x * sp + d.ph, d.spin.y * sp, d.spin.z * sp);
+      d.m.scale.setScalar(S * (d.fall ? 1 - span(k, 0.6, 1) : 1));      // the drifting ones shrink away over the last part of their fall
     }
   };
 }
