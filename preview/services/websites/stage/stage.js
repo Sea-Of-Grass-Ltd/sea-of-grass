@@ -22,8 +22,8 @@ const COL = { phone: 0xf1e8d8 };
 // till still facing you). (t, height m, vertical stretch, turn deg, tilt back deg about the back foot):
 // the gust arrives and the till rocks back twice and digs in, the gust lifts and spins it, the swap under the magic crest
 // at 180 (its back to you), then the wind calms and the phone lands, squashes and settles
-const JUMP = [[0, 0, 1, 0, 0], [0.10, 0, 1, 0, 0], [0.13, 0, 0.97, 0, 4], [0.155, 0, 0.94, 0, 0], [0.18, 0, 0.96, 0, 6],
-  [0.205, 0, 0.86, 0, 0], [0.22, 0, 0.76, 0, 0], [0.27, 0.06, 1.22, 30, 0], [0.30, 0.16, 1.32, 120, 0], [0.33, 0.23, 1.18, 180, 0],
+const JUMP = [[0, 0, 1, 0, 0], [0.10, 0, 1, 0, 0], [0.13, 0, 0.97, 0, 7], [0.155, 0, 0.94, 0, 0], [0.18, 0, 0.96, 0, 10],
+  [0.205, 0, 0.86, 0, 0], [0.22, 0, 0.76, 0, 0], [0.27, 0.06, 1.22, 30, 0], [0.30, 0.12, 1.30, 120, 0], [0.33, 0.18, 1.16, 180, 0],
   [0.36, 0.27, 1.06, 215, 0], [0.44, 0.30, 0.95, 280, 0], [0.51, 0.21, 1.10, 335, 0], [0.57, 0, 1.18, 360, 0], [0.61, 0, 0.74, 360, 0],
   [0.67, 0, 1.08, 360, 0], [0.72, 0, 0.97, 360, 0], [0.78, 0, 1, 360, 0], [1, 0, 1, 360, 0]];
 const SWAP = 0.33;

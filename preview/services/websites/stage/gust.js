@@ -25,7 +25,7 @@ void main(){
   float s = (vU - (uHead - uLen)) / uLen;                 // 0 at the tail, 1 at the head
   if (s < 0.0 || s > 1.0) discard;
   float a = smoothstep(0.0, 0.45, s) * smoothstep(1.0, 0.82, s) * (1.0 - vV * vV);
-  vec3 c = mix(uPale, mix(uRose, uGold, s), uCharge);
+  vec3 c = mix(uPale, mix(uRose, uGold, 0.35 + 0.3 * s), uCharge);
   float band = uCharge * exp(-pow((vU - uBand) / uBandW, 2.0));
   c = mix(c, vec3(1.0, 0.94, 0.92), band * 0.6);
   gl_FragColor = vec4(c, clamp(a * uAlpha * (1.0 + band * 1.6), 0.0, 1.0));
@@ -77,7 +77,7 @@ export function makeGust(T, scene, P, S, lift = 1) {
   // the swap happens behind it
   const crestPts = [];
   for (let i = 0; i <= 8; i++) { const k = i / 8, x = -1.25 + 2.5 * k; crestPts.push(at(x, 0.10 + 0.20 * ease(k) + 0.02 * Math.sin(k * 6), 0.24)); }
-  const crest = ribbon(crestPts, 0.030 * S, true); crest.mesh.renderOrder = 8;
+  const crest = ribbon(crestPts, 0.018 * S, true); crest.mesh.renderOrder = 8;
   const crestU = 0.5;                                     // the till sits mid-line
   // a soft rose-gold bloom under the crest, so the swap is never seen bare
   const glowTex = (() => { const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d');
@@ -136,7 +136,7 @@ export function makeGust(T, scene, P, S, lift = 1) {
     const ch = span(t, 0.28, 0.31) * (1 - span(t, 0.35, 0.385));
     const cu = crest.m.uniforms;
     cu.uLen.value = 0.75; cu.uHead.value = 0.25 + 1.5 * span(t, 0.255, 0.40);
-    cu.uAlpha.value = 0.75 * span(t, 0.255, 0.28) * (1 - span(t, 0.37, 0.40)); cu.uCharge.value = ch;
+    cu.uAlpha.value = 0.6 * span(t, 0.255, 0.28) * (1 - span(t, 0.37, 0.40)); cu.uCharge.value = ch;
     cu.uBand.value = crestU - 0.07 + 0.14 * clamp((t - 0.30) / 0.06); cu.uBandW.value = 0.085;
     crest.mesh.visible = cu.uAlpha.value > 0;
     glow.position.copy(at(0, 0.17, 0.26));
