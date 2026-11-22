@@ -776,3 +776,5 @@ main{overflow-x:clip}
 .close-more .cm-sub{font:400 14.5px/1.4 var(--body);color:var(--soft)}
 .close-more>summary{gap:14px;padding:12px 4px}
 .close-more .cm-plus{width:32px;height:32px;font-size:24px;flex:none;color:var(--text);box-shadow:inset 0 0 0 1.5px rgba(var(--text-rgb),.5)}
+.close-more>summary{width:auto;max-width:min(100%,520px);display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center}
+.close-more .cm-text{min-width:0}
