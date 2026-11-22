@@ -72,7 +72,10 @@ class SogStage extends HTMLElement {
         import(VENDOR + 'environments/RoomEnvironment.js'), import(VENDOR + 'libs/meshopt_decoder.module.js'), import(HERE + 'gust.js')]);
       this._makeGust = makeGust;
       const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
-      const [gltf, till] = await Promise.all([loader.loadAsync(HERE + 'stage.glb'), loader.loadAsync(HERE + 'till.glb')]);
+      // the bare page (the live one) needs only the rigs, the sign and the counter: stage-bare.glb is stage.glb without its
+      // meadow, sky and old toy register (192 KB, not 892), built by tools/rotary-phone/make_stage_bare.mjs; ?scene=1 keeps the full stage
+      const bare = new URLSearchParams(location.search).get('scene') !== '1';
+      const [gltf, till] = await Promise.all([loader.loadAsync(HERE + (bare ? 'stage-bare.glb' : 'stage.glb')), loader.loadAsync(HERE + 'till.glb')]);
       this.build(THREE, gltf, RoomEnvironment, till);
     } catch (err) {
       console.warn('sog-stage:', err);
