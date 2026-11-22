@@ -5,7 +5,10 @@
    page of identical rounded boxes. Physical objects carry the character: a split-flap board and a photo ticket rail. */
 :root{
   /* the page's one light colour (glow, crest, card edge), in one place while the accent is being chosen (Tristan 11-22) */
-  --glow:#D4B26A;--glow-hot:#F2DFAE;--glow-fade:#8E7340;   /* straw, lamp, dusk straw (Tristan 11-22: "Go with straw for the glows"); fade only where light falls off, never a fill */
+  --glow:#D4B26A;--glow-hot:#F2DFAE;--glow-fade:#8E7340;
+  /* the till's own charge (Tristan 11-22: "the register glows with the blue color", his glowing-ghost reference): moonlit
+     cornflower, never sky or cyan. Body glow, rim and peak, fall-off */
+  --till-glow:#7FA0F0;--till-glow-hot:#DCE6FF;--till-glow-fade:#4A63B8;   /* stronger (11-22: "make the blue glow stronger") */   /* straw, lamp, dusk straw (Tristan 11-22: "Go with straw for the glows"); fade only where light falls off, never a fill */
 
   /* PALETTE: "Night meadow with poppies", approved by Tristan 2026-11-19 (PALETTE.md in the shared notes), and restored on
      his later note ("this color scheme was better"). Every colour is
