@@ -30,14 +30,15 @@ export function makeGust(T, scene, P, S) {
   // a piece flies a + (c pulled) to b between t0 and t1, tumbling by spin; fall pieces drift down and rest a beat
   const fly = (geo, mat, t0, t1, a, c, b, spin, fall) => { const m = new T.Mesh(geo, mat); m.visible = false; m.frustumCulled = false;
     scene.add(m); pieces.push({ m, t0, t1, a: at(...a), c: at(...c), b: at(...b), spin: new T.Vector3(...spin), fall, ph: pieces.length * 1.37 }); };
-  // the gust: lifted off the ground just left of the till, up around it (most of them behind it), out past its right side
-  fly(bladeGeo, bladeMats[0], 0.115, 0.215, [-0.24, 0.00, 0.06], [-0.05, 0.30, -0.18], [0.34, 0.34, -0.10], [5, 3, 7], false);
+  // the gust: lifted off the ground just left of the till, around it (most of them behind it), out past its right side,
+  // never above the till's top (0.26): on phones the words sit right above it
+  fly(bladeGeo, bladeMats[0], 0.115, 0.215, [-0.24, 0.00, 0.06], [-0.05, 0.24, -0.18], [0.34, 0.24, -0.10], [5, 3, 7], false);
   fly(bladeGeo, bladeMats[1], 0.135, 0.235, [-0.22, 0.01, -0.12], [0.02, 0.22, -0.26], [0.36, 0.20, -0.20], [3, 6, 4], false);
-  fly(gramaGeo, gramaMat, 0.150, 0.270, [-0.25, 0.02, 0.10], [-0.02, 0.38, 0.14], [0.32, 0.44, 0.04], [2, 4, 3], false);
+  fly(gramaGeo, gramaMat, 0.150, 0.270, [-0.25, 0.02, 0.10], [-0.02, 0.24, 0.14], [0.32, 0.24, 0.04], [2, 4, 3], false);
   fly(bladeGeo, bladeMats[2], 0.170, 0.260, [-0.20, 0.00, 0.12], [0.06, 0.16, 0.16], [0.38, 0.12, 0.02], [6, 2, 8], false);
-  fly(bladeGeo, bladeMats[0], 0.195, 0.290, [-0.23, 0.01, -0.04], [0.00, 0.40, -0.22], [0.34, 0.48, -0.16], [4, 7, 3], false);
-  fly(gramaGeo, gramaMat, 0.215, 0.300, [-0.24, 0.02, -0.16], [0.04, 0.30, -0.24], [0.36, 0.30, -0.14], [3, 2, 5], false);
-  fly(bladeGeo, bladeMats[1], 0.235, 0.300, [-0.21, 0.00, 0.04], [0.04, 0.24, 0.10], [0.37, 0.26, 0.00], [7, 4, 6], false);
+  fly(bladeGeo, bladeMats[0], 0.195, 0.290, [-0.23, 0.01, -0.04], [0.00, 0.24, -0.22], [0.34, 0.24, -0.16], [4, 7, 3], false);
+  fly(gramaGeo, gramaMat, 0.215, 0.300, [-0.24, 0.02, -0.16], [0.04, 0.24, -0.24], [0.36, 0.24, -0.14], [3, 2, 5], false);
+  fly(bladeGeo, bladeMats[1], 0.235, 0.300, [-0.21, 0.00, 0.04], [0.04, 0.24, 0.10], [0.37, 0.24, 0.00], [7, 4, 6], false);
   // the calm: two grama heads and a blade drift down around where the phone settles
   fly(gramaGeo, gramaMat, 0.37, 0.55, [-0.10, 0.62, 0.06], [0.06, 0.36, 0.10], [0.16, 0.01, 0.12], [0.6, 1.5, 0.8], true);
   fly(bladeGeo, bladeMats[2], 0.40, 0.57, [0.20, 0.66, -0.06], [0.10, 0.34, -0.02], [0.02, 0.0, 0.04], [1, 2, 1.5], true);
