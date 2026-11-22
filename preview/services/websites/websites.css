@@ -779,8 +779,7 @@ main{overflow-x:clip}
 .close-more>summary{width:auto;max-width:min(100%,520px);display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center}
 .close-more .cm-text{min-width:0}
 
-/* the Site Plan card art: blue grama backlit at dusk (HQ 11-22); the halo takes the picture's rose-gold backlight */
+/* the Site Plan card art: a flat prairie at dusk, plum sky over foothills and a rose-gold field (HQ 11-22); the halo
+   takes the field's rose-gold */
 .price-band .plans::before{background:#d8928a}
-/* placed so no seed head sits behind the title, tabs, price, button or small print (measured at 1440 and 390) */
-.price-band .u-scene img{object-position:50% 18%}
-@media (max-width:600px){.price-band .u-scene img{width:145%;right:auto;object-position:0 60%}}
+.price-band .u-scene img{object-position:50% 0%}
