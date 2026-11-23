@@ -1,0 +1,73 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Branding, stage 1: the problem, two ways</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Instrument+Serif:ital@0;1&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Anton&family=Big+Shoulders+Display:wght@900&family=Albert+Sans:wght@400&family=Barlow+Condensed:wght@700&family=Young+Serif&family=Fraunces:opsz,wght,SOFT,WONK@9..144,900,100,1&family=Gabarito:wght@900&family=Newsreader:wght@600&display=swap">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}html{background:#fff;color:#000;scroll-behavior:smooth}
+body{font:400 18px/1.45 "Bricolage Grotesque",sans-serif;overflow-x:clip;-webkit-font-smoothing:antialiased}
+a{color:inherit}:root{--m:max(16px,3.4vw)}.w{padding-inline:var(--m)}
+h1,h2,h3{font-weight:700;letter-spacing:-.035em;line-height:.95}
+.sy{font-family:Syne,sans-serif;font-weight:800;letter-spacing:-.05em}.se{font-family:"Instrument Serif",serif;font-weight:400;letter-spacing:-.02em}
+.fit{font-optical-sizing:none;display:block;white-space:nowrap;width:max-content;transform-origin:0 0}
+.fitbox{overflow:visible}
+header{display:flex;justify-content:space-between;gap:20px;padding:20px var(--m);font-size:16px}header b{font-weight:700}nav{display:flex;gap:22px}nav a{text-decoration:none}nav a[aria-current]{text-decoration:underline;text-underline-offset:4px}
+.btn{display:inline-flex;align-items:center;min-height:56px;padding:0 28px;background:#000;color:#fff;text-decoration:none;font-weight:700;font-size:18px}
+/* 1 the theatre, in type: an arch, then three planes going back */
+.hero{padding-bottom:clamp(60px,8vw,130px)}
+.arch{display:block;width:100%;height:auto;overflow:visible}
+.arch .ab{font-family:"Bricolage Grotesque"!important;letter-spacing:-.02em!important}.arch text{font-family:Syne,sans-serif;font-weight:800;letter-spacing:-.03em}
+.planes{display:grid;justify-items:center;margin-top:-33.5vw;position:relative}
+.planes span{display:block;line-height:.86;white-space:nowrap}
+.p1{font-size:11.4vw}.p2{font-size:8.1vw}.p3{font-size:5.5vw}
+.plate{display:grid;grid-template-columns:1.25fr auto auto;align-items:end;gap:20px clamp(28px,5vw,90px);margin-top:clamp(40px,5vw,84px)}
+.plate p{font-size:clamp(18px,1.7vw,25px);line-height:1.25;max-width:24ch}.plate .pr b{display:block;font-size:clamp(46px,5vw,76px);line-height:.95;margin-bottom:6px}
+/* 2 */
+.prob{border-top:6px solid #000;padding-block:clamp(50px,7vw,110px)}
+.prob h2{font-size:clamp(58px,13.2vw,220px);line-height:.82}
+.prob .tiny{font-size:11px;line-height:1.3;margin:clamp(18px,2vw,34px) 0 clamp(50px,7vw,110px) 58%}
+.prob .two{display:grid;grid-template-columns:1fr 1fr;gap:30px clamp(30px,6vw,100px)}
+.prob .two p{font-size:clamp(24px,3vw,44px);line-height:1.08;letter-spacing:-.02em}
+.prob .fonts span{display:block}
+/* 3 wood-type poster */
+.nine{background:#000;color:#fff;padding-block:clamp(40px,5vw,80px)}
+.nine .top{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:clamp(20px,2.6vw,44px)}
+.nine h2{font-size:clamp(32px,4.4vw,66px);max-width:14ch}.nine .top p{max-width:26ch;text-align:right}
+.row{display:block;text-decoration:none;position:relative;border-top:1px solid #fff;padding:.5vw 0}
+.row small{position:absolute;right:0;top:8px;font:500 13px/1 "Bricolage Grotesque";letter-spacing:0;text-transform:none;background:#000;padding:2px 0 2px 8px;opacity:0;transition:opacity .15s}.row:hover small,.row:focus-visible small{opacity:1}
+/* 4 the staircase */
+.get{padding-block:clamp(60px,8vw,130px)}
+.get ol{list-style:none}.get li{font-size:clamp(30px,5.1vw,82px);line-height:1;letter-spacing:-.04em;font-weight:700;padding-left:calc(var(--i)*4.7vw);white-space:nowrap}
+.get h2{font-size:clamp(22px,2.2vw,32px);margin-bottom:26px}.get .own{font-size:clamp(40px,7.4vw,120px);line-height:.9;margin-top:clamp(40px,5vw,80px);text-align:right}
+/* 5 money */
+.how{border-top:6px solid #000}.how ol{list-style:none}
+.how li{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:clamp(20px,4vw,70px);align-items:end;border-bottom:1px solid #000;padding:clamp(18px,2.2vw,36px) 0}
+.how li b{font-size:clamp(84px,19vw,310px);line-height:.76;letter-spacing:-.07em}.how li p{font-size:clamp(20px,2.4vw,36px);line-height:1.12;letter-spacing:-.015em;max-width:19ch}
+.how .wk{font-size:clamp(20px,2.4vw,36px);padding:26px 0 0}
+/* 6 plans */
+.plans{display:grid;grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr);gap:clamp(34px,6vw,110px);padding-block:clamp(70px,9vw,150px);align-items:start}
+.plans h2{font-size:clamp(34px,3.8vw,58px)}.plans .gl{font-size:clamp(19px,1.7vw,24px);margin-top:8px}
+.amt{font-size:clamp(84px,9.6vw,150px);line-height:.85;letter-spacing:-.06em;font-weight:700;margin:clamp(26px,3vw,48px) 0 10px}
+.s .amt{font-size:clamp(100px,18.4vw,300px);margin-left:-.04em}.plans .btn{margin:28px 0}
+.plans .fine{font-size:16px;max-width:34ch;margin-top:12px}
+.s ul{list-style:none;border-top:1px solid #000;margin-top:34px}.s li{padding:13px 0;border-bottom:1px solid #000;font-size:clamp(20px,2vw,29px);line-height:1.15}
+.s .then{font-size:clamp(26px,3vw,46px);line-height:1.05;letter-spacing:-.02em}
+/* 7 */
+.com{min-height:74vh;display:grid;place-items:center;text-align:center}
+.com summary{list-style:none;cursor:pointer;font-size:clamp(20px,1.8vw,26px);padding:16px}.com summary::-webkit-details-marker{display:none}.com summary span{text-decoration:underline;text-underline-offset:4px}
+.com summary span{white-space:nowrap}.end .r{}.com details{width:100%}.com details[open] summary span{display:none}.com .big{font-size:22.6vw;line-height:.82;letter-spacing:-.075em;font-weight:700;margin:14px 0 26px}.com .in p:not(.big){font-size:clamp(20px,1.8vw,26px);margin-bottom:26px}
+/* 8 */
+.qs{border-top:6px solid #000;padding-block:clamp(50px,6vw,100px);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(30px,4vw,60px) clamp(30px,6vw,110px)}
+.qs h3{font-size:clamp(24px,2.5vw,37px);line-height:1.02}.qs p{margin-top:10px;max-width:38ch}
+.end{background:#000;color:#fff;padding-block:clamp(60px,8vw,130px) 26px}.end h2{font-size:clamp(64px,14.6vw,244px);line-height:.8}
+.end .r{display:flex;flex-wrap:wrap;gap:20px 46px;align-items:center;justify-content:flex-end;margin:clamp(40px,5vw,80px) 0}.end .r p{font-size:clamp(20px,2vw,29px);line-height:1.2;max-width:24ch}.end .btn{background:#fff;color:#000}
+footer{border-top:1px solid #fff;padding-top:18px;font-size:15px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}footer a{margin-left:16px;text-decoration:none}
+@media (max-width:760px){
+ nav{display:none}.planes{margin-top:-64vw;gap:1.2vw}.p1{font-size:13.4vw}.p2{font-size:10.4vw}.p3{font-size:7.8vw}
+ .plate{grid-template-columns:1fr;gap:24px;margin-top:44px}.plate .btn,.plans .btn,.end .btn,.com .btn{width:100%;justify-content:center}
+ .prob .two,.plans,.qs{grid-template-columns:1fr}.prob .tiny{margin-left:38%}.end .r{justify-content:flex-start}footer a:first-child{margin-left:0}.nine .top{display:block}.nine .top p{text-align:left;margin-top:10px}
+ .get li{padding-left:calc(var(--i)*2vw);font-size:7.3vw}.how li{grid-template-columns:1fr;gap:16px}.how li b{font-size:36vw}
+ .row small{position:static;opacity:1;display:block;padding:8px 0 4px}.s .amt{font-size:31vw}.s{border-top:6px solid #000;padding-top:40px}
+}
+</style><style>.lab{font-size:15px;padding:14px var(--m) 10px;border-top:1px dotted #000}.prob .pair{display:flex;flex-wrap:wrap;gap:0 .5em;margin-top:.15em}.pair b{font-size:1.45em;line-height:1;white-space:nowrap}</style></head><body><p class="lab">Now</p><section class="prob w"><h2>The sign shop wants a vector&nbsp;file.</h2><p class="tiny">You have a little JPEG.</p>
+ <div class="two"><p>A vector file stays sharp at any size. A picture saved off Facebook doesn&rsquo;t.</p><p class="fonts"><span style="font-family:Anton">Your shirts,</span><span class="se">your sign</span><span style="font-family:'Barlow Condensed';font-weight:700">and your cards</span><span style="font-family:'Young Serif'">are all in different fonts.</span></p></div></section>
+
+<p class="lab">Your idea</p><section class="prob w"><h2>Is your logo AI?</h2><p class="tiny">It&rsquo;s a good start.</p>
+ <div class="two"><p>It usually comes as a picture, and a sign shop usually needs it redrawn before they can cut it.</p><p class="twin">Ask AI for the same thing as another shop, and the two can come out <span class="pair"><b class="se">looking alike.</b><b class="se" aria-hidden="true">looking alike.</b></span></p></div></section></body></html>
