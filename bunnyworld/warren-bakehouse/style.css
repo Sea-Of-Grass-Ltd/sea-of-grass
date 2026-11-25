@@ -7,6 +7,11 @@
   --hf:"Young Serif",Georgia,serif;--hw:400;--bf:"Inclusive Sans",sans-serif;--mf:"DM Mono",monospace}
 .nav{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:14px;border-bottom:1px solid var(--line)}
 .logo{font:400 22px/.95 var(--hf);text-decoration:none;letter-spacing:-.01em}
+/* the mark (approved 2026-11-25, one rabbit in the flower; never redrawn). 44px keeps the header its old height; it shrinks on
+   narrow phones so the name and the hold button stay on one row, and under 360px, where the name already fills the row, it steps out. */
+.logo{display:inline-flex;align-items:center;gap:8px}.logo img{flex:none;width:clamp(28px,calc(100vw - 332px),44px);height:auto}
+@media (min-width:400px){.logo{gap:12px}}
+@media (max-width:359px){.logo img{display:none}}
 .nav nav{display:flex;flex-wrap:wrap;align-items:center;gap:4px 20px;font:500 13px/1 var(--mf);text-transform:uppercase;letter-spacing:.06em}.nav nav a{text-decoration:none}
 .nav .hold{display:inline-flex;align-items:center;min-height:44px;background:#5A0C3C;color:#FFF6EA;padding:0 14px;border-radius:4px}
 h2{font-size:clamp(36px,5vw,72px);line-height:.95;letter-spacing:-.02em}
