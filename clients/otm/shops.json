@@ -1,0 +1,110 @@
+{
+  "_about": "Old Town Marketplace shop records. Public info only, read from oldtownmarketplace.com on 2026-11-17. Anything with a 'tbc' flag or unitConfirmed:false is a placeholder to check with management. One record per shop, same shape for every shop, so the records can feed the local-business app later.",
+  "marketplace": {
+    "name": "Old Town Marketplace",
+    "address": "332 Main St, Longmont, CO 80501",
+    "phone": "(720) 680-0557",
+    "email": "downtownmanagementltd@gmail.com",
+    "timezone": "America/Denver",
+    "hours": { "open": 11, "close": 19, "days": "daily", "tbc": "The home page says 11 to 7; the leasing page says 10 to 7." },
+    "calendar": "https://www.calendarwiz.com/calendars/calendar.php?crd=oldtownmarketplace&nolog=1&cid[]=all"
+  },
+  "categories": {
+    "food": "Food",
+    "boutiques": "Boutiques",
+    "art": "Art",
+    "collectibles": "Collectibles",
+    "wellness": "Wellness",
+    "community": "Community"
+  },
+  "levels": [
+    { "id": "main", "name": "Main floor", "bands": [
+      { "label": "Back hall, B units", "units": ["B1", "B2", "B3", "B4", "B5", "B6"] },
+      { "label": "Atrium and dining", "units": ["tbc:abuelitas", "tbc:colorado-dumplings"] },
+      { "label": "Main Street front, A units", "units": ["A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8"] },
+      { "label": "Inside, spot to confirm", "units": ["tbc:belle-isa", "tbc:golden-bee", "tbc:great-nile", "tbc:proudly-addicted", "tbc:community-cares"] }
+    ] },
+    { "id": "up", "name": "Upstairs", "bands": [
+      { "label": "Top of the stairs, C units", "units": ["C1", "C2", "C3", "C4", "C5", "C6"] }
+    ] },
+    { "id": "mezz", "name": "Mezzanine", "bands": [
+      { "label": "Mezzanine walkway, D units", "units": ["D1", "D2", "D3", "D4", "D5", "D6"] }
+    ] }
+  ],
+  "spaces": [
+    { "unit": "B5", "name": "Coming soon to B5", "sells": "The marketplace is turning B5 into a place to eat and sing, with karaoke on the cards. Details are still to come." }
+  ],
+  "shops": [
+    { "id": "abuelitas", "name": "Abuelita's Empanadas", "short": "Abuelita's", "level": "main", "units": [], "unitConfirmed": false,
+      "categories": ["food"], "sells": "Mirella and David have been baking empanadas here for ten years. Grab a seat in the dining room or order ahead for pickup.",
+      "links": [{ "label": "Order for pickup", "href": "../abuelitas/#order", "kind": "order" }] },
+    { "id": "colorado-dumplings", "name": "Colorado Dumplings", "short": "Dumplings", "level": "main", "units": [], "unitConfirmed": false,
+      "categories": ["food"], "sells": "A dumpling cafe that shares the dining room with Abuelita's, so you can eat in comfort.",
+      "links": [] },
+    { "id": "belle-isa", "name": "Belle Isa Boutique", "short": "Belle Isa", "level": "tbc", "units": [], "unitConfirmed": false,
+      "categories": ["boutiques"], "sells": "A boutique with exciting changes and new arrivals, so there is always something fresh on the racks.",
+      "links": [{ "label": "Website", "href": "https://belleisaboutique.com/" }] },
+    { "id": "rr-unique", "name": "R&R Unique", "short": "R&R Unique", "level": "main", "units": ["A1", "C6", "D6"], "unitConfirmed": true,
+      "categories": ["collectibles"], "sells": "Vinyl records, vintage t-shirts, books, memorabilia and collectibles spread across several units. It is new to the marketplace but not to Longmont.",
+      "tbc": "An older post also lists D4 for this shop, which is The Dinostaur's unit." , "links": [] },
+    { "id": "high-society", "name": "High Society Smoke Shop", "short": "High Society", "level": "up", "units": ["C1"], "unitConfirmed": true,
+      "categories": ["boutiques"], "sells": "Hand-blown glass pipes, vaporizers, CBD, apparel, lighters and local jewelry, with friendly staff to help you find the right piece. Adults only.",
+      "links": [{ "label": "Website", "href": "http://highsociety303.com/" }] },
+    { "id": "golden-bee", "name": "The Golden Bee", "short": "Golden Bee", "level": "tbc", "units": [], "unitConfirmed": false,
+      "categories": ["art", "boutiques"], "sells": "Local art, do-it-yourself workshops and a little retail therapy. The marketplace says exciting news is on the way.",
+      "links": [] },
+    { "id": "timi", "name": "The Timi Collection", "short": "Timi", "level": "main", "units": ["A4"], "unitConfirmed": true,
+      "categories": ["boutiques", "collectibles"], "sells": "Vintage and second-hand clothing and accessories from the collection of Timi Dillon, a Longmont fashion icon. This is the shop she always wanted.",
+      "links": [{ "label": "Instagram", "href": "https://www.instagram.com/thetimicollection/" }] },
+    { "id": "happy-turtle", "name": "The Happy Turtle Soap Shop", "short": "Happy Turtle", "level": "main", "units": ["B3"], "unitConfirmed": true,
+      "categories": ["wellness"], "sells": "Small-batch soap, sea sponges, lotions, sea salt scrubs and bath salts. Everything is made with natural ingredients and extra virgin olive oil from Greece.",
+      "links": [{ "label": "Website", "href": "http://www.happyturtleshop.com/" }] },
+    { "id": "disorderly-designs", "name": "Disorderly Designs", "short": "Disorderly", "level": "main", "units": ["A3"], "unitConfirmed": true,
+      "categories": ["art"], "sells": "A shop on the main floor whose full story we still need to hear from the owner.", "tbc": "What they sell is a placeholder until the owner tells us.",
+      "links": [] },
+    { "id": "nirvanas-garden", "name": "Nirvana's Garden", "short": "Nirvana's", "level": "main", "units": ["A8"], "unitConfirmed": true,
+      "categories": ["wellness", "boutiques"], "sells": "A micro apothecary with herbal remedies, natural skincare and handmade goods, all chosen for clear ingredients and small makers. Find it by the east entry.",
+      "links": [] },
+    { "id": "hail-mary", "name": "Hail Mary Clothing", "short": "Hail Mary", "level": "main", "units": ["A6"], "unitConfirmed": true,
+      "categories": ["boutiques"], "sells": "A clothing shop that the marketplace announced for June 2026 on the main floor.", "tbc": "Opening and what they carry to confirm.",
+      "links": [] },
+    { "id": "dinostaur", "name": "The Dinostaur", "short": "Dinostaur", "level": "mezz", "units": ["D4"], "unitConfirmed": true,
+      "categories": ["collectibles"], "sells": "A whole shop devoted to dinosaurs, up on the mezzanine in D4. You say the name like dahy-nuh-store.",
+      "links": [] },
+    { "id": "broebuck", "name": "Broebuck Photography", "short": "Broebuck", "level": "mezz", "units": ["D2"], "unitConfirmed": true,
+      "categories": ["art"], "sells": "A photography studio on the mezzanine level, ready for portraits and sessions.",
+      "links": [{ "label": "Website", "href": "http://www.broebuckphotography.com/" }] },
+    { "id": "proudly-addicted", "name": "Proudly Addicted", "short": "Proudly Addicted", "level": "tbc", "units": [], "unitConfirmed": false,
+      "categories": ["boutiques"], "sells": "A newer shop in the marketplace whose story we still need to hear.", "tbc": "Unit and what they sell to confirm.",
+      "links": [] },
+    { "id": "joyeria-maria-bonita", "name": "Joyeria Maria Bonita", "short": "Maria Bonita", "level": "mezz", "units": ["D3"], "unitConfirmed": true,
+      "categories": ["boutiques", "art"], "sells": "Rafael is a jeweler, videographer and DJ who specializes in Spanish music for weddings and quinceañeras. He has been at the marketplace since 2011.",
+      "links": [{ "label": "Facebook", "href": "https://www.facebook.com/people/Joyeria-Maria-Bonita/100028577876178/" }] },
+    { "id": "great-nile", "name": "Great Nile Jewelry", "short": "Great Nile", "level": "tbc", "units": [], "unitConfirmed": false,
+      "categories": ["boutiques"], "sells": "Fine jewelry with an Egyptian inspiration. Come in and say hello to Ibrahim.",
+      "links": [] },
+    { "id": "community-cares", "name": "Community Cares, Ltd.", "short": "Community Cares", "level": "tbc", "units": [], "unitConfirmed": false,
+      "categories": ["community"], "sells": "A Longmont grassroots nonprofit that is having fun on purpose. It runs the Cars that Care Pine Car Derby and the Mariposas memorial.",
+      "links": [{ "label": "Website", "href": "http://www.communitycaresltd.org/" }] },
+    { "id": "obra-arts", "name": "Obra Arts", "short": "Obra Arts", "level": "up", "units": ["C4"], "unitConfirmed": true,
+      "categories": ["art"], "sells": "The studio of Joyanna Rose Gittings, a two-time Shock Art winner who is painting a Diego Rivera tribute mural for the marketplace.",
+      "links": [{ "label": "Website", "href": "http://joyannarose.com/" }, { "label": "Studio video", "href": "https://www.youtube.com/watch?v=qKrFQHP8Upo" }] },
+    { "id": "art-spot", "name": "The ART Spot", "short": "ART Spot", "level": "main", "units": ["B6"], "unitConfirmed": true,
+      "categories": ["art", "collectibles"], "sells": "New Mexican retablos by santera Catherine Robles Shaw, old maps, Hopi silver, vintage masks and trade beads, and plenty of affordable gifts.",
+      "links": [] }
+  ],
+  "events": [
+    { "id": "pine-car-derby", "title": "Cars that Care Pine Car Derby", "when": "Late November", "tbc": "The 2026 race date is still to be confirmed. Last year's race was the Saturday after Thanksgiving.",
+      "text": "Kids and grown-ups race wooden cars down Main Street, and the car kits are free for registered racers. Community Cares runs it to raise money for neighbors in need.",
+      "href": "https://www.oldtownmarketplace.com/the-cars-that-care-pine-car-derby/" },
+    { "id": "mariposas", "title": "Mariposas de la Memoria", "when": "In the foyer, all year",
+      "text": "Paper monarch butterflies hang from the foyer ceiling, each one a memorial with a QR code to a loved one's story. Donations go to El Comite de Longmont.",
+      "href": "https://www.oldtownmarketplace.com/mariposas-de-la-memoria/" },
+    { "id": "rivera-mural", "title": "Baile de Tehuantepec Nuevo", "when": "Mural in the marketplace", "tbc": "Whether the mural is finished is still to confirm.",
+      "text": "Joyanna Rose Gittings of Obra Arts is painting her own take on Diego Rivera's dance, with fiesta guests enjoying empanadas, boba and piñatas.",
+      "href": "https://www.oldtownmarketplace.com/a-tribute-to-diego-rivera/" },
+    { "id": "shock-art", "title": "Shock Art public vote", "when": "Every spring", "tbc": "The dates for next spring are still to be confirmed.",
+      "text": "Longmont Art in Public Places shows the artists' models in the atrium, and you vote for the electric boxes that get painted around town.",
+      "href": "https://www.oldtownmarketplace.com/2nd-fridays-at-the-otm/" }
+  ]
+}
