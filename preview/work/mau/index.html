@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Mau’s Catnip Soda · case study · Sea of Grass</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&family=Fraunces:opsz,wght,SOFT@144,900,100&family=Archivo:wdth,wght@125,800&display=swap" rel="stylesheet">
+<style>
+/* Draft, 2026-11-14: the opening of the Mau's case study in the site's Ember style
+   (concrete grey, poster black, sign yellow, coral; thick borders, hard shadows; Syne + Space Grotesk + Space Mono).
+   One big object on a flat field, after Teenage Engineering's product pages. */
+:root{--grey:#D9D9D9;--ink:#1F1F1F;--yellow:#FBB833;--coral:#FA4D43;--green:#027B49;--cream:#F2EADC;--b:4px}
+*{box-sizing:border-box;margin:0}
+html,body{background:var(--grey);color:var(--ink)}
+body{font:500 17px/1.5 "Space Grotesk",system-ui,sans-serif}
+a{color:inherit}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px clamp(16px,4vw,48px);background:var(--yellow);border-bottom:var(--b) solid var(--ink)}
+.bar .home{font:800 20px/1 Syne,sans-serif;text-decoration:none;letter-spacing:-.02em}
+.bar nav{display:flex;gap:clamp(12px,2vw,28px);align-items:center;font-weight:700}
+.bar nav a{text-decoration:none}
+.btn{display:inline-block;background:var(--ink);color:var(--yellow);font-weight:700;text-decoration:none;padding:12px 18px;border:var(--b) solid var(--ink);box-shadow:5px 5px 0 #fff;transition:transform .12s,box-shadow .12s}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #fff}
+.open{background:var(--yellow);border-bottom:var(--b) solid var(--ink);padding:clamp(28px,5vw,72px) clamp(16px,4vw,48px) clamp(36px,6vw,88px)}
+.open-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:clamp(24px,4vw,64px);align-items:center;max-width:1320px;margin:0 auto}
+.kick{font:700 13px/1.4 "Space Mono",monospace;letter-spacing:.14em;text-transform:uppercase;display:inline-block;background:var(--ink);color:var(--yellow);padding:6px 10px;margin-bottom:22px}
+h1{font:800 clamp(56px,9vw,148px)/1.04 Syne,sans-serif;letter-spacing:-.035em}
+h1 span{display:block;font-size:.48em;letter-spacing:-.02em;line-height:1.2;margin-top:.12em}
+.lede{font-size:clamp(19px,1.6vw,24px);line-height:1.45;max-width:30ch;margin:26px 0 30px}
+.lede i{font-style:normal;background:#fff;border:3px solid var(--ink);padding:0 .25em;white-space:nowrap}
+.stage{position:relative;background:var(--cream);border:var(--b) solid var(--ink);box-shadow:12px 12px 0 var(--ink);aspect-ratio:4/5;max-height:78vh;justify-self:end;width:100%}
+.stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+.stage .tag{position:absolute;left:-4px;top:-4px;font:700 12px/1 "Space Mono",monospace;letter-spacing:.12em;text-transform:uppercase;background:var(--coral);color:var(--ink);border:var(--b) solid var(--ink);padding:9px 12px;pointer-events:none;z-index:2}
+.facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--ink);color:var(--yellow);border-bottom:var(--b) solid var(--ink)}
+.facts div{padding:22px clamp(16px,2.4vw,32px);border-right:2px solid #3a3a3a}
+.facts div:last-child{border-right:0}
+.facts dt{font:700 12px/1.3 "Space Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:#bdbdbd;margin-bottom:8px}
+.facts dd{font:700 clamp(16px,1.4vw,20px)/1.3 "Space Grotesk",sans-serif}
+.next{max-width:1320px;margin:0 auto;padding:40px clamp(16px,4vw,48px) 80px;font:700 13px/1.4 "Space Mono",monospace;letter-spacing:.12em;text-transform:uppercase}
+
+/* ---- 2 The letter-creature: M, A and U become ears, nose and grin ---- */
+.lc{max-width:1320px;margin:0 auto;padding:clamp(48px,7vw,104px) clamp(16px,4vw,48px)}
+.lc-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,4vw,64px);align-items:end;margin-bottom:clamp(24px,3vw,40px)}
+.lc h2{font:800 clamp(36px,5.4vw,84px)/1.1 Syne,sans-serif;letter-spacing:-.03em}
+.lc-head p{font-size:clamp(17px,1.4vw,21px);max-width:44ch}
+.lc-board{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:clamp(16px,2.4vw,32px);align-items:stretch}
+.lc-mark{background:var(--cream);border:var(--b) solid var(--ink);box-shadow:12px 12px 0 var(--ink);display:flex;align-items:center;justify-content:center;padding:clamp(20px,4vw,56px)}
+.lc-mark svg{width:100%;height:auto;display:block}
+.lc-mark .p{fill:var(--ink);transition:opacity .35s,fill .35s}
+.lc-board[data-on] .lc-mark .p{opacity:.12}
+.lc-board[data-on="m"] .lc-mark .p-m,.lc-board[data-on="a"] .lc-mark .p-a,.lc-board[data-on="u"] .lc-mark .p-u{opacity:1}
+.lc-keys{display:grid;gap:clamp(12px,1.6vw,20px);list-style:none;padding:0}
+.lc-keys button{width:100%;display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;text-align:left;font:inherit;color:var(--ink);border:var(--b) solid var(--ink);padding:16px 18px;cursor:pointer;box-shadow:6px 6px 0 var(--ink);transition:transform .12s,box-shadow .12s}
+.lc-keys button:hover,.lc-keys button[aria-pressed="true"]{transform:translate(-3px,-3px);box-shadow:9px 9px 0 var(--ink)}
+.lc-keys li:nth-child(1) button{background:var(--yellow)}.lc-keys li:nth-child(2) button{background:var(--coral)}.lc-keys li:nth-child(3) button{background:#fff}
+.lc-keys .L{font:800 clamp(52px,5vw,76px)/1 Syne,sans-serif;width:1.3em;text-align:center}
+.lc-keys b{display:block;font:700 clamp(19px,1.6vw,24px)/1.2 "Space Grotesk",sans-serif}
+.lc-keys small{display:block;font:400 14px/1.45 "Space Mono",monospace;margin-top:4px}
+@media (max-width:860px){.lc-head,.lc-board{grid-template-columns:1fr}.lc-mark{width:calc(100% - 8px);box-shadow:8px 8px 0 var(--ink)}}
+
+/* ---- shared by sections 3-8 ---- */
+.sec{max-width:1320px;margin:0 auto;padding:clamp(48px,7vw,104px) clamp(16px,4vw,48px)}
+.sec-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,4vw,64px);align-items:end;margin-bottom:clamp(24px,3vw,40px)}
+.sec h2{font:800 clamp(36px,5.4vw,84px)/1.1 Syne,sans-serif;letter-spacing:-.03em}
+.sec-head p{font-size:clamp(17px,1.4vw,21px);max-width:44ch}
+.mono{font:700 12px/1.4 "Space Mono",monospace;letter-spacing:.14em;text-transform:uppercase}
+.card{border:var(--b) solid var(--ink);box-shadow:8px 8px 0 var(--ink);background:#fff;min-width:0}
+.card figcaption,.card .cap{padding:12px 16px;border-top:var(--b) solid var(--ink);background:#fff;font:400 14px/1.45 "Space Mono",monospace}
+.card figcaption b,.card .cap b{display:block;font:700 12px/1.4 "Space Mono",monospace;letter-spacing:.14em;text-transform:uppercase;margin-bottom:2px}
+figure{margin:0}
+.grid2,.grid3,.grid4{display:grid;gap:clamp(16px,2.4vw,32px)}
+.grid2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid3{grid-template-columns:repeat(3,minmax(0,1fr))}.grid4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.band{border-top:var(--b) solid var(--ink);border-bottom:var(--b) solid var(--ink)}
+
+/* opener film, in the lockups section */
+.film video{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:var(--cream)}
+
+/* ---- 3 The rules ---- */
+.rules-board{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:clamp(16px,2.4vw,32px);align-items:stretch}
+.geo{background:var(--cream);border:var(--b) solid var(--ink);box-shadow:12px 12px 0 var(--ink);position:relative;padding:clamp(12px,2vw,28px);display:flex;flex-direction:column;justify-content:center}
+.geo svg{display:block;width:100%;height:auto}
+.geo .legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:10px}
+.geo .legend i{display:inline-block;width:18px;height:4px;vertical-align:middle;margin-right:6px;background:var(--coral)}
+.geo .legend i.g{background:none;border-top:2px dashed #8a8a8a;height:0}
+.geo .legend i.k{width:12px;height:12px;border-radius:50%;background:var(--yellow);border:2px solid var(--ink)}
+.rulelist{list-style:none;padding:0;display:grid;gap:0;border:var(--b) solid var(--ink);background:#fff;box-shadow:8px 8px 0 var(--ink);counter-reset:r}
+.rulelist li{display:grid;grid-template-columns:auto 1fr;gap:14px;padding:14px 16px;border-bottom:2px solid var(--ink);counter-increment:r}
+.rulelist li:last-child{border-bottom:0}
+.rulelist li::before{content:"0" counter(r);font:700 13px/1.6 "Space Mono",monospace;background:var(--ink);color:var(--yellow);padding:0 6px;height:max-content}
+.rulelist b{display:block;font:700 18px/1.25 "Space Grotesk",sans-serif}
+.rulelist span{display:block;font-size:15px;line-height:1.45;margin-top:2px}
+.diagrams{margin-top:clamp(24px,3vw,40px)}
+.dg{display:flex;flex-direction:column}.dg figcaption{flex:1}
+.dg [data-vb] .c{vector-effect:non-scaling-stroke;stroke-width:1.6}.dg [data-vb] .k{vector-effect:non-scaling-stroke}.dg .noc .c{display:none}
+.dg .art{flex:none;aspect-ratio:4/3;background:var(--cream);display:flex;align-items:center;justify-content:center;padding:16px;overflow:hidden}
+.dg .art svg{width:100%;height:100%;display:block}
+.ladder{display:flex;flex-direction:column;justify-content:center;gap:14px;width:100%}
+.ladder div{display:grid;grid-template-columns:3.2em 1fr;align-items:center;gap:12px;font:700 14px/1 "Space Mono",monospace}
+.ladder span{display:block;background:var(--ink)}
+
+/* ---- 4 Lockups and type ---- */
+.lk .art{display:flex;align-items:center;justify-content:center;padding:clamp(20px,4vw,48px);aspect-ratio:3/2}
+.lk .art svg{display:block;width:100%;height:100%}
+.lk-st .art{background:#4A1A5E;color:#160812}.lk-ho .art{background:#F3E6CC;color:#3A0B2E}
+.cw .art{aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;padding:14px}
+.cw .art svg{width:100%;height:auto;display:block}.cw .art svg .p{fill:currentColor}
+.cw-1 .art{background:#4A1A5E;color:#160812}.cw-2 .art{background:#F3E6CC;color:#3A0B2E}.cw-3 .art{background:#4A1A5E;color:#F3E6CC}.cw-4 .art{background:#fff;color:#000}
+.row-gap{margin-top:clamp(16px,2.4vw,32px)}
+.spec .art{background:#F3E6CC;color:#3A0B2E;aspect-ratio:4/3;display:flex;flex-direction:column;justify-content:center;padding:clamp(18px,3vw,32px);overflow:hidden}
+.spec .fr{font-family:Fraunces,Georgia,serif;font-weight:900;font-variation-settings:"SOFT" 100,"opsz" 144;line-height:.95}
+.spec .ar{font-family:Archivo,sans-serif;font-weight:800;font-stretch:125%;font-variation-settings:"wdth" 125;letter-spacing:.14em;text-transform:uppercase}
+.spec .big{font-size:clamp(64px,7vw,104px)}
+.spec .abc{font-size:clamp(18px,1.6vw,22px);margin-top:14px;line-height:1.35;word-break:break-word}
+.spec .ar.big{font-size:clamp(26px,2.6vw,38px);line-height:1.15}
+.sm .art{background:#F3E6CC;aspect-ratio:4/3;display:flex;align-items:flex-end;justify-content:center;gap:clamp(10px,2vw,22px);padding:20px}
+.sm .tile{display:flex;flex-direction:column;align-items:center;gap:8px;font:700 11px/1 "Space Mono",monospace;color:#3A0B2E}
+.sm .tile div{background:#4A1A5E;color:#160812;display:flex;align-items:center;justify-content:center}
+.sm .tile svg{display:block;width:100%;height:100%}
+
+/* ---- 5 The can ---- */
+.can-sec{background:var(--grey)}
+.flat{border:var(--b) solid var(--ink);box-shadow:12px 12px 0 var(--ink);background:#4A1A5E;position:relative}
+.flat img{display:block;width:100%;height:auto}
+.flat .tag,.tabs .tag{position:absolute;left:-4px;top:-4px;font:700 12px/1 "Space Mono",monospace;letter-spacing:.12em;text-transform:uppercase;background:var(--yellow);border:var(--b) solid var(--ink);padding:9px 12px}
+.orn img{display:block;width:100%;height:auto;aspect-ratio:1;object-fit:cover;background:#4A1A5E}.orn{display:flex;flex-direction:column}.orn figcaption{flex:1}
+.renders{background:var(--ink);color:var(--grey)}
+.renders .sec{padding-top:clamp(40px,6vw,80px);padding-bottom:clamp(40px,6vw,80px)}
+.rgrid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:clamp(12px,1.6vw,20px)}
+.rgrid .col{display:grid;gap:clamp(12px,1.6vw,20px)}
+.rgrid>img{height:100%!important;aspect-ratio:auto!important}
+.rgrid img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;border:var(--b) solid var(--grey);background:#17151c}
+.renders .mono{color:var(--yellow);margin-top:16px}
+
+/* ---- 6 The tab ---- */
+.tabs{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:clamp(20px,4vw,56px);align-items:start}
+.tabimg{position:relative;border:var(--b) solid var(--ink);box-shadow:12px 12px 0 var(--ink);background:#141218}
+.tabimg img{display:block;width:100%;height:auto}
+.pin{position:absolute;transform:translate(-50%,-50%);width:38px;height:38px;border-radius:50%;background:var(--yellow);border:3px solid var(--ink);font:700 16px/32px "Space Mono",monospace;text-align:center;box-shadow:3px 3px 0 var(--ink)}
+.tabtext .kick{margin-bottom:16px}
+.tabtext h2{margin-bottom:18px}
+.tabtext ol{list-style:none;padding:0;margin:22px 0;display:grid;gap:12px}
+.tabtext ol li{display:grid;grid-template-columns:38px 1fr;gap:14px;align-items:start}
+.tabtext ol li i{font:700 16px/32px "Space Mono",monospace;font-style:normal;width:38px;height:38px;border-radius:50%;background:var(--yellow);border:3px solid var(--ink);text-align:center}
+.tabtext ol b{display:block;font:700 18px/1.3 "Space Grotesk",sans-serif}
+.tabtext ol span{font-size:15px}
+.tabtext figure{margin-top:8px}
+.tabtext figure img{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;object-position:50% 40%}
+
+/* ---- 7 Coming next ---- */
+.fl .art{position:relative;background:#4A1A5E}
+.fl .art img{display:block;width:100%;height:auto}.fl .art img.ic{border-top:var(--b) solid var(--ink)}
+.fl h3{font:800 clamp(28px,2.6vw,40px)/1.05 Syne,sans-serif;letter-spacing:-.02em}
+.fl .cap{display:grid;gap:6px}
+.fl .stamp{position:absolute;right:-4px;top:-4px;font:700 12px/1 "Space Mono",monospace;letter-spacing:.12em;text-transform:uppercase;background:var(--coral);border:var(--b) solid var(--ink);padding:9px 12px;z-index:2}
+.fl .stamp.on{background:var(--yellow)}
+
+
+/* ---- 8 Close ---- */
+.close{background:var(--coral);border-top:var(--b) solid var(--ink)}
+.close .sec{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(20px,4vw,64px);align-items:end}
+.close p{font-size:clamp(18px,1.5vw,22px);max-width:36ch;margin-top:14px}
+.close .acts{display:grid;gap:16px;justify-items:start}
+.close .btn{font-size:18px;padding:16px 22px}
+.close .reach{display:flex;flex-wrap:wrap;gap:6px 20px;font-weight:700}
+.foot{background:var(--ink);color:var(--grey);padding:22px clamp(16px,4vw,48px);display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px;font:400 13px/1.4 "Space Mono",monospace}
+
+@media (max-width:1000px){.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:600px){.diagrams{grid-template-columns:1fr}.dg .art{aspect-ratio:2/1}}
+@media (max-width:860px){
+  .sec-head,.rules-board,.tabs,.close .sec{grid-template-columns:1fr}
+  .grid2,.grid3{grid-template-columns:1fr}
+  .geo,.flat,.tabimg{width:calc(100% - 8px);box-shadow:8px 8px 0 var(--ink)}
+  .card{width:calc(100% - 8px)}
+  .rgrid{grid-template-columns:1fr}.rgrid .col{grid-template-columns:1fr 1fr}
+  .pin{width:30px;height:30px;font-size:13px;line-height:24px}
+}
+@media (max-width:860px){
+  .open-grid{grid-template-columns:1fr}
+  .stage{justify-self:stretch;aspect-ratio:4/5;max-height:none;width:calc(100% - 8px);box-shadow:8px 8px 0 var(--ink)}
+  .bar .btn{padding:10px 12px;white-space:nowrap;font-size:15px}
+  html,body{overflow-x:hidden}
+  .facts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .facts div:nth-child(2){border-right:0}
+  .facts div:nth-child(-n+2){border-bottom:2px solid #3a3a3a}
+  .bar nav .hide-s{display:none}
+}
+</style>
+</head>
+<body>
+<header class="bar">
+  <a class="home" href="/">Sea of Grass</a>
+  <nav><a class="hide-s" href="/#work">Work</a><a class="hide-s" href="/#services">Services</a><a class="btn" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a meeting</a></nav>
+</header>
+<main>
+  <section class="open" aria-labelledby="h-mau">
+    <div class="open-grid">
+      <div>
+        <p class="kick">Case study 01 · Brand &amp; packaging</p>
+        <h1 id="h-mau">Mau&rsquo;s<span>Catnip Soda</span></h1>
+        <p class="lede">A cat made of three letters, M, A and U, and three cans wrapped in ink: vines, flames and water. <i>A made-up client, a real job.</i></p>
+        <a class="btn" href="#mark">See how the cat was drawn &darr;</a>
+      </div>
+      <div class="stage">
+        <span class="tag">Drag to turn</span>
+        <iframe src="can.html" title="The Spooky blackberry can, a live 3D model you can turn" loading="lazy"></iframe>
+      </div>
+    </div>
+  </section>
+  <dl class="facts">
+    <div><dt>Client</dt><dd>Mau&rsquo;s Catnip Soda (fictional)</dd></div>
+    <div><dt>Made</dt><dd>Mark, lockups, can label, tab</dd></div>
+    <div><dt>First flavour</dt><dd>Spooky &middot; blackberry</dd></div>
+    <div><dt>Studio</dt><dd>Berthoud, Colorado</dd></div>
+  </dl>
+  <section class="lc" id="mark" aria-labelledby="h-lc">
+    <div class="lc-head">
+      <h2 id="h-lc">Three letters, one cat.</h2>
+      <p>The brand is called Mau, so the cat is spelled out of it. The M is the head and its ears, the A is the nose, the U is the grin. Nothing was added that the name didn&rsquo;t already have.</p>
+    </div>
+    <div class="lc-board" data-on="m">
+      <div class="lc-mark" data-src="mark-parts.svg" aria-hidden="false"></div>
+      <ul class="lc-keys">
+        <li><button type="button" data-k="m" aria-pressed="true"><span class="L">M</span><span><b>The ears</b><small>Two strokes of the M fold in to a point and become the head.</small></span></button></li>
+        <li><button type="button" data-k="a" aria-pressed="false"><span class="L">A</span><span><b>The nose</b><small>The A&rsquo;s peak sits at the centre, pointing up, as the nose.</small></span></button></li>
+        <li><button type="button" data-k="u" aria-pressed="false"><span class="L">U</span><span><b>The grin</b><small>The U becomes the mouth, with a moon at each corner.</small></span></button></li>
+      </ul>
+    </div>
+  </section>
+  <section class="sec" id="rules" aria-labelledby="h-rules">
+    <div class="sec-head">
+      <h2 id="h-rules">The rules it&rsquo;s drawn by.</h2>
+      <p>Every line in the mark comes from one module, m, and one stroke, a third of it. Nothing is drawn by eye and left there: it is built, then checked by eye, then rebuilt.</p>
+    </div>
+    <div class="rules-board">
+      <div class="geo">
+        <div data-svg="geometry.svg"></div>
+        <p class="legend mono"><span><i></i>Construction</span><span><i class="g"></i>Grid &frac12;m</span><span><i class="k"></i>Key points</span><span>Head 6m &times; 7m</span></p>
+      </div>
+      <ol class="rulelist">
+        <li><span><b>Four weights, no more</b><span>&frac12; &middot; 1 &middot; 1&frac12; &middot; 3 of one stroke. Every line in the mark is one of those four.</span></span></li>
+        <li><span><b>Tapers at 3&nbsp;:&nbsp;1</b><span>Ears and whiskers run from 1&frac12; strokes down to &frac12;. The same ratio as the moon to the line.</span></span></li>
+        <li><span><b>Points where things meet</b><span>Ear tips, the nose&rsquo;s top and the inner ends of the ears all finish in a point, never a blunt cut.</span></span></li>
+        <li><span><b>The nose sits on the grin</b><span>The nose&rsquo;s two lobes rest exactly on the grin&rsquo;s outer circle. Tangent, not nearly.</span></span></li>
+        <li><span><b>The optical pass</b><span>Diagonals read light, so the ears are 6% heavier (1.6&nbsp;&rarr;&nbsp;0.53). No horn tip ends thinner than &frac14; stroke.</span></span></li>
+      </ol>
+    </div>
+    <div class="grid4 diagrams">
+      <figure class="card dg">
+        <div class="art"><div class="ladder" aria-hidden="true">
+          <div>&frac12;<span style="height:6px"></span></div><div>1<span style="height:12px"></span></div><div>1&frac12;<span style="height:18px"></span></div><div>3<span style="height:36px"></span></div>
+        </div></div>
+        <figcaption><b>01 &middot; Weights</b>Gaps and inner ends &middot; the head line &middot; whisker ends &middot; the grin.</figcaption>
+      </figure>
+      <figure class="card dg">
+        <div class="art"><svg viewBox="0 10 400 150" aria-hidden="true">
+          <path d="M24 80 L60 74 L352 62 A18 18 0 0 1 352 98 L60 86 Z" fill="#1F1F1F"/>
+          <g stroke="#FA4D43" stroke-width="2.5" fill="none"><path d="M60 50 V110"/><path d="M352 30 V130"/><path d="M48 74 H72 M48 86 H72"/><path d="M340 62 H364 M340 98 H364"/></g>
+          <g font-family="Space Mono,monospace" font-size="22" font-weight="700" fill="#1F1F1F" text-anchor="middle"><text x="60" y="134">&frac12;</text><text x="352" y="152">1&frac12;</text><text x="206" y="40">3 : 1</text></g>
+        </svg></div>
+        <figcaption><b>02 &middot; Taper</b>A whisker: pointed by the head, round on the outside.</figcaption>
+      </figure>
+      <figure class="card dg">
+        <div class="art"><div class="noc" data-svg="geometry.svg" data-vb="770 545 180 135" style="width:100%;height:100%"></div></div>
+        <figcaption><b>03 &middot; Points</b>Both ears end in points either side of the nose&rsquo;s pointed top.</figcaption>
+      </figure>
+      <figure class="card dg">
+        <div class="art"><div data-svg="geometry.svg" data-vb="680 560 360 270" style="width:100%;height:100%"></div></div>
+        <figcaption><b>04 &middot; Tangent</b>The lobes (r &frac12;m) touch the grin&rsquo;s outer circle (r 1&frac12;m).</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="sec band" id="lockups" aria-labelledby="h-lk" style="max-width:none;background:#fff">
+   <div style="max-width:1224px;margin:0 auto">
+    <div class="sec-head">
+      <h2 id="h-lk">Lockups and type.</h2>
+      <p>Two ways to sit the name beside the cat, four colourways, and a simpler mark for when it gets small. The wordmark is Fraunces Black with its soft corners on; the descriptor is Archivo, extra bold and wide.</p>
+    </div>
+    <div class="grid2">
+      <figure class="card lk lk-st"><div class="art" data-svg="lockup-stacked.svg" role="img" aria-label="Stacked lockup: the mark over Mau's, Catnip Soda"></div><figcaption><b>Stacked</b>Mau&rsquo;s set to the head&rsquo;s width, 1m below it. Catnip Soda at &frac14; its cap height.</figcaption></figure>
+      <figure class="card lk lk-ho"><div class="art" data-svg="lockup-horizontal.svg" role="img" aria-label="Horizontal lockup: the head beside Mau's, Catnip Soda"></div><figcaption><b>Horizontal</b>No whiskers. Mau&rsquo;s as tall as the ears are deep; Catnip Soda on the head&rsquo;s base line.</figcaption></figure>
+    </div>
+    <figure class="card film row-gap"><video src="opener.mp4" poster="opener-poster.webp" muted loop playsinline autoplay preload="metadata" aria-label="The logo opener: coloured tiles shuffle and settle into the stacked lockup"></video><figcaption><b>In motion</b>The opener. The brand&rsquo;s colours shuffle as tiles, then settle into the stacked lockup.</figcaption></figure>
+    <div class="grid4 row-gap">
+      <figure class="card cw cw-1"><div class="art" data-svg="mark-parts.svg"></div><figcaption><b>Primary</b>Ink on witching purple</figcaption></figure>
+      <figure class="card cw cw-2"><div class="art" data-svg="mark-parts.svg"></div><figcaption><b>On light</b>Plum on bone</figcaption></figure>
+      <figure class="card cw cw-3"><div class="art" data-svg="mark-parts.svg"></div><figcaption><b>Reversed</b>Bone on purple</figcaption></figure>
+      <figure class="card cw cw-4"><div class="art" data-svg="mark-parts.svg"></div><figcaption><b>One colour</b>Black, nothing else</figcaption></figure>
+    </div>
+    <div class="grid3 row-gap">
+      <figure class="card spec"><div class="art"><div class="fr big">Mau&rsquo;s</div><div class="fr abc">Aa Bb Cc Dd Ee Ff Gg 0123</div></div><figcaption><b>Fraunces Black &middot; soft</b>The wordmark, in title case.</figcaption></figure>
+      <figure class="card spec"><div class="art"><div class="ar big">Catnip<br>Soda</div><div class="ar abc" style="font-size:14px">ABCDEFG 0123</div></div><figcaption><b>Archivo ExtraBold Wide</b>The descriptor, +14% tracking.</figcaption></figure>
+      <figure class="card sm"><div class="art">
+        <span class="tile"><div style="width:96px;height:96px" data-svg="mark-small.svg"></div>96</span>
+        <span class="tile"><div style="width:64px;height:64px" data-svg="mark-small.svg"></div>64</span>
+        <span class="tile"><div style="width:32px;height:32px" data-svg="mark-small.svg"></div>32</span>
+        <span class="tile"><div style="width:16px;height:16px" data-svg="mark-small.svg"></div>16</span>
+      </div><figcaption><b>Small sizes</b>Below 64&nbsp;px: heavier even lines, a solid nose, no moons, no whiskers.</figcaption></figure>
+    </div>
+   </div>
+  </section>
+
+  <section class="sec can-sec" id="can" aria-labelledby="h-can">
+    <div class="sec-head">
+      <h2 id="h-can">The can.</h2>
+      <p>The first flavour is Spooky: blackberry, for the witching hour. One ink on purple. Every form on the label is a filled shape, and the detail is cut out of it, never drawn on top.</p>
+    </div>
+    <figure class="flat"><span class="tag">The label, flat</span><img src="label.webp" width="2000" height="1061" loading="lazy" alt="The Spooky label laid flat: the cat mark in an arched window, wrapped in vines, blackberries, bats, webs and paws, with ingredient and nutrition panels at the sides"></figure>
+    <div class="grid3 row-gap">
+      <figure class="card orn"><img src="orn-crown.webp" width="700" height="700" loading="lazy" alt="Close-up: the moon and star crowning the arch, with scrolls either side"><figcaption><b>The crown</b>A moon and a star over the window, held up by scrolls.</figcaption></figure>
+      <figure class="card orn"><img src="orn-vine.webp" width="700" height="700" loading="lazy" alt="Close-up: a catnip leaf on the vine beside the window"><figcaption><b>The leaf</b>A catnip leaf on the vine. Its veins are cut out of the solid, not drawn on.</figcaption></figure>
+      <figure class="card orn"><img src="orn-corner.webp" width="700" height="700" loading="lazy" alt="Close-up: a spider web filling the label's corner"><figcaption><b>The corner</b>A web in each corner, built from quarter-circle arcs.</figcaption></figure>
+    </div>
+  </section>
+  <div class="renders band">
+    <div class="sec">
+      <div class="rgrid">
+        <img src="render-hero.webp" width="1200" height="1500" loading="lazy" alt="The Spooky can, front on, purple with black ornament">
+        <div class="col">
+          <img src="render-top.webp" width="800" height="1000" loading="lazy" alt="The can from above, showing the purple tab">
+          <img src="render-side.webp" width="800" height="1000" loading="lazy" alt="The can turned to show the side panel">
+        </div>
+      </div>
+      <p class="mono">Renders &middot; front, top, side</p>
+    </div>
+  </div>
+
+  <section class="sec" id="tab" aria-labelledby="h-tab">
+    <div class="tabs">
+      <div class="tabimg">
+        <img src="tab.webp" width="800" height="700" loading="lazy" alt="The pull tab from above: the Mau mark cut through the finger hole, a crescent slot, and a smile-shaped opening">
+        <span class="pin" style="left:69%;top:47%">1</span>
+        <span class="pin" style="left:69%;top:64%">2</span>
+        <span class="pin" style="left:72%;top:86%">3</span>
+      </div>
+      <div class="tabtext">
+        <p class="kick">Details nobody asked for</p>
+        <h2 class="sec-h" style="font:800 clamp(36px,5.4vw,84px)/1.1 Syne,sans-serif;letter-spacing:-.03em">The tab.</h2>
+        <p>A stock pull tab would have done. This one is purple and carries the cat.</p>
+        <ol>
+          <li><i>1</i><span><b>The mark, cut through</b><span>The small mark is cut right through the finger hole.</span></span></li>
+          <li><i>2</i><span><b>A crescent slot</b><span>The slot round the rivet is the grin&rsquo;s moon.</span></span></li>
+          <li><i>3</i><span><b>A smile to drink from</b><span>The opening is shaped like the grin, so the can smiles when it&rsquo;s open.</span></span></li>
+        </ol>
+        <figure class="card"><img src="tab-top.webp" width="800" height="790" loading="lazy" alt="The top of the can at an angle, the purple tab on the silver lid"></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec band" id="next" aria-labelledby="h-next" style="max-width:none;background:var(--yellow)">
+   <div style="max-width:1224px;margin:0 auto">
+    <div class="sec-head">
+      <h2 id="h-next">Coming next.</h2>
+      <p>Each flavour gets its own set of shapes built on the same grid, so the cans read as one family. All three labels are drawn in one ink; the colour pass is next.</p>
+    </div>
+    <div class="grid3">
+      <figure class="card fl"><div class="art"><span class="stamp on">Shown here</span><img src="label-spooky.webp" width="1200" height="637" loading="lazy" alt="The Spooky label: one ink on purple, with vines, bats, webs and blackberries"><img class="ic" src="icons-spooky.webp" width="900" height="150" loading="lazy" alt="Spooky icons: crescent moon, bat, web corner, blackberry, paw, fizz"></div><div class="cap"><h3>Spooky</h3><span class="mono">Blackberry &middot; moons, bats, webs</span></div></figure>
+      <figure class="card fl"><div class="art"><span class="stamp">Colour next</span><img src="label-spicy.webp" width="1200" height="636" loading="lazy" alt="The Spicy label: one ink on red, with prickly pears, saguaros, chilis and flames"><img class="ic" src="icons-spicy.webp" width="900" height="150" loading="lazy" alt="Spicy icons: ember crescent, prickly pear, chili, blaze, saguaro, agave"></div><div class="cap"><h3>Spicy</h3><span class="mono">Prickly pear &middot; cactus, agave, chili, flame</span></div></figure>
+      <figure class="card fl"><div class="art"><span class="stamp">Colour next</span><img src="label-sunny.webp" width="1200" height="636" loading="lazy" alt="The Sunny label: one ink on blue, with sunflowers, columbines, citrus slices and water drops"><img class="ic" src="icons-sunny.webp" width="900" height="150" loading="lazy" alt="Sunny icons: sunrise, blue columbine, butterfly, citrus slice, Indian paintbrush, mule's ears"></div><div class="cap"><h3>Sunny</h3><span class="mono">Citrus blossom &middot; sun, water, wildflowers</span></div></figure>
+    </div>
+   </div>
+  </section>
+
+  <section class="close" aria-labelledby="h-close">
+    <div class="sec">
+      <div>
+        <p class="kick">Start</p>
+        <h2 id="h-close">Start with a short call.</h2>
+        <p>Fifteen or thirty minutes. You leave with a next step and a price range.</p>
+      </div>
+      <div class="acts">
+        <a class="btn" href="https://cal.com/sea-of-grass" target="_blank" rel="noopener">Book a 15 or 30 minute call &rarr;</a>
+        <div class="reach"><a href="mailto:hello@seaofgrass.studio">hello@seaofgrass.studio</a><a href="tel:+13037751333">303.775.1333</a></div>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="foot"><span>Sea of Grass &middot; a design and technology studio in Berthoud, Colorado</span><a href="/">Back to the studio &rarr;</a></footer>
+<script>
+// the letter-creature board: load the mark (its M, A and U parts are separate paths), light one part at a time;
+// it cycles on its own until someone picks a letter
+(function(){
+  var board=document.querySelector('.lc-board'); if(!board) return;
+  var holder=board.querySelector('.lc-mark'), keys=[].slice.call(board.querySelectorAll('.lc-keys button')), order=['m','a','u'], i=0, timer=null;
+  fetch(holder.dataset.src).then(function(r){return r.text()}).then(function(t){holder.innerHTML=t});
+  function show(k){board.dataset.on=k; keys.forEach(function(b){b.setAttribute('aria-pressed', String(b.dataset.k===k))})}
+  function start(){ if(matchMedia('(prefers-reduced-motion: reduce)').matches) return; timer=setInterval(function(){i=(i+1)%3; show(order[i])},2200) }
+  keys.forEach(function(b){ b.addEventListener('click',function(){ clearInterval(timer); timer=null; show(b.dataset.k) }) });
+  start();
+})();
+// sections 3-4: the brand's own SVG files, loaded once each and dropped into every holder that names them
+// (inline so the page can colour them; data-vb crops the construction sheet to one detail)
+(function(){
+  var cache={};
+  function get(u){ return cache[u]||(cache[u]=fetch(u).then(function(r){return r.text()})) }
+  [].forEach.call(document.querySelectorAll('[data-svg]'),function(el){
+    get(el.dataset.svg).then(function(t){
+      el.insertAdjacentHTML('beforeend',t);
+      var s=el.querySelector('svg'); if(!s) return;
+      s.removeAttribute('role'); s.setAttribute('aria-hidden','true');
+      if(el.dataset.vb){ s.setAttribute('viewBox',el.dataset.vb); s.setAttribute('preserveAspectRatio','xMidYMid meet') }
+    });
+  });
+})();
+</script>
+</body>
+</html>
