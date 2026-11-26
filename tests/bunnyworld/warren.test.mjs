@@ -277,3 +277,32 @@ for (const w of WIDTHS) {
     } finally { await ctx.close(); }
   });
 }
+
+// the mark: one rabbit in the flower, approved by Tristan 2026-11-25 and never redrawn (the first 16 of its path's sha256)
+import crypto from 'node:crypto';
+import fs from 'node:fs';
+import path from 'node:path';
+import { ROOT } from '../lib/site.mjs';
+test('the mark and the favicon carry the approved drawing', () => {
+  for (const f of ['mark.svg', 'favicon.svg']) {
+    const d = (fs.readFileSync(path.join(ROOT, 'bunnyworld/warren-bakehouse', f), 'utf8').match(/ d="([^"]+)"/) || [])[1] || '';
+    assert.equal(crypto.createHash('sha256').update(d).digest('hex').slice(0, 16), '6862567ef60678f1', `${f} is the approved path`);
+  }
+});
+for (const w of WIDTHS) {
+  test(`${w}px · the header shows the mark beside the name, on one row with the hold button`, async () => {
+    const { ctx, page, failed } = await open(w);
+    try {
+      const r = await page.evaluate(() => { const b = s => { const { left, right, top, bottom, width, height } = document.querySelector(s).getBoundingClientRect(); return { left, right, top, bottom, width, height }; };
+        const i = document.querySelector('.logo img'); return { img: b('.logo img'), ok: i.complete && i.naturalWidth > 0, src: i.getAttribute('src'), name: b('.logo .foil'), hold: b('.nav .hold'), text: document.querySelector('.logo').innerText.replace(/\s+/g, ' '),
+          icon: document.querySelector('link[rel=icon]').getAttribute('href'), sw: document.documentElement.scrollWidth, vw: innerWidth }; });
+      assert.ok(r.ok && /^mark\.svg/.test(r.src), `the mark loads (${r.src})`);
+      assert.ok(r.img.width >= 28 && r.img.width <= 44.5 && Math.abs(r.img.width - r.img.height) < 1, `28 to 44px square (${r.img.width} x ${r.img.height})`);
+      assert.ok(r.img.right <= r.name.left - 7 && r.name.right <= r.hold.left, 'mark, name, hold button, left to right');
+      assert.equal(r.text, 'The Warren Bakehouse');
+      assert.match(r.icon, /^favicon\.svg/, 'its own favicon');
+      assert.ok(r.sw <= r.vw, `no sideways scroll (${r.sw} of ${r.vw})`);
+      assert.deepEqual(failed, []);
+    } finally { await ctx.close(); }
+  });
+}
