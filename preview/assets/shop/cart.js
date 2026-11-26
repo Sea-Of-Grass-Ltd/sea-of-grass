@@ -36,7 +36,9 @@ document.querySelectorAll('[data-shop-cards]').forEach(function(box){
 var nav=$('header.top nav')||$('header nav');
 var btn=document.createElement('button');btn.type='button';btn.className='shop-cartbtn';btn.setAttribute('aria-haspopup','dialog');btn.setAttribute('aria-controls','shop-drawer');
 btn.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14l-1.2 11.1a2 2 0 0 1-2 1.9H8.2a2 2 0 0 1-2-1.9L5 7Z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg><span class="shop-cartlbl">Cart</span><span class="shop-n" aria-hidden="true"></span>';
-if(nav){var book=nav.querySelector('.book');nav.insertBefore(btn,book||null);}else{btn.classList.add('shop-float');document.body.appendChild(btn);}
+// no cart in the header any more (Tristan 11-23: the site's nav is the five pages and Book a meeting): adding opens the
+// drawer straight away, and this button floats in a corner only while the cart has something in it
+btn.classList.add('shop-float');document.body.appendChild(btn);
 
 var veil=document.createElement('div');veil.className='shop-veil';veil.hidden=true;
 var dr=document.createElement('aside');dr.className='shop-drawer';dr.id='shop-drawer';dr.hidden=true;
